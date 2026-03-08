@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hawai'i Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Ubuntu:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">
+                Hawai'i Dashboard
+            </h1>
+            <p class="header-subtitle">
+                When you elect a state government, you're handing over tax dollars and trust.
+                <span class="header-subtitle-em">Here's how Hawai'i is delivering on its promises.</span>
+            </p>
+            <div class="header-meta">
+                <span class="meta-badge live-badge" id="live-badge" style="display:none;">
+                    <span class="live-dot"></span> Live data
+                </span>
+                <span class="meta-badge">
+                    <span class="meta-icon">📊</span> 14 areas &middot; 18 metrics
+                </span>
+                <span class="meta-badge">
+                    <span class="meta-icon">🔴</span> Hawai'i vs. <span class="meta-icon" style="margin-left:2px;">⚫</span> Other State Avg
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Grid of cards -->
+    <main class="dashboard-grid" id="dashboard-grid">
+        <!-- Cards injected by app.js -->
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal">
+            <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+            <div class="modal-header">
+                <span class="modal-icon" id="modal-icon"></span>
+                <div>
+                    <h2 class="modal-title" id="modal-title"></h2>
+                    <p class="modal-area" id="modal-area"></p>
+                </div>
+            </div>
+            <div class="modal-chart-container">
+                <canvas id="modal-chart"></canvas>
+            </div>
+            <div class="modal-stats" id="modal-stats"></div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>Why it matters</h3>
+                    <p id="modal-why"></p>
+                </div>
+                <div class="modal-section">
+                    <h3>How to read it</h3>
+                    <p id="modal-how"></p>
+                </div>
+                <div class="modal-source" id="modal-source"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Data sourced from federal agencies: FBI, CDC, Census Bureau, BLS, NCES, HUD, EIA, USDA, NASBO, EAC, FHWA.</p>
+        <p>Built for Hawai'i Residents and Policymakers &middot; All data is non-partisan, publicly available, and reported the same way for all 50 states.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

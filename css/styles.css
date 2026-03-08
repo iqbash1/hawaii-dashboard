@@ -1,0 +1,624 @@
+/* ============================================================
+   Hawai'i State Government Dashboard — Styles
+   Flat Design
+   ============================================================ */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #F5F5F5;
+    --card-bg: #FFFFFF;
+    --text: #333333;
+    --text-secondary: #555555;
+    --text-muted: #888888;
+    --hawaii-blue: #d03135;
+    --hawaii-blue-light: #FDF0F0;
+    --avg-gray: #666666;
+    --avg-gray-light: #F3F4F6;
+    --positive: #059669;
+    --positive-bg: #ECFDF5;
+    --negative: #DC2626;
+    --negative-bg: #FEF2F2;
+    --neutral-bg: #F3F4F6;
+    --border: #E0E0E0;
+    --radius: 4px;
+    --radius-sm: 3px;
+    --font-heading: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --transition: 0.15s ease;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Header --- */
+.header {
+    background: #2d2d44;
+    color: white;
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+}
+
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header-title {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.header-flag {
+    margin-right: 0.25rem;
+}
+
+.header-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto 1rem;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+.header-subtitle-em {
+    font-weight: 600;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255,255,255,0.12);
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.live-badge {
+    background: rgba(5, 150, 105, 0.25);
+}
+
+.live-dot {
+    width: 7px;
+    height: 7px;
+    background: #34D399;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.meta-icon {
+    font-size: 0.85rem;
+}
+
+/* --- Dashboard Grid --- */
+.dashboard-grid {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+/* --- Card --- */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.25rem 1rem;
+    cursor: pointer;
+    transition: border-color var(--transition);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    border-color: var(--hawaii-blue);
+}
+
+.card::after {
+    content: '\203A';
+    position: absolute;
+    top: 1.25rem;
+    right: 1rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+
+.card:hover::after {
+    opacity: 0.6;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-icon {
+    font-size: 1.3rem;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hawaii-blue-light);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.card-area {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--hawaii-blue);
+}
+
+.card-metric {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.card-hero {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-hawaii-value {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.card-unit {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.card-sparkline {
+    height: 44px;
+    width: 100%;
+}
+
+/* --- Card Comparisons (the two key indicators) --- */
+.card-comparisons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.card-comp {
+    text-align: center;
+    padding: 0.4rem 0.25rem;
+    border-radius: var(--radius-sm);
+    background: var(--avg-gray-light);
+}
+
+.comp-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+    font-weight: 600;
+}
+
+.comp-verdict {
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+}
+
+.comp-detail {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+.card-comp.positive {
+    background: var(--positive-bg);
+}
+
+.card-comp.positive .comp-verdict {
+    color: var(--positive);
+}
+
+.card-comp.negative {
+    background: var(--negative-bg);
+}
+
+.card-comp.negative .comp-verdict {
+    color: var(--negative);
+}
+
+.card-comp.neutral {
+    background: var(--neutral-bg);
+}
+
+.card-comp.neutral .comp-verdict {
+    color: var(--text-secondary);
+}
+
+/* --- Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-overlay.active .modal {
+    /* no transform animation — flat */
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: background var(--transition);
+    z-index: 10;
+}
+
+.modal-close:hover {
+    background: var(--avg-gray-light);
+    color: var(--text);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.75rem 2rem 0;
+}
+
+.modal-icon {
+    font-size: 2rem;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hawaii-blue-light);
+    border-radius: var(--radius);
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+}
+
+.modal-area {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--hawaii-blue);
+    margin-top: 0.15rem;
+}
+
+.modal-chart-container {
+    padding: 1.5rem 2rem;
+    height: 320px;
+}
+
+.modal-stats {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0 2rem 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 120px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 0.75rem;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.stat-value {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.stat-value.hawaii-color {
+    color: var(--hawaii-blue);
+}
+
+.stat-value.avg-color {
+    color: var(--avg-gray);
+}
+
+.stat-value.positive {
+    color: var(--positive);
+}
+
+.stat-value.negative {
+    color: var(--negative);
+}
+
+.stat-value.neutral {
+    color: var(--text-secondary);
+}
+
+.stat-sub {
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-top: 0.15rem;
+}
+
+.stat-sub.positive {
+    color: var(--positive);
+}
+
+.stat-sub.negative {
+    color: var(--negative);
+}
+
+.stat-sub.neutral {
+    color: var(--text-secondary);
+}
+
+.modal-body {
+    padding: 0 2rem 2rem;
+}
+
+.modal-section {
+    margin-bottom: 1.25rem;
+}
+
+.modal-section h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.modal-section p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--text);
+}
+
+.modal-source {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.modal-source a {
+    color: var(--hawaii-blue);
+    text-decoration: none;
+}
+
+.modal-source a:hover {
+    text-decoration: underline;
+}
+
+/* --- Footer --- */
+.footer {
+    text-align: center;
+    padding: 2rem 1.5rem 3rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.footer a {
+    color: var(--hawaii-blue);
+    text-decoration: none;
+}
+
+.footer p + p {
+    margin-top: 0.35rem;
+}
+
+/* --- Loading State --- */
+.card.loading .card-sparkline {
+    background: var(--avg-gray-light);
+    border-radius: var(--radius-sm);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .header {
+        padding: 2rem 1rem 1.5rem;
+    }
+
+    .header-title {
+        font-size: 1.5rem;
+    }
+
+    .header-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .header-meta {
+        gap: 0.5rem;
+    }
+
+    .meta-badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .card {
+        padding: 1.25rem;
+    }
+
+    .modal {
+        max-height: 95vh;
+    }
+
+    .modal-header {
+        padding: 1.5rem 1.25rem 0;
+    }
+
+    .modal-chart-container {
+        padding: 1rem 1.25rem;
+        height: 240px;
+    }
+
+    .modal-stats {
+        padding: 0 1.25rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .modal-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .modal-body {
+        padding: 0 1.25rem 1.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.15rem;
+    }
+}
+
+/* --- Scrollbar --- */
+.modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+/* --- Print --- */
+@media print {
+    .header { background: white; color: black; }
+    .card { break-inside: avoid; border: 1px solid #ddd; }
+    .modal-overlay { display: none !important; }
+}
