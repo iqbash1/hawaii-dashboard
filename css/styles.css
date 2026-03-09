@@ -496,6 +496,13 @@ body {
     border-top: 1px solid var(--border);
 }
 
+.modal-official {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    font-style: italic;
+}
+
 .modal-source a {
     color: var(--hawaii-blue);
     text-decoration: none;

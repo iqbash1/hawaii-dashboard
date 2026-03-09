@@ -47,13 +47,14 @@ const DASHBOARD_DATA = {
   "ypll_under75": {
     "area": "Public Health",
     "areaIcon": "\ud83c\udfe5",
-    "metric": "Premature Death Rate (YPLL < 75)",
+    "metric": "Years of Life Lost (under 75)",
+    "officialName": "Years of Potential Life Lost Before Age 75 (YPLL-75)",
     "unit": "per 100K",
     "goodDirection": "down",
     "source": "CDC WISQARS",
     "sourceUrl": "https://wisqars.cdc.gov/",
     "whyItMatters": "The State licenses hospitals, funds Medicaid, regulates insurance, and leads disease control. Years of Potential Life Lost counts the missing years when people die early from chronic disease, overdose or injury \u2014 problems good prevention and timely care can stop.",
-    "howToRead": "You want this line trending down \u2014 fewer lost years means better prevention and timely care.",
+    "howToRead": "This counts the years of life people lose when they die before 75 from preventable causes. A falling line means better health outcomes.",
     "hawaii": {
       "2012-2013": 5444.9,
       "2014-2015": 5610.6,
@@ -148,7 +149,8 @@ const DASHBOARD_DATA = {
   "ba_or_higher_pct": {
     "area": "Higher Education",
     "areaIcon": "\ud83d\udcda",
-    "metric": "Adults 25+ with Bachelor's+",
+    "metric": "Adults with Bachelor\u2019s Degree+",
+    "officialName": "Percent of Persons 25+ with Bachelor\u2019s Degree or Higher",
     "unit": "%",
     "goodDirection": "up",
     "source": "Census ACS / FRED",
@@ -226,7 +228,8 @@ const DASHBOARD_DATA = {
   "median_income_real": {
     "area": "Economic Prosperity",
     "areaIcon": "\ud83d\udcb0",
-    "metric": "Real Median Household Income",
+    "metric": "Median Household Income (adj. for inflation)",
+    "officialName": "Real Median Household Income (2023 CPI-U-RS Adjusted Dollars)",
     "unit": "$",
     "goodDirection": "up",
     "source": "Census ACS / BLS CPI",
@@ -263,7 +266,8 @@ const DASHBOARD_DATA = {
   "renter_cost_burden_pct": {
     "area": "Cost of Living",
     "areaIcon": "\ud83c\udfe0",
-    "metric": "Rent Cost Burden (>30% of income)",
+    "metric": "Renters Paying 30%+ for Housing",
+    "officialName": "Gross Rent as a Percentage of Household Income: 30.0 Percent or More",
     "unit": "%",
     "goodDirection": "down",
     "source": "Census ACS",
@@ -300,7 +304,8 @@ const DASHBOARD_DATA = {
   "unsheltered_homeless_rate": {
     "area": "Cost of Living",
     "areaIcon": "\ud83c\udfe0",
-    "metric": "Unsheltered Homeless (per 10K)",
+    "metric": "Unsheltered Homeless",
+    "officialName": "Unsheltered Homeless Individuals per 10,000 Population (HUD PIT Count)",
     "unit": "per 10K",
     "goodDirection": "down",
     "source": "HUD PIT Count",
@@ -376,13 +381,14 @@ const DASHBOARD_DATA = {
   "broadband_subscription_pct": {
     "area": "Infrastructure",
     "areaIcon": "\ud83d\udee3\ufe0f",
-    "metric": "Broadband Subscriptions",
+    "metric": "Households with Broadband",
+    "officialName": "Percent of Households with a Broadband Internet Subscription (ACS B28002)",
     "unit": "%",
     "goodDirection": "up",
     "source": "Census ACS",
     "sourceUrl": "https://data.census.gov/",
     "whyItMatters": "Today's homework, tele-health and remote work run on broadband. Grants, competition policy and last-mile build-outs shift the line.",
-    "howToRead": "Broadband up equals progress \u2014 more households connected means a more productive economy.",
+    "howToRead": "A rising line means more homes have reliable internet access \u2014 essential for remote work, telehealth, and education.",
     "hawaii": {
       "2015": 0.7759,
       "2016": 0.7937,
@@ -423,7 +429,11 @@ const DASHBOARD_DATA = {
       "2017": 29.5,
       "2018": 32.47,
       "2019": 32.06,
-      "2020": 30.28
+      "2020": 30.28,
+      "2021": 33.49,
+      "2022": 43.03,
+      "2023": 42.39,
+      "2024": 42.86
     },
     "otherStateAvg": {
       "2012": 11.8835,
@@ -434,13 +444,18 @@ const DASHBOARD_DATA = {
       "2017": 13.2222,
       "2018": 13.2645,
       "2019": 13.4092,
-      "2020": 13.4965
+      "2020": 13.4965,
+      "2021": 13.8759,
+      "2022": 15.1145,
+      "2023": 16.1759,
+      "2024": 16.5222
     }
   },
   "renewables_share_gen": {
     "area": "Environment",
     "areaIcon": "\ud83c\udf3f",
-    "metric": "Renewables Share of Generation",
+    "metric": "Electricity from Renewables",
+    "officialName": "Renewable Sources as Share of Total Electricity Generation (EIA-923)",
     "unit": "%",
     "goodDirection": "up",
     "source": "EIA",
@@ -481,13 +496,14 @@ const DASHBOARD_DATA = {
   "net_energy_import_pct": {
     "area": "Energy Cost",
     "areaIcon": "\u26a1",
-    "metric": "Net Energy Import Dependence",
+    "metric": "Share of Energy Imported",
+    "officialName": "Net Energy Import Dependence (EIA SEDS: 1 \u2212 Production/Consumption)",
     "unit": "%",
     "goodDirection": "down",
     "source": "EIA SEDS",
     "sourceUrl": "https://www.eia.gov/state/seds/",
     "whyItMatters": "Shows how vulnerable we are to price shocks when tankers stop or oil spikes. More local renewables and efficiency bring this down.",
-    "howToRead": "You want import dependence falling \u2014 a win that comes from more local energy production.",
+    "howToRead": "Shows what share of energy comes from off-island. You want this falling \u2014 lower means more local energy production and less vulnerability to supply shocks.",
     "hawaii": {
       "2012": 0.9588,
       "2013": 0.9495,
@@ -567,7 +583,8 @@ const DASHBOARD_DATA = {
   "rainy_day_fund_pct": {
     "area": "Fiscal Stewardship",
     "areaIcon": "\ud83c\udfe6",
-    "metric": "Rainy Day Fund (% of General Fund)",
+    "metric": "Rainy Day Fund",
+    "officialName": "Budget Stabilization Fund Balance as Percent of General Fund Expenditures (NASBO)",
     "unit": "%",
     "goodDirection": "up",
     "source": "NASBO Fiscal Survey",
@@ -649,24 +666,25 @@ const DASHBOARD_DATA = {
   "net_domestic_migration_rate": {
     "area": "Public Confidence",
     "areaIcon": "\ud83d\uddf3\ufe0f",
-    "metric": "Net Domestic Migration Rate",
-    "unit": "per 1,000",
+    "metric": "People Moving In vs. Out",
+    "officialName": "Net Domestic Migration Rate per 10,000 Population (Census PEP)",
+    "unit": "per 10K",
     "goodDirection": "up",
     "source": "Census PEP",
     "sourceUrl": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html",
-    "whyItMatters": "Shows how people 'vote with their feet.' Positive numbers mean more individuals and families are choosing Hawai'i than leaving it. From 2020-24, Hawai'i lost nearly 46,000 residents to the mainland.",
-    "howToRead": "Green arrow means residents are staying. Red arrow is a wake-up call: fix what's pushing people away.",
+    "whyItMatters": "Shows how people 'vote with their feet.' Negative numbers mean more residents are leaving than arriving. From 2020\u201324, Hawai'i lost nearly 46,000 residents to the mainland.",
+    "howToRead": "This shows net movers per 10,000 residents. Negative means more people leaving Hawai'i than arriving from other states. A rising line means the trend is improving.",
     "hawaii": {
-      "2021": -0.0678,
-      "2022": -0.1097,
-      "2023": -0.0766,
-      "2024": -0.0646
+      "2021": -67.8,
+      "2022": -109.7,
+      "2023": -76.6,
+      "2024": -64.6
     },
     "otherStateAvg": {
-      "2021": 0.027,
-      "2022": 0.0147,
-      "2023": 0.0116,
-      "2024": 0.0109
+      "2021": 27.0,
+      "2022": 14.7,
+      "2023": 11.6,
+      "2024": 10.9
     }
   }
 };

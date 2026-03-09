@@ -250,7 +250,11 @@ const App = {
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         document.getElementById('modal-why').textContent = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
+        const officialLine = metricData.officialName
+            ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
+            : '';
         document.getElementById('modal-source').innerHTML = `
+            ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
         `;

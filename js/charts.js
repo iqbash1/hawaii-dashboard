@@ -115,36 +115,54 @@ const ChartUtils = {
                     const left = Math.max(x1, chartArea.left);
                     const right = Math.min(x2, chartArea.right);
 
-                    // Draw background band
+                    // Draw background band — strong enough to clearly distinguish terms
                     const bgColor = gov.party === 'R'
-                        ? 'rgba(220, 38, 38, 0.05)'
-                        : 'rgba(37, 99, 235, 0.05)';
+                        ? 'rgba(220, 38, 38, 0.10)'
+                        : 'rgba(37, 99, 235, 0.08)';
                     ctx.fillStyle = bgColor;
                     ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
 
-                    // Draw subtle border at term boundaries (not at chart edges)
+                    // Draw solid border at term boundaries (not at chart edges)
                     if (left > chartArea.left + 2) {
                         ctx.strokeStyle = gov.party === 'R'
-                            ? 'rgba(220, 38, 38, 0.2)'
-                            : 'rgba(37, 99, 235, 0.2)';
-                        ctx.lineWidth = 1;
-                        ctx.setLineDash([4, 4]);
+                            ? 'rgba(220, 38, 38, 0.5)'
+                            : 'rgba(37, 99, 235, 0.5)';
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([]);
                         ctx.beginPath();
                         ctx.moveTo(left, chartArea.top);
                         ctx.lineTo(left, chartArea.bottom);
                         ctx.stroke();
                     }
 
-                    // Draw governor name label at top of band
+                    // Draw governor name label at top of band — bold and clear
                     const centerX = (left + right) / 2;
                     const partyColor = gov.party === 'R' ? '#DC2626' : '#2563EB';
+
+                    // Label background pill for readability
+                    const labelText = `Gov. ${gov.name} (${gov.party})`;
+                    ctx.font = '700 11px "Open Sans", sans-serif';
+                    const textWidth = ctx.measureText(labelText).width;
+                    const pillPadX = 6;
+                    const pillPadY = 3;
+                    const pillY = chartArea.top + 4;
+                    const pillHeight = 16;
+
+                    ctx.fillStyle = gov.party === 'R'
+                        ? 'rgba(220, 38, 38, 0.12)'
+                        : 'rgba(37, 99, 235, 0.10)';
+                    ctx.fillRect(
+                        centerX - textWidth / 2 - pillPadX,
+                        pillY,
+                        textWidth + pillPadX * 2,
+                        pillHeight
+                    );
+
                     ctx.fillStyle = partyColor;
-                    ctx.globalAlpha = 0.6;
-                    ctx.font = '500 10px "Open Sans", sans-serif';
+                    ctx.globalAlpha = 1;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'top';
-                    ctx.fillText(`Gov. ${gov.name} (${gov.party})`, centerX, chartArea.top + 4);
-                    ctx.globalAlpha = 1;
+                    ctx.fillText(labelText, centerX, pillY + pillPadY);
                 });
                 ctx.restore();
             }
