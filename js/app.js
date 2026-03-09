@@ -1,12 +1,12 @@
 // ============================================================
-// Hawai'i State Government Dashboard — Main App
+// Hawaiʻi State Government Dashboard — Main App
 // ============================================================
 
 const App = {
     sparklineCharts: [],
     detailChart: null,
 
-    // Hawai'i Governors — for chart overlay
+    // Hawaiʻi Governors — for chart overlay
     GOVERNORS: [
         { name: 'Lingle', party: 'R', start: 2002, end: 2010 },
         { name: 'Abercrombie', party: 'D', start: 2010, end: 2014 },
@@ -299,7 +299,7 @@ const App = {
         const statsContainer = document.getElementById('modal-stats');
         statsContainer.innerHTML = `
             <div class="stat-card">
-                <div class="stat-label">Hawai'i (${latest.year || '\u2014'})</div>
+                <div class="stat-label">Hawaiʻi (${latest.year || '\u2014'})</div>
                 <div class="stat-value hawaii-color">${ChartUtils.formatValue(latest.value, metricData.unit)}</div>
             </div>
             <div class="stat-card">

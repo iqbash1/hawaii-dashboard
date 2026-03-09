@@ -1,7 +1,10 @@
 // ============================================================
-// Hawai'i State Government Dashboard — Chart Rendering
+// Hawaiʻi State Government Dashboard — Chart Rendering
 // Uses Chart.js v4
 // ============================================================
+
+// Set global Chart.js font to Inter
+Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
 const ChartUtils = {
     // Color constants — GUILD brand palette
@@ -141,7 +144,7 @@ const ChartUtils = {
 
                     // Label background pill for readability
                     const labelText = `Gov. ${gov.name} (${gov.party})`;
-                    ctx.font = '700 11px "Open Sans", sans-serif';
+                    ctx.font = '700 11px "Inter", sans-serif';
                     const textWidth = ctx.measureText(labelText).width;
                     const pillPadX = 6;
                     const pillPadY = 3;
@@ -174,7 +177,7 @@ const ChartUtils = {
                 labels: labels,
                 datasets: [
                     {
-                        label: "Hawai'i",
+                        label: "Hawaiʻi",
                         data: hawaiiValues,
                         borderColor: this.HAWAII_BLUE,
                         backgroundColor: this.HAWAII_BLUE_BG,

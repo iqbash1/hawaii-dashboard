@@ -1,8 +1,8 @@
-# Hawai'i Dashboard — Documentation
+# Hawaiʻi Dashboard — Documentation
 
 ## Overview
 
-A public-facing web dashboard tracking Hawai'i state government performance across **18 metrics** and **14 policy areas**. Each metric compares Hawai'i to the average of all other U.S. states, with 10+ years of trend data and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state government performance across **18 metrics** and **14 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with 10+ years of trend data and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -29,7 +29,7 @@ hawaii-dashboard/
 ├── css/
 │   └── styles.css      # All styles (flat design, responsive)
 ├── js/
-│   ├── data.js         # Embedded metric data (Hawai'i vs. other state averages)
+│   ├── data.js         # Embedded metric data (Hawaiʻi vs. other state averages)
 │   ├── app.js          # Main app — card rendering, modal logic, governor data
 │   ├── charts.js       # Chart.js sparklines, detail charts, governor overlay plugin
 │   └── api.js          # Live API fetchers (BLS, Census, EIA, FBI) with fallback
@@ -148,8 +148,8 @@ Each of the 18 metrics gets its own card displaying:
 
 1. **Area icon + label** (e.g., "PUBLIC HEALTH")
 2. **Metric name** (e.g., "Uninsured Rate")
-3. **Latest Hawai'i value** (large, bold number)
-4. **Sparkline chart** — Hawai'i (red solid line) vs. Other State Avg (gray dashed line), 10+ years
+3. **Latest Hawaiʻi value** (large, bold number)
+4. **Sparkline chart** — Hawaiʻi (red solid line) vs. Other State Avg (gray dashed line), 10+ years
 5. **Two comparison boxes:**
    - **vs Other States** — "Better" (green) or "Worse" (red) with the national average shown
    - **vs Prior Year** — percentage change with "Improving" or "Worsening" label
@@ -165,9 +165,9 @@ Clicking any card opens the detail modal.
 
 Full-screen overlay with:
 
-1. **Line chart** (Chart.js) — Hawai'i (red, filled) vs. Other State Avg (gray, dashed)
+1. **Line chart** (Chart.js) — Hawaiʻi (red, filled) vs. Other State Avg (gray, dashed)
 2. **Governor term bands** — light blue (Democrat) or light red (Republican) background shading with labels like "Gov. Ige (D)" and dashed vertical lines at transitions
-3. **Four stat boxes:** Hawai'i value, Other State Avg, vs Other States verdict, vs Prior Year trend
+3. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
 4. **"Why it matters"** — context paragraph
 5. **"How to read it"** — interpretation guide
 6. **Source link** — direct URL to the federal agency data
@@ -195,7 +195,7 @@ This is implemented as a custom Chart.js plugin (`governorBands`) using the `bef
 
 | Variable | Hex | Usage |
 |----------|-----|-------|
-| `--hawaii-blue` | `#d03135` | Hawai'i data line, accents, area labels |
+| `--hawaii-blue` | `#d03135` | Hawaiʻi data line, accents, area labels |
 | `--avg-gray` | `#666666` | Other state average line |
 | `--positive` | `#059669` | "Better" / "Improving" indicators |
 | `--negative` | `#DC2626` | "Worse" / "Worsening" indicators |
@@ -359,4 +359,4 @@ Works in all modern browsers (Chrome, Firefox, Safari, Edge). Requires JavaScrip
 
 ## License
 
-Data sourced from U.S. federal agencies (public domain). Built for Hawai'i residents and policymakers.
+Data sourced from U.S. federal agencies (public domain). Built for Hawaiʻi residents and policymakers.

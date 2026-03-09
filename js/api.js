@@ -1,5 +1,5 @@
 // ============================================================
-// Hawai'i State Government Dashboard — Live API Integration
+// Hawaiʻi State Government Dashboard — Live API Integration
 // Fetches latest data from federal sources
 // Falls back silently to embedded data on failure
 // ============================================================

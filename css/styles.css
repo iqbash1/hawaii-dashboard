@@ -1,5 +1,5 @@
 /* ============================================================
-   Hawai'i State Government Dashboard — Styles
+   Hawaiʻi State Government Dashboard — Styles
    Flat Design
    ============================================================ */
 
@@ -28,8 +28,8 @@
     --border: #E0E0E0;
     --radius: 4px;
     --radius-sm: 3px;
-    --font-heading: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --transition: 0.15s ease;
 }
 
@@ -270,7 +270,7 @@ body {
 }
 
 .card-comp.positive {
-    background: var(--positive-bg);
+    background: var(--neutral-bg);
 }
 
 .card-comp.positive .comp-verdict {
@@ -278,7 +278,7 @@ body {
 }
 
 .card-comp.negative {
-    background: var(--negative-bg);
+    background: var(--neutral-bg);
 }
 
 .card-comp.negative .comp-verdict {

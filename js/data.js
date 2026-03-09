@@ -1,4 +1,4 @@
-// Hawai'i Government Performance Dashboard - Embedded Data
+// Hawaiʻi Government Performance Dashboard - Embedded Data
 // Extracted from 250814 HI Dashboard.xlsx
 // Generated: 2026-03-07
 
@@ -12,7 +12,7 @@ const DASHBOARD_DATA = {
     "source": "FBI Crime Data Explorer",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
     "whyItMatters": "The first promise any government makes is that you can live, work and raise a family without fear. Murder, rape, robbery and aggravated assault are the crimes people fear most; the State writes the laws, funds police training and prisons, and sets sentencing rules.",
-    "howToRead": "A falling Hawai'i line means streets are getting safer; if Hawai'i trends higher than the other-state average, the State needs to rethink prevention and policing.",
+    "howToRead": "A falling Hawaiʻi line means streets are getting safer; if Hawaiʻi trends higher than the other-state average, the State needs to rethink prevention and policing.",
     "hawaii": {
       "2012": 242.116,
       "2013": 158.7142,
@@ -82,7 +82,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Census ACS / KFF",
     "sourceUrl": "https://www.kff.org/topic/uninsured/",
-    "whyItMatters": "Without coverage, small problems become big \u2014 and costly. Hawai'i's landmark Prepaid Health Care Act keeps this number low; if it ticks up, policy gaps are opening.",
+    "whyItMatters": "Without coverage, small problems become big \u2014 and costly. Hawaiʻi's landmark Prepaid Health Care Act keeps this number low; if it ticks up, policy gaps are opening.",
     "howToRead": "You want this line trending down \u2014 fewer uninsured means better access to care.",
     "hawaii": {
       "2012": 0.066,
@@ -193,7 +193,7 @@ const DASHBOARD_DATA = {
     "source": "Bureau of Labor Statistics",
     "sourceUrl": "https://www.bls.gov/lau/",
     "whyItMatters": "State labor laws, job-training grants, and employment services decide how quickly residents can find work. This combines job availability with how quickly the Department of Labor helps residents reskill.",
-    "howToRead": "Lower is better. If Hawai'i is consistently above the national trend, there's a structural issue.",
+    "howToRead": "Lower is better. If Hawaiʻi is consistently above the national trend, there's a structural issue.",
     "hawaii": {
       "2012": 0.058,
       "2013": 0.0473,
@@ -352,7 +352,7 @@ const DASHBOARD_DATA = {
     "source": "FHWA Highway Statistics, Table HM-64",
     "sourceUrl": "https://www.fhwa.dot.gov/policyinformation/statistics.cfm",
     "whyItMatters": "An island state depends on its roads. Pavement quality is measured by the International Roughness Index (IRI), not surveys \u2014 laser scanners score every mile. Poor roads mean higher vehicle costs, longer commutes, and safety risks.",
-    "howToRead": "Lower is better. Hawai\u2019i\u2019s share of roads rated \u2018poor\u2019 (IRI > 170) far exceeds the national average, reflecting chronic underinvestment in road maintenance.",
+    "howToRead": "Lower is better. Hawaiʻi's share of roads rated 'poor' (IRI > 170) far exceeds the national average, reflecting chronic underinvestment in road maintenance.",
     "hawaii": {
       "2013": 0.302,
       "2014": 0.2632,
@@ -418,7 +418,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "EIA",
     "sourceUrl": "https://www.eia.gov/electricity/data/state/",
-    "whyItMatters": "The Public Utilities Commission decides rates. Hawai'i has the highest electricity prices in the nation; any drop directly cuts family budgets.",
+    "whyItMatters": "The Public Utilities Commission decides rates. Hawaiʻi has the highest electricity prices in the nation; any drop directly cuts family budgets.",
     "howToRead": "You want prices down \u2014 every cent reduction helps every household.",
     "hawaii": {
       "2012": 37.34,
@@ -461,7 +461,7 @@ const DASHBOARD_DATA = {
     "source": "EIA",
     "sourceUrl": "https://www.eia.gov/electricity/data/state/",
     "whyItMatters": "State law mandates 100% renewable electricity by 2045. This is the direct scorecard \u2014 utilities and regulators can't hide behind averages.",
-    "howToRead": "Hawai'i's line rising faster than the other-state average means the islands are outpacing the mainland toward clean energy.",
+    "howToRead": "Hawaiʻi's line rising faster than the other-state average means the islands are outpacing the mainland toward clean energy.",
     "hawaii": {
       "2012": 0.0993,
       "2013": 0.1174,
@@ -590,7 +590,7 @@ const DASHBOARD_DATA = {
     "source": "NASBO Fiscal Survey",
     "sourceUrl": "https://www.nasbo.org/reports-data/fiscal-survey-of-states",
     "whyItMatters": "Only the State can decide how much to save for a rainy day. A bigger cushion means fewer tax hikes or service cuts when tourism dips or disasters strike.",
-    "howToRead": "A healthy reserve is typically 10%+; compare Hawai'i's line to that benchmark.",
+    "howToRead": "A healthy reserve is typically 10%+; compare Hawaiʻi's line to that benchmark.",
     "hawaii": {
       "2012": 0.004,
       "2013": 0.004,
@@ -672,8 +672,8 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Census PEP",
     "sourceUrl": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html",
-    "whyItMatters": "Shows how people 'vote with their feet.' Negative numbers mean more residents are leaving than arriving. From 2020\u201324, Hawai'i lost nearly 46,000 residents to the mainland.",
-    "howToRead": "This shows net movers per 10,000 residents. Negative means more people leaving Hawai'i than arriving from other states. A rising line means the trend is improving.",
+    "whyItMatters": "Shows how people 'vote with their feet.' Negative numbers mean more residents are leaving than arriving. From 2020\u201324, Hawaiʻi lost nearly 46,000 residents to the mainland.",
+    "howToRead": "This shows net movers per 10,000 residents. Negative means more people leaving Hawaiʻi than arriving from other states. A rising line means the trend is improving.",
     "hawaii": {
       "2021": -67.8,
       "2022": -109.7,
