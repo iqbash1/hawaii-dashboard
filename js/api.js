@@ -17,6 +17,21 @@ const LiveAPI = {
     liveUpdates: [],
 
     /**
+     * Clip live data to the embedded otherStateAvg range so Hawaii's
+     * line never extends beyond the comparison line.
+     */
+    clipToAvgRange(metricObj, yearData) {
+        if (!metricObj || !metricObj.otherStateAvg) return yearData;
+        const avgYears = Object.keys(metricObj.otherStateAvg).map(Number);
+        const minYear = Math.min(...avgYears);
+        const clipped = {};
+        for (const [y, v] of Object.entries(yearData)) {
+            if (Number(y) >= minYear) clipped[y] = v;
+        }
+        return clipped;
+    },
+
+    /**
      * Attempt to fetch live data for all supported metrics
      */
     async fetchAll(baselineData) {
@@ -278,6 +293,7 @@ const LiveAPI = {
             });
 
             if (Object.keys(yearData).length > 0 && data.violent_crime_rate) {
+                yearData = this.clipToAvgRange(data.violent_crime_rate, yearData);
                 Object.assign(data.violent_crime_rate.hawaii, yearData);
                 this.liveUpdates.push('violent_crime_rate');
                 console.log('[API] FBI crime data updated:', Object.keys(yearData).length, 'years');
@@ -326,6 +342,7 @@ const LiveAPI = {
                 }
 
                 if (Object.keys(yearData).length > 0 && data.renewables_share_gen) {
+                    yearData = this.clipToAvgRange(data.renewables_share_gen, yearData);
                     Object.assign(data.renewables_share_gen.hawaii, yearData);
                     this.liveUpdates.push('renewables_share_gen');
                     console.log('[API] EIA renewables updated:', Object.keys(yearData).length, 'years');
@@ -355,6 +372,7 @@ const LiveAPI = {
                     }
                 });
                 if (Object.keys(yearData).length > 0 && data.residential_price_cpkwh) {
+                    yearData = this.clipToAvgRange(data.residential_price_cpkwh, yearData);
                     Object.assign(data.residential_price_cpkwh.hawaii, yearData);
                     this.liveUpdates.push('residential_price_cpkwh');
                     console.log('[API] EIA residential price updated:', Object.keys(yearData).length, 'years');
@@ -400,6 +418,7 @@ const LiveAPI = {
                 }
 
                 if (Object.keys(yearData).length > 0 && data.net_energy_import_pct) {
+                    yearData = this.clipToAvgRange(data.net_energy_import_pct, yearData);
                     Object.assign(data.net_energy_import_pct.hawaii, yearData);
                     this.liveUpdates.push('net_energy_import_pct');
                     console.log('[API] EIA energy import updated:', Object.keys(yearData).length, 'years');
