@@ -143,9 +143,9 @@ const ChartUtils = {
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
 
-        // Build governor background bands as a custom plugin
+        // Governor term labels - text only, no background bands
         const governorPlugin = {
-            id: 'governorBands',
+            id: 'governorLabels',
             beforeDraw(chart) {
                 if (!govBoxes || govBoxes.length === 0) return;
 
@@ -154,69 +154,49 @@ const ChartUtils = {
 
                 ctx.save();
                 govBoxes.forEach(gov => {
-                    // Calculate pixel positions - extend half a step beyond each edge
                     const step = labels.length > 1
                         ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0))
                         : 0;
                     const x1 = xScale.getPixelForValue(gov.startIdx) - step * 0.5;
                     const x2 = xScale.getPixelForValue(gov.endIdx) + step * 0.5;
-
-                    // Clamp to chart area
                     const left = Math.max(x1, chartArea.left);
                     const right = Math.min(x2, chartArea.right);
 
-                    // Draw background band - strong enough to clearly distinguish terms
-                    const bgColor = gov.party === 'R'
-                        ? 'rgba(220, 38, 38, 0.10)'
-                        : 'rgba(37, 99, 235, 0.08)';
-                    ctx.fillStyle = bgColor;
-                    ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
-
-                    // Draw solid border at term boundaries (not at chart edges)
+                    // Thin vertical line at term boundary
                     if (left > chartArea.left + 2) {
-                        ctx.strokeStyle = gov.party === 'R'
-                            ? 'rgba(220, 38, 38, 0.5)'
-                            : 'rgba(37, 99, 235, 0.5)';
-                        ctx.lineWidth = 1.5;
-                        ctx.setLineDash([]);
+                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+                        ctx.lineWidth = 1;
+                        ctx.setLineDash([4, 4]);
                         ctx.beginPath();
                         ctx.moveTo(left, chartArea.top);
                         ctx.lineTo(left, chartArea.bottom);
                         ctx.stroke();
+                        ctx.setLineDash([]);
                     }
 
-                    // Draw governor name label at top of band - bold and clear
+                    // Governor name in party color (no background)
                     const centerX = (left + right) / 2;
                     const partyColor = gov.party === 'R' ? '#DC2626' : '#2563EB';
-
-                    // Label background pill for readability
-                    const labelText = `Gov. ${gov.name} (${gov.party})`;
-                    ctx.font = '700 11px "Inter", sans-serif';
-                    const textWidth = ctx.measureText(labelText).width;
-                    const pillPadX = 6;
-                    const pillPadY = 3;
-                    const pillY = chartArea.top + 4;
-                    const pillHeight = 16;
-
-                    ctx.fillStyle = gov.party === 'R'
-                        ? 'rgba(220, 38, 38, 0.12)'
-                        : 'rgba(37, 99, 235, 0.10)';
-                    ctx.fillRect(
-                        centerX - textWidth / 2 - pillPadX,
-                        pillY,
-                        textWidth + pillPadX * 2,
-                        pillHeight
-                    );
-
+                    const labelText = `${gov.name} (${gov.party})`;
+                    ctx.font = '600 11px "Inter", sans-serif';
                     ctx.fillStyle = partyColor;
-                    ctx.globalAlpha = 1;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'top';
-                    ctx.fillText(labelText, centerX, pillY + pillPadY);
+                    ctx.fillText(labelText, centerX, chartArea.top + 4);
                 });
                 ctx.restore();
             }
         };
+
+        // Same gap-scaled fill as sparklines
+        const goodDir = data.goodDirection;
+        const latestHI = hawaiiValues.filter(v => v !== null).pop() || 0;
+        const latestAvgVal = avgValues.filter(v => v !== null).pop() || 0;
+        const mid = (Math.abs(latestHI) + Math.abs(latestAvgVal)) / 2 || 1;
+        const gap = Math.abs(latestHI - latestAvgVal) / mid;
+        const alpha = Math.min(0.30, 0.06 + gap * 0.40);
+        const detailGood = `rgba(5, 150, 105, ${alpha.toFixed(2)})`;
+        const detailBad = `rgba(220, 38, 38, ${alpha.toFixed(2)})`;
 
         return new Chart(ctx, {
             type: 'line',
@@ -229,7 +209,11 @@ const ChartUtils = {
                         borderColor: this.HAWAII_BLUE,
                         backgroundColor: this.HAWAII_BLUE_BG,
                         borderWidth: 3,
-                        fill: true,
+                        fill: avgValues.length > 0 ? {
+                            target: 1,
+                            above: goodDir === 'up' ? detailGood : detailBad,
+                            below: goodDir === 'up' ? detailBad : detailGood,
+                        } : true,
                         tension: 0.3,
                         pointRadius: hawaiiValues.map(v => v === null ? 0 : 4),
                         pointHoverRadius: 6,
