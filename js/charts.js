@@ -25,8 +25,45 @@ const ChartUtils = {
 
         if (values.filter(v => v !== null).length === 0) return null;
 
+        // Anchor y-axis at 0 when all data is non-negative, so visual gap is proportional
+        const allValues = [...values, ...avgValues].filter(v => v !== null);
+        const dataMin = Math.min(...allValues);
+        const dataMax = Math.max(...allValues);
+        const anchorZero = dataMin >= 0;
+        const unit = data.unit;
+
+        // Custom plugin to draw min/max labels on right edge
+        const yLabelPlugin = {
+            id: 'sparklineYLabels',
+            afterDraw(chart) {
+                const { ctx, chartArea, scales } = chart;
+                const yScale = scales.y;
+                if (!yScale) return;
+
+                const yMin = yScale.min;
+                const yMax = yScale.max;
+                const topLabel = ChartUtils.formatSparklineY(yMax, unit);
+                const bottomLabel = ChartUtils.formatSparklineY(yMin, unit);
+
+                ctx.save();
+                ctx.font = '9px Inter, sans-serif';
+                ctx.fillStyle = '#999';
+                ctx.textAlign = 'right';
+
+                // Top label
+                ctx.textBaseline = 'top';
+                ctx.fillText(topLabel, chartArea.right, chartArea.top);
+
+                // Bottom label
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(bottomLabel, chartArea.right, chartArea.bottom);
+                ctx.restore();
+            }
+        };
+
         return new Chart(ctx, {
             type: 'line',
+            plugins: [yLabelPlugin],
             data: {
                 labels: labels,
                 datasets: [
@@ -85,7 +122,11 @@ const ChartUtils = {
                             padding: 2,
                         },
                     },
-                    y: { display: false },
+                    y: {
+                        display: false,
+                        min: anchorZero ? 0 : dataMin - Math.abs(dataMax - dataMin) * 0.1,
+                        max: dataMax + Math.abs(dataMax - dataMin) * 0.1,
+                    },
                 },
                 animation: {
                     duration: 800,
@@ -303,6 +344,30 @@ const ChartUtils = {
                 },
             }
         });
+    },
+
+    /**
+     * Format y-axis labels for sparklines (very compact)
+     */
+    formatSparklineY(value, unit) {
+        if (value === null || value === undefined || isNaN(value)) return '';
+        switch (unit) {
+            case '$':
+                if (Math.abs(value) >= 1000) return '$' + (value / 1000).toFixed(0) + 'K';
+                return '$' + Math.round(value);
+            case '%':
+                if (Math.abs(value) < 1) return (value * 100).toFixed(0) + '%';
+                return Math.round(value) + '%';
+            case 'per 100K':
+                return Math.round(value).toLocaleString();
+            case 'per 10K':
+                return Math.round(value);
+            case '\u00a2/kWh':
+                return Math.round(value) + '\u00a2';
+            default:
+                if (Math.abs(value) >= 1000) return (value / 1000).toFixed(1) + 'K';
+                return Math.round(value);
+        }
     },
 
     /**
