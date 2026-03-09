@@ -14,17 +14,7 @@ const App = {
         { name: 'Green', party: 'D', start: 2022, end: 2027 },
     ],
 
-    // Governor colors
-    GOV_COLORS: {
-        R: 'rgba(220, 38, 38, 0.07)',  // light red
-        D: 'rgba(37, 99, 235, 0.07)',   // light blue
-    },
-    GOV_BORDER_COLORS: {
-        R: 'rgba(220, 38, 38, 0.25)',
-        D: 'rgba(37, 99, 235, 0.25)',
-    },
-
-    // Define the 14 areas and their metrics (order matters for display)
+    // Define the areas and their metrics (order matters for display)
     AREA_ORDER: [
         { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
         { area: 'Public Health', metrics: ['ypll_under75', 'uninsured_rate'] },

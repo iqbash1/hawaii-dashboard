@@ -39,14 +39,12 @@ const LiveAPI = {
             // No key needed
             this.fetchBLSUnemployment(baselineData),
             this.fetchCensusACS(baselineData),
-            this.fetchCensusMigration(baselineData),
 
             // Needs free API key
             this.fetchFBICrime(baselineData),
             this.fetchEIARenewables(baselineData),
             this.fetchEIAResidentialPrice(baselineData),
             this.fetchEIAEnergyImport(baselineData),
-            this.fetchBEATourismGDP(baselineData),
         ];
 
         await Promise.allSettled(fetchers);
@@ -140,7 +138,6 @@ const LiveAPI = {
                     'B15003_024E',  // Professional degree
                     'B15003_025E',  // Doctorate
                     'B15003_001E',  // Total 25+ population
-                    'B27001_001E',  // Health insurance universe
                 ].join(',');
 
                 const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,${variables}&for=state:15`;
@@ -243,21 +240,6 @@ const LiveAPI = {
         }
     },
 
-    /**
-     * Census PEP API — Net Domestic Migration Rate
-     */
-    async fetchCensusMigration(data) {
-        try {
-            const url = 'https://api.census.gov/data/2023/pep/natmonthly?get=POP&for=state:15';
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`Census PEP: ${response.status}`);
-            // PEP structure varies significantly; skip merging for now
-            console.log('[API] Census PEP: connected (migration data structure pending)');
-        } catch (err) {
-            console.log('[API] Census PEP fetch failed (using embedded data):', err.message);
-        }
-    },
-
     // ===========================================================
     // REQUIRE FREE API KEYS
     // ===========================================================
@@ -276,7 +258,7 @@ const LiveAPI = {
             const json = await response.json();
             if (!json.results || json.results.length === 0) throw new Error('No FBI data');
 
-            const yearData = {};
+            let yearData = {};
             json.results.forEach(r => {
                 if (r.year && r.violent_crime && r.population) {
                     const rate = (r.violent_crime / r.population) * 100000;
@@ -323,7 +305,7 @@ const LiveAPI = {
                     if (d.period && d.generation !== null) total[d.period.toString()] = parseFloat(d.generation);
                 });
 
-                const yearData = {};
+                let yearData = {};
                 for (const year of Object.keys(total)) {
                     if (renew[year] !== undefined && total[year] > 0) {
                         const share = renew[year] / total[year];
@@ -357,7 +339,7 @@ const LiveAPI = {
 
             const json = await response.json();
             if (json.response && json.response.data) {
-                const yearData = {};
+                let yearData = {};
                 json.response.data.forEach(d => {
                     if (d.period && d.price !== null) {
                         yearData[d.period.toString()] = parseFloat(d.price);
@@ -401,7 +383,7 @@ const LiveAPI = {
                     if (d.period && d.value !== null) cons[d.period.toString()] = parseFloat(d.value);
                 });
 
-                const yearData = {};
+                let yearData = {};
                 for (const year of Object.keys(cons)) {
                     if (prod[year] !== undefined && cons[year] > 0) {
                         const netImport = (cons[year] - prod[year]) / cons[year];
@@ -423,12 +405,4 @@ const LiveAPI = {
 
     /**
      * BEA API — Tourism GDP Share for Hawaii
-     * (Not in the current 18 metrics, but available if needed)
-     */
-    async fetchBEATourismGDP(data) {
-        if (!this.keys.BEA) return;
-        // Tourism GDP share isn't in the current metric set
-        // Ready to implement if metric is added
-        console.log('[API] BEA key configured (tourism GDP metric not yet active)');
-    },
 };

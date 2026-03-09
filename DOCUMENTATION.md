@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state government performance across **18 metrics** and **14 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with 10+ years of trend data and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state government performance across **18 metrics** and **13 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with 10+ years of trend data and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -47,7 +47,7 @@ hawaii-dashboard/
 | Styling | CSS3 with custom properties, flat design |
 | Logic | Vanilla JavaScript (no frameworks) |
 | Charts | Chart.js 4.4.7 with custom plugins |
-| Fonts | Ubuntu (headings), Open Sans (body) via Google Fonts |
+| Fonts | Inter via Google Fonts |
 | Hosting | Cloudflare Pages |
 | Source control | GitHub |
 
@@ -63,7 +63,7 @@ hawaii-dashboard/
 | 4 | K-12 Education | High School Graduation Rate (ACGR) | % | Up | NCES |
 | 5 | Higher Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
 | 6 | Employment | Unemployment Rate | % | Down | BLS |
-| 7 | Economic Prosperity | Real Median Household Income | $ | Up | Census ACS |
+| 7 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
 | 8 | Cost of Living | Renter Cost Burden (>30% of income) | % | Down | Census ACS |
 | 9 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
 | 10 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
@@ -74,7 +74,7 @@ hawaii-dashboard/
 | 15 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
 | 16 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
 | 17 | Public Confidence | Voter Participation Rate | % | Up | EAC |
-| 18 | Public Confidence | Net Domestic Migration Rate | per 1,000 | Up | Census PEP |
+| 18 | Public Confidence | People Moving In vs. Out | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -115,8 +115,7 @@ On page load, the app attempts to fetch the latest data from federal APIs and me
 | API | Endpoint | Metrics Updated |
 |-----|----------|----------------|
 | BLS v1 | `api.bls.gov/publicAPI/v1/timeseries/data/` | Unemployment Rate |
-| Census ACS | `api.census.gov/data/{year}/acs/acs1` | Median Income, Bachelor's+, Broadband, Uninsured, Renter Cost Burden |
-| Census PEP | `api.census.gov/data/2023/pep/natmonthly` | Net Domestic Migration |
+| Census ACS | `api.census.gov/data/{year}/acs/acs1` | Bachelor's+, Broadband, Renter Cost Burden |
 
 #### APIs Requiring Free Keys
 
@@ -124,12 +123,12 @@ On page load, the app attempts to fetch the latest data from federal APIs and me
 |-----|----------|----------------|---------|
 | FBI Crime Data | `api.usa.gov/crime/fbi/sapi/` | Violent Crime Rate | [api.data.gov/signup](https://api.data.gov/signup/) |
 | EIA v2 | `api.eia.gov/v2/` | Renewables Share, Electricity Price, Energy Import | [eia.gov/opendata](https://www.eia.gov/opendata/register.php) |
-| BEA | `apps.bea.gov/api/` | (configured, not yet active) | [bea.gov/api/signup](https://apps.bea.gov/api/signup/) |
+| BEA | `apps.bea.gov/api/` | (key configured for future use) | [bea.gov/api/signup](https://apps.bea.gov/api/signup/) |
 
 API keys are stored at the top of `api.js`:
 
 ```js
-const API_KEYS = {
+LiveAPI.keys = {
     FBI: 'your-key-here',
     EIA: 'your-key-here',
     BEA: 'your-key-here',
@@ -149,7 +148,7 @@ Each of the 18 metrics gets its own card displaying:
 1. **Area icon + label** (e.g., "PUBLIC HEALTH")
 2. **Metric name** (e.g., "Uninsured Rate")
 3. **Latest Hawaiʻi value** (large, bold number)
-4. **Sparkline chart** — Hawaiʻi (red solid line) vs. Other State Avg (gray dashed line), 10+ years
+4. **Sparkline chart** — Hawaiʻi (teal solid line) vs. Other State Avg (gray dashed line), 10+ years
 5. **Two comparison boxes:**
    - **vs Other States** — "Better" (green) or "Worse" (red) with the national average shown
    - **vs Prior Year** — percentage change with "Improving" or "Worsening" label
@@ -165,8 +164,8 @@ Clicking any card opens the detail modal.
 
 Full-screen overlay with:
 
-1. **Line chart** (Chart.js) — Hawaiʻi (red, filled) vs. Other State Avg (gray, dashed)
-2. **Governor term bands** — light blue (Democrat) or light red (Republican) background shading with labels like "Gov. Ige (D)" and dashed vertical lines at transitions
+1. **Line chart** (Chart.js) — Hawaiʻi (teal, filled) vs. Other State Avg (gray, dashed)
+2. **Governor term bands** — light blue (Democrat) or light red (Republican) background shading with labels like "Gov. Ige (D)" and solid vertical lines at transitions
 3. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
 4. **"Why it matters"** — context paragraph
 5. **"How to read it"** — interpretation guide
@@ -195,7 +194,7 @@ This is implemented as a custom Chart.js plugin (`governorBands`) using the `bef
 
 | Variable | Hex | Usage |
 |----------|-----|-------|
-| `--hawaii-blue` | `#d03135` | Hawaiʻi data line, accents, area labels |
+| `--hawaii-blue` | `#0D7C8F` | Hawaiʻi data line, accents, area labels |
 | `--avg-gray` | `#666666` | Other state average line |
 | `--positive` | `#059669` | "Better" / "Improving" indicators |
 | `--negative` | `#DC2626` | "Worse" / "Worsening" indicators |
@@ -207,8 +206,7 @@ This is implemented as a custom Chart.js plugin (`governorBands`) using the `bef
 
 ### Typography
 
-- **Headings:** Ubuntu (500/700 weight)
-- **Body:** Open Sans (400/500/600/700 weight)
+- **Headings & Body:** Inter (400/500/600/700 weight)
 
 ### Flat Design Principles
 
@@ -261,14 +259,14 @@ Federal API integration layer.
 
 | Method | Description |
 |--------|-------------|
-| `fetchAll(dashboardData)` | Orchestrates all API calls in parallel, merges results into baseline data |
-| `fetchBLS()` | Fetches unemployment rate from BLS |
-| `fetchCensusACS()` | Fetches income, education, broadband, uninsured, renter burden from Census |
-| `fetchCensusPEP()` | Fetches net domestic migration from Census |
-| `fetchFBI()` | Fetches violent crime rate from FBI (requires API key) |
-| `fetchEIA_renewables()` | Fetches renewables share from EIA (requires API key) |
-| `fetchEIA_price()` | Fetches residential electricity price from EIA (requires API key) |
-| `fetchEIA_import()` | Fetches net energy import % from EIA (requires API key) |
+| `fetchAll(baselineData)` | Orchestrates all API calls in parallel, merges results into baseline data |
+| `fetchBLSUnemployment()` | Fetches unemployment rate from BLS |
+| `fetchCensusACS()` | Fetches education, broadband, renter burden from Census |
+| `fetchFBICrime()` | Fetches violent crime rate from FBI (requires API key) |
+| `fetchEIARenewables()` | Fetches renewables share from EIA (requires API key) |
+| `fetchEIAResidentialPrice()` | Fetches residential electricity price from EIA (requires API key) |
+| `fetchEIAEnergyImport()` | Fetches net energy import % from EIA (requires API key) |
+| `clipToAvgRange()` | Clips live data to otherStateAvg year range to prevent chart gaps |
 | `liveUpdates` | Array tracking which metrics received live data (used for badge display) |
 
 ---
@@ -336,7 +334,7 @@ Every metric links to its original federal data source for independent verificat
 | HS Graduation Rate | NCES | https://nces.ed.gov/programs/digest/d23/tables/dt23_219.46.asp |
 | Bachelor's+ % | Census ACS | https://data.census.gov/ |
 | Unemployment Rate | BLS | https://www.bls.gov/lau/ |
-| Median Income | Census ACS | https://data.census.gov/ |
+| Per Capita Income (cost-of-living adj.) | BEA | https://www.bea.gov/data/income-saving/personal-income-by-state |
 | Renter Cost Burden | Census ACS | https://data.census.gov/ |
 | Unsheltered Homeless | HUD | https://www.huduser.gov/portal/datasets/ahar.html |
 | Roads in Poor Condition | FHWA | https://www.fhwa.dot.gov/bridge/britab.cfm |

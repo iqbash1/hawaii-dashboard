@@ -12,8 +12,6 @@ const ChartUtils = {
     HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
     AVG_GRAY: '#666666',
     AVG_GRAY_BG: 'rgba(102, 102, 102, 0.06)',
-    POSITIVE: '#059669',
-    NEGATIVE: '#DC2626',
 
     /**
      * Create a mini sparkline chart for a card
@@ -347,43 +345,5 @@ const ChartUtils = {
                 }
                 return value.toFixed(1);
         }
-    },
-
-    /**
-     * Calculate trend info (compares last two non-null values)
-     */
-    getTrend(data, goodDirection) {
-        // Filter out null/undefined/zero values
-        const values = Object.values(data).filter(v => v !== null && v !== undefined && v !== 0);
-        if (values.length < 2) return { direction: 'neutral', label: '--', class: 'neutral' };
-
-        const latest = values[values.length - 1];
-        const previous = values[values.length - 2];
-        const change = latest - previous;
-        const pctChange = previous !== 0 ? ((change / Math.abs(previous)) * 100) : 0;
-
-        let isGood;
-        if (goodDirection === 'up') {
-            isGood = change >= 0;
-        } else {
-            isGood = change <= 0;
-        }
-
-        const arrow = change > 0 ? '\u2191' : change < 0 ? '\u2193' : '\u2192';
-        const absChange = Math.abs(pctChange);
-        let label;
-        if (absChange < 0.1) {
-            label = '\u2192 Flat';
-        } else if (absChange > 100) {
-            label = `${arrow} ${absChange.toFixed(0)}%`;
-        } else {
-            label = `${arrow} ${absChange.toFixed(1)}%`;
-        }
-
-        return {
-            direction: isGood ? 'positive' : change === 0 ? 'neutral' : 'negative',
-            label: label,
-            class: isGood ? 'positive' : change === 0 ? 'neutral' : 'negative',
-        };
     }
 };
