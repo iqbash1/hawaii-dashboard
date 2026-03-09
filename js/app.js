@@ -286,15 +286,22 @@ const App = {
             `;
         }
 
+        // Show unit suffix for rate-based metrics so visitors understand the numbers
+        const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(metricData.unit)
+            ? `<div class="stat-unit">${metricData.unit}</div>`
+            : '';
+
         const statsContainer = document.getElementById('modal-stats');
         statsContainer.innerHTML = `
             <div class="stat-card">
                 <div class="stat-label">Hawaiʻi (${latest.year || '\u2014'})</div>
                 <div class="stat-value hawaii-color">${ChartUtils.formatValue(latest.value, metricData.unit)}</div>
+                ${unitSuffix}
             </div>
             <div class="stat-card">
                 <div class="stat-label">Other State Avg</div>
                 <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, metricData.unit)}</div>
+                ${unitSuffix}
             </div>
             <div class="stat-card">
                 <div class="stat-label">vs Other States</div>

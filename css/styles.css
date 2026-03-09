@@ -15,7 +15,7 @@
     --card-bg: #FFFFFF;
     --text: #333333;
     --text-secondary: #555555;
-    --text-muted: #888888;
+    --text-muted: #666666;
     --hawaii-blue: #0D7C8F;
     --hawaii-blue-light: #EEF8FA;
     --avg-gray: #666666;
@@ -446,6 +446,13 @@ body {
 
 .stat-value.neutral {
     color: var(--text-secondary);
+}
+
+.stat-unit {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
 }
 
 .stat-sub {
