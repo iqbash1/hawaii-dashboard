@@ -194,7 +194,7 @@ const ChartUtils = {
         const latestAvgVal = avgValues.filter(v => v !== null).pop() || 0;
         const mid = (Math.abs(latestHI) + Math.abs(latestAvgVal)) / 2 || 1;
         const gap = Math.abs(latestHI - latestAvgVal) / mid;
-        const alpha = Math.min(0.30, 0.06 + gap * 0.40);
+        const alpha = Math.min(0.45, 0.10 + gap * 0.55);
         const detailGood = `rgba(5, 150, 105, ${alpha.toFixed(2)})`;
         const detailBad = `rgba(220, 38, 38, ${alpha.toFixed(2)})`;
 
@@ -207,7 +207,6 @@ const ChartUtils = {
                         label: "Hawaiʻi",
                         data: hawaiiValues,
                         borderColor: this.HAWAII_BLUE,
-                        backgroundColor: this.HAWAII_BLUE_BG,
                         borderWidth: 3,
                         fill: avgValues.length > 0 ? {
                             target: 1,
