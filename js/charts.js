@@ -71,9 +71,18 @@ const ChartUtils = {
                         data: values,
                         spanGaps: true,
                         borderColor: this.HAWAII_BLUE,
-                        backgroundColor: this.HAWAII_BLUE_BG,
                         borderWidth: 2,
-                        fill: true,
+                        // Fill between Hawaii and Avg lines: green = better, red = worse
+                        fill: avgValues.length > 0 ? {
+                            target: 1,
+                            above: goodDirection === 'up'
+                                ? 'rgba(5, 150, 105, 0.25)'   // Hawaii above avg = better
+                                : 'rgba(220, 38, 38, 0.20)',  // Hawaii above avg = worse
+                            below: goodDirection === 'up'
+                                ? 'rgba(220, 38, 38, 0.20)'   // Hawaii below avg = worse
+                                : 'rgba(5, 150, 105, 0.25)',  // Hawaii below avg = better
+                        } : true,
+                        backgroundColor: this.HAWAII_BLUE_BG,
                         tension: 0.3,
                         pointRadius: 0,
                         pointHoverRadius: 0,
@@ -81,7 +90,7 @@ const ChartUtils = {
                     {
                         data: avgValues.length > 0 ? avgValues : undefined,
                         borderColor: this.AVG_GRAY,
-                        borderWidth: 1,
+                        borderWidth: 1.5,
                         borderDash: [3, 3],
                         fill: false,
                         tension: 0.3,
