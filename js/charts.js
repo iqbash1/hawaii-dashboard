@@ -30,40 +30,20 @@ const ChartUtils = {
         const dataMin = Math.min(...allValues);
         const dataMax = Math.max(...allValues);
         const anchorZero = dataMin >= 0;
-        const unit = data.unit;
 
-        // Custom plugin to draw min/max labels on right edge
-        const yLabelPlugin = {
-            id: 'sparklineYLabels',
-            afterDraw(chart) {
-                const { ctx, chartArea, scales } = chart;
-                const yScale = scales.y;
-                if (!yScale) return;
+        // Scale fill opacity by gap magnitude: bigger gap = bolder fill
+        const latestHI = values.filter(v => v !== null).pop() || 0;
+        const latestAvg = avgValues.filter(v => v !== null).pop() || 0;
+        const avgMid = (Math.abs(latestHI) + Math.abs(latestAvg)) / 2 || 1;
+        const gapPct = Math.abs(latestHI - latestAvg) / avgMid;
+        // Map: 0-5% gap -> 0.08, 10% -> 0.12, 25% -> 0.20, 50%+ -> 0.35
+        const fillAlpha = Math.min(0.40, 0.08 + gapPct * 0.55);
 
-                const yMin = yScale.min;
-                const yMax = yScale.max;
-                const topLabel = ChartUtils.formatSparklineY(yMax, unit);
-                const bottomLabel = ChartUtils.formatSparklineY(yMin, unit);
-
-                ctx.save();
-                ctx.font = '9px Inter, sans-serif';
-                ctx.fillStyle = '#999';
-                ctx.textAlign = 'right';
-
-                // Top label
-                ctx.textBaseline = 'top';
-                ctx.fillText(topLabel, chartArea.right, chartArea.top);
-
-                // Bottom label
-                ctx.textBaseline = 'bottom';
-                ctx.fillText(bottomLabel, chartArea.right, chartArea.bottom);
-                ctx.restore();
-            }
-        };
+        const goodColor = `rgba(5, 150, 105, ${fillAlpha.toFixed(2)})`;
+        const badColor = `rgba(220, 38, 38, ${fillAlpha.toFixed(2)})`;
 
         return new Chart(ctx, {
             type: 'line',
-            plugins: [yLabelPlugin],
             data: {
                 labels: labels,
                 datasets: [
@@ -73,14 +53,11 @@ const ChartUtils = {
                         borderColor: this.HAWAII_BLUE,
                         borderWidth: 2,
                         // Fill between Hawaii and Avg lines: green = better, red = worse
+                        // Opacity scales with gap size
                         fill: avgValues.length > 0 ? {
                             target: 1,
-                            above: goodDirection === 'up'
-                                ? 'rgba(5, 150, 105, 0.25)'   // Hawaii above avg = better
-                                : 'rgba(220, 38, 38, 0.20)',  // Hawaii above avg = worse
-                            below: goodDirection === 'up'
-                                ? 'rgba(220, 38, 38, 0.20)'   // Hawaii below avg = worse
-                                : 'rgba(5, 150, 105, 0.25)',  // Hawaii below avg = better
+                            above: goodDirection === 'up' ? goodColor : badColor,
+                            below: goodDirection === 'up' ? badColor : goodColor,
                         } : true,
                         backgroundColor: this.HAWAII_BLUE_BG,
                         tension: 0.3,
