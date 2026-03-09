@@ -16,8 +16,8 @@
     --text: #333333;
     --text-secondary: #555555;
     --text-muted: #888888;
-    --hawaii-blue: #d03135;
-    --hawaii-blue-light: #FDF0F0;
+    --hawaii-blue: #0D7C8F;
+    --hawaii-blue-light: #EEF8FA;
     --avg-gray: #666666;
     --avg-gray-light: #F3F4F6;
     --positive: #059669;
@@ -102,6 +102,27 @@ body {
     border-radius: var(--radius);
     font-size: 0.82rem;
     font-weight: 500;
+}
+
+.legend-line {
+    display: inline-block;
+    width: 24px;
+    height: 3px;
+    vertical-align: middle;
+    margin-right: 4px;
+    border-radius: 2px;
+}
+
+.legend-hi {
+    background: #0D7C8F;
+}
+
+.legend-avg {
+    background: repeating-linear-gradient(
+        90deg,
+        #999 0px, #999 5px,
+        transparent 5px, transparent 9px
+    );
 }
 
 .live-badge {
@@ -245,7 +266,6 @@ body {
     text-align: center;
     padding: 0.4rem 0.25rem;
     border-radius: var(--radius-sm);
-    background: var(--avg-gray-light);
 }
 
 .comp-label {
@@ -269,24 +289,12 @@ body {
     margin-top: 0.1rem;
 }
 
-.card-comp.positive {
-    background: var(--neutral-bg);
-}
-
 .card-comp.positive .comp-verdict {
     color: var(--positive);
 }
 
-.card-comp.negative {
-    background: var(--neutral-bg);
-}
-
 .card-comp.negative .comp-verdict {
     color: var(--negative);
-}
-
-.card-comp.neutral {
-    background: var(--neutral-bg);
 }
 
 .card-comp.neutral .comp-verdict {

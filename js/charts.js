@@ -8,8 +8,8 @@ Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe
 
 const ChartUtils = {
     // Color constants — GUILD brand palette
-    HAWAII_BLUE: '#d03135',
-    HAWAII_BLUE_BG: 'rgba(208, 49, 53, 0.08)',
+    HAWAII_BLUE: '#0D7C8F',
+    HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
     AVG_GRAY: '#666666',
     AVG_GRAY_BG: 'rgba(102, 102, 102, 0.06)',
     POSITIVE: '#059669',

@@ -31,7 +31,7 @@ const App = {
         { area: 'K-12 Education', metrics: ['acgr'] },
         { area: 'Higher Education', metrics: ['ba_or_higher_pct'] },
         { area: 'Employment', metrics: ['unemployment_rate'] },
-        { area: 'Economic Prosperity', metrics: ['median_income_real'] },
+        { area: 'Economic Prosperity', metrics: ['real_per_capita_income'] },
         { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'unsheltered_homeless_rate'] },
         { area: 'Infrastructure', metrics: ['road_poor_pct', 'broadband_subscription_pct'] },
         { area: 'Environment', metrics: ['renewables_share_gen'] },

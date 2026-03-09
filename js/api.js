@@ -135,7 +135,6 @@ const LiveAPI = {
         for (const year of years) {
             try {
                 const variables = [
-                    'B19013_001E',  // Median household income
                     'B15003_022E',  // Bachelor's degree
                     'B15003_023E',  // Master's degree
                     'B15003_024E',  // Professional degree
@@ -155,13 +154,6 @@ const LiveAPI = {
                 const values = json[1];
                 const lookup = {};
                 headers.forEach((h, i) => { lookup[h] = values[i]; });
-
-                // Median Income
-                const income = parseFloat(lookup['B19013_001E']);
-                if (!isNaN(income) && data.median_income_real) {
-                    data.median_income_real.hawaii[year.toString()] = income;
-                    this.liveUpdates.push('median_income_real');
-                }
 
                 // Bachelor's+ percentage (store as decimal to match Excel)
                 const totalPop25 = parseFloat(lookup['B15003_001E']);
