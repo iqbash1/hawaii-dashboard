@@ -1,5 +1,5 @@
 // ============================================================
-// Hawaiʻi State Government Dashboard — Chart Rendering
+// Hawaiʻi State Government Dashboard - Chart Rendering
 // Uses Chart.js v4
 // ============================================================
 
@@ -7,7 +7,7 @@
 Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
 const ChartUtils = {
-    // Color constants — GUILD brand palette
+    // Color constants - GUILD brand palette
     HAWAII_BLUE: '#0D7C8F',
     HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
     AVG_GRAY: '#666666',
@@ -127,7 +127,7 @@ const ChartUtils = {
 
                 ctx.save();
                 govBoxes.forEach(gov => {
-                    // Calculate pixel positions — extend half a step beyond each edge
+                    // Calculate pixel positions - extend half a step beyond each edge
                     const step = labels.length > 1
                         ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0))
                         : 0;
@@ -138,7 +138,7 @@ const ChartUtils = {
                     const left = Math.max(x1, chartArea.left);
                     const right = Math.min(x2, chartArea.right);
 
-                    // Draw background band — strong enough to clearly distinguish terms
+                    // Draw background band - strong enough to clearly distinguish terms
                     const bgColor = gov.party === 'R'
                         ? 'rgba(220, 38, 38, 0.10)'
                         : 'rgba(37, 99, 235, 0.08)';
@@ -158,7 +158,7 @@ const ChartUtils = {
                         ctx.stroke();
                     }
 
-                    // Draw governor name label at top of band — bold and clear
+                    // Draw governor name label at top of band - bold and clear
                     const centerX = (left + right) / 2;
                     const partyColor = gov.party === 'R' ? '#DC2626' : '#2563EB';
 

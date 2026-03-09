@@ -1,5 +1,5 @@
 // ============================================================
-// Hawaiʻi State Government Dashboard — Live API Integration
+// Hawaiʻi State Government Dashboard - Live API Integration
 // Fetches latest data from federal sources
 // Falls back silently to embedded data on failure
 // ============================================================
@@ -64,7 +64,7 @@ const LiveAPI = {
     // ===========================================================
 
     /**
-     * BLS API v1 — Unemployment Rate for Hawaii
+     * BLS API v1 - Unemployment Rate for Hawaii
      * No API key required, CORS enabled
      */
     async fetchBLSUnemployment(data) {
@@ -124,7 +124,7 @@ const LiveAPI = {
     },
 
     /**
-     * Census ACS API — Multiple metrics for Hawaii
+     * Census ACS API - Multiple metrics for Hawaii
      * No API key required, CORS enabled
      */
     async fetchCensusACS(data) {
@@ -245,7 +245,7 @@ const LiveAPI = {
     // ===========================================================
 
     /**
-     * FBI Crime Data Explorer — Violent Crime Rate for Hawaii
+     * FBI Crime Data Explorer - Violent Crime Rate for Hawaii
      * Requires free data.gov API key
      */
     async fetchFBICrime(data) {
@@ -278,7 +278,7 @@ const LiveAPI = {
     },
 
     /**
-     * EIA API v2 — Renewables Share of Generation for Hawaii
+     * EIA API v2 - Renewables Share of Generation for Hawaii
      * Requires free EIA API key
      */
     async fetchEIARenewables(data) {
@@ -328,7 +328,7 @@ const LiveAPI = {
     },
 
     /**
-     * EIA API v2 — Residential Electricity Price for Hawaii
+     * EIA API v2 - Residential Electricity Price for Hawaii
      */
     async fetchEIAResidentialPrice(data) {
         if (!this.keys.EIA) return;
@@ -358,7 +358,7 @@ const LiveAPI = {
     },
 
     /**
-     * EIA API v2 — State Energy Data System (SEDS) for Energy Import %
+     * EIA API v2 - State Energy Data System (SEDS) for Energy Import %
      */
     async fetchEIAEnergyImport(data) {
         if (!this.keys.EIA) return;

@@ -1,12 +1,12 @@
 // ============================================================
-// Hawaiʻi State Government Dashboard — Main App
+// Hawaiʻi State Government Dashboard - Main App
 // ============================================================
 
 const App = {
     sparklineCharts: [],
     detailChart: null,
 
-    // Hawaiʻi Governors — for chart overlay
+    // Hawaiʻi Governors - for chart overlay
     GOVERNORS: [
         { name: 'Lingle', party: 'R', start: 2002, end: 2010 },
         { name: 'Abercrombie', party: 'D', start: 2010, end: 2014 },
@@ -249,14 +249,14 @@ const App = {
             ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
         `;
 
-        // Stats — focused on the two key comparisons
+        // Stats - focused on the two key comparisons
         const latest = this.getLatestValue(metricData.hawaii);
         const latestAvg = this.getLatestValue(metricData.otherStateAvg);
         const prior = this.getPriorValue(metricData.hawaii);
 
         // vs Other States
         let vsAvgClass = 'neutral';
-        let vsAvgWord = '—';
+        let vsAvgWord = '-';
         if (latest.value !== null && latestAvg.value !== null) {
             const diff = latest.value - latestAvg.value;
             const isBetter = metricData.goodDirection === 'up' ? diff > 0 : diff < 0;
