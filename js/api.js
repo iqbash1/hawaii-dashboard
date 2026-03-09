@@ -403,6 +403,4 @@ const LiveAPI = {
         }
     },
 
-    /**
-     * BEA API — Tourism GDP Share for Hawaii
 };
