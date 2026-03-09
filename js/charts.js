@@ -62,7 +62,29 @@ const ChartUtils = {
                     tooltip: { enabled: false },
                 },
                 scales: {
-                    x: { display: false },
+                    x: {
+                        display: true,
+                        border: { display: false },
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 9 },
+                            color: '#999',
+                            maxRotation: 0,
+                            autoSkip: false,
+                            callback: function(value, index, ticks) {
+                                const total = ticks.length;
+                                const label = this.getLabelForValue(value);
+                                // Always show first 4 chars as 'XX (handles "2012", "2012-2013", "2012–2013")
+                                const short = "'" + label.slice(2, 4);
+                                // Show first, last, and one middle tick
+                                if (index === 0 || index === total - 1) return short;
+                                const mid = Math.round(total / 2);
+                                if (total > 5 && index === mid) return short;
+                                return '';
+                            },
+                            padding: 2,
+                        },
+                    },
                     y: { display: false },
                 },
                 animation: {
