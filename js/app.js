@@ -240,6 +240,14 @@ const App = {
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         document.getElementById('modal-why').textContent = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
+        const insightSection = document.getElementById('modal-insight-section');
+        const insightText = document.getElementById('modal-insight');
+        if (metricData.insight) {
+            insightText.textContent = metricData.insight;
+            insightSection.style.display = '';
+        } else {
+            insightSection.style.display = 'none';
+        }
         const officialLine = metricData.officialName
             ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
             : '';

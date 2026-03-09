@@ -13,6 +13,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://cde.ucr.cjis.gov/",
     "whyItMatters": "The first promise any government makes is that you can live, work and raise a family without fear. Murder, rape, robbery and aggravated assault are the crimes people fear most; the State writes the laws, funds police training and prisons, and sets sentencing rules.",
     "howToRead": "A falling Hawaiʻi line means streets are getting safer; if Hawaiʻi trends higher than the other-state average, the State needs to rethink prevention and policing.",
+    "insight": "Usually tells you more about serious interpersonal violence than about property crime.",
     "hawaii": {
       "2012": 242.116,
       "2013": 158.7142,
@@ -55,6 +56,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://wisqars.cdc.gov/",
     "whyItMatters": "The State licenses hospitals, funds Medicaid, regulates insurance, and leads disease control. Years of Potential Life Lost counts the missing years when people die early from chronic disease, overdose or injury - problems good prevention and timely care can stop.",
     "howToRead": "This counts the years of life people lose when they die before 75 from preventable causes. A falling line means better health outcomes.",
+    "insight": "Often moves with how many deaths from major causes are happening before old age.",
     "hawaii": {
       "2012-2013": 5444.9,
       "2014-2015": 5610.6,
@@ -84,6 +86,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.kff.org/topic/uninsured/",
     "whyItMatters": "Without coverage, small problems become big - and costly. Hawaiʻi's landmark Prepaid Health Care Act keeps this number low; if it ticks up, policy gaps are opening.",
     "howToRead": "You want this line trending down - fewer uninsured means better access to care.",
+    "insight": "Coverage gaps tend to cluster among working-age and lower-income adults.",
     "hawaii": {
       "2012": 0.066,
       "2013": 0.07,
@@ -121,6 +124,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://nces.ed.gov/programs/digest/d23/tables/dt23_219.46.asp",
     "whyItMatters": "The Department of Education and State Legislature run the single statewide school district, making them fully accountable for student success. One clean percentage captures everything from 9th-grade readiness to senior-year support.",
     "howToRead": "Every point above 90% means many more teens ready for college or trades each year.",
+    "insight": "Because it tracks four-year completion, it is more about staying on track than about one year of test scores.",
     "hawaii": {
       "2012-2013": 81.0,
       "2013-2014": 82.0,
@@ -157,6 +161,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://fred.stlouisfed.org/",
     "whyItMatters": "Tuition policy, scholarship funding, and the UH system are in state hands; they largely determine whether residents can earn college-level skills.",
     "howToRead": "A rising line signals better-paid jobs can stay local instead of importing talent.",
+    "insight": "Because it counts adults 25+, this moves slowly and reflects years of accumulation.",
     "hawaii": {
       "2013": 0.301,
       "2014": 0.312,
@@ -194,6 +199,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.bls.gov/lau/",
     "whyItMatters": "State labor laws, job-training grants, and employment services decide how quickly residents can find work. This combines job availability with how quickly the Department of Labor helps residents reskill.",
     "howToRead": "Lower is better. If Hawaiʻi is consistently above the national trend, there's a structural issue.",
+    "insight": "Can stay low even when wages, hours, or labor-force participation are softer.",
     "hawaii": {
       "2012": 0.058,
       "2013": 0.0473,
@@ -236,6 +242,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.bea.gov/data/income-saving/personal-income-by-state",
     "whyItMatters": "Hawaiʻi's nominal income looks high, but the cost of living eats into it. This metric adjusts for regional price differences so you see actual purchasing power compared to other states.",
     "howToRead": "Higher is better. If Hawaiʻi's line is below the other-state average, residents have less real purchasing power despite higher nominal pay.",
+    "insight": "Best read alongside rent burden and prices, because income gains alone do not settle affordability.",
     "hawaii": {
       "2008": 42828,
       "2009": 41102,
@@ -286,6 +293,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://data.census.gov/",
     "whyItMatters": "Zoning rules, housing subsidies, and tenant protections are set by the State and counties. HUD's gold-standard pain threshold is 30% of income on rent.",
     "howToRead": "Both lines should fall - if cost burden drops but homelessness doesn't, supports aren't reaching the hardest-hit.",
+    "insight": "Usually climbs when housing costs outrun wage growth and affordable units stay scarce.",
     "hawaii": {
       "2012": 0.5938,
       "2013": 0.5924,
@@ -324,6 +332,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.huduser.gov/portal/datasets/ahar.html",
     "whyItMatters": "When this rises, the entire housing and social safety system is flashing red. This is the extreme outcome of housing affordability failure.",
     "howToRead": "A falling line means fewer people without shelter - the housing and support system is working.",
+    "insight": "Tends to rise when high rents, low vacancy, and thin shelter capacity collide.",
     "hawaii": {
       "2012": 18.0619,
       "2013": 18.3842,
@@ -363,6 +372,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.fhwa.dot.gov/policyinformation/statistics.cfm",
     "whyItMatters": "An island state depends on its roads. Pavement quality is measured by the International Roughness Index (IRI), not surveys - laser scanners score every mile. Poor roads mean higher vehicle costs, longer commutes, and safety risks.",
     "howToRead": "Lower is better. Hawaiʻi's share of roads rated 'poor' (IRI > 170) far exceeds the national average, reflecting chronic underinvestment in road maintenance.",
+    "insight": "Usually reflects accumulated aging and upkeep over many years, not a single bad season.",
     "hawaii": {
       "2013": 0.302,
       "2014": 0.2632,
@@ -399,6 +409,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://data.census.gov/",
     "whyItMatters": "Today's homework, tele-health and remote work run on broadband. Grants, competition policy and last-mile build-outs shift the line.",
     "howToRead": "A rising line means more homes have reliable internet access - essential for remote work, telehealth, and education.",
+    "insight": "Gaps here often cluster among older, lower-income, and rural households.",
     "hawaii": {
       "2015": 0.7759,
       "2016": 0.7937,
@@ -430,6 +441,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.eia.gov/electricity/data/state/",
     "whyItMatters": "The Public Utilities Commission decides rates. Hawaiʻi has the highest electricity prices in the nation; any drop directly cuts family budgets.",
     "howToRead": "You want prices down - every cent reduction helps every household.",
+    "insight": "Island isolation and oil-fired generation drive the premium; each percentage point of renewables added chips away at the gap.",
     "hawaii": {
       "2012": 37.34,
       "2013": 36.98,
@@ -472,6 +484,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.eia.gov/electricity/data/state/",
     "whyItMatters": "State law mandates 100% renewable electricity by 2045. This is the direct scorecard - utilities and regulators can't hide behind averages.",
     "howToRead": "Hawaiʻi's line rising faster than the other-state average means the islands are outpacing the mainland toward clean energy.",
+    "insight": "Most meaningful when new renewable output is actually displacing oil-fired generation.",
     "hawaii": {
       "2003": 0.0563,
       "2004": 0.0564,
@@ -532,6 +545,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.eia.gov/state/seds/",
     "whyItMatters": "Shows how vulnerable we are to price shocks when tankers stop or oil spikes. More local renewables and efficiency bring this down.",
     "howToRead": "Shows what share of energy comes from off-island. You want this falling - lower means more local energy production and less vulnerability to supply shocks.",
+    "insight": "For an island state with no fossil fuels, this number is structurally high; progress shows in how fast renewables chip away at it.",
     "hawaii": {
       "2012": 0.9588,
       "2013": 0.9495,
@@ -571,6 +585,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us",
     "whyItMatters": "Food assistance, agricultural policy, and emergency planning are state responsibilities - crucial in remote islands that import 85-90% of food.",
     "howToRead": "In a state that imports most of its food, matching or beating the U.S. average is a must.",
+    "insight": "In an island state that imports 85-90% of its food, supply disruptions and shipping costs amplify mainland price swings.",
     "hawaii": {
       "2006-2008": 0.091,
       "2007-2009": 0.114,
@@ -619,6 +634,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.nasbo.org/reports-data/fiscal-survey-of-states",
     "whyItMatters": "Only the State can decide how much to save for a rainy day. A bigger cushion means fewer tax hikes or service cuts when tourism dips or disasters strike.",
     "howToRead": "A healthy reserve is typically 10%+; compare Hawaiʻi's line to that benchmark.",
+    "insight": "Reserves usually build in good years and matter most in bad ones.",
     "hawaii": {
       "2012": 0.004,
       "2013": 0.004,
@@ -662,6 +678,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
     "whyItMatters": "When people bother to vote, they think their voice matters and the process is worth the effort. Low turnout signals disengagement from democracy.",
     "howToRead": "Higher is better - rising voter turnout means people believe the system can work for them.",
+    "insight": "Usually reflects both civic engagement and how easy the voting system is to navigate.",
     "hawaii": {
       "2002": 0.442,
       "2004": 0.485,
@@ -702,6 +719,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html",
     "whyItMatters": "Shows how people 'vote with their feet.' Negative numbers mean more residents are leaving than arriving. From 2020-24, Hawaiʻi lost nearly 46,000 residents to the mainland.",
     "howToRead": "This shows net movers per 10,000 residents. Negative means more people leaving Hawaiʻi than arriving from other states. A rising line means the trend is improving.",
+    "insight": "Moves in and out often react quickly to housing pressure, since housing is the most common reason people move.",
     "hawaii": {
       "2011": -6.5,
       "2012": -22.2,
