@@ -26,14 +26,14 @@ const App = {
     // 5. Is the government competent with my tax dollars?
     // 6. The verdict: are people actually staying?
     AREA_ORDER: [
+        { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
+        { area: 'Public Health', metrics: ['ypll_under75', 'uninsured_rate'] },
         { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'unsheltered_homeless_rate'] },
         { area: 'Energy Cost', metrics: ['residential_price_cpkwh', 'net_energy_import_pct'] },
         { area: 'Food Security', metrics: ['food_insecurity_rate'] },
         { area: 'Employment', metrics: ['unemployment_rate'] },
         { area: 'Economic Prosperity', metrics: ['real_per_capita_income'] },
         { area: 'Business Climate', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
-        { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
-        { area: 'Public Health', metrics: ['ypll_under75', 'uninsured_rate'] },
         { area: 'K-12 Education', metrics: ['acgr'] },
         { area: 'Higher Education', metrics: ['ba_or_higher_pct'] },
         { area: 'Infrastructure', metrics: ['road_poor_pct', 'broadband_subscription_pct'] },
@@ -249,7 +249,7 @@ const App = {
         document.getElementById('modal-icon').textContent = metricData.areaIcon;
         document.getElementById('modal-title').textContent = metricData.metric;
         document.getElementById('modal-area').textContent = areaName || metricData.area;
-        document.getElementById('modal-why').textContent = metricData.whyItMatters;
+        document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
         const insightSection = document.getElementById('modal-insight-section');
         const insightText = document.getElementById('modal-insight');
@@ -414,7 +414,7 @@ const App = {
             ['Source', m.source],
             ['Source URL', m.sourceUrl],
             [],
-            ['Why It Matters', m.whyItMatters],
+            ['Why It Matters', m.whyItMatters.replace(/<[^>]*>/g, '')],
             ['How To Read It', m.howToRead],
         ];
         if (m.insight) methRows.push(['Insight', m.insight]);

@@ -29,11 +29,10 @@ const ChartUtils = {
 
         if (values.filter(v => v !== null).length === 0) return null;
 
-        // Anchor y-axis at 0 when all data is non-negative, so visual gap is proportional
+        // Tighten y-axis around actual data range to maximize visual gap between lines
         const allValues = [...values, ...avgValues].filter(v => v !== null);
         const dataMin = Math.min(...allValues);
         const dataMax = Math.max(...allValues);
-        const anchorZero = dataMin >= 0;
 
         // Scale fill opacity by gap magnitude: bigger gap = bolder fill
         const latestHI = values.filter(v => v !== null).pop() || 0;
@@ -114,8 +113,8 @@ const ChartUtils = {
                     },
                     y: {
                         display: false,
-                        min: anchorZero ? 0 : dataMin - Math.abs(dataMax - dataMin) * 0.1,
-                        max: dataMax + Math.abs(dataMax - dataMin) * 0.1,
+                        min: dataMin - Math.abs(dataMax - dataMin) * 0.15,
+                        max: dataMax + Math.abs(dataMax - dataMin) * 0.15,
                     },
                 },
                 animation: {
