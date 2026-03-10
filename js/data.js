@@ -795,40 +795,44 @@ const DASHBOARD_DATA = {
       "2023": 10.24
     }
   },
-  "net_estab_growth_pct": {
+  "net_employer_formation": {
     "area": "Business Climate",
     "areaIcon": "\ud83c\udfe2",
-    "metric": "Net Establishment Growth",
-    "unit": "%",
+    "metric": "Net Employer Business Formation",
+    "unit": "pp",
     "goodDirection": "up",
-    "source": "BLS Quarterly Census of Employment & Wages",
-    "sourceUrl": "https://www.bls.gov/cew/",
-    "whyItMatters": "Hawaiʻi's business count grew 8.4% in 2023, more than double the 3.5% other-state average. Net growth captures whether the state is gaining or losing businesses overall, not just new openings.",
-    "howToRead": "Higher is better. Hawaiʻi's line was below the average through 2016, then pulled ahead sharply. A positive number means more businesses opened than closed that year.",
-    "insight": "The post-2017 surge reflects a wave of new LLCs and sole proprietorships, many tied to short-term rentals and remote work. Whether that translates to lasting job growth remains to be seen.",
+    "source": "Census Business Dynamics Statistics",
+    "sourceUrl": "https://www.census.gov/programs-surveys/bds.html",
+    "whyItMatters": "Over the past 12 years Hawaiʻi has averaged just 0.2 pp of net employer formation per year, roughly a quarter of the 0.85 pp other-state average. In 2021 the state lost 3.6% of its employer businesses while the rest of the country grew. High costs, isolation, and regulation make it one of the hardest places in the U.S. to build a lasting business.",
+    "howToRead": "A positive number means more employer businesses opened than closed that year. Hawaiʻi's line sits below the other-state average in most years, and dips below zero in downturns, meaning the state is actually losing businesses.",
+    "insight": "Hawaiʻi ranked near the bottom nationally in 2023 at just 0.41 pp, while the average state posted 1.14 pp. The 2022 bounce (2.71 pp) was a one-year post-pandemic rebound, not a trend reversal.",
     "hawaii": {
-      "2014": 0.7,
-      "2015": 1.7,
-      "2016": 1.7,
-      "2017": 3.4,
-      "2018": 2.7,
-      "2019": 4.4,
-      "2020": 4.0,
-      "2021": 4.9,
-      "2022": 8.8,
-      "2023": 8.4
+      "2012": -0.72,
+      "2013": 0.3,
+      "2014": 0.69,
+      "2015": 0.46,
+      "2016": 1.34,
+      "2017": 0.46,
+      "2018": 0.58,
+      "2019": 0.74,
+      "2020": -0.96,
+      "2021": -3.57,
+      "2022": 2.71,
+      "2023": 0.41
     },
     "otherStateAvg": {
-      "2014": 1.39,
-      "2015": 1.7,
-      "2016": 1.78,
-      "2017": 1.12,
-      "2018": 1.61,
-      "2019": 1.89,
-      "2020": 2.45,
-      "2021": 4.52,
-      "2022": 6.24,
-      "2023": 3.53
+      "2012": 0.49,
+      "2013": 0.42,
+      "2014": 0.87,
+      "2015": 1.1,
+      "2016": 1.57,
+      "2017": 0.34,
+      "2018": 0.39,
+      "2019": 0.93,
+      "2020": 0.27,
+      "2021": 0.9,
+      "2022": 1.78,
+      "2023": 1.14
     }
   }
 };
