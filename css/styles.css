@@ -518,6 +518,11 @@ body {
     text-decoration: underline;
 }
 
+.csv-sep {
+    margin: 0 0.4rem;
+    opacity: 0.4;
+}
+
 /* --- Footer --- */
 .footer {
     text-align: center;

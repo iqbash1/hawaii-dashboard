@@ -258,7 +258,13 @@ const App = {
             ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
+            <span class="csv-sep">&middot;</span>
+            <a href="#" class="csv-download" id="csv-download">Download .csv</a>
         `;
+        document.getElementById('csv-download').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.downloadCsv(slug);
+        });
 
         // Stats - focused on the two key comparisons
         const latest = this.getLatestValue(metricData.hawaii);
@@ -331,6 +337,49 @@ const App = {
         // Show modal
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+    },
+
+    /** Generate and download a CSV for the given metric */
+    downloadCsv(slug) {
+        const m = DASHBOARD_DATA[slug];
+        if (!m) return;
+
+        let csv = '';
+        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+
+        // Section 1: All states (latest year) if per-state data is available
+        if (sd && sd.states) {
+            csv += `"${m.metric} (${m.unit}) - All States (${sd.year})"\n`;
+            csv += `"Source: ${sd.source}"\n`;
+            csv += `"Calculation: ${sd.calculation}"\n\n`;
+            csv += 'State,Value\n';
+            const sorted = Object.entries(sd.states).sort((a, b) => a[0].localeCompare(b[0]));
+            sorted.forEach(([state, value]) => {
+                csv += `"${state}",${value}\n`;
+            });
+            csv += '\n';
+        }
+
+        // Section 2: Time series (Hawaii vs Other State Avg)
+        csv += `"Time Series: Hawai\u02BBi vs Other State Average"\n`;
+        const years = [...new Set([
+            ...Object.keys(m.hawaii),
+            ...Object.keys(m.otherStateAvg),
+        ])].sort();
+        csv += 'Year,Hawaii,Other State Avg\n';
+        years.forEach(y => {
+            const hi = m.hawaii[y] != null ? m.hawaii[y] : '';
+            const avg = m.otherStateAvg[y] != null ? m.otherStateAvg[y] : '';
+            csv += `${y},${hi},${avg}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${slug}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
     },
 
     closeModal() {
