@@ -18,21 +18,28 @@ const App = {
     ],
 
     // Define the areas and their metrics (order matters for display)
+    // Order follows a resident's "should I stay or leave?" calculus:
+    // 1. What does daily life cost me?
+    // 2. Can I earn enough and build something here?
+    // 3. Is my family safe, healthy, and well-educated?
+    // 4. Does the infrastructure and environment work?
+    // 5. Is the government competent with my tax dollars?
+    // 6. The verdict: are people actually staying?
     AREA_ORDER: [
+        { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'unsheltered_homeless_rate'] },
+        { area: 'Energy Cost', metrics: ['residential_price_cpkwh', 'net_energy_import_pct'] },
+        { area: 'Food Security', metrics: ['food_insecurity_rate'] },
+        { area: 'Employment', metrics: ['unemployment_rate'] },
+        { area: 'Economic Prosperity', metrics: ['real_per_capita_income'] },
+        { area: 'Business Climate', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
         { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
         { area: 'Public Health', metrics: ['ypll_under75', 'uninsured_rate'] },
         { area: 'K-12 Education', metrics: ['acgr'] },
         { area: 'Higher Education', metrics: ['ba_or_higher_pct'] },
-        { area: 'Employment', metrics: ['unemployment_rate'] },
-        { area: 'Economic Prosperity', metrics: ['real_per_capita_income'] },
-        { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'unsheltered_homeless_rate'] },
         { area: 'Infrastructure', metrics: ['road_poor_pct', 'broadband_subscription_pct'] },
         { area: 'Environment', metrics: ['renewables_share_gen'] },
-        { area: 'Energy Cost', metrics: ['residential_price_cpkwh', 'net_energy_import_pct'] },
-        { area: 'Food Security', metrics: ['food_insecurity_rate'] },
         { area: 'Fiscal Stewardship', metrics: ['rainy_day_fund_pct'] },
         { area: 'Public Confidence', metrics: ['voter_participation_rate', 'net_domestic_migration_rate'] },
-        { area: 'Business Climate', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
     ],
 
     async init() {
