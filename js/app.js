@@ -259,11 +259,11 @@ const App = {
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
             <span class="csv-sep">&middot;</span>
-            <a href="#" class="csv-download" id="csv-download">Download .csv</a>
+            <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
-            this.downloadCsv(slug);
+            this.downloadData(slug);
         });
 
         // Stats - focused on the two key comparisons
@@ -339,47 +339,86 @@ const App = {
         document.body.style.overflow = 'hidden';
     },
 
-    /** Generate and download a CSV for the given metric */
-    downloadCsv(slug) {
+    /** Generate and download a multi-tab xlsx for the given metric */
+    downloadData(slug) {
         const m = DASHBOARD_DATA[slug];
         if (!m) return;
 
-        let csv = '';
+        const wb = XLSX.utils.book_new();
         const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
 
-        // Section 1: All states (latest year) if per-state data is available
-        if (sd && sd.states) {
-            csv += `"${m.metric} (${m.unit}) - All States (${sd.year})"\n`;
-            csv += `"Source: ${sd.source}"\n`;
-            csv += `"Calculation: ${sd.calculation}"\n\n`;
-            csv += 'State,Value\n';
-            const sorted = Object.entries(sd.states).sort((a, b) => a[0].localeCompare(b[0]));
-            sorted.forEach(([state, value]) => {
-                csv += `"${state}",${value}\n`;
-            });
-            csv += '\n';
-        }
-
-        // Section 2: Time series (Hawaii vs Other State Avg)
-        csv += `"Time Series: Hawai\u02BBi vs Other State Average"\n`;
-        const years = [...new Set([
+        // --- Tab 1: "Chart Data" (what's shown in the dashboard chart) ---
+        const chartRows = [
+            [`${m.metric} (${m.unit})`],
+            [`Source: ${m.source}`],
+            [],
+            ['Year', 'Hawai\u02BBi', 'Other State Avg'],
+        ];
+        const chartYears = [...new Set([
             ...Object.keys(m.hawaii),
             ...Object.keys(m.otherStateAvg),
         ])].sort();
-        csv += 'Year,Hawaii,Other State Avg\n';
-        years.forEach(y => {
-            const hi = m.hawaii[y] != null ? m.hawaii[y] : '';
-            const avg = m.otherStateAvg[y] != null ? m.otherStateAvg[y] : '';
-            csv += `${y},${hi},${avg}\n`;
+        chartYears.forEach(y => {
+            chartRows.push([
+                y,
+                m.hawaii[y] != null ? m.hawaii[y] : '',
+                m.otherStateAvg[y] != null ? m.otherStateAvg[y] : '',
+            ]);
         });
+        const wsChart = XLSX.utils.aoa_to_sheet(chartRows);
+        XLSX.utils.book_append_sheet(wb, wsChart, 'Chart Data');
 
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${slug}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+        // --- Tab 2: "All States" (raw source data, all years × all states) ---
+        if (sd && sd.data) {
+            const allYears = Object.keys(sd.data).sort();
+            const allStates = [...new Set(
+                Object.values(sd.data).flatMap(d => Object.keys(d))
+            )].sort();
+
+            const stateRows = [
+                [`${m.metric} (${m.unit}) - All States`],
+                [`Source: ${sd.source}`],
+                [`Calculation: ${sd.calculation}`],
+                [`Raw variables: ${sd.rawVariables}`],
+                [],
+                ['Year', ...allStates],
+            ];
+
+            allYears.forEach(y => {
+                const row = [y];
+                allStates.forEach(s => {
+                    row.push(sd.data[y]?.[s] ?? '');
+                });
+                stateRows.push(row);
+            });
+
+            const wsStates = XLSX.utils.aoa_to_sheet(stateRows);
+            XLSX.utils.book_append_sheet(wb, wsStates, 'All States');
+        }
+
+        // --- Tab 3: "Methodology" ---
+        const methRows = [
+            ['Metric', m.metric],
+            ['Unit', m.unit],
+            ['Area', m.area],
+            ['Good Direction', m.goodDirection === 'up' ? 'Higher is better' : 'Lower is better'],
+            [],
+            ['Source', m.source],
+            ['Source URL', m.sourceUrl],
+            [],
+            ['Why It Matters', m.whyItMatters],
+            ['How To Read It', m.howToRead],
+        ];
+        if (m.insight) methRows.push(['Insight', m.insight]);
+        if (sd) {
+            methRows.push([], ['Calculation', sd.calculation], ['Raw Variables', sd.rawVariables]);
+        }
+        methRows.push([], ['Other State Avg', 'Simple mean of 49 states (excluding HI and DC)']);
+        methRows.push(['Dashboard', 'hawaiidashboard.org']);
+        const wsMeth = XLSX.utils.aoa_to_sheet(methRows);
+        XLSX.utils.book_append_sheet(wb, wsMeth, 'Methodology');
+
+        XLSX.writeFile(wb, `${slug}.xlsx`);
     },
 
     closeModal() {
