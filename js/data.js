@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 18 metrics across 13 policy areas.
+// 20 metrics across 14 policy areas.
 // Hawaii values and Other State Avg (simple mean of 49 states,
 // excluding HI and DC) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
@@ -753,6 +753,82 @@ const DASHBOARD_DATA = {
       "2022": 14.7,
       "2023": 11.6,
       "2024": 10.9
+    }
+  },
+  "estabs_entry_rate": {
+    "area": "Business Climate",
+    "areaIcon": "\ud83c\udfe2",
+    "metric": "New Business Entry Rate",
+    "unit": "%",
+    "goodDirection": "up",
+    "source": "Census Business Dynamics Statistics",
+    "sourceUrl": "https://www.census.gov/programs-surveys/bds.html",
+    "whyItMatters": "In 2023, 9.2% of Hawaiʻi's business establishments were new, compared to 10.2% nationally. A lower entry rate means fewer entrepreneurs are starting businesses here, which limits job creation and innovation.",
+    "howToRead": "Higher is better. Hawaiʻi's line has run below the other-state average since the mid-1990s, meaning fewer new businesses open here each year as a share of total establishments.",
+    "insight": "Hawaiʻi saw a spike to 11.4% in 2022 (pandemic-era startups) but fell back to 9.2% in 2023. The long-term gap of about 1 percentage point suggests structural barriers to entry.",
+    "hawaii": {
+      "2012": 7.944,
+      "2013": 8.506,
+      "2014": 8.487,
+      "2015": 8.422,
+      "2016": 8.778,
+      "2017": 8.454,
+      "2018": 8.346,
+      "2019": 8.449,
+      "2020": 7.802,
+      "2021": 8.618,
+      "2022": 11.354,
+      "2023": 9.199
+    },
+    "otherStateAvg": {
+      "2012": 9.57,
+      "2013": 9.34,
+      "2014": 9.39,
+      "2015": 9.55,
+      "2016": 9.66,
+      "2017": 9.12,
+      "2018": 8.95,
+      "2019": 9.11,
+      "2020": 9.15,
+      "2021": 10.29,
+      "2022": 11.0,
+      "2023": 10.24
+    }
+  },
+  "net_estab_growth_pct": {
+    "area": "Business Climate",
+    "areaIcon": "\ud83c\udfe2",
+    "metric": "Net Establishment Growth",
+    "unit": "%",
+    "goodDirection": "up",
+    "source": "BLS Quarterly Census of Employment & Wages",
+    "sourceUrl": "https://www.bls.gov/cew/",
+    "whyItMatters": "Hawaiʻi's business count grew 8.4% in 2023, more than double the 3.5% other-state average. Net growth captures whether the state is gaining or losing businesses overall, not just new openings.",
+    "howToRead": "Higher is better. Hawaiʻi's line was below the average through 2016, then pulled ahead sharply. A positive number means more businesses opened than closed that year.",
+    "insight": "The post-2017 surge reflects a wave of new LLCs and sole proprietorships, many tied to short-term rentals and remote work. Whether that translates to lasting job growth remains to be seen.",
+    "hawaii": {
+      "2014": 0.7,
+      "2015": 1.7,
+      "2016": 1.7,
+      "2017": 3.4,
+      "2018": 2.7,
+      "2019": 4.4,
+      "2020": 4.0,
+      "2021": 4.9,
+      "2022": 8.8,
+      "2023": 8.4
+    },
+    "otherStateAvg": {
+      "2014": 1.39,
+      "2015": 1.7,
+      "2016": 1.78,
+      "2017": 1.12,
+      "2018": 1.61,
+      "2019": 1.89,
+      "2020": 2.45,
+      "2021": 4.52,
+      "2022": 6.24,
+      "2023": 3.53
     }
   }
 };

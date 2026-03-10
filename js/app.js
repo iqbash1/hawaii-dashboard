@@ -32,6 +32,7 @@ const App = {
         { area: 'Food Security', metrics: ['food_insecurity_rate'] },
         { area: 'Fiscal Stewardship', metrics: ['rainy_day_fund_pct'] },
         { area: 'Public Confidence', metrics: ['voter_participation_rate', 'net_domestic_migration_rate'] },
+        { area: 'Business Climate', metrics: ['estabs_entry_rate', 'net_estab_growth_pct'] },
     ],
 
     async init() {
