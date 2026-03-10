@@ -49,35 +49,45 @@ const DASHBOARD_DATA = {
       "2024": 325.0594
     }
   },
-  "ypll_under75": {
+  "pcp_per_100k": {
     "area": "Public Health",
     "areaIcon": "\ud83c\udfe5",
-    "metric": "Years of Life Lost (under 75)",
-    "officialName": "Years of Potential Life Lost Before Age 75 (YPLL-75)",
+    "metric": "Primary Care Physicians",
+    "officialName": "Primary Care Physicians per 100,000 Population",
     "unit": "per 100K",
-    "goodDirection": "down",
-    "source": "CDC WISQARS",
-    "sourceUrl": "https://wisqars.cdc.gov/",
-    "whyItMatters": "Hawaiʻi residents lose about 5,600 years of life per 100K to early death, roughly 1,500 fewer than the other-state average of 7,100. State-funded hospitals, Medicaid, and disease prevention help keep this number low.",
-    "howToRead": "Each point represents years of life lost before age 75 per 100,000 people. Hawaiʻi has stayed consistently below the other-state average.",
-    "insight": "The gap widened slightly as the mainland average worsened during and after COVID, driven by overdose, heart disease, and suicide.",
+    "goodDirection": "up",
+    "source": "HRSA Area Health Resource File",
+    "sourceUrl": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
+    "whyItMatters": "Hawaiʻi has about 89 primary care physicians per 100K residents, roughly 17% above the other-state average of 76. The State shapes this through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care.",
+    "howToRead": "Each point represents practicing primary care physicians (family medicine, internal medicine, pediatrics, OB/GYN) per 100,000 population. A higher number means better access to a doctor.",
+    "insight": "Hawaiʻi has consistently ranked in the top 10 nationally. The rate rose to 93 per 100K in 2020 before pulling back to 89 in 2021, a pattern seen across many states as retirements accelerated post-COVID.",
     "hawaii": {
-      "2012-2013": 5444.9,
-      "2014-2015": 5610.6,
-      "2016-2017": 5368.5,
-      "2018-2019": 5478.3,
-      "2020-2021": 5619.9,
-      "2021-2022": 5742.8,
-      "2022-2023": 5582.4
+      "2010": 86.1,
+      "2011": 85.2,
+      "2012": 83.9,
+      "2013": 86.4,
+      "2014": 86.6,
+      "2015": 87.6,
+      "2016": 88.3,
+      "2017": 87.6,
+      "2018": 88.7,
+      "2019": 90.1,
+      "2020": 92.7,
+      "2021": 89.1
     },
     "otherStateAvg": {
-      "2012-2013": 6719.3776,
-      "2014-2015": 6741.3061,
-      "2016-2017": 6793.8735,
-      "2018-2019": 6988.7163,
-      "2020-2021": 7175.2163,
-      "2021-2022": 7186.6184,
-      "2022-2023": 7082.9102
+      "2010": 73.9,
+      "2011": 74.8,
+      "2012": 75.4,
+      "2013": 76.7,
+      "2014": 76.7,
+      "2015": 76.6,
+      "2016": 76.6,
+      "2017": 76.8,
+      "2018": 77.3,
+      "2019": 78.1,
+      "2020": 77.9,
+      "2021": 76.3
     }
   },
   "uninsured_rate": {
