@@ -89,7 +89,7 @@ const DASHBOARD_DATA = {
     "source": "Census ACS / KFF",
     "sourceUrl": "https://www.kff.org/topic/uninsured/",
     "whyItMatters": "At 2.8%, Hawaiʻi's uninsured rate is less than half the other-state average of 7.4%. The Prepaid Health Care Act is the main reason, but roughly 40,000 residents still lack coverage.",
-    "howToRead": "Both lines have been falling since ACA expansion in 2012. Hawaiʻi has consistently been at or near the lowest uninsured rate in the nation.",
+    "howToRead": "Both lines have been falling since the Affordable Care Act expansion in 2012. Hawaiʻi has consistently been at or near the lowest uninsured rate in the nation.",
     "insight": "The rate dropped from 6.6% in 2012 to 2.8% in 2023. The remaining uninsured tend to be part-time or gig workers not covered by the Prepaid Health Care Act.",
     "hawaii": {
       "2012": 0.066,
@@ -201,7 +201,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Bureau of Labor Statistics",
     "sourceUrl": "https://www.bls.gov/lau/",
-    "whyItMatters": "At 3.0% in 2024, Hawaiʻi's unemployment is below the other-state average of 3.7%. But in 2020, tourism's collapse drove it to 11.6%, the highest spike of any state, exposing dependence on a single industry.",
+    "whyItMatters": "At 3.0% in 2024, Hawaiʻi's unemployment is below the other-state average of 3.7%. But in 2020, tourism's collapse drove it to 11.6%, the highest spike of any state. The State shapes this through workforce programs, tax incentives, and whether it diversifies the economy beyond tourism.",
     "howToRead": "Hawaiʻi typically runs below the other-state average in normal years. The 2020 spike and rapid recovery both reflect tourism's outsized role.",
     "insight": "Hawaiʻi had some of the lowest unemployment in the country before COVID (2.2% in 2017). The collapse from 2.5% to 11.6% in months shows the structural risk of tourism dependence.",
     "hawaii": {
@@ -244,9 +244,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "BEA",
     "sourceUrl": "https://www.bea.gov/data/income-saving/personal-income-by-state",
-    "whyItMatters": "After adjusting for cost of living, the average Hawaiʻi resident has about $6,700 less purchasing power per year than other states ($52,272 vs. $58,994). Paychecks look good on paper but buy less when groceries, rent, and gas cost more.",
+    "whyItMatters": "After adjusting for cost of living, the average Hawaiʻi resident has about $6,700 less purchasing power per year than other states ($52,272 vs. $58,994). Paychecks look good on paper but buy less here. The State influences this through tax policy, minimum wage, and economic development spending.",
     "howToRead": "Hawaiʻi's line has been below the other-state average the entire period. The gap was about $3,400 in 2008 and has widened to ~$6,700 by 2024.",
-    "insight": "Nominal income ranks above the national median, but cost-of-living adjustments erase that advantage. The widening gap suggests costs are rising faster than wages.",
+    "insight": "Before adjusting for prices, Hawaiʻi income ranks above the national median, but the high cost of living erases that advantage. The widening gap suggests costs are rising faster than wages.",
     "hawaii": {
       "2008": 42828,
       "2009": 41102,
@@ -295,7 +295,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Census ACS",
     "sourceUrl": "https://data.census.gov/",
-    "whyItMatters": "60% of Hawaiʻi renters spend more than 30% of income on housing, 7 points worse than the other-state average of 53%. Three in five renting households are cost-burdened, squeezing budgets for food, childcare, and savings.",
+    "whyItMatters": "60% of Hawaiʻi renters spend more than 30% of income on housing, 7 points worse than the other-state average of 53%. The State controls zoning, building permits, and rent assistance programs that determine how much housing gets built and what it costs.",
     "howToRead": "Both lines should fall. Hawaiʻi has been persistently above the other-state average for the entire decade.",
     "insight": "Rent burden has hovered near 60% since 2012 with little improvement. The gap reflects chronically low housing supply; new construction hasn't kept pace with demand.",
     "hawaii": {
@@ -334,7 +334,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "HUD PIT Count",
     "sourceUrl": "https://www.huduser.gov/portal/datasets/ahar.html",
-    "whyItMatters": "Hawaiʻi has about 25 unsheltered homeless per 10,000 residents, 5 times the other-state average of 5. This is the most visible sign that the housing safety net is failing.",
+    "whyItMatters": "Hawaiʻi has about 25 unsheltered homeless per 10,000 residents, 5 times the other-state average of 5. The State controls zoning, shelter funding, and housing subsidies that directly shape this number.",
     "howToRead": "Hawaiʻi's line runs 5 to 7 times above the other-state average for the entire period. Even small declines represent hundreds of lives improved.",
     "insight": "Peaked at 30 per 10K in 2016 and has hovered around 25 since. Mild climate plays a role, but the scale of the gap points to a housing crisis.",
     "hawaii": {
@@ -374,7 +374,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FHWA Highway Statistics, Table HM-64",
     "sourceUrl": "https://www.fhwa.dot.gov/policyinformation/statistics.cfm",
-    "whyItMatters": "One in five Hawaiʻi road miles is rated 'poor', more than 6 times the other-state average of 3.3%. Poor roads damage tires and suspensions, lengthen commutes, and increase accident risk.",
+    "whyItMatters": "One in five Hawaiʻi road miles is rated 'poor', more than 6 times the other-state average of 3.3%. The State DOT is responsible for maintaining these roads, and the capital budget determines how fast they get fixed.",
     "howToRead": "Hawaiʻi's line stays far above the other-state average. It improved from 30% in 2013 to 20% in 2023, but other states average just 3%, so the gap remains huge.",
     "insight": "Road quality reflects decades of wear, tropical weather, and volcanic soil. At the current pace of improvement, it would take many more years to approach the mainland average.",
     "hawaii": {
@@ -411,7 +411,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Census ACS",
     "sourceUrl": "https://data.census.gov/",
-    "whyItMatters": "92.8% of Hawaiʻi households have broadband, slightly ahead of the other-state average of 91.5%. About 30,000 households still lack reliable internet for remote work, telehealth, and homework.",
+    "whyItMatters": "92.8% of Hawaiʻi households have broadband, slightly ahead of the other-state average of 91.5%. About 30,000 households still lack reliable internet. The State distributes federal broadband grants and sets infrastructure policy for underserved areas.",
     "howToRead": "Both lines rise steadily toward universal coverage. Hawaiʻi has consistently run 1 to 2 points above the other-state average.",
     "insight": "Climbed from 77.6% in 2015 to 92.8% in 2023. The remaining gap is concentrated in rural and lower-income households across the neighbor islands.",
     "hawaii": {
@@ -443,7 +443,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "EIA",
     "sourceUrl": "https://www.eia.gov/electricity/data/state/",
-    "whyItMatters": "Hawaiʻi residents pay 42.9¢ per kWh, 2.6 times the other-state average of 16.5¢. A typical household pays roughly $215/month vs. $83 on the mainland, an extra $130+ that squeezes family budgets.",
+    "whyItMatters": "Hawaiʻi residents pay 42.9¢ per kWh, 2.6 times the other-state average of 16.5¢. That's roughly $215/month vs. $83 on the mainland. The State's Public Utilities Commission sets the rates, and energy policy decisions directly affect what residents pay.",
     "howToRead": "Hawaiʻi's line sits far above the other-state average. Prices dipped to 27¢ in 2016 when oil was cheap, then spiked to 43¢ by 2022 and haven't come back down.",
     "insight": "Driven by island isolation and oil-fired generation. As renewables grow (now 22% of generation), they should put downward pressure on rates, but the transition costs money upfront.",
     "hawaii": {
@@ -488,7 +488,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.eia.gov/electricity/data/state/",
     "whyItMatters": "State law mandates 100% renewable electricity by 2045, but Hawaiʻi currently generates just 21.8% from renewables, trailing the other-state average of 26.6%. With 78 points still to go, the pace needs to roughly quadruple.",
     "howToRead": "Hawaiʻi's line started at 5.6% in 2003 and has been closing the gap with the other-state average. The recent jump from 12% in 2019 to 22% in 2024 is encouraging but not yet fast enough for the 2045 target.",
-    "insight": "Renewables have quadrupled since 2003, driven by rooftop solar and utility-scale projects. Reaching 100% will require grid-scale storage and retiring the remaining oil plants.",
+    "insight": "Renewables have quadrupled since 2003, driven by rooftop solar and large solar farms. Reaching 100% will require massive battery systems and retiring the remaining oil plants.",
     "hawaii": {
       "2003": 0.0563,
       "2004": 0.0564,
@@ -547,7 +547,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "EIA SEDS",
     "sourceUrl": "https://www.eia.gov/state/seds/",
-    "whyItMatters": "Hawaiʻi imports 94% of its energy while the average state is a net exporter. Every barrel of oil shipped in adds cost and vulnerability. When global prices spike, Hawaiʻi feels it first.",
+    "whyItMatters": "Hawaiʻi imports 94% of its energy while the average state produces more than it uses. Every barrel of oil shipped in adds cost and vulnerability. The State's renewable energy mandates and permitting decisions determine how quickly this dependence shrinks.",
     "howToRead": "Hawaiʻi's line sits near the top at ~94%. The other-state average is below zero (net exporter). Despite a decade of renewable buildout, imports have only dropped from 96% to 94%.",
     "insight": "The 2-point drop over 11 years shows how slowly energy infrastructure changes. With no fossil fuel reserves, the only path to independence is renewables and efficiency.",
     "hawaii": {
@@ -587,7 +587,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "USDA ERS",
     "sourceUrl": "https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us",
-    "whyItMatters": "About 9.6% of Hawaiʻi residents, roughly 140,000 people, lack consistent access to enough food. That's below the other-state average of 11.8%, but in a state that imports 85-90% of its food, any supply disruption could push the number higher fast.",
+    "whyItMatters": "About 9.6% of Hawaiʻi residents, roughly 140,000 people, lack consistent access to enough food. The State administers food assistance programs and sets agricultural policy that affects how much food is grown locally vs. shipped in.",
     "howToRead": "Hawaiʻi's line peaked at 14% during 2010-12 and fell to 9.6%, now below the other-state average. The most recent tick up from 9.1% suggests rising grocery prices are eroding gains.",
     "insight": "The improvement from 14% to 9.6% is significant, but extreme dependence on imported food means shipping costs and mainland price swings hit island households harder.",
     "hawaii": {
@@ -637,7 +637,7 @@ const DASHBOARD_DATA = {
     "source": "NASBO Fiscal Survey",
     "sourceUrl": "https://www.nasbo.org/reports-data/fiscal-survey-of-states",
     "whyItMatters": "Hawaiʻi's rainy day fund holds 13.8% of general fund spending, up from near-zero (0.4%) in 2012 but still 3 points below the other-state average of 16.7%. A thin reserve directly affects the state's credit rating and borrowing costs, meaning taxpayers pay more interest on every bond issued.",
-    "howToRead": "Hawaiʻi's line shows a dramatic climb from 0.4% to 13.8%, crossing the 10% healthy-reserve benchmark in 2023 for the first time. The goal is to match the other-state average of 16.7%.",
+    "howToRead": "Hawaiʻi's line shows a dramatic climb from 0.4% to 13.8%, crossing the 10% minimum recommended level in 2023 for the first time. The goal is to match the other-state average of 16.7%.",
     "insight": "The fund was nearly drained during COVID (dropping to 0.7%) but recovered rapidly as tourism revenues returned. Reserves build in good years and matter most in bad ones.",
     "hawaii": {
       "2012": 0.004,
@@ -681,7 +681,7 @@ const DASHBOARD_DATA = {
     "source": "Election Assistance Commission",
     "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
     "whyItMatters": "Only half of Hawaiʻi's eligible voters cast a ballot in 2024, 15 points below the other-state average of 65%. When half the electorate stays home, elected officials answer to a narrow slice of the public.",
-    "howToRead": "The sawtooth pattern reflects presidential years (higher) vs. midterms (lower). Even in 2020 at 55.7%, Hawaiʻi trailed the other-state average of 67.9% by 12 points.",
+    "howToRead": "The zigzag pattern reflects presidential years (higher turnout) vs. midterm elections (lower). Even in 2020 at 55.7%, Hawaiʻi trailed the other-state average of 67.9% by 12 points.",
     "insight": "All-mail voting boosted turnout from 39.5% (2018) to 55.7% (2020), but the 2024 rate of 50.3% suggests the lift is fading. The persistent gap points to disengagement beyond ballot access.",
     "hawaii": {
       "2002": 0.442,
@@ -721,7 +721,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Census PEP",
     "sourceUrl": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html",
-    "whyItMatters": "For every 10,000 residents, about 65 more people leave Hawaiʻi each year than arrive, while other states average a net gain of 11. From 2021 to 2024, Hawaiʻi lost roughly 46,000 residents to the mainland.",
+    "whyItMatters": "For every 10,000 residents, about 65 more people leave Hawaiʻi each year than arrive, while other states average a net gain of 11. This is the ultimate scorecard: the State's decisions on housing, jobs, taxes, and cost of living determine whether people choose to stay.",
     "howToRead": "Hawaiʻi's line has been deeply negative for over a decade, peaking at -110 per 10K in 2022. The recent reading of -65 in 2024 is the best since 2013 but still far from positive.",
     "insight": "The outflow accelerated after 2015 and peaked during COVID. Housing cost is the top reason for leaving. The modest improvement in 2023-24 may reflect normalization, but the structural drivers remain.",
     "hawaii": {
@@ -763,9 +763,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Census Business Dynamics Statistics",
     "sourceUrl": "https://www.census.gov/programs-surveys/bds.html",
-    "whyItMatters": "In 2023, 9.2% of Hawaiʻi's business establishments were new, compared to 10.2% nationally. A lower entry rate means fewer entrepreneurs are starting businesses here, which limits job creation and innovation.",
+    "whyItMatters": "In 2023, 9.2% of Hawaiʻi's business establishments were new, compared to 10.2% nationally. A lower entry rate means fewer entrepreneurs are starting businesses here. The State's licensing requirements, tax rates, and permitting process are major factors.",
     "howToRead": "Higher is better. Hawaiʻi's line has run below the other-state average since the mid-1990s, meaning fewer new businesses open here each year as a share of total establishments.",
-    "insight": "Hawaiʻi saw a spike to 11.4% in 2022 (pandemic-era startups) but fell back to 9.2% in 2023. The long-term gap of about 1 percentage point suggests structural barriers to entry.",
+    "insight": "Hawaiʻi saw a spike to 11.4% in 2022 (pandemic-era startups) but fell back to 9.2% in 2023. The long-term gap of about 1 percentage point suggests high costs and regulations discourage new businesses from opening.",
     "hawaii": {
       "2012": 7.944,
       "2013": 8.506,
@@ -799,13 +799,13 @@ const DASHBOARD_DATA = {
     "area": "Business Climate",
     "areaIcon": "\ud83c\udfe2",
     "metric": "Net Employer Business Formation",
-    "unit": "pp",
+    "unit": "%",
     "goodDirection": "up",
     "source": "Census Business Dynamics Statistics",
     "sourceUrl": "https://www.census.gov/programs-surveys/bds.html",
-    "whyItMatters": "Over the past 12 years Hawaiʻi has averaged just 0.2 pp of net employer formation per year, roughly a quarter of the 0.85 pp other-state average. In 2021 the state lost 3.6% of its employer businesses while the rest of the country grew. High costs, isolation, and regulation make it one of the hardest places in the U.S. to build a lasting business.",
+    "whyItMatters": "Over the past 12 years Hawaiʻi has averaged just 0.2% net employer formation per year, roughly a quarter of the 0.85% other-state average. In 2021 the state lost 3.6% of its employer businesses while the rest of the country grew. High costs, isolation, and regulation make it one of the hardest places in the U.S. to build a lasting business.",
     "howToRead": "A positive number means more employer businesses opened than closed that year. Hawaiʻi's line sits below the other-state average in most years, and dips below zero in downturns, meaning the state is actually losing businesses.",
-    "insight": "Hawaiʻi ranked near the bottom nationally in 2023 at just 0.41 pp, while the average state posted 1.14 pp. The 2022 bounce (2.71 pp) was a one-year post-pandemic rebound, not a trend reversal.",
+    "insight": "Hawaiʻi ranked near the bottom nationally in 2023 at just 0.41%, while the average state posted 1.14%. The 2022 bounce (2.71%) was a one-year post-pandemic rebound, not a trend reversal.",
     "hawaii": {
       "2012": -0.72,
       "2013": 0.3,
