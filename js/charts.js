@@ -113,8 +113,24 @@ const ChartUtils = {
                     },
                     y: {
                         display: false,
-                        min: dataMin - Math.abs(dataMax - dataMin) * 0.15,
-                        max: dataMax + Math.abs(dataMax - dataMin) * 0.15,
+                        // Ensure gap between lines fills most of chart height
+                        min: (() => {
+                            const range = dataMax - dataMin;
+                            const gap = Math.abs(latestHI - latestAvg);
+                            // The gap should occupy ~50% of visible chart
+                            const minRange = gap * 2;
+                            const effectiveRange = Math.max(range, minRange);
+                            const mid = (dataMin + dataMax) / 2;
+                            return mid - effectiveRange * 0.55;
+                        })(),
+                        max: (() => {
+                            const range = dataMax - dataMin;
+                            const gap = Math.abs(latestHI - latestAvg);
+                            const minRange = gap * 2;
+                            const effectiveRange = Math.max(range, minRange);
+                            const mid = (dataMin + dataMax) / 2;
+                            return mid + effectiveRange * 0.55;
+                        })(),
                     },
                 },
                 animation: {
