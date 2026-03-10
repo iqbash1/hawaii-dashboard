@@ -1,13 +1,17 @@
 // ============================================================
-// Hawaiʻi State Government Dashboard - Chart Rendering
-// Uses Chart.js v4
+// Hawaiʻi Dashboard - Chart Rendering (Chart.js v4)
+//
+// createSparkline()   - mini card charts with gap-scaled fill
+// createDetailChart() - full modal chart with governor overlays
+// formatValue()       - unit-aware number formatting
+// formatCardValue()   - compact formatting for card display
 // ============================================================
 
 // Set global Chart.js font to Inter
 Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
 const ChartUtils = {
-    // Color constants - GUILD brand palette
+    // Color constants
     HAWAII_BLUE: '#0D7C8F',
     HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
     AVG_GRAY: '#666666',
@@ -313,30 +317,6 @@ const ChartUtils = {
                 },
             }
         });
-    },
-
-    /**
-     * Format y-axis labels for sparklines (very compact)
-     */
-    formatSparklineY(value, unit) {
-        if (value === null || value === undefined || isNaN(value)) return '';
-        switch (unit) {
-            case '$':
-                if (Math.abs(value) >= 1000) return '$' + (value / 1000).toFixed(0) + 'K';
-                return '$' + Math.round(value);
-            case '%':
-                if (Math.abs(value) < 1) return (value * 100).toFixed(0) + '%';
-                return Math.round(value) + '%';
-            case 'per 100K':
-                return Math.round(value).toLocaleString();
-            case 'per 10K':
-                return Math.round(value);
-            case '\u00a2/kWh':
-                return Math.round(value) + '\u00a2';
-            default:
-                if (Math.abs(value) >= 1000) return (value / 1000).toFixed(1) + 'K';
-                return Math.round(value);
-        }
     },
 
     /**

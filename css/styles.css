@@ -1,6 +1,6 @@
 /* ============================================================
-   Hawaiʻi State Government Dashboard - Styles
-   Flat Design
+   Hawaiʻi Dashboard - Styles
+   Flat design, Inter font, ocean teal (#0D7C8F) accent
    ============================================================ */
 
 /* --- Reset & Base --- */
@@ -24,7 +24,6 @@
     --positive-bg: #ECFDF5;
     --negative: #DC2626;
     --negative-bg: #FEF2F2;
-    --neutral-bg: #F3F4F6;
     --border: #E0E0E0;
     --radius: 4px;
     --radius-sm: 3px;

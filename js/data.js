@@ -1,6 +1,10 @@
-// Hawaiʻi Government Performance Dashboard - Embedded Data
-// Extracted from 250814 HI Dashboard.xlsx
-// Generated: 2026-03-07
+// Hawaiʻi Dashboard - Embedded Data
+//
+// 18 metrics across 13 policy areas.
+// Hawaii values and Other State Avg (simple mean of 49 states,
+// excluding HI and DC) sourced from federal agencies.
+// Original baseline: 250814 HI Dashboard.xlsx
+// Migration 2011-2019 backfilled from Census PEP 2019 vintage.
 
 const DASHBOARD_DATA = {
   "violent_crime_rate": {

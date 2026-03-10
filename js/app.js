@@ -1,5 +1,8 @@
 // ============================================================
-// Hawaiʻi State Government Dashboard - Main App
+// Hawaiʻi Dashboard - Main App
+//
+// Renders metric cards, manages the detail modal, and
+// coordinates live API updates from api.js.
 // ============================================================
 
 const App = {
@@ -125,7 +128,7 @@ const App = {
         this.sparklineCharts.forEach(c => c && c.destroy());
         this.sparklineCharts = [];
 
-        // One card per metric (no more dual-metric confusion)
+        // One card per metric, ordered by area
         this.AREA_ORDER.forEach(areaGroup => {
             areaGroup.metrics.forEach(slug => {
                 const metricData = DASHBOARD_DATA[slug];
