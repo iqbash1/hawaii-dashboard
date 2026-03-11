@@ -5,6 +5,23 @@
 // coordinates live API updates from api.js.
 // ============================================================
 
+const AREA_ICONS = {
+    'Safety & Justice': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    'Public Health': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>',
+    'Cost of Living': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+    'Energy Cost': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    'Food Security': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+    'Employment': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    'Economic Prosperity': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    'Business Climate': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    'K-12 Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    'Higher Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>',
+    'Infrastructure': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
+    'Environment': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20c2 0 3-1 3-1s1 1 3 1a4.49 4.49 0 0 0 1.29-.3L17 22l.71-.66C17.07 17.83 18 10 17 8z"/><path d="M6 2l.71.71C8.07 4.17 9 12 9 16"/><path d="M18 2l-.71.71C15.93 4.17 15 12 15 16"/></svg>',
+    'Fiscal Stewardship': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+    'Public Confidence': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+};
+
 const App = {
     sparklineCharts: [],
     detailChart: null,
@@ -153,7 +170,7 @@ const App = {
 
                 card.innerHTML = `
                     <div class="card-header">
-                        <div class="card-icon">${metricData.areaIcon}</div>
+                        <div class="card-icon">${AREA_ICONS[areaGroup.area] || ''}</div>
                         <div class="card-area">${areaGroup.area}</div>
                     </div>
                     <div class="card-metric">${metricData.metric}</div>
@@ -246,7 +263,7 @@ const App = {
         if (!metricData) return;
 
         // Set modal content
-        document.getElementById('modal-icon').textContent = metricData.areaIcon;
+        document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
