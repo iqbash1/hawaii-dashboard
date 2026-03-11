@@ -54,7 +54,7 @@ const DASHBOARD_DATA = {
     "areaIcon": "\ud83c\udfe5",
     "metric": "Primary Care Physicians (civilian)",
     "officialName": "Non-Federal Primary Care Physicians per 100,000 Civilian Population",
-    "unit": "per 100K civilian",
+    "unit": "per 100K",
     "goodDirection": "up",
     "source": "HRSA Area Health Resource File",
     "sourceUrl": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
