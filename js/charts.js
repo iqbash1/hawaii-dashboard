@@ -456,23 +456,23 @@ const ChartUtils = {
                     const neutralEnd = 27;
 
                     if (rank < neutralStart) {
-                        // Green zone: rank 1 = strongest green, fade to neutral
+                        // Green zone: rank 1 = strongest green, fade to white
                         const t = (rank - 1) / (neutralStart - 1); // 0 at rank 1, 1 at rank 22
-                        r = Math.round(200 + (242 - 200) * t);   // 200 → 242
-                        g = Math.round(235 + (242 - 235) * t);   // 235 → 242
-                        b = Math.round(200 + (242 - 200) * t);   // 200 → 242
+                        r = Math.round(200 + (255 - 200) * t);   // 200 → 255
+                        g = Math.round(235 + (255 - 235) * t);   // 235 → 255
+                        b = Math.round(200 + (255 - 200) * t);   // 200 → 255
                         a = 1;
                     } else if (rank > neutralEnd) {
-                        // Red zone: fade from neutral to strongest red
+                        // Red zone: fade from white to strongest red
                         const remaining = n - neutralEnd;
                         const t = (rank - neutralEnd) / remaining; // 0 just past neutral, 1 at last
-                        r = Math.round(242 + (248 - 242) * t);   // 242 → 248
-                        g = Math.round(242 + (195 - 242) * t);   // 242 → 195
-                        b = Math.round(242 + (192 - 242) * t);   // 242 → 192
+                        r = Math.round(255 + (218 - 255) * t);   // 255 → 218
+                        g = Math.round(255 + (90 - 255) * t);    // 255 → 90
+                        b = Math.round(255 + (85 - 255) * t);    // 255 → 85
                         a = 1;
                     } else {
-                        // Neutral zone
-                        r = 242; g = 242; b = 242; a = 1;
+                        // Neutral zone: white
+                        r = 255; g = 255; b = 255; a = 1;
                     }
 
                     ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
@@ -498,7 +498,7 @@ const ChartUtils = {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: { right: 60 } },
+                layout: { padding: { right: 10 } },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -509,8 +509,20 @@ const ChartUtils = {
                 },
                 scales: {
                     x: {
-                        display: false,
-                        grid: { display: false },
+                        display: true,
+                        grid: {
+                            display: true,
+                            color: 'rgba(0,0,0,0.08)',
+                            borderDash: [4, 4],
+                            drawTicks: false,
+                        },
+                        border: { display: false },
+                        ticks: {
+                            font: { size: 10, family: "'Inter', sans-serif" },
+                            color: '#999',
+                            maxTicksLimit: 5,
+                            callback: (v) => fmt(v, unit),
+                        },
                     },
                     y: {
                         grid: { display: false },
@@ -534,17 +546,26 @@ const ChartUtils = {
             plugins: [rowBgPlugin, {
                 id: 'valueLabels',
                 afterDatasetsDraw(chart) {
-                    const { ctx } = chart;
+                    const { ctx, chartArea } = chart;
                     chart.data.datasets[0].data.forEach((val, i) => {
                         const meta = chart.getDatasetMeta(0).data[i];
                         if (!meta) return;
-                        const x = meta.x + 6;
-                        const y = meta.y;
+                        const label = fmt(val, unit);
                         ctx.save();
                         ctx.font = '11px Inter, sans-serif';
-                        ctx.fillStyle = '#555';
                         ctx.textBaseline = 'middle';
-                        ctx.fillText(fmt(val, unit), x, y);
+                        const textW = ctx.measureText(label).width;
+                        const barEnd = meta.x;
+                        // Place label after bar, but clamp inside chart area
+                        let x = barEnd + 6;
+                        if (x + textW > chartArea.right - 2) {
+                            // Put inside the bar if it would overflow
+                            x = barEnd - textW - 6;
+                            ctx.fillStyle = '#fff';
+                        } else {
+                            ctx.fillStyle = '#555';
+                        }
+                        ctx.fillText(label, x, meta.y);
                         ctx.restore();
                     });
                 }

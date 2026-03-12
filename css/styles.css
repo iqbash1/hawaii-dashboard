@@ -335,9 +335,11 @@ body {
 }
 
 .modal-close {
-    position: absolute;
+    position: sticky;
     top: 1rem;
-    right: 1rem;
+    float: right;
+    margin-right: 1rem;
+    margin-top: -2.5rem;
     width: 36px;
     height: 36px;
     border: 1px solid var(--border);
@@ -645,7 +647,8 @@ body {
 
     .modal-close {
         top: 0.75rem;
-        right: 0.75rem;
+        margin-right: 0.75rem;
+        margin-top: -2rem;
         width: 32px;
         height: 32px;
         font-size: 1.1rem;

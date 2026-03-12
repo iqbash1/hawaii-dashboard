@@ -486,7 +486,7 @@ const DASHBOARD_DATA = {
     }
   },
   "residential_price_cpkwh": {
-    "area": "Energy Cost",
+    "area": "Energy",
     "areaIcon": "\u26a1",
     "metric": "Residential Electricity Price",
     "unit": "\u00a2/kWh",
@@ -589,7 +589,7 @@ const DASHBOARD_DATA = {
     }
   },
   "net_energy_import_pct": {
-    "area": "Energy Cost",
+    "area": "Energy",
     "areaIcon": "\u26a1",
     "metric": "Share of Energy Imported",
     "officialName": "Net Energy Import Dependence (EIA SEDS: 1 \u2212 Production/Consumption)",
