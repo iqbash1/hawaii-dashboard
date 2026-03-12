@@ -43,6 +43,7 @@ body {
     color: var(--text);
     line-height: 1.4;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
 }
 
 /* --- Header --- */
