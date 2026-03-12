@@ -16,6 +16,15 @@ const ChartUtils = {
     HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
     AVG_GRAY: '#666666',
     AVG_GRAY_BG: 'rgba(102, 102, 102, 0.06)',
+    GREEN_BEST: [200, 235, 200],
+    RED_WORST: [218, 90, 85],
+    NEUTRAL_RANGE: [23, 27],
+
+    /** Linear interpolation, rounded to integer */
+    lerp(a, b, t) { return Math.round(a + (b - a) * t); },
+
+    /** Check if a state name is Hawaii (handles ʻokina variant) */
+    isHawaii(name) { return name === 'Hawaii' || name === 'Hawai\u02BBi'; },
 
     /**
      * Create a mini sparkline chart for a card
@@ -417,10 +426,9 @@ const ChartUtils = {
 
         const labels = stateValues.map(s => s.state);
         const values = stateValues.map(s => s.value);
-        const hawaiiColor = '#0D7C8F';
-        const otherColor = '#D1D5DB';
+        const otherColor = '#A0A5AD';
         const bgColors = stateValues.map(s =>
-            s.state === 'Hawaii' || s.state === 'Hawai\u02BBi' ? hawaiiColor : otherColor
+            this.isHawaii(s.state) ? this.HAWAII_BLUE : otherColor
         );
 
         // Dynamic height: 22px per bar, minimum 500px
@@ -430,58 +438,50 @@ const ChartUtils = {
         canvas.parentElement.style.height = chartHeight + 'px';
 
         const fmt = this.formatValue.bind(this);
-        const totalStates = stateValues.length;
+        const lerp = this.lerp;
+        const n = stateValues.length;
 
-        // Green-neutral-red row background plugin
-        // Best (rank 1) = green, middle (23-27) = neutral, worst = red
+        // Precompute row background colors (green → white → red gradient)
+        const [neutralStart, neutralEnd] = this.NEUTRAL_RANGE;
+        const [gr, gg, gb] = this.GREEN_BEST;
+        const [rr, rg, rb] = this.RED_WORST;
+        const rowColors = new Array(n);
+        for (let i = 0; i < n; i++) {
+            const rank = i + 1;
+            if (rank < neutralStart) {
+                const t = (rank - 1) / (neutralStart - 1);
+                rowColors[i] = `rgb(${lerp(gr, 255, t)},${lerp(gg, 255, t)},${lerp(gb, 255, t)})`;
+            } else if (rank > neutralEnd) {
+                const t = (rank - neutralEnd) / (n - neutralEnd);
+                rowColors[i] = `rgb(${lerp(255, rr, t)},${lerp(255, rg, t)},${lerp(255, rb, t)})`;
+            } else {
+                rowColors[i] = '#fff';
+            }
+        }
+
+        // Precompute formatted value labels and Hawaii index
+        const formattedLabels = values.map(v => fmt(v, unit));
+        const hawaiiIdx = labels.findIndex(l => this.isHawaii(l));
+
+        // Row background plugin — uses precomputed colors
         const rowBgPlugin = {
             id: 'rowBackground',
             beforeDatasetsDraw(chart) {
                 const { ctx, chartArea, scales } = chart;
                 const yScale = scales.y;
+                const barH = yScale.getPixelForValue(1) - yScale.getPixelForValue(0);
+                const width = chartArea.right - chartArea.left;
                 ctx.save();
-                const n = chart.data.labels.length;
                 for (let i = 0; i < n; i++) {
                     const yCenter = yScale.getPixelForValue(i);
-                    const barH = yScale.getPixelForValue(1) - yScale.getPixelForValue(0);
-                    const top = yCenter - barH / 2;
-                    const bottom = yCenter + barH / 2;
-
-                    // Rank is 1-indexed (i=0 → rank 1 = best)
-                    const rank = i + 1;
-                    let r, g, b, a;
-
-                    // Neutral zone: ranks 23-27
-                    const neutralStart = 23;
-                    const neutralEnd = 27;
-
-                    if (rank < neutralStart) {
-                        // Green zone: rank 1 = strongest green, fade to white
-                        const t = (rank - 1) / (neutralStart - 1); // 0 at rank 1, 1 at rank 22
-                        r = Math.round(200 + (255 - 200) * t);   // 200 → 255
-                        g = Math.round(235 + (255 - 235) * t);   // 235 → 255
-                        b = Math.round(200 + (255 - 200) * t);   // 200 → 255
-                        a = 1;
-                    } else if (rank > neutralEnd) {
-                        // Red zone: fade from white to strongest red
-                        const remaining = n - neutralEnd;
-                        const t = (rank - neutralEnd) / remaining; // 0 just past neutral, 1 at last
-                        r = Math.round(255 + (218 - 255) * t);   // 255 → 218
-                        g = Math.round(255 + (90 - 255) * t);    // 255 → 90
-                        b = Math.round(255 + (85 - 255) * t);    // 255 → 85
-                        a = 1;
-                    } else {
-                        // Neutral zone: white
-                        r = 255; g = 255; b = 255; a = 1;
-                    }
-
-                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
-                    ctx.fillRect(chartArea.left, top, chartArea.right - chartArea.left, bottom - top);
+                    ctx.fillStyle = rowColors[i];
+                    ctx.fillRect(chartArea.left, yCenter - barH / 2, width, barH);
                 }
                 ctx.restore();
             }
         };
 
+        const self = this;
         return new Chart(ctx, {
             type: 'bar',
             data: {
@@ -527,17 +527,15 @@ const ChartUtils = {
                     y: {
                         grid: { display: false },
                         ticks: {
-                            font: { size: 11, family: "'Inter', sans-serif" },
+                            font: (ctx) => ({
+                                size: 11,
+                                family: "'Inter', sans-serif",
+                                weight: self.isHawaii(ctx.tick?.label) ? 'bold' : 'normal',
+                            }),
                             color: (ctx) => {
-                                const label = ctx.tick?.label;
-                                return (label === 'Hawaii' || label === 'Hawai\u02BBi')
-                                    ? hawaiiColor : '#555';
+                                return self.isHawaii(ctx.tick?.label)
+                                    ? self.HAWAII_BLUE : '#555';
                             },
-                            fontStyle: (ctx) => {
-                                const label = ctx.tick?.label;
-                                return (label === 'Hawaii' || label === 'Hawai\u02BBi')
-                                    ? 'bold' : 'normal';
-                            }
                         }
                     }
                 },
@@ -547,27 +545,27 @@ const ChartUtils = {
                 id: 'valueLabels',
                 afterDatasetsDraw(chart) {
                     const { ctx, chartArea } = chart;
+                    ctx.save();
+                    ctx.textBaseline = 'middle';
                     chart.data.datasets[0].data.forEach((val, i) => {
                         const meta = chart.getDatasetMeta(0).data[i];
                         if (!meta) return;
-                        const label = fmt(val, unit);
-                        ctx.save();
-                        ctx.font = '11px Inter, sans-serif';
-                        ctx.textBaseline = 'middle';
+                        const isBold = i === hawaiiIdx;
+                        ctx.font = isBold ? 'bold 11px Inter, sans-serif' : '11px Inter, sans-serif';
+                        const label = formattedLabels[i];
                         const textW = ctx.measureText(label).width;
                         const barEnd = meta.x;
                         // Place label after bar, but clamp inside chart area
                         let x = barEnd + 6;
                         if (x + textW > chartArea.right - 2) {
-                            // Put inside the bar if it would overflow
                             x = barEnd - textW - 6;
                             ctx.fillStyle = '#fff';
                         } else {
                             ctx.fillStyle = '#555';
                         }
                         ctx.fillText(label, x, meta.y);
-                        ctx.restore();
                     });
+                    ctx.restore();
                 }
             }]
         });
