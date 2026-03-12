@@ -16,8 +16,8 @@ const ChartUtils = {
     HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
     AVG_GRAY: '#666666',
     AVG_GRAY_BG: 'rgba(102, 102, 102, 0.06)',
-    GREEN_BEST: [200, 235, 200],
-    RED_WORST: [218, 90, 85],
+    GREEN_BEST: [5, 150, 105],
+    RED_WORST: [192, 57, 43],
     NEUTRAL_RANGE: [23, 27],
 
     /** Linear interpolation, rounded to integer */
@@ -441,42 +441,46 @@ const ChartUtils = {
         const lerp = this.lerp;
         const n = stateValues.length;
 
-        // Precompute row background colors (green → white → red gradient)
+        // Gradient color stops
         const [neutralStart, neutralEnd] = this.NEUTRAL_RANGE;
         const [gr, gg, gb] = this.GREEN_BEST;
         const [rr, rg, rb] = this.RED_WORST;
-        const rowColors = new Array(n);
-        for (let i = 0; i < n; i++) {
-            const rank = i + 1;
-            if (rank < neutralStart) {
-                const t = (rank - 1) / (neutralStart - 1);
-                rowColors[i] = `rgb(${lerp(gr, 255, t)},${lerp(gg, 255, t)},${lerp(gb, 255, t)})`;
-            } else if (rank > neutralEnd) {
-                const t = (rank - neutralEnd) / (n - neutralEnd);
-                rowColors[i] = `rgb(${lerp(255, rr, t)},${lerp(255, rg, t)},${lerp(255, rb, t)})`;
-            } else {
-                rowColors[i] = '#fff';
-            }
-        }
+        const neutralStartPct = (neutralStart - 1) / (n - 1);
+        const neutralEndPct = (neutralEnd - 1) / (n - 1);
 
         // Precompute formatted value labels and Hawaii index
         const formattedLabels = values.map(v => fmt(v, unit));
         const hawaiiIdx = labels.findIndex(l => this.isHawaii(l));
 
-        // Row background plugin — uses precomputed colors
+        // 3 evenly spaced x-axis ticks: start, middle, end
+        const minVal = Math.min(...values);
+        const maxVal = Math.max(...values);
+        const range = maxVal - minVal;
+        // Nice rounding helper
+        const niceRound = (v, step) => Math.round(v / step) * step;
+        // Pick rounding step based on range
+        const mag = Math.pow(10, Math.floor(Math.log10(Math.max(range, 1))));
+        const roundStep = mag >= range / 2 ? mag / 5 : mag / 2;
+        const xStart = minVal <= 0 ? niceRound(minVal, roundStep) : Math.max(0, niceRound(minVal - range * 0.05, roundStep));
+        const xEnd = niceRound(maxVal + range * 0.05, roundStep);
+        const xMid = niceRound((xStart + xEnd) / 2, roundStep);
+        const xTicks = [xStart, xMid, xEnd];
+
+        // Smooth gradient background plugin (no horizontal banding)
         const rowBgPlugin = {
             id: 'rowBackground',
             beforeDatasetsDraw(chart) {
-                const { ctx, chartArea, scales } = chart;
-                const yScale = scales.y;
-                const barH = yScale.getPixelForValue(1) - yScale.getPixelForValue(0);
-                const width = chartArea.right - chartArea.left;
+                const { ctx, chartArea } = chart;
+                const { top, bottom, left, right } = chartArea;
                 ctx.save();
-                for (let i = 0; i < n; i++) {
-                    const yCenter = yScale.getPixelForValue(i);
-                    ctx.fillStyle = rowColors[i];
-                    ctx.fillRect(chartArea.left, yCenter - barH / 2, width, barH);
-                }
+                const grad = ctx.createLinearGradient(0, top, 0, bottom);
+                grad.addColorStop(0, `rgba(${gr},${gg},${gb},0.25)`);
+                grad.addColorStop(neutralStartPct, `rgba(${gr},${gg},${gb},0.06)`);
+                grad.addColorStop((neutralStartPct + neutralEndPct) / 2, 'rgba(255,255,255,0)');
+                grad.addColorStop(neutralEndPct, `rgba(${rr},${rg},${rb},0.06)`);
+                grad.addColorStop(1, `rgba(${rr},${rg},${rb},0.22)`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(left, top, right - left, bottom - top);
                 ctx.restore();
             }
         };
@@ -510,17 +514,23 @@ const ChartUtils = {
                 scales: {
                     x: {
                         display: true,
+                        min: xTicks[0],
+                        max: xTicks[2],
+                        afterBuildTicks(axis) {
+                            axis.ticks = xTicks.map(v => ({ value: v }));
+                        },
                         grid: {
                             display: true,
-                            color: 'rgba(0,0,0,0.08)',
-                            borderDash: [4, 4],
+                            color: 'rgba(0,0,0,0.12)',
+                            borderDash: [4, 3],
                             drawTicks: false,
+                            drawOnChartArea: true,
+                            lineWidth: 1,
                         },
                         border: { display: false },
                         ticks: {
                             font: { size: 10, family: "'Inter', sans-serif" },
-                            color: '#999',
-                            maxTicksLimit: 5,
+                            color: '#aaa',
                             callback: (v) => fmt(v, unit),
                         },
                     },

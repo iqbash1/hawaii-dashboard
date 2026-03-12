@@ -49,7 +49,7 @@ const App = {
         { area: 'Energy', metrics: ['residential_price_cpkwh', 'net_energy_import_pct'] },
         { area: 'Food Security', metrics: ['food_insecurity_rate'] },
         { area: 'Employment', metrics: ['unemployment_rate'] },
-        { area: 'Economic Prosperity', metrics: ['real_per_capita_income', 'labor_productivity'] },
+        { area: 'Economic Prosperity', metrics: ['labor_productivity', 'real_per_capita_income'] },
         { area: 'Business Climate', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
         { area: 'K-12 Education', metrics: ['acgr'] },
         { area: 'Higher Education', metrics: ['ba_or_higher_pct'] },
@@ -168,10 +168,21 @@ const App = {
                     ? `<span class="card-unit">${metricData.unit}</span>`
                     : '';
 
+                // Compute rank badge if state data available
+                let rankBadge = '';
+                const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+                if (hasRankings) {
+                    const rankings = this.getStateRankings(slug);
+                    if (rankings && rankings.hawaiiRank > 0) {
+                        rankBadge = `<span class="card-rank-badge" data-slug="${slug}" data-area="${areaGroup.area}">#${rankings.hawaiiRank} of ${rankings.total}</span>`;
+                    }
+                }
+
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-icon">${AREA_ICONS[areaGroup.area] || ''}</div>
                         <div class="card-area">${areaGroup.area}</div>
+                        ${rankBadge}
                     </div>
                     <div class="card-metric">${metricData.metric}</div>
                     <div class="card-hero">
@@ -187,7 +198,16 @@ const App = {
                     </div>
                 `;
 
-                // Click handler
+                // Click badge → open rankings directly
+                const badge = card.querySelector('.card-rank-badge');
+                if (badge) {
+                    badge.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.openModal(slug, areaGroup.area, 'rankings');
+                    });
+                }
+
+                // Click card → open detail
                 card.addEventListener('click', () => {
                     this.openModal(slug, areaGroup.area);
                 });
@@ -257,10 +277,12 @@ const App = {
         return boxes;
     },
 
-    openModal(slug, areaName) {
+    openModal(slug, areaName, initialView) {
         const overlay = document.getElementById('modal-overlay');
         const metricData = DASHBOARD_DATA[slug];
         if (!metricData) return;
+
+        this._currentSlug = slug;
 
         // Set modal content
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
@@ -276,18 +298,16 @@ const App = {
         } else {
             insightSection.style.display = 'none';
         }
+
+        // Footer source line
         const officialLine = metricData.officialName
             ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
             : '';
         const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
-        const rankingsLink = hasStateData
-            ? `<span class="csv-sep">&middot;</span><a href="#" id="rankings-link">See state rankings</a>`
-            : '';
         document.getElementById('modal-source').innerHTML = `
             ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
-            ${rankingsLink}
             <span class="csv-sep">&middot;</span>
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
         `;
@@ -295,14 +315,28 @@ const App = {
             e.preventDefault();
             this.downloadData(slug);
         });
+
+        // Set up tabs
+        const tabBar = document.getElementById('modal-tabs');
+        const tabDetail = document.getElementById('tab-detail');
+        const tabRankings = document.getElementById('tab-rankings');
+
         if (hasStateData) {
-            document.getElementById('rankings-link').addEventListener('click', (e) => {
-                e.preventDefault();
-                this.showRankings(slug);
-            });
+            tabBar.style.display = '';
+            // Compute rank for tab label
+            const rankings = this.getStateRankings(slug);
+            const rankLabel = rankings && rankings.hawaiiRank > 0
+                ? `<span class="tab-rank">#${rankings.hawaiiRank} of ${rankings.total}</span>`
+                : '';
+            tabRankings.innerHTML = `Rankings ${rankLabel}`;
+
+            tabDetail.onclick = () => this.switchTab('detail', slug);
+            tabRankings.onclick = () => this.switchTab('rankings', slug);
+        } else {
+            tabBar.style.display = 'none';
         }
 
-        // Reset rankings view if returning from previous modal
+        // Reset to detail view first
         this.hideRankings();
 
         // Stats - focused on the two key comparisons
@@ -376,6 +410,27 @@ const App = {
         // Show modal
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // If requested, switch to rankings tab immediately
+        if (initialView === 'rankings' && hasStateData) {
+            this.switchTab('rankings', slug);
+        }
+    },
+
+    switchTab(tab, slug) {
+        const tabDetail = document.getElementById('tab-detail');
+        const tabRankings = document.getElementById('tab-rankings');
+
+        if (tab === 'rankings') {
+            tabDetail.classList.remove('active');
+            tabRankings.classList.add('active');
+            this.showRankings(slug);
+        } else {
+            tabRankings.classList.remove('active');
+            tabDetail.classList.add('active');
+            this.hideRankings();
+        }
+        document.querySelector('.modal').scrollTop = 0;
     },
 
     /** Generate and download a multi-tab xlsx for the given metric */
@@ -523,9 +578,7 @@ const App = {
         const { stateValues, year, hawaiiRank, total } = rankings;
 
         // Hide detail view, show rankings
-        document.querySelector('.modal-chart-container').style.display = 'none';
-        document.querySelector('.modal-stats').style.display = 'none';
-        document.querySelector('.modal-body').style.display = 'none';
+        document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'block';
 
         // Update subtitle and rank
@@ -539,22 +592,17 @@ const App = {
         this.rankingsChart = ChartUtils.createRankingsChart(
             canvas, stateValues, metricData.goodDirection, metricData.unit
         );
-
-        // Back button
-        document.getElementById('rankings-back').onclick = (e) => {
-            e.preventDefault();
-            this.hideRankings();
-        };
-
-        // Scroll modal to top
-        document.querySelector('.modal').scrollTop = 0;
     },
 
     hideRankings() {
-        document.querySelector('.modal-chart-container').style.display = '';
-        document.querySelector('.modal-stats').style.display = '';
-        document.querySelector('.modal-body').style.display = '';
+        document.getElementById('modal-detail-view').style.display = '';
         document.getElementById('modal-rankings').style.display = 'none';
+
+        // Reset tab state
+        const tabDetail = document.getElementById('tab-detail');
+        const tabRankings = document.getElementById('tab-rankings');
+        if (tabDetail) tabDetail.classList.add('active');
+        if (tabRankings) tabRankings.classList.remove('active');
 
         if (this.rankingsChart) {
             this.rankingsChart.destroy();

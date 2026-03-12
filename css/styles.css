@@ -215,6 +215,27 @@ body {
     color: var(--hawaii-blue);
 }
 
+.card-rank-badge {
+    font-family: var(--font-heading);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.15rem 0.5rem;
+    margin-left: auto;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+}
+
+.card-rank-badge:hover {
+    background: var(--hawaii-blue);
+    color: #fff;
+    border-color: var(--hawaii-blue);
+}
+
 .card-metric {
     font-family: var(--font-heading);
     font-size: 0.85rem;
@@ -396,6 +417,49 @@ body {
     letter-spacing: 0.05em;
     color: var(--hawaii-blue);
     margin-top: 0.15rem;
+}
+
+/* --- Modal Tabs --- */
+.modal-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0.75rem 2rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-tab {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color var(--transition), border-color var(--transition);
+}
+
+.modal-tab:hover {
+    color: var(--text);
+}
+
+.modal-tab.active {
+    color: var(--hawaii-blue);
+    border-bottom-color: var(--hawaii-blue);
+}
+
+.modal-tab .tab-rank {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-left: 0.3rem;
+}
+
+.modal-tab.active .tab-rank {
+    color: var(--hawaii-blue);
+    opacity: 0.7;
 }
 
 .modal-chart-container {

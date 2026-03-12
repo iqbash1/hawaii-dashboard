@@ -55,26 +55,31 @@
                     <p class="modal-area" id="modal-area"></p>
                 </div>
             </div>
-            <div class="modal-chart-container">
-                <canvas id="modal-chart"></canvas>
+            <div class="modal-tabs" id="modal-tabs" style="display:none;">
+                <button class="modal-tab active" id="tab-detail">Detail</button>
+                <button class="modal-tab" id="tab-rankings">Rankings</button>
             </div>
-            <div class="modal-stats" id="modal-stats"></div>
-            <div class="modal-body">
-                <div class="modal-section">
-                    <h3>Why it matters</h3>
-                    <p id="modal-why"></p>
+            <div id="modal-detail-view">
+                <div class="modal-chart-container">
+                    <canvas id="modal-chart"></canvas>
                 </div>
-                <div class="modal-section">
-                    <h3>How to read it</h3>
-                    <p id="modal-how"></p>
-                </div>
-                <div class="modal-section" id="modal-insight-section" style="display:none;">
-                    <h3>Insight</h3>
-                    <p id="modal-insight"></p>
+                <div class="modal-stats" id="modal-stats"></div>
+                <div class="modal-body">
+                    <div class="modal-section">
+                        <h3>Why it matters</h3>
+                        <p id="modal-why"></p>
+                    </div>
+                    <div class="modal-section">
+                        <h3>How to read it</h3>
+                        <p id="modal-how"></p>
+                    </div>
+                    <div class="modal-section" id="modal-insight-section" style="display:none;">
+                        <h3>Insight</h3>
+                        <p id="modal-insight"></p>
+                    </div>
                 </div>
             </div>
             <div class="modal-rankings" id="modal-rankings" style="display:none;">
-                <a href="#" class="rankings-back" id="rankings-back">← Back to detail</a>
                 <p class="rankings-subtitle" id="rankings-subtitle"></p>
                 <p class="rankings-rank" id="rankings-rank"></p>
                 <div class="rankings-chart-wrap">
