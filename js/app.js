@@ -49,7 +49,7 @@ const App = {
         { area: 'Energy Cost', metrics: ['residential_price_cpkwh', 'net_energy_import_pct'] },
         { area: 'Food Security', metrics: ['food_insecurity_rate'] },
         { area: 'Employment', metrics: ['unemployment_rate'] },
-        { area: 'Economic Prosperity', metrics: ['real_per_capita_income'] },
+        { area: 'Economic Prosperity', metrics: ['real_per_capita_income', 'labor_productivity'] },
         { area: 'Business Climate', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
         { area: 'K-12 Education', metrics: ['acgr'] },
         { area: 'Higher Education', metrics: ['ba_or_higher_pct'] },

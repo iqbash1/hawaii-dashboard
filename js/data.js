@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 20 metrics across 14 policy areas.
+// 21 metrics across 14 policy areas.
 // Hawaii values and Other State Avg (simple mean of 49 states,
 // excluding HI and DC) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
@@ -58,8 +58,8 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "HRSA Area Health Resource File",
     "sourceUrl": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
-    "whyItMatters": "Hawaiʻi has about 93 non-federal primary care physicians per 100K civilian residents, roughly 20% above the other-state average of 78. The State shapes this through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care.",
-    "howToRead": "Each point represents non-federal, practicing primary care physicians (family medicine, internal medicine, pediatrics, OB/GYN) per 100,000 civilian noninstitutionalized population. Military personnel and their dedicated health system are excluded. A higher number means better access to a doctor.",
+    "whyItMatters": "Hawaiʻi has about 88 non-federal primary care physicians per 100K residents, roughly 17% above the other-state average of 75. The State shapes this through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care.",
+    "howToRead": "A higher number means better access to a doctor. Hawaiʻi has held around 88 to 97 physicians per 100K over the past decade, consistently above the other-state average. Military doctors are not counted since they serve a separate system.",
     "insight": "The statewide number masks a sharp Oahu-versus-neighbor-island divide. Most physicians practice on Oahu; Maui, the Big Island, Kauaʻi, and the rural islands face persistent shortages, and because you cannot drive between islands, each one is effectively its own healthcare market. An aging physician workforce and high cost of living make recruitment even harder.",
     "hawaii": {
       "2010": 89.2,
@@ -73,7 +73,9 @@ const DASHBOARD_DATA = {
       "2018": 92.1,
       "2019": 93.9,
       "2020": 96.7,
-      "2021": 93.0
+      "2021": 93.0,
+      "2022": 86.8,
+      "2023": 88.1
     },
     "otherStateAvg": {
       "2010": 75.1,
@@ -87,7 +89,9 @@ const DASHBOARD_DATA = {
       "2018": 78.5,
       "2019": 79.4,
       "2020": 79.2,
-      "2021": 77.5
+      "2021": 77.5,
+      "2022": 76.9,
+      "2023": 75.1
     }
   },
   "uninsured_rate": {
@@ -138,7 +142,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://nces.ed.gov/programs/digest/d23/tables/dt23_219.46.asp",
     "whyItMatters": "Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate climbed from 81% in 2013 to 86% in 2022, meaning roughly 1,000 more students finish on time each year.",
     "howToRead": "Hawaiʻi trailed the other-state average for most of the decade but caught up at 86% in 2022, matching the national average. The question is whether it can push past 90%.",
-    "insight": "This tracks four-year completion, not just one year of test scores. The steady climb suggests sustained investment in student retention is paying off.",
+    "insight": "The steady climb from 81% to 86% over nine years means roughly 1,000 more students finish on time each year. Sustained investment in student retention is paying off.",
     "hawaii": {
       "2012-2013": 81.0,
       "2013-2014": 82.0,
@@ -175,7 +179,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://fred.stlouisfed.org/",
     "whyItMatters": "35.4% of Hawaiʻi adults hold a bachelor's degree or higher, slightly above the other-state average of 34.6%. The UH system, tuition policy, and scholarships largely determine whether residents can earn degrees without leaving the islands.",
     "howToRead": "Both lines rise steadily. Hawaiʻi has tracked about 1 point above the other-state average throughout the decade, a thin margin that could slip if UH enrollment declines.",
-    "insight": "Rose from 30.1% in 2013 to 35.4% in 2023. Because it counts all adults 25+, this moves slowly and requires steady graduation rates year after year to maintain.",
+    "insight": "Rose from 30.1% in 2013 to 35.4% in 2023. This metric moves slowly since it reflects all adults 25 and older, not just recent graduates. Keeping UH affordable is critical to holding this edge.",
     "hawaii": {
       "2013": 0.301,
       "2014": 0.312,
@@ -859,6 +863,58 @@ const DASHBOARD_DATA = {
       "2021": 0.9,
       "2022": 1.78,
       "2023": 1.14
+    }
+  },
+  "labor_productivity": {
+    "area": "Economic Prosperity",
+    "areaIcon": "💰",
+    "metric": "Labor Productivity (Output per Hour)",
+    "unit": "Index (2017=100)",
+    "goodDirection": "up",
+    "source": "Bureau of Labor Statistics",
+    "sourceUrl": "https://www.bls.gov/lpc/state-productivity.htm",
+    "whyItMatters": "Productivity drives wages: when workers produce more value per hour, businesses can pay more and the state collects more tax revenue. At 105.2, Hawaiʻi trails the other-state average of 113.9. The gap reflects an economy built around tourism and government, which are lower-productivity sectors. Diversifying into technology, renewable energy, and life sciences is key to closing this gap and raising wages across the state.",
+    "howToRead": "Both lines use 2017 as the starting point, set at 100. A score of 105.2 means Hawaiʻi workers produce about 5% more per hour than in 2017. Other states average 113.9, or about 14% more. A rising blue line is good; when it falls below the gray line, Hawaiʻi is falling behind.",
+    "insight": "Through 2019, Hawaiʻi kept up with the national average. After the pandemic, other states bounced back strongly while Hawaiʻi stalled. The gap has widened to 8.7 index points, the largest on record.",
+    "hawaii": {
+      "2007": 90.1,
+      "2008": 89.6,
+      "2009": 92.1,
+      "2010": 94.9,
+      "2011": 95.0,
+      "2012": 92.0,
+      "2013": 95.0,
+      "2014": 92.9,
+      "2015": 96.5,
+      "2016": 98.7,
+      "2017": 100.0,
+      "2018": 102.9,
+      "2019": 103.7,
+      "2020": 107.7,
+      "2021": 107.8,
+      "2022": 105.0,
+      "2023": 102.4,
+      "2024": 105.2
+    },
+    "otherStateAvg": {
+      "2007": 87.5,
+      "2008": 88.5,
+      "2009": 91.6,
+      "2010": 94.6,
+      "2011": 94.5,
+      "2012": 95.2,
+      "2013": 95.9,
+      "2014": 96.8,
+      "2015": 98.1,
+      "2016": 98.7,
+      "2017": 100.0,
+      "2018": 101.3,
+      "2019": 103.4,
+      "2020": 108.6,
+      "2021": 110.7,
+      "2022": 108.9,
+      "2023": 111.1,
+      "2024": 113.9
     }
   }
 };
