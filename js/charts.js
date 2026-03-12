@@ -43,7 +43,7 @@ const ChartUtils = {
         const fillAlpha = Math.min(0.40, 0.08 + gapPct * 0.55);
 
         const goodColor = `rgba(5, 150, 105, ${fillAlpha.toFixed(2)})`;
-        const badColor = `rgba(220, 38, 38, ${fillAlpha.toFixed(2)})`;
+        const badColor = `rgba(192, 57, 43, ${fillAlpha.toFixed(2)})`;
 
         return new Chart(ctx, {
             type: 'line',
@@ -195,7 +195,7 @@ const ChartUtils = {
 
                     // Governor name in party color (no background)
                     const centerX = (left + right) / 2;
-                    const partyColor = gov.party === 'R' ? '#DC2626' : '#2563EB';
+                    const partyColor = gov.party === 'R' ? '#C0392B' : '#2563EB';
                     const labelText = `${gov.name} (${gov.party})`;
                     ctx.font = '600 11px "Inter", sans-serif';
                     ctx.fillStyle = partyColor;
@@ -215,7 +215,7 @@ const ChartUtils = {
         const gap = Math.abs(latestHI - latestAvgVal) / mid;
         const alpha = Math.min(0.45, 0.10 + gap * 0.55);
         const detailGood = `rgba(5, 150, 105, ${alpha.toFixed(2)})`;
-        const detailBad = `rgba(220, 38, 38, ${alpha.toFixed(2)})`;
+        const detailBad = `rgba(192, 57, 43, ${alpha.toFixed(2)})`;
 
         return new Chart(ctx, {
             type: 'line',
@@ -357,6 +357,8 @@ const ChartUtils = {
                 return value.toFixed(2);
             case '\u00a2/kWh':
                 return value.toFixed(1) + '\u00a2';
+            case '\u00d7':
+                return value.toFixed(1) + '\u00d7';
             default:
                 if (Math.abs(value) >= 1000) {
                     return Math.round(value).toLocaleString();
@@ -390,6 +392,8 @@ const ChartUtils = {
                 return value.toFixed(2);
             case '\u00a2/kWh':
                 return value.toFixed(1) + '\u00a2';
+            case '\u00d7':
+                return value.toFixed(1) + '\u00d7';
             default:
                 if (Math.abs(value) >= 1000) {
                     return Math.round(value).toLocaleString();
@@ -462,9 +466,9 @@ const ChartUtils = {
                         // Red zone: fade from neutral to strongest red
                         const remaining = n - neutralEnd;
                         const t = (rank - neutralEnd) / remaining; // 0 just past neutral, 1 at last
-                        r = Math.round(242 + (250 - 242) * t);   // 242 → 250
-                        g = Math.round(242 + (180 - 242) * t);   // 242 → 180
-                        b = Math.round(242 + (180 - 242) * t);   // 242 → 180
+                        r = Math.round(242 + (248 - 242) * t);   // 242 → 248
+                        g = Math.round(242 + (195 - 242) * t);   // 242 → 195
+                        b = Math.round(242 + (192 - 242) * t);   // 242 → 192
                         a = 1;
                     } else {
                         // Neutral zone

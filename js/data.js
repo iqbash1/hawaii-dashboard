@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 21 metrics across 14 policy areas.
+// 22 metrics across 14 policy areas.
 // Hawaii values and Other State Avg (simple mean of 49 states,
 // excluding HI and DC) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
@@ -309,7 +309,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Census ACS",
     "sourceUrl": "https://data.census.gov/",
-    "whyItMatters": "60% of Hawaiʻi renters spend more than 30% of income on housing, 7 points worse than the other-state average of 53%. The State controls zoning, building permits, and rent assistance programs that determine how much housing gets built and what it costs.",
+    "whyItMatters": "The federal government defines renters paying more than 30% of income on housing as \"cost-burdened.\" By that standard, 60% of Hawaiʻi renters are cost-burdened, 7 points worse than the other-state average of 53%. The State controls zoning, building permits, and rent assistance programs that determine how much housing gets built and what it costs.",
     "howToRead": "Both lines should fall. Hawaiʻi has been persistently above the other-state average for the entire decade.",
     "insight": "Rent burden has hovered near 60% since 2012 with little improvement. The gap reflects chronically low housing supply; new construction hasn't kept pace with demand.",
     "hawaii": {
@@ -337,6 +337,42 @@ const DASHBOARD_DATA = {
       "2021": 0.5326,
       "2022": 0.5347,
       "2023": 0.5333
+    }
+  },
+  "home_price_to_income": {
+    "area": "Cost of Living",
+    "areaIcon": "\ud83c\udfe0",
+    "metric": "Home Price-to-Income Ratio",
+    "unit": "\u00d7",
+    "goodDirection": "down",
+    "source": "Census ACS",
+    "sourceUrl": "https://data.census.gov/",
+    "whyItMatters": "The federal government and housing economists generally consider a home price-to-income ratio above 5\u00d7 as \"severely unaffordable.\" Hawai\u02bbi's ratio of 8.9\u00d7 is more than double the other-state average of 4.3\u00d7, meaning it takes nearly 9 years of gross household income to equal the median home price.",
+    "howToRead": "A rising line means homes are becoming less affordable relative to local incomes. Hawai\u02bbi has been persistently above the national average for the entire period.",
+    "insight": "Hawai\u02bbi's ratio has climbed from 7.4\u00d7 in 2013 to 8.9\u00d7 in 2023, driven by home prices rising faster than incomes. Only California comes close among the 50 states.",
+    "hawaii": {
+      "2013": 7.4,
+      "2014": 7.6,
+      "2015": 7.7,
+      "2016": 7.9,
+      "2017": 7.9,
+      "2018": 7.9,
+      "2019": 8.1,
+      "2021": 8.5,
+      "2022": 8.9,
+      "2023": 8.9
+    },
+    "otherStateAvg": {
+      "2013": 3.4,
+      "2014": 3.4,
+      "2015": 3.5,
+      "2016": 3.5,
+      "2017": 3.6,
+      "2018": 3.7,
+      "2019": 3.6,
+      "2021": 4.0,
+      "2022": 4.2,
+      "2023": 4.3
     }
   },
   "unsheltered_homeless_rate": {

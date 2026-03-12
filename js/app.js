@@ -45,7 +45,7 @@ const App = {
     AREA_ORDER: [
         { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
         { area: 'Public Health', metrics: ['pcp_per_100k', 'uninsured_rate'] },
-        { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'unsheltered_homeless_rate'] },
+        { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate'] },
         { area: 'Energy Cost', metrics: ['residential_price_cpkwh', 'net_energy_import_pct'] },
         { area: 'Food Security', metrics: ['food_insecurity_rate'] },
         { area: 'Employment', metrics: ['unemployment_rate'] },
