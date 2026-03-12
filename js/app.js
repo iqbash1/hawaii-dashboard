@@ -69,7 +69,7 @@ const App = {
             // Re-render cards with updated data
             this.renderCards();
         } catch (err) {
-            console.log('Live API update skipped:', err.message);
+            // Live API update skipped silently
         }
 
         // Set up modal events

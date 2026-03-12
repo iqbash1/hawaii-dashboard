@@ -55,7 +55,7 @@ const LiveAPI = {
         if (this.liveUpdates.length > 0) {
             const badge = document.getElementById('live-badge');
             if (badge) badge.style.display = 'inline-flex';
-            console.log(`[API] Live updates for: ${[...new Set(this.liveUpdates)].join(', ')}`);
+            // console.log(`[API] Live updates for: ${[...new Set(this.liveUpdates)].join(', ')}`);
         }
 
         return baselineData;
@@ -118,10 +118,10 @@ const LiveAPI = {
             if (Object.keys(yearData).length > 0 && data.unemployment_rate) {
                 Object.assign(data.unemployment_rate.hawaii, yearData);
                 this.liveUpdates.push('unemployment_rate');
-                console.log('[API] BLS unemployment data updated:', Object.keys(yearData).length, 'years');
+                // console.log('[API] BLS unemployment data updated:', Object.keys(yearData).length, 'years');
             }
         } catch (err) {
-            console.log('[API] BLS fetch failed (using embedded data):', err.message);
+            // console.log('[API] BLS fetch failed (using embedded data):', err.message);
         }
     },
 
@@ -166,10 +166,10 @@ const LiveAPI = {
                     this.liveUpdates.push('ba_or_higher_pct');
                 }
 
-                console.log(`[API] Census ACS ${year} data updated`);
+                // console.log(`[API] Census ACS ${year} data updated`);
                 break;
             } catch (err) {
-                console.log(`[API] Census ACS ${year} failed:`, err.message);
+                // console.log(`[API] Census ACS ${year} failed:`, err.message);
             }
         }
 
@@ -197,12 +197,12 @@ const LiveAPI = {
                     if (pct > 0 && pct <= 1 && data.broadband_subscription_pct) {
                         data.broadband_subscription_pct.hawaii[year.toString()] = parseFloat(pct.toFixed(4));
                         this.liveUpdates.push('broadband_subscription_pct');
-                        console.log(`[API] Census broadband ${year} data updated: ${(pct * 100).toFixed(1)}%`);
+                        // console.log(`[API] Census broadband ${year} data updated: ${(pct * 100).toFixed(1)}%`);
                     }
                 }
                 break;
             } catch (err) {
-                console.log(`[API] Census broadband ${year} failed:`, err.message);
+                // console.log(`[API] Census broadband ${year} failed:`, err.message);
             }
         }
 
@@ -232,12 +232,12 @@ const LiveAPI = {
                     if (pct > 0 && pct <= 1 && data.renter_cost_burden_pct) {
                         data.renter_cost_burden_pct.hawaii[year.toString()] = parseFloat(pct.toFixed(4));
                         this.liveUpdates.push('renter_cost_burden_pct');
-                        console.log(`[API] Census renter cost burden ${year} updated: ${(pct * 100).toFixed(1)}%`);
+                        // console.log(`[API] Census renter cost burden ${year} updated: ${(pct * 100).toFixed(1)}%`);
                     }
                 }
                 break;
             } catch (err) {
-                console.log(`[API] Census renter cost burden ${year} failed:`, err.message);
+                // console.log(`[API] Census renter cost burden ${year} failed:`, err.message);
             }
         }
     },
@@ -272,10 +272,10 @@ const LiveAPI = {
                 yearData = this.clipToAvgRange(data.violent_crime_rate, yearData);
                 Object.assign(data.violent_crime_rate.hawaii, yearData);
                 this.liveUpdates.push('violent_crime_rate');
-                console.log('[API] FBI crime data updated:', Object.keys(yearData).length, 'years');
+                // console.log('[API] FBI crime data updated:', Object.keys(yearData).length, 'years');
             }
         } catch (err) {
-            console.log('[API] FBI fetch failed (using embedded data):', err.message);
+            // console.log('[API] FBI fetch failed (using embedded data):', err.message);
         }
     },
 
@@ -321,11 +321,11 @@ const LiveAPI = {
                     yearData = this.clipToAvgRange(data.renewables_share_gen, yearData);
                     Object.assign(data.renewables_share_gen.hawaii, yearData);
                     this.liveUpdates.push('renewables_share_gen');
-                    console.log('[API] EIA renewables updated:', Object.keys(yearData).length, 'years');
+                    // console.log('[API] EIA renewables updated:', Object.keys(yearData).length, 'years');
                 }
             }
         } catch (err) {
-            console.log('[API] EIA renewables fetch failed (using embedded data):', err.message);
+            // console.log('[API] EIA renewables fetch failed (using embedded data):', err.message);
         }
     },
 
@@ -351,11 +351,11 @@ const LiveAPI = {
                     yearData = this.clipToAvgRange(data.residential_price_cpkwh, yearData);
                     Object.assign(data.residential_price_cpkwh.hawaii, yearData);
                     this.liveUpdates.push('residential_price_cpkwh');
-                    console.log('[API] EIA residential price updated:', Object.keys(yearData).length, 'years');
+                    // console.log('[API] EIA residential price updated:', Object.keys(yearData).length, 'years');
                 }
             }
         } catch (err) {
-            console.log('[API] EIA price fetch failed (using embedded data):', err.message);
+            // console.log('[API] EIA price fetch failed (using embedded data):', err.message);
         }
     },
 
@@ -397,11 +397,11 @@ const LiveAPI = {
                     yearData = this.clipToAvgRange(data.net_energy_import_pct, yearData);
                     Object.assign(data.net_energy_import_pct.hawaii, yearData);
                     this.liveUpdates.push('net_energy_import_pct');
-                    console.log('[API] EIA energy import updated:', Object.keys(yearData).length, 'years');
+                    // console.log('[API] EIA energy import updated:', Object.keys(yearData).length, 'years');
                 }
             }
         } catch (err) {
-            console.log('[API] EIA energy import fetch failed (using embedded data):', err.message);
+            // console.log('[API] EIA energy import fetch failed (using embedded data):', err.message);
         }
     },
 
