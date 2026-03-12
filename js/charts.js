@@ -426,6 +426,57 @@ const ChartUtils = {
         canvas.parentElement.style.height = chartHeight + 'px';
 
         const fmt = this.formatValue.bind(this);
+        const totalStates = stateValues.length;
+
+        // Green-neutral-red row background plugin
+        // Best (rank 1) = green, middle (23-27) = neutral, worst = red
+        const rowBgPlugin = {
+            id: 'rowBackground',
+            beforeDatasetsDraw(chart) {
+                const { ctx, chartArea, scales } = chart;
+                const yScale = scales.y;
+                ctx.save();
+                const n = chart.data.labels.length;
+                for (let i = 0; i < n; i++) {
+                    const yCenter = yScale.getPixelForValue(i);
+                    const barH = yScale.getPixelForValue(1) - yScale.getPixelForValue(0);
+                    const top = yCenter - barH / 2;
+                    const bottom = yCenter + barH / 2;
+
+                    // Rank is 1-indexed (i=0 → rank 1 = best)
+                    const rank = i + 1;
+                    let r, g, b, a;
+
+                    // Neutral zone: ranks 23-27
+                    const neutralStart = 23;
+                    const neutralEnd = 27;
+
+                    if (rank < neutralStart) {
+                        // Green zone: rank 1 = strongest green, fade to neutral
+                        const t = (rank - 1) / (neutralStart - 1); // 0 at rank 1, 1 at rank 22
+                        r = Math.round(200 + (242 - 200) * t);   // 200 → 242
+                        g = Math.round(235 + (242 - 235) * t);   // 235 → 242
+                        b = Math.round(200 + (242 - 200) * t);   // 200 → 242
+                        a = 1;
+                    } else if (rank > neutralEnd) {
+                        // Red zone: fade from neutral to strongest red
+                        const remaining = n - neutralEnd;
+                        const t = (rank - neutralEnd) / remaining; // 0 just past neutral, 1 at last
+                        r = Math.round(242 + (250 - 242) * t);   // 242 → 250
+                        g = Math.round(242 + (180 - 242) * t);   // 242 → 180
+                        b = Math.round(242 + (180 - 242) * t);   // 242 → 180
+                        a = 1;
+                    } else {
+                        // Neutral zone
+                        r = 242; g = 242; b = 242; a = 1;
+                    }
+
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+                    ctx.fillRect(chartArea.left, top, chartArea.right - chartArea.left, bottom - top);
+                }
+                ctx.restore();
+            }
+        };
 
         return new Chart(ctx, {
             type: 'bar',
@@ -476,7 +527,7 @@ const ChartUtils = {
                 },
                 animation: { duration: 400 }
             },
-            plugins: [{
+            plugins: [rowBgPlugin, {
                 id: 'valueLabels',
                 afterDatasetsDraw(chart) {
                     const { ctx } = chart;

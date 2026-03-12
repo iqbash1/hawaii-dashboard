@@ -287,9 +287,9 @@ const App = {
             ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
+            ${rankingsLink}
             <span class="csv-sep">&middot;</span>
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
-            ${rankingsLink}
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
