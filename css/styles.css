@@ -358,9 +358,9 @@ body {
 .modal-close {
     position: sticky;
     top: 1rem;
-    float: right;
+    align-self: flex-end;
     margin-right: 1rem;
-    margin-top: -2.5rem;
+    margin-bottom: -2.5rem;
     width: 36px;
     height: 36px;
     border: 1px solid var(--border);
