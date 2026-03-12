@@ -396,5 +396,104 @@ const ChartUtils = {
                 }
                 return value.toFixed(1);
         }
+    },
+
+    /**
+     * Horizontal bar chart ranking all 50 states for a given metric.
+     * @param {HTMLCanvasElement} canvas
+     * @param {Array<{state: string, value: number}>} stateValues - sorted best-to-worst
+     * @param {string} goodDirection - 'up' or 'down'
+     * @param {string} unit - metric unit for label formatting
+     * @returns {Chart}
+     */
+    createRankingsChart(canvas, stateValues, goodDirection, unit) {
+        const ctx = canvas.getContext('2d');
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) existingChart.destroy();
+
+        const labels = stateValues.map(s => s.state);
+        const values = stateValues.map(s => s.value);
+        const hawaiiColor = '#0D7C8F';
+        const otherColor = '#D1D5DB';
+        const bgColors = stateValues.map(s =>
+            s.state === 'Hawaii' || s.state === 'Hawai\u02BBi' ? hawaiiColor : otherColor
+        );
+
+        // Dynamic height: 22px per bar, minimum 500px
+        const barHeight = 22;
+        const chartHeight = Math.max(500, stateValues.length * barHeight);
+        canvas.style.height = chartHeight + 'px';
+        canvas.parentElement.style.height = chartHeight + 'px';
+
+        const fmt = this.formatValue.bind(this);
+
+        return new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: bgColors,
+                    borderWidth: 0,
+                    barPercentage: 0.75,
+                    categoryPercentage: 0.9,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { right: 60 } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => fmt(ctx.raw, unit)
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false,
+                        grid: { display: false },
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 11, family: "'Inter', sans-serif" },
+                            color: (ctx) => {
+                                const label = ctx.tick?.label;
+                                return (label === 'Hawaii' || label === 'Hawai\u02BBi')
+                                    ? hawaiiColor : '#555';
+                            },
+                            fontStyle: (ctx) => {
+                                const label = ctx.tick?.label;
+                                return (label === 'Hawaii' || label === 'Hawai\u02BBi')
+                                    ? 'bold' : 'normal';
+                            }
+                        }
+                    }
+                },
+                animation: { duration: 400 }
+            },
+            plugins: [{
+                id: 'valueLabels',
+                afterDatasetsDraw(chart) {
+                    const { ctx } = chart;
+                    chart.data.datasets[0].data.forEach((val, i) => {
+                        const meta = chart.getDatasetMeta(0).data[i];
+                        if (!meta) return;
+                        const x = meta.x + 6;
+                        const y = meta.y;
+                        ctx.save();
+                        ctx.font = '11px Inter, sans-serif';
+                        ctx.fillStyle = '#555';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(fmt(val, unit), x, y);
+                        ctx.restore();
+                    });
+                }
+            }]
+        });
     }
 };

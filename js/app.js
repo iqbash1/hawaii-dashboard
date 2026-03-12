@@ -279,17 +279,31 @@ const App = {
         const officialLine = metricData.officialName
             ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
             : '';
+        const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        const rankingsLink = hasStateData
+            ? `<span class="csv-sep">&middot;</span><a href="#" id="rankings-link">See state rankings</a>`
+            : '';
         document.getElementById('modal-source').innerHTML = `
             ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
             <span class="csv-sep">&middot;</span>
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
+            ${rankingsLink}
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
             this.downloadData(slug);
         });
+        if (hasStateData) {
+            document.getElementById('rankings-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showRankings(slug);
+            });
+        }
+
+        // Reset rankings view if returning from previous modal
+        this.hideRankings();
 
         // Stats - focused on the two key comparisons
         const latest = this.getLatestValue(metricData.hawaii);
@@ -446,15 +460,121 @@ const App = {
         XLSX.writeFile(wb, `${slug}.xlsx`);
     },
 
+    /** Extract per-state latest-year values from STATE_DATA */
+    getStateRankings(slug) {
+        const sd = STATE_DATA[slug];
+        if (!sd || !sd.data) return null;
+        const metricData = DASHBOARD_DATA[slug];
+        const unit = metricData.unit;
+
+        // PCP uses FIPS-keyed structure: { "01": { name: "Alabama", "2021": 64.8 } }
+        const firstKey = Object.keys(sd.data)[0];
+        const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+
+        let stateValues = [];
+        let year = '';
+
+        if (isPCPStyle) {
+            // FIPS-keyed: find latest year across all entries
+            const allYears = new Set();
+            Object.values(sd.data).forEach(entry => {
+                Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
+            });
+            year = [...allYears].sort().pop();
+            Object.values(sd.data).forEach(entry => {
+                if (entry[year] != null) {
+                    stateValues.push({ state: entry.name, value: entry[year] });
+                }
+            });
+        } else {
+            // Year-keyed: { "2023": { "Alabama": 0.25, ... } }
+            const years = Object.keys(sd.data).sort();
+            year = years[years.length - 1];
+            const yearData = sd.data[year];
+            if (!yearData) return null;
+            Object.entries(yearData).forEach(([state, value]) => {
+                if (value != null) {
+                    // Percentages stored as decimals — convert for display
+                    const displayVal = (unit === '%' && Math.abs(value) < 1) ? value * 100 : value;
+                    stateValues.push({ state, value: displayVal });
+                }
+            });
+        }
+
+        // Sort best-to-worst based on goodDirection
+        if (metricData.goodDirection === 'up') {
+            stateValues.sort((a, b) => b.value - a.value);
+        } else {
+            stateValues.sort((a, b) => a.value - b.value);
+        }
+
+        const hawaiiRank = stateValues.findIndex(s =>
+            s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
+        ) + 1;
+
+        return { stateValues, year, hawaiiRank, total: stateValues.length };
+    },
+
+    showRankings(slug) {
+        const rankings = this.getStateRankings(slug);
+        if (!rankings) return;
+
+        const metricData = DASHBOARD_DATA[slug];
+        const { stateValues, year, hawaiiRank, total } = rankings;
+
+        // Hide detail view, show rankings
+        document.querySelector('.modal-chart-container').style.display = 'none';
+        document.querySelector('.modal-stats').style.display = 'none';
+        document.querySelector('.modal-body').style.display = 'none';
+        document.getElementById('modal-rankings').style.display = 'block';
+
+        // Update subtitle and rank
+        document.getElementById('rankings-subtitle').textContent =
+            `${metricData.metric} (${metricData.unit}, ${year})`;
+        document.getElementById('rankings-rank').textContent =
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states`;
+
+        // Create chart
+        const canvas = document.getElementById('rankings-chart');
+        this.rankingsChart = ChartUtils.createRankingsChart(
+            canvas, stateValues, metricData.goodDirection, metricData.unit
+        );
+
+        // Back button
+        document.getElementById('rankings-back').onclick = (e) => {
+            e.preventDefault();
+            this.hideRankings();
+        };
+
+        // Scroll modal to top
+        document.querySelector('.modal').scrollTop = 0;
+    },
+
+    hideRankings() {
+        document.querySelector('.modal-chart-container').style.display = '';
+        document.querySelector('.modal-stats').style.display = '';
+        document.querySelector('.modal-body').style.display = '';
+        document.getElementById('modal-rankings').style.display = 'none';
+
+        if (this.rankingsChart) {
+            this.rankingsChart.destroy();
+            this.rankingsChart = null;
+        }
+    },
+
     closeModal() {
         const overlay = document.getElementById('modal-overlay');
         overlay.classList.remove('active');
         document.body.style.overflow = '';
 
-        // Destroy chart
+        // Destroy charts
         if (this.detailChart) {
             this.detailChart.destroy();
             this.detailChart = null;
+        }
+        if (this.rankingsChart) {
+            this.rankingsChart.destroy();
+            this.rankingsChart = null;
         }
     },
 };
