@@ -526,12 +526,16 @@ const App = {
         let year = '';
 
         if (isPCPStyle) {
-            // FIPS-keyed: find latest year across all entries
-            const allYears = new Set();
+            // FIPS-keyed: find latest year with enough data for rankings
+            const yearCounts = {};
             Object.values(sd.data).forEach(entry => {
-                Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
+                Object.keys(entry).forEach(k => {
+                    if (k !== 'name') yearCounts[k] = (yearCounts[k] || 0) + 1;
+                });
             });
-            year = [...allYears].sort().pop();
+            // Pick latest year with at least 25 states
+            year = Object.keys(yearCounts).sort()
+                .reverse().find(y => yearCounts[y] >= 25) || Object.keys(yearCounts).sort().pop();
             Object.values(sd.data).forEach(entry => {
                 if (entry[year] != null) {
                     stateValues.push({ state: entry.name, value: entry[year] });
@@ -539,8 +543,10 @@ const App = {
             });
         } else {
             // Year-keyed: { "2023": { "Alabama": 0.25, ... } }
+            // Pick latest year with at least 25 states for meaningful rankings
             const years = Object.keys(sd.data).sort();
-            year = years[years.length - 1];
+            year = years.reverse().find(y => Object.keys(sd.data[y]).length >= 25)
+                || years[0];
             const yearData = sd.data[year];
             if (!yearData) return null;
             const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
