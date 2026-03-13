@@ -999,9 +999,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "USDA ERS",
     "sourceUrl": "https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us",
-    "whyItMatters": "About 9.6% of Hawaiʻi residents, roughly 140,000 people, lack consistent access to enough food. The State administers food assistance programs and sets agricultural policy that affects how much food is grown locally vs. shipped in.",
+    "whyItMatters": "About 10.8% of Hawaiʻi residents lack consistent access to enough food. The State administers food assistance programs and sets agricultural policy that affects how much food is grown locally vs. shipped in.",
     "howToRead": "Hawaiʻi's line peaked at 14% during 2010-12 and fell to 9.6%, now below the other-state average. The most recent tick up from 9.1% suggests rising grocery prices are eroding gains.",
-    "insight": "The improvement from 14% to 9.6% is significant, but extreme dependence on imported food means shipping costs and mainland price swings hit island households harder.",
+    "insight": "Food insecurity rose from 9.6% (2021-2023) to 10.8% (2022-2024), while the other-state average worsened to 13.0%. Extreme dependence on imported food means shipping costs and mainland price swings hit island households harder.",
     "hawaii": {
       "2006-2008": 0.091,
       "2007-2009": 0.114,
@@ -1018,7 +1018,8 @@ const DASHBOARD_DATA = {
       "2018-2020": 0.089,
       "2019-2021": 0.0905,
       "2020-2022": 0.091,
-      "2021-2023": 0.096
+      "2021-2023": 0.096,
+      "2022-2024": 0.1083
     },
     "otherStateAvg": {
       "2006-2008": 0.1187,
@@ -1036,7 +1037,8 @@ const DASHBOARD_DATA = {
       "2018-2020": 0.107,
       "2019-2021": 0.1036,
       "2020-2022": 0.1086,
-      "2021-2023": 0.118
+      "2021-2023": 0.118,
+      "2022-2024": 0.1295
     }
   },
   "rainy_day_fund_pct": {
