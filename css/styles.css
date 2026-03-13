@@ -170,20 +170,6 @@ body {
     border-color: var(--hawaii-blue);
 }
 
-.card::after {
-    content: '\203A';
-    position: absolute;
-    top: 1.25rem;
-    right: 1rem;
-    font-size: 1.2rem;
-    color: var(--text-muted);
-    opacity: 0;
-    transition: opacity var(--transition);
-}
-
-.card:hover::after {
-    opacity: 0.6;
-}
 
 .card-header {
     display: flex;
