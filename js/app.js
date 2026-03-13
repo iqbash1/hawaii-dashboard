@@ -2,7 +2,7 @@
 // Hawaiʻi Dashboard - Main App
 //
 // Renders metric cards, manages the detail modal, and
-// coordinates live API updates from api.js.
+// uses embedded data updated quarterly.
 // ============================================================
 
 const AREA_ICONS = {
@@ -63,17 +63,8 @@ const App = {
     ],
 
     async init() {
-        // Render cards immediately with embedded data
+        // Render cards from embedded data (updated quarterly)
         this.renderCards();
-
-        // Attempt live API updates in background
-        try {
-            await LiveAPI.fetchAll(DASHBOARD_DATA);
-            // Re-render cards with updated data
-            this.renderCards();
-        } catch (err) {
-            // Live API update skipped silently
-        }
 
         // Set up modal events
         this.setupModal();
@@ -310,7 +301,6 @@ const App = {
         document.getElementById('modal-source').innerHTML = `
             ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
-            ${LiveAPI.liveUpdates.includes(slug) ? ' <span style="color:var(--positive);">(Live data)</span>' : ''}
             <span class="csv-sep">&middot;</span>
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
         `;
@@ -561,21 +551,6 @@ const App = {
 
         // Override Hawaii's ranking value with DASHBOARD_DATA (which includes
         // live API updates) so Detail and Rankings views agree — but only if
-        // DASHBOARD_DATA has data at least as recent as the rankings year.
-        const liveLatest = this.getLatestValue(metricData.hawaii);
-        if (liveLatest.value !== null && liveLatest.year && liveLatest.year >= year) {
-            let liveDisplay = (unit === '%' && Math.abs(liveLatest.value) < 1)
-                ? liveLatest.value * 100 : liveLatest.value;
-            if (isPCPStyle) liveDisplay = liveLatest.value;
-            const hiIdx = stateValues.findIndex(s =>
-                s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
-            );
-            if (hiIdx >= 0) {
-                stateValues[hiIdx].value = liveDisplay;
-            }
-            if (liveLatest.year > year) year = liveLatest.year;
-        }
-
         // Sort best-to-worst based on goodDirection
         if (metricData.goodDirection === 'up') {
             stateValues.sort((a, b) => b.value - a.value);
