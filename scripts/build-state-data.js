@@ -446,8 +446,9 @@ async function fetchRenewablesShare() {
     try {
         const base = `https://api.eia.gov/v2/electricity/electric-power-operational-data/data/?api_key=${KEYS.EIA}&frequency=annual&data[0]=generation&facets[sectorid][]=99&sort[0][column]=period&sort[0][direction]=desc&length=5000`;
 
+        // FIX: Use REN (all renewables including hydro) instead of AOR (excludes hydro)
         const [resRenew, resTotal] = await Promise.all([
-            fetchJSON(base + '&facets[fueltypeid][]=AOR'),
+            fetchJSON(base + '&facets[fueltypeid][]=REN'),
             fetchJSON(base + '&facets[fueltypeid][]=ALL'),
         ]);
 
@@ -494,8 +495,8 @@ async function fetchRenewablesShare() {
         console.log(`  OK ${Object.keys(data).length} years`);
         return Object.keys(data).length > 0 ? {
             source: 'EIA Electric Power Operational Data',
-            calculation: 'All renewables generation (AOR) / All fuels generation (ALL), sector 99 (all sectors).',
-            rawVariables: 'fueltypeid=AOR generation / fueltypeid=ALL generation, sectorid=99',
+            calculation: 'Total renewables generation including hydro (REN) / All fuels generation (ALL), sector 99 (all sectors).',
+            rawVariables: 'fueltypeid=REN generation / fueltypeid=ALL generation, sectorid=99',
             data,
         } : null;
     } catch (err) {
@@ -510,8 +511,9 @@ async function fetchNetEnergyImport() {
     try {
         const baseUrl = `https://api.eia.gov/v2/seds/data/?api_key=${KEYS.EIA}&frequency=annual&data[0]=value&sort[0][column]=period&sort[0][direction]=desc&length=5000`;
 
+        // FIX: Use TEPRB (total primary energy production) not TETPB (per capita consumption)
         const [resProd, resCons] = await Promise.all([
-            fetchJSON(baseUrl + '&facets[seriesId][]=TETPB'),
+            fetchJSON(baseUrl + '&facets[seriesId][]=TEPRB'),
             fetchJSON(baseUrl + '&facets[seriesId][]=TETCB'),
         ]);
 
@@ -555,7 +557,7 @@ async function fetchNetEnergyImport() {
         return Object.keys(data).length > 0 ? {
             source: 'EIA State Energy Data System (SEDS)',
             calculation: '(Total energy consumption - Total energy production) / Total energy consumption. Positive = net importer.',
-            rawVariables: '(TETCB - TETPB) / TETCB',
+            rawVariables: '(TETCB - TEPRB) / TETCB',
             data,
         } : null;
     } catch (err) {

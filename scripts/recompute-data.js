@@ -9,14 +9,12 @@
  *   ba_or_higher_pct, broadband_subscription_pct, renter_cost_burden_pct,
  *   uninsured_rate, home_price_to_income, unemployment_rate, violent_crime_rate,
  *   pcp_per_100k, estabs_entry_rate, net_employer_formation, acgr,
- *   residential_price_cpkwh, unsheltered_homeless_rate, food_insecurity_rate
+ *   residential_price_cpkwh, unsheltered_homeless_rate, food_insecurity_rate,
+ *   real_per_capita_income, net_energy_import_pct, renewables_share_gen
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
- *   real_per_capita_income (nominal vs RPP-adjusted mismatch)
- *   net_energy_import_pct (all states = 1.0, wrong calculation)
- *   renewables_share_gen (WA = 8.9%, clearly wrong)
- *   road_poor_pct (different FHWA measure, 16.8% avg vs 3.3%)
- *   voter_participation_rate (2020 values nonsensical)
+ *   road_poor_pct (need to verify FHWA measure matches dashboard methodology)
+ *   voter_participation_rate (need verified VEP turnout data)
  */
 
 const fs = require('fs');
@@ -55,13 +53,13 @@ const RECOMPUTE_METRICS = [
     'residential_price_cpkwh',
     'unsheltered_homeless_rate',
     'food_insecurity_rate',
+    'real_per_capita_income',
+    'net_energy_import_pct',
+    'renewables_share_gen',
 ];
 
 // Metrics with known bad state-data (keep original data.js, rankings-only)
 const SKIP_METRICS = [
-    'real_per_capita_income',
-    'net_energy_import_pct',
-    'renewables_share_gen',
     'road_poor_pct',
     'voter_participation_rate',
     'net_domestic_migration_rate',  // Sparse coverage (2003-10, 2024) creates discontinuities

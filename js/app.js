@@ -72,6 +72,78 @@ const App = {
 
     // --- Helpers ---
 
+    /** Cache for computed chart data from STATE_DATA */
+    _chartDataCache: {},
+
+    /**
+     * Compute hawaii + otherStateAvg time series from STATE_DATA.
+     * This is the SINGLE SOURCE OF TRUTH for both chart versions:
+     * card sparklines and modal detail charts derive from the same
+     * per-state data that drives rankings.
+     */
+    computeChartData(slug) {
+        if (this._chartDataCache[slug]) return this._chartDataCache[slug];
+
+        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        if (!sd || !sd.data) return null;
+
+        const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
+        const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
+
+        // Detect FIPS-keyed vs year-keyed
+        const firstKey = Object.keys(sd.data)[0];
+        const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+
+        const hawaii = {};
+        const otherStateAvg = {};
+
+        if (isPCPStyle) {
+            // FIPS-keyed: { "15": { name: "Hawaii", "2021": 64.8 } }
+            // Collect all years
+            const yearValues = {}; // { year: { hi: val, others: [vals] } }
+            Object.values(sd.data).forEach(entry => {
+                const name = entry.name;
+                Object.entries(entry).forEach(([k, v]) => {
+                    if (k === 'name' || v == null) return;
+                    if (!yearValues[k]) yearValues[k] = { hi: null, others: [] };
+                    if (isHawaii(name)) {
+                        yearValues[k].hi = v;
+                    } else {
+                        yearValues[k].others.push(v);
+                    }
+                });
+            });
+            for (const [year, vals] of Object.entries(yearValues)) {
+                if (vals.hi !== null) hawaii[year] = vals.hi;
+                if (vals.others.length > 0) {
+                    const avg = vals.others.reduce((a,b) => a+b, 0) / vals.others.length;
+                    otherStateAvg[year] = Math.abs(avg) > 100 ? Math.round(avg) : parseFloat(avg.toFixed(4));
+                }
+            }
+        } else {
+            // Year-keyed: { "2023": { "Alabama": 0.25, ... } }
+            for (const [year, yearData] of Object.entries(sd.data)) {
+                const otherVals = [];
+                for (const [state, val] of Object.entries(yearData)) {
+                    if (val == null) continue;
+                    if (isHawaii(state)) {
+                        hawaii[year] = val;
+                    } else {
+                        otherVals.push(val);
+                    }
+                }
+                if (otherVals.length > 0) {
+                    const avg = otherVals.reduce((a,b) => a+b, 0) / otherVals.length;
+                    otherStateAvg[year] = Math.abs(avg) > 100 ? Math.round(avg) : parseFloat(avg.toFixed(4));
+                }
+            }
+        }
+
+        const result = { hawaii, otherStateAvg };
+        this._chartDataCache[slug] = result;
+        return result;
+    },
+
     /** Get the latest non-null/non-zero value from a data object */
     getLatestValue(obj) {
         const entries = Object.entries(obj).filter(([k, v]) => v !== null && v !== undefined && v !== 0);
@@ -92,18 +164,44 @@ const App = {
      * For metrics with rankings, find the rankings year and return a
      * trimmed copy of the data so the line chart ends at that year.
      * This ensures the detail chart, stats, and rankings all refer to
-     * the same endpoint. Returns the original data unchanged for
-     * metrics without rankings.
+     * the same endpoint.
+     *
+     * SINGLE SOURCE OF TRUTH: When STATE_DATA has per-state data for
+     * a metric, hawaii/otherStateAvg are computed from it at runtime.
+     * For metrics without STATE_DATA, falls back to DASHBOARD_DATA.
      */
     getEffectiveData(slug) {
         const metricData = DASHBOARD_DATA[slug];
         if (!metricData) return null;
 
+        // Compute hawaii/otherStateAvg from STATE_DATA when available
+        const computed = this.computeChartData(slug);
+
+        // Merge: state-data values take precedence (verified per-state data),
+        // but preserve data.js historical years that predate state-data coverage.
+        // This ensures chart + rankings use the same source for overlapping years,
+        // while keeping longer time series for the line chart.
+        let mergedHawaii, mergedAvg;
+        if (computed) {
+            mergedHawaii = { ...metricData.hawaii, ...computed.hawaii };
+            mergedAvg = { ...metricData.otherStateAvg, ...computed.otherStateAvg };
+        } else {
+            mergedHawaii = metricData.hawaii;
+            mergedAvg = metricData.otherStateAvg;
+        }
+
+        const merged = {
+            ...metricData,
+            hawaii: mergedHawaii,
+            otherStateAvg: mergedAvg,
+        };
+
+        // If we have rankings, trim chart data to end at rankings year
         const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
-        if (!hasRankings) return metricData;
+        if (!hasRankings) return merged;
 
         const rankings = this.getStateRankings(slug);
-        if (!rankings || !rankings.year) return metricData;
+        if (!rankings || !rankings.year) return merged;
 
         const endYear = rankings.year;
 
@@ -117,9 +215,9 @@ const App = {
         };
 
         return {
-            ...metricData,
-            hawaii: trimToYear(metricData.hawaii),
-            otherStateAvg: trimToYear(metricData.otherStateAvg),
+            ...merged,
+            hawaii: trimToYear(merged.hawaii),
+            otherStateAvg: trimToYear(merged.otherStateAvg),
         };
     },
 
