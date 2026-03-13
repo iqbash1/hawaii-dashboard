@@ -183,7 +183,16 @@ const ChartUtils = {
                 ctx.save();
                 const pillPad = 4;
                 const pillH = 16;
-                const pillY = chartArea.top + 2;
+                // Place labels at top or bottom depending on where the data sits
+                const yScale = chart.scales.y;
+                const hiData = chart.data.datasets[0].data.filter(v => v !== null);
+                const avgVal = hiData.length > 0 ? hiData.reduce((a,b) => a+b, 0) / hiData.length : 0;
+                const midY = (yScale.top + yScale.bottom) / 2;
+                const avgPixel = yScale.getPixelForValue(avgVal);
+                const dataInTopHalf = avgPixel < midY;
+                const pillY = dataInTopHalf
+                    ? chartArea.bottom - pillH - 4
+                    : chartArea.top + 2;
                 ctx.font = '500 11px "Inter", sans-serif';
 
                 // Pass 1: compute label candidates
@@ -255,6 +264,11 @@ const ChartUtils = {
         const alpha = Math.min(0.45, 0.10 + gap * 0.55);
         const detailGood = `rgba(5, 150, 105, ${alpha.toFixed(2)})`;
         const detailBad = `rgba(192, 57, 43, ${alpha.toFixed(2)})`;
+
+        // Detect if % values are stored as decimals (0.028 = 2.8%) vs whole (86 = 86%)
+        const nonNullHawaii = hawaiiValues.filter(v => v !== null);
+        const isDecimalPct = data.unit === '%' && nonNullHawaii.length > 0 &&
+            nonNullHawaii.every(v => Math.abs(v) <= 1);
 
         return new Chart(ctx, {
             type: 'line',
@@ -367,6 +381,7 @@ const ChartUtils = {
                             font: { size: 11 },
                             color: '#888888',
                             callback: function(value) {
+                                if (isDecimalPct) return (value * 100).toFixed(1) + '%';
                                 return ChartUtils.formatValue(value, data.unit);
                             }
                         },
