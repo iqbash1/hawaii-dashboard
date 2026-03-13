@@ -181,7 +181,13 @@ const ChartUtils = {
                 const xScale = scales.x;
 
                 ctx.save();
-                govBoxes.forEach(gov => {
+                const pillPad = 4;
+                const pillH = 16;
+                const pillY = chartArea.top + 2;
+                ctx.font = '600 12px "Inter", sans-serif';
+
+                // Pass 1: compute label candidates
+                const candidates = govBoxes.map(gov => {
                     const step = labels.length > 1
                         ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0))
                         : 0;
@@ -189,51 +195,51 @@ const ChartUtils = {
                     const x2 = xScale.getPixelForValue(gov.endIdx) + step * 0.5;
                     const left = Math.max(x1, chartArea.left);
                     const right = Math.min(x2, chartArea.right);
-
-                    // Thin vertical line at term boundary
-                    if (left > chartArea.left + 2) {
-                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
-                        ctx.lineWidth = 1;
-                        ctx.setLineDash([4, 4]);
-                        ctx.beginPath();
-                        ctx.moveTo(left, chartArea.top);
-                        ctx.lineTo(left, chartArea.bottom);
-                        ctx.stroke();
-                        ctx.setLineDash([]);
-                    }
-
-                    // Governor name in party color — pick label that fits
                     const segWidth = right - left;
-                    const partyColor = gov.party === 'R' ? '#C0392B' : '#2563EB';
                     const fullLabel = `${gov.name} (${gov.party})`;
                     const shortLabel = gov.name;
-                    ctx.font = '600 12px "Inter", sans-serif';
                     const fullW = ctx.measureText(fullLabel).width;
                     const shortW = ctx.measureText(shortLabel).width;
                     let labelText = null;
                     if (fullW + 10 <= segWidth) labelText = fullLabel;
                     else if (shortW + 6 <= segWidth) labelText = shortLabel;
-                    if (labelText) {
-                        const centerX = (left + right) / 2;
-                        const textW = ctx.measureText(labelText).width;
-                        // Background pill for readability
-                        const pillPad = 4;
-                        const pillH = 16;
-                        const pillY = chartArea.top + 2;
+                    const centerX = (left + right) / 2;
+                    const textW = labelText ? ctx.measureText(labelText).width : 0;
+                    const px = centerX - textW / 2 - pillPad;
+                    const pw = textW + pillPad * 2;
+                    return { gov, left, right, labelText, centerX, textW, px, pw };
+                });
+
+                // Pass 2: draw lines + labels, skipping overlapping pills
+                let lastPillRight = -Infinity;
+                candidates.forEach(c => {
+                    // Thin vertical line at term boundary
+                    if (c.left > chartArea.left + 2) {
+                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+                        ctx.lineWidth = 1;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.moveTo(c.left, chartArea.top);
+                        ctx.lineTo(c.left, chartArea.bottom);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+
+                    if (c.labelText && c.px > lastPillRight + 4) {
                         ctx.fillStyle = 'rgba(255,255,255,0.85)';
-                        const px = centerX - textW/2 - pillPad;
-                        const pw = textW + pillPad*2;
                         if (ctx.roundRect) {
                             ctx.beginPath();
-                            ctx.roundRect(px, pillY, pw, pillH, 3);
+                            ctx.roundRect(c.px, pillY, c.pw, pillH, 3);
                             ctx.fill();
                         } else {
-                            ctx.fillRect(px, pillY, pw, pillH);
+                            ctx.fillRect(c.px, pillY, c.pw, pillH);
                         }
+                        const partyColor = c.gov.party === 'R' ? '#C0392B' : '#2563EB';
                         ctx.fillStyle = partyColor;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'top';
-                        ctx.fillText(labelText, centerX, pillY + 2);
+                        ctx.fillText(c.labelText, c.centerX, pillY + 2);
+                        lastPillRight = c.px + c.pw;
                     }
                 });
                 ctx.restore();
