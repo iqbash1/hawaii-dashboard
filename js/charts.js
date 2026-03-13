@@ -202,24 +202,38 @@ const ChartUtils = {
                         ctx.setLineDash([]);
                     }
 
-                    // Governor name in party color — skip if segment too narrow
+                    // Governor name in party color — pick label that fits
                     const segWidth = right - left;
                     const partyColor = gov.party === 'R' ? '#C0392B' : '#2563EB';
-                    const shortLabel = gov.name;
                     const fullLabel = `${gov.name} (${gov.party})`;
-                    ctx.font = '600 11px "Inter", sans-serif';
+                    const shortLabel = gov.name;
+                    ctx.font = '600 12px "Inter", sans-serif';
                     const fullW = ctx.measureText(fullLabel).width;
                     const shortW = ctx.measureText(shortLabel).width;
-                    // Pick label that fits, or skip entirely
                     let labelText = null;
-                    if (fullW + 8 <= segWidth) labelText = fullLabel;
-                    else if (shortW + 8 <= segWidth) labelText = shortLabel;
+                    if (fullW + 10 <= segWidth) labelText = fullLabel;
+                    else if (shortW + 6 <= segWidth) labelText = shortLabel;
                     if (labelText) {
                         const centerX = (left + right) / 2;
+                        const textW = ctx.measureText(labelText).width;
+                        // Background pill for readability
+                        const pillPad = 4;
+                        const pillH = 16;
+                        const pillY = chartArea.top + 2;
+                        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                        const px = centerX - textW/2 - pillPad;
+                        const pw = textW + pillPad*2;
+                        if (ctx.roundRect) {
+                            ctx.beginPath();
+                            ctx.roundRect(px, pillY, pw, pillH, 3);
+                            ctx.fill();
+                        } else {
+                            ctx.fillRect(px, pillY, pw, pillH);
+                        }
                         ctx.fillStyle = partyColor;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'top';
-                        ctx.fillText(labelText, centerX, chartArea.top + 4);
+                        ctx.fillText(labelText, centerX, pillY + 2);
                     }
                 });
                 ctx.restore();
