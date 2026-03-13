@@ -160,6 +160,8 @@ const DASHBOARD_DATA = {
     "howToRead": "Both lines have been falling since the Affordable Care Act expansion in 2012. Hawaiʻi has consistently been at or near the lowest uninsured rate in the nation.",
     "insight": "The rate dropped from 6.6% in 2012 to 2.8% in 2023. The remaining uninsured tend to be part-time or gig workers not covered by the Prepaid Health Care Act.",
     "hawaii": {
+      "2010": 0.079,
+      "2011": 0.071,
       "2012": 0.066,
       "2013": 0.07,
       "2014": 0.049,
@@ -173,6 +175,8 @@ const DASHBOARD_DATA = {
       "2023": 0.028
     },
     "otherStateAvg": {
+      "2010": 0.142,
+      "2011": 0.138,
       "2012": 0.1378,
       "2013": 0.1359,
       "2014": 0.1091,
@@ -198,6 +202,8 @@ const DASHBOARD_DATA = {
     "howToRead": "Hawaiʻi trailed the other-state average for most of the decade but caught up at 86% in 2022, matching the national average. The question is whether it can push past 90%.",
     "insight": "The steady climb from 81% to 86% over nine years means roughly 1,000 more students finish on time each year. Sustained investment in student retention is paying off.",
     "hawaii": {
+      "2010-2011": 80.0,
+      "2011-2012": 81.0,
       "2012-2013": 81.0,
       "2013-2014": 82.0,
       "2014-2015": 82.0,
@@ -210,6 +216,8 @@ const DASHBOARD_DATA = {
       "2021-2022": 86.0
     },
     "otherStateAvg": {
+      "2010-2011": 78.8,
+      "2011-2012": 80.2,
       "2012-2013": 80.1739,
       "2013-2014": 81.5625,
       "2014-2015": 82.551,
@@ -1101,6 +1109,8 @@ const DASHBOARD_DATA = {
     "howToRead": "Hawaiʻi briefly had net inflow in 2003 (+17 per 10K) but has been negative for most of the past two decades, peaking at -110 per 10K in 2022. The recent reading of -65 in 2024 is the best since 2013 but still far from positive.",
     "insight": "The outflow accelerated sharply after 2005 and peaked during COVID. Housing cost is the top reason for leaving. The modest improvement in 2023-24 may reflect normalization, but the structural drivers remain.",
     "hawaii": {
+      "2001": -53.8,
+      "2002": -6.0,
       "2003": 16.7,
       "2004": -5.6,
       "2005": -14.2,
@@ -1124,6 +1134,8 @@ const DASHBOARD_DATA = {
       "2024": -64.6
     },
     "otherStateAvg": {
+      "2001": 1.9,
+      "2002": 11.8,
       "2003": 12.1,
       "2004": 12.9,
       "2005": 14.1,
