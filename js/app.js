@@ -170,7 +170,7 @@ const App = {
                 if (hasRankings) {
                     const rankings = this.getStateRankings(slug);
                     if (rankings && rankings.hawaiiRank > 0) {
-                        rankBadge = `<span class="card-rank-badge" data-slug="${slug}" data-area="${areaGroup.area}">Ranked #${rankings.hawaiiRank}</span>`;
+                        rankBadge = `<span class="card-rank-badge" data-slug="${slug}" data-area="${areaGroup.area}">Rank #${rankings.hawaiiRank}</span>`;
                     }
                 }
 
@@ -323,7 +323,7 @@ const App = {
             const rankLabel = rankings && rankings.hawaiiRank > 0
                 ? `<span class="tab-rank">#${rankings.hawaiiRank}</span>`
                 : '';
-            tabRankings.innerHTML = `Rankings ${rankLabel}`;
+            tabRankings.innerHTML = `Rank ${rankLabel}`;
 
             tabDetail.onclick = () => this.switchTab('detail', slug);
             tabRankings.onclick = () => this.switchTab('rankings', slug);

@@ -48,7 +48,7 @@ body {
 
 /* --- Header --- */
 .header {
-    background: #2d2d44;
+    background: #3d3d56;
     color: white;
     padding: 1.75rem 1.5rem 1.5rem;
     text-align: center;
@@ -156,11 +156,11 @@ body {
 /* --- Card --- */
 .card {
     background: var(--card-bg);
-    border: 1px solid var(--border);
+    border: 1px solid #EAEAEA;
     border-radius: var(--radius);
     padding: 1.25rem 1.25rem 1rem;
     cursor: pointer;
-    transition: border-color var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -168,6 +168,7 @@ body {
 
 .card:hover {
     border-color: var(--hawaii-blue);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 
@@ -334,9 +335,9 @@ body {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    max-width: 1000px;
+    max-width: 1100px;
     width: 100%;
-    max-height: 90vh;
+    max-height: 92vh;
     overflow-y: auto;
     position: relative;
     display: flex;
@@ -466,7 +467,7 @@ body {
     flex: 1;
     min-width: 120px;
     background: var(--bg);
-    border: 1px solid var(--border);
+    border: none;
     border-radius: var(--radius-sm);
     padding: 0.85rem 0.75rem;
     text-align: center;
@@ -542,11 +543,11 @@ body {
 }
 
 .modal-section h3 {
-    font-size: 0.8rem;
-    font-weight: 700;
+    font-size: 0.7rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
     margin-bottom: 0.4rem;
 }
 
@@ -557,10 +558,10 @@ body {
 }
 
 .modal-source {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    padding: 1rem 2rem;
-    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.85rem 2rem;
+    border-top: 1px solid #EAEAEA;
     background: var(--bg);
     position: sticky;
     bottom: 0;
