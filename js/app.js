@@ -383,7 +383,7 @@ const App = {
                 ${unitSuffix}
             </div>
             <div class="stat-card">
-                <div class="stat-label">Other State Avg</div>
+                <div class="stat-label">Other State Avg (${latestAvg.year || '—'})</div>
                 <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, metricData.unit, isDecimal)}</div>
                 ${unitSuffix}
             </div>
@@ -585,8 +585,12 @@ const App = {
         // Update subtitle and rank
         document.getElementById('rankings-subtitle').textContent =
             `${metricData.metric} (${metricData.unit}, ${year})`;
+        const latestDetailYear = this.getLatestValue(metricData.hawaii).year;
+        const yearNote = (year !== latestDetailYear)
+            ? ` · Using ${year} data (latest with all states)`
+            : '';
         document.getElementById('rankings-rank').textContent =
-            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states`;
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote}`;
 
         // Create chart
         const canvas = document.getElementById('rankings-chart');
