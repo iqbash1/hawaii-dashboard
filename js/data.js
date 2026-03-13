@@ -15,9 +15,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FBI Crime Data Explorer",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
-    "whyItMatters": "At 159 per 100K, Hawaiʻi's violent crime rate is less than half the other-state average of 346. The State sets criminal laws, funds police training, and runs the prison system.",
+    "whyItMatters": "At 201 per 100K, Hawaiʻi's violent crime rate is well below the other-state average of 346. The State sets criminal laws, funds police training, and runs the prison system.",
     "howToRead": "Hawaiʻi has run well below the other-state average for over a decade. A falling line means safer streets.",
-    "insight": "The 2024 rate of 159 is the lowest in recent history, down from a peak of 275 in 2022.",
+    "insight": "The 2023 rate of 201 is down sharply from a peak of 275 in 2022, continuing a long-term trend of Hawaiʻi being one of the safest states.",
     "hawaii": {
       "1985": 219.4,
       "1986": 245.2,
@@ -111,7 +111,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "HRSA Area Health Resource File",
     "sourceUrl": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
-    "whyItMatters": "Hawaiʻi has about 88 non-federal primary care physicians per 100K residents, roughly 14% above the other-state average of 78. The State shapes this through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care.",
+    "whyItMatters": "Hawaiʻi has about 93 non-federal primary care physicians per 100K residents, roughly 19% above the other-state average of 78. The State shapes this through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care.",
     "howToRead": "A higher number means better access to a doctor. Hawaiʻi has held around 88 to 97 physicians per 100K over the past decade, consistently above the other-state average. Military doctors are not counted since they serve a separate system.",
     "insight": "The statewide number masks a sharp Oahu-versus-neighbor-island divide. Most physicians practice on Oahu; Maui, the Big Island, Kauaʻi, and the rural islands face persistent shortages, and because you cannot drive between islands, each one is effectively its own healthcare market. An aging physician workforce and high cost of living make recruitment even harder.",
     "hawaii": {
@@ -288,7 +288,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Bureau of Labor Statistics",
     "sourceUrl": "https://www.bls.gov/lau/",
-    "whyItMatters": "At 3.0% in 2024, Hawaiʻi's unemployment is below the other-state average of 3.3%. But in 2020, tourism's collapse drove it to 11.6%, the highest spike of any state. The State shapes this through workforce programs, tax incentives, and whether it diversifies the economy beyond tourism.",
+    "whyItMatters": "At 2.9% in 2023, Hawaiʻi's unemployment is below the other-state average of 3.3%. But in 2020, tourism's collapse drove it to 11.6%, the highest spike of any state. The State shapes this through workforce programs, tax incentives, and whether it diversifies the economy beyond tourism.",
     "howToRead": "Hawaiʻi typically runs below the other-state average in normal years. The 2020 spike and rapid recovery both reflect tourism's outsized role.",
     "insight": "Hawaiʻi had some of the lowest unemployment in the country before COVID (2.2% in 2017). The collapse from 2.5% to 11.6% in months shows the structural risk of tourism dependence.",
     "hawaii": {

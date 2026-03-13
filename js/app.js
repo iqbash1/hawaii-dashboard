@@ -88,6 +88,41 @@ const App = {
         return { year: prev[0], value: prev[1] };
     },
 
+    /**
+     * For metrics with rankings, find the rankings year and return a
+     * trimmed copy of the data so the line chart ends at that year.
+     * This ensures the detail chart, stats, and rankings all refer to
+     * the same endpoint. Returns the original data unchanged for
+     * metrics without rankings.
+     */
+    getEffectiveData(slug) {
+        const metricData = DASHBOARD_DATA[slug];
+        if (!metricData) return null;
+
+        const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        if (!hasRankings) return metricData;
+
+        const rankings = this.getStateRankings(slug);
+        if (!rankings || !rankings.year) return metricData;
+
+        const endYear = rankings.year;
+
+        // Trim year-keyed objects to <= endYear
+        const trimToYear = (obj) => {
+            const trimmed = {};
+            for (const [k, v] of Object.entries(obj)) {
+                if (k <= endYear) trimmed[k] = v;
+            }
+            return trimmed;
+        };
+
+        return {
+            ...metricData,
+            hawaii: trimToYear(metricData.hawaii),
+            otherStateAvg: trimToYear(metricData.otherStateAvg),
+        };
+    },
+
     /** Build "vs Other States" comparison HTML for a card */
     buildVsAvgHtml(metricData) {
         const latest = this.getLatestValue(metricData.hawaii);
@@ -151,17 +186,17 @@ const App = {
         // One card per metric, ordered by area
         this.AREA_ORDER.forEach(areaGroup => {
             areaGroup.metrics.forEach(slug => {
-                const metricData = DASHBOARD_DATA[slug];
-                if (!metricData) return;
+                const effective = this.getEffectiveData(slug);
+                if (!effective) return;
 
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.dataset.metric = slug;
 
-                const latest = this.getLatestValue(metricData.hawaii);
-                const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
-                const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(metricData.unit)
-                    ? `<span class="card-unit">${metricData.unit}</span>`
+                const latest = this.getLatestValue(effective.hawaii);
+                const isDecimal = ChartUtils.isDecimalPctMetric(effective);
+                const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(effective.unit)
+                    ? `<span class="card-unit">${effective.unit}</span>`
                     : '';
 
                 // Compute rank badge if state data available
@@ -180,17 +215,17 @@ const App = {
                         <div class="card-area">${areaGroup.area}</div>
                         ${rankBadge}
                     </div>
-                    <div class="card-metric">${metricData.metric}</div>
+                    <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">
-                        <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, metricData.unit, isDecimal)}</span>
+                        <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, effective.unit, isDecimal)}</span>
                         ${unitSuffix}
                     </div>
                     <div class="card-sparkline">
                         <canvas></canvas>
                     </div>
                     <div class="card-comparisons">
-                        ${this.buildVsAvgHtml(metricData)}
-                        ${this.buildVsYearHtml(metricData)}
+                        ${this.buildVsAvgHtml(effective)}
+                        ${this.buildVsYearHtml(effective)}
                     </div>
                 `;
 
@@ -212,7 +247,7 @@ const App = {
 
                 // Create sparkline
                 const canvas = card.querySelector('.card-sparkline canvas');
-                const chart = ChartUtils.createSparkline(canvas, metricData, metricData.goodDirection);
+                const chart = ChartUtils.createSparkline(canvas, effective, effective.goodDirection);
                 this.sparklineCharts.push(chart);
             });
         });
@@ -278,7 +313,10 @@ const App = {
         const metricData = DASHBOARD_DATA[slug];
         if (!metricData) return;
 
-        // Set modal content
+        // Use effective data (trimmed to rankings year) for chart/stats
+        const effective = this.getEffectiveData(slug);
+
+        // Set modal content (text from original metricData)
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
         document.getElementById('modal-area').textContent = areaName || metricData.area;
@@ -332,18 +370,18 @@ const App = {
         // Reset to detail view first
         this.hideRankings();
 
-        // Stats - focused on the two key comparisons
-        const latest = this.getLatestValue(metricData.hawaii);
-        const latestAvg = this.getLatestValue(metricData.otherStateAvg);
-        const prior = this.getPriorValue(metricData.hawaii);
-        const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
+        // Stats use effective data so they match both charts
+        const latest = this.getLatestValue(effective.hawaii);
+        const latestAvg = this.getLatestValue(effective.otherStateAvg);
+        const prior = this.getPriorValue(effective.hawaii);
+        const isDecimal = ChartUtils.isDecimalPctMetric(effective);
 
         // vs Other States
         let vsAvgClass = 'neutral';
         let vsAvgWord = '-';
         if (latest.value !== null && latestAvg.value !== null) {
             const diff = latest.value - latestAvg.value;
-            const isBetter = metricData.goodDirection === 'up' ? diff > 0 : diff < 0;
+            const isBetter = effective.goodDirection === 'up' ? diff > 0 : diff < 0;
             vsAvgClass = isBetter ? 'positive' : 'negative';
             vsAvgWord = isBetter ? 'Better' : 'Worse';
         }
@@ -353,7 +391,7 @@ const App = {
         if (latest.value !== null && prior.value !== null) {
             const change = latest.value - prior.value;
             const pctChange = prior.value !== 0 ? ((change / Math.abs(prior.value)) * 100) : 0;
-            const isImproving = metricData.goodDirection === 'up' ? change > 0 : change < 0;
+            const isImproving = effective.goodDirection === 'up' ? change > 0 : change < 0;
             const isFlat = Math.abs(pctChange) < 0.1;
             const arrow = change > 0 ? '\u2191' : change < 0 ? '\u2193' : '\u2192';
             const absPct = Math.abs(pctChange);
@@ -371,20 +409,20 @@ const App = {
         }
 
         // Show unit suffix for rate-based metrics so visitors understand the numbers
-        const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(metricData.unit)
-            ? `<div class="stat-unit">${metricData.unit}</div>`
+        const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(effective.unit)
+            ? `<div class="stat-unit">${effective.unit}</div>`
             : '';
 
         const statsContainer = document.getElementById('modal-stats');
         statsContainer.innerHTML = `
             <div class="stat-card">
                 <div class="stat-label">Hawaiʻi (${latest.year || '\u2014'})</div>
-                <div class="stat-value hawaii-color">${ChartUtils.formatValue(latest.value, metricData.unit, isDecimal)}</div>
+                <div class="stat-value hawaii-color">${ChartUtils.formatValue(latest.value, effective.unit, isDecimal)}</div>
                 ${unitSuffix}
             </div>
             <div class="stat-card">
                 <div class="stat-label">Other State Avg (${latestAvg.year || '—'})</div>
-                <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, metricData.unit, isDecimal)}</div>
+                <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, effective.unit, isDecimal)}</div>
                 ${unitSuffix}
             </div>
             <div class="stat-card">
@@ -394,12 +432,12 @@ const App = {
             ${vsYearHtml}
         `;
 
-        // Chart with governor term overlay
+        // Chart uses effective data (trimmed to rankings year)
         const canvas = document.getElementById('modal-chart');
-        const labels = Object.keys(metricData.hawaii);
+        const labels = Object.keys(effective.hawaii);
         const govBoxes = this.getGovernorBoxes(labels);
 
-        this.detailChart = ChartUtils.createDetailChart(canvas, metricData, govBoxes);
+        this.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes);
 
         // Show modal
         overlay.classList.add('active');
