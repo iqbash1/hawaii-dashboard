@@ -436,30 +436,18 @@ const ChartUtils = {
         const lerp = this.lerp;
         const n = stateValues.length;
 
-        // Per-bar color: green (best) → neutral gray → red (worst), Hawaii stays teal
+        // Uniform bar color; Hawaii stays teal
+        const otherColor = '#A0A5AD';
+        const bgColors = stateValues.map(s =>
+            this.isHawaii(s.state) ? this.HAWAII_BLUE : otherColor
+        );
+
+        // Background gradient: green (best) → white → red (worst)
         const [neutralStart, neutralEnd] = this.NEUTRAL_RANGE;
         const [gr, gg, gb] = this.GREEN_BEST;
         const [rr, rg, rb] = this.RED_WORST;
-        const bgColors = stateValues.map((s, i) => {
-            if (this.isHawaii(s.state)) return this.HAWAII_BLUE;
-            const t = i / (n - 1); // 0 = top/best, 1 = bottom/worst
-            const neutralStartT = (neutralStart - 1) / (n - 1);
-            const neutralEndT = (neutralEnd - 1) / (n - 1);
-            if (t <= neutralStartT) {
-                // Green zone: stronger green at top
-                const p = 1 - t / neutralStartT;
-                const alpha = 0.15 + p * 0.35;
-                return `rgba(${gr},${gg},${gb},${alpha.toFixed(2)})`;
-            } else if (t >= neutralEndT) {
-                // Red zone: stronger red at bottom
-                const p = (t - neutralEndT) / (1 - neutralEndT);
-                const alpha = 0.15 + p * 0.35;
-                return `rgba(${rr},${rg},${rb},${alpha.toFixed(2)})`;
-            } else {
-                // Neutral zone: gray
-                return '#B0B5BD';
-            }
-        });
+        const neutralStartPct = (neutralStart - 1) / (n - 1);
+        const neutralEndPct = (neutralEnd - 1) / (n - 1);
 
         // Precompute formatted value labels and Hawaii index
         const formattedLabels = values.map(v => fmt(v, unit));
@@ -478,6 +466,25 @@ const ChartUtils = {
         const xEnd = niceRound(maxVal + range * 0.05, roundStep);
         const xMid = niceRound((xStart + xEnd) / 2, roundStep);
         const xTicks = [xStart, xMid, xEnd];
+
+        // Smooth background gradient plugin
+        const rowBgPlugin = {
+            id: 'rowBackground',
+            beforeDatasetsDraw(chart) {
+                const { ctx, chartArea } = chart;
+                const { top, bottom, left, right } = chartArea;
+                ctx.save();
+                const grad = ctx.createLinearGradient(0, top, 0, bottom);
+                grad.addColorStop(0, `rgba(${gr},${gg},${gb},0.18)`);
+                grad.addColorStop(neutralStartPct, `rgba(${gr},${gg},${gb},0.04)`);
+                grad.addColorStop((neutralStartPct + neutralEndPct) / 2, 'rgba(255,255,255,0)');
+                grad.addColorStop(neutralEndPct, `rgba(${rr},${rg},${rb},0.04)`);
+                grad.addColorStop(1, `rgba(${rr},${rg},${rb},0.16)`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(left, top, right - left, bottom - top);
+                ctx.restore();
+            }
+        };
 
         const self = this;
         return new Chart(ctx, {
@@ -545,7 +552,7 @@ const ChartUtils = {
                 },
                 animation: { duration: 400 }
             },
-            plugins: [{
+            plugins: [rowBgPlugin, {
                 id: 'valueLabels',
                 afterDatasetsDraw(chart) {
                     const { ctx, chartArea } = chart;
