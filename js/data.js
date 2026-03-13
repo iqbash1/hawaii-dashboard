@@ -588,6 +588,11 @@ const DASHBOARD_DATA = {
     "howToRead": "Hawaiʻi's line stays far above the other-state average. It improved from 30% in 2013 to 20% in 2023, but other states average just 3%, so the gap remains huge.",
     "insight": "Road quality reflects decades of wear, tropical weather, and volcanic soil. At the current pace of improvement, it would take many more years to approach the mainland average.",
     "hawaii": {
+      "2007": 0.172,
+      "2008": 0.182,
+      "2009": 0.25,
+      "2011": 0.29,
+      "2012": 0.294,
       "2013": 0.302,
       "2014": 0.2632,
       "2015": 0.2814,
@@ -600,6 +605,11 @@ const DASHBOARD_DATA = {
       "2023": 0.2034
     },
     "otherStateAvg": {
+      "2007": 0.047,
+      "2008": 0.046,
+      "2009": 0.044,
+      "2011": 0.054,
+      "2012": 0.049,
       "2013": 0.0422,
       "2014": 0.0432,
       "2015": 0.0433,
