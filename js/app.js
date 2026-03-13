@@ -278,8 +278,6 @@ const App = {
         const metricData = DASHBOARD_DATA[slug];
         if (!metricData) return;
 
-        this._currentSlug = slug;
-
         // Set modal content
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;

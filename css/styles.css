@@ -24,7 +24,7 @@
     --positive-bg: #ECFDF5;
     --negative: #C0392B;
     --negative-bg: #FDF0EE;
-    --border: #E0E0E0;
+    --border: #EAEAEA;
     --radius: 8px;
     --radius-sm: 6px;
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -100,45 +100,6 @@ body {
     font-weight: 500;
 }
 
-.legend-line {
-    display: inline-block;
-    width: 24px;
-    height: 3px;
-    vertical-align: middle;
-    margin-right: 4px;
-    border-radius: 2px;
-}
-
-.legend-hi {
-    background: #0D7C8F;
-}
-
-.legend-avg {
-    background: repeating-linear-gradient(
-        90deg,
-        #999 0px, #999 5px,
-        transparent 5px, transparent 9px
-    );
-}
-
-.live-badge {
-    background: rgba(5, 150, 105, 0.25);
-}
-
-.live-dot {
-    width: 7px;
-    height: 7px;
-    background: #34D399;
-    border-radius: 50%;
-    display: inline-block;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-}
-
 .meta-icon {
     font-size: 0.85rem;
 }
@@ -156,7 +117,7 @@ body {
 /* --- Card --- */
 .card {
     background: var(--card-bg);
-    border: 1px solid #EAEAEA;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 1.25rem 1.25rem 1rem;
     cursor: pointer;
@@ -561,7 +522,7 @@ body {
     font-size: 0.8rem;
     color: var(--text-muted);
     padding: 0.85rem 2rem;
-    border-top: 1px solid #EAEAEA;
+    border-top: 1px solid var(--border);
     background: var(--bg);
     position: sticky;
     bottom: 0;
