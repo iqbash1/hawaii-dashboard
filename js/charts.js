@@ -184,7 +184,7 @@ const ChartUtils = {
                 const pillPad = 4;
                 const pillH = 16;
                 const pillY = chartArea.top + 2;
-                ctx.font = '600 12px "Inter", sans-serif';
+                ctx.font = '500 11px "Inter", sans-serif';
 
                 // Pass 1: compute label candidates
                 const candidates = govBoxes.map(gov => {
@@ -215,9 +215,9 @@ const ChartUtils = {
                 candidates.forEach(c => {
                     // Thin vertical line at term boundary
                     if (c.left > chartArea.left + 2) {
-                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.10)';
                         ctx.lineWidth = 1;
-                        ctx.setLineDash([4, 4]);
+                        ctx.setLineDash([3, 4]);
                         ctx.beginPath();
                         ctx.moveTo(c.left, chartArea.top);
                         ctx.lineTo(c.left, chartArea.bottom);
@@ -226,7 +226,7 @@ const ChartUtils = {
                     }
 
                     if (c.labelText && c.px > lastPillRight + 4) {
-                        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                        ctx.fillStyle = 'rgba(255,255,255,0.88)';
                         if (ctx.roundRect) {
                             ctx.beginPath();
                             ctx.roundRect(c.px, pillY, c.pw, pillH, 3);
@@ -272,11 +272,20 @@ const ChartUtils = {
                             below: goodDir === 'up' ? detailBad : detailGood,
                         } : true,
                         tension: 0.3,
-                        pointRadius: hawaiiValues.map(v => v === null ? 0 : 4),
-                        pointHoverRadius: 6,
+                        pointRadius: hawaiiValues.map((v, i) => {
+                            if (v === null) return 0;
+                            const n = hawaiiValues.filter(x => x !== null).length;
+                            if (n <= 15) return 3;
+                            // Show dots every Nth point + first/last
+                            const step = Math.ceil(n / 12);
+                            const isFirst = i === hawaiiValues.findIndex(x => x !== null);
+                            const isLast = i === hawaiiValues.length - 1 - [...hawaiiValues].reverse().findIndex(x => x !== null);
+                            return (i % step === 0 || isFirst || isLast) ? 2.5 : 0;
+                        }),
+                        pointHoverRadius: 5,
                         pointBackgroundColor: this.HAWAII_BLUE,
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
+                        pointBorderWidth: 1.5,
                         spanGaps: true,
                     },
                     {
@@ -288,11 +297,11 @@ const ChartUtils = {
                         borderDash: [6, 4],
                         fill: false,
                         tension: 0.3,
-                        pointRadius: avgValues.map(v => v === null ? 0 : 3),
-                        pointHoverRadius: 5,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
                         pointBackgroundColor: this.AVG_GRAY,
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
+                        pointBorderWidth: 1,
                         spanGaps: true,
                     }
                 ]
@@ -301,17 +310,22 @@ const ChartUtils = {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: { top: 0 }
+                },
                 plugins: {
                     legend: {
                         display: true,
                         position: 'top',
-                        align: 'end',
+                        align: 'center',
                         labels: {
                             usePointStyle: true,
                             pointStyle: 'circle',
                             padding: 16,
                             font: { size: 12, weight: '500' },
                             color: '#555555',
+                            boxWidth: 8,
+                            boxHeight: 8,
                         }
                     },
                     tooltip: {
