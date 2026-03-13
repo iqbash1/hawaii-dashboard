@@ -984,9 +984,9 @@ const DASHBOARD_DATA = {
     "metric": "Voter Participation Rate",
     "unit": "%",
     "goodDirection": "up",
-    "source": "Election Assistance Commission",
-    "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-    "whyItMatters": "Only half of Hawaiʻi's eligible voters cast a ballot in 2024, 15 points below the other-state average of 65%. When half the electorate stays home, elected officials answer to a narrow slice of the public.",
+    "source": "US Elections Project",
+    "sourceUrl": "https://www.electproject.org/election-data/voter-turnout-data",
+    "whyItMatters": "Only 50.3% of Hawaiʻi's eligible voters cast a ballot in 2024, 15 points below the other-state average of 65.6%. When half the electorate stays home, elected officials answer to a narrow slice of the public.",
     "howToRead": "The zigzag pattern reflects presidential years (higher turnout) vs. midterm elections (lower). Even in 2020 at 55.7%, Hawaiʻi trailed the other-state average of 67.9% by 12 points.",
     "insight": "All-mail voting boosted turnout from 39.5% (2018) to 55.7% (2020), but the 2024 rate of 50.3% suggests the lift is fading. The persistent gap points to disengagement beyond ballot access.",
     "hawaii": {
@@ -1000,22 +1000,22 @@ const DASHBOARD_DATA = {
       "2016": 0.432,
       "2018": 0.395,
       "2020": 0.557,
-      "2022": 0.405,
-      "2024": 0.503
+      "2022": 0.4063,
+      "2024": 0.5026
     },
     "otherStateAvg": {
-      "2002": 0.4395,
-      "2004": 0.6358,
-      "2006": 0.4503,
-      "2008": 0.6434,
-      "2010": 0.4474,
-      "2012": 0.6153,
-      "2014": 0.4076,
-      "2016": 0.6237,
+      "2002": 0.4311,
+      "2004": 0.6309,
+      "2006": 0.4426,
+      "2008": 0.6411,
+      "2010": 0.4434,
+      "2012": 0.6068,
+      "2014": 0.4016,
+      "2016": 0.6198,
       "2018": 0.5167,
-      "2020": 0.679,
-      "2022": 0.4749,
-      "2024": 0.6527
+      "2020": 0.6792,
+      "2022": 0.4769,
+      "2024": 0.6557
     }
   },
   "net_domestic_migration_rate": {

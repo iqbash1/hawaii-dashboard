@@ -56,13 +56,13 @@ const RECOMPUTE_METRICS = [
     'real_per_capita_income',
     'net_energy_import_pct',
     'renewables_share_gen',
+    'voter_participation_rate',
 ];
 
 // Metrics with known bad state-data (keep original data.js, rankings-only)
 const SKIP_METRICS = [
-    'road_poor_pct',
-    'voter_participation_rate',
-    'net_domestic_migration_rate',  // Sparse coverage (2003-10, 2024) creates discontinuities
+    'road_poor_pct',              // state-data uses different methodology than data.js; removed from STATE_DATA
+    'net_domestic_migration_rate', // Sparse coverage (2003-10, 2024) creates discontinuities
 ];
 
 // ==========================================================
