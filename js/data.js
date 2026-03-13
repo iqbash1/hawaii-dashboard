@@ -15,7 +15,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FBI Crime Data Explorer",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
-    "whyItMatters": "At 159 per 100K, Hawaiʻi's violent crime rate is less than half the other-state average of 325. The State sets criminal laws, funds police training, and runs the prison system.",
+    "whyItMatters": "At 159 per 100K, Hawaiʻi's violent crime rate is less than half the other-state average of 346. The State sets criminal laws, funds police training, and runs the prison system.",
     "howToRead": "Hawaiʻi has run well below the other-state average for over a decade. A falling line means safer streets.",
     "insight": "The 2024 rate of 159 is the lowest in recent history, down from a peak of 275 in 2022.",
     "hawaii": {
@@ -99,8 +99,7 @@ const DASHBOARD_DATA = {
       "2020": 369.7603,
       "2021": 316.7133,
       "2022": 358.8403,
-      "2023": 345.9259,
-      "2024": 325.0594
+      "2023": 345.9259
     }
   },
   "pcp_per_100k": {
@@ -112,7 +111,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "HRSA Area Health Resource File",
     "sourceUrl": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
-    "whyItMatters": "Hawaiʻi has about 88 non-federal primary care physicians per 100K residents, roughly 17% above the other-state average of 75. The State shapes this through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care.",
+    "whyItMatters": "Hawaiʻi has about 88 non-federal primary care physicians per 100K residents, roughly 14% above the other-state average of 78. The State shapes this through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care.",
     "howToRead": "A higher number means better access to a doctor. Hawaiʻi has held around 88 to 97 physicians per 100K over the past decade, consistently above the other-state average. Military doctors are not counted since they serve a separate system.",
     "insight": "The statewide number masks a sharp Oahu-versus-neighbor-island divide. Most physicians practice on Oahu; Maui, the Big Island, Kauaʻi, and the rural islands face persistent shortages, and because you cannot drive between islands, each one is effectively its own healthcare market. An aging physician workforce and high cost of living make recruitment even harder.",
     "hawaii": {
@@ -143,9 +142,7 @@ const DASHBOARD_DATA = {
       "2018": 78.5,
       "2019": 79.4,
       "2020": 79.2,
-      "2021": 77.5,
-      "2022": 76.9,
-      "2023": 75.1
+      "2021": 77.5
     }
   },
   "uninsured_rate": {
@@ -291,7 +288,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Bureau of Labor Statistics",
     "sourceUrl": "https://www.bls.gov/lau/",
-    "whyItMatters": "At 3.0% in 2024, Hawaiʻi's unemployment is below the other-state average of 3.7%. But in 2020, tourism's collapse drove it to 11.6%, the highest spike of any state. The State shapes this through workforce programs, tax incentives, and whether it diversifies the economy beyond tourism.",
+    "whyItMatters": "At 3.0% in 2024, Hawaiʻi's unemployment is below the other-state average of 3.3%. But in 2020, tourism's collapse drove it to 11.6%, the highest spike of any state. The State shapes this through workforce programs, tax incentives, and whether it diversifies the economy beyond tourism.",
     "howToRead": "Hawaiʻi typically runs below the other-state average in normal years. The 2020 spike and rapid recovery both reflect tourism's outsized role.",
     "insight": "Hawaiʻi had some of the lowest unemployment in the country before COVID (2.2% in 2017). The collapse from 2.5% to 11.6% in months shows the structural risk of tourism dependence.",
     "hawaii": {
@@ -393,8 +390,7 @@ const DASHBOARD_DATA = {
       "2020": 0.0727,
       "2021": 0.0477,
       "2022": 0.0337,
-      "2023": 0.0329,
-      "2024": 0.0369
+      "2023": 0.0329
     }
   },
   "real_per_capita_income": {
