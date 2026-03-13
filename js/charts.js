@@ -202,15 +202,25 @@ const ChartUtils = {
                         ctx.setLineDash([]);
                     }
 
-                    // Governor name in party color (no background)
-                    const centerX = (left + right) / 2;
+                    // Governor name in party color — skip if segment too narrow
+                    const segWidth = right - left;
                     const partyColor = gov.party === 'R' ? '#C0392B' : '#2563EB';
-                    const labelText = `${gov.name} (${gov.party})`;
+                    const shortLabel = gov.name;
+                    const fullLabel = `${gov.name} (${gov.party})`;
                     ctx.font = '600 11px "Inter", sans-serif';
-                    ctx.fillStyle = partyColor;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'top';
-                    ctx.fillText(labelText, centerX, chartArea.top + 4);
+                    const fullW = ctx.measureText(fullLabel).width;
+                    const shortW = ctx.measureText(shortLabel).width;
+                    // Pick label that fits, or skip entirely
+                    let labelText = null;
+                    if (fullW + 8 <= segWidth) labelText = fullLabel;
+                    else if (shortW + 8 <= segWidth) labelText = shortLabel;
+                    if (labelText) {
+                        const centerX = (left + right) / 2;
+                        ctx.fillStyle = partyColor;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'top';
+                        ctx.fillText(labelText, centerX, chartArea.top + 4);
+                    }
                 });
                 ctx.restore();
             }

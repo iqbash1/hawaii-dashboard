@@ -28,6 +28,9 @@ const App = {
 
     // Hawaiʻi Governors - for chart overlay
     GOVERNORS: [
+        { name: 'Ariyoshi', party: 'D', start: 1974, end: 1986 },
+        { name: 'Waihee', party: 'D', start: 1986, end: 1994 },
+        { name: 'Cayetano', party: 'D', start: 1994, end: 2002 },
         { name: 'Lingle', party: 'R', start: 2002, end: 2010 },
         { name: 'Abercrombie', party: 'D', start: 2010, end: 2014 },
         { name: 'Ige', party: 'D', start: 2014, end: 2022 },
