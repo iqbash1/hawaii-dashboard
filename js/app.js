@@ -465,7 +465,12 @@ const App = {
         document.querySelector('.modal').scrollTop = 0;
     },
 
-    /** Generate and download a multi-tab xlsx for the given metric */
+    /**
+     * Generate and download a multi-tab xlsx for the given metric.
+     * Tab order: Raw Data → Chart Data → Rankings → Methodology
+     * Raw data (state-data.js) is the single source of truth;
+     * chart data and rankings are derived from it.
+     */
     downloadData(slug) {
         const m = DASHBOARD_DATA[slug];
         if (!m) return;
@@ -473,58 +478,119 @@ const App = {
         const wb = XLSX.utils.book_new();
         const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
 
-        // --- Tab 1: "Chart Data" (what's shown in the dashboard chart) ---
+        // Detect FIPS-keyed structure (e.g. pcp_per_100k)
+        let isFIPS = false;
+        if (sd && sd.data) {
+            const firstKey = Object.keys(sd.data)[0];
+            isFIPS = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+        }
+
+        // --- Tab 1: "Raw Data" (per-state source data, single source of truth) ---
+        if (sd && sd.data) {
+            let stateRows;
+
+            if (isFIPS) {
+                // FIPS-keyed: { "15": { name: "Hawaiʻi", "2010": 89.2, ... } }
+                // Transpose to Year × State format
+                const allYears = new Set();
+                const stateMap = {};
+                Object.values(sd.data).forEach(entry => {
+                    stateMap[entry.name] = entry;
+                    Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
+                });
+                const years = [...allYears].sort();
+                const stateNames = Object.keys(stateMap).sort();
+
+                stateRows = [
+                    [`${m.metric} (${m.unit}) - Raw Per-State Data`],
+                    [`Source: ${sd.source}`],
+                    sd.calculation ? [`Calculation: ${sd.calculation}`] : [],
+                    [],
+                    ['Year', ...stateNames],
+                ];
+
+                years.forEach(y => {
+                    const row = [y];
+                    stateNames.forEach(s => {
+                        row.push(stateMap[s]?.[y] ?? '');
+                    });
+                    stateRows.push(row);
+                });
+            } else {
+                // Year-keyed: { "2023": { "Alabama": 0.25, ... } }
+                const allYears = Object.keys(sd.data).sort();
+                const allStates = [...new Set(
+                    Object.values(sd.data).flatMap(d => Object.keys(d))
+                )].sort();
+
+                stateRows = [
+                    [`${m.metric} (${m.unit}) - Raw Per-State Data`],
+                    [`Source: ${sd.source}`],
+                    sd.calculation ? [`Calculation: ${sd.calculation}`] : [],
+                    sd.rawVariables ? [`Raw variables: ${sd.rawVariables}`] : [],
+                    [],
+                    ['Year', ...allStates],
+                ];
+
+                allYears.forEach(y => {
+                    const row = [y];
+                    allStates.forEach(s => {
+                        row.push(sd.data[y]?.[s] ?? '');
+                    });
+                    stateRows.push(row);
+                });
+            }
+
+            const wsStates = XLSX.utils.aoa_to_sheet(stateRows.filter(r => r.length > 0));
+            XLSX.utils.book_append_sheet(wb, wsStates, 'Raw Data');
+        }
+
+        // --- Tab 2: "Chart Data" (Hawaiʻi + Other State Avg, derived from raw data) ---
+        const effective = this.getEffectiveData(slug);
         const chartRows = [
-            [`${m.metric} (${m.unit})`],
+            [`${m.metric} (${m.unit}) - Dashboard Chart Data`],
             [`Source: ${m.source}`],
+            sd ? ['Note: Hawaiʻi and Other State Avg are computed from the Raw Data tab'] : [],
             [],
             ['Year', 'Hawai\u02BBi', 'Other State Avg'],
         ];
         const chartYears = [...new Set([
-            ...Object.keys(m.hawaii),
-            ...Object.keys(m.otherStateAvg),
+            ...Object.keys(effective.hawaii),
+            ...Object.keys(effective.otherStateAvg),
         ])].sort();
         chartYears.forEach(y => {
             chartRows.push([
                 y,
-                m.hawaii[y] != null ? m.hawaii[y] : '',
-                m.otherStateAvg[y] != null ? m.otherStateAvg[y] : '',
+                effective.hawaii[y] != null ? effective.hawaii[y] : '',
+                effective.otherStateAvg[y] != null ? effective.otherStateAvg[y] : '',
             ]);
         });
-        const wsChart = XLSX.utils.aoa_to_sheet(chartRows);
+        const wsChart = XLSX.utils.aoa_to_sheet(chartRows.filter(r => r.length > 0));
         XLSX.utils.book_append_sheet(wb, wsChart, 'Chart Data');
 
-        // --- Tab 2: "All States" (raw source data, all years × all states) ---
-        if (sd && sd.data) {
-            const allYears = Object.keys(sd.data).sort();
-            const allStates = [...new Set(
-                Object.values(sd.data).flatMap(d => Object.keys(d))
-            )].sort();
-
-            const stateRows = [
-                [`${m.metric} (${m.unit}) - All States`],
-                [`Source: ${sd.source}`],
-                [`Calculation: ${sd.calculation}`],
-                [`Raw variables: ${sd.rawVariables}`],
-                [],
-                ['Year', ...allStates],
-            ];
-
-            allYears.forEach(y => {
-                const row = [y];
-                allStates.forEach(s => {
-                    row.push(sd.data[y]?.[s] ?? '');
+        // --- Tab 3: "Rankings" (state rankings for the latest year) ---
+        if (sd) {
+            const rankings = this.getStateRankings(slug);
+            if (rankings && rankings.stateValues.length > 0) {
+                const isDecimal = ChartUtils.isDecimalPctMetric(m);
+                const rankRows = [
+                    [`${m.metric} - State Rankings (${rankings.year})`],
+                    [`${m.goodDirection === 'up' ? 'Higher is better' : 'Lower is better'}`],
+                    [],
+                    ['Rank', 'State', `Value (${m.unit})`],
+                ];
+                rankings.stateValues.forEach((sv, i) => {
+                    rankRows.push([i + 1, sv.state, sv.value]);
                 });
-                stateRows.push(row);
-            });
-
-            const wsStates = XLSX.utils.aoa_to_sheet(stateRows);
-            XLSX.utils.book_append_sheet(wb, wsStates, 'All States');
+                const wsRank = XLSX.utils.aoa_to_sheet(rankRows);
+                XLSX.utils.book_append_sheet(wb, wsRank, 'Rankings');
+            }
         }
 
-        // --- Tab 3: "Methodology" ---
+        // --- Tab 4: "Methodology" ---
         const methRows = [
             ['Metric', m.metric],
+            m.officialName ? ['Official Name', m.officialName] : [],
             ['Unit', m.unit],
             ['Area', m.area],
             ['Good Direction', m.goodDirection === 'up' ? 'Higher is better' : 'Lower is better'],
@@ -537,14 +603,14 @@ const App = {
         ];
         if (m.insight) methRows.push(['Insight', m.insight]);
         if (sd) {
-            methRows.push([], ['Calculation', sd.calculation], ['Raw Variables', sd.rawVariables]);
+            methRows.push([], ['Calculation', sd.calculation || ''], ['Raw Variables', sd.rawVariables || '']);
         }
         methRows.push([], ['Other State Avg', 'Simple mean of 49 states (excluding HI and DC)']);
         methRows.push(['Dashboard', 'hawaiidashboard.org']);
-        const wsMeth = XLSX.utils.aoa_to_sheet(methRows);
+        const wsMeth = XLSX.utils.aoa_to_sheet(methRows.filter(r => r.length > 0));
         XLSX.utils.book_append_sheet(wb, wsMeth, 'Methodology');
 
-        XLSX.writeFile(wb, `${slug}.xlsx`);
+        XLSX.writeFile(wb, `hawaii-${slug}.xlsx`);
     },
 
     /** Extract per-state latest-year values from STATE_DATA */
