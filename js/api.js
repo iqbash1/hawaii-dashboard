@@ -26,9 +26,11 @@ const LiveAPI = {
         if (!metricObj || !metricObj.otherStateAvg) return yearData;
         const avgYears = Object.keys(metricObj.otherStateAvg).map(Number);
         const minYear = Math.min(...avgYears);
+        const maxYear = Math.max(...avgYears);
         const clipped = {};
         for (const [y, v] of Object.entries(yearData)) {
-            if (Number(y) >= minYear) clipped[y] = v;
+            const yn = Number(y);
+            if (yn >= minYear && yn <= maxYear) clipped[y] = v;
         }
         return clipped;
     },

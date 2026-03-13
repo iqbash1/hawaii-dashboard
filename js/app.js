@@ -559,13 +559,13 @@ const App = {
             });
         }
 
-        // Override Hawaii's value with live-updated DASHBOARD_DATA so both
-        // the Detail (line chart) and Rankings (bar chart) views agree.
+        // Override Hawaii's ranking value with DASHBOARD_DATA (which includes
+        // live API updates) so Detail and Rankings views agree — but only if
+        // DASHBOARD_DATA has data at least as recent as the rankings year.
         const liveLatest = this.getLatestValue(metricData.hawaii);
-        if (liveLatest.value !== null) {
+        if (liveLatest.value !== null && liveLatest.year && liveLatest.year >= year) {
             let liveDisplay = (unit === '%' && Math.abs(liveLatest.value) < 1)
                 ? liveLatest.value * 100 : liveLatest.value;
-            // For PCP-style, values are already raw numbers
             if (isPCPStyle) liveDisplay = liveLatest.value;
             const hiIdx = stateValues.findIndex(s =>
                 s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
@@ -573,8 +573,7 @@ const App = {
             if (hiIdx >= 0) {
                 stateValues[hiIdx].value = liveDisplay;
             }
-            // Use whichever year is more recent
-            if (liveLatest.year && liveLatest.year > year) year = liveLatest.year;
+            if (liveLatest.year > year) year = liveLatest.year;
         }
 
         // Sort best-to-worst based on goodDirection
