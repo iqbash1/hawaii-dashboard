@@ -559,6 +559,24 @@ const App = {
             });
         }
 
+        // Override Hawaii's value with live-updated DASHBOARD_DATA so both
+        // the Detail (line chart) and Rankings (bar chart) views agree.
+        const liveLatest = this.getLatestValue(metricData.hawaii);
+        if (liveLatest.value !== null) {
+            let liveDisplay = (unit === '%' && Math.abs(liveLatest.value) < 1)
+                ? liveLatest.value * 100 : liveLatest.value;
+            // For PCP-style, values are already raw numbers
+            if (isPCPStyle) liveDisplay = liveLatest.value;
+            const hiIdx = stateValues.findIndex(s =>
+                s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
+            );
+            if (hiIdx >= 0) {
+                stateValues[hiIdx].value = liveDisplay;
+            }
+            // Use whichever year is more recent
+            if (liveLatest.year && liveLatest.year > year) year = liveLatest.year;
+        }
+
         // Sort best-to-worst based on goodDirection
         if (metricData.goodDirection === 'up') {
             stateValues.sort((a, b) => b.value - a.value);
