@@ -62,7 +62,7 @@ const App = {
         { area: 'Public Confidence', metrics: ['voter_participation_rate', 'net_domestic_migration_rate'] },
     ],
 
-    async init() {
+    init() {
         // Render cards from embedded data (updated quarterly)
         this.renderCards();
 
@@ -96,7 +96,8 @@ const App = {
 
         const diff = latest.value - latestAvg.value;
         const isBetter = metricData.goodDirection === 'up' ? diff > 0 : diff < 0;
-        const avgFormatted = ChartUtils.formatCardValue(latestAvg.value, metricData.unit);
+        const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
+        const avgFormatted = ChartUtils.formatCardValue(latestAvg.value, metricData.unit, isDecimal);
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
@@ -158,6 +159,7 @@ const App = {
                 card.dataset.metric = slug;
 
                 const latest = this.getLatestValue(metricData.hawaii);
+                const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
                 const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(metricData.unit)
                     ? `<span class="card-unit">${metricData.unit}</span>`
                     : '';
@@ -180,7 +182,7 @@ const App = {
                     </div>
                     <div class="card-metric">${metricData.metric}</div>
                     <div class="card-hero">
-                        <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, metricData.unit)}</span>
+                        <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, metricData.unit, isDecimal)}</span>
                         ${unitSuffix}
                     </div>
                     <div class="card-sparkline">
@@ -336,6 +338,7 @@ const App = {
         const latest = this.getLatestValue(metricData.hawaii);
         const latestAvg = this.getLatestValue(metricData.otherStateAvg);
         const prior = this.getPriorValue(metricData.hawaii);
+        const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
 
         // vs Other States
         let vsAvgClass = 'neutral';
@@ -378,12 +381,12 @@ const App = {
         statsContainer.innerHTML = `
             <div class="stat-card">
                 <div class="stat-label">Hawaiʻi (${latest.year || '\u2014'})</div>
-                <div class="stat-value hawaii-color">${ChartUtils.formatValue(latest.value, metricData.unit)}</div>
+                <div class="stat-value hawaii-color">${ChartUtils.formatValue(latest.value, metricData.unit, isDecimal)}</div>
                 ${unitSuffix}
             </div>
             <div class="stat-card">
                 <div class="stat-label">Other State Avg</div>
-                <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, metricData.unit)}</div>
+                <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, metricData.unit, isDecimal)}</div>
                 ${unitSuffix}
             </div>
             <div class="stat-card">
@@ -540,17 +543,16 @@ const App = {
             year = years[years.length - 1];
             const yearData = sd.data[year];
             if (!yearData) return null;
+            const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
             Object.entries(yearData).forEach(([state, value]) => {
                 if (value != null) {
-                    // Percentages stored as decimals — convert for display
-                    const displayVal = (unit === '%' && Math.abs(value) < 1) ? value * 100 : value;
+                    // Convert decimal-stored percentages for display
+                    const displayVal = isDecimal ? value * 100 : value;
                     stateValues.push({ state, value: displayVal });
                 }
             });
         }
 
-        // Override Hawaii's ranking value with DASHBOARD_DATA (which includes
-        // live API updates) so Detail and Rankings views agree — but only if
         // Sort best-to-worst based on goodDirection
         if (metricData.goodDirection === 'up') {
             stateValues.sort((a, b) => b.value - a.value);

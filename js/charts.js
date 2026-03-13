@@ -27,6 +27,18 @@ const ChartUtils = {
     isHawaii(name) { return name === 'Hawaii' || name === 'Hawai\u02BBi'; },
 
     /**
+     * Determine if a % metric stores values as decimals (0.028 = 2.8%)
+     * vs whole numbers (86 = 86%). Uses dataset-level check: if ALL
+     * non-null values are ≤ 1, it's decimal-stored.
+     */
+    isDecimalPctMetric(metricData) {
+        if (metricData.unit !== '%') return false;
+        const allVals = [...Object.values(metricData.hawaii), ...Object.values(metricData.otherStateAvg)]
+            .filter(v => v !== null && v !== 0);
+        return allVals.length > 0 && allVals.every(v => Math.abs(v) <= 1);
+    },
+
+    /**
      * Create a mini sparkline chart for a card
      */
     createSparkline(canvas, data, goodDirection) {
@@ -171,7 +183,12 @@ const ChartUtils = {
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
 
+        const nonNullHawaii = hawaiiValues.filter(v => v !== null);
+
         // Governor term labels - text only, no background bands
+        // Precompute Hawaii data average for adaptive label placement
+        const hiDataAvg = nonNullHawaii.length > 0
+            ? nonNullHawaii.reduce((a, b) => a + b, 0) / nonNullHawaii.length : 0;
         const governorPlugin = {
             id: 'governorLabels',
             beforeDraw(chart) {
@@ -185,10 +202,8 @@ const ChartUtils = {
                 const pillH = 16;
                 // Place labels at top or bottom depending on where the data sits
                 const yScale = chart.scales.y;
-                const hiData = chart.data.datasets[0].data.filter(v => v !== null);
-                const avgVal = hiData.length > 0 ? hiData.reduce((a,b) => a+b, 0) / hiData.length : 0;
                 const midY = (yScale.top + yScale.bottom) / 2;
-                const avgPixel = yScale.getPixelForValue(avgVal);
+                const avgPixel = yScale.getPixelForValue(hiDataAvg);
                 const dataInTopHalf = avgPixel < midY;
                 const pillY = dataInTopHalf
                     ? chartArea.bottom - pillH - 4
@@ -266,9 +281,7 @@ const ChartUtils = {
         const detailBad = `rgba(192, 57, 43, ${alpha.toFixed(2)})`;
 
         // Detect if % values are stored as decimals (0.028 = 2.8%) vs whole (86 = 86%)
-        const nonNullHawaii = hawaiiValues.filter(v => v !== null);
-        const isDecimalPct = data.unit === '%' && nonNullHawaii.length > 0 &&
-            nonNullHawaii.every(v => Math.abs(v) <= 1);
+        const isDecimalPct = this.isDecimalPctMetric(data);
 
         return new Chart(ctx, {
             type: 'line',
@@ -286,16 +299,16 @@ const ChartUtils = {
                             below: goodDir === 'up' ? detailBad : detailGood,
                         } : true,
                         tension: 0.3,
-                        pointRadius: hawaiiValues.map((v, i) => {
-                            if (v === null) return 0;
-                            const n = hawaiiValues.filter(x => x !== null).length;
-                            if (n <= 15) return 3;
-                            // Show dots every Nth point + first/last
+                        pointRadius: (() => {
+                            const n = nonNullHawaii.length;
+                            if (n <= 15) return hawaiiValues.map(v => v === null ? 0 : 3);
                             const step = Math.ceil(n / 12);
-                            const isFirst = i === hawaiiValues.findIndex(x => x !== null);
-                            const isLast = i === hawaiiValues.length - 1 - [...hawaiiValues].reverse().findIndex(x => x !== null);
-                            return (i % step === 0 || isFirst || isLast) ? 2.5 : 0;
-                        }),
+                            const firstIdx = hawaiiValues.findIndex(x => x !== null);
+                            const lastIdx = hawaiiValues.length - 1 - [...hawaiiValues].reverse().findIndex(x => x !== null);
+                            return hawaiiValues.map((v, i) =>
+                                v === null ? 0 : (i % step === 0 || i === firstIdx || i === lastIdx) ? 2.5 : 0
+                            );
+                        })(),
                         pointHoverRadius: 5,
                         pointBackgroundColor: this.HAWAII_BLUE,
                         pointBorderColor: '#fff',
@@ -324,9 +337,7 @@ const ChartUtils = {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: { top: 0 }
-                },
+                layout: { padding: 0 },
                 plugins: {
                     legend: {
                         display: true,
@@ -354,7 +365,7 @@ const ChartUtils = {
                         callbacks: {
                             label: function(context) {
                                 const val = context.parsed.y;
-                                return `${context.dataset.label}: ${ChartUtils.formatValue(val, data.unit)}`;
+                                return `${context.dataset.label}: ${ChartUtils.formatValue(val, data.unit, isDecimalPct)}`;
                             }
                         }
                     },
@@ -403,19 +414,20 @@ const ChartUtils = {
     },
 
     /**
-     * Format a value based on its unit type
+     * Format a value based on its unit type.
+     * @param {number} value
+     * @param {string} unit
+     * @param {boolean} [isDecimalPct] - For % units: true if values are stored as decimals (0.028 = 2.8%).
+     *                                   Pass this from isDecimalPctMetric() for accurate formatting.
      */
-    formatValue(value, unit) {
+    formatValue(value, unit, isDecimalPct) {
         if (value === null || value === undefined || isNaN(value)) return 'N/A';
 
         switch (unit) {
             case '$':
                 return '$' + Math.round(value).toLocaleString();
             case '%':
-                // Values might be stored as decimals (0.028) or whole (86)
-                if (Math.abs(value) < 1 && Math.abs(value) > 0) {
-                    return (value * 100).toFixed(1) + '%';
-                }
+                if (isDecimalPct) return (value * 100).toFixed(1) + '%';
                 return value.toFixed(1) + '%';
             case 'per 100K':
                 return Math.round(value).toLocaleString();
@@ -436,9 +448,12 @@ const ChartUtils = {
     },
 
     /**
-     * Format for display on cards (shorter)
+     * Format for display on cards (shorter).
+     * @param {number} value
+     * @param {string} unit
+     * @param {boolean} [isDecimalPct] - For % units: true if values are stored as decimals.
      */
-    formatCardValue(value, unit) {
+    formatCardValue(value, unit, isDecimalPct) {
         if (value === null || value === undefined || isNaN(value)) return 'N/A';
 
         switch (unit) {
@@ -448,9 +463,7 @@ const ChartUtils = {
                 }
                 return '$' + Math.round(value);
             case '%':
-                if (Math.abs(value) < 1 && Math.abs(value) > 0) {
-                    return (value * 100).toFixed(1) + '%';
-                }
+                if (isDecimalPct) return (value * 100).toFixed(1) + '%';
                 return value.toFixed(1) + '%';
             case 'per 100K':
                 return Math.round(value).toLocaleString();
@@ -491,7 +504,8 @@ const ChartUtils = {
         canvas.style.height = chartHeight + 'px';
         canvas.parentElement.style.height = chartHeight + 'px';
 
-        const fmt = this.formatValue.bind(this);
+        // Rankings values are pre-converted to display scale, so never multiply % by 100
+        const fmt = (v, u) => this.formatValue(v, u, false);
         const lerp = this.lerp;
         const n = stateValues.length;
 

@@ -198,9 +198,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "NCES",
     "sourceUrl": "https://nces.ed.gov/programs/digest/d23/tables/dt23_219.46.asp",
-    "whyItMatters": "Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate climbed from 81% in 2013 to 86% in 2022, meaning roughly 1,000 more students finish on time each year.",
-    "howToRead": "Hawaiʻi trailed the other-state average for most of the decade but caught up at 86% in 2022, matching the national average. The question is whether it can push past 90%.",
-    "insight": "The steady climb from 81% to 86% over nine years means roughly 1,000 more students finish on time each year. Sustained investment in student retention is paying off.",
+    "whyItMatters": "Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate climbed from 80% in 2011 to 93.2% in 2024, surpassing the other-state average of 91%.",
+    "howToRead": "Hawaiʻi trailed the other-state average for most of the 2010s but pulled ahead after 2022. A rising line means more students are finishing on time.",
+    "insight": "The jump from 86% in 2022 to 93.2% in 2024 represents one of the fastest improvements in the nation, moving Hawaiʻi from below average to above average.",
     "hawaii": {
       "2011": 80.0,
       "2012": 81.0,
@@ -213,7 +213,9 @@ const DASHBOARD_DATA = {
       "2019": 85.0,
       "2020": 85.0,
       "2021": 86.0,
-      "2022": 86.0
+      "2022": 86.0,
+      "2023": 92.9,
+      "2024": 93.2
     },
     "otherStateAvg": {
       "2011": 78.8,
@@ -227,7 +229,9 @@ const DASHBOARD_DATA = {
       "2019": 85.3673,
       "2020": 85.6327,
       "2021": 86.0213,
-      "2022": 85.5319
+      "2022": 85.5319,
+      "2023": 90.7898,
+      "2024": 91.0143
     }
   },
   "ba_or_higher_pct": {
@@ -701,7 +705,8 @@ const DASHBOARD_DATA = {
       "2021": 33.49,
       "2022": 43.03,
       "2023": 42.39,
-      "2024": 42.86
+      "2024": 42.86,
+      "2025": 40.59
     },
     "otherStateAvg": {
       "1990": 7.64,
@@ -738,7 +743,8 @@ const DASHBOARD_DATA = {
       "2021": 13.8759,
       "2022": 15.1145,
       "2023": 16.1759,
-      "2024": 16.5222
+      "2024": 16.5222,
+      "2025": 17.3802
     }
   },
   "renewables_share_gen": {
@@ -788,7 +794,8 @@ const DASHBOARD_DATA = {
       "2021": 0.1902,
       "2022": 0.1847,
       "2023": 0.2024,
-      "2024": 0.2177
+      "2024": 0.2177,
+      "2025": 0.2118
     },
     "otherStateAvg": {
       "1990": 0.149,
@@ -825,7 +832,8 @@ const DASHBOARD_DATA = {
       "2021": 0.2376,
       "2022": 0.2509,
       "2023": 0.2514,
-      "2024": 0.2661
+      "2024": 0.2661,
+      "2025": 0.1975
     }
   },
   "net_energy_import_pct": {
