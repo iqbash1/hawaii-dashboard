@@ -18,7 +18,7 @@ const ChartUtils = {
     AVG_GRAY_BG: 'rgba(102, 102, 102, 0.06)',
     GREEN_BEST: [5, 150, 105],
     RED_WORST: [192, 57, 43],
-    NEUTRAL_RANGE: [23, 27],
+    NEUTRAL_RANGE: [24, 26],
 
     /** Linear interpolation, rounded to integer */
     lerp(a, b, t) { return Math.round(a + (b - a) * t); },
@@ -439,6 +439,8 @@ const ChartUtils = {
                 return value.toFixed(1) + '\u00a2';
             case '\u00d7':
                 return value.toFixed(1) + '\u00d7';
+            case 'Index (2017=100)':
+                return value.toFixed(1);
             default:
                 if (Math.abs(value) >= 1000) {
                     return Math.round(value).toLocaleString();
@@ -475,6 +477,8 @@ const ChartUtils = {
                 return value.toFixed(1) + '\u00a2';
             case '\u00d7':
                 return value.toFixed(1) + '\u00d7';
+            case 'Index (2017=100)':
+                return value.toFixed(1);
             default:
                 if (Math.abs(value) >= 1000) {
                     return Math.round(value).toLocaleString();
@@ -548,11 +552,9 @@ const ChartUtils = {
                 const { top, bottom, left, right } = chartArea;
                 ctx.save();
                 const grad = ctx.createLinearGradient(0, top, 0, bottom);
-                grad.addColorStop(0, `rgba(${gr},${gg},${gb},0.18)`);
-                grad.addColorStop(neutralStartPct, `rgba(${gr},${gg},${gb},0.04)`);
-                grad.addColorStop((neutralStartPct + neutralEndPct) / 2, 'rgba(255,255,255,0)');
-                grad.addColorStop(neutralEndPct, `rgba(${rr},${rg},${rb},0.04)`);
-                grad.addColorStop(1, `rgba(${rr},${rg},${rb},0.16)`);
+                grad.addColorStop(0, `rgba(34,197,94,0.45)`);
+                grad.addColorStop(0.5, `rgba(255,255,255,0.0)`);
+                grad.addColorStop(1, `rgba(239,68,68,0.45)`);
                 ctx.fillStyle = grad;
                 ctx.fillRect(left, top, right - left, bottom - top);
                 ctx.restore();

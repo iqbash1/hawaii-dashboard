@@ -17,7 +17,6 @@ const AREA_ICONS = {
     'K-12 Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
     'Higher Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>',
     'Infrastructure': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
-    'Environment': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-3 3.5-5.5C7 13 9 10 13 8c-2 4-3 7-3.5 9.5-.3 1.5-.4 3-.5 4.5"/><path d="M22 2s-4 0-8 2-7 5-9 10c4-1 7-2 10-4s5-5 7-8z"/></svg>',
     'Fiscal Stewardship': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
     'Public Confidence': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
 };
@@ -49,7 +48,7 @@ const App = {
         { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
         { area: 'Public Health', metrics: ['pcp_per_100k', 'uninsured_rate'] },
         { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate'] },
-        { area: 'Energy', metrics: ['residential_price_cpkwh', 'net_energy_import_pct'] },
+        { area: 'Energy', metrics: ['residential_price_cpkwh', 'renewables_share_gen'] },
         { area: 'Food Security', metrics: ['food_insecurity_rate'] },
         { area: 'Employment', metrics: ['unemployment_rate'] },
         { area: 'Economic Prosperity', metrics: ['labor_productivity', 'real_per_capita_income'] },
@@ -57,7 +56,6 @@ const App = {
         { area: 'K-12 Education', metrics: ['acgr'] },
         { area: 'Higher Education', metrics: ['ba_or_higher_pct'] },
         { area: 'Infrastructure', metrics: ['road_poor_pct', 'broadband_subscription_pct'] },
-        { area: 'Environment', metrics: ['renewables_share_gen'] },
         { area: 'Fiscal Stewardship', metrics: ['rainy_day_fund_pct'] },
         { area: 'Public Confidence', metrics: ['voter_participation_rate', 'net_domestic_migration_rate'] },
     ],
@@ -519,7 +517,7 @@ const App = {
                 ${unitSuffix}
             </div>
             <div class="stat-card">
-                <div class="stat-label">Other State Avg (${latestAvg.year || '—'})</div>
+                <div class="stat-label">Other State Avg (${latestAvg.year || '-'})</div>
                 <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, effective.unit, isDecimal)}</div>
                 ${unitSuffix}
             </div>

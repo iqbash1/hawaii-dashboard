@@ -10,7 +10,7 @@
  *   uninsured_rate, home_price_to_income, unemployment_rate, violent_crime_rate,
  *   pcp_per_100k, estabs_entry_rate, net_employer_formation, acgr,
  *   residential_price_cpkwh, unsheltered_homeless_rate, food_insecurity_rate,
- *   real_per_capita_income, net_energy_import_pct, renewables_share_gen
+ *   real_per_capita_income, renewables_share_gen
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
  *   road_poor_pct (need to verify FHWA measure matches dashboard methodology)
@@ -54,15 +54,14 @@ const RECOMPUTE_METRICS = [
     'unsheltered_homeless_rate',
     'food_insecurity_rate',
     'real_per_capita_income',
-    'net_energy_import_pct',
     'renewables_share_gen',
     'voter_participation_rate',
+    'net_domestic_migration_rate',
 ];
 
 // Metrics with known bad state-data (keep original data.js, rankings-only)
 const SKIP_METRICS = [
     'road_poor_pct',              // state-data uses different methodology than data.js; removed from STATE_DATA
-    'net_domestic_migration_rate', // Sparse coverage (2003-10, 2024) creates discontinuities
 ];
 
 // ==========================================================

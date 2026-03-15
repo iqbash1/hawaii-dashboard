@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 22 metrics across 14 policy areas.
+// 21 metrics across 13 policy areas.
 // Hawaii values and Other State Avg (simple mean of 49 states,
 // excluding HI and DC) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
@@ -58,7 +58,7 @@ const DASHBOARD_DATA = {
       "2021": 268.4811,
       "2022": 274.5843,
       "2023": 187.1,
-      "2024": 158.9743
+      "2024": 217.68
     },
     "otherStateAvg": {
       "1985": 431.2,
@@ -200,14 +200,14 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "NCES",
     "sourceUrl": "https://nces.ed.gov/programs/digest/d23/tables/dt23_219.46.asp",
-    "whyItMatters": "Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate reached 86% in 2022, roughly matching the other-state average of 85.5319%.",
+    "whyItMatters": "Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate reached 86% in 2022, roughly matching the other-state average of 90.6%.",
     "howToRead": "Hawaiʻi trailed the other-state average for most of the 2010s and has been closing the gap. A rising line means more students are finishing on time.",
     "insight": "The graduation rate climbed from 80% in 2011 to 86% in 2022. Hawaiʻi's single statewide district means state policy directly drives this number.",
     "hawaii": {
       "2011": 80,
       "2012": 81,
-      "2013": 81,
-      "2014": 82,
+      "2013": 82.4,
+      "2014": 81.8,
       "2015": 82,
       "2016": 82,
       "2017": 83,
@@ -220,16 +220,16 @@ const DASHBOARD_DATA = {
     "otherStateAvg": {
       "2011": 78.8,
       "2012": 80.2,
-      "2013": 80.1739,
-      "2014": 81.5625,
-      "2015": 88.2,
-      "2016": 88.5,
-      "2017": 88.8,
-      "2018": 89.1,
-      "2019": 89.5,
-      "2020": 90,
-      "2021": 90.3,
-      "2022": 90.6
+      "2013": 81.5,
+      "2014": 82.5,
+      "2015": 83.3,
+      "2016": 84,
+      "2017": 84.8,
+      "2018": 85.3,
+      "2019": 85.6,
+      "2020": 86,
+      "2021": 85.5,
+      "2022": 85.9
     }
   },
   "ba_or_higher_pct": {
@@ -552,9 +552,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "HUD PIT Count",
     "sourceUrl": "https://www.huduser.gov/portal/datasets/ahar.html",
-    "whyItMatters": "Hawaiʻi has about 25 unsheltered homeless per 10,000 residents, 5 times the other-state average of 5.3. The State controls zoning, shelter funding, and housing subsidies that directly shape this number.",
+    "whyItMatters": "Hawaiʻi has about 28 unsheltered homeless per 10,000 residents, over 5 times the other-state average of 5.5. The State controls zoning, shelter funding, and housing subsidies that directly shape this number.",
     "howToRead": "Hawaiʻi's line runs 5 to 7 times above the other-state average for the entire period. Even small declines represent hundreds of lives improved.",
-    "insight": "Peaked at 30 per 10K in 2016 and has hovered around 25 since. Mild climate plays a role, but the scale of the gap points to a housing crisis.",
+    "insight": "Peaked at 30 per 10K in 2016, dipped to about 24 in 2018, then climbed back to 28 in 2024. Only Oregon and California have higher unsheltered rates.",
     "hawaii": {
       "2012": 18.0619,
       "2013": 18.3842,
@@ -567,7 +567,7 @@ const DASHBOARD_DATA = {
       "2020": 25.1507,
       "2022": 25.9866,
       "2023": 27.1058,
-      "2024": 25.1703
+      "2024": 28.16
     },
     "otherStateAvg": {
       "2012": 5.3972,
@@ -581,7 +581,7 @@ const DASHBOARD_DATA = {
       "2020": 3.944,
       "2022": 4.1754,
       "2023": 4.8458,
-      "2024": 5.3
+      "2024": 5.5
     }
   },
   "road_poor_pct": {
@@ -758,8 +758,8 @@ const DASHBOARD_DATA = {
     }
   },
   "renewables_share_gen": {
-    "area": "Environment",
-    "areaIcon": "🌿",
+    "area": "Energy",
+    "areaIcon": "⚡",
     "metric": "Electricity from Renewables",
     "officialName": "Renewable Sources as Share of Total Electricity Generation (EIA-923)",
     "unit": "%",
@@ -818,69 +818,6 @@ const DASHBOARD_DATA = {
       "2023": 0.2632,
       "2024": 0.2739,
       "2025": 0.2867
-    }
-  },
-  "net_energy_import_pct": {
-    "area": "Energy",
-    "areaIcon": "⚡",
-    "metric": "Share of Energy Imported",
-    "officialName": "Net Energy Import Dependence (EIA SEDS: 1 − Production/Consumption)",
-    "unit": "%",
-    "goodDirection": "down",
-    "source": "EIA SEDS",
-    "sourceUrl": "https://www.eia.gov/state/seds/",
-    "whyItMatters": "Hawaiʻi imports 94% of its total energy, while the average state is a net exporter at 32% surplus. This extreme dependence on imported petroleum means global oil price swings hit Hawaiʻi's economy and household budgets harder than any other state.",
-    "howToRead": "Hawaiʻi's line sits near the top at ~94%. The other-state average is below zero (net exporter). Despite a decade of renewable buildout, imports have only dropped from 96% to 94%.",
-    "insight": "In 2023 Hawaiʻi still imported 94% of its energy, down only slightly from near-total dependence a decade ago. Growing local renewable generation is the primary path to reducing this vulnerability.",
-    "hawaii": {
-      "2001": 0.9618,
-      "2002": 0.9672,
-      "2003": 0.9616,
-      "2004": 0.9626,
-      "2005": 0.9666,
-      "2006": 0.9652,
-      "2007": 0.966,
-      "2008": 0.9553,
-      "2009": 0.9551,
-      "2010": 0.9609,
-      "2011": 0.9605,
-      "2012": 0.9589,
-      "2013": 0.9495,
-      "2014": 0.9469,
-      "2015": 0.9473,
-      "2016": 0.9416,
-      "2017": 0.9494,
-      "2018": 0.9498,
-      "2019": 0.9519,
-      "2020": 0.9313,
-      "2021": 0.935,
-      "2022": 0.9375,
-      "2023": 0.9357
-    },
-    "otherStateAvg": {
-      "2001": -0.1231,
-      "2002": -0.1092,
-      "2003": -0.0876,
-      "2004": -0.1106,
-      "2005": -0.1146,
-      "2006": -0.1351,
-      "2007": -0.0981,
-      "2008": -0.1454,
-      "2009": -0.1609,
-      "2010": -0.1561,
-      "2011": -0.1694,
-      "2012": -0.1774,
-      "2013": -0.1855,
-      "2014": -0.2404,
-      "2015": -0.2618,
-      "2016": -0.1663,
-      "2017": -0.1916,
-      "2018": -0.2162,
-      "2019": -0.256,
-      "2020": -0.2273,
-      "2021": -0.2305,
-      "2022": -0.2681,
-      "2023": -0.3154
     }
   },
   "food_insecurity_rate": {
