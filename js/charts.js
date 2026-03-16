@@ -134,24 +134,21 @@ const ChartUtils = {
                     },
                     y: {
                         display: false,
-                        // Compress Y-axis so the current gap between lines is always visible
                         min: (() => {
                             const range = dataMax - dataMin;
                             const gap = Math.abs(latestHI - latestAvg);
-                            if (gap === 0 || range === 0) return undefined;
-                            // Use the larger of: full range, or gap * 3 (gap occupies ~33% of chart)
-                            // But cap range at gap * 6 so historical spikes don't flatten the current view
-                            const effectiveRange = Math.min(Math.max(range, gap * 3), gap * 6);
-                            const center = (latestHI + latestAvg) / 2;
-                            return center - effectiveRange * 0.6;
+                            const minRange = gap * 2;
+                            const effectiveRange = Math.max(range, minRange);
+                            const mid = (dataMin + dataMax) / 2;
+                            return mid - effectiveRange * 0.55;
                         })(),
                         max: (() => {
                             const range = dataMax - dataMin;
                             const gap = Math.abs(latestHI - latestAvg);
-                            if (gap === 0 || range === 0) return undefined;
-                            const effectiveRange = Math.min(Math.max(range, gap * 3), gap * 6);
-                            const center = (latestHI + latestAvg) / 2;
-                            return center + effectiveRange * 0.6;
+                            const minRange = gap * 2;
+                            const effectiveRange = Math.max(range, minRange);
+                            const mid = (dataMin + dataMax) / 2;
+                            return mid + effectiveRange * 0.55;
                         })(),
                     },
                 },
