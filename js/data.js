@@ -406,7 +406,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "BEA",
     "sourceUrl": "https://www.bea.gov/data/income-saving/personal-income-by-state",
-    "whyItMatters": "After adjusting for Hawaiʻi's higher cost of living, residents earn $64,591 per capita—about 11% less than the other-state average of $72,898. The State influences this through tax policy, minimum wage, and investments in workforce development.",
+    "whyItMatters": "After adjusting for Hawaiʻi's higher cost of living, residents earn $64,591 per capita, about 11% less than the other-state average of $72,898. The State influences this through tax policy, minimum wage, and investments in workforce development.",
     "howToRead": "Hawaiʻi's line has been below the other-state average the entire period. The gap was about $3,400 in 2008 and has widened to ~$6,700 by 2024.",
     "insight": "Real per capita income has climbed steadily since the 2009 trough, reaching $64,591 in 2024. But the gap with other states persists because Hawaiʻi's cost of living remains among the highest in the nation.",
     "hawaii": {
