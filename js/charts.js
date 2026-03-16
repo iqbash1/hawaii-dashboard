@@ -14,8 +14,8 @@ const ChartUtils = {
     // Color constants
     HAWAII_BLUE: '#0D7C8F',
     HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
-    AVG_GRAY: '#666666',
-    AVG_GRAY_BG: 'rgba(102, 102, 102, 0.06)',
+    AVG_GRAY: '#999999',
+    AVG_GRAY_BG: 'rgba(153, 153, 153, 0.06)',
     GREEN_BEST: [5, 150, 105],
     RED_WORST: [192, 57, 43],
     NEUTRAL_RANGE: [24, 26],
@@ -134,23 +134,24 @@ const ChartUtils = {
                     },
                     y: {
                         display: false,
-                        // Ensure gap between lines fills most of chart height
+                        // Compress Y-axis so the current gap between lines is always visible
                         min: (() => {
                             const range = dataMax - dataMin;
                             const gap = Math.abs(latestHI - latestAvg);
-                            // The gap should occupy ~50% of visible chart
-                            const minRange = gap * 2;
-                            const effectiveRange = Math.max(range, minRange);
-                            const mid = (dataMin + dataMax) / 2;
-                            return mid - effectiveRange * 0.55;
+                            if (gap === 0 || range === 0) return undefined;
+                            // Use the larger of: full range, or gap * 3 (gap occupies ~33% of chart)
+                            // But cap range at gap * 6 so historical spikes don't flatten the current view
+                            const effectiveRange = Math.min(Math.max(range, gap * 3), gap * 6);
+                            const center = (latestHI + latestAvg) / 2;
+                            return center - effectiveRange * 0.6;
                         })(),
                         max: (() => {
                             const range = dataMax - dataMin;
                             const gap = Math.abs(latestHI - latestAvg);
-                            const minRange = gap * 2;
-                            const effectiveRange = Math.max(range, minRange);
-                            const mid = (dataMin + dataMax) / 2;
-                            return mid + effectiveRange * 0.55;
+                            if (gap === 0 || range === 0) return undefined;
+                            const effectiveRange = Math.min(Math.max(range, gap * 3), gap * 6);
+                            const center = (latestHI + latestAvg) / 2;
+                            return center + effectiveRange * 0.6;
                         })(),
                     },
                 },
@@ -320,7 +321,7 @@ const ChartUtils = {
                         data: avgValues,
                         borderColor: this.AVG_GRAY,
                         backgroundColor: this.AVG_GRAY_BG,
-                        borderWidth: 2,
+                        borderWidth: 1.5,
                         borderDash: [6, 4],
                         fill: false,
                         tension: 0.3,
