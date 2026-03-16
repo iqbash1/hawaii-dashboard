@@ -12,7 +12,7 @@ const AREA_ICONS = {
     'Energy': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
     'Food Security': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
     'Employment': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
-    'Economic Prosperity': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    'Economic Prosperity': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
     'Business Climate': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
     'K-12 Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
     'Higher Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>',
@@ -66,6 +66,10 @@ const App = {
 
         // Set up modal events
         this.setupModal();
+
+        // Handle permalink hash routing
+        this.handleHashRoute();
+        window.addEventListener('hashchange', () => this.handleHashRoute());
     },
 
     // --- Helpers ---
@@ -260,11 +264,15 @@ const App = {
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
         const word = isFlat ? 'Flat' : (isImproving ? 'Improving' : 'Worsening');
 
+        const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
+        const formattedPrior = ChartUtils.formatCardValue(prior.value, metricData.unit, isDecimal);
+
         return `
             <div class="card-comp ${cls}">
                 <div class="comp-label">vs Prior Year</div>
                 <div class="comp-verdict">${pctLabel}</div>
                 <div class="comp-detail">${word}</div>
+                <div class="comp-context">from ${formattedPrior} in ${prior.year}</div>
             </div>
         `;
     },
@@ -537,7 +545,13 @@ const App = {
 
         // Show modal
         overlay.classList.add('active');
+        document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
+
+        // Update URL hash for permalink
+        if (window.location.hash !== '#' + slug) {
+            history.replaceState(null, '', '#' + slug);
+        }
 
         // If requested, switch to rankings tab immediately
         if (initialView === 'rankings' && hasStateData) {
@@ -553,10 +567,12 @@ const App = {
             tabDetail.classList.remove('active');
             tabRankings.classList.add('active');
             this.showRankings(slug);
+            history.replaceState(null, '', '#' + slug + '/rankings');
         } else {
             tabRankings.classList.remove('active');
             tabDetail.classList.add('active');
             this.hideRankings();
+            history.replaceState(null, '', '#' + slug);
         }
         document.querySelector('.modal').scrollTop = 0;
     },
@@ -797,6 +813,25 @@ const App = {
         this.rankingsChart = ChartUtils.createRankingsChart(
             canvas, stateValues, metricData.goodDirection, metricData.unit
         );
+
+        // Show scroll hint
+        const hint = document.getElementById('rankings-scroll-hint');
+        if (hint) {
+            hint.classList.remove('hidden');
+            const modal = document.getElementById('modal');
+            const onScroll = () => {
+                const wrap = document.querySelector('.rankings-chart-wrap');
+                if (!wrap) return;
+                const wrapBottom = wrap.getBoundingClientRect().bottom;
+                const modalBottom = modal.getBoundingClientRect().bottom;
+                if (wrapBottom <= modalBottom + 50) {
+                    hint.classList.add('hidden');
+                    modal.removeEventListener('scroll', onScroll);
+                }
+            };
+            modal.addEventListener('scroll', onScroll);
+            this._rankingsScrollHandler = onScroll;
+        }
     },
 
     hideRankings() {
@@ -809,6 +844,13 @@ const App = {
         if (tabDetail) tabDetail.classList.add('active');
         if (tabRankings) tabRankings.classList.remove('active');
 
+        // Clean up scroll hint listener
+        if (this._rankingsScrollHandler) {
+            const modal = document.getElementById('modal');
+            modal.removeEventListener('scroll', this._rankingsScrollHandler);
+            this._rankingsScrollHandler = null;
+        }
+
         if (this.rankingsChart) {
             this.rankingsChart.destroy();
             this.rankingsChart = null;
@@ -818,7 +860,18 @@ const App = {
     closeModal() {
         const overlay = document.getElementById('modal-overlay');
         overlay.classList.remove('active');
+        document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
+
+        // Clear URL hash
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+
+        // Clean up scroll hint listener
+        if (this._rankingsScrollHandler) {
+            const modal = document.getElementById('modal');
+            modal.removeEventListener('scroll', this._rankingsScrollHandler);
+            this._rankingsScrollHandler = null;
+        }
 
         // Destroy charts
         if (this.detailChart) {
@@ -829,6 +882,29 @@ const App = {
             this.rankingsChart.destroy();
             this.rankingsChart = null;
         }
+    },
+
+    /** Handle URL hash for permalink routing */
+    handleHashRoute() {
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+
+        const parts = hash.split('/');
+        const slug = parts[0];
+        const view = parts[1];
+
+        if (!DASHBOARD_DATA[slug]) return;
+
+        let areaName = '';
+        for (const areaGroup of this.AREA_ORDER) {
+            if (areaGroup.metrics.includes(slug)) {
+                areaName = areaGroup.area;
+                break;
+            }
+        }
+
+        const initialView = (view === 'rankings') ? 'rankings' : undefined;
+        this.openModal(slug, areaName, initialView);
     },
 };
 

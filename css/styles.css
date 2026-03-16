@@ -258,6 +258,13 @@ body {
     margin-top: 0.1rem;
 }
 
+.comp-context {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+    opacity: 0.7;
+}
+
 .card-comp.positive .comp-verdict {
     color: var(--positive);
 }
@@ -760,6 +767,15 @@ body {
         font-size: 0.6rem;
     }
 
+    .comp-context {
+        font-size: 0.52rem;
+    }
+
+    .card-comp {
+        min-width: 0;
+        overflow: hidden;
+    }
+
     .modal-overlay {
         padding: 0.5rem;
     }
@@ -815,6 +831,64 @@ body {
     }
 }
 
+/* --- Small Phone --- */
+@media (max-width: 380px) {
+    .card {
+        padding: 1rem;
+    }
+
+    .card-hawaii-value {
+        font-size: 1.25rem;
+    }
+
+    .card-metric {
+        font-size: 0.8rem;
+    }
+
+    .card-comp {
+        padding: 0.3rem 0.15rem;
+    }
+}
+
+/* --- Loading Skeleton --- */
+.card-skeleton {
+    pointer-events: none;
+}
+
+.skel-line, .skel-block, .skel-half {
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skel-short { width: 40%; height: 12px; margin-bottom: 0.6rem; }
+.skel-medium { width: 70%; height: 14px; margin-bottom: 0.5rem; }
+.skel-large { width: 35%; height: 24px; margin-bottom: 0.5rem; }
+.skel-block { width: 100%; height: 44px; margin-bottom: 0.75rem; }
+.skel-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.skel-half { height: 48px; }
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* --- Rankings Scroll Hint --- */
+.rankings-scroll-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding: 0.5rem 0;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.rankings-scroll-hint.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* --- Scrollbar --- */
 .modal::-webkit-scrollbar {
     width: 6px;
@@ -831,7 +905,132 @@ body {
 
 /* --- Print --- */
 @media print {
-    .header { background: white; color: black; }
-    .card { break-inside: avoid; border: 1px solid #ddd; }
-    .modal-overlay { display: none !important; }
+    body {
+        background: white;
+        color: black;
+        font-size: 11pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .header {
+        background: white;
+        color: black;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid #333;
+    }
+
+    .header-title {
+        font-size: 18pt;
+        color: black;
+    }
+
+    .header-subtitle,
+    .header-meta {
+        display: none;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+    }
+
+    .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        border: 1px solid #ccc;
+        padding: 0.75rem;
+        box-shadow: none;
+    }
+
+    .card:hover {
+        border-color: #ccc;
+        box-shadow: none;
+    }
+
+    .card-sparkline canvas {
+        max-height: 36px;
+    }
+
+    .card-rank-badge {
+        border: 1px solid #999;
+        background: #f0f0f0;
+        color: #333;
+    }
+
+    .card-skeleton,
+    .rankings-scroll-hint,
+    .modal-close,
+    .modal-tabs,
+    .csv-download,
+    .csv-sep,
+    .go-deeper,
+    .footer {
+        display: none !important;
+    }
+
+    /* When modal is open: print only modal content */
+    body.modal-open .dashboard-grid,
+    body.modal-open .header,
+    body.modal-open .go-deeper,
+    body.modal-open .footer {
+        display: none !important;
+    }
+
+    body.modal-open .modal-overlay {
+        display: block !important;
+        position: static;
+        background: none;
+        padding: 0;
+        opacity: 1;
+    }
+
+    body.modal-open .modal {
+        max-width: 100%;
+        max-height: none;
+        overflow: visible;
+        border: none;
+        box-shadow: none;
+    }
+
+    /* When modal is closed: hide modal overlay */
+    .modal-overlay {
+        display: none !important;
+    }
+
+    .modal-chart-container {
+        height: 280px;
+        padding: 1rem 0;
+    }
+
+    .modal-body {
+        padding: 0 1rem;
+    }
+
+    .modal-source {
+        position: static;
+        border-top: 1px solid #ccc;
+        background: white;
+    }
+
+    .modal-source a::after {
+        content: " (" attr(href) ")";
+        font-size: 0.7rem;
+        color: #666;
+    }
+
+    .modal-rankings {
+        page-break-before: avoid;
+    }
+
+    .rankings-chart-wrap {
+        max-height: none;
+        overflow: visible;
+    }
+
+    h2, h3 {
+        page-break-after: avoid;
+    }
 }
