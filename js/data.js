@@ -193,7 +193,7 @@ const DASHBOARD_DATA = {
     }
   },
   "acgr": {
-    "area": "K-12 Education",
+    "area": "Education",
     "areaIcon": "🎓",
     "metric": "High School Graduation Rate",
     "unit": "%",
@@ -233,7 +233,7 @@ const DASHBOARD_DATA = {
     }
   },
   "ba_or_higher_pct": {
-    "area": "Higher Education",
+    "area": "Education",
     "areaIcon": "📚",
     "metric": "Adults with Bachelor’s Degree+",
     "officialName": "Percent of Persons 25+ with Bachelor’s Degree or Higher",
@@ -281,6 +281,84 @@ const DASHBOARD_DATA = {
       "2022": 0.3463,
       "2023": 0.3512,
       "2024": 0.3575
+    }
+  },
+  "naep_math_8": {
+    "area": "Education",
+    "areaIcon": "🎓",
+    "metric": "NAEP 8th Grade Math",
+    "officialName": "NAEP Mathematics Scale Score, Grade 8 (Nation's Report Card)",
+    "unit": "score",
+    "goodDirection": "up",
+    "source": "NAEP / Nation's Report Card",
+    "sourceUrl": "https://www.nationsreportcard.gov/mathematics/states/scores/?grade=8",
+    "whyItMatters": "Hawaiʻi's 8th graders scored 270 on the NAEP math exam in 2024, about 3 points below the other-state average of 273. The State's single statewide school district means curriculum, teacher pay, and standards are set centrally — changes flow directly to every classroom.",
+    "howToRead": "Scores are on a 0–500 scale; 262 is 'Basic,' 299 is 'Proficient.' Both lines peaked around 2013 and have declined since, reflecting a nationwide post-pandemic slide. Hawaiʻi's gap with the average has narrowed slightly.",
+    "insight": "Hawaiʻi posted the 4th-largest math recovery among states between 2022 and 2024, essentially holding steady while many states continued to slide. The gap with the other-state average shrank from 12 points in 2003 to 3 points in 2024.",
+    "hawaii": {
+      "2003": 265.73,
+      "2005": 265.63,
+      "2007": 268.77,
+      "2009": 273.76,
+      "2011": 277.84,
+      "2013": 281.41,
+      "2015": 279.34,
+      "2017": 277.34,
+      "2019": 275.33,
+      "2022": 270.1,
+      "2024": 270.04
+    },
+    "otherStateAvg": {
+      "2003": 277.66,
+      "2005": 278.66,
+      "2007": 281.52,
+      "2009": 283.18,
+      "2011": 284.08,
+      "2013": 284.35,
+      "2015": 282.19,
+      "2017": 282.3,
+      "2019": 281.35,
+      "2022": 273.31,
+      "2024": 272.81
+    }
+  },
+  "naep_reading_8": {
+    "area": "Education",
+    "areaIcon": "🎓",
+    "metric": "NAEP 8th Grade Reading",
+    "officialName": "NAEP Reading Scale Score, Grade 8 (Nation's Report Card)",
+    "unit": "score",
+    "goodDirection": "up",
+    "source": "NAEP / Nation's Report Card",
+    "sourceUrl": "https://www.nationsreportcard.gov/reading/states/scores/?grade=8",
+    "whyItMatters": "Hawaiʻi's 8th graders scored 257 in reading in 2024, essentially matching the other-state average of 257. This is a striking turnaround from 2003, when Hawaiʻi trailed by 12 points. State literacy initiatives and the single-district structure deserve partial credit.",
+    "howToRead": "Scores are on a 0–500 scale; 243 is 'Basic,' 281 is 'Proficient.' Hawaiʻi's line has been climbing toward the average over two decades while other states have declined since 2013, closing the gap from below.",
+    "insight": "Hawaiʻi posted the 2nd-best reading recovery of any state between 2022 and 2024. The score of 257 is the closest Hawaiʻi has ever been to the other-state average, a convergence driven as much by other states declining as by Hawaiʻi improving.",
+    "hawaii": {
+      "2003": 251.28,
+      "2005": 248.51,
+      "2007": 251.33,
+      "2009": 254.74,
+      "2011": 257.19,
+      "2013": 259.96,
+      "2015": 257.35,
+      "2017": 260.98,
+      "2019": 258.16,
+      "2022": 258.98,
+      "2024": 257.28
+    },
+    "otherStateAvg": {
+      "2003": 263.11,
+      "2005": 262.36,
+      "2007": 262.74,
+      "2009": 263.85,
+      "2011": 265.29,
+      "2013": 266.81,
+      "2015": 265.36,
+      "2017": 265.88,
+      "2019": 262.61,
+      "2022": 258.83,
+      "2024": 256.94
     }
   },
   "unemployment_rate": {
