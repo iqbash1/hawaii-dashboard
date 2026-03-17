@@ -224,7 +224,7 @@ const App = {
     },
 
     /** Build "vs Other States" comparison HTML for a card */
-    buildVsAvgHtml(metricData) {
+    buildVsAvgHtml(metricData, slug) {
         const latest = this.getLatestValue(metricData.hawaii);
         const latestAvg = this.getLatestValue(metricData.otherStateAvg);
         if (latest.value === null || latestAvg.value === null) return '';
@@ -234,11 +234,23 @@ const App = {
         const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
         const avgFormatted = ChartUtils.formatCardValue(latestAvg.value, metricData.unit, isDecimal);
 
+        let rankHtml = '';
+        if (slug) {
+            const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+            if (hasRankings) {
+                const rankings = this.getStateRankings(slug);
+                if (rankings && rankings.hawaiiRank > 0) {
+                    rankHtml = `<div class="comp-rank" data-slug="${slug}">Rank #${rankings.hawaiiRank} of ${rankings.total}</div>`;
+                }
+            }
+        }
+
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
                 <div class="comp-label">vs Other States</div>
                 <div class="comp-verdict">${isBetter ? 'Better' : 'Worse'}</div>
                 <div class="comp-detail">avg ${avgFormatted}</div>
+                ${rankHtml}
             </div>
         `;
     },
@@ -303,21 +315,10 @@ const App = {
                     ? `<span class="card-unit">${effective.unit}</span>`
                     : '';
 
-                // Compute rank badge if state data available
-                let rankBadge = '';
-                const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
-                if (hasRankings) {
-                    const rankings = this.getStateRankings(slug);
-                    if (rankings && rankings.hawaiiRank > 0) {
-                        rankBadge = `<span class="card-rank-badge" data-slug="${slug}" data-area="${areaGroup.area}">Rank #${rankings.hawaiiRank}</span>`;
-                    }
-                }
-
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-icon">${AREA_ICONS[areaGroup.area] || ''}</div>
                         <div class="card-area">${areaGroup.area}</div>
-                        ${rankBadge}
                     </div>
                     <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">
@@ -328,15 +329,15 @@ const App = {
                         <canvas></canvas>
                     </div>
                     <div class="card-comparisons">
-                        ${this.buildVsAvgHtml(effective)}
+                        ${this.buildVsAvgHtml(effective, slug)}
                         ${this.buildVsYearHtml(effective)}
                     </div>
                 `;
 
-                // Click badge → open rankings directly
-                const badge = card.querySelector('.card-rank-badge');
-                if (badge) {
-                    badge.addEventListener('click', (e) => {
+                // Click rank → open rankings directly
+                const rankEl = card.querySelector('.comp-rank');
+                if (rankEl) {
+                    rankEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.openModal(slug, areaGroup.area, 'rankings');
                     });
