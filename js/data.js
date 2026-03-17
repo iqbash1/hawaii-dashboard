@@ -678,9 +678,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Census ACS",
     "sourceUrl": "https://data.census.gov/",
-    "whyItMatters": "4.3% of Hawaiʻi workers commute by public transit, nearly double the other-state average of 2.3%. That ranks #6 nationally, but the number is almost entirely driven by Oʻahu, where TheBus carries the vast majority of the state's transit riders. Neighbor islands have minimal or no fixed-route service. The share has fallen from a peak of 7.2% in 2014, and the Skyline rail extension will test whether the trend reverses.",
-    "howToRead": "Hawaiʻi's line sits well above the national average but has declined since 2014. The COVID-era plunge (to 3.3% in 2021) has only partially recovered. Because nearly all ridership is concentrated on Oʻahu, this metric largely reflects that island's commuting patterns.",
-    "insight": "Transit mode share peaked at 7.2% in 2014, then slid steadily to 5.4% by 2019 before COVID pushed it to 3.3%. The 2024 reading of 4.3% is a partial recovery, but still 40% below the pre-pandemic peak. Neighbor island residents remain almost entirely car-dependent.",
+    "whyItMatters": "4.3% of Hawaiʻi workers commute by public transit, nearly double the other-state average of 2.3%. This is almost entirely Oʻahu, where TheBus is one of the most-ridden municipal systems in the country; neighbor islands have minimal or no fixed-route service. The State funds transit operations, sets land-use rules that shape ridership, and is building the Skyline rail extension.",
+    "howToRead": "Hawaiʻi's line runs above the other-state average for the full period but has been declining since 2014. A rising line means more workers are choosing transit over cars.",
+    "insight": "The share peaked at 7.2% in 2014, slid to 5.4% by 2019, then cratered to 3.3% during COVID. At 4.3% in 2024 the recovery is still 40% below the pre-pandemic peak. Whether Skyline reverses the long-term slide is the key question ahead.",
     "hawaii": {
       "2006": 0.0539,
       "2007": 0.056,
