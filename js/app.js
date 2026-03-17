@@ -444,10 +444,23 @@ const App = {
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             <span class="csv-sep">&middot;</span>
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
+            <span class="csv-sep">&middot;</span>
+            <a href="#" class="share-link" id="share-link">Share</a>
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
             this.downloadData(slug);
+        });
+        document.getElementById('share-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            const shareUrl = 'https://hawaiidashboard.org/m/' + slug + '/';
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const el = document.getElementById('share-link');
+                el.textContent = 'Copied!';
+                setTimeout(() => { el.textContent = 'Share'; }, 2000);
+            }).catch(() => {
+                prompt('Copy this link:', shareUrl);
+            });
         });
 
         // Set up tabs
