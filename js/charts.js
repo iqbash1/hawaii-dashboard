@@ -550,9 +550,9 @@ const ChartUtils = {
                 const { top, bottom, left, right } = chartArea;
                 ctx.save();
                 const grad = ctx.createLinearGradient(0, top, 0, bottom);
-                grad.addColorStop(0, `rgba(34,197,94,0.45)`);
+                grad.addColorStop(0, `rgba(34,197,94,0.55)`);
                 grad.addColorStop(0.5, `rgba(255,255,255,0.0)`);
-                grad.addColorStop(1, `rgba(239,68,68,0.45)`);
+                grad.addColorStop(1, `rgba(239,68,68,0.55)`);
                 ctx.fillStyle = grad;
                 ctx.fillRect(left, top, right - left, bottom - top);
                 ctx.restore();

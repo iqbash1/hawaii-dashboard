@@ -551,10 +551,16 @@ const App = {
 
         // Chart uses effective data (trimmed to rankings year)
         const canvas = document.getElementById('modal-chart');
+        const skeleton = document.getElementById('modal-chart-skeleton');
+        canvas.style.display = 'none';
+        if (skeleton) skeleton.style.display = 'block';
+
         const labels = Object.keys(effective.hawaii);
         const govBoxes = this.getGovernorBoxes(labels);
 
         this.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes);
+        canvas.style.display = '';
+        if (skeleton) skeleton.style.display = 'none';
 
         // Show modal
         overlay.classList.add('active');
