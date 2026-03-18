@@ -3,8 +3,10 @@
 Generate per-metric Open Graph images and redirect pages.
 
 For each of the 24 metrics, creates:
-  - /assets/og/{slug}.png  (1200x630 branded OG image)
-  - /m/{slug}/index.html   (redirect page with metric-specific OG tags)
+  - /assets/og/{slug}.png             (detail OG image)
+  - /assets/og/{slug}_rankings.png    (rankings OG image with bar chart)
+  - /m/{slug}/index.html              (detail redirect page)
+  - /m/{slug}/rankings/index.html     (rankings redirect page)
 
 Run from the repo root:
   python3 scripts/generate-og-pages.py
@@ -33,17 +35,27 @@ WHITE     = (255, 255, 255)
 LIGHT     = (200, 210, 218)
 DIVIDER   = (70, 88, 105)
 HI_BLUE   = (26, 115, 141)   # #1A738D  Hawaii line color
+BAR_GRAY  = (120, 140, 155)   # gray bars for other states
+GREEN_BG  = (30, 80, 65)      # subtle green tint for top ranks
+RED_BG    = (80, 40, 40)      # subtle red tint for bottom ranks
 
 # ── Fonts ─────────────────────────────────────────────────────────
+_font_cache = {}
 def font(size):
+    if size in _font_cache:
+        return _font_cache[size]
     for path in ['/System/Library/Fonts/SFNS.ttf',
                  '/System/Library/Fonts/Helvetica.ttc',
                  '/System/Library/Fonts/Supplemental/Arial.ttf']:
         try:
-            return ImageFont.truetype(path, size)
+            f = ImageFont.truetype(path, size)
+            _font_cache[size] = f
+            return f
         except (IOError, OSError):
             continue
-    return ImageFont.load_default()
+    f = ImageFont.load_default()
+    _font_cache[size] = f
+    return f
 
 
 # ── Data Extraction ───────────────────────────────────────────────
@@ -51,18 +63,13 @@ def extract_data():
     """Run Node.js to extract DASHBOARD_DATA and STATE_DATA as JSON."""
     node_script = r"""
     const fs = require('fs');
-    // Read raw file contents
     let dataJS = fs.readFileSync('js/data.js', 'utf8');
     let stateJS = fs.readFileSync('js/state-data.js', 'utf8');
-
-    // Replace const/let/var declarations with assignments for eval
     dataJS = dataJS.replace(/^const\s+/m, 'global.');
     stateJS = stateJS.replace(/^const\s+/m, 'global.');
-
     eval(dataJS);
     eval(stateJS);
 
-    // Extract AREA_ORDER from app.js for area mapping
     let appJS = fs.readFileSync('js/app.js', 'utf8');
     const areaMatch = appJS.match(/AREA_ORDER:\s*\[([\s\S]*?)\],\s*\n/);
     const areaMap = {};
@@ -94,7 +101,6 @@ def extract_data():
 
 # ── Value Formatting (port of ChartUtils.formatCardValue) ─────────
 def is_decimal_pct(metric):
-    """Check if a % metric stores values as decimals (0.035 = 3.5%)."""
     if metric.get('unit') != '%':
         return False
     vals = [v for v in list(metric.get('hawaii', {}).values()) +
@@ -104,7 +110,6 @@ def is_decimal_pct(metric):
 
 
 def format_value(value, unit, decimal_pct):
-    """Format a metric value for display (Python port of formatCardValue)."""
     if value is None or (isinstance(value, float) and math.isnan(value)):
         return 'N/A'
     if unit == '$':
@@ -126,7 +131,6 @@ def format_value(value, unit, decimal_pct):
         return f'{value:.1f}\u00d7'
     if unit == 'Index (2017=100)':
         return f'{value:.1f}'
-    # default (score, etc.)
     if abs(value) >= 1000:
         return f'{round(value):,}'
     return f'{value:.1f}'
@@ -134,7 +138,7 @@ def format_value(value, unit, decimal_pct):
 
 # ── Rankings Computation (port of App.getStateRankings) ───────────
 def get_rankings(slug, dashboard, state_data):
-    """Compute state rankings. Returns dict or None."""
+    """Compute state rankings. Returns dict with state_values list or None."""
     sd = state_data.get(slug)
     if not sd or 'data' not in sd:
         return None
@@ -184,12 +188,12 @@ def get_rankings(slug, dashboard, state_data):
         'year': year,
         'hawaiiRank': hi_rank,
         'total': len(state_values),
+        'stateValues': state_values,
     }
 
 
 # ── Latest Value Extraction ───────────────────────────────────────
 def get_latest(series):
-    """Get latest non-zero value from {year: value} dict."""
     for year in sorted(series.keys(), reverse=True):
         v = series[year]
         if v is not None and v != 0:
@@ -197,9 +201,9 @@ def get_latest(series):
     return None, None
 
 
-# ── OG Image Generation ──────────────────────────────────────────
+# ── Detail OG Image ──────────────────────────────────────────────
 def generate_og_image(slug, metric, area, rankings, output_path):
-    """Generate a 1200x630 branded OG image for one metric."""
+    """Generate a 1200x630 branded OG image for one metric (detail view)."""
     W, H = 1200, 630
     im = Image.new('RGB', (W, H), BG)
     d = ImageDraw.Draw(im)
@@ -216,60 +220,39 @@ def generate_og_image(slug, metric, area, rankings, output_path):
     formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
     formatted_avg = format_value(latest_avg, unit, dec) if latest_avg is not None else 'N/A'
 
-    # Determine better/worse
     if latest_val is not None and latest_avg is not None:
-        if good_dir == 'up':
-            is_better = latest_val >= latest_avg
-        else:
-            is_better = latest_val <= latest_avg
+        is_better = (latest_val >= latest_avg) if good_dir == 'up' else (latest_val <= latest_avg)
         verdict = 'Better' if is_better else 'Worse'
         verdict_color = TEAL if is_better else ACCENT
     else:
-        verdict = ''
-        verdict_color = LIGHT
+        verdict, verdict_color = '', LIGHT
 
-    # ── Draw ──
     # Top accent bar
     d.rectangle([0, 0, W, 6], fill=ACCENT)
 
-    # Branding (top-left)
-    f_brand = font(20)
-    d.text((70, 50), "Hawai\u02BBi Dashboard", fill=LIGHT, font=f_brand)
+    # Branding
+    d.text((70, 50), "Hawai\u02BBi Dashboard", fill=LIGHT, font=font(20))
 
-    # Area label
-    f_area = font(15)
-    d.text((70, 120), area.upper(), fill=TEAL, font=f_area)
-
-    # Metric name
+    # Area label + metric name
+    d.text((70, 120), area.upper(), fill=TEAL, font=font(15))
     metric_name = metric.get('metric', slug)
-    f_name = font(38)
-    d.text((70, 148), metric_name, fill=WHITE, font=f_name)
+    d.text((70, 148), metric_name, fill=WHITE, font=font(38))
 
-    # ── Central card ──
-    card_x, card_y = 70, 210
-    card_w, card_h = 1060, 340
+    # Central card
+    card_x, card_y, card_w, card_h = 70, 210, 1060, 340
     d.rounded_rectangle([card_x, card_y, card_x + card_w, card_y + card_h],
                         radius=16, fill=CARD_BG)
 
     # Big value
     f_val = font(72)
     d.text((card_x + 40, card_y + 20), formatted, fill=WHITE, font=f_val)
-
-    # Year label next to value
     if latest_year:
-        f_year_label = font(22)
-        # Get value text width to position year label
         val_bbox = d.textbbox((0, 0), formatted, font=f_val)
-        val_w = val_bbox[2] - val_bbox[0]
-        d.text((card_x + 40 + val_w + 15, card_y + 55), latest_year,
-               fill=LIGHT, font=f_year_label)
+        d.text((card_x + 40 + val_bbox[2] - val_bbox[0] + 15, card_y + 55),
+               latest_year, fill=LIGHT, font=font(22))
 
-    # ── Sparkline ──
-    spark_x = card_x + 40
-    spark_y = card_y + 130
-    spark_w = card_w - 80
-    spark_h = 70
-
+    # Sparkline
+    spark_x, spark_y, spark_w, spark_h = card_x + 40, card_y + 130, card_w - 80, 70
     years_sorted = sorted(hawaii.keys())
     vals = [(y, hawaii[y]) for y in years_sorted if hawaii.get(y) and hawaii[y] != 0]
     avg_vals = [(y, other_avg.get(y, 0)) for y in years_sorted
@@ -277,90 +260,195 @@ def generate_og_image(slug, metric, area, rankings, output_path):
 
     if len(vals) >= 2:
         all_v = [v for _, v in vals] + [v for _, v in avg_vals if v]
-        v_min = min(all_v)
-        v_max = max(all_v)
+        v_min, v_max = min(all_v), max(all_v)
         v_range = v_max - v_min if v_max != v_min else 1
 
-        def to_px(val_list):
+        def to_px(vl):
             pts = []
-            n = len(val_list)
-            for i, (_, v) in enumerate(val_list):
-                px = spark_x + (i / max(1, n - 1)) * spark_w
+            for i, (_, v) in enumerate(vl):
+                px = spark_x + (i / max(1, len(vl) - 1)) * spark_w
                 py = spark_y + spark_h - ((v - v_min) / v_range) * spark_h
                 pts.append((px, py))
             return pts
 
-        # Draw other-state avg line (dashed approximation - dotted)
         if len(avg_vals) >= 2:
             avg_pts = to_px(avg_vals)
             for i in range(len(avg_pts) - 1):
-                if i % 2 == 0:  # skip every other segment for "dashed" effect
+                if i % 2 == 0:
                     d.line([avg_pts[i], avg_pts[i + 1]], fill=LIGHT, width=2)
 
-        # Draw Hawaii line (solid)
         hi_pts = to_px(vals)
         if len(hi_pts) >= 2:
             d.line(hi_pts, fill=HI_BLUE, width=3)
 
-        # Year labels under sparkline
-        f_spark_yr = font(12)
-        first_yr = vals[0][0]
-        last_yr = vals[-1][0]
-        d.text((spark_x, spark_y + spark_h + 4), f"'{first_yr[2:]}",
-               fill=LIGHT, font=f_spark_yr)
-        last_yr_bbox = d.textbbox((0, 0), f"'{last_yr[2:]}", font=f_spark_yr)
-        d.text((spark_x + spark_w - (last_yr_bbox[2] - last_yr_bbox[0]),
-                spark_y + spark_h + 4), f"'{last_yr[2:]}",
-               fill=LIGHT, font=f_spark_yr)
+        f_yr = font(12)
+        d.text((spark_x, spark_y + spark_h + 4), f"'{vals[0][0][2:]}", fill=LIGHT, font=f_yr)
+        last_lbl = f"'{vals[-1][0][2:]}"
+        bb = d.textbbox((0, 0), last_lbl, font=f_yr)
+        d.text((spark_x + spark_w - (bb[2] - bb[0]), spark_y + spark_h + 4),
+               last_lbl, fill=LIGHT, font=f_yr)
 
-    # ── Divider ──
+    # Divider
     div_y = card_y + 240
-    d.line([(card_x + 40, div_y), (card_x + card_w - 40, div_y)],
-           fill=DIVIDER, width=1)
+    d.line([(card_x + 40, div_y), (card_x + card_w - 40, div_y)], fill=DIVIDER, width=1)
 
-    # ── VS OTHER STATES section ──
-    f_label = font(12)
-    f_verdict = font(22)
-    f_detail = font(16)
+    # VS OTHER STATES
+    d.text((card_x + 40, div_y + 14), "VS OTHER STATES", fill=LIGHT, font=font(12))
+    d.text((card_x + 40, div_y + 34), verdict, fill=verdict_color, font=font(22))
+    d.text((card_x + 40, div_y + 64), f"avg {formatted_avg}", fill=LIGHT, font=font(16))
 
-    d.text((card_x + 40, div_y + 14), "VS OTHER STATES", fill=LIGHT, font=f_label)
-    d.text((card_x + 40, div_y + 34), verdict, fill=verdict_color, font=f_verdict)
-    d.text((card_x + 40, div_y + 64), f"avg {formatted_avg}",
-           fill=LIGHT, font=f_detail)
-
-    # ── Rank badge (right side) ──
+    # Rank badge
     if rankings and rankings['hawaiiRank'] > 0:
         rank_text = f"Rank #{rankings['hawaiiRank']} of {rankings['total']}"
         f_rank = font(22)
-        rank_bbox = d.textbbox((0, 0), rank_text, font=f_rank)
-        rank_w = rank_bbox[2] - rank_bbox[0]
-        rank_x = card_x + card_w - 40 - rank_w
-        d.text((rank_x, div_y + 34), rank_text, fill=TEAL, font=f_rank)
+        bb = d.textbbox((0, 0), rank_text, font=f_rank)
+        rx = card_x + card_w - 40 - (bb[2] - bb[0])
+        d.text((rx, div_y + 34), rank_text, fill=TEAL, font=f_rank)
+        d.text((rx, div_y + 64), f"({rankings['year']} data)", fill=LIGHT, font=font(14))
 
-        # Year for rankings
-        f_rank_yr = font(14)
-        yr_text = f"({rankings['year']} data)"
-        yr_bbox = d.textbbox((0, 0), yr_text, font=f_rank_yr)
-        d.text((rank_x, div_y + 64), yr_text, fill=LIGHT, font=f_rank_yr)
-
-    # ── Bottom bar ──
+    # Bottom bar
     d.rectangle([0, H - 50, W, H], fill=CARD_BG)
-    f_url = font(16)
-    d.text((70, H - 37), "hawaiidashboard.org", fill=LIGHT, font=f_url)
-
-    # Compass icon
-    cx, cy, cr = W - 90, H - 25, 12
-    d.ellipse([cx - cr, cy - cr, cx + cr, cy + cr], outline=WHITE, width=2)
-    d.polygon([(cx, cy - 10), (cx + 3, cy), (cx, cy + 2), (cx - 3, cy)], fill=ACCENT)
-    d.polygon([(cx, cy + 10), (cx + 3, cy), (cx, cy - 2), (cx - 3, cy)], fill=WHITE)
+    d.text((70, H - 37), "hawaiidashboard.org", fill=LIGHT, font=font(16))
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     im.save(output_path, 'PNG', optimize=True)
 
 
+# ── Rankings OG Image ─────────────────────────────────────────────
+def generate_rankings_og_image(slug, metric, area, rankings, output_path):
+    """Generate a 1200x630 OG image showing the horizontal bar chart."""
+    W, H = 1200, 630
+    im = Image.new('RGB', (W, H), BG)
+    d = ImageDraw.Draw(im)
+
+    unit = metric.get('unit', '')
+    # Rankings stateValues already have decimal->pct conversion applied,
+    # so pass decimal_pct=False to avoid double-conversion
+    dec = False
+    metric_name = metric.get('metric', slug)
+    sv = rankings['stateValues']
+    hi_rank = rankings['hawaiiRank']
+    total = rankings['total']
+    year = rankings['year']
+
+    # Top accent bar
+    d.rectangle([0, 0, W, 6], fill=ACCENT)
+
+    # Branding
+    d.text((70, 30), "Hawai\u02BBi Dashboard", fill=LIGHT, font=font(18))
+
+    # Title
+    d.text((70, 65), area.upper(), fill=TEAL, font=font(13))
+    d.text((70, 85), metric_name, fill=WHITE, font=font(30))
+
+    # Subtitle: rank + year
+    subtitle = f"Hawai\u02BBi ranks #{hi_rank} of {total} states ({year})"
+    d.text((70, 125), subtitle, fill=TEAL, font=font(18))
+
+    # ── Bar chart ──
+    # Show a window of states around Hawaii: top 5, gap, 3 around Hawaii, gap, bottom 2
+    # Or if Hawaii is in top/bottom, just show contiguous
+    bars_to_show = _pick_bars(sv, hi_rank, total)
+
+    chart_x = 200
+    chart_y = 168
+    chart_w = 930
+    bar_h = 28
+    gap = 5
+    total_chart_h = len(bars_to_show) * (bar_h + gap)
+
+    # Find max value for scaling
+    max_val = max(abs(s['value']) for s in sv) if sv else 1
+
+    for i, item in enumerate(bars_to_show):
+        y = chart_y + i * (bar_h + gap)
+
+        if item.get('gap'):
+            # Draw "..." gap indicator
+            d.text((chart_x - 30, y + 2), "\u2022\u2022\u2022", fill=LIGHT, font=font(16))
+            continue
+
+        state = item['state']
+        value = item['value']
+        rank = item['rank']
+        is_hi = state in ('Hawaii', 'Hawai\u02BBi')
+
+        # State label (right-aligned before bar)
+        label = 'Hawai\u02BBi' if is_hi else state
+        f_lbl = font(14)
+        lbl_bb = d.textbbox((0, 0), label, font=f_lbl)
+        lbl_w = lbl_bb[2] - lbl_bb[0]
+        label_color = WHITE if is_hi else LIGHT
+        d.text((chart_x - 10 - lbl_w, y + 5), label, fill=label_color, font=f_lbl)
+
+        # Bar
+        bar_w = max(4, (abs(value) / max_val) * chart_w) if max_val else 4
+        bar_color = TEAL if is_hi else BAR_GRAY
+        d.rounded_rectangle([chart_x, y, chart_x + bar_w, y + bar_h],
+                            radius=4, fill=bar_color)
+
+        # Value label at end of bar
+        val_text = format_value(value, unit, dec)
+        f_v = font(13)
+        vbb = d.textbbox((0, 0), val_text, font=f_v)
+        vw = vbb[2] - vbb[0]
+        val_x = chart_x + bar_w + 8
+        if val_x + vw > W - 30:
+            val_x = chart_x + bar_w - vw - 8
+        val_color = WHITE if is_hi else LIGHT
+        d.text((val_x, y + 6), val_text, fill=val_color, font=f_v)
+
+    # Bottom bar
+    d.rectangle([0, H - 50, W, H], fill=CARD_BG)
+    d.text((70, H - 37), "hawaiidashboard.org", fill=LIGHT, font=font(16))
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    im.save(output_path, 'PNG', optimize=True)
+
+
+def _pick_bars(sv, hi_rank, total):
+    """Pick which bars to show in the rankings OG image.
+    Show ~12 bars: top states, Hawaii's neighborhood, bottom states.
+    Uses gap markers to indicate skipped states."""
+    if total <= 14:
+        # Small enough to show all
+        return [{'state': s['state'], 'value': s['value'], 'rank': i+1}
+                for i, s in enumerate(sv)]
+
+    bars = []
+
+    if hi_rank <= 7:
+        # Hawaii near top: show top 10, gap, bottom 2
+        for i in range(min(10, total)):
+            bars.append({'state': sv[i]['state'], 'value': sv[i]['value'], 'rank': i+1})
+        bars.append({'gap': True})
+        for i in range(total - 2, total):
+            bars.append({'state': sv[i]['state'], 'value': sv[i]['value'], 'rank': i+1})
+    elif hi_rank >= total - 5:
+        # Hawaii near bottom: show top 2, gap, bottom 10
+        for i in range(2):
+            bars.append({'state': sv[i]['state'], 'value': sv[i]['value'], 'rank': i+1})
+        bars.append({'gap': True})
+        for i in range(max(0, total - 10), total):
+            bars.append({'state': sv[i]['state'], 'value': sv[i]['value'], 'rank': i+1})
+    else:
+        # Hawaii in middle: top 3, gap, 3 around Hawaii, gap, bottom 2
+        for i in range(3):
+            bars.append({'state': sv[i]['state'], 'value': sv[i]['value'], 'rank': i+1})
+        bars.append({'gap': True})
+        for i in range(hi_rank - 3, hi_rank + 2):
+            if 0 <= i < total:
+                bars.append({'state': sv[i]['state'], 'value': sv[i]['value'], 'rank': i+1})
+        bars.append({'gap': True})
+        for i in range(total - 2, total):
+            bars.append({'state': sv[i]['state'], 'value': sv[i]['value'], 'rank': i+1})
+
+    return bars
+
+
 # ── Redirect HTML Generation ─────────────────────────────────────
-def generate_redirect_html(slug, metric, area, rankings, output_path):
-    """Generate a lightweight redirect page with metric-specific OG tags."""
+def generate_redirect_html(slug, metric, area, rankings, output_path, is_rankings=False):
+    """Generate a redirect page with metric-specific OG tags."""
     metric_name = metric.get('metric', slug)
     unit = metric.get('unit', '')
     hawaii = metric.get('hawaii', {})
@@ -369,17 +457,27 @@ def generate_redirect_html(slug, metric, area, rankings, output_path):
     latest_year, latest_val = get_latest(hawaii)
     formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
 
-    # Build description
-    parts = [f"{area}: Hawai\u02BBi is at {formatted}"]
-    if latest_year:
-        parts[0] += f" ({latest_year})"
-    if rankings and rankings['hawaiiRank'] > 0:
-        parts.append(f"Ranked #{rankings['hawaiiRank']} of {rankings['total']} states")
-    description = '. '.join(parts) + '.'
-
-    title = f"{metric_name} \u2014 Hawai\u02BBi Dashboard"
-    image_url = f"{SITE_URL}/assets/og/{slug}.png"
-    page_url = f"{SITE_URL}/m/{slug}/"
+    if is_rankings:
+        title = f"{metric_name} Rankings \u2014 Hawai\u02BBi Dashboard"
+        image_url = f"{SITE_URL}/assets/og/{slug}_rankings.png"
+        page_url = f"{SITE_URL}/m/{slug}/rankings/"
+        redirect_hash = f"#{slug}/rankings"
+        parts = []
+        if rankings and rankings['hawaiiRank'] > 0:
+            parts.append(f"Hawai\u02BBi ranks #{rankings['hawaiiRank']} of {rankings['total']} states in {metric_name}")
+            parts.append(f"{formatted} ({rankings['year']})")
+        description = '. '.join(parts) + '.' if parts else f"{metric_name} state rankings."
+    else:
+        title = f"{metric_name} \u2014 Hawai\u02BBi Dashboard"
+        image_url = f"{SITE_URL}/assets/og/{slug}.png"
+        page_url = f"{SITE_URL}/m/{slug}/"
+        redirect_hash = f"#{slug}"
+        parts = [f"{area}: Hawai\u02BBi is at {formatted}"]
+        if latest_year:
+            parts[0] += f" ({latest_year})"
+        if rankings and rankings['hawaiiRank'] > 0:
+            parts.append(f"Ranked #{rankings['hawaiiRank']} of {rankings['total']} states")
+        description = '. '.join(parts) + '.'
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -400,22 +498,17 @@ def generate_redirect_html(slug, metric, area, rankings, output_path):
   <meta name="twitter:image" content="{image_url}">
   <meta name="description" content="{description}">
   <link rel="canonical" href="{page_url}">
-  <script>window.location.replace('/{slug_to_hash(slug)}');</script>
-  <meta http-equiv="refresh" content="0;url={SITE_URL}/#{slug}">
+  <script>window.location.replace('/{redirect_hash}');</script>
+  <meta http-equiv="refresh" content="0;url={SITE_URL}/{redirect_hash}">
 </head>
 <body>
-  <p>Redirecting to <a href="{SITE_URL}/#{slug}">Hawai\u02BBi Dashboard &mdash; {metric_name}</a>&hellip;</p>
+  <p>Redirecting to <a href="{SITE_URL}/{redirect_hash}">Hawai\u02BBi Dashboard &mdash; {metric_name}</a>&hellip;</p>
 </body>
 </html>"""
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html)
-
-
-def slug_to_hash(slug):
-    """Return hash URL path for redirect."""
-    return f'#{slug}'
 
 
 # ── Main ──────────────────────────────────────────────────────────
@@ -427,7 +520,7 @@ def main():
     area_map = raw['areaMap']
 
     slugs = list(area_map.keys())
-    print(f"Found {len(slugs)} metrics")
+    print(f"Found {len(slugs)} metrics\n")
 
     for slug in slugs:
         metric = dashboard.get(slug)
@@ -438,21 +531,24 @@ def main():
         area = area_map.get(slug, metric.get('area', ''))
         rankings = get_rankings(slug, dashboard, state_data)
 
-        # Generate OG image
-        img_path = os.path.join(ASSETS_OG, f'{slug}.png')
-        generate_og_image(slug, metric, area, rankings, img_path)
+        # Detail OG image + redirect page
+        generate_og_image(slug, metric, area, rankings,
+                          os.path.join(ASSETS_OG, f'{slug}.png'))
+        generate_redirect_html(slug, metric, area, rankings,
+                               os.path.join(REDIRECT_DIR, slug, 'index.html'))
 
-        # Generate redirect HTML
-        html_path = os.path.join(REDIRECT_DIR, slug, 'index.html')
-        generate_redirect_html(slug, metric, area, rankings, html_path)
+        # Rankings OG image + redirect page (only if state data exists)
+        if rankings and rankings['hawaiiRank'] > 0:
+            generate_rankings_og_image(slug, metric, area, rankings,
+                                       os.path.join(ASSETS_OG, f'{slug}_rankings.png'))
+            generate_redirect_html(slug, metric, area, rankings,
+                                   os.path.join(REDIRECT_DIR, slug, 'rankings', 'index.html'),
+                                   is_rankings=True)
 
         rank_str = f"#{rankings['hawaiiRank']}/{rankings['total']}" if rankings and rankings['hawaiiRank'] > 0 else "no rank"
-        print(f"  {slug}: {rank_str} -> {img_path}")
+        print(f"  {slug}: {rank_str}")
 
-    # Also regenerate the generic og-image.png
-    print(f"\nGenerated {len(slugs)} OG images + redirect pages")
-    print(f"  Images: {ASSETS_OG}/")
-    print(f"  Pages:  {REDIRECT_DIR}/")
+    print(f"\nDone. Images: {ASSETS_OG}/  Pages: {REDIRECT_DIR}/")
 
 
 if __name__ == '__main__':
