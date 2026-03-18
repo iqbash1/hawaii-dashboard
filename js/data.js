@@ -201,7 +201,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "CDC NCHS, National Vital Statistics System",
     "sourceUrl": "https://www.cdc.gov/suicide/facts/data.html",
-    "whyItMatters": "Hawaiʻi's age-adjusted suicide rate is 13.9 per 100,000, well below the other-state average of 17.0. While Hawaiʻi consistently ranks among the lower-rate states, the rate has fluctuated significantly — spiking to 17.1 in 2022 before declining. Isolation between islands, high cost of living, and limited mental health providers on neighbor islands all shape these numbers.",
+    "whyItMatters": "Hawaiʻi's age-adjusted suicide rate is 13.9 per 100,000, well below the other-state average of 17.0. While Hawaiʻi consistently ranks among the lower-rate states, the rate has fluctuated significantly, spiking to 17.1 in 2022 before declining. Isolation between islands, high cost of living, and limited mental health providers on neighbor islands all shape these numbers.",
     "howToRead": "A lower line means fewer suicide deaths per 100,000 residents. Hawaiʻi (teal) has stayed below the other-state average (gray) for most of the past 25 years, but the gap narrowed in recent years as the national rate climbed.",
     "insight": "Hawaiʻi's rate dropped from 11.1 in 1999 to a low of 8.2 in 2005, then climbed back to the mid-teens. The national trend rose steadily from about 12 to 17 over the same period. Despite Hawaiʻi's lower overall rate, Native Hawaiian and Pacific Islander populations face disproportionately high risk.",
     "hawaii": {
@@ -359,7 +359,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "NAEP / Nation's Report Card",
     "sourceUrl": "https://www.nationsreportcard.gov/mathematics/states/scores/?grade=8",
-    "whyItMatters": "Hawaiʻi's 8th graders scored 270 on the NAEP math exam in 2024, about 3 points below the other-state average of 273. The State's single statewide school district means curriculum, teacher pay, and standards are set centrally — changes flow directly to every classroom.",
+    "whyItMatters": "Hawaiʻi's 8th graders scored 270 on the NAEP math exam in 2024, about 3 points below the other-state average of 273. The State's single statewide school district means curriculum, teacher pay, and standards are set centrally, so changes flow directly to every classroom.",
     "howToRead": "Scores are on a 0–500 scale; 262 is 'Basic,' 299 is 'Proficient.' Both lines peaked around 2013 and have declined since, reflecting a nationwide post-pandemic slide. Hawaiʻi's gap with the average has narrowed slightly.",
     "insight": "Hawaiʻi posted the 4th-largest math recovery among states between 2022 and 2024, essentially holding steady while many states continued to slide. The gap with the other-state average shrank from 12 points in 2003 to 3 points in 2024.",
     "hawaii": {
@@ -553,7 +553,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.bls.gov/lau/",
     "whyItMatters": "At 59.9%, Hawaiʻi's labor force participation rate has fallen below the other-state average of 63.0%. This means roughly four in ten working-age residents are neither employed nor looking for work. High cost of living, an aging population, and multi-job fatigue all contribute to the decline.",
     "howToRead": "Hawaiʻi was above the other-state average through the 1990s but crossed below it in the mid-2000s. Both lines have been falling, but Hawaiʻi's decline has been steeper. COVID caused a sharp drop in 2020.",
-    "insight": "Hawaiʻi's participation rate was 69.3% in 1976 — among the highest in the nation — and has fallen steadily to 59.9% in 2024. The 9.4-point decline is nearly double the national drop. Out-migration of working-age residents and the high cost of living are key drivers.",
+    "insight": "Hawaiʻi's participation rate was 69.3% in 1976, among the highest in the nation, and has fallen steadily to 59.9% in 2024. The 9.4-point decline is nearly double the national drop. Out-migration of working-age residents and the high cost of living are key drivers.",
     "hawaii": {
       "1976": 69.3,
       "1977": 68.5,

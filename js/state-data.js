@@ -14552,7 +14552,7 @@ const STATE_DATA = {
   },
 
   "suicide_rate": {
-    "source": "CDC NCHS, National Vital Statistics System — Mapping Injury, Overdose, and Violence (ICD-10 codes X60–X84, U03, Y87.0)",
+    "source": "CDC NCHS, National Vital Statistics System, Mapping Injury, Overdose, and Violence (ICD-10 codes X60–X84, U03, Y87.0)",
     "calculation": "Age-adjusted death rate per 100,000 population for intentional self-harm (suicide).",
     "data": {
       "2019": {

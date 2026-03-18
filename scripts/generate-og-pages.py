@@ -458,7 +458,7 @@ def generate_redirect_html(slug, metric, area, rankings, output_path, is_ranking
     formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
 
     if is_rankings:
-        title = f"{metric_name} Rankings \u2014 Hawai\u02BBi Dashboard"
+        title = f"{metric_name} Rankings | Hawai\u02BBi Dashboard"
         image_url = f"{SITE_URL}/assets/og/{slug}_rankings.png"
         page_url = f"{SITE_URL}/r/{slug}/"
         redirect_hash = f"#{slug}/rankings"
@@ -468,7 +468,7 @@ def generate_redirect_html(slug, metric, area, rankings, output_path, is_ranking
             parts.append(f"{formatted} ({rankings['year']})")
         description = '. '.join(parts) + '.' if parts else f"{metric_name} state rankings."
     else:
-        title = f"{metric_name} \u2014 Hawai\u02BBi Dashboard"
+        title = f"{metric_name} | Hawai\u02BBi Dashboard"
         image_url = f"{SITE_URL}/assets/og/{slug}.png"
         page_url = f"{SITE_URL}/t/{slug}/"
         redirect_hash = f"#{slug}"
