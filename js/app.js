@@ -65,9 +65,10 @@ const App = {
         // Set up modal events
         this.setupModal();
 
-        // Handle permalink hash routing
-        this.handleHashRoute();
-        window.addEventListener('hashchange', () => this.handleHashRoute());
+        // Handle permalink routing (path-based /m/slug/ or legacy hash #slug)
+        this.handleRoute();
+        window.addEventListener('hashchange', () => this.handleRoute());
+        window.addEventListener('popstate', () => this.handleRoute());
     },
 
     // --- Helpers ---
@@ -560,10 +561,8 @@ const App = {
         document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
 
-        // Update URL hash for permalink
-        if (window.location.hash !== '#' + slug) {
-            history.replaceState(null, '', '#' + slug);
-        }
+        // Update URL for permalink (use /m/ path for clean sharing)
+        history.replaceState(null, '', '/m/' + slug + '/');
 
         // If requested, switch to rankings tab immediately
         if (initialView === 'rankings' && hasStateData) {
@@ -579,12 +578,12 @@ const App = {
             tabDetail.classList.remove('active');
             tabRankings.classList.add('active');
             this.showRankings(slug);
-            history.replaceState(null, '', '#' + slug + '/rankings');
+            history.replaceState(null, '', '/m/' + slug + '/');
         } else {
             tabRankings.classList.remove('active');
             tabDetail.classList.add('active');
             this.hideRankings();
-            history.replaceState(null, '', '#' + slug);
+            history.replaceState(null, '', '/m/' + slug + '/');
         }
         document.querySelector('.modal').scrollTop = 0;
     },
@@ -875,8 +874,8 @@ const App = {
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
 
-        // Clear URL hash
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+        // Reset URL to root
+        history.replaceState(null, '', '/');
 
         // Clean up scroll hint listener
         if (this._rankingsScrollHandler) {
@@ -896,16 +895,27 @@ const App = {
         }
     },
 
-    /** Handle URL hash for permalink routing */
-    handleHashRoute() {
-        const hash = window.location.hash.slice(1);
-        if (!hash) return;
+    /** Handle permalink routing: /m/{slug}/ (preferred) or legacy #{slug} */
+    handleRoute() {
+        let slug = '';
+        let view = '';
 
-        const parts = hash.split('/');
-        const slug = parts[0];
-        const view = parts[1];
+        // Check path-based route first: /m/{slug}/
+        const pathMatch = window.location.pathname.match(/^\/m\/([^/]+)/);
+        if (pathMatch) {
+            slug = pathMatch[1];
+        }
 
-        if (!DASHBOARD_DATA[slug]) return;
+        // Fall back to legacy hash route: #{slug} or #{slug}/rankings
+        if (!slug) {
+            const hash = window.location.hash.slice(1);
+            if (!hash) return;
+            const parts = hash.split('/');
+            slug = parts[0];
+            view = parts[1] || '';
+        }
+
+        if (!slug || !DASHBOARD_DATA[slug]) return;
 
         let areaName = '';
         for (const areaGroup of this.AREA_ORDER) {
