@@ -27,18 +27,19 @@ REDIRECT_DIR_T = os.path.join(BASE_DIR, 't')   # /t/{slug}/ trend pages
 REDIRECT_DIR_R = os.path.join(BASE_DIR, 'r')   # /r/{slug}/ rankings pages
 SITE_URL = 'https://hawaiidashboard.org'
 
-# ── Colors (from dashboard CSS) ───────────────────────────────────
-BG        = (56, 75, 91)      # #384B5B  dark slate
-CARD_BG   = (45, 62, 77)      # card interior
-ACCENT    = (208, 49, 53)     # #d03135  red
-TEAL      = (20, 148, 138)    # #14948A  "Better" green
-WHITE     = (255, 255, 255)
-LIGHT     = (200, 210, 218)
-DIVIDER   = (70, 88, 105)
-HI_BLUE   = (26, 115, 141)   # #1A738D  Hawaii line color
-BAR_GRAY  = (120, 140, 155)   # gray bars for other states
-GREEN_BG  = (30, 80, 65)      # subtle green tint for top ranks
-RED_BG    = (80, 40, 40)      # subtle red tint for bottom ranks
+# ── Colors (matching dashboard CSS variables) ─────────────────────
+BG         = (245, 245, 245)    # #F5F5F5  --bg  page background
+CARD_BG    = (255, 255, 255)    # #FFFFFF  --card-bg
+TEAL       = (13, 124, 143)     # #0D7C8F  --hawaii-blue
+POSITIVE   = (5, 150, 105)      # #059669  --positive  "Better"
+NEGATIVE   = (192, 57, 43)      # #C0392B  --negative  "Worse"
+TEXT_PRI   = (51, 51, 51)       # #333333  --text  primary
+TEXT_SEC   = (102, 102, 102)    # #666666  secondary
+TEXT_TER   = (153, 153, 153)    # #999999  tertiary / labels
+DIVIDER    = (220, 220, 220)    # #DCDCDC  borders
+SPARK_GRAY = (175, 175, 175)    # #AFAFAF  other-state sparkline
+BAR_GRAY   = (195, 205, 215)   # #C3CDD7  other-state bars
+FOOTER_BG  = (235, 237, 240)   # #EBEDF0  footer strip
 
 # ── Fonts ─────────────────────────────────────────────────────────
 _font_cache = {}
@@ -224,33 +225,33 @@ def generate_og_image(slug, metric, area, rankings, output_path):
     if latest_val is not None and latest_avg is not None:
         is_better = (latest_val >= latest_avg) if good_dir == 'up' else (latest_val <= latest_avg)
         verdict = 'Better' if is_better else 'Worse'
-        verdict_color = TEAL if is_better else ACCENT
+        verdict_color = POSITIVE if is_better else NEGATIVE
     else:
-        verdict, verdict_color = '', LIGHT
+        verdict, verdict_color = '', TEXT_TER
 
     # Top accent bar
-    d.rectangle([0, 0, W, 6], fill=ACCENT)
+    d.rectangle([0, 0, W, 5], fill=TEAL)
 
     # Branding
-    d.text((70, 50), "Hawai\u02BBi Dashboard", fill=LIGHT, font=font(20))
+    d.text((70, 40), "Hawai\u02BBi Dashboard", fill=TEXT_SEC, font=font(20))
 
     # Area label + metric name
-    d.text((70, 120), area.upper(), fill=TEAL, font=font(15))
+    d.text((70, 100), area.upper(), fill=TEAL, font=font(15))
     metric_name = metric.get('metric', slug)
-    d.text((70, 148), metric_name, fill=WHITE, font=font(38))
+    d.text((70, 125), metric_name, fill=TEXT_PRI, font=font(38))
 
-    # Central card
-    card_x, card_y, card_w, card_h = 70, 210, 1060, 340
+    # Central card with border
+    card_x, card_y, card_w, card_h = 70, 190, 1060, 350
     d.rounded_rectangle([card_x, card_y, card_x + card_w, card_y + card_h],
-                        radius=16, fill=CARD_BG)
+                        radius=12, fill=CARD_BG, outline=DIVIDER, width=1)
 
     # Big value
     f_val = font(72)
-    d.text((card_x + 40, card_y + 20), formatted, fill=WHITE, font=f_val)
+    d.text((card_x + 40, card_y + 20), formatted, fill=TEXT_PRI, font=f_val)
     if latest_year:
         val_bbox = d.textbbox((0, 0), formatted, font=f_val)
         d.text((card_x + 40 + val_bbox[2] - val_bbox[0] + 15, card_y + 55),
-               latest_year, fill=LIGHT, font=font(22))
+               latest_year, fill=TEXT_TER, font=font(22))
 
     # Sparkline
     spark_x, spark_y, spark_w, spark_h = card_x + 40, card_y + 130, card_w - 80, 70
@@ -276,27 +277,27 @@ def generate_og_image(slug, metric, area, rankings, output_path):
             avg_pts = to_px(avg_vals)
             for i in range(len(avg_pts) - 1):
                 if i % 2 == 0:
-                    d.line([avg_pts[i], avg_pts[i + 1]], fill=LIGHT, width=2)
+                    d.line([avg_pts[i], avg_pts[i + 1]], fill=SPARK_GRAY, width=2)
 
         hi_pts = to_px(vals)
         if len(hi_pts) >= 2:
-            d.line(hi_pts, fill=HI_BLUE, width=3)
+            d.line(hi_pts, fill=TEAL, width=3)
 
         f_yr = font(12)
-        d.text((spark_x, spark_y + spark_h + 4), f"'{vals[0][0][2:]}", fill=LIGHT, font=f_yr)
+        d.text((spark_x, spark_y + spark_h + 4), f"'{vals[0][0][2:]}", fill=TEXT_TER, font=f_yr)
         last_lbl = f"'{vals[-1][0][2:]}"
         bb = d.textbbox((0, 0), last_lbl, font=f_yr)
         d.text((spark_x + spark_w - (bb[2] - bb[0]), spark_y + spark_h + 4),
-               last_lbl, fill=LIGHT, font=f_yr)
+               last_lbl, fill=TEXT_TER, font=f_yr)
 
     # Divider
-    div_y = card_y + 240
+    div_y = card_y + 245
     d.line([(card_x + 40, div_y), (card_x + card_w - 40, div_y)], fill=DIVIDER, width=1)
 
     # VS OTHER STATES
-    d.text((card_x + 40, div_y + 14), "VS OTHER STATES", fill=LIGHT, font=font(12))
+    d.text((card_x + 40, div_y + 14), "VS OTHER STATES", fill=TEXT_TER, font=font(12))
     d.text((card_x + 40, div_y + 34), verdict, fill=verdict_color, font=font(22))
-    d.text((card_x + 40, div_y + 64), f"avg {formatted_avg}", fill=LIGHT, font=font(16))
+    d.text((card_x + 40, div_y + 64), f"avg {formatted_avg}", fill=TEXT_SEC, font=font(16))
 
     # Rank badge
     if rankings and rankings['hawaiiRank'] > 0:
@@ -305,11 +306,12 @@ def generate_og_image(slug, metric, area, rankings, output_path):
         bb = d.textbbox((0, 0), rank_text, font=f_rank)
         rx = card_x + card_w - 40 - (bb[2] - bb[0])
         d.text((rx, div_y + 34), rank_text, fill=TEAL, font=f_rank)
-        d.text((rx, div_y + 64), f"({rankings['year']} data)", fill=LIGHT, font=font(14))
+        d.text((rx, div_y + 64), f"({rankings['year']} data)", fill=TEXT_TER, font=font(14))
 
-    # Bottom bar
-    d.rectangle([0, H - 50, W, H], fill=CARD_BG)
-    d.text((70, H - 37), "hawaiidashboard.org", fill=LIGHT, font=font(16))
+    # Footer
+    d.rectangle([0, H - 46, W, H], fill=FOOTER_BG)
+    d.line([(0, H - 46), (W, H - 46)], fill=DIVIDER, width=1)
+    d.text((70, H - 34), "hawaiidashboard.org", fill=TEXT_SEC, font=font(16))
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     im.save(output_path, 'PNG', optimize=True)
@@ -333,30 +335,27 @@ def generate_rankings_og_image(slug, metric, area, rankings, output_path):
     year = rankings['year']
 
     # Top accent bar
-    d.rectangle([0, 0, W, 6], fill=ACCENT)
+    d.rectangle([0, 0, W, 5], fill=TEAL)
 
     # Branding
-    d.text((70, 30), "Hawai\u02BBi Dashboard", fill=LIGHT, font=font(18))
+    d.text((70, 25), "Hawai\u02BBi Dashboard", fill=TEXT_SEC, font=font(18))
 
     # Title
-    d.text((70, 65), area.upper(), fill=TEAL, font=font(13))
-    d.text((70, 85), metric_name, fill=WHITE, font=font(30))
+    d.text((70, 58), area.upper(), fill=TEAL, font=font(13))
+    d.text((70, 78), metric_name, fill=TEXT_PRI, font=font(30))
 
     # Subtitle: rank + year
     subtitle = f"Hawai\u02BBi ranks #{hi_rank} of {total} states ({year})"
-    d.text((70, 125), subtitle, fill=TEAL, font=font(18))
+    d.text((70, 118), subtitle, fill=TEAL, font=font(18))
 
     # ── Bar chart ──
-    # Show a window of states around Hawaii: top 5, gap, 3 around Hawaii, gap, bottom 2
-    # Or if Hawaii is in top/bottom, just show contiguous
     bars_to_show = _pick_bars(sv, hi_rank, total)
 
     chart_x = 200
-    chart_y = 168
+    chart_y = 158
     chart_w = 930
     bar_h = 28
     gap = 5
-    total_chart_h = len(bars_to_show) * (bar_h + gap)
 
     # Find max value for scaling
     max_val = max(abs(s['value']) for s in sv) if sv else 1
@@ -365,8 +364,7 @@ def generate_rankings_og_image(slug, metric, area, rankings, output_path):
         y = chart_y + i * (bar_h + gap)
 
         if item.get('gap'):
-            # Draw "..." gap indicator
-            d.text((chart_x - 30, y + 2), "\u2022\u2022\u2022", fill=LIGHT, font=font(16))
+            d.text((chart_x - 30, y + 2), "\u2022\u2022\u2022", fill=TEXT_TER, font=font(16))
             continue
 
         state = item['state']
@@ -379,7 +377,7 @@ def generate_rankings_og_image(slug, metric, area, rankings, output_path):
         f_lbl = font(14)
         lbl_bb = d.textbbox((0, 0), label, font=f_lbl)
         lbl_w = lbl_bb[2] - lbl_bb[0]
-        label_color = WHITE if is_hi else LIGHT
+        label_color = TEXT_PRI if is_hi else TEXT_SEC
         d.text((chart_x - 10 - lbl_w, y + 5), label, fill=label_color, font=f_lbl)
 
         # Bar
@@ -396,12 +394,13 @@ def generate_rankings_og_image(slug, metric, area, rankings, output_path):
         val_x = chart_x + bar_w + 8
         if val_x + vw > W - 30:
             val_x = chart_x + bar_w - vw - 8
-        val_color = WHITE if is_hi else LIGHT
+        val_color = TEXT_PRI if is_hi else TEXT_SEC
         d.text((val_x, y + 6), val_text, fill=val_color, font=f_v)
 
-    # Bottom bar
-    d.rectangle([0, H - 50, W, H], fill=CARD_BG)
-    d.text((70, H - 37), "hawaiidashboard.org", fill=LIGHT, font=font(16))
+    # Footer
+    d.rectangle([0, H - 46, W, H], fill=FOOTER_BG)
+    d.line([(0, H - 46), (W, H - 46)], fill=DIVIDER, width=1)
+    d.text((70, H - 34), "hawaiidashboard.org", fill=TEXT_SEC, font=font(16))
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     im.save(output_path, 'PNG', optimize=True)
