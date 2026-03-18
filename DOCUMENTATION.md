@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state government performance across **24 metrics** and **12 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state government performance across **26 metrics** and **12 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -70,34 +70,36 @@ hawaii-dashboard/
 
 ---
 
-## The 24 Metrics
+## The 26 Metrics
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
 | 1 | Safety & Justice | Violent Crime Rate | per 100K | Down | FBI UCR |
 | 2 | Public Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
 | 3 | Public Health | Uninsured Rate | % | Down | Census ACS / KFF |
-| 4 | Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
-| 5 | Cost of Living | Home Price to Income Ratio | × | Down | Census ACS |
-| 6 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
-| 7 | Energy | Residential Electricity Price | ¢/kWh | Down | EIA |
-| 8 | Energy | Electricity from Renewables | % | Up | EIA |
-| 9 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
-| 10 | Employment | Unemployment Rate | % | Down | BLS LAUS |
-| 11 | Economic Prosperity | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
-| 12 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
-| 13 | Business Climate | New Business Entry Rate | % | Up | Census BDS |
-| 14 | Business Climate | Net Employer Business Formation | % | Up | Census BFS |
-| 15 | Education | NAEP 8th Grade Math | score | Up | NAEP |
-| 16 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
-| 17 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
-| 18 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
-| 19 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
-| 20 | Infrastructure | Broadband Subscriptions | % | Up | Census ACS |
-| 21 | Infrastructure | Public Transit Commuters | % | Up | Census ACS |
-| 22 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 23 | Public Confidence | Voter Participation Rate | % | Up | EAC |
-| 24 | Public Confidence | Net Domestic Migration | per 10K | Up | Census PEP |
+| 4 | Public Health | Suicide Rate | per 100K | Down | CDC NCHS |
+| 5 | Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
+| 6 | Cost of Living | Home Price to Income Ratio | × | Down | Census ACS |
+| 7 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
+| 8 | Energy | Residential Electricity Price | ¢/kWh | Down | EIA |
+| 9 | Energy | Electricity from Renewables | % | Up | EIA |
+| 10 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
+| 11 | Employment | Unemployment Rate | % | Down | BLS LAUS |
+| 12 | Employment | Labor Force Participation Rate | % | Up | BLS LAUS |
+| 13 | Economic Prosperity | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
+| 14 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
+| 15 | Business Climate | New Business Entry Rate | % | Up | Census BDS |
+| 16 | Business Climate | Net Employer Business Formation | % | Up | Census BFS |
+| 17 | Education | NAEP 8th Grade Math | score | Up | NAEP |
+| 18 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
+| 19 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
+| 20 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
+| 21 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
+| 22 | Infrastructure | Broadband Subscriptions | % | Up | Census ACS |
+| 23 | Infrastructure | Public Transit Commuters | % | Up | Census ACS |
+| 24 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 25 | Public Confidence | Voter Participation Rate | % | Up | EAC |
+| 26 | Public Confidence | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -136,10 +138,10 @@ python3 scripts/generate-og-pages.py
 ```
 
 This reads `js/data.js` + `js/state-data.js` and produces:
-- 24 trend OG images (`assets/og/{slug}.png`)
-- 24 rankings OG images (`assets/og/{slug}_rankings.png`)
-- 24 trend redirect pages (`t/{slug}/index.html`)
-- 24 rankings redirect pages (`r/{slug}/index.html`)
+- 26 trend OG images (`assets/og/{slug}.png`)
+- 26 rankings OG images (`assets/og/{slug}_rankings.png`)
+- 26 trend redirect pages (`t/{slug}/index.html`)
+- 26 rankings redirect pages (`r/{slug}/index.html`)
 
 ---
 
@@ -147,7 +149,7 @@ This reads `js/data.js` + `js/state-data.js` and produces:
 
 ### Embedded Baseline (`data.js`)
 
-All 24 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated quarterly by editing this file directly — no live API calls.
+All 26 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated quarterly by editing this file directly — no live API calls.
 
 Each metric follows this structure:
 
@@ -172,6 +174,8 @@ Each metric follows this structure:
 **Data format conventions:**
 - Percentages are stored as decimals: `0.028` = 2.8%, `0.86` = 86%
 - Exception: `home_price_to_income` stores raw multiplier (e.g., `8.9`)
+- Exception: `suicide_rate` stores raw rate (e.g., `13.9` per 100K)
+- Exception: `labor_force_participation` stores whole-number percentage (e.g., `59.9` = 59.9%)
 - Exception: `acgr` in `state-data.js` stores whole numbers (e.g., `93.2`)
 - NAEP scores stored as raw numbers (e.g., `270.04`)
 - A value of `0` is treated as missing data (mapped to `null` in charts)
@@ -196,7 +200,7 @@ Generated by `scripts/build-state-data.js`.
 
 ### Card Grid (Landing Page)
 
-Each of the 24 metrics gets its own card displaying:
+Each of the 26 metrics gets its own card displaying:
 
 1. **Area icon + label** (e.g., "EDUCATION")
 2. **Metric name** (e.g., "NAEP 8th Grade Math")
@@ -279,7 +283,7 @@ Main application controller.
 | `AREA_ORDER` | Array defining the 12 areas and which metrics belong to each |
 | `GOVERNORS` | Array of 7 governors: `{ name, party, start, end }` from 1974–2027 |
 | `init()` | Renders cards, sets up modal, handles URL routing |
-| `renderCards()` | Creates all 24 card DOM elements with sparklines and comparisons |
+| `renderCards()` | Creates all 26 card DOM elements with sparklines and comparisons |
 | `openModal(slug, areaName, initialView)` | Opens detail/rankings view for a metric |
 | `closeModal()` | Closes the modal and resets URL to `/` |
 | `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, or `#{slug}` and opens the modal |

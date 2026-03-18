@@ -45,11 +45,11 @@ const App = {
     // 6. The verdict: are people actually staying?
     AREA_ORDER: [
         { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
-        { area: 'Public Health', metrics: ['pcp_per_100k', 'uninsured_rate'] },
+        { area: 'Public Health', metrics: ['pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
         { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate'] },
         { area: 'Energy', metrics: ['residential_price_cpkwh', 'renewables_share_gen'] },
         { area: 'Food Security', metrics: ['food_insecurity_rate'] },
-        { area: 'Employment', metrics: ['unemployment_rate'] },
+        { area: 'Employment', metrics: ['unemployment_rate', 'labor_force_participation'] },
         { area: 'Economic Prosperity', metrics: ['labor_productivity', 'real_per_capita_income'] },
         { area: 'Business Climate', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
         { area: 'Education', metrics: ['naep_math_8', 'naep_reading_8', 'acgr', 'ba_or_higher_pct'] },
