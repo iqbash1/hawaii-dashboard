@@ -112,7 +112,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FBI Uniform Crime Reports",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
-    "whyItMatters": "At 1,947 per 100,000, Hawaiʻi's property crime rate is 17% above the other-state average of 1,668. This includes burglary, larceny-theft, and motor vehicle theft. Tourism-dependent areas, open-air living conditions, and high cost of living all contribute to elevated property crime.",
+    "whyItMatters": "At 1,947 per 100,000, Hawaiʻi's property crime rate is 17% above the other-state average of 1,668. This includes burglary, larceny-theft, and motor vehicle theft. The State sets criminal penalties, funds law enforcement, and shapes policing priorities. Tourism-dependent areas, open-air living conditions, and high cost of living all contribute to elevated property crime.",
     "howToRead": "Hawaiʻi (teal) has consistently run above the other-state average (gray). Both lines have declined substantially since the early 1990s peak, but Hawaiʻi's gap above the average has persisted.",
     "insight": "Hawaiʻi's property crime rate peaked at 6,903 per 100K in 1995 and has since fallen 72% to 1,947 in 2024. The gap with the national average has also narrowed, from 1.57x in 1995 to 1.17x today.",
     "hawaii": {
@@ -298,7 +298,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "CDC NCHS, National Vital Statistics System",
     "sourceUrl": "https://www.cdc.gov/suicide/facts/data.html",
-    "whyItMatters": "Hawaiʻi's age-adjusted suicide rate is 13.9 per 100,000, well below the other-state average of 17.0. While Hawaiʻi consistently ranks among the lower-rate states, the rate has fluctuated significantly, spiking to 17.1 in 2022 before declining. Isolation between islands, high cost of living, and limited mental health providers on neighbor islands all shape these numbers.",
+    "whyItMatters": "Hawaiʻi's age-adjusted suicide rate is 13.9 per 100,000, well below the other-state average of 17.0. The State funds crisis hotlines, community mental health centers, and school-based prevention programs. While Hawaiʻi consistently ranks among the lower-rate states, the rate spiked to 17.1 in 2022 before declining. Isolation between islands, high cost of living, and limited mental health providers on neighbor islands all shape these numbers.",
     "howToRead": "A lower line means fewer suicide deaths per 100,000 residents. Hawaiʻi (teal) has stayed below the other-state average (gray) for most of the past 25 years, but the gap narrowed in recent years as the national rate climbed.",
     "insight": "Hawaiʻi's rate dropped from 11.1 in 1999 to a low of 8.2 in 2005, then climbed back to the mid-teens. The national trend rose steadily from about 12 to 17 over the same period. Despite Hawaiʻi's lower overall rate, Native Hawaiian and Pacific Islander populations face disproportionately high risk.",
     "hawaii": {
@@ -648,7 +648,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Bureau of Labor Statistics",
     "sourceUrl": "https://www.bls.gov/lau/",
-    "whyItMatters": "At 59.9%, Hawaiʻi's labor force participation rate has fallen below the other-state average of 63.0%. This means roughly four in ten working-age residents are neither employed nor looking for work. High cost of living, an aging population, and multi-job fatigue all contribute to the decline.",
+    "whyItMatters": "At 59.9%, Hawaiʻi's labor force participation rate has fallen below the other-state average of 63.0%. This means roughly four in ten working-age residents are neither employed nor looking for work. The State influences participation through workforce training programs, childcare subsidies, and tax policy. High cost of living, an aging population, and multi-job fatigue all contribute to the decline.",
     "howToRead": "Hawaiʻi was above the other-state average through the 1990s but crossed below it in the mid-2000s. Both lines have been falling, but Hawaiʻi's decline has been steeper. COVID caused a sharp drop in 2020.",
     "insight": "Hawaiʻi's participation rate was 69.3% in 1976, among the highest in the nation, and has fallen steadily to 59.9% in 2024. The 9.4-point decline is nearly double the national drop. Out-migration of working-age residents and the high cost of living are key drivers.",
     "hawaii": {
