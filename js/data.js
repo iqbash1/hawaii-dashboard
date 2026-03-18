@@ -112,9 +112,9 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FBI Uniform Crime Reports",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
-    "whyItMatters": "At 2,841 per 100,000 in 2019, Hawaiʻi's property crime rate is 36% above the other-state average of 2,081. This includes burglary, larceny-theft, and motor vehicle theft. Tourism-dependent areas, open-air living conditions, and high cost of living all contribute to elevated property crime.",
+    "whyItMatters": "At 1,947 per 100,000, Hawaiʻi's property crime rate is 17% above the other-state average of 1,668. This includes burglary, larceny-theft, and motor vehicle theft. Tourism-dependent areas, open-air living conditions, and high cost of living all contribute to elevated property crime.",
     "howToRead": "Hawaiʻi (teal) has consistently run above the other-state average (gray). Both lines have declined substantially since the early 1990s peak, but Hawaiʻi's gap above the average has persisted.",
-    "insight": "Hawaiʻi's property crime rate peaked at 6,903 per 100K in 1995 and has since fallen by 59%. Despite this dramatic improvement, the state still ranks #44 of 50 because the national decline was even steeper.",
+    "insight": "Hawaiʻi's property crime rate peaked at 6,903 per 100K in 1995 and has since fallen 72% to 1,947 in 2024. The gap with the national average has also narrowed, from 1.57x in 1995 to 1.17x today.",
     "hawaii": {
       "1985": 4981.1,
       "1986": 5426.2,
@@ -150,7 +150,12 @@ const DASHBOARD_DATA = {
       "2016": 2992.7,
       "2017": 2836.1,
       "2018": 2888.0,
-      "2019": 2841.2
+      "2019": 2841.2,
+      "2020": 2411.4,
+      "2021": 2533.2,
+      "2022": 2481.7,
+      "2023": 2142.5,
+      "2024": 1946.8
     },
     "otherStateAvg": {
       "1985": 4310.86,
@@ -187,7 +192,12 @@ const DASHBOARD_DATA = {
       "2016": 2448.11,
       "2017": 2369.24,
       "2018": 2205.06,
-      "2019": 2081.49
+      "2019": 2081.49,
+      "2020": 1942.26,
+      "2021": 1832.94,
+      "2022": 1902.42,
+      "2023": 1846.51,
+      "2024": 1668.06
     }
   },
   "pcp_per_100k": {
