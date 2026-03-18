@@ -44,7 +44,7 @@ const App = {
     // 5. Is the government competent with my tax dollars?
     // 6. The verdict: are people actually staying?
     AREA_ORDER: [
-        { area: 'Safety & Justice', metrics: ['violent_crime_rate'] },
+        { area: 'Safety & Justice', metrics: ['violent_crime_rate', 'property_crime_rate'] },
         { area: 'Public Health', metrics: ['pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
         { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate'] },
         { area: 'Energy', metrics: ['residential_price_cpkwh', 'renewables_share_gen'] },

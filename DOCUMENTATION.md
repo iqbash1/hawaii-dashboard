@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state government performance across **26 metrics** and **12 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state government performance across **27 metrics** and **12 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -70,36 +70,37 @@ hawaii-dashboard/
 
 ---
 
-## The 26 Metrics
+## The 27 Metrics
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
 | 1 | Safety & Justice | Violent Crime Rate | per 100K | Down | FBI UCR |
-| 2 | Public Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
-| 3 | Public Health | Uninsured Rate | % | Down | Census ACS / KFF |
-| 4 | Public Health | Suicide Rate | per 100K | Down | CDC NCHS |
-| 5 | Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
-| 6 | Cost of Living | Home Price to Income Ratio | × | Down | Census ACS |
-| 7 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
-| 8 | Energy | Residential Electricity Price | ¢/kWh | Down | EIA |
-| 9 | Energy | Electricity from Renewables | % | Up | EIA |
-| 10 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
-| 11 | Employment | Unemployment Rate | % | Down | BLS LAUS |
-| 12 | Employment | Labor Force Participation Rate | % | Up | BLS LAUS |
-| 13 | Economic Prosperity | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
-| 14 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
-| 15 | Business Climate | New Business Entry Rate | % | Up | Census BDS |
-| 16 | Business Climate | Net Employer Business Formation | % | Up | Census BFS |
-| 17 | Education | NAEP 8th Grade Math | score | Up | NAEP |
-| 18 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
-| 19 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
-| 20 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
-| 21 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
-| 22 | Infrastructure | Broadband Subscriptions | % | Up | Census ACS |
-| 23 | Infrastructure | Public Transit Commuters | % | Up | Census ACS |
-| 24 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Public Confidence | Voter Participation Rate | % | Up | EAC |
-| 26 | Public Confidence | Net Domestic Migration | per 10K | Up | Census PEP |
+| 2 | Safety & Justice | Property Crime Rate | per 100K | Down | FBI UCR |
+| 3 | Public Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
+| 4 | Public Health | Uninsured Rate | % | Down | Census ACS / KFF |
+| 5 | Public Health | Suicide Rate | per 100K | Down | CDC NCHS |
+| 6 | Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
+| 7 | Cost of Living | Home Price to Income Ratio | × | Down | Census ACS |
+| 8 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
+| 9 | Energy | Residential Electricity Price | ¢/kWh | Down | EIA |
+| 10 | Energy | Electricity from Renewables | % | Up | EIA |
+| 11 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
+| 12 | Employment | Unemployment Rate | % | Down | BLS LAUS |
+| 13 | Employment | Labor Force Participation Rate | % | Up | BLS LAUS |
+| 14 | Economic Prosperity | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
+| 15 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
+| 16 | Business Climate | New Business Entry Rate | % | Up | Census BDS |
+| 17 | Business Climate | Net Employer Business Formation | % | Up | Census BFS |
+| 18 | Education | NAEP 8th Grade Math | score | Up | NAEP |
+| 19 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
+| 20 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
+| 21 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
+| 22 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
+| 23 | Infrastructure | Broadband Subscriptions | % | Up | Census ACS |
+| 24 | Infrastructure | Public Transit Commuters | % | Up | Census ACS |
+| 25 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 26 | Public Confidence | Voter Participation Rate | % | Up | EAC |
+| 27 | Public Confidence | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -138,10 +139,10 @@ python3 scripts/generate-og-pages.py
 ```
 
 This reads `js/data.js` + `js/state-data.js` and produces:
-- 26 trend OG images (`assets/og/{slug}.png`)
-- 26 rankings OG images (`assets/og/{slug}_rankings.png`)
+- 27 trend OG images (`assets/og/{slug}.png`)
+- 27 rankings OG images (`assets/og/{slug}_rankings.png`)
 - 26 trend redirect pages (`t/{slug}/index.html`)
-- 26 rankings redirect pages (`r/{slug}/index.html`)
+- 27 rankings redirect pages (`r/{slug}/index.html`)
 
 ---
 
@@ -149,7 +150,7 @@ This reads `js/data.js` + `js/state-data.js` and produces:
 
 ### Embedded Baseline (`data.js`)
 
-All 26 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated quarterly by editing this file directly (no live API calls).
+All 27 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated quarterly by editing this file directly (no live API calls).
 
 Each metric follows this structure:
 
@@ -200,7 +201,7 @@ Generated by `scripts/build-state-data.js`.
 
 ### Card Grid (Landing Page)
 
-Each of the 26 metrics gets its own card displaying:
+Each of the 27 metrics gets its own card displaying:
 
 1. **Area icon + label** (e.g., "EDUCATION")
 2. **Metric name** (e.g., "NAEP 8th Grade Math")
