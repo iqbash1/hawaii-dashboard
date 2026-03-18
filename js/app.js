@@ -578,7 +578,7 @@ const App = {
             tabDetail.classList.remove('active');
             tabRankings.classList.add('active');
             this.showRankings(slug);
-            history.replaceState(null, '', '/m/' + slug + '/rankings/');
+            history.replaceState(null, '', '/r/' + slug + '/');
         } else {
             tabRankings.classList.remove('active');
             tabDetail.classList.add('active');
@@ -895,16 +895,19 @@ const App = {
         }
     },
 
-    /** Handle permalink routing: /m/{slug}/ or /m/{slug}/rankings/ (preferred), or legacy #{slug} */
+    /** Handle permalink routing: /m/{slug}/ (detail) or /r/{slug}/ (rankings), or legacy #{slug} */
     handleRoute() {
         let slug = '';
         let view = '';
 
-        // Check path-based route: /m/{slug}/ or /m/{slug}/rankings/
-        const pathMatch = window.location.pathname.match(/^\/m\/([^/]+)(?:\/(rankings))?\/?$/);
-        if (pathMatch) {
-            slug = pathMatch[1];
-            view = pathMatch[2] || '';
+        // Check path-based routes: /m/{slug}/ (detail) or /r/{slug}/ (rankings)
+        const detailMatch = window.location.pathname.match(/^\/m\/([^/]+)\/?$/);
+        const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
+        if (detailMatch) {
+            slug = detailMatch[1];
+        } else if (rankMatch) {
+            slug = rankMatch[1];
+            view = 'rankings';
         }
 
         // Fall back to legacy hash route: #{slug} or #{slug}/rankings

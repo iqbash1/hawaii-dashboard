@@ -23,7 +23,8 @@ from PIL import Image, ImageDraw, ImageFont
 # ── Paths ──────────────────────────────────────────────────────────
 BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 ASSETS_OG = os.path.join(BASE_DIR, 'assets', 'og')
-REDIRECT_DIR = os.path.join(BASE_DIR, 'm')
+REDIRECT_DIR_M = os.path.join(BASE_DIR, 'm')   # /m/{slug}/ detail pages
+REDIRECT_DIR_R = os.path.join(BASE_DIR, 'r')   # /r/{slug}/ rankings pages
 SITE_URL = 'https://hawaiidashboard.org'
 
 # ── Colors (from dashboard CSS) ───────────────────────────────────
@@ -460,7 +461,7 @@ def generate_redirect_html(slug, metric, area, rankings, output_path, is_ranking
     if is_rankings:
         title = f"{metric_name} Rankings \u2014 Hawai\u02BBi Dashboard"
         image_url = f"{SITE_URL}/assets/og/{slug}_rankings.png"
-        page_url = f"{SITE_URL}/m/{slug}/rankings/"
+        page_url = f"{SITE_URL}/r/{slug}/"
         redirect_hash = f"#{slug}/rankings"
         parts = []
         if rankings and rankings['hawaiiRank'] > 0:
@@ -531,24 +532,24 @@ def main():
         area = area_map.get(slug, metric.get('area', ''))
         rankings = get_rankings(slug, dashboard, state_data)
 
-        # Detail OG image + redirect page
+        # Detail OG image + redirect page → /m/{slug}/
         generate_og_image(slug, metric, area, rankings,
                           os.path.join(ASSETS_OG, f'{slug}.png'))
         generate_redirect_html(slug, metric, area, rankings,
-                               os.path.join(REDIRECT_DIR, slug, 'index.html'))
+                               os.path.join(REDIRECT_DIR_M, slug, 'index.html'))
 
-        # Rankings OG image + redirect page (only if state data exists)
+        # Rankings OG image + redirect page → /r/{slug}/
         if rankings and rankings['hawaiiRank'] > 0:
             generate_rankings_og_image(slug, metric, area, rankings,
                                        os.path.join(ASSETS_OG, f'{slug}_rankings.png'))
             generate_redirect_html(slug, metric, area, rankings,
-                                   os.path.join(REDIRECT_DIR, slug, 'rankings', 'index.html'),
+                                   os.path.join(REDIRECT_DIR_R, slug, 'index.html'),
                                    is_rankings=True)
 
         rank_str = f"#{rankings['hawaiiRank']}/{rankings['total']}" if rankings and rankings['hawaiiRank'] > 0 else "no rank"
         print(f"  {slug}: {rank_str}")
 
-    print(f"\nDone. Images: {ASSETS_OG}/  Pages: {REDIRECT_DIR}/")
+    print(f"\nDone. Images: {ASSETS_OG}/  Detail: {REDIRECT_DIR_M}/  Rankings: {REDIRECT_DIR_R}/")
 
 
 if __name__ == '__main__':
