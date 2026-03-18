@@ -2,7 +2,7 @@
 """
 Generate per-metric Open Graph images and redirect pages.
 
-For each of the 24 metrics, creates:
+For each of the 26 metrics, creates:
   - /assets/og/{slug}.png             (trend OG image)
   - /assets/og/{slug}_rankings.png    (rankings OG image with bar chart)
   - /t/{slug}/index.html              (trend redirect page)
