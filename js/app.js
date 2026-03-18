@@ -65,7 +65,7 @@ const App = {
         // Set up modal events
         this.setupModal();
 
-        // Handle permalink routing (path-based /m/slug/ or legacy hash #slug)
+        // Handle permalink routing (path-based /t/slug/ or legacy hash #slug)
         this.handleRoute();
         window.addEventListener('hashchange', () => this.handleRoute());
         window.addEventListener('popstate', () => this.handleRoute());
@@ -454,7 +454,7 @@ const App = {
         });
         document.getElementById('share-link').addEventListener('click', (e) => {
             e.preventDefault();
-            const shareUrl = 'https://hawaiidashboard.org/m/' + slug + '/';
+            const shareUrl = 'https://hawaiidashboard.org/t/' + slug + '/';
             navigator.clipboard.writeText(shareUrl).then(() => {
                 const el = document.getElementById('share-link');
                 el.textContent = 'Copied!';
@@ -561,8 +561,8 @@ const App = {
         document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
 
-        // Update URL for permalink (use /m/ path for clean sharing)
-        history.replaceState(null, '', '/m/' + slug + '/');
+        // Update URL for permalink (use /t/ path for clean sharing)
+        history.replaceState(null, '', '/t/' + slug + '/');
 
         // If requested, switch to rankings tab immediately
         if (initialView === 'rankings' && hasStateData) {
@@ -583,7 +583,7 @@ const App = {
             tabRankings.classList.remove('active');
             tabDetail.classList.add('active');
             this.hideRankings();
-            history.replaceState(null, '', '/m/' + slug + '/');
+            history.replaceState(null, '', '/t/' + slug + '/');
         }
         document.querySelector('.modal').scrollTop = 0;
     },
@@ -895,13 +895,13 @@ const App = {
         }
     },
 
-    /** Handle permalink routing: /m/{slug}/ (detail) or /r/{slug}/ (rankings), or legacy #{slug} */
+    /** Handle permalink routing: /t/{slug}/ (detail) or /r/{slug}/ (rankings), or legacy #{slug} */
     handleRoute() {
         let slug = '';
         let view = '';
 
-        // Check path-based routes: /m/{slug}/ (detail) or /r/{slug}/ (rankings)
-        const detailMatch = window.location.pathname.match(/^\/m\/([^/]+)\/?$/);
+        // Check path-based routes: /t/{slug}/ (detail) or /r/{slug}/ (rankings)
+        const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
         const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
         if (detailMatch) {
             slug = detailMatch[1];

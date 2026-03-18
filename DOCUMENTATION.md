@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state government performance across **22 metrics** and **14 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state government performance across **24 metrics** and **12 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -25,20 +25,27 @@ Then visit `http://localhost:8080`.
 
 ```
 hawaii-dashboard/
-├── index.html          # Main page — header, card grid, detail modal, footer
+├── index.html              # Main page — header, card grid, detail modal, footer
 ├── css/
-│   └── styles.css      # All styles (flat design, responsive)
+│   └── styles.css          # All styles (flat design, responsive)
 ├── js/
-│   ├── data.js         # Embedded metric data (Hawaiʻi vs. other state averages)
-│   ├── state-data.js   # Per-state data for all metrics (rankings + .xlsx export)
-│   ├── app.js          # Main app — card rendering, modal logic, governor data
-│   └── charts.js       # Chart.js sparklines, detail charts, rankings, governor overlay
+│   ├── data.js             # Embedded metric data (Hawaiʻi vs. other state averages)
+│   ├── state-data.js       # Per-state data for all metrics (rankings + .xlsx export)
+│   ├── app.js              # Main app — card rendering, modal logic, governor data
+│   └── charts.js           # Chart.js sparklines, detail charts, rankings, governor overlay
+├── assets/
+│   ├── og-image.png        # Generic OG image (fallback)
+│   └── og/                 # Per-metric OG images (generated)
+│       ├── {slug}.png          # Trend view OG image (1200×630)
+│       └── {slug}_rankings.png # Rankings view OG image (1200×630)
+├── t/                      # Trend redirect pages for OG sharing
+│   └── {slug}/index.html       # Metric-specific OG tags + JS redirect
+├── r/                      # Rankings redirect pages for OG sharing
+│   └── {slug}/index.html       # Rankings-specific OG tags + JS redirect
 ├── scripts/
-│   ├── build-state-data.js       # Generates state-data.js from federal APIs
-│   ├── compute-migration-2000s.js
-│   ├── compute-pcp-civilian.js
-│   ├── fetch-business-climate.js
-│   └── replace-state-metric.js
+│   ├── generate-og-pages.py    # Generates all OG images + redirect pages
+│   ├── build-state-data.js     # Generates state-data.js from federal APIs
+│   └── ...                     # Other data processing scripts
 └── DOCUMENTATION.md
 ```
 
@@ -59,10 +66,11 @@ hawaii-dashboard/
 | Fonts | Inter via Google Fonts |
 | Hosting | Cloudflare Pages |
 | Source control | GitHub |
+| OG image generation | Python 3 + Pillow (PIL) |
 
 ---
 
-## The 22 Metrics
+## The 24 Metrics
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
@@ -73,23 +81,65 @@ hawaii-dashboard/
 | 5 | Cost of Living | Home Price to Income Ratio | × | Down | Census ACS |
 | 6 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
 | 7 | Energy | Residential Electricity Price | ¢/kWh | Down | EIA |
-| 8 | Energy | Net Energy Import Dependence | % | Down | EIA SEDS |
+| 8 | Energy | Electricity from Renewables | % | Up | EIA |
 | 9 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
 | 10 | Employment | Unemployment Rate | % | Down | BLS LAUS |
-| 11 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
-| 12 | Economic Prosperity | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
+| 11 | Economic Prosperity | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
+| 12 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
 | 13 | Business Climate | New Business Entry Rate | % | Up | Census BDS |
 | 14 | Business Climate | Net Employer Business Formation | % | Up | Census BFS |
-| 15 | K-12 Education | High School Graduation Rate (ACGR) | % | Up | NCES |
-| 16 | Higher Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
-| 17 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
-| 18 | Infrastructure | Broadband Subscriptions | % | Up | Census ACS |
-| 19 | Environment | Renewables Share of Generation | % | Up | EIA |
-| 20 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 21 | Public Confidence | Voter Participation Rate | % | Up | EAC |
-| 22 | Public Confidence | Net Domestic Migration | per 10K | Up | Census PEP |
+| 15 | Education | NAEP 8th Grade Math | score | Up | NAEP |
+| 16 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
+| 17 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
+| 18 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
+| 19 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
+| 20 | Infrastructure | Broadband Subscriptions | % | Up | Census ACS |
+| 21 | Infrastructure | Public Transit Commuters | % | Up | Census ACS |
+| 22 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 23 | Public Confidence | Voter Participation Rate | % | Up | EAC |
+| 24 | Public Confidence | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
+
+---
+
+## URL Routing & Link Sharing
+
+The dashboard uses **path-based URLs** so that every metric and rankings view can be shared with a rich link preview (OG image + description) on iMessage, Twitter, LinkedIn, Slack, etc.
+
+### URL Structure
+
+| View | URL Pattern | Example |
+|------|------------|---------|
+| Homepage | `/` | `hawaiidashboard.org` |
+| Metric trend | `/t/{slug}/` | `hawaiidashboard.org/t/naep_math_8/` |
+| State rankings | `/r/{slug}/` | `hawaiidashboard.org/r/naep_math_8/` |
+| Legacy hash (still works) | `#{slug}` | `hawaiidashboard.org/#naep_math_8` |
+
+- **`/t/`** = **t**rend (sparkline + value + rank)
+- **`/r/`** = **r**ankings (bar chart of all 50 states)
+
+### How Sharing Works
+
+1. User opens a metric modal → URL bar shows `/t/{slug}/` or `/r/{slug}/`
+2. User copies URL (or clicks **Share** in the modal footer)
+3. When pasted into iMessage/Twitter/etc., the crawler fetches the redirect page at `/t/{slug}/index.html`
+4. Crawler sees metric-specific `og:title`, `og:description`, `og:image` → renders a rich preview
+5. When a real user clicks the link, JS instantly redirects to `/#slug` → SPA opens the modal
+
+### Regenerating OG Assets
+
+When data changes, regenerate all OG images and redirect pages:
+
+```bash
+python3 scripts/generate-og-pages.py
+```
+
+This reads `js/data.js` + `js/state-data.js` and produces:
+- 24 trend OG images (`assets/og/{slug}.png`)
+- 24 rankings OG images (`assets/og/{slug}_rankings.png`)
+- 24 trend redirect pages (`t/{slug}/index.html`)
+- 24 rankings redirect pages (`r/{slug}/index.html`)
 
 ---
 
@@ -97,7 +147,7 @@ All data is **non-partisan, publicly available, and reported the same way for al
 
 ### Embedded Baseline (`data.js`)
 
-All 22 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated quarterly by editing this file directly — no live API calls.
+All 24 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated quarterly by editing this file directly — no live API calls.
 
 Each metric follows this structure:
 
@@ -106,12 +156,13 @@ Each metric follows this structure:
   area: "Category name",
   areaIcon: "emoji",
   metric: "Full metric name",
-  unit: "%" | "$" | "per 100K" | "per 10K" | "per 1,000" | "¢/kWh" | "×" | "Index (2017=100)",
+  officialName: "Official Federal Name (optional)",
+  unit: "%" | "$" | "per 100K" | "per 10K" | "per 1,000" | "¢/kWh" | "×" | "Index (2017=100)" | "score",
   goodDirection: "up" | "down",
   source: "Federal agency name",
   sourceUrl: "https://...",
-  whyItMatters: "Current numbers, comparison, why residents should care, what the state does",
-  howToRead: "How to interpret the chart visually, what direction is good/bad",
+  whyItMatters: "Current numbers, comparison, why residents should care",
+  howToRead: "How to interpret the chart visually",
   insight: "A surprising detail, notable trend, or deeper context",
   hawaii: { "2012": 253.85, "2013": 232.48, ... },
   otherStateAvg: { "2012": 387.77, "2013": 372.01, ... }
@@ -122,18 +173,20 @@ Each metric follows this structure:
 - Percentages are stored as decimals: `0.028` = 2.8%, `0.86` = 86%
 - Exception: `home_price_to_income` stores raw multiplier (e.g., `8.9`)
 - Exception: `acgr` in `state-data.js` stores whole numbers (e.g., `93.2`)
+- NAEP scores stored as raw numbers (e.g., `270.04`)
 - A value of `0` is treated as missing data (mapped to `null` in charts)
 
-**Time ranges:** Metrics go back to the earliest year with reliable data for all states:
-- Longest: Net Energy Import (1960–2023), Violent Crime Rate (1985–2024)
-- Shortest: ACGR (2011–2022), Food Insecurity (2005–2023)
+**Narrative pattern** (whyItMatters / howToRead / insight):
+- `whyItMatters`: headline number + state's role — what and why
+- `howToRead`: how to interpret the chart visually — chart reading guide
+- `insight`: one non-obvious, data-driven takeaway — the surprise
 
 ### Per-State Data (`state-data.js`)
 
 Contains all 50 states' values for each metric. Used for:
 1. **Rankings bar chart** — horizontal bar chart showing Hawaiʻi's rank among all states
-2. **Rank badges** on cards — e.g., "Rank #2"
-3. **.xlsx export** — Tab 2: "All States"
+2. **Rank badges** on cards — e.g., "Rank #2 of 50"
+3. **.xlsx export** — multi-tab download with raw data, chart data, rankings, methodology
 
 Generated by `scripts/build-state-data.js`.
 
@@ -143,15 +196,14 @@ Generated by `scripts/build-state-data.js`.
 
 ### Card Grid (Landing Page)
 
-Each of the 22 metrics gets its own card displaying:
+Each of the 24 metrics gets its own card displaying:
 
-1. **Area icon + label** (e.g., "PUBLIC HEALTH")
-2. **Rank badge** — teal pill showing Hawaiʻi's rank (e.g., "Rank #2")
-3. **Metric name** (e.g., "Uninsured Rate")
-4. **Latest Hawaiʻi value** (large, bold number)
-5. **Sparkline chart** — Hawaiʻi (teal solid line) vs. Other State Avg (gray dashed line)
-6. **Two comparison boxes:**
-   - **vs Other States** — "Better" (green) or "Worse" (red) with the average shown
+1. **Area icon + label** (e.g., "EDUCATION")
+2. **Metric name** (e.g., "NAEP 8th Grade Math")
+3. **Latest Hawaiʻi value** (large, bold number)
+4. **Sparkline chart** — Hawaiʻi (teal solid line) vs. Other State Avg (gray dashed line)
+5. **Two comparison sections:**
+   - **vs Other States** — "Better" (green) or "Worse" (red) with the average, plus rank badge
    - **vs Prior Year** — percentage change with "Improving" or "Worsening" label
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum).
@@ -161,12 +213,11 @@ Cards are in a responsive CSS grid (auto-fill, 300px minimum).
 Wider overlay (max-width 1100px, max-height 92vh) with two tabs:
 
 **Detail tab:**
-1. **Line chart** (Chart.js, 400px tall) — Hawaiʻi (teal, solid, sparse dots) vs. Other State Avg (gray, dashed, no dots)
-2. **Governor term labels** — positioned adaptively (top when data is low, bottom when data is high) with white background pills
-3. **Dashed vertical lines** at governor term boundaries
-4. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
-5. **Why it matters / How to read it / Insight** — context sections
-6. **Source link + Download .xlsx**
+1. **Line chart** (Chart.js, 400px tall) — Hawaiʻi (teal, solid) vs. Other State Avg (gray, dashed)
+2. **Governor term labels** — positioned adaptively with dashed vertical boundary lines
+3. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
+4. **Why it matters / How to read it / Insight** — context sections
+5. **Source link + Download .xlsx + Share**
 
 **Rank tab:**
 1. **Horizontal bar chart** — all 50 states sorted best-to-worst
@@ -187,14 +238,6 @@ A custom Chart.js plugin renders governor names and dashed term boundaries:
 | David Ige | D | 2014–2022 |
 | Josh Green | D | 2022–2027 |
 
-**Label rendering:**
-- Two-pass approach: compute all positions, then skip any that would overlap
-- Full label (e.g., "Cayetano (D)") preferred; falls back to short (e.g., "Cayetano")
-- Adaptive vertical placement: labels go to the bottom when Hawaiʻi's data line is in the top half of the chart, and to the top otherwise
-- Party colors: Democrat `#2563EB`, Republican `#C0392B`
-
-**Dot density:** Charts with ≤15 data points show all dots (radius 3). Longer series show ~12 evenly-spaced dots (radius 2.5) plus first and last points. "Other State Avg" line shows no dots.
-
 ---
 
 ## Design System
@@ -208,10 +251,8 @@ A custom Chart.js plugin renders governor names and dashed term boundaries:
 | `--positive` | `#059669` | "Better" / "Improving" indicators |
 | `--negative` | `#C0392B` | "Worse" / "Worsening" indicators |
 | `--text` | `#333333` | Primary body text |
-| `--text-muted` | `#666666` | Secondary/label text |
 | `--bg` | `#F5F5F5` | Page background |
 | `--card-bg` | `#FFFFFF` | Card/modal background |
-| `--border` | `#EAEAEA` | Card borders, dividers |
 
 ### Typography
 
@@ -219,10 +260,8 @@ A custom Chart.js plugin renders governor names and dashed term boundaries:
 
 ### Design Principles
 
-- No gradients (`#3d3d56` header)
+- No gradients, no backdrop blur, no transform animations
 - Minimal box shadows (subtle hover shadow on cards only)
-- No backdrop blur
-- No transform animations on hover
 - Rounded corners (8px cards/modal, 6px inner elements)
 - Borders for structure, not depth
 - Clean, information-dense layout
@@ -237,18 +276,16 @@ Main application controller.
 
 | Property/Method | Description |
 |----------------|-------------|
-| `AREA_ORDER` | Array defining the 14 areas and which metrics belong to each (controls card display order) |
+| `AREA_ORDER` | Array defining the 12 areas and which metrics belong to each |
 | `GOVERNORS` | Array of 7 governors: `{ name, party, start, end }` from 1974–2027 |
-| `init()` | Renders cards from embedded data, sets up modal events |
-| `renderCards()` | Creates all 22 card DOM elements with sparklines and comparisons |
-| `openModal(slug, areaName)` | Opens detail view for a specific metric |
-| `closeModal()` | Closes the detail modal and destroys the chart instance |
-| `showRankings(slug)` | Renders the rankings bar chart for a metric |
+| `init()` | Renders cards, sets up modal, handles URL routing |
+| `renderCards()` | Creates all 24 card DOM elements with sparklines and comparisons |
+| `openModal(slug, areaName, initialView)` | Opens detail/rankings view for a metric |
+| `closeModal()` | Closes the modal and resets URL to `/` |
+| `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, or `#{slug}` and opens the modal |
+| `switchTab(tab, slug)` | Switches between detail and rankings tabs, updates URL |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
-| `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file for the metric |
-| `getLatestValue(obj)` | Returns the most recent non-null/non-zero value from a year-keyed object |
-| `getPriorValue(obj)` | Returns the second-to-last non-null value |
-| `getGovernorBoxes(labels)` | Maps governor terms to chart x-axis label indices |
+| `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file |
 
 ### `ChartUtils` (charts.js)
 
@@ -256,13 +293,12 @@ Chart rendering utilities.
 
 | Method | Description |
 |--------|-------------|
-| `createSparkline(canvas, data, goodDirection)` | Creates a mini line chart for a card (no axes, no tooltips) |
-| `createDetailChart(canvas, data, govBoxes)` | Creates the full detail chart with axes, tooltips, legend, governor overlay, and adaptive dot density |
-| `createRankingsChart(canvas, stateValues, goodDirection, unit)` | Creates horizontal bar chart for rankings view |
-| `formatValue(value, unit, isDecimalPct)` | Formats a number based on its unit type — optional flag for decimal-stored percentages |
-| `formatCardValue(value, unit, isDecimalPct)` | Compact format for card display (e.g., "$95K") |
-| `isDecimalPctMetric(metricData)` | Returns true if a %-unit metric stores values as decimals (all values ≤ 1) |
-| `isHawaii(name)` | Checks if a state name is Hawaiʻi (handles ʻokina variant) |
+| `createSparkline(canvas, data, goodDirection)` | Mini line chart for cards |
+| `createDetailChart(canvas, data, govBoxes)` | Full detail chart with governor overlay |
+| `createRankingsChart(canvas, stateValues, goodDirection, unit)` | Horizontal bar chart for rankings |
+| `formatValue(value, unit, isDecimalPct)` | Full precision value formatting |
+| `formatCardValue(value, unit, isDecimalPct)` | Compact card display formatting |
+| `isDecimalPctMetric(metricData)` | Detects decimal-stored percentage metrics |
 
 ---
 
@@ -284,69 +320,26 @@ Every push to `main` auto-deploys within ~30 seconds.
 
 ### Adding a new year of data
 
-Edit `data.js` and add the new year's value to the `hawaii` and `otherStateAvg` objects for each metric:
-
-```js
-"violent_crime_rate": {
-    ...
-    "hawaii": { ..., "2024": 158.97, "2025": NEW_VALUE },
-    "otherStateAvg": { ..., "2024": 325.06, "2025": NEW_VALUE }
-}
-```
-
-Then update `state-data.js` with the new year's per-state values (either manually or via `scripts/build-state-data.js`).
+1. Edit `data.js` — add new year's value to `hawaii` and `otherStateAvg` for each metric
+2. Edit `state-data.js` — add new year's per-state values
+3. Run `python3 scripts/generate-og-pages.py` to regenerate OG images and redirect pages
+4. Commit and push
 
 ### Adding a new metric
 
-1. Add the metric object to `DASHBOARD_DATA` in `data.js` following the existing structure
+1. Add the metric object to `DASHBOARD_DATA` in `data.js`
 2. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `app.js`
-3. Update the metric count in the header badge in `index.html`
-4. Add per-state data to `state-data.js` (via `scripts/build-state-data.js` or manually)
-
-### Updating a governor
-
-Add to the `App.GOVERNORS` array in `app.js`:
-
-```js
-{ name: 'NewGov', party: 'D', start: 2027, end: 2031 },
-```
-
----
-
-## Data Source URLs
-
-Every metric links to its original data source for independent verification:
-
-| Metric | Source | URL |
-|--------|--------|-----|
-| Violent Crime Rate | FBI UCR | https://cde.ucr.cjis.gov/ |
-| Primary Care Physicians | HRSA AHRF | https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf |
-| Uninsured Rate | KFF | https://www.kff.org/topic/uninsured/ |
-| Renter Cost Burden | Census ACS | https://data.census.gov/ |
-| Home Price to Income | Census ACS | https://data.census.gov/ |
-| Unsheltered Homeless | HUD | https://www.huduser.gov/portal/datasets/ahar.html |
-| Residential Electricity Price | EIA | https://www.eia.gov/electricity/data/state/ |
-| Net Energy Import | EIA SEDS | https://www.eia.gov/state/seds/ |
-| Food Insecurity Rate | USDA ERS | https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us/ |
-| Unemployment Rate | BLS LAUS | https://www.bls.gov/lau/ |
-| Per Capita Income | BEA | https://www.bea.gov/data/income-saving/personal-income-by-state |
-| Labor Productivity | BLS | https://www.bls.gov/lpc/state-productivity.htm |
-| New Business Entry Rate | Census BDS | https://www.census.gov/programs-surveys/bds.html |
-| Net Employer Formation | Census BFS | https://www.census.gov/econ/bfs/ |
-| HS Graduation Rate | NCES | https://nces.ed.gov/programs/digest/d23/tables/dt23_219.46.asp |
-| Bachelor's+ % | Census ACS | https://data.census.gov/ |
-| Roads in Poor Condition | FHWA | https://www.fhwa.dot.gov/bridge/britab.cfm |
-| Broadband % | Census ACS | https://data.census.gov/ |
-| Renewables Share | EIA | https://www.eia.gov/electricity/data/state/ |
-| Rainy Day Fund | NASBO | https://www.nasbo.org/reports-data/fiscal-survey-of-states |
-| Voter Participation | EAC | https://www.eac.gov/research-and-data/studies-and-reports |
-| Net Migration | Census PEP | https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html |
+3. If needed, add the area icon to `AREA_ICONS` in `app.js`
+4. Update the metric count in the header badge in `index.html`
+5. Add per-state data to `state-data.js`
+6. Run `python3 scripts/generate-og-pages.py` to generate OG assets for the new metric
+7. Commit and push
 
 ---
 
 ## Browser Support
 
-Works in all modern browsers (Chrome, Firefox, Safari, Edge). Requires JavaScript enabled. No polyfills needed — uses only widely supported ES6+ features.
+Works in all modern browsers (Chrome, Firefox, Safari, Edge). Requires JavaScript enabled.
 
 ---
 
