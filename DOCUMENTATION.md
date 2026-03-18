@@ -74,11 +74,11 @@ hawaii-dashboard/
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
-| 1 | Safety & Justice | Violent Crime Rate | per 100K | Down | FBI UCR |
-| 2 | Safety & Justice | Property Crime Rate | per 100K | Down | FBI UCR |
-| 3 | Public Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
-| 4 | Public Health | Uninsured Rate | % | Down | Census ACS / KFF |
-| 5 | Public Health | Suicide Rate | per 100K | Down | CDC NCHS |
+| 1 | Crime | Violent Crime Rate | per 100K | Down | FBI UCR |
+| 2 | Crime | Property Crime Rate | per 100K | Down | FBI UCR |
+| 3 | Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
+| 4 | Health | Uninsured Rate | % | Down | Census ACS / KFF |
+| 5 | Health | Suicide Rate | per 100K | Down | CDC NCHS |
 | 6 | Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
 | 7 | Cost of Living | Home Price to Income Ratio | × | Down | Census ACS |
 | 8 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
@@ -87,10 +87,10 @@ hawaii-dashboard/
 | 11 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
 | 12 | Employment | Unemployment Rate | % | Down | BLS LAUS |
 | 13 | Employment | Labor Force Participation Rate | % | Up | BLS LAUS |
-| 14 | Economic Prosperity | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
-| 15 | Economic Prosperity | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
-| 16 | Business Climate | New Business Entry Rate | % | Up | Census BDS |
-| 17 | Business Climate | Net Employer Business Formation | % | Up | Census BFS |
+| 14 | Economy | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
+| 15 | Economy | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
+| 16 | Business | New Business Entry Rate | % | Up | Census BDS |
+| 17 | Business | Net Employer Business Formation | % | Up | Census BFS |
 | 18 | Education | NAEP 8th Grade Math | score | Up | NAEP |
 | 19 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
 | 20 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |

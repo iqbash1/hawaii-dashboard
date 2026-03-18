@@ -8,7 +8,7 @@
 
 const DASHBOARD_DATA = {
   "violent_crime_rate": {
-    "area": "Safety & Justice",
+    "area": "Crime",
     "areaIcon": "🛡️",
     "metric": "Violent Crime Rate",
     "unit": "per 100K",
@@ -104,7 +104,7 @@ const DASHBOARD_DATA = {
     }
   },
   "property_crime_rate": {
-    "area": "Safety & Justice",
+    "area": "Crime",
     "areaIcon": "\ud83d\udee1\ufe0f",
     "metric": "Property Crime Rate",
     "officialName": "Estimated Property Crime Rate (Burglary, Larceny-Theft, Motor Vehicle Theft)",
@@ -201,7 +201,7 @@ const DASHBOARD_DATA = {
     }
   },
   "pcp_per_100k": {
-    "area": "Public Health",
+    "area": "Health",
     "areaIcon": "🏥",
     "metric": "Primary Care Physicians (civilian)",
     "officialName": "Non-Federal Primary Care Physicians per 100,000 Civilian Population",
@@ -246,7 +246,7 @@ const DASHBOARD_DATA = {
     }
   },
   "uninsured_rate": {
-    "area": "Public Health",
+    "area": "Health",
     "areaIcon": "🏥",
     "metric": "Uninsured Rate",
     "unit": "%",
@@ -290,7 +290,7 @@ const DASHBOARD_DATA = {
     }
   },
   "suicide_rate": {
-    "area": "Public Health",
+    "area": "Health",
     "areaIcon": "🏥",
     "metric": "Suicide Rate",
     "officialName": "Age-Adjusted Death Rate for Intentional Self-Harm (Suicide)",
@@ -755,7 +755,7 @@ const DASHBOARD_DATA = {
     }
   },
   "real_per_capita_income": {
-    "area": "Economic Prosperity",
+    "area": "Economy",
     "areaIcon": "💰",
     "metric": "Per Capita Income (cost-of-living adj.)",
     "officialName": "Real Per Capita Personal Income, RPP-adjusted (BEA SARPI)",
@@ -1429,7 +1429,7 @@ const DASHBOARD_DATA = {
     }
   },
   "estabs_entry_rate": {
-    "area": "Business Climate",
+    "area": "Business",
     "areaIcon": "🏢",
     "metric": "New Business Entry Rate",
     "unit": "%",
@@ -1537,7 +1537,7 @@ const DASHBOARD_DATA = {
     }
   },
   "net_employer_formation": {
-    "area": "Business Climate",
+    "area": "Business",
     "areaIcon": "🏢",
     "metric": "Net Employer Business Formation",
     "unit": "%",
@@ -1645,7 +1645,7 @@ const DASHBOARD_DATA = {
     }
   },
   "labor_productivity": {
-    "area": "Economic Prosperity",
+    "area": "Economy",
     "areaIcon": "💰",
     "metric": "Labor Productivity (Output per Hour)",
     "unit": "Index (2017=100)",
