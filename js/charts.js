@@ -209,7 +209,7 @@ const ChartUtils = {
                 ctx.font = '500 11px "Inter", sans-serif';
 
                 // Pass 1: compute label candidates
-                const candidates = govBoxes.map(gov => {
+                const candidates = govBoxes.map((gov, gi) => {
                     const step = labels.length > 1
                         ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0))
                         : 0;
@@ -218,6 +218,7 @@ const ChartUtils = {
                     const left = Math.max(x1, chartArea.left);
                     const right = Math.min(x2, chartArea.right);
                     const segWidth = right - left;
+                    const isLast = gi === govBoxes.length - 1;
                     const fullLabel = `${gov.name} (${gov.party})`;
                     const shortLabel = gov.name;
                     const fullW = ctx.measureText(fullLabel).width;
@@ -225,11 +226,16 @@ const ChartUtils = {
                     let labelText = null;
                     if (fullW + 10 <= segWidth) labelText = fullLabel;
                     else if (shortW + 6 <= segWidth) labelText = shortLabel;
+                    else if (isLast) labelText = shortLabel;
                     const centerX = (left + right) / 2;
                     const textW = labelText ? ctx.measureText(labelText).width : 0;
-                    const px = centerX - textW / 2 - pillPad;
+                    let pillX = centerX - textW / 2 - pillPad;
                     const pw = textW + pillPad * 2;
-                    return { gov, left, right, labelText, centerX, textW, px, pw };
+                    // Keep last governor's pill inside chart area
+                    if (isLast && pillX + pw > chartArea.right) {
+                        pillX = chartArea.right - pw;
+                    }
+                    return { gov, left, right, labelText, centerX: pillX + pw / 2, textW, px: pillX, pw };
                 });
 
                 // Pass 2: draw lines + labels, skipping overlapping pills

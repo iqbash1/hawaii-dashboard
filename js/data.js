@@ -1544,7 +1544,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Census Business Dynamics Statistics",
     "sourceUrl": "https://www.census.gov/programs-surveys/bds.html",
-    "whyItMatters": "Over the past 12 years Hawaiʻi has averaged just 0.2% net employer formation per year, roughly a quarter of the 0.85% other-state average. In 2021 the state lost 3.6% of its employer businesses while the rest of the country grew. High costs, isolation, and regulation make it one of the hardest places in the U.S. to build a lasting business.",
+    "whyItMatters": "Over the past 12 years Hawaiʻi has averaged just 0.2% net employer formation per year, roughly a quarter of the 0.85% other-state average. In 2021 the state lost 3.6% of its employer businesses while the rest of the country grew. The highest commercial lease costs in the nation, Jones Act shipping surcharges, a general excise tax that pyramids at each stage of production, and one of the slowest state permitting processes all raise the bar for new employers to survive.",
     "howToRead": "A positive number means more employer businesses opened than closed that year. Hawaiʻi's line sits below the other-state average in most years, and dips below zero in downturns, meaning the state is actually losing businesses.",
     "insight": "Hawaiʻi ranked near the bottom nationally in 2023 at just 0.41%, while the average state posted 1.14%. The 2022 bounce (2.71%) was a one-year post-pandemic rebound, not a trend reversal.",
     "hawaii": {
