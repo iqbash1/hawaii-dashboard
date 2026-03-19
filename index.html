@@ -75,6 +75,7 @@
             <div class="modal-tabs" id="modal-tabs" style="display:none;">
                 <button class="modal-tab active" id="tab-detail">Detail</button>
                 <button class="modal-tab" id="tab-rankings">Rank</button>
+                <button class="modal-tab" id="tab-county" style="display:none;">County-level</button>
             </div>
             <div id="modal-detail-view">
                 <div class="modal-chart-container">
@@ -104,6 +105,10 @@
                     <canvas id="rankings-chart"></canvas>
                 </div>
                 <p class="rankings-scroll-hint" id="rankings-scroll-hint">&darr; Scroll to see all states</p>
+            </div>
+            <div class="modal-county" id="modal-county" style="display:none;">
+                <p class="county-subtitle" id="county-subtitle"></p>
+                <div class="county-chart-container"><canvas id="county-chart"></canvas></div>
             </div>
             <div class="modal-source" id="modal-source"></div>
         </div>
@@ -159,6 +164,7 @@
     <!-- Scripts -->
     <script src="js/data.js"></script>
     <script src="js/state-data.js"></script>
+    <script src="js/county-data.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/app.js"></script>
 </body>

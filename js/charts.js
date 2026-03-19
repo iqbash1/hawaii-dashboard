@@ -183,93 +183,10 @@ const ChartUtils = {
 
         const nonNullHawaii = hawaiiValues.filter(v => v !== null);
 
-        // Governor term overlay with alternating bands + party-colored labels
+        // Governor overlay (reusable plugin)
         const hiDataAvg = nonNullHawaii.length > 0
             ? nonNullHawaii.reduce((a, b) => a + b, 0) / nonNullHawaii.length : 0;
-        const governorPlugin = {
-            id: 'governorLabels',
-            beforeDatasetsDraw(chart) {
-                if (!govBoxes || govBoxes.length === 0) return;
-
-                const { ctx, chartArea, scales } = chart;
-                const xScale = scales.x;
-
-                ctx.save();
-                const pillPad = 5;
-                const pillH = 18;
-                const yScale = chart.scales.y;
-                const midY = (yScale.top + yScale.bottom) / 2;
-                const avgPixel = yScale.getPixelForValue(hiDataAvg);
-                const dataInTopHalf = avgPixel < midY;
-                const pillY = dataInTopHalf
-                    ? chartArea.bottom - pillH - 4
-                    : chartArea.top + 2;
-                ctx.font = '400 11px "Inter", sans-serif';
-
-                // Pass 1: compute segment bounds and label variants
-                const gap = 6;
-                const step = labels.length > 1
-                    ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0)) : 0;
-                const candidates = govBoxes.map((gov, gi) => {
-                    const x1 = xScale.getPixelForValue(gov.startIdx) - step * 0.5;
-                    const x2 = xScale.getPixelForValue(gov.endIdx) + step * 0.5;
-                    const left = Math.max(x1, chartArea.left);
-                    const right = Math.min(x2, chartArea.right);
-                    const parts = gov.name.split(' ');
-                    const lastName = parts[parts.length - 1];
-                    // Label options from longest to shortest
-                    const variants = [
-                        `${gov.name} (${gov.party})`,
-                        `${lastName} (${gov.party})`,
-                        lastName
-                    ];
-                    return { gov, left, right, variants, idx: gi, centerX: (left + right) / 2 };
-                });
-
-                // Pass 2: draw alternating background bands
-                candidates.forEach(c => {
-                    if (c.idx % 2 === 0) {
-                        ctx.fillStyle = 'rgba(0, 0, 0, 0.025)';
-                        ctx.fillRect(c.left, chartArea.top, c.right - c.left, chartArea.bottom - chartArea.top);
-                    }
-                });
-
-                // Pass 3: greedily assign labels, no overlaps
-                // For each governor pick the longest variant that fits
-                // without overlapping the previous label
-                let prevRight = -Infinity;
-                const placed = candidates.map(c => {
-                    let bestText = c.variants[c.variants.length - 1]; // fallback: last name
-                    for (const v of c.variants) {
-                        const w = ctx.measureText(v).width;
-                        const px = c.centerX - w / 2 - pillPad;
-                        const pr = c.centerX + w / 2 + pillPad;
-                        if (px >= prevRight + gap && pr <= chartArea.right + 2) {
-                            bestText = v;
-                            break;
-                        }
-                    }
-                    const tw = ctx.measureText(bestText).width;
-                    let px = c.centerX - tw / 2;
-                    // Ensure no overlap with previous
-                    if (px < prevRight + gap) px = prevRight + gap;
-                    // Ensure within chart bounds
-                    if (px + tw > chartArea.right) px = chartArea.right - tw;
-                    prevRight = px + tw;
-                    return { ...c, labelText: bestText, textX: px + tw / 2 };
-                });
-
-                // Pass 4: draw text labels
-                placed.forEach(c => {
-                    const partyColor = c.gov.party === 'R' ? '#C0392B' : '#2563EB';
-                    ctx.fillStyle = partyColor;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'top';
-                    ctx.fillText(c.labelText, c.textX, pillY + 3);
-                });
-                ctx.restore();
-            }
-        };
+        const governorPlugin = ChartUtils._buildGovernorPlugin(govBoxes, hiDataAvg);
 
         // Same gap-scaled fill as sparklines
         const goodDir = data.goodDirection;
@@ -410,6 +327,219 @@ const ChartUtils = {
                     intersect: false,
                     mode: 'index',
                 },
+            }
+        });
+    },
+
+    /** Build reusable governor overlay Chart.js plugin */
+    _buildGovernorPlugin(govBoxes, dataAvg) {
+        return {
+            id: 'governorLabels',
+            beforeDatasetsDraw(chart) {
+                if (!govBoxes || govBoxes.length === 0) return;
+                const { ctx, chartArea, scales } = chart;
+                const xScale = scales.x;
+                ctx.save();
+                const pillPad = 5;
+                const pillH = 18;
+                const yScale = chart.scales.y;
+                const midY = (yScale.top + yScale.bottom) / 2;
+                const avgPixel = yScale.getPixelForValue(dataAvg);
+                const dataInTopHalf = avgPixel < midY;
+                const pillY = dataInTopHalf
+                    ? chartArea.bottom - pillH - 4
+                    : chartArea.top + 2;
+                ctx.font = '400 11px "Inter", sans-serif';
+                const gap = 6;
+                const step = xScale.ticks.length > 1
+                    ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0)) : 0;
+                const candidates = govBoxes.map((gov, gi) => {
+                    const x1 = xScale.getPixelForValue(gov.startIdx) - step * 0.5;
+                    const x2 = xScale.getPixelForValue(gov.endIdx) + step * 0.5;
+                    const left = Math.max(x1, chartArea.left);
+                    const right = Math.min(x2, chartArea.right);
+                    const parts = gov.name.split(' ');
+                    const lastName = parts[parts.length - 1];
+                    const variants = [
+                        `${gov.name} (${gov.party})`,
+                        `${lastName} (${gov.party})`,
+                        lastName
+                    ];
+                    return { gov, left, right, variants, idx: gi, centerX: (left + right) / 2 };
+                });
+                candidates.forEach(c => {
+                    if (c.idx % 2 === 0) {
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.025)';
+                        ctx.fillRect(c.left, chartArea.top, c.right - c.left, chartArea.bottom - chartArea.top);
+                    }
+                });
+                let prevRight = -Infinity;
+                const placed = candidates.map(c => {
+                    let bestText = c.variants[c.variants.length - 1];
+                    for (const v of c.variants) {
+                        const w = ctx.measureText(v).width;
+                        const px = c.centerX - w / 2 - pillPad;
+                        const pr = c.centerX + w / 2 + pillPad;
+                        if (px >= prevRight + gap && pr <= chartArea.right + 2) {
+                            bestText = v;
+                            break;
+                        }
+                    }
+                    const tw = ctx.measureText(bestText).width;
+                    let px = c.centerX - tw / 2;
+                    if (px < prevRight + gap) px = prevRight + gap;
+                    if (px + tw > chartArea.right) px = chartArea.right - tw;
+                    prevRight = px + tw;
+                    return { ...c, labelText: bestText, textX: px + tw / 2 };
+                });
+                placed.forEach(c => {
+                    const partyColor = c.gov.party === 'R' ? '#C0392B' : '#2563EB';
+                    ctx.fillStyle = partyColor;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(c.labelText, c.textX, pillY + 3);
+                });
+                ctx.restore();
+            }
+        };
+    },
+
+    /** County-level multi-line chart with governor overlay and state reference line */
+    createCountyChart(canvas, countyData, metricData, govBoxes, countyColors, stateData) {
+        const ctx = canvas.getContext('2d');
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) existingChart.destroy();
+
+        const allYears = new Set();
+        for (const county of countyData.counties) {
+            Object.keys(countyData.data[county]).forEach(y => allYears.add(y));
+        }
+        const labels = [...allYears].sort();
+        const isDecimalPct = this.isDecimalPctMetric(metricData);
+
+        // Compute average across all counties for governor label placement
+        let totalSum = 0, totalCount = 0;
+        for (const county of countyData.counties) {
+            for (const y of labels) {
+                const v = countyData.data[county][y];
+                if (v != null && v !== 0) { totalSum += v; totalCount++; }
+            }
+        }
+        const dataAvg = totalCount > 0 ? totalSum / totalCount : 0;
+        const governorPlugin = this._buildGovernorPlugin(govBoxes, dataAvg);
+
+        const datasets = countyData.counties.map(county => {
+            const color = countyColors[county];
+            const values = labels.map(y => {
+                const v = countyData.data[county][y];
+                return (v === 0 || v == null) ? null : v;
+            });
+            return {
+                label: county,
+                data: values,
+                borderColor: color,
+                borderWidth: 2.5,
+                fill: false,
+                tension: 0.3,
+                pointRadius: labels.length <= 15 ? 3 : 0,
+                pointHoverRadius: 5,
+                pointBackgroundColor: color,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+                spanGaps: true,
+            };
+        });
+
+        // Add state-level reference line (dashed gray)
+        if (stateData) {
+            const stateValues = labels.map(y => {
+                const v = stateData[y];
+                return (v === 0 || v == null) ? null : v;
+            });
+            datasets.push({
+                label: 'State',
+                data: stateValues,
+                borderColor: '#333333',
+                borderWidth: 1.5,
+                borderDash: [6, 4],
+                fill: false,
+                tension: 0.3,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                pointBackgroundColor: '#333333',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1,
+                spanGaps: true,
+            });
+        }
+
+        return new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            plugins: [governorPlugin],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: 0 },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 14,
+                            font: { size: 11, weight: '500' },
+                            color: '#555555',
+                            boxWidth: 8,
+                            boxHeight: 8,
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#333333',
+                        titleColor: '#fff',
+                        bodyColor: '#E5E7EB',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 13, weight: '600' },
+                        bodyFont: { size: 12 },
+                        usePointStyle: true,
+                        callbacks: {
+                            label: (context) => {
+                                const val = context.parsed.y;
+                                return ` ${context.dataset.label}: ${ChartUtils.formatValue(val, metricData.unit, isDecimalPct)}`;
+                            }
+                        }
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#888888',
+                            maxRotation: 45,
+                            minRotation: 0,
+                        }
+                    },
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#888888',
+                            callback: (value) => {
+                                if (isDecimalPct) return (value * 100).toFixed(1) + '%';
+                                return ChartUtils.formatValue(value, metricData.unit);
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                animation: { duration: 1000, easing: 'easeOutQuart' },
             }
         });
     },

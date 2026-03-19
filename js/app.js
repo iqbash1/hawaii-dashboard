@@ -23,6 +23,14 @@ const AREA_ICONS = {
 const App = {
     sparklineCharts: [],
     detailChart: null,
+    countyChart: null,
+
+    COUNTY_COLORS: {
+        'Honolulu': '#0D7C8F',
+        'Hawai\u02BBi': '#E67E22',
+        'Maui': '#8E44AD',
+        'Kauai': '#27AE60',
+    },
 
     // Hawaiʻi Governors - for chart overlay
     GOVERNORS: [
@@ -484,8 +492,26 @@ const App = {
             tabBar.style.display = 'none';
         }
 
-        // Reset to detail view first
+        // County tab - show only for metrics with county data
+        const tabCounty = document.getElementById('tab-county');
+        const hasCountyData = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
+        if (hasCountyData) {
+            tabCounty.style.display = '';
+            tabCounty.onclick = () => this.switchTab('county', slug);
+            if (!hasStateData) tabBar.style.display = '';
+        } else {
+            tabCounty.style.display = 'none';
+        }
+
+        // Reset to detail view
         this.hideRankings();
+        this.hideCounty();
+        document.getElementById('modal-detail-view').style.display = '';
+        const tabDetailEl = document.getElementById('tab-detail');
+        if (tabDetailEl) tabDetailEl.classList.add('active');
+        const tabRankingsEl = document.getElementById('tab-rankings');
+        if (tabRankingsEl) tabRankingsEl.classList.remove('active');
+        if (tabCounty) tabCounty.classList.remove('active');
 
         // Stats use effective data so they match both charts
         const latest = this.getLatestValue(effective.hawaii);
@@ -573,22 +599,46 @@ const App = {
         // If requested, switch to rankings tab immediately
         if (initialView === 'rankings' && hasStateData) {
             this.switchTab('rankings', slug);
+        } else if (initialView === 'county' && hasCountyData) {
+            this.switchTab('county', slug);
         }
     },
 
     switchTab(tab, slug) {
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
+        const tabCounty = document.getElementById('tab-county');
+
+        // Clear all tabs
+        tabDetail.classList.remove('active');
+        tabRankings.classList.remove('active');
+        if (tabCounty) tabCounty.classList.remove('active');
+
+        // Hide all views
+        document.getElementById('modal-detail-view').style.display = 'none';
+        document.getElementById('modal-rankings').style.display = 'none';
+        document.getElementById('modal-county').style.display = 'none';
+        // Destroy charts for hidden views
+        if (tab !== 'rankings' && this.rankingsChart) {
+            this.rankingsChart.destroy();
+            this.rankingsChart = null;
+        }
+        if (tab !== 'county' && this.countyChart) {
+            this.countyChart.destroy();
+            this.countyChart = null;
+        }
 
         if (tab === 'rankings') {
-            tabDetail.classList.remove('active');
             tabRankings.classList.add('active');
             this.showRankings(slug);
             history.replaceState(null, '', '/r/' + slug + '/');
+        } else if (tab === 'county') {
+            tabCounty.classList.add('active');
+            this.showCounty(slug);
+            history.replaceState(null, '', '/c/' + slug + '/');
         } else {
-            tabRankings.classList.remove('active');
             tabDetail.classList.add('active');
-            this.hideRankings();
+            document.getElementById('modal-detail-view').style.display = '';
             history.replaceState(null, '', '/t/' + slug + '/');
         }
         document.querySelector('.modal').scrollTop = 0;
@@ -852,16 +902,8 @@ const App = {
     },
 
     hideRankings() {
-        document.getElementById('modal-detail-view').style.display = '';
         document.getElementById('modal-rankings').style.display = 'none';
 
-        // Reset tab state
-        const tabDetail = document.getElementById('tab-detail');
-        const tabRankings = document.getElementById('tab-rankings');
-        if (tabDetail) tabDetail.classList.add('active');
-        if (tabRankings) tabRankings.classList.remove('active');
-
-        // Clean up scroll hint listener
         if (this._rankingsScrollHandler) {
             const modal = document.getElementById('modal');
             modal.removeEventListener('scroll', this._rankingsScrollHandler);
@@ -871,6 +913,35 @@ const App = {
         if (this.rankingsChart) {
             this.rankingsChart.destroy();
             this.rankingsChart = null;
+        }
+    },
+
+    showCounty(slug) {
+        const countyData = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
+        if (!countyData) return;
+        const metricData = DASHBOARD_DATA[slug];
+
+        document.getElementById('modal-detail-view').style.display = 'none';
+        document.getElementById('modal-rankings').style.display = 'none';
+        document.getElementById('modal-county').style.display = 'block';
+
+        document.getElementById('county-subtitle').textContent =
+            `${metricData.metric} by County`;
+
+        const canvas = document.getElementById('county-chart');
+        const labels = Object.keys(Object.values(countyData.data)[0]).sort();
+        const govBoxes = this.getGovernorBoxes(labels);
+
+        this.countyChart = ChartUtils.createCountyChart(
+            canvas, countyData, metricData, govBoxes, this.COUNTY_COLORS, metricData.hawaii
+        );
+    },
+
+    hideCounty() {
+        document.getElementById('modal-county').style.display = 'none';
+        if (this.countyChart) {
+            this.countyChart.destroy();
+            this.countyChart = null;
         }
     },
 
@@ -899,21 +970,29 @@ const App = {
             this.rankingsChart.destroy();
             this.rankingsChart = null;
         }
+        if (this.countyChart) {
+            this.countyChart.destroy();
+            this.countyChart = null;
+        }
     },
 
-    /** Handle permalink routing: /t/{slug}/ (detail) or /r/{slug}/ (rankings), or legacy #{slug} */
+    /** Handle permalink routing: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county), or legacy #{slug} */
     handleRoute() {
         let slug = '';
         let view = '';
 
-        // Check path-based routes: /t/{slug}/ (detail) or /r/{slug}/ (rankings)
+        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county)
         const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
         const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
+        const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/?$/);
         if (detailMatch) {
             slug = detailMatch[1];
         } else if (rankMatch) {
             slug = rankMatch[1];
             view = 'rankings';
+        } else if (countyMatch) {
+            slug = countyMatch[1];
+            view = 'county';
         }
 
         // Fall back to legacy hash route: #{slug} or #{slug}/rankings
@@ -935,7 +1014,7 @@ const App = {
             }
         }
 
-        const initialView = (view === 'rankings') ? 'rankings' : undefined;
+        const initialView = (view === 'rankings') ? 'rankings' : (view === 'county') ? 'county' : undefined;
         this.openModal(slug, areaName, initialView);
     },
 };
