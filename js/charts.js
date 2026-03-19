@@ -183,22 +183,20 @@ const ChartUtils = {
 
         const nonNullHawaii = hawaiiValues.filter(v => v !== null);
 
-        // Governor term labels - text only, no background bands
-        // Precompute Hawaii data average for adaptive label placement
+        // Governor term overlay with alternating bands + party-colored labels
         const hiDataAvg = nonNullHawaii.length > 0
             ? nonNullHawaii.reduce((a, b) => a + b, 0) / nonNullHawaii.length : 0;
         const governorPlugin = {
             id: 'governorLabels',
-            beforeDraw(chart) {
+            beforeDatasetsDraw(chart) {
                 if (!govBoxes || govBoxes.length === 0) return;
 
                 const { ctx, chartArea, scales } = chart;
                 const xScale = scales.x;
 
                 ctx.save();
-                const pillPad = 4;
-                const pillH = 16;
-                // Place labels at top or bottom depending on where the data sits
+                const pillPad = 5;
+                const pillH = 18;
                 const yScale = chart.scales.y;
                 const midY = (yScale.top + yScale.bottom) / 2;
                 const avgPixel = yScale.getPixelForValue(hiDataAvg);
@@ -206,69 +204,68 @@ const ChartUtils = {
                 const pillY = dataInTopHalf
                     ? chartArea.bottom - pillH - 4
                     : chartArea.top + 2;
-                ctx.font = '500 11px "Inter", sans-serif';
+                ctx.font = '400 11px "Inter", sans-serif';
 
-                // Pass 1: compute label candidates
+                // Pass 1: compute segment bounds and label variants
+                const gap = 6;
+                const step = labels.length > 1
+                    ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0)) : 0;
                 const candidates = govBoxes.map((gov, gi) => {
-                    const step = labels.length > 1
-                        ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0))
-                        : 0;
                     const x1 = xScale.getPixelForValue(gov.startIdx) - step * 0.5;
                     const x2 = xScale.getPixelForValue(gov.endIdx) + step * 0.5;
                     const left = Math.max(x1, chartArea.left);
                     const right = Math.min(x2, chartArea.right);
-                    const segWidth = right - left;
-                    const isLast = gi === govBoxes.length - 1;
-                    const fullLabel = `${gov.name} (${gov.party})`;
-                    const shortLabel = gov.name;
-                    const fullW = ctx.measureText(fullLabel).width;
-                    const shortW = ctx.measureText(shortLabel).width;
-                    let labelText = null;
-                    if (fullW + 10 <= segWidth) labelText = fullLabel;
-                    else if (shortW + 6 <= segWidth) labelText = shortLabel;
-                    else if (isLast) labelText = shortLabel;
-                    const centerX = (left + right) / 2;
-                    const textW = labelText ? ctx.measureText(labelText).width : 0;
-                    let pillX = centerX - textW / 2 - pillPad;
-                    const pw = textW + pillPad * 2;
-                    // Keep last governor's pill inside chart area
-                    if (isLast && pillX + pw > chartArea.right) {
-                        pillX = chartArea.right - pw;
-                    }
-                    return { gov, left, right, labelText, centerX: pillX + pw / 2, textW, px: pillX, pw };
+                    const parts = gov.name.split(' ');
+                    const lastName = parts[parts.length - 1];
+                    // Label options from longest to shortest
+                    const variants = [
+                        `${gov.name} (${gov.party})`,
+                        `${lastName} (${gov.party})`,
+                        lastName
+                    ];
+                    return { gov, left, right, variants, idx: gi, centerX: (left + right) / 2 };
                 });
 
-                // Pass 2: draw lines + labels, skipping overlapping pills
-                let lastPillRight = -Infinity;
+                // Pass 2: draw alternating background bands
                 candidates.forEach(c => {
-                    // Thin vertical line at term boundary
-                    if (c.left > chartArea.left + 2) {
-                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.10)';
-                        ctx.lineWidth = 1;
-                        ctx.setLineDash([3, 4]);
-                        ctx.beginPath();
-                        ctx.moveTo(c.left, chartArea.top);
-                        ctx.lineTo(c.left, chartArea.bottom);
-                        ctx.stroke();
-                        ctx.setLineDash([]);
+                    if (c.idx % 2 === 0) {
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.025)';
+                        ctx.fillRect(c.left, chartArea.top, c.right - c.left, chartArea.bottom - chartArea.top);
                     }
+                });
 
-                    if (c.labelText && c.px > lastPillRight + 4) {
-                        ctx.fillStyle = 'rgba(255,255,255,0.88)';
-                        if (ctx.roundRect) {
-                            ctx.beginPath();
-                            ctx.roundRect(c.px, pillY, c.pw, pillH, 3);
-                            ctx.fill();
-                        } else {
-                            ctx.fillRect(c.px, pillY, c.pw, pillH);
+                // Pass 3: greedily assign labels, no overlaps
+                // For each governor pick the longest variant that fits
+                // without overlapping the previous label
+                let prevRight = -Infinity;
+                const placed = candidates.map(c => {
+                    let bestText = c.variants[c.variants.length - 1]; // fallback: last name
+                    for (const v of c.variants) {
+                        const w = ctx.measureText(v).width;
+                        const px = c.centerX - w / 2 - pillPad;
+                        const pr = c.centerX + w / 2 + pillPad;
+                        if (px >= prevRight + gap && pr <= chartArea.right + 2) {
+                            bestText = v;
+                            break;
                         }
-                        const partyColor = c.gov.party === 'R' ? '#C0392B' : '#2563EB';
-                        ctx.fillStyle = partyColor;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'top';
-                        ctx.fillText(c.labelText, c.centerX, pillY + 2);
-                        lastPillRight = c.px + c.pw;
                     }
+                    const tw = ctx.measureText(bestText).width;
+                    let px = c.centerX - tw / 2;
+                    // Ensure no overlap with previous
+                    if (px < prevRight + gap) px = prevRight + gap;
+                    // Ensure within chart bounds
+                    if (px + tw > chartArea.right) px = chartArea.right - tw;
+                    prevRight = px + tw;
+                    return { ...c, labelText: bestText, textX: px + tw / 2 };
+                });
+
+                // Pass 4: draw text labels
+                placed.forEach(c => {
+                    const partyColor = c.gov.party === 'R' ? '#C0392B' : '#2563EB';
+                    ctx.fillStyle = partyColor;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(c.labelText, c.textX, pillY + 3);
                 });
                 ctx.restore();
             }
