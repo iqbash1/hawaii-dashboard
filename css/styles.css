@@ -212,6 +212,12 @@ body {
     font-weight: 500;
 }
 
+.card-year {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
 .card-sparkline {
     height: 56px;
     width: 100%;
@@ -529,9 +535,7 @@ body {
     padding: 0.85rem 2rem;
     border-top: 1px solid var(--border);
     background: var(--bg);
-    position: sticky;
-    bottom: 0;
-    z-index: 5;
+    position: static;
 }
 
 .modal-official {
@@ -857,6 +861,11 @@ body {
 
     .modal-title {
         font-size: 1.1rem;
+    }
+
+    .modal-tab {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.6rem;
     }
 
     .modal-rankings {

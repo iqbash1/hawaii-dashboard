@@ -288,7 +288,7 @@ const App = {
 
         return `
             <div class="card-comp ${cls}">
-                <div class="comp-label">vs Prior Year</div>
+                <div class="comp-label">vs ${prior.year}</div>
                 <div class="comp-verdict">${pctLabel}</div>
                 <div class="comp-detail">${word}</div>
                 <div class="comp-context">from ${formattedPrior} in ${prior.year}</div>
@@ -331,6 +331,7 @@ const App = {
                     <div class="card-hero">
                         <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, effective.unit, isDecimal)}</span>
                         ${unitSuffix}
+                        <span class="card-year">(${latest.year})</span>
                     </div>
                     <div class="card-sparkline">
                         <canvas></canvas>
@@ -544,7 +545,7 @@ const App = {
 
             vsYearHtml = `
                 <div class="stat-card">
-                    <div class="stat-label">vs Prior Year</div>
+                    <div class="stat-label">vs ${prior.year}</div>
                     <div class="stat-value ${cls}">${pctLabel}</div>
                     <div class="stat-sub ${cls}">${word}</div>
                 </div>
@@ -592,6 +593,7 @@ const App = {
         overlay.classList.add('active');
         document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
+        document.getElementById('modal').scrollTop = 0;
 
         // Update URL for permalink (use /t/ path for clean sharing)
         history.replaceState(null, '', '/t/' + slug + '/');
@@ -769,7 +771,35 @@ const App = {
             }
         }
 
-        // --- Tab 4: "Methodology" ---
+        // --- Tab 4 (conditional): "County Data" ---
+        const countyData = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
+        const countyTabActive = document.getElementById('tab-county')
+            && document.getElementById('tab-county').classList.contains('active');
+        if (countyData && countyTabActive) {
+            const counties = countyData.counties || Object.keys(countyData.data);
+            const allCountyYears = [...new Set(
+                counties.flatMap(c => Object.keys(countyData.data[c] || {}))
+            )].sort();
+
+            const countyRows = [
+                [`${m.metric} (${m.unit}) - County Data`],
+                [],
+                ['Year', ...counties],
+            ];
+
+            allCountyYears.forEach(y => {
+                const row = [y];
+                counties.forEach(c => {
+                    row.push(countyData.data[c]?.[y] ?? '');
+                });
+                countyRows.push(row);
+            });
+
+            const wsCounty = XLSX.utils.aoa_to_sheet(countyRows);
+            XLSX.utils.book_append_sheet(wb, wsCounty, 'County Data');
+        }
+
+        // --- Tab 5: "Methodology" ---
         const methRows = [
             ['Metric', m.metric],
             m.officialName ? ['Official Name', m.officialName] : [],
@@ -1008,7 +1038,11 @@ const App = {
             view = parts[1] || '';
         }
 
-        if (!slug || !DASHBOARD_DATA[slug]) return;
+        if (slug && !DASHBOARD_DATA[slug]) {
+            history.replaceState(null, '', '/');
+            return;
+        }
+        if (!slug) return;
 
         let areaName = '';
         for (const areaGroup of this.AREA_ORDER) {

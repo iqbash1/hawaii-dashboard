@@ -363,17 +363,26 @@ const ChartUtils = {
                     const variants = [
                         `${gov.name} (${gov.party})`,
                         `${lastName} (${gov.party})`,
-                        lastName
+                        lastName,
                     ];
                     return { gov, left, right, variants, idx: gi, centerX: (left + right) / 2 };
                 });
+                // Always draw alternating background bands
                 candidates.forEach(c => {
                     if (c.idx % 2 === 0) {
                         ctx.fillStyle = 'rgba(0, 0, 0, 0.025)';
                         ctx.fillRect(c.left, chartArea.top, c.right - c.left, chartArea.bottom - chartArea.top);
                     }
                 });
-                let prevRight = -Infinity;
+                // On narrow charts, skip text labels and only show bands
+                const chartWidth = chartArea.right - chartArea.left;
+                if (chartWidth < 500) {
+                    ctx.restore();
+                    return;
+                }
+                // Inset from left edge so labels do not overlap y-axis values
+                const leftInset = chartArea.left + 30;
+                let prevRight = leftInset;
                 const placed = candidates.map(c => {
                     let bestText = c.variants[c.variants.length - 1];
                     for (const v of c.variants) {
@@ -452,7 +461,21 @@ const ChartUtils = {
 
         // Add state-level reference line (bold dashed black)
         if (stateData) {
+            // Find the range of years that have at least one county data point
+            const yearsWithCountyData = new Set();
+            for (const county of countyData.counties) {
+                for (const y of labels) {
+                    const v = countyData.data[county][y];
+                    if (v != null && v !== 0) yearsWithCountyData.add(y);
+                }
+            }
+            const countyYearsSorted = [...yearsWithCountyData].sort();
+            const countyMinYear = countyYearsSorted[0];
+            const countyMaxYear = countyYearsSorted[countyYearsSorted.length - 1];
+
             const stateValues = labels.map(y => {
+                // Only include state values within the county data range
+                if (y < countyMinYear || y > countyMaxYear) return null;
                 const v = stateData[y];
                 return (v === 0 || v == null) ? null : v;
             });
@@ -519,6 +542,9 @@ const ChartUtils = {
                         titleFont: { size: 13, weight: '600' },
                         bodyFont: { size: 12 },
                         usePointStyle: true,
+                        filter: (tooltipItem) => {
+                            return tooltipItem.parsed.y !== null;
+                        },
                         callbacks: {
                             label: (context) => {
                                 const val = context.parsed.y;
@@ -642,6 +668,12 @@ const ChartUtils = {
         const bgColors = stateValues.map(s =>
             this.isHawaii(s.state) ? this.HAWAII_BLUE : otherColor
         );
+        const borderColors = stateValues.map(s =>
+            this.isHawaii(s.state) ? '#0D7C8F' : 'transparent'
+        );
+        const borderWidths = stateValues.map(s =>
+            this.isHawaii(s.state) ? 2 : 0
+        );
 
         // Background gradient: green (best) → white → red (worst)
         const [neutralStart, neutralEnd] = this.NEUTRAL_RANGE;
@@ -693,7 +725,8 @@ const ChartUtils = {
                 datasets: [{
                     data: values,
                     backgroundColor: bgColors,
-                    borderWidth: 0,
+                    borderColor: borderColors,
+                    borderWidth: borderWidths,
                     barPercentage: 0.75,
                     categoryPercentage: 0.9,
                 }]

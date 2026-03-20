@@ -59,8 +59,8 @@ const METRIC_RULES = {
     // Homeless PIT counts: methodology changes and small populations cause big swings
     unsheltered_homeless_rate:  { min: 1,     max: 100,    maxYoYPct: 1.00, format: 'rate' },
     road_poor_pct:              { min: 0.01,  max: 0.50,   maxYoYPct: 0.40, format: 'decimal_pct' },
-    // Broadband: Census changed the question in 2016, causing a legitimate ~800% jump
-    broadband_subscription_pct: { min: 0.05,  max: 1.0,    maxYoYPct: 10.0, format: 'decimal_pct' },
+    // Broadband: pre-2016 data stripped (Census variable change); 2016+ values are 0.70-0.96
+    broadband_subscription_pct: { min: 0.50,  max: 1.0,    maxYoYPct: 0.15, format: 'decimal_pct' },
     // Transit: COVID caused >50% drops in 2020-2021; small-county values are inherently noisy
     transit_mode_share:         { min: 0.001, max: 0.15,   maxYoYPct: 0.60, format: 'decimal_pct' },
     residential_price_cpkwh:    { min: 5,     max: 60,     maxYoYPct: 0.40, format: 'cents' },

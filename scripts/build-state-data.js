@@ -144,8 +144,11 @@ async function fetchBaOrHigher() {
 async function fetchBroadband() {
     console.log('Fetching: Broadband subscription (Census ACS B28002)...');
     const data = {};
+    // Skip pre-2016: Census changed the B28002 variable definition in 2016,
+    // so 2013-2015 values measure a different (narrower) broadband concept.
+    const bbYears = ACS_YEARS.filter(y => y >= 2016);
 
-    for (const year of ACS_YEARS) {
+    for (const year of bbYears) {
         try {
             const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,B28002_001E,B28002_004E&for=state:*`;
             const json = await fetchJSON(url);

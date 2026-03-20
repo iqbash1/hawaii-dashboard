@@ -998,11 +998,8 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://data.census.gov/",
     "whyItMatters": "93.1% of Hawaiʻi households have broadband, slightly ahead of the other-state average of 92.8%. About 30,000 households still lack reliable internet. The State distributes federal broadband grants and sets infrastructure policy for underserved areas.",
     "howToRead": "Both lines rise steadily toward universal coverage. Hawaiʻi has consistently run 1 to 2 points above the other-state average.",
-    "insight": "Climbed from 77.6% in 2015 to 93.1% in 2024. The remaining gap is concentrated in rural and lower-income households across the neighbor islands.",
+    "insight": "Climbed from 83.2% in 2016 to 93.1% in 2024. The remaining gap is concentrated in rural and lower-income households across the neighbor islands.",
     "hawaii": {
-      "2013": 0.126,
-      "2014": 0.1154,
-      "2015": 0.0864,
       "2016": 0.8318,
       "2017": 0.8448,
       "2018": 0.8573,
@@ -1013,9 +1010,6 @@ const DASHBOARD_DATA = {
       "2024": 0.931
     },
     "otherStateAvg": {
-      "2013": 0.1621,
-      "2014": 0.1501,
-      "2015": 0.137,
       "2016": 0.8078,
       "2017": 0.8276,
       "2018": 0.8436,

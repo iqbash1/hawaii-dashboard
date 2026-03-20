@@ -127,13 +127,16 @@ async function fetchBaOrHigher() {
 }
 
 async function fetchBroadband() {
+    // Skip pre-2016: Census changed the B28002 variable definition in 2016,
+    // so 2013-2015 values measure a different (narrower) broadband concept.
+    const bbYears = ACS_YEARS.filter(y => y >= 2016);
     return fetchACSCounty("Broadband subscription (B28002)", 'B28002_001E,B28002_004E', (row) => {
         const total = parseFloat(row['B28002_001E']);
         const bb = parseFloat(row['B28002_004E']);
         if (isNaN(total) || isNaN(bb) || total <= 0) return null;
         const pct = bb / total;
         return (pct > 0 && pct <= 1) ? parseFloat(pct.toFixed(4)) : null;
-    });
+    }, bbYears);
 }
 
 async function fetchRenterCostBurden() {
