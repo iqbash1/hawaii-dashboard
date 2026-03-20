@@ -618,7 +618,10 @@ const App = {
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'none';
         document.getElementById('modal-county').style.display = 'none';
-        // Destroy charts for hidden views
+        // Destroy charts for hidden views to free memory
+        // Note: detailChart is NOT destroyed here because it is only created
+        // once in openModal() and not recreated on tab switch. It is destroyed
+        // in closeModal() instead.
         if (tab !== 'rankings' && this.rankingsChart) {
             this.rankingsChart.destroy();
             this.rankingsChart = null;

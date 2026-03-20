@@ -595,41 +595,20 @@ const ChartUtils = {
     },
 
     /**
-     * Format for display on cards (shorter).
+     * Format for display on cards (shorter). Delegates to formatValue
+     * but uses compact dollar format ($65K instead of $65,000).
      * @param {number} value
      * @param {string} unit
      * @param {boolean} [isDecimalPct] - For % units: true if values are stored as decimals.
      */
     formatCardValue(value, unit, isDecimalPct) {
         if (value === null || value === undefined || isNaN(value)) return 'N/A';
-
-        switch (unit) {
-            case '$':
-                if (value >= 1000) {
-                    return '$' + (value / 1000).toFixed(0) + 'K';
-                }
-                return '$' + Math.round(value);
-            case '%':
-                if (isDecimalPct) return (value * 100).toFixed(1) + '%';
-                return value.toFixed(1) + '%';
-            case 'per 100K':
-                return Math.round(value).toLocaleString();
-            case 'per 10K':
-                return value.toFixed(1);
-            case 'per 1,000':
-                return value.toFixed(2);
-            case '\u00a2/kWh':
-                return value.toFixed(1) + '\u00a2';
-            case '\u00d7':
-                return value.toFixed(1) + '\u00d7';
-            case 'Index (2017=100)':
-                return value.toFixed(1);
-            default:
-                if (Math.abs(value) >= 1000) {
-                    return Math.round(value).toLocaleString();
-                }
-                return value.toFixed(1);
+        if (unit === '$') {
+            return value >= 1000
+                ? '$' + (value / 1000).toFixed(0) + 'K'
+                : '$' + Math.round(value);
         }
+        return this.formatValue(value, unit, isDecimalPct);
     },
 
     /**

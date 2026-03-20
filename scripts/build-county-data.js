@@ -30,6 +30,25 @@ const COUNTY_FIPS = {
 const COUNTY_ORDER = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
 const COUNTY_FIPS_CODES = ['001', '003', '007', '009'];
 
+// 5-digit FIPS for BEA/other APIs (state FIPS 15 + county FIPS)
+const COUNTY_FIPS_5 = {
+    '15001': 'Hawai\u02BBi',
+    '15003': 'Honolulu',
+    '15007': 'Kauai',
+    '15009': 'Maui',
+    '15901': 'Maui',  // BEA combines Maui + Kalawao
+};
+
+// BLS LAUS time windows (max 10-year span per v1 API request)
+const BLS_TIME_WINDOWS = [
+    { start: '2000', end: '2009' },
+    { start: '2010', end: '2019' },
+    { start: '2020', end: '2025' },
+];
+
+// Minimum monthly data points required to compute annual average
+const MIN_MONTHLY_DATA_POINTS = 10;
+
 // ---- API Keys ----
 const KEYS = {
     BEA: 'C51F8C25-E865-4DCC-B502-13BAFEB7D8AD',
@@ -193,14 +212,7 @@ async function fetchUnemploymentRate() {
     }
     const seriesIds = Object.keys(seriesMap);
 
-    // BLS v1 API: max 10-year window per request
-    const timeWindows = [
-        { start: '2000', end: '2009' },
-        { start: '2010', end: '2019' },
-        { start: '2020', end: '2025' },
-    ];
-
-    for (const tw of timeWindows) {
+    for (const tw of BLS_TIME_WINDOWS) {
         const body = JSON.stringify({
             seriesid: seriesIds,
             startyear: tw.start,
@@ -218,7 +230,7 @@ async function fetchUnemploymentRate() {
                 if (!res.ok) { await sleep(2000); continue; }
                 json = await res.json();
                 if (json.status === 'REQUEST_SUCCEEDED') break;
-            } catch { /* retry */ }
+            } catch (err) { process.stdout.write(` retry(${err.code || 'err'})`); }
             await sleep(3000);
             json = null;
         }
@@ -252,7 +264,7 @@ async function fetchUnemploymentRate() {
                 let rate;
                 if (vals.m13 !== null) {
                     rate = vals.m13;
-                } else if (vals.monthly.length >= 10) {
+                } else if (vals.monthly.length >= MIN_MONTHLY_DATA_POINTS) {
                     rate = vals.monthly.reduce((a, b) => a + b, 0) / vals.monthly.length;
                 } else {
                     continue;
@@ -281,8 +293,8 @@ async function fetchPerCapitaIncome() {
 
     try {
         // Fetch county-level per capita personal income
-        // BEA combines Maui + Kalawao as GeoFips 15901
-        const countyFips = '15001,15003,15007,15901';
+        // Use 5-digit FIPS (BEA combines Maui + Kalawao as 15901)
+        const countyFips = Object.keys(COUNTY_FIPS_5).filter(f => f !== '15009').join(',');
         const incomeUrl = `https://apps.bea.gov/api/data?UserID=${KEYS.BEA}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&GeoFips=${countyFips}&Year=ALL&ResultFormat=JSON`;
         const jsonIncome = await fetchJSON(incomeUrl);
 
@@ -300,20 +312,11 @@ async function fetchPerCapitaIncome() {
             }
         }
 
-        // BEA FIPS -> county name mapping (includes Maui+Kalawao combined)
-        const beaFipsMap = {
-            '15001': 'Hawai\u02BBi',
-            '15003': 'Honolulu',
-            '15007': 'Kauai',
-            '15009': 'Maui',
-            '15901': 'Maui',  // Maui + Kalawao combined
-        };
-
         for (const row of jsonIncome.BEAAPI.Results.Data) {
             if (row.DataValue === '(NA)') continue;
             const year = row.TimePeriod;
             const fips5 = row.GeoFips;
-            const countyName = beaFipsMap[fips5];
+            const countyName = COUNTY_FIPS_5[fips5];
             if (!countyName) continue;
 
             const nominal = parseFloat(row.DataValue.replace(/,/g, ''));
