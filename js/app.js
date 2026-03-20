@@ -935,8 +935,9 @@ const App = {
         const labels = Object.keys(Object.values(countyData.data)[0]).sort();
         const govBoxes = this.getGovernorBoxes(labels);
 
+        const stateRef = countyData.hideStateLine ? null : metricData.hawaii;
         this.countyChart = ChartUtils.createCountyChart(
-            canvas, countyData, metricData, govBoxes, this.COUNTY_COLORS, metricData.hawaii
+            canvas, countyData, metricData, govBoxes, this.COUNTY_COLORS, stateRef
         );
     },
 
