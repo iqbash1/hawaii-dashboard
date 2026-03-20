@@ -729,6 +729,12 @@ body {
     margin-top: 0.35rem;
 }
 
+.footer-updated {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
 /* --- Responsive --- */
 @media (max-width: 1024px) {
     .dashboard-grid {
