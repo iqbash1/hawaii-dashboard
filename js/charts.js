@@ -438,7 +438,7 @@ const ChartUtils = {
                 label: county,
                 data: values,
                 borderColor: color,
-                borderWidth: 2.5,
+                borderWidth: 1.5,
                 fill: false,
                 tension: 0.3,
                 pointRadius: labels.length <= 15 ? 3 : 0,
@@ -450,7 +450,7 @@ const ChartUtils = {
             };
         });
 
-        // Add state-level reference line (dashed gray)
+        // Add state-level reference line (bold dashed black)
         if (stateData) {
             const stateValues = labels.map(y => {
                 const v = stateData[y];
@@ -459,17 +459,18 @@ const ChartUtils = {
             datasets.push({
                 label: 'State',
                 data: stateValues,
-                borderColor: '#333333',
-                borderWidth: 1.5,
-                borderDash: [6, 4],
+                borderColor: '#111111',
+                borderWidth: 2.5,
+                borderDash: [10, 5],
                 fill: false,
                 tension: 0.3,
                 pointRadius: 0,
-                pointHoverRadius: 4,
-                pointBackgroundColor: '#333333',
+                pointHoverRadius: 5,
+                pointBackgroundColor: '#111111',
                 pointBorderColor: '#fff',
-                pointBorderWidth: 1,
+                pointBorderWidth: 1.5,
                 spanGaps: true,
+                order: -1,
             });
         }
 
@@ -494,6 +495,19 @@ const ChartUtils = {
                             color: '#555555',
                             boxWidth: 8,
                             boxHeight: 8,
+                            generateLabels: function(chart) {
+                                const defaultLabels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                                return defaultLabels.map(label => {
+                                    if (label.text === 'State') {
+                                        label.pointStyle = 'line';
+                                        label.lineDash = [6, 3];
+                                        label.lineWidth = 2.5;
+                                        label.strokeStyle = '#111111';
+                                        label.fontColor = '#111111';
+                                    }
+                                    return label;
+                                });
+                            }
                         }
                     },
                     tooltip: {
