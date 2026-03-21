@@ -32,8 +32,28 @@
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Audit round 2 styles -->
+    <style>
+    .area-divider { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 0 0.25rem; margin-top: 0.5rem; border-top: 1px solid #e5e7eb; }
+    .area-divider:first-child { border-top: none; margin-top: 0; }
+    .area-divider-icon { font-size: 1.2rem; }
+    .area-divider-name { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .search-wrap { margin-top: 1rem; text-align: center; }
+    .metric-search { width: 280px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; outline: none; transition: border-color 0.15s; }
+    .metric-search:focus { border-color: var(--hawaii-blue); }
+    @media (max-width: 700px) { .metric-search { width: 100%; } }
+    .summary-badge { text-align: center; margin-top: 0.4rem; font-size: 0.8rem; color: var(--text-muted); }
+    .summary-better { color: var(--positive); font-weight: 600; }
+    .summary-worse { color: var(--negative); font-weight: 600; }
+    .rankings-chart-wrap { -webkit-overflow-scrolling: touch; }
+    .card-year-stale { color: #b45309; }
+    .skip-link { position: absolute; top: -40px; left: 0; background: #000; color: #fff; padding: 8px 16px; z-index: 1000; transition: top 0.15s; }
+    .skip-link:focus { top: 0; }
+    .deeper-area { font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
+    </style>
 </head>
 <body>
+    <a href="#dashboard-grid" class="skip-link">Skip to dashboard</a>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -47,6 +67,10 @@
                 <span class="meta-badge">
                     <span class="meta-icon">📊</span> 12 areas &middot; 27 metrics
                 </span>
+                <div class="summary-badge" id="summary-badge"></div>
+            </div>
+            <div class="search-wrap">
+                <input type="text" id="metric-search" class="metric-search" placeholder="Filter metrics..." aria-label="Filter metrics by name or area">
             </div>
         </div>
     </header>
@@ -72,12 +96,12 @@
                     <p class="modal-area" id="modal-area"></p>
                 </div>
             </div>
-            <div class="modal-tabs" id="modal-tabs" style="display:none;">
-                <button class="modal-tab active" id="tab-detail">Detail</button>
-                <button class="modal-tab" id="tab-rankings">Rank</button>
-                <button class="modal-tab" id="tab-county" style="display:none;">County-level</button>
+            <div class="modal-tabs" id="modal-tabs" role="tablist" style="display:none;">
+                <button class="modal-tab active" id="tab-detail" role="tab">Detail</button>
+                <button class="modal-tab" id="tab-rankings" role="tab">Rank</button>
+                <button class="modal-tab" id="tab-county" role="tab" style="display:none;">County-level</button>
             </div>
-            <div id="modal-detail-view">
+            <div id="modal-detail-view" role="tabpanel">
                 <div class="modal-chart-container">
                     <div class="modal-chart-skeleton" id="modal-chart-skeleton"></div>
                     <canvas id="modal-chart"></canvas>
@@ -98,7 +122,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-rankings" id="modal-rankings" style="display:none;">
+            <div class="modal-rankings" id="modal-rankings" role="tabpanel" style="display:none;">
                 <p class="rankings-subtitle" id="rankings-subtitle"></p>
                 <p class="rankings-rank" id="rankings-rank"></p>
                 <div class="rankings-chart-wrap">
@@ -106,7 +130,7 @@
                 </div>
                 <p class="rankings-scroll-hint" id="rankings-scroll-hint">&darr; Scroll to see all states</p>
             </div>
-            <div class="modal-county" id="modal-county" style="display:none;">
+            <div class="modal-county" id="modal-county" role="tabpanel" style="display:none;">
                 <p class="county-subtitle" id="county-subtitle"></p>
                 <div class="county-chart-container"><canvas id="county-chart"></canvas></div>
             </div>
@@ -124,18 +148,18 @@
                 <div class="go-deeper-col">
                     <h3 class="go-deeper-heading">Data Portals</h3>
                     <ul class="go-deeper-list">
-                        <li><a href="https://dbedt.hawaii.gov/economic/dashboards-main/" target="_blank" rel="noopener">DBEDT Dashboards</a><span>Economy, housing, tourism, population, and county data</span></li>
+                        <li><a href="https://dbedt.hawaii.gov/economic/dashboards-main/" target="_blank" rel="noopener">DBEDT Dashboards</a><span>Economy, housing, tourism, population, and county data</span> <span class="deeper-area">(Economy, Housing, Tourism)</span></li>
                         <li><a href="https://dbedt.hawaii.gov/economic/databook/" target="_blank" rel="noopener">State Data Book</a><span>Statewide statistical reference across all sectors</span></li>
-                        <li><a href="https://census.hawaii.gov/" target="_blank" rel="noopener">Census Hawaiʻi</a><span>Official state partner for U.S. Census and ACS data</span></li>
+                        <li><a href="https://census.hawaii.gov/" target="_blank" rel="noopener">Census Hawaiʻi</a><span>Official state partner for U.S. Census and ACS data</span> <span class="deeper-area">(Demographics)</span></li>
                         <li><a href="https://data.uhero.hawaii.edu/" target="_blank" rel="noopener">UHERO Data Portal</a><span>Economic and social indicators for state and counties</span></li>
                         <li><a href="https://data.hawaii.gov/" target="_blank" rel="noopener">State Data Office</a><span>Raw public datasets from state agencies</span></li>
                         <li><a href="https://labor.hawaii.gov/rs/" target="_blank" rel="noopener">DLIR Research &amp; Statistics</a><span>Labor market, unemployment, wages, and workforce</span></li>
                         <li><a href="https://hawaiipublicschools.org/data-reports/" target="_blank" rel="noopener">HIDOE Data &amp; Reports</a><span>School accountability, enrollment, and performance</span></li>
-                        <li><a href="https://hhdw.org/" target="_blank" rel="noopener">Health Data Warehouse</a><span>Custom public-health reports from state surveys</span></li>
+                        <li><a href="https://hhdw.org/" target="_blank" rel="noopener">Health Data Warehouse</a><span>Custom public-health reports from state surveys</span> <span class="deeper-area">(Health)</span></li>
                         <li><a href="https://www.hawaiihealthmatters.org/" target="_blank" rel="noopener">Hawaiʻi Health Matters</a><span>Community health indicators and county comparisons</span></li>
-                        <li><a href="https://crimestats.hawaii.gov/" target="_blank" rel="noopener">Crime Dashboard</a><span>Statewide NIBRS crime data and arrests</span></li>
-                        <li><a href="https://climate.hawaii.gov/" target="_blank" rel="noopener">Climate Change Portal</a><span>Sea-level rise, adaptation, and climate reports</span></li>
-                        <li><a href="https://energy.hawaii.gov/" target="_blank" rel="noopener">State Energy Office</a><span>Energy dashboards, fuel data, and decarbonization</span></li>
+                        <li><a href="https://crimestats.hawaii.gov/" target="_blank" rel="noopener">Crime Dashboard</a><span>Statewide NIBRS crime data and arrests</span> <span class="deeper-area">(Crime)</span></li>
+                        <li><a href="https://climate.hawaii.gov/" target="_blank" rel="noopener">Climate Change Portal</a><span>Sea-level rise, adaptation, and climate reports</span> <span class="deeper-area">(Environment)</span></li>
+                        <li><a href="https://energy.hawaii.gov/" target="_blank" rel="noopener">State Energy Office</a><span>Energy dashboards, fuel data, and decarbonization</span> <span class="deeper-area">(Energy)</span></li>
                         <li><a href="https://alohachallenge.hawaii.gov/" target="_blank" rel="noopener">Aloha+ Challenge</a><span>Sustainability and SDG-style progress tracking</span></li>
                     </ul>
                 </div>
@@ -145,7 +169,7 @@
                         <li><a href="https://dbedt.hawaii.gov/economic/qser/" target="_blank" rel="noopener">DBEDT Quarterly Economic Report</a><span>Statewide economic outlook and detailed tables</span></li>
                         <li><a href="https://dbedt.hawaii.gov/economic/county_report/" target="_blank" rel="noopener">DBEDT County Trends</a><span>Annual county-by-county social and economic trends</span></li>
                         <li><a href="https://uhero.hawaii.edu/focus-areas/forecast-project/" target="_blank" rel="noopener">UHERO Forecast Project</a><span>Recurring state economic forecast and analysis</span></li>
-                        <li><a href="https://analytics.uhero.hawaii.edu/housing/" target="_blank" rel="noopener">UHERO Housing Dashboard</a><span>Neighborhood, county, and statewide housing data</span></li>
+                        <li><a href="https://analytics.uhero.hawaii.edu/housing/" target="_blank" rel="noopener">UHERO Housing Dashboard</a><span>Neighborhood, county, and statewide housing data</span> <span class="deeper-area">(Cost of Living)</span></li>
                         <li><a href="https://health.hawaii.gov/vitalstatistics/" target="_blank" rel="noopener">DOH Vital Statistics</a><span>Annual births, deaths, marriages, and civil unions</span></li>
                         <li><a href="https://www.hawaii-can.org/kidscount" target="_blank" rel="noopener">Hawaiʻi KIDS COUNT</a><span>Child well-being analysis and family indicators</span></li>
                         <li><a href="https://budget.hawaii.gov/budget/" target="_blank" rel="noopener">Budget &amp; Finance</a><span>Executive budget, Budget in Brief, and fiscal planning</span></li>

@@ -5,6 +5,8 @@
 // uses embedded data updated quarterly.
 // ============================================================
 
+// Note: Using emoji for area icons. Consider replacing with inline SVGs
+// for cross-platform rendering consistency if needed in the future.
 const AREA_ICONS = {
     'Crime': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
     'Health': '<svg width="24" height="24" viewBox="0 0 24 24" fill="#d03135" stroke="none"><rect x="9" y="2" width="6" height="20" rx="1"/><rect x="2" y="9" width="20" height="6" rx="1"/></svg>',
@@ -77,6 +79,26 @@ const App = {
         this.handleRoute();
         window.addEventListener('hashchange', () => this.handleRoute());
         window.addEventListener('popstate', () => this.handleRoute());
+
+        // Search/filter input
+        document.getElementById('metric-search')?.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            document.querySelectorAll('.card').forEach(card => {
+                const metric = card.querySelector('.card-metric')?.textContent.toLowerCase() || '';
+                const area = card.querySelector('.card-area')?.textContent.toLowerCase() || '';
+                card.style.display = (metric.includes(query) || area.includes(query) || !query) ? '' : 'none';
+            });
+            // Also hide area dividers that have no visible cards after them
+            document.querySelectorAll('.area-divider').forEach(div => {
+                let next = div.nextElementSibling;
+                let hasVisible = false;
+                while (next && !next.classList.contains('area-divider')) {
+                    if (next.classList.contains('card') && next.style.display !== 'none') hasVisible = true;
+                    next = next.nextElementSibling;
+                }
+                div.style.display = hasVisible ? '' : 'none';
+            });
+        });
     },
 
     // --- Helpers ---
@@ -306,8 +328,18 @@ const App = {
         this.sparklineCharts.forEach(c => c && c.destroy());
         this.sparklineCharts = [];
 
+        let betterCount = 0;
+        let worseCount = 0;
+        const currentYear = new Date().getFullYear();
+
         // One card per metric, ordered by area
         this.AREA_ORDER.forEach(areaGroup => {
+            // Insert area section divider before each area group
+            const divider = document.createElement('div');
+            divider.className = 'area-divider';
+            divider.innerHTML = `<span class="area-divider-icon">${AREA_ICONS[areaGroup.area] || ''}</span><span class="area-divider-name">${areaGroup.area}</span>`;
+            grid.appendChild(divider);
+
             areaGroup.metrics.forEach(slug => {
                 const effective = this.getEffectiveData(slug);
                 if (!effective) return;
@@ -317,10 +349,25 @@ const App = {
                 card.dataset.metric = slug;
 
                 const latest = this.getLatestValue(effective.hawaii);
+                const latestAvg = this.getLatestValue(effective.otherStateAvg);
                 const isDecimal = ChartUtils.isDecimalPctMetric(effective);
                 const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(effective.unit)
                     ? `<span class="card-unit">${effective.unit}</span>`
                     : '';
+
+                // Item 21: stale year indicator (use last year in ranges like "2022-2024")
+                const yearStr = String(latest.year);
+                const parsedYear = parseInt(yearStr.includes('-') ? yearStr.split('-').pop() : yearStr);
+                const yearDiff = currentYear - parsedYear;
+                const yearClass = yearDiff >= 3 ? 'card-year card-year-stale' : 'card-year';
+
+                // Item 6: count better/worse for summary
+                if (latest.value !== null && latestAvg.value !== null) {
+                    const diff = latest.value - latestAvg.value;
+                    const isBetter = effective.goodDirection === 'up' ? diff > 0 : diff < 0;
+                    if (isBetter) betterCount++;
+                    else worseCount++;
+                }
 
                 card.innerHTML = `
                     <div class="card-header">
@@ -331,7 +378,7 @@ const App = {
                     <div class="card-hero">
                         <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, effective.unit, isDecimal)}</span>
                         ${unitSuffix}
-                        <span class="card-year">(${latest.year})</span>
+                        <span class="${yearClass}">(${latest.year})</span>
                     </div>
                     <div class="card-sparkline">
                         <canvas></canvas>
@@ -341,6 +388,16 @@ const App = {
                         ${this.buildVsYearHtml(effective)}
                     </div>
                 `;
+
+                // Item 14: keyboard accessibility
+                card.setAttribute('role', 'button');
+                card.setAttribute('tabindex', '0');
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.openModal(slug, areaGroup.area);
+                    }
+                });
 
                 // Click rank → open rankings directly
                 const rankEl = card.querySelector('.comp-rank');
@@ -364,6 +421,12 @@ const App = {
                 this.sparklineCharts.push(chart);
             });
         });
+
+        // Item 6: update summary badge
+        const summaryEl = document.getElementById('summary-badge');
+        if (summaryEl) {
+            summaryEl.innerHTML = `<span class="summary-better">${betterCount} better</span> \u00b7 <span class="summary-worse">${worseCount} worse</span> than other states`;
+        }
     },
 
     // --- Modal ---
@@ -456,6 +519,8 @@ const App = {
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
             <span class="csv-sep">&middot;</span>
             <a href="#" class="share-link" id="share-link">Share</a>
+            <span class="csv-sep">&middot;</span>
+            <a href="#" class="print-link" id="print-link">Print</a>
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
@@ -471,6 +536,10 @@ const App = {
             }).catch(() => {
                 prompt('Copy this link:', shareUrl);
             });
+        });
+        document.getElementById('print-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.print();
         });
 
         // Set up tabs
@@ -616,6 +685,9 @@ const App = {
         tabRankings.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
+        // Item 15: update ARIA selected state
+        document.querySelectorAll('.modal-tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+
         // Hide all views
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'none';
@@ -635,14 +707,33 @@ const App = {
 
         if (tab === 'rankings') {
             tabRankings.classList.add('active');
+            tabRankings.setAttribute('aria-selected', 'true');
             this.showRankings(slug);
+            this.currentSlug = slug;
             history.replaceState(null, '', '/r/' + slug + '/');
+
+            // Item 8: auto-scroll rankings to Hawaii bar
+            setTimeout(() => {
+                const wrap = document.querySelector('.rankings-chart-wrap');
+                if (wrap && slug) {
+                    const rankings = this.getStateRankings(slug);
+                    if (rankings) {
+                        const hiRank = rankings.stateValues.findIndex(s => s.state === "Hawai\u02BBi" || s.state === "Hawaii");
+                        if (hiRank >= 0) {
+                            const pct = hiRank / rankings.stateValues.length;
+                            wrap.scrollTop = Math.max(0, (wrap.scrollHeight * pct) - (wrap.clientHeight / 2));
+                        }
+                    }
+                }
+            }, 100);
         } else if (tab === 'county') {
             tabCounty.classList.add('active');
+            tabCounty.setAttribute('aria-selected', 'true');
             this.showCounty(slug);
             history.replaceState(null, '', '/c/' + slug + '/');
         } else {
             tabDetail.classList.add('active');
+            tabDetail.setAttribute('aria-selected', 'true');
             document.getElementById('modal-detail-view').style.display = '';
             history.replaceState(null, '', '/t/' + slug + '/');
         }
@@ -823,6 +914,14 @@ const App = {
         XLSX.utils.book_append_sheet(wb, wsMeth, 'Methodology');
 
         XLSX.writeFile(wb, `hawaii-${slug}.xlsx`);
+
+        // Item 10: download feedback toast
+        const dlLink = document.getElementById('csv-download');
+        if (dlLink) {
+            const orig = dlLink.textContent;
+            dlLink.textContent = 'Downloaded!';
+            setTimeout(() => { dlLink.textContent = orig; }, 2000);
+        }
     },
 
     /** Extract per-state latest-year values from STATE_DATA */

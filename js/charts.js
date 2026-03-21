@@ -50,6 +50,31 @@ const ChartUtils = {
 
         if (values.filter(v => v !== null).length === 0) return null;
 
+        // Build an accessible label describing the trend
+        const nonNullHI = values.filter(v => v !== null);
+        const nonNullAvg = avgValues.filter(v => v !== null);
+        if (nonNullHI.length > 0 && nonNullAvg.length > 0) {
+            const latestHIVal = nonNullHI[nonNullHI.length - 1];
+            const latestAvgVal = nonNullAvg[nonNullAvg.length - 1];
+            const aboveBelow = latestHIVal >= latestAvgVal ? 'above' : 'below';
+            let trend = 'stable';
+            if (nonNullHI.length >= 2) {
+                const prev = nonNullHI[nonNullHI.length - 2];
+                const curr = nonNullHI[nonNullHI.length - 1];
+                const moved = curr > prev ? 'up' : curr < prev ? 'down' : 'flat';
+                if (moved === 'flat') {
+                    trend = 'stable';
+                } else if (goodDirection === 'up') {
+                    trend = moved === 'up' ? 'improving' : 'worsening';
+                } else {
+                    trend = moved === 'down' ? 'improving' : 'worsening';
+                }
+            }
+            const ariaText = `Trend chart: Hawaii is ${aboveBelow} the other-state average and ${trend}`;
+            canvas.setAttribute('role', 'img');
+            canvas.setAttribute('aria-label', ariaText);
+        }
+
         // Tighten y-axis around actual data range to maximize visual gap between lines
         const allValues = [...values, ...avgValues].filter(v => v !== null);
         const dataMin = Math.min(...allValues);
@@ -401,12 +426,25 @@ const ChartUtils = {
                     prevRight = px + tw;
                     return { ...c, labelText: bestText, textX: px + tw / 2 };
                 });
-                placed.forEach(c => {
+                const lastIdx = placed.length - 1;
+                placed.forEach((c, i) => {
                     const partyColor = c.gov.party === 'R' ? '#C0392B' : '#2563EB';
                     ctx.fillStyle = partyColor;
-                    ctx.textAlign = 'center';
                     ctx.textBaseline = 'top';
-                    ctx.fillText(c.labelText, c.textX, pillY + 3);
+                    // Right-align the last governor label if it would clip
+                    if (i === lastIdx) {
+                        const tw = ctx.measureText(c.labelText).width;
+                        if (c.textX + tw / 2 > chartArea.right) {
+                            ctx.textAlign = 'right';
+                            ctx.fillText(c.labelText, Math.min(c.centerX, chartArea.right - 5), pillY + 3);
+                        } else {
+                            ctx.textAlign = 'center';
+                            ctx.fillText(c.labelText, c.textX, pillY + 3);
+                        }
+                    } else {
+                        ctx.textAlign = 'center';
+                        ctx.fillText(c.labelText, c.textX, pillY + 3);
+                    }
                 });
                 ctx.restore();
             }
