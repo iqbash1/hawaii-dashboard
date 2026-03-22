@@ -34,17 +34,6 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Audit round 2 styles -->
     <style>
-    .area-divider { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 0 0.25rem; margin-top: 0.5rem; border-top: 1px solid #e5e7eb; }
-    .area-divider:first-child { border-top: none; margin-top: 0; }
-    .area-divider-icon { font-size: 1.2rem; }
-    .area-divider-name { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .search-wrap { margin-top: 1rem; text-align: center; }
-    .metric-search { width: 280px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; outline: none; transition: border-color 0.15s; }
-    .metric-search:focus { border-color: var(--hawaii-blue); }
-    @media (max-width: 700px) { .metric-search { width: 100%; } }
-    .summary-badge { text-align: center; margin-top: 0.4rem; font-size: 0.8rem; color: var(--text-muted); }
-    .summary-better { color: var(--positive); font-weight: 600; }
-    .summary-worse { color: var(--negative); font-weight: 600; }
     .rankings-chart-wrap { -webkit-overflow-scrolling: touch; }
     .card-year-stale { color: #b45309; }
     .skip-link { position: absolute; top: -40px; left: 0; background: #000; color: #fff; padding: 8px 16px; z-index: 1000; transition: top 0.15s; }
@@ -76,10 +65,6 @@
                 <span class="meta-badge">
                     <span class="meta-icon">📊</span> 12 areas &middot; 27 metrics
                 </span>
-                <div class="summary-badge" id="summary-badge"></div>
-            </div>
-            <div class="search-wrap">
-                <input type="text" id="metric-search" class="metric-search" placeholder="Filter metrics..." aria-label="Filter metrics by name or area">
             </div>
         </div>
     </header>

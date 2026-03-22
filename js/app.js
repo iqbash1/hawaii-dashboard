@@ -80,25 +80,6 @@ const App = {
         window.addEventListener('hashchange', () => this.handleRoute());
         window.addEventListener('popstate', () => this.handleRoute());
 
-        // Search/filter input
-        document.getElementById('metric-search')?.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            document.querySelectorAll('.card').forEach(card => {
-                const metric = card.querySelector('.card-metric')?.textContent.toLowerCase() || '';
-                const area = card.querySelector('.card-area')?.textContent.toLowerCase() || '';
-                card.style.display = (metric.includes(query) || area.includes(query) || !query) ? '' : 'none';
-            });
-            // Also hide area dividers that have no visible cards after them
-            document.querySelectorAll('.area-divider').forEach(div => {
-                let next = div.nextElementSibling;
-                let hasVisible = false;
-                while (next && !next.classList.contains('area-divider')) {
-                    if (next.classList.contains('card') && next.style.display !== 'none') hasVisible = true;
-                    next = next.nextElementSibling;
-                }
-                div.style.display = hasVisible ? '' : 'none';
-            });
-        });
     },
 
     // --- Helpers ---
@@ -328,18 +309,10 @@ const App = {
         this.sparklineCharts.forEach(c => c && c.destroy());
         this.sparklineCharts = [];
 
-        let betterCount = 0;
-        let worseCount = 0;
         const currentYear = new Date().getFullYear();
 
         // One card per metric, ordered by area
         this.AREA_ORDER.forEach(areaGroup => {
-            // Insert area section divider before each area group
-            const divider = document.createElement('div');
-            divider.className = 'area-divider';
-            divider.innerHTML = `<span class="area-divider-icon">${AREA_ICONS[areaGroup.area] || ''}</span><span class="area-divider-name">${areaGroup.area}</span>`;
-            grid.appendChild(divider);
-
             areaGroup.metrics.forEach(slug => {
                 const effective = this.getEffectiveData(slug);
                 if (!effective) return;
@@ -360,14 +333,6 @@ const App = {
                 const parsedYear = parseInt(yearStr.includes('-') ? yearStr.split('-').pop() : yearStr);
                 const yearDiff = currentYear - parsedYear;
                 const yearClass = yearDiff >= 3 ? 'card-year card-year-stale' : 'card-year';
-
-                // Item 6: count better/worse for summary
-                if (latest.value !== null && latestAvg.value !== null) {
-                    const diff = latest.value - latestAvg.value;
-                    const isBetter = effective.goodDirection === 'up' ? diff > 0 : diff < 0;
-                    if (isBetter) betterCount++;
-                    else worseCount++;
-                }
 
                 card.innerHTML = `
                     <div class="card-header">
@@ -422,11 +387,6 @@ const App = {
             });
         });
 
-        // Item 6: update summary badge
-        const summaryEl = document.getElementById('summary-badge');
-        if (summaryEl) {
-            summaryEl.innerHTML = `<span class="summary-better">${betterCount} better</span> \u00b7 <span class="summary-worse">${worseCount} worse</span> than other states`;
-        }
     },
 
     // --- Modal ---
@@ -548,7 +508,12 @@ const App = {
         });
         document.getElementById('print-link').addEventListener('click', (e) => {
             e.preventDefault();
+            const origTitle = document.title;
+            const activeTab = document.querySelector('.modal-tab.active');
+            const tabLabel = activeTab ? activeTab.textContent.trim().split(/\s/)[0] : 'Detail';
+            document.title = `${metricData.metric} - ${tabLabel} - Hawaii Dashboard`;
             window.print();
+            document.title = origTitle;
         });
 
         // Set up tabs
@@ -772,20 +737,25 @@ const App = {
             this.currentSlug = slug;
             history.replaceState(null, '', '/r/' + slug + '/');
 
-            // Item 8: auto-scroll rankings to Hawaii bar
+            // Auto-scroll modal so Hawaii's bar is visible in rankings
             setTimeout(() => {
-                const wrap = document.querySelector('.rankings-chart-wrap');
-                if (wrap && slug) {
+                const modal = document.querySelector('.modal');
+                const canvas = document.getElementById('rankings-chart');
+                if (modal && canvas && slug) {
                     const rankings = this.getStateRankings(slug);
                     if (rankings) {
-                        const hiRank = rankings.stateValues.findIndex(s => s.state === "Hawai\u02BBi" || s.state === "Hawaii");
-                        if (hiRank >= 0) {
-                            const pct = hiRank / rankings.stateValues.length;
-                            wrap.scrollTop = Math.max(0, (wrap.scrollHeight * pct) - (wrap.clientHeight / 2));
+                        const hiIdx = rankings.stateValues.findIndex(s =>
+                            s.state === "Hawai\u02BBi" || s.state === "Hawaii");
+                        if (hiIdx >= 0) {
+                            const canvasRect = canvas.getBoundingClientRect();
+                            const modalRect = modal.getBoundingClientRect();
+                            const pct = hiIdx / rankings.stateValues.length;
+                            const barY = canvasRect.top - modalRect.top + modal.scrollTop + (canvasRect.height * pct);
+                            modal.scrollTop = Math.max(0, barY - (modalRect.height / 2));
                         }
                     }
                 }
-            }, 100);
+            }, 200);
         } else if (tab === 'county') {
             tabCounty.classList.add('active');
             tabCounty.setAttribute('aria-selected', 'true');
@@ -797,7 +767,10 @@ const App = {
             document.getElementById('modal-detail-view').style.display = '';
             history.replaceState(null, '', '/t/' + slug + '/');
         }
-        document.querySelector('.modal').scrollTop = 0;
+        // Scroll to top for Detail/County tabs (Rankings handles its own scroll)
+        if (tab !== 'rankings') {
+            document.querySelector('.modal').scrollTop = 0;
+        }
     },
 
     /**
@@ -973,7 +946,8 @@ const App = {
         const wsMeth = XLSX.utils.aoa_to_sheet(methRows.filter(r => r.length > 0));
         XLSX.utils.book_append_sheet(wb, wsMeth, 'Methodology');
 
-        XLSX.writeFile(wb, `hawaii-${slug}.xlsx`);
+        const safeName = m.metric.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_');
+        XLSX.writeFile(wb, `Hawaii_${safeName}.xlsx`);
 
         // Item 10: download feedback toast
         const dlLink = document.getElementById('csv-download');
