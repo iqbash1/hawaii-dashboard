@@ -507,6 +507,15 @@ const App = {
             insightSection.style.display = 'none';
         }
 
+        // Data quality note
+        const dataNoteCont = document.getElementById('modal-data-note');
+        if (metricData.dataNote) {
+            dataNoteCont.innerHTML = `<p>\u26A0 Data note: ${metricData.dataNote}</p>`;
+            dataNoteCont.style.display = '';
+        } else {
+            dataNoteCont.style.display = 'none';
+        }
+
         // Footer source line
         const officialLine = metricData.officialName
             ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
@@ -658,6 +667,39 @@ const App = {
         canvas.style.display = '';
         if (skeleton) skeleton.style.display = 'none';
 
+        // Table toggle (data accessibility feature)
+        const tableToggleWrap = document.getElementById('table-toggle-wrap');
+        const tableToggle = document.getElementById('table-toggle');
+        const modalTableContainer = document.getElementById('modal-table-container');
+        const chartContainer = canvas.parentElement;
+
+        // Reset to chart view
+        tableToggleWrap.style.display = '';
+        modalTableContainer.style.display = 'none';
+        chartContainer.style.display = '';
+        tableToggle.textContent = 'View as table';
+
+        // Remove previous listener by replacing the element
+        const freshToggle = tableToggle.cloneNode(true);
+        tableToggle.parentNode.replaceChild(freshToggle, tableToggle);
+
+        freshToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const showingTable = modalTableContainer.style.display !== 'none';
+            if (showingTable) {
+                // Switch back to chart
+                modalTableContainer.style.display = 'none';
+                chartContainer.style.display = '';
+                freshToggle.textContent = 'View as table';
+            } else {
+                // Build table and show it
+                this.buildDataTable(effective);
+                chartContainer.style.display = 'none';
+                modalTableContainer.style.display = '';
+                freshToggle.textContent = 'View as chart';
+            }
+        });
+
         // Show modal
         overlay.classList.add('active');
         document.body.classList.add('modal-open');
@@ -692,6 +734,24 @@ const App = {
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'none';
         document.getElementById('modal-county').style.display = 'none';
+
+        // Reset table toggle: hide on non-detail tabs, reset to chart view
+        const tableToggleWrap = document.getElementById('table-toggle-wrap');
+        const modalTableContainer = document.getElementById('modal-table-container');
+        const tableToggle = document.getElementById('table-toggle');
+        if (tab === 'detail') {
+            tableToggleWrap.style.display = '';
+            // Reset to chart view when returning to detail tab
+            modalTableContainer.style.display = 'none';
+            document.querySelector('.modal-chart-container').style.display = '';
+            if (tableToggle) tableToggle.textContent = 'View as table';
+        } else {
+            tableToggleWrap.style.display = 'none';
+            modalTableContainer.style.display = 'none';
+            document.querySelector('.modal-chart-container').style.display = '';
+            if (tableToggle) tableToggle.textContent = 'View as table';
+        }
+
         // Destroy charts for hidden views to free memory
         // Note: detailChart is NOT destroyed here because it is only created
         // once in openModal() and not recreated on tab switch. It is destroyed
@@ -1078,6 +1138,22 @@ const App = {
         }
     },
 
+    buildDataTable(effective) {
+        const table = document.getElementById('data-table');
+        const isDecimal = ChartUtils.isDecimalPctMetric(effective);
+        const years = Object.keys(effective.hawaii);
+        const fmt = (v) => ChartUtils.formatValue(v, effective.unit, isDecimal);
+
+        let html = '<thead><tr><th>Year</th><th>Hawaii</th><th>Other State Avg</th></tr></thead><tbody>';
+        for (const year of years) {
+            const hi = effective.hawaii[year];
+            const avg = effective.otherStateAvg[year];
+            html += `<tr><td>${year}</td><td>${fmt(hi)}</td><td>${fmt(avg)}</td></tr>`;
+        }
+        html += '</tbody>';
+        table.innerHTML = html;
+    },
+
     closeModal() {
         const overlay = document.getElementById('modal-overlay');
         overlay.classList.remove('active');
@@ -1086,6 +1162,11 @@ const App = {
 
         // Reset URL to root
         history.replaceState(null, '', '/');
+
+        // Reset table toggle state
+        document.getElementById('table-toggle-wrap').style.display = 'none';
+        document.getElementById('modal-table-container').style.display = 'none';
+        document.querySelector('.modal-chart-container').style.display = '';
 
         // Clean up scroll hint listener
         if (this._rankingsScrollHandler) {

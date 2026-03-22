@@ -212,6 +212,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State shapes physician supply through Medicaid reimbursement rates, loan-repayment programs, and the Prepaid Health Care Act, which requires employer-sponsored insurance and sustains demand for primary care. Hawaiʻi's Prepaid Act is unique nationwide and has historically helped maintain doctor access above the national norm.",
     "howToRead": "A higher number means better access to a doctor. Hawaiʻi has held around 88 to 97 physicians per 100K over the past decade, consistently above the other-state average. Military doctors are not counted since they serve a separate system.",
     "insight": "The statewide number masks a sharp Oahu-versus-neighbor-island divide. Most physicians practice on Oahu; Maui, the Big Island, Kauaʻi, and the rural islands face persistent shortages, and because you cannot drive between islands, each one is effectively its own healthcare market. An aging physician workforce and high cost of living make recruitment even harder.",
+    "dataNote": "Counts civilian physicians only. Military facilities serve a significant share of the population in Hawaii but are excluded.",
     "hawaii": {
       "2010": 89.2,
       "2011": 88.3,
@@ -459,6 +460,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State's single statewide school district means curriculum, teacher pay, and standards are set centrally, so changes flow directly to every classroom. Hawaiʻi has steadily narrowed the math gap with other states over two decades, suggesting that centralized reforms can move the needle when sustained.",
     "howToRead": "Scores are on a 0–500 scale; 262 is 'Basic,' 299 is 'Proficient.' Both lines peaked around 2013 and have declined since, reflecting a nationwide post-pandemic slide. Hawaiʻi's gap with the average has narrowed slightly.",
     "insight": "Hawaiʻi posted the 4th-largest math recovery among states between 2022 and 2024, essentially holding steady while many states continued to slide. The gap with the other-state average shrank from 12 points in 2003 to 3 points in 2024.",
+    "dataNote": "NAEP is administered every 2 years. Hawaii did not participate in some earlier rounds.",
     "hawaii": {
       "2003": 265.73,
       "2005": 265.63,
@@ -498,6 +500,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "State literacy initiatives and the single-district structure deserve partial credit for a striking turnaround: Hawaiʻi trailed the other-state average by 12 points in 2003 and has essentially closed the gap. Continued investment in reading intervention programs and teacher retention will determine whether this convergence holds.",
     "howToRead": "Scores are on a 0–500 scale; 243 is 'Basic,' 281 is 'Proficient.' Hawaiʻi's line has been climbing toward the average over two decades while other states have declined since 2013, closing the gap from below.",
     "insight": "Hawaiʻi posted the 2nd-best reading recovery of any state between 2022 and 2024. The score of 257 is the closest Hawaiʻi has ever been to the other-state average, a convergence driven as much by other states declining as by Hawaiʻi improving.",
+    "dataNote": "NAEP is administered every 2 years. Hawaii did not participate in some earlier rounds.",
     "hawaii": {
       "2003": 251.28,
       "2005": 248.51,
@@ -766,6 +769,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State influences real incomes through tax policy, minimum wage, and investments in workforce development. After adjusting for Hawaiʻi's high cost of living, purchasing power trails the national norm by a meaningful margin, and the gap has been widening rather than closing over the past decade.",
     "howToRead": "Hawaiʻi's line has been below the other-state average the entire period. The gap was about $3,000 in 2008 and has widened to roughly $8,300 by 2024.",
     "insight": "Real per capita income has climbed steadily since the 2009 trough, reaching $64,591 in 2024. But the gap with other states persists because Hawaiʻi's cost of living remains among the highest in the nation.",
+    "dataNote": "County-level values use RPP-adjusted (cost-of-living adjusted) income from BEA, which differs from the nominal values in the state detail view.",
     "hawaii": {
       "2008": 38158,
       "2009": 36503,
@@ -912,6 +916,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State controls zoning, shelter funding, and housing subsidies that directly shape homelessness. Mild year-round weather, a severe housing shortage, and high cost of living create conditions where unsheltered homelessness runs several times above the national norm.",
     "howToRead": "Hawaiʻi's line runs 5 to 7 times above the other-state average for the entire period. Even small declines represent hundreds of lives improved.",
     "insight": "Peaked at 30 per 10K in 2016, dipped to about 24 in 2018, then climbed back to 28 in 2024. Only Oregon and California have higher unsheltered rates.",
+    "dataNote": "Based on HUD Point-in-Time counts, a single-night snapshot. Methodology changes between years can affect comparability.",
     "hawaii": {
       "2012": 18.0619,
       "2013": 18.3842,
@@ -999,6 +1004,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State distributes federal broadband grants and sets infrastructure policy for underserved areas. About 30,000 households still lack reliable internet, concentrated on rural neighbor islands where terrain and low population density make buildout expensive.",
     "howToRead": "Both lines rise steadily toward universal coverage. Hawaiʻi has consistently run 1 to 2 points above the other-state average.",
     "insight": "Climbed from 83.2% in 2016 to 93.1% in 2024. The remaining gap is concentrated in rural and lower-income households across the neighbor islands.",
+    "dataNote": "Census ACS variable B28002 changed definition in 2016. Pre-2016 data excluded.",
     "hawaii": {
       "2016": 0.8318,
       "2017": 0.8448,
@@ -1235,6 +1241,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State administers food assistance programs and sets agricultural policy that affects how much food is grown locally vs. shipped in. Hawaiʻi imports roughly 85% of its food, so mainland price swings and shipping costs hit island households especially hard.",
     "howToRead": "Hawaiʻi's line peaked at 14% during 2010-12 and fell to 9.1%, well below the other-state average. The recent tick up to 10.8% suggests rising grocery prices are eroding gains.",
     "insight": "Food insecurity rose from 9.6% (2021-2023) to 10.8% (2022-2024), while the other-state average worsened to 13.0%. Extreme dependence on imported food means shipping costs and mainland price swings hit island households harder.",
+    "dataNote": "USDA reports 3-year rolling averages, so values lag current conditions by about 1-2 years.",
     "hawaii": {
       "2006-2008": 0.091,
       "2007-2009": 0.114,
@@ -1330,6 +1337,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "When half the electorate stays home, elected officials answer to a narrow slice of the public. Hawaiʻi adopted all-mail voting in 2020, which lifted turnout initially, but participation has since drifted back down, suggesting the problem runs deeper than ballot access.",
     "howToRead": "The zigzag pattern reflects presidential years (higher turnout) vs. midterm elections (lower). Even in 2020 at 55.7%, Hawaiʻi trailed the other-state average of 67.9% by 12 points.",
     "insight": "All-mail voting boosted turnout from 39.5% (2018) to 55.7% (2020), but the 2024 rate of 50.3% suggests the lift is fading. The persistent gap points to disengagement beyond ballot access.",
+    "dataNote": "Uses Voting Eligible Population (VEP) as denominator, not registered voters.",
     "hawaii": {
       "2002": 0.442,
       "2004": 0.485,
@@ -1371,6 +1379,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "<strong>This is the ultimate scorecard: people voting with their feet.</strong> The State's decisions on housing, jobs, taxes, and cost of living determine whether families see a future here or decide to leave. Net outflow has been a persistent feature of Hawaiʻi for most of the past two decades.",
     "howToRead": "Hawaiʻi briefly had net inflow in 2003 (+17 per 10K) but has been negative for most of the past two decades, peaking at -110 per 10K in 2022. The recent reading of -65 in 2024 is the best since 2015 but still far from positive.",
     "insight": "The outflow accelerated sharply after 2005 and peaked during COVID. Housing cost is the top reason for leaving. The modest improvement in 2023-24 may reflect normalization, but the structural drivers remain.",
+    "dataNote": "Census population estimates; does not capture international migration.",
     "hawaii": {
       "2001": -53.8,
       "2002": -6,

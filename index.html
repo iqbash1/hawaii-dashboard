@@ -50,6 +50,15 @@
     .skip-link { position: absolute; top: -40px; left: 0; background: #000; color: #fff; padding: 8px 16px; z-index: 1000; transition: top 0.15s; }
     .skip-link:focus { top: 0; }
     .deeper-area { font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
+    .modal-data-note { border-left: 3px solid #f0c36d; padding-left: 0.75rem; margin-top: 0.5rem; }
+    .modal-data-note p { font-size: 0.8rem; color: #8a7548; margin: 0; line-height: 1.4; }
+    .table-toggle-wrap { text-align: right; padding: 0.25rem 2rem; font-size: 0.75rem; }
+    .table-toggle { color: var(--hawaii-blue); text-decoration: none; opacity: 0.7; }
+    .table-toggle:hover { opacity: 1; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 0 auto; max-width: calc(100% - 4rem); padding: 0 2rem; }
+    .data-table th { text-align: left; padding: 0.4rem 0.8rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+    .data-table td { padding: 0.35rem 0.8rem; border-bottom: 1px solid #f0f0f0; }
+    .data-table tr:hover td { background: #f9f9f9; }
     </style>
 </head>
 <body>
@@ -106,6 +115,12 @@
                     <div class="modal-chart-skeleton" id="modal-chart-skeleton"></div>
                     <canvas id="modal-chart"></canvas>
                 </div>
+                <div class="table-toggle-wrap" id="table-toggle-wrap" style="display:none;">
+                    <a href="#" class="table-toggle" id="table-toggle">View as table</a>
+                </div>
+                <div class="modal-table-container" id="modal-table-container" style="display:none;">
+                    <table class="data-table" id="data-table"></table>
+                </div>
                 <div class="modal-stats" id="modal-stats"></div>
                 <div class="modal-body">
                     <div class="modal-section">
@@ -120,6 +135,7 @@
                         <h3>Latest trend</h3>
                         <p id="modal-insight"></p>
                     </div>
+                    <div class="modal-section modal-data-note" id="modal-data-note" style="display:none;"></div>
                 </div>
             </div>
             <div class="modal-rankings" id="modal-rankings" role="tabpanel" style="display:none;">
