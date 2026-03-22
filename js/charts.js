@@ -407,24 +407,37 @@ const ChartUtils = {
                 }
                 // Inset from left edge so labels do not overlap y-axis values
                 const leftInset = chartArea.left + 30;
+                // Filter out governors whose band is too narrow for any label
+                const minLabelWidth = 30;
+                const fittable = candidates.filter(c => (c.right - c.left) >= minLabelWidth);
                 let prevRight = leftInset;
-                const placed = candidates.map(c => {
-                    let bestText = c.variants[c.variants.length - 1];
+                const placed = [];
+                fittable.forEach(c => {
+                    // Find the longest variant that fits within the band
+                    let bestText = null;
                     for (const v of c.variants) {
                         const w = ctx.measureText(v).width;
-                        const px = c.centerX - w / 2 - pillPad;
-                        const pr = c.centerX + w / 2 + pillPad;
-                        if (px >= prevRight + gap && pr <= chartArea.right + 2) {
+                        if (w + pillPad * 2 <= (c.right - c.left) && c.left >= prevRight) {
                             bestText = v;
                             break;
                         }
                     }
+                    // Fall back to shortest variant if it fits with gap from previous
+                    if (!bestText) {
+                        const shortest = c.variants[c.variants.length - 1];
+                        const sw = ctx.measureText(shortest).width;
+                        if (c.centerX - sw / 2 >= prevRight + gap) {
+                            bestText = shortest;
+                        }
+                    }
+                    if (!bestText) return; // skip this label entirely
                     const tw = ctx.measureText(bestText).width;
+                    // Center within the band, but do not overlap previous label
                     let px = c.centerX - tw / 2;
                     if (px < prevRight + gap) px = prevRight + gap;
                     if (px + tw > chartArea.right) px = chartArea.right - tw;
                     prevRight = px + tw;
-                    return { ...c, labelText: bestText, textX: px + tw / 2 };
+                    placed.push({ ...c, labelText: bestText, textX: px + tw / 2 });
                 });
                 const lastIdx = placed.length - 1;
                 placed.forEach((c, i) => {
