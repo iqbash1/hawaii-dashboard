@@ -584,6 +584,13 @@ body {
     text-decoration: underline;
 }
 
+.data-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
 .csv-sep {
     margin: 0 0.5rem;
     opacity: 0.4;

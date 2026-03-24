@@ -481,6 +481,9 @@ const App = {
             ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
             : '';
         const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        const dataNoteLine = metricData.dataNote
+            ? `<div class="data-note"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="vertical-align:-1px;margin-right:3px;"><circle cx="8" cy="8" r="7.5" stroke="currentColor"/><text x="8" y="12" text-anchor="middle" fill="currentColor" font-size="11" font-weight="600">i</text></svg>${metricData.dataNote}</div>`
+            : '';
         document.getElementById('modal-source').innerHTML = `
             ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
@@ -490,6 +493,7 @@ const App = {
             <a href="#" class="share-link" id="share-link">Share</a>
             <span class="csv-sep">&middot;</span>
             <a href="#" class="print-link" id="print-link">Print</a>
+            ${dataNoteLine}
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
@@ -658,7 +662,7 @@ const App = {
                 freshToggle.textContent = 'View as table';
             } else {
                 // Build table and show it
-                this.buildDataTable(effective);
+                this.buildDataTable(effective, slug);
                 chartContainer.style.display = 'none';
                 modalTableContainer.style.display = '';
                 freshToggle.textContent = 'View as chart';
@@ -1112,19 +1116,51 @@ const App = {
         }
     },
 
-    buildDataTable(effective) {
+    buildDataTable(effective, slug) {
         const table = document.getElementById('data-table');
         const isDecimal = ChartUtils.isDecimalPctMetric(effective);
-        const years = Object.keys(effective.hawaii);
         const fmt = (v) => ChartUtils.formatValue(v, effective.unit, isDecimal);
+        const HAWAII_NAMES = ['Hawaii', "Hawai\u02BBi", "Hawai'i"];
+        const isHI = (name) => HAWAII_NAMES.some(h => name === h);
 
-        let html = '<thead><tr><th>Year</th><th>Hawaii</th><th>Other State Avg</th></tr></thead><tbody>';
+        let html = '';
+
+        // Section 1: All States for latest year (if STATE_DATA exists for this metric)
+        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        if (sd && sd.data) {
+            const rankings = this.getStateRankings(slug);
+            if (rankings && rankings.stateValues.length > 0) {
+                const dirLabel = effective.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+                html += '<thead><tr class="section-header"><td colspan="3">'
+                    + 'All States (' + rankings.year + ') - ' + dirLabel
+                    + '</td></tr><tr><th>Rank</th><th>State</th><th>Value</th></tr></thead><tbody>';
+                rankings.stateValues.forEach((sv, i) => {
+                    const rowClass = isHI(sv.state) ? ' class="hawaii-row"' : '';
+                    html += '<tr' + rowClass + '><td>' + (i + 1) + '</td><td>' + sv.state + '</td><td>' + fmt(sv.value) + '</td></tr>';
+                });
+
+                // 49-state average row
+                const otherVals = rankings.stateValues.filter(sv => !isHI(sv.state)).map(sv => sv.value);
+                if (otherVals.length > 0) {
+                    const avg = otherVals.reduce((a, b) => a + b, 0) / otherVals.length;
+                    html += '<tr style="border-top:2px solid var(--border);font-style:italic;color:var(--text-muted)">'
+                        + '<td></td><td>49-State Average</td><td>' + fmt(avg) + '</td></tr>';
+                }
+                html += '</tbody>';
+            }
+        }
+
+        // Section 2: Hawaii Time Series
+        const years = Object.keys(effective.hawaii);
+        html += '<thead><tr class="section-header"><td colspan="3">Hawaii Time Series</td></tr>'
+            + '<tr><th>Year</th><th>Hawaii</th><th>Other State Avg</th></tr></thead><tbody>';
         for (const year of years) {
             const hi = effective.hawaii[year];
             const avg = effective.otherStateAvg[year];
-            html += `<tr><td>${year}</td><td>${fmt(hi)}</td><td>${fmt(avg)}</td></tr>`;
+            html += '<tr><td>' + year + '</td><td>' + fmt(hi) + '</td><td>' + (avg != null ? fmt(avg) : '-') + '</td></tr>';
         }
         html += '</tbody>';
+
         table.innerHTML = html;
     },
 

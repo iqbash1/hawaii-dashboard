@@ -18,6 +18,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State sets criminal laws, funds police training, and runs the prison system. Hawaiʻi has historically maintained lower violent crime than the national norm, though tourism-related property crime remains a persistent challenge.",
     "howToRead": "Hawaiʻi has run well below the other-state average for over a decade. A falling line means safer streets.",
     "insight": "The 2024 rate of 218 per 100K continues a long-term trend of Hawaiʻi being one of the safest states, running about 36% below the other-state average of 340.",
+    "dataNote": "FBI transitioned from UCR to NIBRS in 2021; year-over-year comparisons across that boundary should be interpreted with caution",
     "hawaii": {
       "1985": 219.4,
       "1986": 245.2,
@@ -115,6 +116,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State sets criminal penalties, funds law enforcement, and shapes policing priorities for burglary, larceny-theft, and motor vehicle theft. Tourism-dependent areas, open-air living conditions, and high cost of living all contribute to Hawaiʻi's persistently elevated property crime rate, which runs about 17% above the other-state average.",
     "howToRead": "Hawaiʻi (teal) has consistently run above the other-state average (gray). Both lines have declined substantially since the early 1990s peak, but Hawaiʻi's gap above the average has persisted.",
     "insight": "Hawaiʻi's property crime rate peaked at 6,903 per 100K in 1995 and has since fallen 72% to 1,947 in 2024. The gap with the national average has also narrowed, from 1.57x in 1995 to 1.17x today.",
+    "dataNote": "FBI transitioned from UCR to NIBRS in 2021; year-over-year comparisons across that boundary should be interpreted with caution",
     "hawaii": {
       "1985": 4981.1,
       "1986": 5426.2,
@@ -1004,7 +1006,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State distributes federal broadband grants and sets infrastructure policy for underserved areas. About 30,000 households still lack reliable internet, concentrated on rural neighbor islands where terrain and low population density make buildout expensive.",
     "howToRead": "Both lines rise steadily toward universal coverage. Hawaiʻi has consistently run 1 to 2 points above the other-state average.",
     "insight": "Climbed from 83.2% in 2016 to 93.1% in 2024. The remaining gap is concentrated in rural and lower-income households across the neighbor islands.",
-    "dataNote": "Census ACS variable B28002 changed definition in 2016. Pre-2016 data excluded.",
+    "dataNote": "Pre-2016 data excluded due to Census variable definition change",
     "hawaii": {
       "2016": 0.8318,
       "2017": 0.8448,
@@ -1038,6 +1040,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "Transit ridership is almost entirely on Oʻahu, where TheBus is one of the most-ridden municipal systems in the country; neighbor islands have minimal or no fixed-route service. The State funds transit operations, sets land-use rules that shape ridership, and is building the Skyline rail extension, which will be the first urban rail system in the state.",
     "howToRead": "Hawaiʻi's line runs above the other-state average for the full period but has been declining since 2014. A rising line means more workers are choosing transit over cars.",
     "insight": "The share peaked at 7.2% in 2014, slid to 5.4% by 2019, then cratered to 3.3% during COVID. At 4.3% in 2024 the recovery is still 40% below the pre-pandemic peak. Whether Skyline reverses the long-term slide is the key question ahead.",
+    "dataNote": "COVID-19 caused a 40-60% drop in 2020-2021; recovery is ongoing",
     "hawaii": {
       "2006": 0.0539,
       "2007": 0.056,
@@ -1241,7 +1244,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State administers food assistance programs and sets agricultural policy that affects how much food is grown locally vs. shipped in. Hawaiʻi imports roughly 85% of its food, so mainland price swings and shipping costs hit island households especially hard.",
     "howToRead": "Hawaiʻi's line peaked at 14% during 2010-12 and fell to 9.1%, well below the other-state average. The recent tick up to 10.8% suggests rising grocery prices are eroding gains.",
     "insight": "Food insecurity rose from 9.6% (2021-2023) to 10.8% (2022-2024), while the other-state average worsened to 13.0%. Extreme dependence on imported food means shipping costs and mainland price swings hit island households harder.",
-    "dataNote": "USDA reports 3-year rolling averages, so values lag current conditions by about 1-2 years.",
+    "dataNote": "Uses 3-year rolling averages; single-year spikes are smoothed",
     "hawaii": {
       "2006-2008": 0.091,
       "2007-2009": 0.114,

@@ -3,497 +3,467 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Methods &amp; Sources | Hawaiʻi Dashboard</title>
+    <title>Methodology & Data Sources - Hawaiʻi Dashboard</title>
     <meta name="description" content="Methodology, data sources, and metric definitions for the Hawaiʻi Dashboard.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23384B5B' stroke='%23fff' stroke-width='2'/%3E%3Cpolygon points='32,6 36,28 32,32 28,28' fill='%23e74c3c'/%3E%3Cpolygon points='32,58 28,36 32,32 36,36' fill='%23fff'/%3E%3Cpolygon points='6,32 28,28 32,32 28,36' fill='%23fff'/%3E%3Cpolygon points='58,32 36,36 32,32 36,28' fill='%23fff'/%3E%3Ccircle cx='32' cy='32' r='3' fill='%23fff'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
     <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #F5F5F5;
-            --card-bg: #FFFFFF;
-            --text: #333333;
-            --text-secondary: #555555;
-            --text-muted: #666666;
-            --hawaii-blue: #0D7C8F;
-            --hawaii-blue-light: #EEF8FA;
-            --positive: #059669;
-            --negative: #C0392B;
-            --border: #EAEAEA;
-            --radius: 8px;
-        }
-
-        html { font-size: 16px; scroll-behavior: smooth; }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--bg);
+            font-family: var(--font);
             color: var(--text);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2.5rem 1.5rem 4rem;
+        .methods-header {
+            background: var(--bg);
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
         }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
+        .methods-header h1 {
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .methods-header .back-link {
+            display: inline-block;
+            margin-top: 0.5rem;
             color: var(--hawaii-blue);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
-            margin-bottom: 2rem;
-        }
-        .back-link:hover { text-decoration: underline; }
-        .back-link svg {
-            width: 14px;
-            height: 14px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
         }
 
-        h1 {
-            font-size: 1.75rem;
+        .methods-header .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .methods-content {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        .methods-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .methods-section h2 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--hawaii-blue);
-            letter-spacing: -0.02em;
-            margin-bottom: 0.25rem;
+            margin-bottom: 1rem;
         }
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 2.5rem;
-        }
-
-        h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 0.75rem;
-            margin-top: 2.5rem;
-        }
-
-        h2:first-of-type { margin-top: 0; }
-
-        p, li {
-            font-size: 0.9rem;
+        .methods-section p,
+        .methods-section li {
+            font-size: 0.88rem;
             color: var(--text-secondary);
             line-height: 1.7;
         }
 
-        .section {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 1.25rem;
-        }
-
-        /* Metric table */
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82rem;
-        }
-
-        thead th {
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            padding: 0.5rem 0.75rem;
-            border-bottom: 2px solid var(--border);
-            white-space: nowrap;
-        }
-
-        tbody td {
-            padding: 0.5rem 0.75rem;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
-        }
-
-        tbody tr:last-child td { border-bottom: none; }
-
-        /* Area group header */
-        .area-row td {
-            background: #F9FAFB;
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--text);
-            padding-top: 0.65rem;
-            padding-bottom: 0.65rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .direction-up {
-            color: var(--positive);
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-        .direction-down {
-            color: var(--negative);
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        /* Methodology notes */
-        .notes-list {
+        .methods-section ul {
             list-style: none;
             padding: 0;
         }
-        .notes-list li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .notes-list li:last-child { border-bottom: none; }
-        .notes-list li strong {
-            color: var(--text);
-            font-weight: 600;
+
+        .methods-section ul li {
+            padding: 0.3rem 0;
+            padding-left: 1.25rem;
+            position: relative;
         }
 
-        .footer-meta {
-            margin-top: 2.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
+        .methods-section ul li::before {
+            content: "\00b7";
+            position: absolute;
+            left: 0.25rem;
+            font-weight: 700;
+            color: var(--hawaii-blue);
+            font-size: 1.2rem;
+        }
+
+        .methods-section p + p {
+            margin-top: 0.5rem;
+        }
+
+        /* Metric registry table */
+        .registry-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 0.75rem;
+        }
+
+        .registry-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            min-width: 740px;
+        }
+
+        .registry-table thead th {
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .registry-table tbody td {
+            padding: 0.45rem 0.75rem;
+            border-bottom: 1px solid #f0f0f0;
+            color: var(--text-secondary);
+        }
+
+        .registry-table tbody tr:hover td {
+            background: #f9f9f9;
+        }
+
+        .registry-table .metric-name {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .registry-table .area-cell {
+            white-space: nowrap;
+        }
+
+        .registry-table .direction-cell {
             text-align: center;
+            font-size: 1rem;
+        }
+
+        /* Update log */
+        .update-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .update-list li {
+            padding: 0.4rem 0;
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .update-list li::before {
+            content: "\00b7";
+            position: absolute;
+            left: 0.25rem;
+            font-weight: 700;
+            color: var(--hawaii-blue);
+            font-size: 1.2rem;
+        }
+
+        .update-date {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .methods-footer-note {
             font-size: 0.8rem;
             color: var(--text-muted);
+            font-style: italic;
+            margin-top: 0.75rem;
         }
-        .footer-meta a {
-            color: var(--hawaii-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .footer-meta a:hover { text-decoration: underline; }
 
-        @media (max-width: 600px) {
-            .container { padding: 1.5rem 1rem 3rem; }
-            h1 { font-size: 1.4rem; }
-            table { font-size: 0.78rem; }
-            thead th, tbody td { padding: 0.4rem 0.5rem; }
+        @media (max-width: 640px) {
+            .methods-section {
+                padding: 1.25rem 1rem;
+            }
+
+            .methods-header h1 {
+                font-size: 1.35rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
 
-        <a href="/" class="back-link">
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            Back to Dashboard
-        </a>
+    <!-- Header -->
+    <header class="methods-header">
+        <h1>Methodology & Data Sources</h1>
+        <a href="../" class="back-link">&larr; Back to Hawai&#699;i Dashboard</a>
+    </header>
 
-        <h1>Methods &amp; Sources</h1>
-        <p class="subtitle">How this dashboard is built and where the data comes from.</p>
+    <div class="methods-content">
 
-        <!-- About -->
-        <div class="section">
-            <h2>About This Dashboard</h2>
-            <p>
-                This dashboard tracks 27 key statewide outcomes across 12 policy areas using federal data sources.
-                All metrics use the same methodology for all 50 states, enabling apples-to-apples comparison.
-                The dashboard is nonpartisan and reports outcomes, not government activity.
-            </p>
-        </div>
+        <!-- How We Compare -->
+        <section class="methods-section">
+            <h2>How We Compare</h2>
+            <ul>
+                <li><strong>"Other State Average"</strong> is the simple mean of the 49 other states (excluding Hawai&#699;i). DC is excluded from state rankings.</li>
+                <li>All data comes from federal sources that report consistently across all 50 states, so every comparison is apples-to-apples.</li>
+                <li><strong>"Better" and "Worse"</strong> are determined by the direction of each metric. For example, lower crime rates and lower unemployment are better, while higher graduation rates and higher incomes are better.</li>
+                <li><strong>Rankings</strong> run from #1 (best-performing state for that metric) to #50 (worst-performing).</li>
+            </ul>
+        </section>
 
         <!-- Metric Registry -->
-        <div class="section">
+        <section class="methods-section">
             <h2>Metric Registry</h2>
-            <p style="margin-bottom: 1rem;">All 27 metrics tracked on the dashboard, grouped by policy area.</p>
-            <div class="table-wrapper">
-                <table>
+            <p>All 27 metrics tracked by the dashboard, with their source, unit, time span, and direction of improvement.</p>
+            <div class="registry-wrap">
+                <table class="registry-table">
                     <thead>
                         <tr>
-                            <th>Area</th>
                             <th>Metric</th>
-                            <th>Unit</th>
+                            <th>Area</th>
                             <th>Source</th>
-                            <th>Direction</th>
+                            <th>Unit</th>
+                            <th>Years</th>
+                            <th>Better</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Business -->
-                        <tr class="area-row"><td colspan="5">Business</td></tr>
                         <tr>
-                            <td></td>
-                            <td>Net Employer Business Formation</td>
-                            <td>%</td>
-                            <td>Census Business Dynamics Statistics</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>New Business Entry Rate</td>
-                            <td>%</td>
-                            <td>Census Business Dynamics Statistics</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-
-                        <!-- Cost of Living -->
-                        <tr class="area-row"><td colspan="5">Cost of Living</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Home Price-to-Income Ratio</td>
-                            <td>&times;</td>
-                            <td>Census ACS</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Renters Paying 30%+ for Housing</td>
-                            <td>%</td>
-                            <td>Census ACS</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Unsheltered Homeless</td>
-                            <td>per 10K</td>
-                            <td>HUD PIT Count</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-
-                        <!-- Crime -->
-                        <tr class="area-row"><td colspan="5">Crime</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Property Crime Rate</td>
-                            <td>per 100K</td>
-                            <td>FBI Uniform Crime Reports</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Violent Crime Rate</td>
-                            <td>per 100K</td>
+                            <td class="metric-name">Violent Crime Rate</td>
+                            <td class="area-cell">Crime</td>
                             <td>FBI Crime Data Explorer</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-
-                        <!-- Economy -->
-                        <tr class="area-row"><td colspan="5">Economy</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Labor Productivity (Output per Hour)</td>
-                            <td>Index (2017=100)</td>
-                            <td>Bureau of Labor Statistics</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Per Capita Income (cost-of-living adj.)</td>
-                            <td>$</td>
-                            <td>BEA</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-
-                        <!-- Education -->
-                        <tr class="area-row"><td colspan="5">Education</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Adults with Bachelor's Degree+</td>
-                            <td>%</td>
-                            <td>Census ACS / FRED</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>High School Graduation Rate</td>
-                            <td>%</td>
-                            <td>NCES</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>NAEP 8th Grade Math</td>
-                            <td>score</td>
-                            <td>NAEP / Nation's Report Card</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>NAEP 8th Grade Reading</td>
-                            <td>score</td>
-                            <td>NAEP / Nation's Report Card</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-
-                        <!-- Employment -->
-                        <tr class="area-row"><td colspan="5">Employment</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Labor Force Participation Rate</td>
-                            <td>%</td>
-                            <td>Bureau of Labor Statistics</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Unemployment Rate</td>
-                            <td>%</td>
-                            <td>Bureau of Labor Statistics</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-
-                        <!-- Energy -->
-                        <tr class="area-row"><td colspan="5">Energy</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Electricity from Renewables</td>
-                            <td>%</td>
-                            <td>EIA</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Residential Electricity Price</td>
-                            <td>&cent;/kWh</td>
-                            <td>EIA</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-
-                        <!-- Fiscal Stewardship -->
-                        <tr class="area-row"><td colspan="5">Fiscal Stewardship</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Rainy Day Fund</td>
-                            <td>%</td>
-                            <td>NASBO Fiscal Survey</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-
-                        <!-- Food Security -->
-                        <tr class="area-row"><td colspan="5">Food Security</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Food Insecurity Rate</td>
-                            <td>%</td>
-                            <td>USDA ERS</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-
-                        <!-- Health -->
-                        <tr class="area-row"><td colspan="5">Health</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Primary Care Physicians (civilian)</td>
                             <td>per 100K</td>
+                            <td>1985 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Property Crime Rate</td>
+                            <td class="area-cell">Crime</td>
+                            <td>FBI Uniform Crime Reports</td>
+                            <td>per 100K</td>
+                            <td>1985 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Primary Care Physicians (civilian)</td>
+                            <td class="area-cell">Health</td>
                             <td>HRSA Area Health Resource File</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Suicide Rate</td>
                             <td>per 100K</td>
-                            <td>CDC NCHS, National Vital Statistics System</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
+                            <td>2010 - 2023</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>Uninsured Rate</td>
-                            <td>%</td>
+                            <td class="metric-name">Uninsured Rate</td>
+                            <td class="area-cell">Health</td>
                             <td>Census ACS / KFF</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-
-                        <!-- Infrastructure -->
-                        <tr class="area-row"><td colspan="5">Infrastructure</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>Households with Broadband</td>
                             <td>%</td>
+                            <td>2010 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Suicide Rate</td>
+                            <td class="area-cell">Health</td>
+                            <td>CDC NCHS, National Vital Statistics System</td>
+                            <td>per 100K</td>
+                            <td>1999 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">High School Graduation Rate</td>
+                            <td class="area-cell">Education</td>
+                            <td>NCES</td>
+                            <td>%</td>
+                            <td>2011 - 2022</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Adults with Bachelor's Degree+</td>
+                            <td class="area-cell">Education</td>
+                            <td>Census ACS / FRED</td>
+                            <td>%</td>
+                            <td>2008 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">NAEP 8th Grade Math</td>
+                            <td class="area-cell">Education</td>
+                            <td>NAEP / Nation's Report Card</td>
+                            <td>score</td>
+                            <td>2003 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">NAEP 8th Grade Reading</td>
+                            <td class="area-cell">Education</td>
+                            <td>NAEP / Nation's Report Card</td>
+                            <td>score</td>
+                            <td>2003 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Unemployment Rate</td>
+                            <td class="area-cell">Employment</td>
+                            <td>Bureau of Labor Statistics</td>
+                            <td>%</td>
+                            <td>1976 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Labor Force Participation Rate</td>
+                            <td class="area-cell">Employment</td>
+                            <td>Bureau of Labor Statistics</td>
+                            <td>%</td>
+                            <td>1976 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Per Capita Income (cost-of-living adj.)</td>
+                            <td class="area-cell">Economy</td>
+                            <td>BEA</td>
+                            <td>$</td>
+                            <td>2008 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Renters Paying 30%+ for Housing</td>
+                            <td class="area-cell">Cost of Living</td>
                             <td>Census ACS</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
+                            <td>%</td>
+                            <td>2012 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>Public Transit Commuters</td>
-                            <td>%</td>
+                            <td class="metric-name">Home Price-to-Income Ratio</td>
+                            <td class="area-cell">Cost of Living</td>
                             <td>Census ACS</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
+                            <td>&times;</td>
+                            <td>2005 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>Roads in Poor Condition</td>
-                            <td>%</td>
-                            <td>FHWA Highway Statistics, Table HM-64</td>
-                            <td><span class="direction-down" title="Lower is better">&#x25BC;</span></td>
-                        </tr>
-
-                        <!-- Public Confidence -->
-                        <tr class="area-row"><td colspan="5">Public Confidence</td></tr>
-                        <tr>
-                            <td></td>
-                            <td>People Moving In vs. Out</td>
+                            <td class="metric-name">Unsheltered Homeless</td>
+                            <td class="area-cell">Cost of Living</td>
+                            <td>HUD PIT Count</td>
                             <td>per 10K</td>
-                            <td>Census PEP</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
+                            <td>2012 - 2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>Voter Participation Rate</td>
+                            <td class="metric-name">Roads in Poor Condition</td>
+                            <td class="area-cell">Infrastructure</td>
+                            <td>FHWA Highway Statistics, Table HM-64</td>
                             <td>%</td>
+                            <td>2007 - 2023</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Households with Broadband</td>
+                            <td class="area-cell">Infrastructure</td>
+                            <td>Census ACS</td>
+                            <td>%</td>
+                            <td>2016 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Public Transit Commuters</td>
+                            <td class="area-cell">Infrastructure</td>
+                            <td>Census ACS</td>
+                            <td>%</td>
+                            <td>2006 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Residential Electricity Price</td>
+                            <td class="area-cell">Energy</td>
+                            <td>EIA</td>
+                            <td>&cent;/kWh</td>
+                            <td>1990 - 2025</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Electricity from Renewables</td>
+                            <td class="area-cell">Energy</td>
+                            <td>EIA</td>
+                            <td>%</td>
+                            <td>2003 - 2025</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Food Insecurity Rate</td>
+                            <td class="area-cell">Food Security</td>
+                            <td>USDA ERS</td>
+                            <td>%</td>
+                            <td>2006-2008 - 2022-2024</td>
+                            <td class="direction-cell" title="Lower is better">&#9660;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Rainy Day Fund</td>
+                            <td class="area-cell">Fiscal Stewardship</td>
+                            <td>NASBO Fiscal Survey</td>
+                            <td>%</td>
+                            <td>2012 - 2025</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Voter Participation Rate</td>
+                            <td class="area-cell">Public Confidence</td>
                             <td>US Elections Project</td>
-                            <td><span class="direction-up" title="Higher is better">&#x25B2;</span></td>
+                            <td>%</td>
+                            <td>2002 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">People Moving In vs. Out</td>
+                            <td class="area-cell">Public Confidence</td>
+                            <td>Census PEP</td>
+                            <td>per 10K</td>
+                            <td>2001 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">New Business Entry Rate</td>
+                            <td class="area-cell">Business</td>
+                            <td>Census Business Dynamics Statistics</td>
+                            <td>%</td>
+                            <td>1978 - 2023</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Net Employer Business Formation</td>
+                            <td class="area-cell">Business</td>
+                            <td>Census Business Dynamics Statistics</td>
+                            <td>%</td>
+                            <td>1978 - 2023</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
+                        </tr>
+                        <tr>
+                            <td class="metric-name">Labor Productivity (Output per Hour)</td>
+                            <td class="area-cell">Economy</td>
+                            <td>Bureau of Labor Statistics</td>
+                            <td>Index (2017=100)</td>
+                            <td>2007 - 2024</td>
+                            <td class="direction-cell" title="Higher is better">&#9650;</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
 
-        <!-- Methodology Notes -->
-        <div class="section">
-            <h2>Methodology Notes</h2>
-            <ul class="notes-list">
-                <li>
-                    <strong>Comparator definition.</strong>
-                    "Other State Average" is the unweighted mean of all 49 other states, excluding Hawaii. Washington D.C. is not included.
-                </li>
-                <li>
-                    <strong>Data currency.</strong>
-                    Each metric shows its latest available year. Federal sources publish on different schedules, so not all metrics share the same data vintage.
-                </li>
-                <li>
-                    <strong>Series breaks.</strong>
-                    The Census ACS broadband variable (B28002) changed definition in 2016, so pre-2016 broadband data is excluded from this dashboard. County-level Per Capita Income uses RPP-adjusted (cost-of-living adjusted) values from BEA, which differ from the nominal values shown in the state-level detail view.
-                </li>
-                <li>
-                    <strong>Missing years.</strong>
-                    2020 ACS data is excluded for most Census-sourced metrics due to COVID-related collection disruptions that compromised data quality.
-                </li>
+        <!-- Update Log -->
+        <section class="methods-section">
+            <h2>Update Log</h2>
+            <ul class="update-list">
+                <li><span class="update-date">March 2026:</span> Initial dashboard launch with 27 metrics across 12 policy areas.</li>
             </ul>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer-meta">
-            <p>Data last updated: March 2026</p>
-            <p style="margin-top: 0.5rem;">
-                <a href="/">Back to the Hawai&#699;i Dashboard</a>
-            </p>
-        </div>
+            <p class="methods-footer-note">This dashboard is refreshed monthly via automated federal data pipelines.</p>
+        </section>
 
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><a href="../">&larr; Back to Hawai&#699;i Dashboard</a></p>
+    </footer>
+
 </body>
 </html>
