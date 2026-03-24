@@ -308,7 +308,19 @@ const ChartUtils = {
                         callbacks: {
                             label: function(context) {
                                 const val = context.parsed.y;
-                                return `${context.dataset.label}: ${ChartUtils.formatValue(val, data.unit, isDecimalPct)}`;
+                                const formatted = ChartUtils.formatValue(val, data.unit, isDecimalPct);
+                                // YoY % change
+                                const idx = context.dataIndex;
+                                const series = context.dataset.data;
+                                if (idx > 0 && val !== null && series[idx - 1] !== null) {
+                                    const prev = series[idx - 1];
+                                    if (prev !== 0) {
+                                        const pct = ((val - prev) / Math.abs(prev)) * 100;
+                                        const arrow = pct > 0 ? '\u2191' : pct < 0 ? '\u2193' : '';
+                                        return `${context.dataset.label}: ${formatted}  ${arrow} ${Math.abs(pct).toFixed(1)}%`;
+                                    }
+                                }
+                                return `${context.dataset.label}: ${formatted}`;
                             }
                         }
                     },

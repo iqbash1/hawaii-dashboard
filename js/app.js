@@ -499,16 +499,34 @@ const App = {
             e.preventDefault();
             this.downloadData(slug);
         });
+        // Share logic: detect active tab to build correct URL with matching OG tags
+        const getShareUrl = () => {
+            const activeTab = document.querySelector('.modal-tab.active');
+            const tabId = activeTab ? activeTab.id : 'tab-detail';
+            const prefix = tabId === 'tab-rankings' ? 'r' : tabId === 'tab-county' ? 'c' : 't';
+            return 'https://hawaiidashboard.org/' + prefix + '/' + slug + '/';
+        };
+        const copyShare = (feedbackEl, resetContent) => {
+            navigator.clipboard.writeText(getShareUrl()).then(() => {
+                if (typeof resetContent === 'string') {
+                    feedbackEl.textContent = 'Copied!';
+                    setTimeout(() => { feedbackEl.textContent = resetContent; }, 2000);
+                } else {
+                    feedbackEl.classList.add('copied');
+                    feedbackEl.title = 'Copied!';
+                    setTimeout(() => { feedbackEl.classList.remove('copied'); feedbackEl.title = 'Copy link'; }, 2000);
+                }
+            }).catch(() => {
+                prompt('Copy this link:', getShareUrl());
+            });
+        };
         document.getElementById('share-link').addEventListener('click', (e) => {
             e.preventDefault();
-            const shareUrl = 'https://hawaiidashboard.org/t/' + slug + '/';
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                const el = document.getElementById('share-link');
-                el.textContent = 'Copied!';
-                setTimeout(() => { el.textContent = 'Share'; }, 2000);
-            }).catch(() => {
-                prompt('Copy this link:', shareUrl);
-            });
+            copyShare(document.getElementById('share-link'), 'Share');
+        });
+        document.getElementById('modal-share-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            copyShare(document.getElementById('modal-share-btn'));
         });
         document.getElementById('print-link').addEventListener('click', (e) => {
             e.preventDefault();

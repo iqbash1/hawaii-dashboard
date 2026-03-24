@@ -344,12 +344,43 @@ body {
     flex-direction: column;
 }
 
-.modal-close {
+.modal-actions {
     position: sticky;
     top: 1rem;
     align-self: flex-end;
     margin-right: 1rem;
     margin-bottom: -2.5rem;
+    display: flex;
+    gap: 0.4rem;
+    z-index: 10;
+}
+
+.modal-share-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all var(--transition);
+}
+
+.modal-share-btn:hover {
+    background: var(--avg-gray-light);
+    color: var(--hawaii-blue);
+    border-color: var(--hawaii-blue);
+}
+
+.modal-share-btn.copied {
+    color: var(--good-green);
+    border-color: var(--good-green);
+}
+
+.modal-close {
     width: 36px;
     height: 36px;
     border: 1px solid var(--border);
