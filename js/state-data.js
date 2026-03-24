@@ -1,3 +1,15 @@
+// ============================================================
+// Hawaiʻi Dashboard - All-State Time Series Data
+//
+// Updated: 2026-03-24T21:31:30.855Z
+//
+// Contains per-state values across all available years for
+// metrics with federal API access.
+// Structure: { slug: { source, calculation, data: { year: { state: val } } } }
+// Values stored as decimals for percentages (0.35 = 35%).
+// DC is excluded to match the dashboard methodology.
+// ============================================================
+
 const STATE_DATA = {
   "ba_or_higher_pct": {
     "source": "Census ACS 1-Year, Table B15003",
@@ -12787,7 +12799,6 @@ const STATE_DATA = {
         "Delaware": 0.054,
         "Florida": 0.064,
         "Georgia": 0.176,
-        "Hawaii": 0.093,
         "Idaho": 0.241,
         "Illinois": 0.039,
         "Indiana": 0.097,
@@ -12826,7 +12837,8 @@ const STATE_DATA = {
         "Washington": 0.089,
         "West Virginia": 0.167,
         "Wisconsin": 0.088,
-        "Wyoming": 0.818
+        "Wyoming": 0.818,
+        "Hawaiʻi": 0.093
       },
       "2024": {
         "Alabama": 0.21,
@@ -12839,7 +12851,6 @@ const STATE_DATA = {
         "Delaware": 0.053,
         "Florida": 0.075,
         "Georgia": 0.153,
-        "Hawaii": 0.141,
         "Idaho": 0.422,
         "Illinois": 0.036,
         "Indiana": 0.085,
@@ -12878,7 +12889,8 @@ const STATE_DATA = {
         "Washington": 0.055,
         "West Virginia": 0.198,
         "Wisconsin": 0.083,
-        "Wyoming": 0.828
+        "Wyoming": 0.828,
+        "Hawaiʻi": 0.141
       },
       "2025": {
         "Alabama": 0.194,
@@ -12891,7 +12903,6 @@ const STATE_DATA = {
         "Delaware": 0.05,
         "Florida": 0.083,
         "Georgia": 0.154,
-        "Hawaii": 0.145,
         "Idaho": 0.406,
         "Illinois": 0.043,
         "Indiana": 0.08,
@@ -12930,7 +12941,8 @@ const STATE_DATA = {
         "Washington": 0.035,
         "West Virginia": 0.226,
         "Wisconsin": 0.093,
-        "Wyoming": 0.877
+        "Wyoming": 0.877,
+        "Hawaiʻi": 0.145
       }
     }
   },
@@ -12950,7 +12962,6 @@ const STATE_DATA = {
         "Delaware": 0.03,
         "Florida": 0.0205,
         "Georgia": 0.0227,
-        "Hawaii": 0.0662,
         "Idaho": 0.0081,
         "Illinois": 0.0854,
         "Indiana": 0.0097,
@@ -12989,7 +13000,8 @@ const STATE_DATA = {
         "Washington": 0.0549,
         "West Virginia": 0.0071,
         "Wisconsin": 0.0167,
-        "Wyoming": 0.017
+        "Wyoming": 0.017,
+        "Hawaiʻi": 0.0662
       },
       "2011": {
         "Alabama": 0.0048,
@@ -13002,7 +13014,6 @@ const STATE_DATA = {
         "Delaware": 0.0327,
         "Florida": 0.021,
         "Georgia": 0.0215,
-        "Hawaii": 0.0594,
         "Idaho": 0.0069,
         "Illinois": 0.09,
         "Indiana": 0.0105,
@@ -13041,7 +13052,8 @@ const STATE_DATA = {
         "Washington": 0.0563,
         "West Virginia": 0.0091,
         "Wisconsin": 0.0196,
-        "Wyoming": 0.0154
+        "Wyoming": 0.0154,
+        "Hawaiʻi": 0.0594
       },
       "2012": {
         "Alabama": 0.0041,
@@ -13054,7 +13066,6 @@ const STATE_DATA = {
         "Delaware": 0.0254,
         "Florida": 0.0217,
         "Georgia": 0.0197,
-        "Hawaii": 0.0674,
         "Idaho": 0.0085,
         "Illinois": 0.0854,
         "Indiana": 0.0113,
@@ -13093,7 +13104,8 @@ const STATE_DATA = {
         "Washington": 0.0583,
         "West Virginia": 0.0073,
         "Wisconsin": 0.018,
-        "Wyoming": 0.0153
+        "Wyoming": 0.0153,
+        "Hawaiʻi": 0.0674
       },
       "2013": {
         "Alabama": 0.0048,
@@ -13106,7 +13118,6 @@ const STATE_DATA = {
         "Delaware": 0.0352,
         "Florida": 0.021,
         "Georgia": 0.0208,
-        "Hawaii": 0.0612,
         "Idaho": 0.0069,
         "Illinois": 0.0913,
         "Indiana": 0.0118,
@@ -13145,7 +13156,8 @@ const STATE_DATA = {
         "Washington": 0.0628,
         "West Virginia": 0.007,
         "Wisconsin": 0.0198,
-        "Wyoming": 0.0153
+        "Wyoming": 0.0153,
+        "Hawaiʻi": 0.0612
       },
       "2014": {
         "Alabama": 0.0041,
@@ -13158,7 +13170,6 @@ const STATE_DATA = {
         "Delaware": 0.0291,
         "Florida": 0.0208,
         "Georgia": 0.0211,
-        "Hawaii": 0.0719,
         "Idaho": 0.008,
         "Illinois": 0.094,
         "Indiana": 0.0107,
@@ -13197,7 +13208,8 @@ const STATE_DATA = {
         "Washington": 0.0634,
         "West Virginia": 0.0074,
         "Wisconsin": 0.019,
-        "Wyoming": 0.0161
+        "Wyoming": 0.0161,
+        "Hawaiʻi": 0.0719
       },
       "2015": {
         "Alabama": 0.003,
@@ -13210,7 +13222,6 @@ const STATE_DATA = {
         "Delaware": 0.0274,
         "Florida": 0.022,
         "Georgia": 0.023,
-        "Hawaii": 0.0699,
         "Idaho": 0.008,
         "Illinois": 0.093,
         "Indiana": 0.0109,
@@ -13249,7 +13260,8 @@ const STATE_DATA = {
         "Washington": 0.0625,
         "West Virginia": 0.0106,
         "Wisconsin": 0.0191,
-        "Wyoming": 0.022
+        "Wyoming": 0.022,
+        "Hawaiʻi": 0.0699
       },
       "2016": {
         "Alabama": 0.0031,
@@ -13262,7 +13274,6 @@ const STATE_DATA = {
         "Delaware": 0.0268,
         "Florida": 0.0205,
         "Georgia": 0.0214,
-        "Hawaii": 0.0674,
         "Idaho": 0.0057,
         "Illinois": 0.0935,
         "Indiana": 0.0101,
@@ -13301,7 +13312,8 @@ const STATE_DATA = {
         "Washington": 0.0636,
         "West Virginia": 0.0109,
         "Wisconsin": 0.0174,
-        "Wyoming": 0.0152
+        "Wyoming": 0.0152,
+        "Hawaiʻi": 0.0674
       },
       "2017": {
         "Alabama": 0.0035,
@@ -13314,7 +13326,6 @@ const STATE_DATA = {
         "Delaware": 0.0223,
         "Florida": 0.0174,
         "Georgia": 0.0214,
-        "Hawaii": 0.0615,
         "Idaho": 0.0063,
         "Illinois": 0.096,
         "Indiana": 0.0093,
@@ -13353,7 +13364,8 @@ const STATE_DATA = {
         "Washington": 0.0654,
         "West Virginia": 0.0092,
         "Wisconsin": 0.0175,
-        "Wyoming": 0.0059
+        "Wyoming": 0.0059,
+        "Hawaiʻi": 0.0615
       },
       "2018": {
         "Alabama": 0.0034,
@@ -13366,7 +13378,6 @@ const STATE_DATA = {
         "Delaware": 0.0216,
         "Florida": 0.0165,
         "Georgia": 0.0201,
-        "Hawaii": 0.0574,
         "Idaho": 0.008,
         "Illinois": 0.094,
         "Indiana": 0.0093,
@@ -13405,7 +13416,8 @@ const STATE_DATA = {
         "Washington": 0.0697,
         "West Virginia": 0.0085,
         "Wisconsin": 0.015,
-        "Wyoming": 0.0123
+        "Wyoming": 0.0123,
+        "Hawaiʻi": 0.0574
       },
       "2019": {
         "Alabama": 0.0042,
@@ -13418,7 +13430,6 @@ const STATE_DATA = {
         "Delaware": 0.0235,
         "Florida": 0.0159,
         "Georgia": 0.0198,
-        "Hawaii": 0.0537,
         "Idaho": 0.0077,
         "Illinois": 0.0965,
         "Indiana": 0.0092,
@@ -13457,7 +13468,8 @@ const STATE_DATA = {
         "Washington": 0.0711,
         "West Virginia": 0.0079,
         "Wisconsin": 0.0169,
-        "Wyoming": 0.0116
+        "Wyoming": 0.0116,
+        "Hawaiʻi": 0.0537
       },
       "2021": {
         "Alabama": 0.0023,
@@ -13470,7 +13482,6 @@ const STATE_DATA = {
         "Delaware": 0.0163,
         "Florida": 0.0097,
         "Georgia": 0.0071,
-        "Hawaii": 0.0329,
         "Idaho": 0.0048,
         "Illinois": 0.0383,
         "Indiana": 0.0056,
@@ -13509,7 +13520,8 @@ const STATE_DATA = {
         "Washington": 0.0212,
         "West Virginia": 0.0036,
         "Wisconsin": 0.0086,
-        "Wyoming": 0.0079
+        "Wyoming": 0.0079,
+        "Hawaiʻi": 0.0329
       },
       "2022": {
         "Alabama": 0.003,
@@ -13522,7 +13534,6 @@ const STATE_DATA = {
         "Delaware": 0.0144,
         "Florida": 0.0119,
         "Georgia": 0.0106,
-        "Hawaii": 0.0352,
         "Idaho": 0.0065,
         "Illinois": 0.0559,
         "Indiana": 0.0065,
@@ -13561,7 +13572,8 @@ const STATE_DATA = {
         "Washington": 0.0315,
         "West Virginia": 0.0059,
         "Wisconsin": 0.0106,
-        "Wyoming": 0.0096
+        "Wyoming": 0.0096,
+        "Hawaiʻi": 0.0352
       },
       "2023": {
         "Alabama": 0.0029,
@@ -13574,7 +13586,6 @@ const STATE_DATA = {
         "Delaware": 0.0233,
         "Florida": 0.0136,
         "Georgia": 0.0114,
-        "Hawaii": 0.0413,
         "Idaho": 0.0061,
         "Illinois": 0.066,
         "Indiana": 0.0069,
@@ -13613,7 +13624,8 @@ const STATE_DATA = {
         "Washington": 0.0399,
         "West Virginia": 0.0049,
         "Wisconsin": 0.0111,
-        "Wyoming": 0.0117
+        "Wyoming": 0.0117,
+        "Hawaiʻi": 0.0413
       },
       "2024": {
         "Alabama": 0.0044,
@@ -13626,7 +13638,6 @@ const STATE_DATA = {
         "Delaware": 0.0235,
         "Florida": 0.0129,
         "Georgia": 0.012,
-        "Hawaii": 0.043,
         "Idaho": 0.0046,
         "Illinois": 0.0697,
         "Indiana": 0.0059,
@@ -13665,7 +13676,8 @@ const STATE_DATA = {
         "Washington": 0.042,
         "West Virginia": 0.0057,
         "Wisconsin": 0.0137,
-        "Wyoming": 0.0111
+        "Wyoming": 0.0111,
+        "Hawaiʻi": 0.043
       }
     }
   },
@@ -13684,7 +13696,6 @@ const STATE_DATA = {
         "Delaware": 277.16,
         "Florida": 271.37,
         "Georgia": 269.68,
-        "Hawaii": 265.73,
         "Idaho": 279.94,
         "Illinois": 277.16,
         "Indiana": 281.22,
@@ -13723,7 +13734,8 @@ const STATE_DATA = {
         "Washington": 281.15,
         "West Virginia": 270.77,
         "Wisconsin": 283.92,
-        "Wyoming": 283.5
+        "Wyoming": 283.5,
+        "Hawaiʻi": 265.73
       },
       "2005": {
         "Alabama": 262.21,
@@ -13736,7 +13748,6 @@ const STATE_DATA = {
         "Delaware": 280.95,
         "Florida": 274.05,
         "Georgia": 272.19,
-        "Hawaii": 265.63,
         "Idaho": 280.97,
         "Illinois": 277.67,
         "Indiana": 281.71,
@@ -13775,7 +13786,8 @@ const STATE_DATA = {
         "Washington": 285.05,
         "West Virginia": 269.1,
         "Wisconsin": 284.54,
-        "Wyoming": 282.1
+        "Wyoming": 282.1,
+        "Hawaiʻi": 265.63
       },
       "2007": {
         "Alabama": 266,
@@ -13788,7 +13800,6 @@ const STATE_DATA = {
         "Delaware": 282.99,
         "Florida": 277.38,
         "Georgia": 274.78,
-        "Hawaii": 268.77,
         "Idaho": 283.51,
         "Illinois": 280.5,
         "Indiana": 285.01,
@@ -13827,7 +13838,8 @@ const STATE_DATA = {
         "Washington": 284.86,
         "West Virginia": 270.08,
         "Wisconsin": 285.62,
-        "Wyoming": 286.99
+        "Wyoming": 286.99,
+        "Hawaiʻi": 268.77
       },
       "2009": {
         "Alabama": 268.52,
@@ -13840,7 +13852,6 @@ const STATE_DATA = {
         "Delaware": 283.83,
         "Florida": 279.34,
         "Georgia": 277.56,
-        "Hawaii": 273.76,
         "Idaho": 287.31,
         "Illinois": 282.43,
         "Indiana": 286.81,
@@ -13879,7 +13890,8 @@ const STATE_DATA = {
         "Washington": 288.72,
         "West Virginia": 270.42,
         "Wisconsin": 288.14,
-        "Wyoming": 286.1
+        "Wyoming": 286.1,
+        "Hawaiʻi": 273.76
       },
       "2011": {
         "Alabama": 269.1,
@@ -13892,7 +13904,6 @@ const STATE_DATA = {
         "Delaware": 282.77,
         "Florida": 277.84,
         "Georgia": 278.48,
-        "Hawaii": 277.84,
         "Idaho": 286.68,
         "Illinois": 283.23,
         "Indiana": 285,
@@ -13931,7 +13942,8 @@ const STATE_DATA = {
         "Washington": 288.11,
         "West Virginia": 273.26,
         "Wisconsin": 288.67,
-        "Wyoming": 287.77
+        "Wyoming": 287.77,
+        "Hawaiʻi": 277.84
       },
       "2013": {
         "Alabama": 269.19,
@@ -13944,7 +13956,6 @@ const STATE_DATA = {
         "Delaware": 282.34,
         "Florida": 280.86,
         "Georgia": 279.18,
-        "Hawaii": 281.41,
         "Idaho": 286.41,
         "Illinois": 284.9,
         "Indiana": 287.77,
@@ -13983,7 +13994,8 @@ const STATE_DATA = {
         "Washington": 289.96,
         "West Virginia": 274.43,
         "Wisconsin": 288.75,
-        "Wyoming": 288.12
+        "Wyoming": 288.12,
+        "Hawaiʻi": 281.41
       },
       "2015": {
         "Alabama": 266.56,
@@ -13996,7 +14008,6 @@ const STATE_DATA = {
         "Delaware": 279.81,
         "Florida": 275.32,
         "Georgia": 278.71,
-        "Hawaii": 279.34,
         "Idaho": 283.74,
         "Illinois": 281.97,
         "Indiana": 287.18,
@@ -14035,7 +14046,8 @@ const STATE_DATA = {
         "Washington": 286.51,
         "West Virginia": 271.45,
         "Wisconsin": 289.08,
-        "Wyoming": 286.67
+        "Wyoming": 286.67,
+        "Hawaiʻi": 279.34
       },
       "2017": {
         "Alabama": 268.31,
@@ -14048,7 +14060,6 @@ const STATE_DATA = {
         "Delaware": 278.02,
         "Florida": 279.12,
         "Georgia": 281.04,
-        "Hawaii": 277.34,
         "Idaho": 284.37,
         "Illinois": 281.62,
         "Indiana": 287.71,
@@ -14087,7 +14098,8 @@ const STATE_DATA = {
         "Washington": 289.13,
         "West Virginia": 273.42,
         "Wisconsin": 288.14,
-        "Wyoming": 288.76
+        "Wyoming": 288.76,
+        "Hawaiʻi": 277.34
       },
       "2019": {
         "Alabama": 268.7,
@@ -14100,7 +14112,6 @@ const STATE_DATA = {
         "Delaware": 276.7,
         "Florida": 278.52,
         "Georgia": 279.49,
-        "Hawaii": 275.33,
         "Idaho": 285.94,
         "Illinois": 282.56,
         "Indiana": 285.65,
@@ -14139,7 +14150,8 @@ const STATE_DATA = {
         "Washington": 285.81,
         "West Virginia": 272.35,
         "Wisconsin": 288.66,
-        "Wyoming": 286.31
+        "Wyoming": 286.31,
+        "Hawaiʻi": 275.33
       },
       "2022": {
         "Alabama": 264.36,
@@ -14152,7 +14164,6 @@ const STATE_DATA = {
         "Delaware": 264.25,
         "Florida": 271.2,
         "Georgia": 271.28,
-        "Hawaii": 270.1,
         "Idaho": 281.77,
         "Illinois": 275.2,
         "Indiana": 278.65,
@@ -14191,7 +14202,8 @@ const STATE_DATA = {
         "Washington": 276.08,
         "West Virginia": 260.39,
         "Wisconsin": 281.14,
-        "Wyoming": 280.93
+        "Wyoming": 280.93,
+        "Hawaiʻi": 270.1
       },
       "2024": {
         "Alabama": 261.77,
@@ -14204,7 +14216,6 @@ const STATE_DATA = {
         "Delaware": 263.06,
         "Florida": 267.24,
         "Georgia": 268.66,
-        "Hawaii": 270.04,
         "Idaho": 278.1,
         "Illinois": 277.42,
         "Indiana": 278.19,
@@ -14243,7 +14254,8 @@ const STATE_DATA = {
         "Washington": 273.67,
         "West Virginia": 260.77,
         "Wisconsin": 282.65,
-        "Wyoming": 278.32
+        "Wyoming": 278.32,
+        "Hawaiʻi": 270.04
       }
     }
   },
@@ -14262,7 +14274,6 @@ const STATE_DATA = {
         "Delaware": 264.53,
         "Florida": 257.3,
         "Georgia": 257.71,
-        "Hawaii": 251.28,
         "Idaho": 264.44,
         "Illinois": 266.41,
         "Indiana": 264.83,
@@ -14301,7 +14312,8 @@ const STATE_DATA = {
         "Washington": 264.49,
         "West Virginia": 259.56,
         "Wisconsin": 266.47,
-        "Wyoming": 267
+        "Wyoming": 267,
+        "Hawaiʻi": 251.28
       },
       "2005": {
         "Alabama": 251.98,
@@ -14314,7 +14326,6 @@ const STATE_DATA = {
         "Delaware": 266.01,
         "Florida": 255.78,
         "Georgia": 256.87,
-        "Hawaii": 248.51,
         "Idaho": 264.3,
         "Illinois": 263.52,
         "Indiana": 261.01,
@@ -14353,7 +14364,8 @@ const STATE_DATA = {
         "Washington": 264.66,
         "West Virginia": 255.07,
         "Wisconsin": 266.23,
-        "Wyoming": 268.12
+        "Wyoming": 268.12,
+        "Hawaiʻi": 248.51
       },
       "2007": {
         "Alabama": 251.94,
@@ -14366,7 +14378,6 @@ const STATE_DATA = {
         "Delaware": 264.54,
         "Florida": 259.79,
         "Georgia": 258.7,
-        "Hawaii": 251.33,
         "Idaho": 264.89,
         "Illinois": 262.83,
         "Indiana": 264.1,
@@ -14405,7 +14416,8 @@ const STATE_DATA = {
         "Washington": 264.95,
         "West Virginia": 255,
         "Wisconsin": 264.18,
-        "Wyoming": 266.23
+        "Wyoming": 266.23,
+        "Hawaiʻi": 251.33
       },
       "2009": {
         "Alabama": 254.9,
@@ -14418,7 +14430,6 @@ const STATE_DATA = {
         "Delaware": 265,
         "Florida": 264.36,
         "Georgia": 260.24,
-        "Hawaii": 254.74,
         "Idaho": 264.84,
         "Illinois": 264.51,
         "Indiana": 265.69,
@@ -14457,7 +14468,8 @@ const STATE_DATA = {
         "Washington": 266.92,
         "West Virginia": 254.8,
         "Wisconsin": 265.81,
-        "Wyoming": 268.16
+        "Wyoming": 268.16,
+        "Hawaiʻi": 254.74
       },
       "2011": {
         "Alabama": 258.42,
@@ -14470,7 +14482,6 @@ const STATE_DATA = {
         "Delaware": 265.84,
         "Florida": 262.12,
         "Georgia": 262.36,
-        "Hawaii": 257.19,
         "Idaho": 268.01,
         "Illinois": 265.64,
         "Indiana": 264.73,
@@ -14509,7 +14520,8 @@ const STATE_DATA = {
         "Washington": 267.58,
         "West Virginia": 256.11,
         "Wisconsin": 267.17,
-        "Wyoming": 269.57
+        "Wyoming": 269.57,
+        "Hawaiʻi": 257.19
       },
       "2013": {
         "Alabama": 257.43,
@@ -14522,7 +14534,6 @@ const STATE_DATA = {
         "Delaware": 265.98,
         "Florida": 265.83,
         "Georgia": 264.62,
-        "Hawaii": 259.96,
         "Idaho": 270.22,
         "Illinois": 266.9,
         "Indiana": 267.27,
@@ -14561,7 +14572,8 @@ const STATE_DATA = {
         "Washington": 272.04,
         "West Virginia": 257.38,
         "Wisconsin": 267.54,
-        "Wyoming": 270.97
+        "Wyoming": 270.97,
+        "Hawaiʻi": 259.96
       },
       "2015": {
         "Alabama": 258.75,
@@ -14574,7 +14586,6 @@ const STATE_DATA = {
         "Delaware": 262.61,
         "Florida": 263.38,
         "Georgia": 262.27,
-        "Hawaii": 257.35,
         "Idaho": 268.55,
         "Illinois": 266.81,
         "Indiana": 268.25,
@@ -14613,7 +14624,8 @@ const STATE_DATA = {
         "Washington": 267.25,
         "West Virginia": 260.19,
         "Wisconsin": 269.53,
-        "Wyoming": 268.8
+        "Wyoming": 268.8,
+        "Hawaiʻi": 257.35
       },
       "2017": {
         "Alabama": 257.69,
@@ -14626,7 +14638,6 @@ const STATE_DATA = {
         "Delaware": 263.09,
         "Florida": 266.55,
         "Georgia": 266.33,
-        "Hawaii": 260.98,
         "Idaho": 269.67,
         "Illinois": 266.93,
         "Indiana": 272.02,
@@ -14665,7 +14676,8 @@ const STATE_DATA = {
         "Washington": 271.62,
         "West Virginia": 258.7,
         "Wisconsin": 269.37,
-        "Wyoming": 269.02
+        "Wyoming": 269.02,
+        "Hawaiʻi": 260.98
       },
       "2019": {
         "Alabama": 253.4,
@@ -14678,7 +14690,6 @@ const STATE_DATA = {
         "Delaware": 259.68,
         "Florida": 263.35,
         "Georgia": 262.39,
-        "Hawaii": 258.16,
         "Idaho": 266.48,
         "Illinois": 264.7,
         "Indiana": 265.95,
@@ -14717,7 +14728,8 @@ const STATE_DATA = {
         "Washington": 266.28,
         "West Virginia": 255.62,
         "Wisconsin": 267.38,
-        "Wyoming": 264.64
+        "Wyoming": 264.64,
+        "Hawaiʻi": 258.16
       },
       "2022": {
         "Alabama": 250.9,
@@ -14730,7 +14742,6 @@ const STATE_DATA = {
         "Delaware": 253.01,
         "Florida": 259.63,
         "Georgia": 259.99,
-        "Hawaii": 258.98,
         "Idaho": 263.54,
         "Illinois": 261.89,
         "Indiana": 260.5,
@@ -14769,7 +14780,8 @@ const STATE_DATA = {
         "Washington": 261.54,
         "West Virginia": 249.4,
         "Wisconsin": 262.23,
-        "Wyoming": 260.77
+        "Wyoming": 260.77,
+        "Hawaiʻi": 258.98
       },
       "2024": {
         "Alabama": 249.6,
@@ -14782,7 +14794,6 @@ const STATE_DATA = {
         "Delaware": 249.45,
         "Florida": 252.86,
         "Georgia": 259.33,
-        "Hawaii": 257.28,
         "Idaho": 260.73,
         "Illinois": 261.62,
         "Indiana": 261.66,
@@ -14821,7 +14832,8 @@ const STATE_DATA = {
         "Washington": 259.27,
         "West Virginia": 247.36,
         "Wisconsin": 260.09,
-        "Wyoming": 259.97
+        "Wyoming": 259.97,
+        "Hawaiʻi": 257.28
       }
     }
   },

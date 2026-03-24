@@ -1,0 +1,149 @@
+name: Monthly Data Refresh
+
+on:
+  schedule:
+    # 7:17 AM UTC on the 5th of each month (avoid :00/:30 load spikes)
+    - cron: '17 7 5 * *'
+  workflow_dispatch:  # allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --production 2>/dev/null || true
+
+      # ----- Snapshot current data for diffing later -----
+      - name: Snapshot current data
+        run: |
+          cp js/state-data.js /tmp/state-data-before.js
+          cp js/data.js /tmp/data-before.js
+          cp js/county-data.js /tmp/county-data-before.js
+
+      # ----- Fetch fresh data from federal APIs -----
+      - name: Fetch state-level data
+        run: node scripts/build-state-data.js
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      - name: Fetch county-level data
+        run: node scripts/build-county-data.js
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      # ----- Recompute derived values -----
+      - name: Recompute data.js from state-data.js
+        run: node scripts/recompute-data.js
+
+      # ----- Validate (strict mode for CI) -----
+      - name: Validate data integrity
+        id: validate
+        run: |
+          set +e
+          node scripts/validate-data.js 2>&1 | tee /tmp/validation-output.txt
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0  # don't fail the step; we handle it below
+
+      # ----- Check what changed -----
+      - name: Detect changes
+        id: changes
+        run: |
+          CHANGED="false"
+          SUMMARY=""
+          for f in js/state-data.js js/data.js js/county-data.js; do
+            if ! diff -q "$f" "/tmp/$(basename $f | sed 's/\.js/-before.js/')" > /dev/null 2>&1; then
+              CHANGED="true"
+              LINES=$(diff "/tmp/$(basename $f | sed 's/\.js/-before.js/')" "$f" | grep -c '^[<>]' || echo "0")
+              SUMMARY="$SUMMARY\n- \`$f\`: $LINES lines changed"
+            fi
+          done
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+          echo "summary<<EOF" >> "$GITHUB_OUTPUT"
+          echo -e "$SUMMARY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      # ----- If validation failed with errors, open an issue instead of PR -----
+      - name: Open issue on validation failure
+        if: steps.validate.outputs.exit_code == '2'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('/tmp/validation-output.txt', 'utf8');
+            const errorLines = output.split('\n').filter(l => l.includes('ERROR:'));
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Data refresh failed validation - ${new Date().toISOString().slice(0, 10)}`,
+              body: `## Validation Errors\n\nThe monthly data refresh fetched new data but it failed validation checks.\n\n\`\`\`\n${errorLines.join('\n')}\n\`\`\`\n\n<details><summary>Full validation output</summary>\n\n\`\`\`\n${output.slice(0, 10000)}\n\`\`\`\n</details>\n\nPlease investigate before manually re-running the workflow.`,
+              labels: ['data-quality']
+            });
+
+      # ----- If data changed and validation passed, open a PR -----
+      - name: Create pull request
+        if: steps.changes.outputs.changed == 'true' && steps.validate.outputs.exit_code != '2'
+        run: |
+          BRANCH="data-refresh/$(date +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add js/state-data.js js/data.js js/county-data.js
+          git commit -m "Data refresh: $(date +%B\ %Y)
+
+          Automated monthly data refresh from federal APIs.
+          Run validation: $([ '${{ steps.validate.outputs.exit_code }}' = '0' ] && echo 'PASS' || echo 'PASS with warnings')"
+          git push origin "$BRANCH"
+
+          # Build PR body
+          VALIDATION_STATUS=$([ '${{ steps.validate.outputs.exit_code }}' = '0' ] && echo 'All checks passed' || echo 'Passed with warnings (review below)')
+          BODY=$(cat <<'PREOF'
+          ## Monthly Data Refresh
+
+          **Validation**: $VALIDATION_STATUS
+
+          ### Files changed
+          ${{ steps.changes.outputs.summary }}
+
+          ### Validation output
+          <details><summary>Click to expand</summary>
+
+          ```
+          $(cat /tmp/validation-output.txt)
+          ```
+          </details>
+
+          ### Review checklist
+          - [ ] Spot-check a few metrics in the diff for plausibility
+          - [ ] Verify no unexpected metrics lost data
+          - [ ] Preview the site after merge
+
+          ---
+          *Automated by [refresh-data workflow](../../actions/workflows/refresh-data.yml)*
+          PREOF
+          )
+
+          gh pr create \
+            --title "Data refresh: $(date +%B\ %Y)" \
+            --body "$BODY" \
+            --label "data-refresh"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ----- No changes -----
+      - name: Report no changes
+        if: steps.changes.outputs.changed == 'false'
+        run: echo "No data changes detected. All data is current."

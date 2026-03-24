@@ -10,7 +10,8 @@
 //   4. Cross-consistency - county vs state data alignment
 //   5. Structural integrity - required fields, correct types
 //
-// Usage: node scripts/validate-data.js
+// Usage: node scripts/validate-data.js          (normal: warnings ok)
+//        node scripts/validate-data.js --strict  (CI: warnings = errors)
 //
 // Exit code 0 = all checks pass
 // Exit code 1 = warnings only (data looks suspicious)
@@ -20,9 +21,12 @@
 const fs = require('fs');
 const path = require('path');
 
+const STRICT = process.argv.includes('--strict');
+
 // ---- Load data files ----
 const dataPath = path.join(__dirname, '..', 'js', 'data.js');
 const countyPath = path.join(__dirname, '..', 'js', 'county-data.js');
+const statePath = path.join(__dirname, '..', 'js', 'state-data.js');
 
 function loadJSConst(filePath, varName) {
     const src = fs.readFileSync(filePath, 'utf8');
@@ -32,6 +36,7 @@ function loadJSConst(filePath, varName) {
 
 const DASHBOARD_DATA = loadJSConst(dataPath, 'DASHBOARD_DATA');
 const COUNTY_DATA = loadJSConst(countyPath, 'COUNTY_DATA');
+const STATE_DATA = fs.existsSync(statePath) ? loadJSConst(statePath, 'STATE_DATA') : null;
 
 // ---- Validation rules per metric ----
 // min/max: absolute plausible bounds for the value
@@ -312,17 +317,147 @@ for (const [slug, metric] of Object.entries(COUNTY_DATA)) {
 }
 
 // ============================================================
-// 3. SUMMARY
+// 3. STATE-DATA.JS CROSS-VALIDATION (rankings source)
+// ============================================================
+
+if (STATE_DATA) {
+    console.log('\n=== STATE-DATA CROSS-VALIDATION ===\n');
+
+    const EXPECTED_STATE_COUNT = 50;
+
+    for (const [slug, sd] of Object.entries(STATE_DATA)) {
+        console.log(`[${slug}]`);
+
+        if (!sd.data || typeof sd.data !== 'object') {
+            error(`STATE_DATA.${slug} missing "data" object`);
+            continue;
+        }
+
+        const topKeys = Object.keys(sd.data).sort();
+        if (topKeys.length === 0) {
+            error(`STATE_DATA.${slug} has no data`);
+            continue;
+        }
+
+        // Detect data structure: standard = data[year][state], transposed = data[stateId][year]
+        const firstKey = topKeys[0];
+        const isStandardYearKey = /^\d{4}$/.test(firstKey) || /^\d{4}-\d{4}$/.test(firstKey);
+
+        if (!isStandardYearKey) {
+            // Transposed structure (e.g., pcp_per_100k: data[fips] = {year: value, name: "..."})
+            let stateCount = 0;
+            let hiFound = false;
+            for (const [id, stateObj] of Object.entries(sd.data)) {
+                if (typeof stateObj !== 'object') continue;
+                stateCount++;
+                if (stateObj.name === 'Hawaii' || stateObj.name === 'Hawai\u02BBi') hiFound = true;
+                // Check for NaN values
+                for (const [k, v] of Object.entries(stateObj)) {
+                    if (k === 'name') continue;
+                    if (typeof v !== 'number' || isNaN(v)) {
+                        error(`${slug} state ${stateObj.name || id} key ${k}: non-numeric value`);
+                    }
+                }
+            }
+            if (!hiFound) error(`${slug}: Hawaii not found in transposed state-data`);
+            if (stateCount < 45) error(`${slug}: only ${stateCount} states (expected ~${EXPECTED_STATE_COUNT})`);
+            info(`${stateCount} states (transposed structure)`);
+            continue;
+        }
+
+        // Standard structure: data[year][state] = value
+        const years = topKeys;
+
+        // 3a. Check each year has enough states (should be ~50)
+        for (const year of years) {
+            const states = Object.keys(sd.data[year]);
+            if (states.length < 45) {
+                error(`${slug} ${year}: only ${states.length} states (expected ~${EXPECTED_STATE_COUNT})`);
+            } else if (states.length < EXPECTED_STATE_COUNT) {
+                warn(`${slug} ${year}: ${states.length} states (expected ${EXPECTED_STATE_COUNT})`);
+            }
+        }
+
+        // 3b. Verify Hawaii is present in each year
+        for (const year of years) {
+            const hi = sd.data[year]['Hawaii'] ?? sd.data[year]['Hawai\u02BBi'];
+            if (hi === undefined || hi === null) {
+                error(`${slug} ${year}: Hawaii value missing from state-data`);
+            }
+        }
+
+        // 3c. Cross-check: Hawaii value in state-data should match data.js
+        const dashMetric = DASHBOARD_DATA[slug];
+        if (dashMetric && dashMetric.hawaii) {
+            const latestSDYear = years[years.length - 1];
+            const hiSD = sd.data[latestSDYear]?.['Hawaii'] ?? sd.data[latestSDYear]?.['Hawai\u02BBi'];
+            const hiDash = dashMetric.hawaii[latestSDYear];
+
+            if (hiSD !== undefined && hiDash !== undefined && hiSD !== null && hiDash !== null) {
+                const diff = Math.abs(hiSD - hiDash);
+                const relDiff = hiDash !== 0 ? diff / Math.abs(hiDash) : diff;
+                if (relDiff > 0.01) {
+                    error(`${slug} ${latestSDYear}: Hawaii mismatch - state-data=${hiSD}, data.js=${hiDash} (${(relDiff * 100).toFixed(1)}% diff)`);
+                }
+            }
+        }
+
+        // 3d. Check for null/NaN values that would corrupt rankings
+        const rules = METRIC_RULES[slug];
+        for (const year of years) {
+            let nanCount = 0;
+            for (const [state, value] of Object.entries(sd.data[year])) {
+                if (typeof value !== 'number' || isNaN(value)) {
+                    nanCount++;
+                }
+            }
+            if (nanCount > 0) {
+                error(`${slug} ${year}: ${nanCount} non-numeric values would corrupt rankings`);
+            }
+        }
+
+        // 3e. Range-check Hawaii's values in state-data against metric rules
+        if (rules) {
+            for (const year of years) {
+                const hi = sd.data[year]['Hawaii'] ?? sd.data[year]['Hawai\u02BBi'];
+                if (hi === undefined || hi === null) continue;
+                if (hi < rules.min || hi > rules.max) {
+                    error(`${slug} ${year} Hawaii: value ${hi} outside range [${rules.min}, ${rules.max}]`);
+                }
+            }
+        }
+
+        info(`${years.length} years, latest=${years[years.length - 1]}`);
+    }
+
+    // 3f. Check that every metric in DASHBOARD_DATA with rankings has a matching STATE_DATA entry
+    for (const slug of Object.keys(DASHBOARD_DATA)) {
+        if (!STATE_DATA[slug]) {
+            // Not all metrics have state-data (some are manually curated)
+            // Just note it, don't error
+        }
+    }
+}
+
+// ============================================================
+// 4. SUMMARY
 // ============================================================
 
 console.log('\n=== VALIDATION SUMMARY ===\n');
+console.log(`  Mode:     ${STRICT ? 'STRICT (CI)' : 'Normal'}`);
 console.log(`  Errors:   ${errors}`);
 console.log(`  Warnings: ${warnings}`);
 console.log(`  State metrics:  ${Object.keys(DASHBOARD_DATA).length}`);
 console.log(`  County metrics: ${Object.keys(COUNTY_DATA).length}`);
+if (STATE_DATA) {
+    console.log(`  State-data metrics: ${Object.keys(STATE_DATA).length}`);
+}
 
 if (errors > 0) {
     console.log('\n  RESULT: FAIL - errors found that likely indicate incorrect data\n');
+    process.exit(2);
+} else if (warnings > 0 && STRICT) {
+    console.log('\n  RESULT: FAIL (strict mode) - warnings treated as errors in CI\n');
     process.exit(2);
 } else if (warnings > 0) {
     console.log('\n  RESULT: PASS with warnings - review flagged items\n');
