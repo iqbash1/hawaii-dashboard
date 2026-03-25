@@ -121,6 +121,16 @@ body {
     font-weight: 500;
 }
 
+.methods-link {
+    color: var(--hawaii-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.methods-link:hover {
+    text-decoration: underline;
+}
+
 .meta-icon {
     font-size: 0.85rem;
 }
