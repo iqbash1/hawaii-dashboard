@@ -68,7 +68,7 @@ body {
 .header {
     background: var(--bg);
     color: var(--text);
-    padding: 1.75rem 1.5rem 1.5rem;
+    padding: 1.25rem 1.5rem 1rem;
     text-align: center;
     border-bottom: 1px solid #dcdcdc;
 }
@@ -341,13 +341,15 @@ body {
 
 .modal-actions {
     position: sticky;
-    top: 1rem;
+    top: 0;
     align-self: flex-end;
     margin-right: 1rem;
-    margin-bottom: -2.5rem;
+    margin-bottom: -3rem;
     display: flex;
     gap: 0.4rem;
     z-index: 10;
+    padding: 0.75rem 0;
+    background: linear-gradient(to bottom, var(--bg) 60%, transparent);
 }
 
 .modal-share-btn {
@@ -761,12 +763,12 @@ body {
     font-size: 0.75rem;
     color: var(--text-muted);
     display: inline;
-    margin-left: 0.15rem;
+    margin-left: 0.1rem;
 }
 
 .go-deeper-list span::before {
-    content: "·";
-    margin-right: 0.15rem;
+    content: " \00b7 ";
+    color: var(--border);
 }
 
 @media (max-width: 700px) {
@@ -1107,6 +1109,7 @@ body {
 
     .card-skeleton,
     .rankings-scroll-hint,
+    .modal-actions,
     .modal-close,
     .modal-tabs,
     .csv-download,

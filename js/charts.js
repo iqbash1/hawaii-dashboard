@@ -19,6 +19,11 @@ const ChartUtils = {
     GREEN_BEST: [5, 150, 105],
     RED_WORST: [192, 57, 43],
     NEUTRAL_RANGE: [24, 26],
+    PARTY_DEM: '#2563EB',
+    PARTY_REP: '#C0392B',
+    // Standardized dash patterns
+    DASH_AVG: [6, 4],
+    DASH_STATE_REF: [8, 4],
 
     /** Linear interpolation, rounded to integer */
     lerp(a, b, t) { return Math.round(a + (b - a) * t); },
@@ -85,8 +90,8 @@ const ChartUtils = {
         const latestAvg = avgValues.filter(v => v !== null).pop() || 0;
         const avgMid = (Math.abs(latestHI) + Math.abs(latestAvg)) / 2 || 1;
         const gapPct = Math.abs(latestHI - latestAvg) / avgMid;
-        // Map: 0-5% gap -> 0.08, 10% -> 0.12, 25% -> 0.20, 50%+ -> 0.35
-        const fillAlpha = Math.min(0.40, 0.08 + gapPct * 0.55);
+        // Map: 0-5% gap -> 0.12, 10% -> 0.17, 25% -> 0.25, 50%+ -> 0.40
+        const fillAlpha = Math.min(0.40, 0.12 + gapPct * 0.55);
 
         const goodColor = `rgba(5, 150, 105, ${fillAlpha.toFixed(2)})`;
         const badColor = `rgba(192, 57, 43, ${fillAlpha.toFixed(2)})`;
@@ -219,7 +224,7 @@ const ChartUtils = {
         const latestAvgVal = avgValues.filter(v => v !== null).pop() || 0;
         const mid = (Math.abs(latestHI) + Math.abs(latestAvgVal)) / 2 || 1;
         const gap = Math.abs(latestHI - latestAvgVal) / mid;
-        const alpha = Math.min(0.45, 0.10 + gap * 0.55);
+        const alpha = Math.min(0.45, 0.12 + gap * 0.55);
         const detailGood = `rgba(5, 150, 105, ${alpha.toFixed(2)})`;
         const detailBad = `rgba(192, 57, 43, ${alpha.toFixed(2)})`;
 
@@ -264,7 +269,7 @@ const ChartUtils = {
                         borderColor: this.AVG_GRAY,
                         backgroundColor: this.AVG_GRAY_BG,
                         borderWidth: 1.5,
-                        borderDash: [6, 4],
+                        borderDash: this.DASH_AVG,
                         fill: false,
                         tension: 0.3,
                         pointRadius: 0,
@@ -420,16 +425,17 @@ const ChartUtils = {
                 // Inset from left edge so labels do not overlap y-axis values
                 const leftInset = chartArea.left + 30;
                 // Filter out governors whose band is too narrow for any label
-                const minLabelWidth = 30;
+                const minLabelWidth = 15;
                 const fittable = candidates.filter(c => (c.right - c.left) >= minLabelWidth);
                 let prevRight = leftInset;
                 const placed = [];
                 fittable.forEach(c => {
                     // Find the longest variant that fits within the band
                     let bestText = null;
+                    const bandWidth = c.right - c.left;
                     for (const v of c.variants) {
                         const w = ctx.measureText(v).width;
-                        if (w + pillPad * 2 <= (c.right - c.left) && c.left >= prevRight) {
+                        if (w + pillPad * 2 <= bandWidth && c.left >= prevRight) {
                             bestText = v;
                             break;
                         }
@@ -440,6 +446,14 @@ const ChartUtils = {
                         const sw = ctx.measureText(shortest).width;
                         if (c.centerX - sw / 2 >= prevRight + gap) {
                             bestText = shortest;
+                        }
+                    }
+                    // Last resort: single initial if band is at least 15px
+                    if (!bestText && bandWidth >= 15) {
+                        const initial = c.variants[c.variants.length - 1].charAt(0);
+                        const iw = ctx.measureText(initial).width;
+                        if (c.centerX - iw / 2 >= prevRight + gap) {
+                            bestText = initial;
                         }
                     }
                     if (!bestText) return; // skip this label entirely
@@ -453,7 +467,7 @@ const ChartUtils = {
                 });
                 const lastIdx = placed.length - 1;
                 placed.forEach((c, i) => {
-                    const partyColor = c.gov.party === 'R' ? '#C0392B' : '#2563EB';
+                    const partyColor = c.gov.party === 'R' ? ChartUtils.PARTY_REP : ChartUtils.PARTY_DEM;
                     ctx.fillStyle = partyColor;
                     ctx.textBaseline = 'top';
                     // Right-align the last governor label if it would clip
@@ -547,7 +561,7 @@ const ChartUtils = {
                 data: stateValues,
                 borderColor: '#111111',
                 borderWidth: 2.5,
-                borderDash: [10, 5],
+                borderDash: this.DASH_STATE_REF,
                 fill: false,
                 tension: 0.3,
                 pointRadius: 0,
@@ -732,7 +746,7 @@ const ChartUtils = {
             this.isHawaii(s.state) ? this.HAWAII_BLUE : otherColor
         );
         const borderColors = stateValues.map(s =>
-            this.isHawaii(s.state) ? '#0D7C8F' : 'transparent'
+            this.isHawaii(s.state) ? this.HAWAII_BLUE : 'transparent'
         );
         const borderWidths = stateValues.map(s =>
             this.isHawaii(s.state) ? 2 : 0
