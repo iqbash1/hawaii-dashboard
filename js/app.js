@@ -467,6 +467,16 @@ const App = {
             insightSection.style.display = 'none';
         }
 
+        // Cross-metric insight
+        const crossInsightSection = document.getElementById('modal-cross-insight-section');
+        const crossInsightText = document.getElementById('modal-cross-insight');
+        if (metricData.crossInsight) {
+            crossInsightText.textContent = metricData.crossInsight;
+            crossInsightSection.style.display = '';
+        } else {
+            crossInsightSection.style.display = 'none';
+        }
+
         // Data quality note
         const dataNoteCont = document.getElementById('modal-data-note');
         if (metricData.dataNote) {
