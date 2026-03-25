@@ -539,7 +539,13 @@ const App = {
             } else {
                 feedbackEl.classList.add('copied');
                 feedbackEl.title = 'Copied!';
-                setTimeout(() => { feedbackEl.classList.remove('copied'); feedbackEl.title = 'Copy link'; }, 2000);
+                const label = feedbackEl.querySelector('.share-label');
+                if (label) label.textContent = 'Copied!';
+                setTimeout(() => {
+                    feedbackEl.classList.remove('copied');
+                    feedbackEl.title = 'Copy link';
+                    if (label) label.textContent = 'Share';
+                }, 2000);
             }
         };
         document.getElementById('share-link').addEventListener('click', (e) => {
