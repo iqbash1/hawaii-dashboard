@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 26 metrics across 12 policy areas.
+// 27 metrics across 12 policy areas.
 // Hawaii values and Other State Avg (simple mean of 49 states,
 // excluding HI and DC) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
