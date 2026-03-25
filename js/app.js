@@ -481,9 +481,6 @@ const App = {
             ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
             : '';
         const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
-        const dataNoteLine = metricData.dataNote
-            ? `<div class="data-note"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="vertical-align:-1px;margin-right:3px;"><circle cx="8" cy="8" r="7.5" stroke="currentColor"/><text x="8" y="12" text-anchor="middle" fill="currentColor" font-size="11" font-weight="600">i</text></svg>${metricData.dataNote}</div>`
-            : '';
         document.getElementById('modal-source').innerHTML = `
             ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
@@ -493,7 +490,6 @@ const App = {
             <a href="#" class="share-link" id="share-link">Share</a>
             <span class="csv-sep">&middot;</span>
             <a href="#" class="print-link" id="print-link">Print</a>
-            ${dataNoteLine}
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
