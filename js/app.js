@@ -506,19 +506,41 @@ const App = {
             const prefix = tabId === 'tab-rankings' ? 'r' : tabId === 'tab-county' ? 'c' : 't';
             return 'https://hawaiidashboard.org/' + prefix + '/' + slug + '/';
         };
+        const copyToClipboard = (text) => {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(text).catch(() => {
+                    // Fallback for HTTP or restricted contexts
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                });
+            }
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            return Promise.resolve();
+        };
         const copyShare = (feedbackEl, resetContent) => {
-            navigator.clipboard.writeText(getShareUrl()).then(() => {
-                if (typeof resetContent === 'string') {
-                    feedbackEl.textContent = 'Copied!';
-                    setTimeout(() => { feedbackEl.textContent = resetContent; }, 2000);
-                } else {
-                    feedbackEl.classList.add('copied');
-                    feedbackEl.title = 'Copied!';
-                    setTimeout(() => { feedbackEl.classList.remove('copied'); feedbackEl.title = 'Copy link'; }, 2000);
-                }
-            }).catch(() => {
-                prompt('Copy this link:', getShareUrl());
-            });
+            copyToClipboard(getShareUrl());
+            // Always show feedback (clipboard works on HTTPS in production)
+            if (typeof resetContent === 'string') {
+                feedbackEl.textContent = 'Copied!';
+                setTimeout(() => { feedbackEl.textContent = resetContent; }, 2000);
+            } else {
+                feedbackEl.classList.add('copied');
+                feedbackEl.title = 'Copied!';
+                setTimeout(() => { feedbackEl.classList.remove('copied'); feedbackEl.title = 'Copy link'; }, 2000);
+            }
         };
         document.getElementById('share-link').addEventListener('click', (e) => {
             e.preventDefault();
