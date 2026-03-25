@@ -341,15 +341,13 @@ body {
 
 .modal-actions {
     position: sticky;
-    top: 0;
+    top: 0.75rem;
     align-self: flex-end;
     margin-right: 1rem;
-    margin-bottom: -3rem;
+    margin-bottom: -2.5rem;
     display: flex;
     gap: 0.4rem;
     z-index: 10;
-    padding: 0.75rem 0;
-    background: linear-gradient(to bottom, var(--bg) 60%, transparent);
 }
 
 .modal-share-btn {

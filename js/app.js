@@ -1164,32 +1164,25 @@ const App = {
         const table = document.getElementById('data-table');
         const isDecimal = ChartUtils.isDecimalPctMetric(effective);
         const fmt = (v) => ChartUtils.formatValue(v, effective.unit, isDecimal);
-        const HAWAII_NAMES = ['Hawaii', "Hawai\u02BBi", "Hawai'i"];
-        const isHI = (name) => HAWAII_NAMES.some(h => name === h);
+        // Rankings values are already converted (decimal * 100), so format without double-conversion
+        const fmtRank = (v) => ChartUtils.formatValue(v, effective.unit, false);
+        const isHI = (name) => name === 'Hawaii' || name === 'Hawai\u02BBi' || name === "Hawai'i";
 
         let html = '';
 
-        // Section 1: All States for latest year (if STATE_DATA exists for this metric)
+        // Section 1: Other States for latest year (exclude Hawaii - shown separately below)
         const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
         if (sd && sd.data) {
             const rankings = this.getStateRankings(slug);
             if (rankings && rankings.stateValues.length > 0) {
                 const dirLabel = effective.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+                const otherStates = rankings.stateValues.filter(sv => !isHI(sv.state));
                 html += '<thead><tr class="section-header"><td colspan="3">'
-                    + 'All States (' + rankings.year + ') - ' + dirLabel
+                    + 'Other States (' + rankings.year + ') - ' + dirLabel
                     + '</td></tr><tr><th>Rank</th><th>State</th><th>Value</th></tr></thead><tbody>';
-                rankings.stateValues.forEach((sv, i) => {
-                    const rowClass = isHI(sv.state) ? ' class="hawaii-row"' : '';
-                    html += '<tr' + rowClass + '><td>' + (i + 1) + '</td><td>' + sv.state + '</td><td>' + fmt(sv.value) + '</td></tr>';
+                otherStates.forEach((sv, i) => {
+                    html += '<tr><td>' + (i + 1) + '</td><td>' + sv.state + '</td><td>' + fmtRank(sv.value) + '</td></tr>';
                 });
-
-                // 49-state average row
-                const otherVals = rankings.stateValues.filter(sv => !isHI(sv.state)).map(sv => sv.value);
-                if (otherVals.length > 0) {
-                    const avg = otherVals.reduce((a, b) => a + b, 0) / otherVals.length;
-                    html += '<tr style="border-top:2px solid var(--border);font-style:italic;color:var(--text-muted)">'
-                        + '<td></td><td>49-State Average</td><td>' + fmt(avg) + '</td></tr>';
-                }
                 html += '</tbody>';
             }
         }
