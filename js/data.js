@@ -114,7 +114,7 @@ const DASHBOARD_DATA = {
     "source": "FBI Uniform Crime Reports",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
     "whyItMatters": "The State sets criminal penalties, funds law enforcement, and shapes policing priorities for burglary, larceny-theft, and motor vehicle theft. Tourism-dependent areas, open-air living conditions, and high cost of living all contribute to persistent property crime challenges that state policy must address.",
-    "howToRead": "Hawaiʻi (teal) has consistently run above the other-state average (gray). Both lines have declined substantially since the early 1990s peak, but Hawaiʻi's gap above the average has persisted.",
+    "howToRead": "Hawaiʻi has consistently run above the other-state average. Both lines have declined substantially since the early 1990s peak, but Hawaiʻi's gap above the average has persisted.",
     "insight": "Hawaiʻi's property crime rate peaked at 6,903 per 100K in 1995 and has since fallen 72% to 1,947 in 2024. The gap with the national average has also narrowed, from 1.57x in 1995 to 1.17x today.",
     "dataNote": "FBI transitioned from UCR to NIBRS in 2021; year-over-year comparisons across that boundary should be interpreted with caution",
     "hawaii": {
@@ -302,7 +302,7 @@ const DASHBOARD_DATA = {
     "source": "CDC NCHS, National Vital Statistics System",
     "sourceUrl": "https://www.cdc.gov/suicide/facts/data.html",
     "whyItMatters": "The State funds crisis hotlines, community mental health centers, and school-based prevention programs through the Department of Health's Behavioral Health Administration. Inter-island isolation and a shortage of mental health providers on neighbor islands make state investment in telehealth and workforce pipelines especially critical.",
-    "howToRead": "A lower line means fewer suicide deaths per 100,000 residents. Hawaiʻi (teal) has stayed below the other-state average (gray) for most of the past 25 years, but the gap narrowed in recent years as the national rate climbed.",
+    "howToRead": "A lower line means fewer suicide deaths per 100,000 residents. Hawaiʻi has stayed below the other-state average for most of the past 25 years, but the gap narrowed in recent years as the national rate climbed.",
     "insight": "Hawaiʻi's rate dropped from 11.1 in 1999 to a low of 8.2 in 2005, then climbed back to the mid-teens. The national trend rose steadily from about 12 to 17 over the same period. Despite Hawaiʻi's lower overall rate, Native Hawaiian and Pacific Islander populations face disproportionately high risk.",
     "hawaii": {
       "1999": 11.1,
@@ -1659,7 +1659,7 @@ const DASHBOARD_DATA = {
     "source": "Bureau of Labor Statistics",
     "sourceUrl": "https://www.bls.gov/lpc/state-productivity.htm",
     "whyItMatters": "The State can improve productivity through economic diversification away from tourism dependence, workforce training programs run by DLIR, technology infrastructure investment, and aligning the University of Hawaiʻi system with growth industries. Higher output per hour translates directly into higher wages and more tax revenue, making this a core measure of whether state economic development strategy is working.",
-    "howToRead": "Both lines use 2017 as the starting point, set at 100. A score of 105.2 means Hawaiʻi workers produce about 5% more per hour than in 2017. Other states average 113.9, or about 14% more. A rising blue line is good; when it falls below the gray line, Hawaiʻi is falling behind.",
+    "howToRead": "Both lines use 2017 as the starting point, set at 100. A score of 105.2 means Hawaiʻi workers produce about 5% more per hour than in 2017. Other states average 113.9, or about 14% more. A rising line is good; when Hawaiʻi falls below the other-state average, the state is falling behind.",
     "insight": "Through 2019, Hawaiʻi kept up with the national average. After the pandemic, other states bounced back strongly while Hawaiʻi stalled. The gap has widened to 8.7 index points, the largest on record.",
     "hawaii": {
       "2007": 90.1,

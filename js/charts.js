@@ -740,7 +740,7 @@ const ChartUtils = {
         const lerp = this.lerp;
         const n = stateValues.length;
 
-        // Uniform bar color; Hawaii stays teal
+        // Bar colors: Hawaii highlighted, others gray
         const otherColor = '#A0A5AD';
         const bgColors = stateValues.map(s =>
             this.isHawaii(s.state) ? this.HAWAII_BLUE : otherColor
