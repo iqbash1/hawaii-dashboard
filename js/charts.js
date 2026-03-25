@@ -146,7 +146,7 @@ const ChartUtils = {
                             callback: function(value, index, ticks) {
                                 const total = ticks.length;
                                 const label = this.getLabelForValue(value);
-                                // Always show first 4 chars as 'XX (handles "2012", "2012-2013", "2012–2013")
+                                // Always show first 4 chars as 'XX (handles "2012", "2012-2013")
                                 const short = "'" + label.slice(2, 4);
                                 // Show first, last, and one middle tick
                                 if (index === 0 || index === total - 1) return short;

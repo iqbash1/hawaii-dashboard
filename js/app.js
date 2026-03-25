@@ -328,7 +328,7 @@ const App = {
                     ? `<span class="card-unit">${effective.unit}</span>`
                     : '';
 
-                // Item 21: stale year indicator (use last year in ranges like "2022-2024")
+                // Stale year indicator (use last year in ranges like "2022-2024")
                 const yearStr = String(latest.year);
                 const parsedYear = parseInt(yearStr.includes('-') ? yearStr.split('-').pop() : yearStr);
                 const yearDiff = currentYear - parsedYear;
@@ -354,7 +354,7 @@ const App = {
                     </div>
                 `;
 
-                // Item 14: keyboard accessibility
+                // Keyboard accessibility
                 card.setAttribute('role', 'button');
                 card.setAttribute('tabindex', '0');
                 card.addEventListener('keydown', (e) => {
@@ -404,10 +404,10 @@ const App = {
         });
     },
 
-    /** Parse a year label (handles "2012", "2012-2013", "2006–2008" etc.) to a numeric year */
+    /** Parse a year label (handles "2012", "2012-2013", "2006-2008" etc.) to a numeric year */
     parseYearLabel(label) {
         const str = label.toString();
-        // Handle range formats: "2012-2013", "2006–2008"
+        // Handle range formats: "2012-2013", "2006-2008"
         const match = str.match(/(\d{4})/);
         return match ? parseInt(match[1]) : null;
     },
@@ -742,7 +742,7 @@ const App = {
         tabRankings.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
-        // Item 15: update ARIA selected state
+        // Update ARIA selected state
         document.querySelectorAll('.modal-tab').forEach(t => t.setAttribute('aria-selected', 'false'));
 
         // Hide all views
@@ -999,7 +999,7 @@ const App = {
         const safeName = m.metric.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_');
         XLSX.writeFile(wb, `Hawaii_${safeName}.xlsx`);
 
-        // Item 10: download feedback toast
+        // Download feedback
         const dlLink = document.getElementById('csv-download');
         if (dlLink) {
             const orig = dlLink.textContent;

@@ -234,12 +234,7 @@ body {
     letter-spacing: -0.02em;
 }
 
-.card-unit {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
+.card-unit,
 .card-year {
     font-size: 0.7rem;
     color: var(--text-muted);
@@ -380,8 +375,8 @@ body {
 }
 
 .modal-share-btn.copied {
-    color: var(--good-green);
-    border-color: var(--good-green);
+    color: var(--positive);
+    border-color: var(--positive);
 }
 
 .modal-close {

@@ -460,7 +460,7 @@ const DASHBOARD_DATA = {
     "source": "NAEP / Nation's Report Card",
     "sourceUrl": "https://www.nationsreportcard.gov/mathematics/states/scores/?grade=8",
     "whyItMatters": "The State's single statewide school district means curriculum, teacher pay, and standards are set centrally, so changes flow directly to every classroom. Hawaiʻi has steadily narrowed the math gap with other states over two decades, suggesting that centralized reforms can move the needle when sustained.",
-    "howToRead": "Scores are on a 0–500 scale; 262 is 'Basic,' 299 is 'Proficient.' Both lines peaked around 2013 and have declined since, reflecting a nationwide post-pandemic slide. Hawaiʻi's gap with the average has narrowed slightly.",
+    "howToRead": "Scores are on a 0-500 scale; 262 is 'Basic,' 299 is 'Proficient.' Both lines peaked around 2013 and have declined since, reflecting a nationwide post-pandemic slide. Hawaiʻi's gap with the average has narrowed slightly.",
     "insight": "Hawaiʻi posted the 4th-largest math recovery among states between 2022 and 2024, essentially holding steady while many states continued to slide. The gap with the other-state average shrank from 12 points in 2003 to 3 points in 2024.",
     "dataNote": "NAEP is administered every 2 years. Hawaii did not participate in some earlier rounds.",
     "hawaii": {
@@ -500,7 +500,7 @@ const DASHBOARD_DATA = {
     "source": "NAEP / Nation's Report Card",
     "sourceUrl": "https://www.nationsreportcard.gov/reading/states/scores/?grade=8",
     "whyItMatters": "State literacy initiatives and the single-district structure deserve partial credit for a striking turnaround: Hawaiʻi trailed the other-state average by 12 points in 2003 and has essentially closed the gap. Continued investment in reading intervention programs and teacher retention will determine whether this convergence holds.",
-    "howToRead": "Scores are on a 0–500 scale; 243 is 'Basic,' 281 is 'Proficient.' Hawaiʻi's line has been climbing toward the average over two decades while other states have declined since 2013, closing the gap from below.",
+    "howToRead": "Scores are on a 0-500 scale; 243 is 'Basic,' 281 is 'Proficient.' Hawaiʻi's line has been climbing toward the average over two decades while other states have declined since 2013, closing the gap from below.",
     "insight": "Hawaiʻi posted the 2nd-best reading recovery of any state between 2022 and 2024. The score of 257 is the closest Hawaiʻi has ever been to the other-state average, a convergence driven as much by other states declining as by Hawaiʻi improving.",
     "dataNote": "NAEP is administered every 2 years. Hawaii did not participate in some earlier rounds.",
     "hawaii": {

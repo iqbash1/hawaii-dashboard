@@ -1,0 +1,93 @@
+# Hawaiʻi Dashboard
+
+A minimalist state accountability dashboard tracking 27 key outcomes across 12 policy areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
+
+**Live site**: [hawaiidashboard.org](https://hawaiidashboard.org)
+
+## Architecture
+
+Static site hosted on GitHub Pages. No backend, no database, no build step for the frontend.
+
+```
+index.html              Main page (single-page app)
+css/styles.css          All styles
+js/
+  app.js                Application logic (routing, modal, cards, data export)
+  charts.js             Chart.js rendering (sparklines, detail, rankings, county)
+  data.js               Metric definitions + Hawaiʻi/other-state-avg time series
+  state-data.js          Per-state data for all 50 states (used for rankings)
+  county-data.js         Per-county data for Honolulu, Hawaiʻi, Maui, Kauai
+methods/index.html      Methodology page (metric registry, comparator rules)
+t/{slug}/index.html     Detail view redirect pages (with OG tags)
+r/{slug}/index.html     Rankings view redirect pages (with OG tags)
+c/{slug}/index.html     County view redirect pages (with OG tags)
+assets/og/              Open Graph preview images (1200x630)
+```
+
+## Data pipeline
+
+Data comes from federal APIs (Census ACS, BLS, FBI, BEA, EIA, CDC, FHWA, HUD, NCES, HRSA). Four scripts handle the refresh cycle:
+
+```
+scripts/build-state-data.js     Fetch per-state data from 9 federal APIs
+scripts/build-county-data.js    Fetch per-county data from Census/BLS/BEA/FBI
+scripts/recompute-data.js       Derive hawaiʻi/other-state-avg from state-data
+scripts/validate-data.js        Check ranges, YoY changes, cross-tab consistency
+```
+
+Run the full pipeline:
+```bash
+node scripts/build-state-data.js
+node scripts/build-county-data.js
+node scripts/recompute-data.js
+node scripts/validate-data.js
+```
+
+A GitHub Actions workflow (`.github/workflows/refresh-data.yml`) runs this monthly and opens a PR if data changed.
+
+## OG image generation
+
+```bash
+python3 scripts/generate-og-pages.py
+```
+
+Generates per-metric OG images (detail, rankings, county) and redirect pages with matching meta tags. Requires `Pillow`.
+
+## Metrics (27)
+
+| Area | Metrics | County |
+|------|---------|--------|
+| Crime | Violent Crime Rate, Property Crime Rate | Yes |
+| Health | Primary Care Physicians, Uninsured Rate, Suicide Rate | Partial |
+| Cost of Living | Renter Cost Burden, Home Price-to-Income, Unsheltered Homeless | Yes |
+| Energy | Residential Electricity Price, Renewables Share | No |
+| Food Security | Food Insecurity Rate | No |
+| Employment | Unemployment Rate, Labor Force Participation | Yes |
+| Economy | Labor Productivity, Real Per Capita Income | Partial |
+| Business | Establishment Entry Rate, Net Employer Formation | Yes |
+| Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
+| Infrastructure | Road Quality, Broadband, Transit Mode Share | Partial |
+| Fiscal Stewardship | Rainy Day Fund | No |
+| Demographics | Voter Participation, Net Domestic Migration | No |
+
+## Design principles
+
+- **Outcomes, not activity**: Measures what happened to residents, not what government spent
+- **Federal sources only**: All data from nonpartisan federal agencies, reported identically for all 50 states
+- **Two comparisons per metric**: Over time (trend) and against other states (ranking)
+- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 27 cards, 3 tabs per metric
+- **Governor overlay**: Alternating bands show which governor was in office during each period
+
+## Local development
+
+```bash
+python3 -m http.server 8080
+```
+
+Open `http://localhost:8080` in a browser.
+
+## Style rules
+
+- No em dashes in code or content
+- Use okina (ʻ) in "Hawaiʻi" (Unicode U+02BB)
+- "Other state average" excludes Hawaiʻi (average of the other 49 states + DC)
