@@ -25,6 +25,7 @@ BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 ASSETS_OG = os.path.join(BASE_DIR, 'assets', 'og')
 REDIRECT_DIR_T = os.path.join(BASE_DIR, 't')   # /t/{slug}/ trend pages
 REDIRECT_DIR_R = os.path.join(BASE_DIR, 'r')   # /r/{slug}/ rankings pages
+REDIRECT_DIR_C = os.path.join(BASE_DIR, 'c')   # /c/{slug}/ county pages
 SITE_URL = 'https://hawaiidashboard.org'
 
 # ── Colors (matching dashboard CSS variables) ─────────────────────
@@ -67,10 +68,13 @@ def extract_data():
     const fs = require('fs');
     let dataJS = fs.readFileSync('js/data.js', 'utf8');
     let stateJS = fs.readFileSync('js/state-data.js', 'utf8');
+    let countyJS = fs.readFileSync('js/county-data.js', 'utf8');
     dataJS = dataJS.replace(/^const\s+/m, 'global.');
     stateJS = stateJS.replace(/^const\s+/m, 'global.');
+    countyJS = countyJS.replace(/^const\s+/m, 'global.');
     eval(dataJS);
     eval(stateJS);
+    eval(countyJS);
 
     let appJS = fs.readFileSync('js/app.js', 'utf8');
     const areaMatch = appJS.match(/AREA_ORDER:\s*\[([\s\S]*?)\],\s*\n/);
@@ -88,6 +92,7 @@ def extract_data():
     console.log(JSON.stringify({
         dashboard: DASHBOARD_DATA,
         state: STATE_DATA,
+        county: COUNTY_DATA,
         areaMap: areaMap
     }));
     """
@@ -446,9 +451,114 @@ def _pick_bars(sv, hi_rank, total):
     return bars
 
 
+# ── County Colors ────────────────────────────────────────────────
+COUNTY_COLORS = [
+    (13, 124, 143),    # Honolulu - teal
+    (230, 140, 50),    # Hawaii - orange
+    (160, 80, 160),    # Maui - purple
+    (60, 160, 90),     # Kauai - green
+]
+
+
+# ── County OG Image ──────────────────────────────────────────────
+def generate_county_og_image(slug, metric, area, county_data, output_path):
+    """Generate a 1200x630 OG image for a county comparison view."""
+    W, H = 1200, 630
+    im = Image.new('RGB', (W, H), BG)
+    d = ImageDraw.Draw(im)
+
+    unit = metric.get('unit', '')
+    dec = is_decimal_pct(metric)
+    metric_name = metric.get('metric', slug)
+    counties = county_data.get('counties', list(county_data.get('data', {}).keys()))
+    data = county_data.get('data', {})
+
+    # Top accent bar
+    d.rectangle([0, 0, W, 5], fill=TEAL)
+
+    # Branding
+    d.text((70, 40), "Hawai\u02BBi Dashboard", fill=TEXT_SEC, font=font(20))
+
+    # Area label + metric name
+    d.text((70, 100), area.upper(), fill=TEAL, font=font(15))
+    d.text((70, 125), f"{metric_name} by County", fill=TEXT_PRI, font=font(34))
+
+    # Legend
+    legend_x = 70
+    legend_y = 175
+    for ci, county in enumerate(counties):
+        color = COUNTY_COLORS[ci % len(COUNTY_COLORS)]
+        d.ellipse([legend_x, legend_y + 2, legend_x + 12, legend_y + 14], fill=color)
+        f_leg = font(14)
+        d.text((legend_x + 18, legend_y), county, fill=TEXT_SEC, font=f_leg)
+        bb = d.textbbox((0, 0), county, font=f_leg)
+        legend_x += 18 + (bb[2] - bb[0]) + 30
+
+    # Chart area
+    chart_x, chart_y, chart_w, chart_h = 70, 210, 1060, 310
+
+    # Gather all values for scaling
+    all_vals = []
+    all_years = set()
+    for county in counties:
+        cd = data.get(county, {})
+        for y, v in cd.items():
+            if v is not None and v != 0:
+                val = v * 100 if dec else v
+                all_vals.append(val)
+                all_years.add(y)
+
+    if len(all_vals) < 2 or len(all_years) < 2:
+        # Not enough data - skip chart, just show message
+        d.text((chart_x + 40, chart_y + 100), "County data available on dashboard",
+               fill=TEXT_TER, font=font(20))
+    else:
+        years_sorted = sorted(all_years)
+        v_min, v_max = min(all_vals), max(all_vals)
+        pad = (v_max - v_min) * 0.1 if v_max != v_min else 1
+        v_min -= pad
+        v_max += pad
+        v_range = v_max - v_min if v_max != v_min else 1
+
+        # Draw county lines
+        for ci, county in enumerate(counties):
+            cd = data.get(county, {})
+            color = COUNTY_COLORS[ci % len(COUNTY_COLORS)]
+            pts = []
+            for y in years_sorted:
+                v = cd.get(y)
+                if v is not None and v != 0:
+                    val = v * 100 if dec else v
+                    idx = years_sorted.index(y)
+                    px = chart_x + (idx / max(1, len(years_sorted) - 1)) * chart_w
+                    py = chart_y + chart_h - ((val - v_min) / v_range) * chart_h
+                    pts.append((px, py))
+            if len(pts) >= 2:
+                d.line(pts, fill=color, width=3)
+
+        # Year labels
+        f_yr = font(12)
+        d.text((chart_x, chart_y + chart_h + 8), years_sorted[0], fill=TEXT_TER, font=f_yr)
+        last_lbl = years_sorted[-1]
+        bb = d.textbbox((0, 0), last_lbl, font=f_yr)
+        d.text((chart_x + chart_w - (bb[2] - bb[0]), chart_y + chart_h + 8),
+               last_lbl, fill=TEXT_TER, font=f_yr)
+
+    # Footer
+    d.rectangle([0, H - 46, W, H], fill=FOOTER_BG)
+    d.line([(0, H - 46), (W, H - 46)], fill=DIVIDER, width=1)
+    d.text((70, H - 34), "hawaiidashboard.org", fill=TEXT_SEC, font=font(16))
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    im.save(output_path, 'PNG', optimize=True)
+
+
 # ── Redirect HTML Generation ─────────────────────────────────────
-def generate_redirect_html(slug, metric, area, rankings, output_path, is_rankings=False):
-    """Generate a redirect page with metric-specific OG tags."""
+def generate_redirect_html(slug, metric, area, rankings, output_path,
+                           view='detail', county_data=None):
+    """Generate a redirect page with metric-specific OG tags.
+    view: 'detail', 'rankings', or 'county'
+    """
     metric_name = metric.get('metric', slug)
     unit = metric.get('unit', '')
     hawaii = metric.get('hawaii', {})
@@ -457,7 +567,7 @@ def generate_redirect_html(slug, metric, area, rankings, output_path, is_ranking
     latest_year, latest_val = get_latest(hawaii)
     formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
 
-    if is_rankings:
+    if view == 'rankings':
         title = f"{metric_name} Rankings | Hawai\u02BBi Dashboard"
         image_url = f"{SITE_URL}/assets/og/{slug}_rankings.png"
         page_url = f"{SITE_URL}/r/{slug}/"
@@ -467,6 +577,16 @@ def generate_redirect_html(slug, metric, area, rankings, output_path, is_ranking
             parts.append(f"Hawai\u02BBi ranks #{rankings['hawaiiRank']} of {rankings['total']} states in {metric_name}")
             parts.append(f"{formatted} ({rankings['year']})")
         description = '. '.join(parts) + '.' if parts else f"{metric_name} state rankings."
+    elif view == 'county':
+        counties = county_data.get('counties', []) if county_data else []
+        county_list = ', '.join(counties[:3])
+        if len(counties) > 3:
+            county_list += f", and {counties[-1]}"
+        title = f"{metric_name} by County | Hawai\u02BBi Dashboard"
+        image_url = f"{SITE_URL}/assets/og/{slug}_county.png"
+        page_url = f"{SITE_URL}/c/{slug}/"
+        redirect_hash = f"#{slug}/county"
+        description = f"Compare {metric_name.lower()} across {county_list} counties."
     else:
         title = f"{metric_name} | Hawai\u02BBi Dashboard"
         image_url = f"{SITE_URL}/assets/og/{slug}.png"
@@ -517,6 +637,7 @@ def main():
     raw = extract_data()
     dashboard = raw['dashboard']
     state_data = raw['state']
+    county_data = raw.get('county', {})
     area_map = raw['areaMap']
 
     slugs = list(area_map.keys())
@@ -531,24 +652,35 @@ def main():
         area = area_map.get(slug, metric.get('area', ''))
         rankings = get_rankings(slug, dashboard, state_data)
 
-        # Trend OG image + redirect page → /t/{slug}/
+        # Trend OG image + redirect page -> /t/{slug}/
         generate_og_image(slug, metric, area, rankings,
                           os.path.join(ASSETS_OG, f'{slug}.png'))
         generate_redirect_html(slug, metric, area, rankings,
-                               os.path.join(REDIRECT_DIR_T, slug, 'index.html'))
+                               os.path.join(REDIRECT_DIR_T, slug, 'index.html'),
+                               view='detail')
 
-        # Rankings OG image + redirect page → /r/{slug}/
+        # Rankings OG image + redirect page -> /r/{slug}/
         if rankings and rankings['hawaiiRank'] > 0:
             generate_rankings_og_image(slug, metric, area, rankings,
                                        os.path.join(ASSETS_OG, f'{slug}_rankings.png'))
             generate_redirect_html(slug, metric, area, rankings,
                                    os.path.join(REDIRECT_DIR_R, slug, 'index.html'),
-                                   is_rankings=True)
+                                   view='rankings')
+
+        # County OG image + redirect page -> /c/{slug}/
+        cd = county_data.get(slug)
+        if cd:
+            generate_county_og_image(slug, metric, area, cd,
+                                     os.path.join(ASSETS_OG, f'{slug}_county.png'))
+            generate_redirect_html(slug, metric, area, rankings,
+                                   os.path.join(REDIRECT_DIR_C, slug, 'index.html'),
+                                   view='county', county_data=cd)
 
         rank_str = f"#{rankings['hawaiiRank']}/{rankings['total']}" if rankings and rankings['hawaiiRank'] > 0 else "no rank"
-        print(f"  {slug}: {rank_str}")
+        county_str = " +county" if cd else ""
+        print(f"  {slug}: {rank_str}{county_str}")
 
-    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/")
+    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/")
 
 
 if __name__ == '__main__':
