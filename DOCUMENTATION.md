@@ -251,7 +251,7 @@ Each of the 27 metrics gets its own card displaying:
 1. **Area icon + label** (e.g., "EDUCATION")
 2. **Metric name** (e.g., "NAEP 8th Grade Math")
 3. **Latest Hawaiʻi value** (large, bold number)
-4. **Sparkline chart** - Hawaiʻi (teal solid line) vs. Other State Avg (gray dashed line)
+4. **Sparkline chart** - Hawaiʻi (solid solid line) vs. Other State Avg (gray dashed line)
 5. **Two comparison sections:**
    - **vs Other States** - "Better" (green) or "Worse" (red) with the average, plus rank badge
    - **vs Prior Year** - percentage change with "Improving" or "Worsening" label
@@ -263,7 +263,7 @@ Cards are in a responsive CSS grid (auto-fill, 300px minimum).
 Wider overlay (max-width 1100px, max-height 92vh) with up to three tabs:
 
 **Detail tab:**
-1. **Line chart** (Chart.js, 400px tall) - Hawaiʻi (teal, solid) vs. Other State Avg (gray, dashed)
+1. **Line chart** (Chart.js, 400px tall) - Hawaiʻi (solid, solid) vs. Other State Avg (gray, dashed)
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
 3. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
 4. **Why it matters / How to read it / Insight** - context sections
@@ -272,7 +272,7 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to three tabs:
 **Rank tab:**
 1. **Horizontal bar chart** - all 50 states sorted best-to-worst
 2. **Gradient background** - green (best) to white to red (worst)
-3. **Hawaiʻi highlighted** in teal with rank displayed
+3. **Hawaiʻi highlighted** with rank displayed
 
 **County-level tab** (shown only for metrics with county data):
 1. **Multi-line chart** - 4 county lines in distinct colors (Honolulu=teal, Hawaiʻi=orange, Maui=purple, Kauai=green)

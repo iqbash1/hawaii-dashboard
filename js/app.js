@@ -309,8 +309,6 @@ const App = {
         this.sparklineCharts.forEach(c => c && c.destroy());
         this.sparklineCharts = [];
 
-        const currentYear = new Date().getFullYear();
-
         // One card per metric, ordered by area
         this.AREA_ORDER.forEach(areaGroup => {
             areaGroup.metrics.forEach(slug => {
@@ -328,12 +326,6 @@ const App = {
                     ? `<span class="card-unit">${effective.unit}</span>`
                     : '';
 
-                // Stale year indicator (use last year in ranges like "2022-2024")
-                const yearStr = String(latest.year);
-                const parsedYear = parseInt(yearStr.includes('-') ? yearStr.split('-').pop() : yearStr);
-                const yearDiff = currentYear - parsedYear;
-                const yearClass = yearDiff >= 3 ? 'card-year card-year-stale' : 'card-year';
-
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-icon">${AREA_ICONS[areaGroup.area] || ''}</div>
@@ -343,7 +335,7 @@ const App = {
                     <div class="card-hero">
                         <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, effective.unit, isDecimal)}</span>
                         ${unitSuffix}
-                        <span class="${yearClass}">(${latest.year})</span>
+                        <span class="card-year">(${latest.year})</span>
                     </div>
                     <div class="card-sparkline">
                         <canvas></canvas>
