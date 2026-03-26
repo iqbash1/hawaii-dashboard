@@ -550,7 +550,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State shapes employment through workforce programs, tax incentives, and economic diversification policy. Heavy dependence on tourism creates structural vulnerability: when visitor arrivals drop, unemployment spikes faster than in more diversified economies, making DBEDT's diversification efforts a direct policy lever.",
     "howToRead": "Hawaiʻi typically runs below the other-state average in normal years. The 2020 spike and rapid recovery both reflect tourism's outsized role.",
     "insight": "Hawaiʻi had some of the lowest unemployment in the country before COVID (2.2% in 2017). The collapse from 2.5% to 11.6% in months shows the structural risk of tourism dependence.",
-    "crossInsight": "Low unemployment (#7) masks a structural problem: Hawaiʻi's jobs are concentrated in tourism, government, and low-wage service sectors, which keeps productivity at #46 and wages below the cost of living. People have work, but the work doesn't pay enough to stay.",
+    "crossInsight": "Low unemployment (#7) masks a structural problem: Hawaiʻi's jobs are concentrated in tourism, government, and low-wage service sectors, which keeps productivity at #46 and wages below the cost of living. People have work, many work multiple jobs, but the work doesn't pay enough to be financially comfortable.",
     "hawaii": {
       "1976": 0.091,
       "1977": 0.075,
