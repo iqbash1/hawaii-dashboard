@@ -18,7 +18,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State sets criminal laws, funds police training through the Law Enforcement Standards Board, and runs the prison system. Sentencing reform, community policing grants, and county prosecutor priorities all shape the violent crime rate.",
     "howToRead": "Hawaiʻi has run well below the other-state average for over a decade. A falling line means safer streets.",
     "insight": "The 2024 rate of 218 per 100K continues a long-term trend of Hawaiʻi being one of the safest states, running about 36% below the other-state average of 340.",
-    "crossInsight": "Hawaiʻi is the safest expensive place in America, ranking #8 in violent crime despite #50 in housing affordability. In most states, extreme cost pressure correlates with higher crime. Hawaiʻi's strong multigenerational family ties, tight-knit island communities, and geographic isolation from mainland drug corridors may explain why the pattern breaks here.",
+    "crossInsight": "Hawaiʻi is the safest expensive place in America, ranking #8 in violent crime despite #50 in housing affordability. In most states, extreme cost pressure correlates with higher crime. Strong multigenerational family ties and tight-knit island communities may explain why the pattern breaks here.",
     "dataNote": "FBI transitioned from UCR to NIBRS in 2021; year-over-year comparisons across that boundary should be interpreted with caution",
     "hawaii": {
       "1985": 219.4,
@@ -308,7 +308,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State funds crisis hotlines, community mental health centers, and school-based prevention programs through the Department of Health's Behavioral Health Administration. Inter-island isolation and a shortage of mental health providers on neighbor islands make state investment in telehealth and workforce pipelines especially critical.",
     "howToRead": "A lower line means fewer suicide deaths per 100,000 residents. Hawaiʻi has stayed below the other-state average for most of the past 25 years, but the gap narrowed in recent years as the national rate climbed.",
     "insight": "Hawaiʻi's rate dropped from 11.1 in 1999 to a low of 8.2 in 2005, then climbed back to the mid-teens. The national trend rose steadily from about 12 to 17 over the same period. Despite Hawaiʻi's lower overall rate, Native Hawaiian and Pacific Islander populations face disproportionately high risk.",
-    "crossInsight": "Insurance cards and primary provider counts don't equal specialist or mental health support, especially on neighbor islands. Despite the 2nd-lowest uninsured rate and strong PCP access (#8), Hawaiʻi's suicide rate has nearly doubled since 2005.",
+    "crossInsight": "Insurance cards and primary provider counts don't equal specialist or mental health support, especially on neighbor islands. Despite the 2nd-lowest uninsured rate and strong PCP access (#8), Hawaiʻi's suicide rate has risen roughly 70% since 2005.",
     "hawaii": {
       "1999": 11.1,
       "2000": 11.2,
@@ -375,7 +375,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable for curriculum standards, teacher pay, and dropout prevention. The Board of Education and DOE set graduation requirements and allocate resources to every school from a single budget.",
     "howToRead": "Hawaiʻi trailed the other-state average for most of the 2010s and has been closing the gap. A rising line means more students are finishing on time.",
     "insight": "The graduation rate climbed from 80% in 2011 to 86% in 2022, a 6-point gain that brought Hawaiʻi within 0.1 point of the other-state average after trailing for most of the decade.",
-    "crossInsight": "Graduation rate (#29) trails the average even as NAEP scores converge. The gap may reflect dropout pressures from cost of living and family obligations rather than classroom quality.",
+    "crossInsight": "Graduation rate (#29) trails the average even as NAEP test scores converge with the national norm. The disconnect suggests that academic ability is not the bottleneck. Something outside the classroom is pulling students away before they finish.",
     "hawaii": {
       "2011": 80,
       "2012": 81,
@@ -417,7 +417,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The University of Hawaiʻi system, tuition policy, and scholarships largely determine whether residents can earn degrees without leaving the islands. Hawaiʻi's slim edge over the national average could slip if UH enrollment declines or if degree-holders continue migrating to the mainland for higher-paying jobs.",
     "howToRead": "Both lines rise steadily. Hawaiʻi has tracked about 1 to 2 points above the other-state average throughout the decade. A rising line means a growing share of adults hold four-year degrees.",
     "insight": "Rose from 29.1% in 2008 to 37.8% in 2024. This metric moves slowly since it reflects all adults 25 and older. Keeping UH affordable is critical to holding this edge.",
-    "crossInsight": "Bachelor's attainment (#17) outperforms K-12 rankings, partly because the military and federal government bring educated workers. The challenge is whether locally educated residents can afford to stay.",
+    "crossInsight": "Bachelor's attainment (#17) outperforms Hawaiʻi's K-12 rankings, likely boosted by in-migration of degree-holders for military, federal, and professional roles. The question is whether homegrown graduates can afford to stay or whether the state is importing its educated workforce.",
     "hawaii": {
       "2008": 0.291,
       "2009": 0.296,
@@ -974,7 +974,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State DOT is responsible for maintaining these roads, and the capital budget determines how fast they get fixed. Tropical weather, volcanic soil, salt air, and heavy tourist traffic accelerate pavement deterioration, making Hawaiʻi one of the most challenging road-maintenance environments in the nation.",
     "howToRead": "Hawaiʻi's line stays far above the other-state average. The gap has narrowed somewhat since 2013, but Hawaiʻi remains one of the worst states for road condition.",
     "insight": "The share of roads rated poor peaked at 26.1% in 2019 and has improved to 21.6% in 2023. That is still 2.4 times the other-state average of 8.9%, but the gap has narrowed from a peak of 2.8 times in 2013.",
-    "crossInsight": "Road quality (#47) ranks among the worst while broadband (#21) is above average. The state invested in digital infrastructure but deferred maintenance on the physical roads residents drive every day.",
+    "crossInsight": "Road quality (#47) ranks among the worst while broadband (#21) is above average. Digital infrastructure grew faster than physical infrastructure could be maintained. Residents notice both every day, but potholes are harder to ignore than download speeds.",
     "hawaii": {
       "2007": 0.2102,
       "2008": 0.2241,
@@ -1022,7 +1022,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State distributes federal broadband grants through the Broadband and Digital Equity Office and sets infrastructure policy for underserved areas. Terrain and low population density on neighbor islands make buildout expensive, so state subsidy decisions directly determine which communities get connected.",
     "howToRead": "Both lines rise steadily toward universal coverage. Hawaiʻi has consistently run 1 to 2 points above the other-state average.",
     "insight": "Climbed from 83.2% in 2016 to 93.1% in 2024. The remaining gap is concentrated in rural and lower-income households across the neighbor islands.",
-    "crossInsight": "Above-average broadband (#21) creates an opportunity that Hawaiʻi hasn't fully exploited: remote work. If residents can work mainland-salary jobs from Hawaiʻi, it partially offsets the cost-of-living gap. Broadband infrastructure is a quiet economic development lever.",
+    "crossInsight": "Broadband (#21) outperforms road quality (#47), an unusual split for a state with aging physical infrastructure. The post-pandemic rise in remote work makes this gap more consequential: reliable internet is increasingly a prerequisite for economic participation, not just a convenience.",
     "dataNote": "Pre-2016 data excluded due to Census variable definition change",
     "hawaii": {
       "2016": 0.8318,
@@ -1362,7 +1362,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The Legislature controls voter registration rules, early voting windows, ballot access policies, and the all-mail voting system adopted in 2020. Civic education funding, same-day registration, and multilingual ballot access are additional levers that shape whether eligible residents actually cast a vote.",
     "howToRead": "The zigzag pattern reflects presidential years (higher turnout) vs. midterm elections (lower). Hawaiʻi's line sits well below the other-state average across the entire period.",
     "insight": "Turnout jumped from 39.5% in 2018 to 55.7% in 2020 after all-mail voting launched, but fell back to 50.3% in 2024. The 2024 figure trails the other-state average of 65.6% by 15 points.",
-    "crossInsight": "Hawaiʻi adopted all-mail voting and same-day registration, yet turnout ranks #50. Removing logistical barriers didn't help, suggesting the problem isn't access but belief, whether residents feel their vote changes anything.",
+    "crossInsight": "Hawaiʻi adopted all-mail voting and same-day registration, yet turnout ranks #50. Removing logistical barriers didn't move the needle, suggesting deeper factors at play: political competition, cultural norms, or a sense that outcomes don't change regardless of who wins.",
     "dataNote": "Uses Voting Eligible Population (VEP) as denominator, not registered voters.",
     "hawaii": {
       "2002": 0.442,
@@ -1687,7 +1687,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State can improve productivity through economic diversification away from tourism dependence, workforce training programs run by DLIR, technology infrastructure investment, and aligning the University of Hawaiʻi system with growth industries. Higher output per hour translates directly into higher wages and more tax revenue, making this a core measure of whether state economic development strategy is working.",
     "howToRead": "Both lines use 2017 as the starting point, set at 100. A score of 105.2 means Hawaiʻi workers produce about 5% more per hour than in 2017. Other states average 113.9, or about 14% more. A rising line is good; when Hawaiʻi falls below the other-state average, the state is falling behind.",
     "insight": "Through 2019, Hawaiʻi kept up with the national average. After the pandemic, other states bounced back strongly while Hawaiʻi stalled. The gap has widened to 8.7 index points, the largest on record.",
-    "crossInsight": "Productivity (#46) lags because the economy is concentrated in tourism, government, and low-wage service sectors. Diversification into technology, health sciences, and sustainable agriculture would lift output per worker and, with it, wages. Higher productivity is the prerequisite for higher pay.",
+    "crossInsight": "Productivity (#46) lags because the economy is concentrated in tourism, government, and low-wage service sectors. Until output per worker rises, wages are unlikely to keep pace with the cost of living, no matter how low unemployment falls.",
     "hawaii": {
       "2007": 90.1,
       "2008": 89.6,
