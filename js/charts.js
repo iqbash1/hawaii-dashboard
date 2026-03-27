@@ -919,7 +919,7 @@ const ChartUtils = {
                 c.lineWidth = 1.5;
                 c.stroke();
                 // Label above
-                const abbr = s.state.length > 2 ? (s.state.substring(0, 2).toUpperCase()) : s.state;
+                const abbr = abbreviateState(s.state);
                 const text = `${abbr} ${fmt(s.value, unit)}`;
                 c.font = '600 10px Inter, sans-serif';
                 c.textAlign = 'center';
