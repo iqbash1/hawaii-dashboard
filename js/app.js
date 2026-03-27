@@ -471,7 +471,7 @@ const App = {
         const trendContext = document.getElementById('modal-trend-context');
         const trendResult = this.computeTrendComparison(effective, metricData);
         if (trendResult) {
-            document.getElementById('modal-trend-title').textContent = `Recent direction (${trendResult.recentLabel} vs ${trendResult.priorLabel})`;
+            document.getElementById('modal-trend-title').textContent = `Recent trend (${trendResult.recentLabel} vs ${trendResult.priorLabel})`;
             const isDecimal = ChartUtils.isDecimalPctMetric(effective);
             const fmtVal = (v) => ChartUtils.formatValue(v, effective.unit, isDecimal);
             const pctChange = ((trendResult.recentAvg - trendResult.priorAvg) / Math.abs(trendResult.priorAvg) * 100);
