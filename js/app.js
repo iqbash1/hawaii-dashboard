@@ -63,7 +63,7 @@ const App = {
         { area: 'Economy', metrics: ['labor_productivity', 'real_per_capita_income'] },
         { area: 'Business', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
         { area: 'Education', metrics: ['naep_math_8', 'naep_reading_8', 'acgr', 'ba_or_higher_pct'] },
-        { area: 'Infrastructure', metrics: ['road_poor_pct', 'broadband_subscription_pct', 'transit_mode_share'] },
+        { area: 'Infrastructure', metrics: ['road_poor_pct', 'broadband_subscription_pct'] },
         { area: 'Fiscal Stewardship', metrics: ['rainy_day_fund_pct'] },
         { area: 'Public Confidence', metrics: ['voter_participation_rate', 'net_domestic_migration_rate'] },
     ],

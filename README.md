@@ -1,6 +1,6 @@
 # Hawaiʻi Dashboard
 
-A minimalist state accountability dashboard tracking 27 key outcomes across 12 policy areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
+A statewide scorecard of outcomes and the conditions that shape them, tracking 26 key measures across 12 policy areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
 
 **Live site**: [hawaiidashboard.org](https://hawaiidashboard.org)
 
@@ -53,7 +53,7 @@ python3 scripts/generate-og-pages.py
 
 Generates per-metric OG images (detail, rankings, county) and redirect pages with matching meta tags. Requires `Pillow`.
 
-## Metrics (27)
+## Metrics (26)
 
 | Area | Metrics | County |
 |------|---------|--------|
@@ -66,7 +66,7 @@ Generates per-metric OG images (detail, rankings, county) and redirect pages wit
 | Economy | Labor Productivity, Real Per Capita Income | Partial |
 | Business | Establishment Entry Rate, Net Employer Formation | Yes |
 | Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
-| Infrastructure | Road Quality, Broadband, Transit Mode Share | Partial |
+| Infrastructure | Road Quality, Broadband | Partial |
 | Fiscal Stewardship | Rainy Day Fund | No |
 | Demographics | Voter Participation, Net Domestic Migration | No |
 
@@ -75,7 +75,7 @@ Generates per-metric OG images (detail, rankings, county) and redirect pages wit
 - **Outcomes, not activity**: Measures what happened to residents, not what government spent
 - **Federal sources only**: All data from nonpartisan federal agencies, reported identically for all 50 states
 - **Two comparisons per metric**: Over time (trend) and against other states (ranking)
-- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 27 cards, 3 tabs per metric
+- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 26 cards, 3 tabs per metric
 - **Governor overlay**: Alternating bands show which governor was in office during each period
 
 ## Local development

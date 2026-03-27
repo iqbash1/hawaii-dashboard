@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 27 metrics across 12 policy areas.
+// 26 metrics across 12 policy areas.
 // Hawaii values and Other State Avg (simple mean of 49 states,
 // excluding HI and DC) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
@@ -1043,61 +1043,6 @@ const DASHBOARD_DATA = {
       "2022": 0.9048,
       "2023": 0.9161,
       "2024": 0.9278
-    }
-  },
-  "transit_mode_share": {
-    "area": "Infrastructure",
-    "areaIcon": "🛣️",
-    "metric": "Public Transit Commuters",
-    "officialName": "Percent of Workers Using Public Transportation to Commute (ACS B08301)",
-    "unit": "%",
-    "goodDirection": "up",
-    "source": "Census ACS",
-    "sourceUrl": "https://data.census.gov/",
-    "whyItMatters": "The State funds TheBus operations and is building the Skyline rail extension, Hawaiʻi's first urban rail system. State land-use policy and transit-oriented development rules determine whether housing and jobs cluster near transit stops, which is the single biggest driver of ridership. Neighbor islands have minimal fixed-route service, so gains here depend almost entirely on Oʻahu investments.",
-    "howToRead": "Hawaiʻi's line runs above the other-state average for the full period but has been declining since 2014. A rising line means more workers are choosing transit over cars.",
-    "insight": "The share peaked at 7.2% in 2014, slid to 5.4% by 2019, then cratered to 3.3% during COVID. At 4.3% in 2024 the recovery is still 40% below the pre-pandemic peak. Whether Skyline reverses the long-term slide is the key question ahead.",
-    "crossInsight": "In a state with the highest electricity and gas prices, affordable public transit is not a convenience but a cost-of-living lifeline. Yet ridership has not recovered to pre-pandemic levels, especially on neighbor islands where fixed-route service barely exists.",
-    "dataNote": "COVID-19 caused a 40-60% drop in 2020-2021; recovery is ongoing",
-    "hawaii": {
-      "2006": 0.0539,
-      "2007": 0.056,
-      "2008": 0.0585,
-      "2009": 0.0598,
-      "2010": 0.0662,
-      "2011": 0.0594,
-      "2012": 0.0674,
-      "2013": 0.0612,
-      "2014": 0.0719,
-      "2015": 0.0699,
-      "2016": 0.0674,
-      "2017": 0.0615,
-      "2018": 0.0574,
-      "2019": 0.0537,
-      "2021": 0.0329,
-      "2022": 0.0352,
-      "2023": 0.0413,
-      "2024": 0.043
-    },
-    "otherStateAvg": {
-      "2006": 0.0288,
-      "2007": 0.0291,
-      "2008": 0.0302,
-      "2009": 0.0298,
-      "2010": 0.0295,
-      "2011": 0.0304,
-      "2012": 0.0299,
-      "2013": 0.0311,
-      "2014": 0.0314,
-      "2015": 0.0318,
-      "2016": 0.0306,
-      "2017": 0.0298,
-      "2018": 0.0295,
-      "2019": 0.0302,
-      "2021": 0.0148,
-      "2022": 0.0187,
-      "2023": 0.0215,
-      "2024": 0.0225
     }
   },
   "residential_price_cpkwh": {

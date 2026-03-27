@@ -66,8 +66,6 @@ const METRIC_RULES = {
     road_poor_pct:              { min: 0.01,  max: 0.50,   maxYoYPct: 0.40, format: 'decimal_pct' },
     // Broadband: pre-2016 data stripped (Census variable change); 2016+ values are 0.70-0.96
     broadband_subscription_pct: { min: 0.50,  max: 1.0,    maxYoYPct: 0.15, format: 'decimal_pct' },
-    // Transit: COVID caused >50% drops in 2020-2021; small-county values are inherently noisy
-    transit_mode_share:         { min: 0.001, max: 0.15,   maxYoYPct: 0.60, format: 'decimal_pct' },
     residential_price_cpkwh:    { min: 5,     max: 60,     maxYoYPct: 0.40, format: 'cents' },
     renewables_share_gen:       { min: 0.01,  max: 0.60,   maxYoYPct: 0.40, format: 'decimal_pct' },
     food_insecurity_rate:       { min: 0.03,  max: 0.25,   maxYoYPct: 0.30, format: 'decimal_pct' },

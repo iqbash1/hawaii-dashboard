@@ -33,7 +33,7 @@ img.text((80, 70), "Hawai\u02BBi Dashboard", fill=WHITE, font=title_font)
 
 # --- Subtitle ---
 sub_font = font(24)
-img.text((80, 145), "Track key statewide outcomes across 12 areas \u00b7 27 metrics", fill=LIGHT, font=sub_font)
+img.text((80, 145), "A statewide scorecard of outcomes and the conditions that shape them", fill=LIGHT, font=sub_font)
 
 # --- Divider line ---
 img.line([(80, 200), (1120, 200)], fill=(80, 100, 118), width=2)
