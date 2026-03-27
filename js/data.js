@@ -979,7 +979,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Permanent supportive housing; shelter, outreach, and case management; mental health, substance use, and eviction prevention."
   },
   "road_poor_pct": {
-    "area": "Infrastructure, Energy, Resilience & Trust",
+    "area": "Infrastructure, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "Roads in Poor Condition",
     "unit": "%",
@@ -1027,7 +1027,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Pavement preservation funding; asset management and maintenance delivery; capital planning and resilience upgrades."
   },
   "broadband_subscription_pct": {
-    "area": "Infrastructure, Energy, Resilience & Trust",
+    "area": "Infrastructure, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "Households with Broadband",
     "officialName": "Percent of Households with a Broadband Internet Subscription (ACS B28002)",
@@ -1153,7 +1153,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Utility regulation and rate design; energy efficiency and bill relief; generation, fuel, and grid planning."
   },
   "renewables_share_gen": {
-    "area": "Infrastructure, Energy, Resilience & Trust",
+    "area": "Infrastructure, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "Electricity from Renewables",
     "officialName": "Renewable Sources as Share of Total Electricity Generation (EIA-923)",
@@ -1271,7 +1271,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "SNAP and WIC access; school and summer meals; local food access and emergency food support."
   },
   "rainy_day_fund_pct": {
-    "area": "Infrastructure, Energy, Resilience & Trust",
+    "area": "Infrastructure, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "Rainy Day Fund",
     "officialName": "Budget Stabilization Fund Balance as Percent of General Fund Expenditures (NASBO)",
@@ -1318,7 +1318,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Reserve deposit rules; revenue forecasting and spending discipline; disaster readiness and recovery planning."
   },
   "voter_participation_rate": {
-    "area": "Infrastructure, Energy, Resilience & Trust",
+    "area": "Infrastructure, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "Voter Participation Rate",
     "unit": "%",
@@ -1361,7 +1361,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Statewide election rules and ballot access; registration and update pathways; voter education and trust."
   },
   "net_domestic_migration_rate": {
-    "area": "Infrastructure, Energy, Resilience & Trust",
+    "area": "Infrastructure, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "People Moving In vs. Out",
     "officialName": "Net Domestic Migration Rate per 10,000 Population (Census PEP)",

@@ -97,12 +97,12 @@ hawaii-dashboard/
 | 18 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
 | 19 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
 | 20 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
-| 21 | Infra, Energy, Resilience & Trust | Roads in Poor Condition | % | Down | FHWA |
-| 22 | Infra, Energy, Resilience & Trust | Broadband Subscriptions | % | Up | Census ACS |
-| 23 | Infra, Energy, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
-| 24 | Infra, Energy, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Infra, Energy, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
-| 26 | Infra, Energy, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
+| 21 | Infra, Resilience & Trust | Roads in Poor Condition | % | Down | FHWA |
+| 22 | Infra, Resilience & Trust | Broadband Subscriptions | % | Up | Census ACS |
+| 23 | Infra, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
+| 24 | Infra, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 25 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
+| 26 | Infra, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 

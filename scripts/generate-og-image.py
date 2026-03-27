@@ -40,9 +40,9 @@ img.line([(80, 200), (1120, 200)], fill=(80, 100, 118), width=2)
 
 # --- Sample metric cards (3 across) ---
 cards = [
-    {"area": "COST OF LIVING", "metric": "Home Price-to-Income", "value": "8.7\u00d7", "rank": "#50 of 50", "verdict": "Worse", "color": ACCENT},
+    {"area": "HOUSING & COST OF LIVING", "metric": "Home Price-to-Income", "value": "8.7\u00d7", "rank": "#50 of 50", "verdict": "Worse", "color": ACCENT},
     {"area": "EDUCATION", "metric": "NAEP 8th Grade Math", "value": "270.0", "rank": "#30 of 50", "verdict": "Worse", "color": ACCENT},
-    {"area": "PUBLIC HEALTH", "metric": "Uninsured Rate", "value": "3.5%", "rank": "#2 of 50", "verdict": "Better", "color": TEAL},
+    {"area": "SAFETY & HEALTH", "metric": "Uninsured Rate", "value": "3.5%", "rank": "#2 of 50", "verdict": "Better", "color": TEAL},
 ]
 
 card_w = 320

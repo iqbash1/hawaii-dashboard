@@ -61,7 +61,7 @@ Generates per-metric OG images (detail, rankings, county) and redirect pages wit
 | Housing & Cost of Living | Renter Cost Burden, Home Price-to-Income, Unsheltered Homeless, Electricity Price, Food Insecurity | Partial |
 | Economy & Workforce | Unemployment, Labor Force Participation, Labor Productivity, Per Capita Income, Business Entry, Net Employer Formation | Partial |
 | Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
-| Infra, Energy, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
+| Infra, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
 
 ## Design principles
 
