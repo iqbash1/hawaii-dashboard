@@ -1087,14 +1087,22 @@ const App = {
         document.getElementById('rankings-rank').textContent =
             `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote}`;
 
-        // Create chart
+        // Compute distribution stats (shared between dot strip and rankings chart)
+        const sortedVals = stateValues.map(s => s.value).sort((a, b) => a - b);
+        const distStats = {
+            q1: sortedVals[Math.floor(sortedVals.length * 0.25)],
+            median: sortedVals[Math.floor(sortedVals.length * 0.5)],
+            q3: sortedVals[Math.floor(sortedVals.length * 0.75)],
+        };
+
+        // Create chart with distribution lines
         const canvas = document.getElementById('rankings-chart');
         this.rankingsChart = ChartUtils.createRankingsChart(
-            canvas, stateValues, metricData.goodDirection, metricData.unit
+            canvas, stateValues, metricData.goodDirection, metricData.unit, distStats
         );
 
         // Dot strip distribution plot
-        this.buildDotStrip(stateValues, metricData.unit, hawaiiRank);
+        this.buildDotStrip(stateValues, metricData.unit, hawaiiRank, distStats);
 
         // Show scroll hint
         const hint = document.getElementById('rankings-scroll-hint');
@@ -1116,7 +1124,7 @@ const App = {
         }
     },
 
-    buildDotStrip(stateValues, unit, hawaiiRank) {
+    buildDotStrip(stateValues, unit, hawaiiRank, distStats) {
         const container = document.getElementById('dot-strip-container');
         if (!container) return;
         container.innerHTML = '';
@@ -1126,9 +1134,7 @@ const App = {
 
         const values = stateValues.map(s => s.value);
         const sorted = [...values].sort((a, b) => a - b);
-        const q1 = sorted[Math.floor(n * 0.25)];
-        const median = sorted[Math.floor(n * 0.5)];
-        const q3 = sorted[Math.floor(n * 0.75)];
+        const { q1, median, q3 } = distStats;
         const minVal = sorted[0];
         const maxVal = sorted[n - 1];
         const range = maxVal - minVal || 1;
@@ -1202,10 +1208,27 @@ const App = {
         medLabel.textContent = 'Median';
         svg.appendChild(medLabel);
 
+        // HTML tooltip (shared across all dots)
+        let tooltip = document.getElementById('dot-strip-tooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.id = 'dot-strip-tooltip';
+            tooltip.style.cssText = 'position:absolute;background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;font-family:Inter,sans-serif;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:100;white-space:nowrap;';
+            document.body.appendChild(tooltip);
+        }
+
+        const showTooltip = (e, text) => {
+            tooltip.textContent = text;
+            tooltip.style.opacity = '1';
+            const rect = e.target.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+            tooltip.style.top = (rect.top - 28) + 'px';
+        };
+        const hideTooltip = () => { tooltip.style.opacity = '0'; };
+
         // All state dots (non-labeled ones first, smaller)
         stateValues.forEach((s, i) => {
             if (labelIndices.has(i)) return;
-            const abbr = this.abbreviateState(s.state);
             const dot = document.createElementNS(ns, 'circle');
             dot.setAttribute('cx', px(s.value));
             dot.setAttribute('cy', dotY);
@@ -1213,11 +1236,11 @@ const App = {
             dot.setAttribute('fill', '#C3CDD7');
             dot.setAttribute('stroke', '#fff');
             dot.setAttribute('stroke-width', '0.5');
-            dot.setAttribute('style', 'cursor:pointer');
-            // Native tooltip on hover
-            const title = document.createElementNS(ns, 'title');
-            title.textContent = `${s.state}: ${fmt(s.value)} (#${i + 1})`;
-            dot.appendChild(title);
+            dot.setAttribute('class', 'dot-strip-dot');
+            const tipText = `${this.abbreviateState(s.state)}: ${fmt(s.value)} (#${i + 1})`;
+            dot.addEventListener('mouseenter', (e) => { showTooltip(e, tipText); });
+            dot.addEventListener('mouseleave', hideTooltip);
+            dot.addEventListener('click', (e) => { showTooltip(e, tipText); });
             svg.appendChild(dot);
         });
 
@@ -1244,10 +1267,11 @@ const App = {
             dot.setAttribute('fill', fill);
             dot.setAttribute('stroke', '#fff');
             dot.setAttribute('stroke-width', isHawaii ? '2' : '1');
-            dot.setAttribute('style', 'cursor:pointer');
-            const title = document.createElementNS(ns, 'title');
-            title.textContent = `${s.state}: ${fmt(s.value)} (#${idx + 1})`;
-            dot.appendChild(title);
+            dot.setAttribute('class', 'dot-strip-dot');
+            const tipText = `${this.abbreviateState(s.state)}: ${fmt(s.value)} (#${idx + 1})`;
+            dot.addEventListener('mouseenter', (e) => { showTooltip(e, tipText); });
+            dot.addEventListener('mouseleave', hideTooltip);
+            dot.addEventListener('click', (e) => { showTooltip(e, tipText); });
             svg.appendChild(dot);
 
             // Skip text labels if they would collide with an already-placed label

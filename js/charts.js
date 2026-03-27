@@ -722,7 +722,7 @@ const ChartUtils = {
      * @param {string} unit - metric unit for label formatting
      * @returns {Chart}
      */
-    createRankingsChart(canvas, stateValues, goodDirection, unit) {
+    createRankingsChart(canvas, stateValues, goodDirection, unit, distStats) {
         const ctx = canvas.getContext('2d');
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
@@ -794,6 +794,46 @@ const ChartUtils = {
             }
         };
 
+        // Distribution reference lines (Q1, median, Q3)
+        const distLinesPlugin = {
+            id: 'distributionLines',
+            afterDatasetsDraw(chart) {
+                if (!distStats) return;
+                const { ctx, chartArea, scales } = chart;
+                const xScale = scales.x;
+                const { top, bottom } = chartArea;
+                ctx.save();
+
+                // Q1 and Q3: subtle dashed lines
+                [distStats.q1, distStats.q3].forEach(val => {
+                    const x = xScale.getPixelForValue(val);
+                    if (x >= chartArea.left && x <= chartArea.right) {
+                        ctx.beginPath();
+                        ctx.setLineDash([4, 4]);
+                        ctx.strokeStyle = 'rgba(13, 124, 143, 0.15)';
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(x, top);
+                        ctx.lineTo(x, bottom);
+                        ctx.stroke();
+                    }
+                });
+
+                // Median: slightly more prominent
+                const medX = xScale.getPixelForValue(distStats.median);
+                if (medX >= chartArea.left && medX <= chartArea.right) {
+                    ctx.beginPath();
+                    ctx.setLineDash([6, 3]);
+                    ctx.strokeStyle = 'rgba(13, 124, 143, 0.3)';
+                    ctx.lineWidth = 1.5;
+                    ctx.moveTo(medX, top);
+                    ctx.lineTo(medX, bottom);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+        };
+
         const self = this;
         return new Chart(ctx, {
             type: 'bar',
@@ -861,7 +901,7 @@ const ChartUtils = {
                 },
                 animation: { duration: 400 }
             },
-            plugins: [rowBgPlugin, {
+            plugins: [rowBgPlugin, distLinesPlugin, {
                 id: 'valueLabels',
                 afterDatasetsDraw(chart) {
                     const { ctx, chartArea } = chart;
