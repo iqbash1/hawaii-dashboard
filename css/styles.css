@@ -680,13 +680,6 @@ body {
     background: rgba(208, 49, 53, 0.06);
 }
 
-.trend-context {
-    font-size: 0.85rem;
-    line-height: 1.55;
-    color: var(--text-secondary);
-    margin-top: 0.6rem;
-}
-
 .modal-source {
     font-size: 0.8rem;
     color: var(--text-muted);

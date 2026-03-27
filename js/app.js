@@ -265,14 +265,23 @@ const App = {
 
     /** Build "vs Prior Year" comparison HTML for a card */
     buildVsYearHtml(metricData) {
-        const latest = this.getLatestValue(metricData.hawaii);
-        const prior = this.getPriorValue(metricData.hawaii);
-        if (latest.value === null || prior.value === null) return '';
+        const years = Object.keys(metricData.hawaii).map(Number).sort((a, b) => a - b);
+        if (years.length < 4) return '';
+        const recent = years.slice(-3);
+        const prior = years.slice(-6, -3);
+        if (prior.length < 2) return '';
+        const avg = (yrs) => {
+            const vals = yrs.map(y => metricData.hawaii[y]).filter(v => v != null);
+            return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+        };
+        const recentAvg = avg(recent);
+        const priorAvg = avg(prior);
+        if (recentAvg == null || priorAvg == null || priorAvg === 0) return '';
 
-        const change = latest.value - prior.value;
-        const pctChange = prior.value !== 0 ? ((change / Math.abs(prior.value)) * 100) : 0;
+        const change = recentAvg - priorAvg;
+        const pctChange = (change / Math.abs(priorAvg)) * 100;
         const isImproving = metricData.goodDirection === 'up' ? change > 0 : change < 0;
-        const isFlat = Math.abs(pctChange) < 0.1;
+        const isFlat = Math.abs(pctChange) < 0.5;
 
         const arrow = change > 0 ? '\u2191' : change < 0 ? '\u2193' : '\u2192';
         const absPct = Math.abs(pctChange);
@@ -285,14 +294,16 @@ const App = {
         const word = isFlat ? 'Flat' : (isImproving ? 'Improving' : 'Worsening');
 
         const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
-        const formattedPrior = ChartUtils.formatCardValue(prior.value, metricData.unit, isDecimal);
+        const formattedPrior = ChartUtils.formatCardValue(priorAvg, metricData.unit, isDecimal);
+        const priorLabel = `${prior[0]}-${String(prior[prior.length - 1]).slice(-2)}`;
+        const recentLabel = `${recent[0]}-${String(recent[recent.length - 1]).slice(-2)}`;
 
         return `
             <div class="card-comp ${cls}">
-                <div class="comp-label">vs ${prior.year}</div>
+                <div class="comp-label">${recentLabel} vs ${priorLabel}</div>
                 <div class="comp-verdict">${pctLabel}</div>
                 <div class="comp-detail">${word}</div>
-                <div class="comp-context">from ${formattedPrior} in ${prior.year}</div>
+                <div class="comp-context">prior avg ${formattedPrior}</div>
             </div>
         `;
     },
@@ -487,10 +498,6 @@ const App = {
                         <div class="trend-period-note">avg of ${trendResult.recentYears.length} yr</div>
                     </div>
                 </div>`;
-            // Context from insight + crossInsight
-            const contextParts = [metricData.insight, metricData.crossInsight].filter(Boolean);
-            trendContext.textContent = contextParts.length ? contextParts[0] : '';
-            trendContext.style.display = contextParts.length ? '' : 'none';
             trendSection.style.display = '';
         } else {
             trendSection.style.display = 'none';

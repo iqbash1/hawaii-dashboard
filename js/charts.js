@@ -55,7 +55,7 @@ const ChartUtils = {
 
         if (values.filter(v => v !== null).length === 0) return null;
 
-        // Build an accessible label describing the trend
+        // Build an accessible label describing the trend (3-year avg direction)
         const nonNullHI = values.filter(v => v !== null);
         const nonNullAvg = avgValues.filter(v => v !== null);
         if (nonNullHI.length > 0 && nonNullAvg.length > 0) {
@@ -63,16 +63,16 @@ const ChartUtils = {
             const latestAvgVal = nonNullAvg[nonNullAvg.length - 1];
             const aboveBelow = latestHIVal >= latestAvgVal ? 'above' : 'below';
             let trend = 'stable';
-            if (nonNullHI.length >= 2) {
-                const prev = nonNullHI[nonNullHI.length - 2];
-                const curr = nonNullHI[nonNullHI.length - 1];
-                const moved = curr > prev ? 'up' : curr < prev ? 'down' : 'flat';
-                if (moved === 'flat') {
-                    trend = 'stable';
-                } else if (goodDirection === 'up') {
-                    trend = moved === 'up' ? 'improving' : 'worsening';
-                } else {
-                    trend = moved === 'down' ? 'improving' : 'worsening';
+            if (nonNullHI.length >= 4) {
+                const recent3 = nonNullHI.slice(-3);
+                const prior3 = nonNullHI.slice(-6, -3);
+                if (prior3.length >= 2) {
+                    const avgR = recent3.reduce((a, b) => a + b, 0) / recent3.length;
+                    const avgP = prior3.reduce((a, b) => a + b, 0) / prior3.length;
+                    const moved = avgR > avgP ? 'up' : avgR < avgP ? 'down' : 'flat';
+                    if (moved === 'flat') trend = 'stable';
+                    else if (goodDirection === 'up') trend = moved === 'up' ? 'improving' : 'worsening';
+                    else trend = moved === 'down' ? 'improving' : 'worsening';
                 }
             }
             const ariaText = `Trend chart: Hawaii is ${aboveBelow} the other-state average and ${trend}`;
