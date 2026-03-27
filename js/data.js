@@ -1393,7 +1393,7 @@ const DASHBOARD_DATA = {
     "sourceUrl": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html",
     "whyItMatters": "<strong>This is the verdict metric: people voting with their feet.</strong> When residents leave, it reflects the cumulative effect of every other metric on this dashboard: housing costs shaped by state zoning, job availability driven by DBEDT diversification efforts, tax burden set by the Legislature, and overall cost of living. State housing, tax, and economic policy determine whether Hawaiʻi is a place people can afford to stay.",
     "howToRead": "Hawaiʻi briefly had net inflow in 2003 (+17 per 10K) but has been negative for most of the past two decades, peaking at -110 per 10K in 2022. The recent reading of -65 in 2024 is the best since 2015 but still far from positive.",
-    "insight": "The outflow accelerated sharply after 2005 and peaked during COVID. Housing cost is the top reason for leaving. The modest improvement in 2023-24 may reflect normalization, but the structural drivers remain.",
+    "insight": "The outflow accelerated sharply after 2005 and peaked during COVID. Housing cost is the top reason for leaving. The modest improvement in 2023-24 may reflect normalization, but deep structural issues remain.",
     "crossInsight": "This is the one metric you can't spin. Every other indicator can be explained in isolation. But when thousands more leave than arrive year after year, that's the aggregate verdict on whether the state is working for its residents.",
     "dataNote": "Census population estimates; does not capture international migration.",
     "hawaii": {
