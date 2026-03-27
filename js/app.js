@@ -448,6 +448,10 @@ const App = {
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
         document.getElementById('modal-area').textContent = areaName || metricData.area;
+        // Vintage line: data years and update cadence
+        const hiYears = Object.keys(effective.hawaii).sort();
+        const vintageText = `Data: ${hiYears[0]}-${hiYears[hiYears.length - 1]}  ·  ${metricData.updateCadence || 'Annual'}  ·  ${metricData.source}`;
+        document.getElementById('modal-vintage').textContent = vintageText;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
         const insightSection = document.getElementById('modal-insight-section');

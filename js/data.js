@@ -104,7 +104,8 @@ const DASHBOARD_DATA = {
       "2023": 351.2,
       "2024": 339.5
     },
-    "policyLevers": "Violence prevention and behavioral health; prosecution, sentencing, and reentry policy; victim services and youth intervention."
+    "policyLevers": "Violence prevention and behavioral health; prosecution, sentencing, and reentry policy; victim services and youth intervention.",
+    "updateCadence": "Annual"
   },
   "property_crime_rate": {
     "area": "Safety & Health",
@@ -204,7 +205,8 @@ const DASHBOARD_DATA = {
       "2023": 1846.51,
       "2024": 1668.06
     },
-    "policyLevers": "Substance-use treatment and diversion; prosecution and reentry policy; theft, fraud, and neighborhood prevention."
+    "policyLevers": "Substance-use treatment and diversion; prosecution and reentry policy; theft, fraud, and neighborhood prevention.",
+    "updateCadence": "Annual"
   },
   "pcp_per_100k": {
     "area": "Safety & Health",
@@ -252,7 +254,8 @@ const DASHBOARD_DATA = {
       "2022": 77.4,
       "2023": 77.3
     },
-    "policyLevers": "Provider recruitment and retention; Medicaid payment and access policy; training pipelines and rural clinic support."
+    "policyLevers": "Provider recruitment and retention; Medicaid payment and access policy; training pipelines and rural clinic support.",
+    "updateCadence": "Annual"
   },
   "uninsured_rate": {
     "area": "Safety & Health",
@@ -298,7 +301,8 @@ const DASHBOARD_DATA = {
       "2023": 0.0736,
       "2024": 0.0768
     },
-    "policyLevers": "Med-QUEST eligibility and renewals; enrollment outreach and navigator support; regulation of private coverage."
+    "policyLevers": "Med-QUEST eligibility and renewals; enrollment outreach and navigator support; regulation of private coverage.",
+    "updateCadence": "Annual"
   },
   "suicide_rate": {
     "area": "Safety & Health",
@@ -367,7 +371,8 @@ const DASHBOARD_DATA = {
       "2023": 17,
       "2024": 16.96
     },
-    "policyLevers": "Behavioral health access; school and community prevention; crisis response and post-attempt care."
+    "policyLevers": "Behavioral health access; school and community prevention; crisis response and post-attempt care.",
+    "updateCadence": "Annual"
   },
   "acgr": {
     "area": "Education",
@@ -409,7 +414,8 @@ const DASHBOARD_DATA = {
       "2021": 85.5,
       "2022": 85.9
     },
-    "policyLevers": "Attendance and dropout prevention; counseling, credit recovery, and student supports; college and career pathways."
+    "policyLevers": "Attendance and dropout prevention; counseling, credit recovery, and student supports; college and career pathways.",
+    "updateCadence": "Annual"
   },
   "ba_or_higher_pct": {
     "area": "Education",
@@ -462,7 +468,8 @@ const DASHBOARD_DATA = {
       "2023": 0.3512,
       "2024": 0.3575
     },
-    "policyLevers": "College affordability; transfer, retention, and completion support; adult learner and workforce-aligned degree pathways."
+    "policyLevers": "College affordability; transfer, retention, and completion support; adult learner and workforce-aligned degree pathways.",
+    "updateCadence": "Annual"
   },
   "naep_math_8": {
     "area": "Education",
@@ -504,7 +511,8 @@ const DASHBOARD_DATA = {
       "2022": 273.31,
       "2024": 272.81
     },
-    "policyLevers": "Strong math instruction; teacher pipeline and support; tutoring, attendance, and targeted intervention."
+    "policyLevers": "Strong math instruction; teacher pipeline and support; tutoring, attendance, and targeted intervention.",
+    "updateCadence": "Biennial"
   },
   "naep_reading_8": {
     "area": "Education",
@@ -546,7 +554,8 @@ const DASHBOARD_DATA = {
       "2022": 258.83,
       "2024": 256.94
     },
-    "policyLevers": "Early literacy and reading support; teacher pipeline and coaching; attendance and family support."
+    "policyLevers": "Early literacy and reading support; teacher pipeline and coaching; attendance and family support.",
+    "updateCadence": "Biennial"
   },
   "unemployment_rate": {
     "area": "Economy & Workforce",
@@ -662,7 +671,8 @@ const DASHBOARD_DATA = {
       "2023": 0.0307,
       "2024": 0.0369
     },
-    "policyLevers": "Sector growth and job creation; training and job matching; unemployment insurance and rapid reemployment."
+    "policyLevers": "Sector growth and job creation; training and job matching; unemployment insurance and rapid reemployment.",
+    "updateCadence": "Annual"
   },
   "labor_force_participation": {
     "area": "Economy & Workforce",
@@ -779,7 +789,8 @@ const DASHBOARD_DATA = {
       "2023": 62.9,
       "2024": 63
     },
-    "policyLevers": "Childcare and work supports; skills training and career pathways; return-to-work and barrier reduction."
+    "policyLevers": "Childcare and work supports; skills training and career pathways; return-to-work and barrier reduction.",
+    "updateCadence": "Annual"
   },
   "real_per_capita_income": {
     "area": "Economy & Workforce",
@@ -833,7 +844,8 @@ const DASHBOARD_DATA = {
       "2023": 70034,
       "2024": 72898
     },
-    "policyLevers": "Wage and tax policy; skills and career mobility; economic diversification into higher-value sectors."
+    "policyLevers": "Wage and tax policy; skills and career mobility; economic diversification into higher-value sectors.",
+    "updateCadence": "Annual"
   },
   "renter_cost_burden_pct": {
     "area": "Housing & Cost of Living",
@@ -876,7 +888,8 @@ const DASHBOARD_DATA = {
       "2023": 0.4933,
       "2024": 0.4535
     },
-    "policyLevers": "Housing production and permitting reform; rental assistance and tenant stability; infrastructure that unlocks new housing."
+    "policyLevers": "Housing production and permitting reform; rental assistance and tenant stability; infrastructure that unlocks new housing.",
+    "updateCadence": "Annual"
   },
   "home_price_to_income": {
     "area": "Housing & Cost of Living",
@@ -932,7 +945,8 @@ const DASHBOARD_DATA = {
       "2023": 4.3,
       "2024": 4.3
     },
-    "policyLevers": "Housing supply and land use reform; affordable financing and down-payment support; job and wage growth."
+    "policyLevers": "Housing supply and land use reform; affordable financing and down-payment support; job and wage growth.",
+    "updateCadence": "Annual"
   },
   "unsheltered_homeless_rate": {
     "area": "Housing & Cost of Living",
@@ -976,7 +990,8 @@ const DASHBOARD_DATA = {
       "2023": 4.8458,
       "2024": 5.5
     },
-    "policyLevers": "Permanent supportive housing; shelter, outreach, and case management; mental health, substance use, and eviction prevention."
+    "policyLevers": "Permanent supportive housing; shelter, outreach, and case management; mental health, substance use, and eviction prevention.",
+    "updateCadence": "Annual"
   },
   "road_poor_pct": {
     "area": "Infrastructure, Resilience & Trust",
@@ -1024,7 +1039,8 @@ const DASHBOARD_DATA = {
       "2022": 0.0887,
       "2023": 0.0885
     },
-    "policyLevers": "Pavement preservation funding; asset management and maintenance delivery; capital planning and resilience upgrades."
+    "policyLevers": "Pavement preservation funding; asset management and maintenance delivery; capital planning and resilience upgrades.",
+    "updateCadence": "Annual"
   },
   "broadband_subscription_pct": {
     "area": "Infrastructure, Resilience & Trust",
@@ -1060,7 +1076,8 @@ const DASHBOARD_DATA = {
       "2023": 0.9161,
       "2024": 0.9278
     },
-    "policyLevers": "Last-mile deployment; affordability and adoption support; digital skills and device access."
+    "policyLevers": "Last-mile deployment; affordability and adoption support; digital skills and device access.",
+    "updateCadence": "Annual"
   },
   "residential_price_cpkwh": {
     "area": "Housing & Cost of Living",
@@ -1150,7 +1167,8 @@ const DASHBOARD_DATA = {
       "2024": 16.5,
       "2025": 17.4
     },
-    "policyLevers": "Utility regulation and rate design; energy efficiency and bill relief; generation, fuel, and grid planning."
+    "policyLevers": "Utility regulation and rate design; energy efficiency and bill relief; generation, fuel, and grid planning.",
+    "updateCadence": "Monthly (shown annual)"
   },
   "renewables_share_gen": {
     "area": "Infrastructure, Resilience & Trust",
@@ -1215,7 +1233,8 @@ const DASHBOARD_DATA = {
       "2024": 0.2739,
       "2025": 0.2867
     },
-    "policyLevers": "Renewable procurement and permitting; grid upgrades and storage; utility planning and interconnection."
+    "policyLevers": "Renewable procurement and permitting; grid upgrades and storage; utility planning and interconnection.",
+    "updateCadence": "Monthly (shown annual)"
   },
   "food_insecurity_rate": {
     "area": "Housing & Cost of Living",
@@ -1268,7 +1287,8 @@ const DASHBOARD_DATA = {
       "2021-2023": 0.118,
       "2022-2024": 0.1295
     },
-    "policyLevers": "SNAP and WIC access; school and summer meals; local food access and emergency food support."
+    "policyLevers": "SNAP and WIC access; school and summer meals; local food access and emergency food support.",
+    "updateCadence": "3-year average"
   },
   "rainy_day_fund_pct": {
     "area": "Infrastructure, Resilience & Trust",
@@ -1315,7 +1335,8 @@ const DASHBOARD_DATA = {
       "2024": 0.1581,
       "2025": 0.1672
     },
-    "policyLevers": "Reserve deposit rules; revenue forecasting and spending discipline; disaster readiness and recovery planning."
+    "policyLevers": "Reserve deposit rules; revenue forecasting and spending discipline; disaster readiness and recovery planning.",
+    "updateCadence": "Annual"
   },
   "voter_participation_rate": {
     "area": "Infrastructure, Resilience & Trust",
@@ -1358,7 +1379,8 @@ const DASHBOARD_DATA = {
       "2022": 0.4769,
       "2024": 0.6557
     },
-    "policyLevers": "Statewide election rules and ballot access; registration and update pathways; voter education and trust."
+    "policyLevers": "Statewide election rules and ballot access; registration and update pathways; voter education and trust.",
+    "updateCadence": "Biennial (election years)"
   },
   "net_domestic_migration_rate": {
     "area": "Infrastructure, Resilience & Trust",
@@ -1424,7 +1446,8 @@ const DASHBOARD_DATA = {
       "2023": 11.6,
       "2024": 10.9
     },
-    "policyLevers": "Housing cost and supply; job quality and wages; schools, safety, and disaster resilience."
+    "policyLevers": "Housing cost and supply; job quality and wages; schools, safety, and disaster resilience.",
+    "updateCadence": "Annual"
   },
   "estabs_entry_rate": {
     "area": "Economy & Workforce",
@@ -1534,7 +1557,8 @@ const DASHBOARD_DATA = {
       "2022": 11,
       "2023": 10.2
     },
-    "policyLevers": "Licensing and permit speed; access to capital; startup assistance and procurement access."
+    "policyLevers": "Licensing and permit speed; access to capital; startup assistance and procurement access.",
+    "updateCadence": "Annual"
   },
   "net_employer_formation": {
     "area": "Economy & Workforce",
@@ -1644,7 +1668,8 @@ const DASHBOARD_DATA = {
       "2022": 1.8,
       "2023": 1.1
     },
-    "policyLevers": "Business climate and permitting; infrastructure and site readiness; capital access and sector development."
+    "policyLevers": "Business climate and permitting; infrastructure and site readiness; capital access and sector development.",
+    "updateCadence": "Annual"
   },
   "labor_productivity": {
     "area": "Economy & Workforce",
@@ -1698,6 +1723,7 @@ const DASHBOARD_DATA = {
       "2023": 111.1,
       "2024": 113.9
     },
-    "policyLevers": "Infrastructure and technology adoption; workforce skills; business environment and innovation support."
+    "policyLevers": "Infrastructure and technology adoption; workforce skills; business environment and innovation support.",
+    "updateCadence": "Annual"
   }
 };

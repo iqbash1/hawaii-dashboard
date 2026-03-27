@@ -450,6 +450,13 @@ body {
     margin-top: 0.15rem;
 }
 
+.modal-vintage {
+    font-size: 0.72rem;
+    color: #9AA8B4;
+    margin-top: 0.25rem;
+    letter-spacing: 0.01em;
+}
+
 /* --- Modal Tabs --- */
 .modal-tabs {
     display: flex;
