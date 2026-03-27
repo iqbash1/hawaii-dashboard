@@ -829,7 +829,7 @@ const ChartUtils = {
                     // Q1, Median, Q3 lines with labels
                     const lines = [
                         { val: distStats.q1, label: '25th', dash: [4, 4], alpha: 0.15, width: 1 },
-                        { val: distStats.median, label: '50th', dash: [6, 3], alpha: 0.3, width: 1.5 },
+                        { val: distStats.median, label: 'Median', dash: [6, 3], alpha: 0.3, width: 1.5 },
                         { val: distStats.q3, label: '75th', dash: [4, 4], alpha: 0.15, width: 1 },
                     ];
                     lines.forEach(line => {
@@ -848,6 +848,10 @@ const ChartUtils = {
                             ctx.fillStyle = `rgba(13, 124, 143, ${Math.min(line.alpha + 0.2, 0.55)})`;
                             ctx.textAlign = 'center';
                             ctx.fillText(line.label, x, topEdge + 6);
+                            // Value at bottom of chart
+                            ctx.font = '500 9px Inter, sans-serif';
+                            ctx.fillStyle = `rgba(13, 124, 143, ${Math.min(line.alpha + 0.15, 0.45)})`;
+                            ctx.fillText(distStats.fmt(line.val), x, chartArea.bottom + 14);
                         }
                     });
                 }
@@ -934,12 +938,7 @@ const ChartUtils = {
                             axis.ticks = xTicks.map(v => ({ value: v }));
                         },
                         grid: {
-                            display: true,
-                            color: 'rgba(0,0,0,0.12)',
-                            borderDash: [4, 3],
-                            drawTicks: false,
-                            drawOnChartArea: true,
-                            lineWidth: 1,
+                            display: false,
                         },
                         border: { display: false },
                         ticks: {

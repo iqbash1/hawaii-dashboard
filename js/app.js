@@ -969,26 +969,57 @@ const App = {
             XLSX.utils.book_append_sheet(wb, wsCounty, 'County Data');
         }
 
-        // --- Tab 5: "Methodology" ---
+        // --- Tab 5: "Methodology" (reproducibility reference) ---
         const methRows = [
+            ['METRIC DEFINITION'],
             ['Metric', m.metric],
-            m.officialName ? ['Official Name', m.officialName] : [],
+            m.officialName ? ['Federal Name', m.officialName] : [],
             ['Unit', m.unit],
             ['Area', m.area],
-            ['Good Direction', m.goodDirection === 'up' ? 'Higher is better' : 'Lower is better'],
+            ['Direction', m.goodDirection === 'up' ? 'Higher is better' : 'Lower is better'],
             [],
+            ['DATA SOURCE'],
             ['Source', m.source],
             ['Source URL', m.sourceUrl],
+        ];
+        if (sd) {
+            methRows.push(
+                ['Calculation', sd.calculation || ''],
+                ['Raw Variables', sd.rawVariables || ''],
+                ['Source Table', sd.source || ''],
+            );
+        }
+        methRows.push(
             [],
+            ['COMPARATOR'],
+            ['Other State Average', 'Simple mean of 49 states, excluding Hawai\u02BBi. DC excluded from rankings.'],
+            ['Hawai\u02BBi Value', 'Pulled from same source, same variable, same year.'],
+        );
+        if (slug === 'real_per_capita_income') {
+            methRows.push(
+                [],
+                ['COST-OF-LIVING ADJUSTMENT'],
+                ['Method', 'BEA Regional Price Parities (RPPs)'],
+                ['What RPPs do', 'Adjust nominal income by state-level price differences for goods, services, and housing.'],
+                ['Reference', 'https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area'],
+            );
+        }
+        methRows.push(
+            [],
+            ['NARRATIVE'],
             ['Why It Matters', m.whyItMatters.replace(/<[^>]*>/g, '')],
             ['How To Read It', m.howToRead],
-        ];
-        if (m.insight) methRows.push(['Insight', m.insight]);
-        if (sd) {
-            methRows.push([], ['Calculation', sd.calculation || ''], ['Raw Variables', sd.rawVariables || '']);
-        }
-        methRows.push([], ['Other State Avg', 'Simple mean of 49 states (excluding HI and DC)']);
-        methRows.push(['Dashboard', 'hawaiidashboard.org']);
+        );
+        if (m.insight) methRows.push(['Latest Trend', m.insight]);
+        if (m.crossInsight) methRows.push(['Insight', m.crossInsight]);
+        if (m.dataNote) methRows.push([], ['Data Note', m.dataNote]);
+        methRows.push(
+            [],
+            ['REPRODUCIBILITY'],
+            ['To reproduce', 'Pull the raw variables from the source URL for all 50 states. Apply the calculation formula. Compute the other-state average as the simple mean excluding Hawai\u02BBi.'],
+            ['Dashboard', 'hawaiidashboard.org'],
+            ['Data updated', document.getElementById('last-updated')?.textContent || ''],
+        );
         const wsMeth = XLSX.utils.aoa_to_sheet(methRows.filter(r => r.length > 0));
         XLSX.utils.book_append_sheet(wb, wsMeth, 'Methodology');
 
@@ -1093,6 +1124,7 @@ const App = {
             q1: sortedVals[Math.floor(sortedVals.length * 0.25)],
             median: sortedVals[Math.floor(sortedVals.length * 0.5)],
             q3: sortedVals[Math.floor(sortedVals.length * 0.75)],
+            fmt: (v) => ChartUtils.formatValue(v, metricData.unit, false),
         };
 
         // Create chart with distribution lines
