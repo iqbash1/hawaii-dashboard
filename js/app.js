@@ -302,8 +302,14 @@ const App = {
         this.sparklineCharts.forEach(c => c && c.destroy());
         this.sparklineCharts = [];
 
-        // One card per metric, ordered by area
+        // One card per metric, ordered by area, with section headings
         this.AREA_ORDER.forEach(areaGroup => {
+            // Section heading for this area
+            const section = document.createElement('div');
+            section.className = 'area-section-heading';
+            section.innerHTML = `<span class="area-section-icon">${AREA_ICONS[areaGroup.area] || ''}</span><span class="area-section-label">${areaGroup.area}</span>`;
+            grid.appendChild(section);
+
             areaGroup.metrics.forEach(slug => {
                 const effective = this.getEffectiveData(slug);
                 if (!effective) return;
@@ -320,10 +326,6 @@ const App = {
                     : '';
 
                 card.innerHTML = `
-                    <div class="card-header">
-                        <div class="card-icon">${AREA_ICONS[areaGroup.area] || ''}</div>
-                        <div class="card-area">${areaGroup.area}</div>
-                    </div>
                     <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">
                         <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, effective.unit, isDecimal)}</span>

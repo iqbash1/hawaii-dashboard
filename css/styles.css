@@ -145,6 +145,35 @@ body {
     gap: 1rem;
 }
 
+/* --- Area section headings --- */
+.area-section-heading {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+    margin-top: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.area-section-heading:first-child {
+    margin-top: 0;
+}
+
+.area-section-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.area-section-label {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+}
+
 /* --- Card --- */
 .card {
     background: var(--card-bg);
@@ -169,35 +198,6 @@ body {
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    margin-bottom: 0.5rem;
-}
-
-.card-icon {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.card-icon svg {
-    width: 22px;
-    height: 22px;
-}
-
-.card-area {
-    font-family: var(--font-heading);
-    font-size: 0.7rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--hawaii-blue);
-}
 
 .comp-rank {
     font-family: var(--font-heading);
