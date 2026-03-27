@@ -1205,6 +1205,7 @@ const App = {
         // All state dots (non-labeled ones first, smaller)
         stateValues.forEach((s, i) => {
             if (labelIndices.has(i)) return;
+            const abbr = this.abbreviateState(s.state);
             const dot = document.createElementNS(ns, 'circle');
             dot.setAttribute('cx', px(s.value));
             dot.setAttribute('cy', dotY);
@@ -1212,6 +1213,11 @@ const App = {
             dot.setAttribute('fill', '#C3CDD7');
             dot.setAttribute('stroke', '#fff');
             dot.setAttribute('stroke-width', '0.5');
+            dot.setAttribute('style', 'cursor:pointer');
+            // Native tooltip on hover
+            const title = document.createElementNS(ns, 'title');
+            title.textContent = `${s.state}: ${fmt(s.value)} (#${i + 1})`;
+            dot.appendChild(title);
             svg.appendChild(dot);
         });
 
@@ -1238,6 +1244,10 @@ const App = {
             dot.setAttribute('fill', fill);
             dot.setAttribute('stroke', '#fff');
             dot.setAttribute('stroke-width', isHawaii ? '2' : '1');
+            dot.setAttribute('style', 'cursor:pointer');
+            const title = document.createElementNS(ns, 'title');
+            title.textContent = `${s.state}: ${fmt(s.value)} (#${idx + 1})`;
+            dot.appendChild(title);
             svg.appendChild(dot);
 
             // Skip text labels if they would collide with an already-placed label
