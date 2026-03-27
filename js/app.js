@@ -1093,6 +1093,9 @@ const App = {
             canvas, stateValues, metricData.goodDirection, metricData.unit
         );
 
+        // Dot strip distribution plot
+        this.buildDotStrip(stateValues, metricData.unit, hawaiiRank);
+
         // Show scroll hint
         const hint = document.getElementById('rankings-scroll-hint');
         if (hint) {
@@ -1111,6 +1114,188 @@ const App = {
             modal.addEventListener('scroll', onScroll);
             this._rankingsScrollHandler = onScroll;
         }
+    },
+
+    buildDotStrip(stateValues, unit, hawaiiRank) {
+        const container = document.getElementById('dot-strip-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const n = stateValues.length;
+        if (n < 3) return;
+
+        const values = stateValues.map(s => s.value);
+        const sorted = [...values].sort((a, b) => a - b);
+        const q1 = sorted[Math.floor(n * 0.25)];
+        const median = sorted[Math.floor(n * 0.5)];
+        const q3 = sorted[Math.floor(n * 0.75)];
+        const minVal = sorted[0];
+        const maxVal = sorted[n - 1];
+        const range = maxVal - minVal || 1;
+        const pad = range * 0.06;
+        const scaleMin = minVal - pad;
+        const scaleMax = maxVal + pad;
+
+        // Hawaii index in the sorted-by-rank array (stateValues is already sorted best-to-worst)
+        const hiIdx = hawaiiRank - 1;
+        const hiVal = stateValues[hiIdx]?.value;
+        const hiState = stateValues[hiIdx]?.state;
+
+        // States to label: lowest (rank 1), highest (rank N), and Hawaii's immediate neighbors
+        const labelIndices = new Set();
+        labelIndices.add(0);           // best
+        labelIndices.add(n - 1);       // worst
+        if (hiIdx > 0) labelIndices.add(hiIdx - 1);   // neighbor above
+        if (hiIdx < n - 1) labelIndices.add(hiIdx + 1); // neighbor below
+        labelIndices.add(hiIdx);       // Hawaii itself
+
+        const fmt = (v) => ChartUtils.formatValue(v, unit, false);
+
+        // SVG dimensions
+        const svgW = 700;
+        const svgH = 72;
+        const padL = 12;
+        const padR = 12;
+        const plotW = svgW - padL - padR;
+        const dotY = 30;
+
+        const px = (v) => padL + ((v - scaleMin) / (scaleMax - scaleMin)) * plotW;
+
+        const ns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+        svg.setAttribute('class', 'dot-strip-svg');
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', `Distribution of all ${n} states`);
+
+        // IQR box
+        const iqr = document.createElementNS(ns, 'rect');
+        iqr.setAttribute('x', px(q1));
+        iqr.setAttribute('y', dotY - 10);
+        iqr.setAttribute('width', px(q3) - px(q1));
+        iqr.setAttribute('height', 20);
+        iqr.setAttribute('rx', 3);
+        iqr.setAttribute('fill', 'rgba(13, 124, 143, 0.06)');
+        iqr.setAttribute('stroke', 'rgba(13, 124, 143, 0.15)');
+        iqr.setAttribute('stroke-width', '1');
+        svg.appendChild(iqr);
+
+        // Median tick
+        const medLine = document.createElementNS(ns, 'line');
+        medLine.setAttribute('x1', px(median));
+        medLine.setAttribute('y1', dotY - 12);
+        medLine.setAttribute('x2', px(median));
+        medLine.setAttribute('y2', dotY + 12);
+        medLine.setAttribute('stroke', 'rgba(13, 124, 143, 0.35)');
+        medLine.setAttribute('stroke-width', '1.5');
+        svg.appendChild(medLine);
+
+        // Median label
+        const medLabel = document.createElementNS(ns, 'text');
+        medLabel.setAttribute('x', px(median));
+        medLabel.setAttribute('y', 12);
+        medLabel.setAttribute('text-anchor', 'middle');
+        medLabel.setAttribute('font-size', '9');
+        medLabel.setAttribute('font-weight', '500');
+        medLabel.setAttribute('fill', 'rgba(13, 124, 143, 0.5)');
+        medLabel.setAttribute('font-family', 'Inter, sans-serif');
+        medLabel.textContent = 'Median';
+        svg.appendChild(medLabel);
+
+        // All state dots (non-labeled ones first, smaller)
+        stateValues.forEach((s, i) => {
+            if (labelIndices.has(i)) return;
+            const dot = document.createElementNS(ns, 'circle');
+            dot.setAttribute('cx', px(s.value));
+            dot.setAttribute('cy', dotY);
+            dot.setAttribute('r', 3.5);
+            dot.setAttribute('fill', '#C3CDD7');
+            dot.setAttribute('stroke', '#fff');
+            dot.setAttribute('stroke-width', '0.5');
+            svg.appendChild(dot);
+        });
+
+        // Labeled state dots (neighbors, min, max) with collision detection
+        // Hawaii label always placed first, then others skip if too close
+        const placedLabels = []; // array of {x, halfW} for collision checks
+        const minLabelGap = 40; // minimum px gap between label centers
+
+        const wouldCollide = (x) => {
+            return placedLabels.some(p => Math.abs(x - p.x) < minLabelGap);
+        };
+
+        const addLabeledDot = (idx, isHawaii) => {
+            const s = stateValues[idx];
+            if (!s) return;
+            const x = px(s.value);
+            const r = isHawaii ? 6 : 4.5;
+            const fill = isHawaii ? '#0D7C8F' : '#7A8A9A';
+
+            const dot = document.createElementNS(ns, 'circle');
+            dot.setAttribute('cx', x);
+            dot.setAttribute('cy', dotY);
+            dot.setAttribute('r', r);
+            dot.setAttribute('fill', fill);
+            dot.setAttribute('stroke', '#fff');
+            dot.setAttribute('stroke-width', isHawaii ? '2' : '1');
+            svg.appendChild(dot);
+
+            // Skip text labels if they would collide with an already-placed label
+            if (!isHawaii && wouldCollide(x)) return;
+
+            const shortName = isHawaii ? 'Hawai\u02BBi' : this.abbreviateState(s.state);
+            const label = document.createElementNS(ns, 'text');
+            label.setAttribute('x', x);
+            label.setAttribute('y', dotY + 22);
+            label.setAttribute('text-anchor', 'middle');
+            label.setAttribute('font-size', isHawaii ? '9' : '8');
+            label.setAttribute('font-weight', isHawaii ? '700' : '500');
+            label.setAttribute('fill', isHawaii ? '#0D7C8F' : '#888');
+            label.setAttribute('font-family', 'Inter, sans-serif');
+            label.textContent = shortName;
+            svg.appendChild(label);
+
+            const valLabel = document.createElementNS(ns, 'text');
+            valLabel.setAttribute('x', x);
+            valLabel.setAttribute('y', dotY + 32);
+            valLabel.setAttribute('text-anchor', 'middle');
+            valLabel.setAttribute('font-size', '7.5');
+            valLabel.setAttribute('font-weight', '400');
+            valLabel.setAttribute('fill', isHawaii ? '#0D7C8F' : '#aaa');
+            valLabel.setAttribute('font-family', 'Inter, sans-serif');
+            valLabel.textContent = fmt(s.value);
+            svg.appendChild(valLabel);
+
+            placedLabels.push({ x });
+        };
+
+        // Hawaii first (always placed), then others check for collision
+        addLabeledDot(hiIdx, true);
+        [...labelIndices].filter(i => i !== hiIdx).forEach(i => addLabeledDot(i, false));
+
+        // Label
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'dot-strip-label';
+        labelDiv.textContent = `Distribution of all ${n} states`;
+        container.appendChild(labelDiv);
+        container.appendChild(svg);
+    },
+
+    abbreviateState(name) {
+        const abbrevs = {
+            'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+            'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+            'Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
+            'Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA',
+            'Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT',
+            'Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM',
+            'New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+            'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+            'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+            'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY',
+            'Hawai\u02BBi':'HI','Hawaii':'HI',
+        };
+        return abbrevs[name] || name.slice(0, 2).toUpperCase();
     },
 
     hideRankings() {
