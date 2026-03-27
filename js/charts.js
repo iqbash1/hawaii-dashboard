@@ -839,18 +839,18 @@ const ChartUtils = {
                             ctx.setLineDash(line.dash);
                             ctx.strokeStyle = `rgba(13, 124, 143, ${line.alpha})`;
                             ctx.lineWidth = line.width;
-                            ctx.moveTo(x, topEdge + 10);
+                            ctx.moveTo(x, topEdge + 14);
                             ctx.lineTo(x, chartArea.bottom);
                             ctx.stroke();
                             // Percentile label at top
                             ctx.setLineDash([]);
-                            ctx.font = '600 8px Inter, sans-serif';
-                            ctx.fillStyle = `rgba(13, 124, 143, ${Math.min(line.alpha + 0.2, 0.55)})`;
+                            ctx.font = '600 10px Inter, sans-serif';
+                            ctx.fillStyle = '#7A8A9A';
                             ctx.textAlign = 'center';
-                            ctx.fillText(line.label, x, topEdge + 6);
+                            ctx.fillText(line.label, x, topEdge + 8);
                             // Value at bottom of chart
                             ctx.font = '500 9px Inter, sans-serif';
-                            ctx.fillStyle = `rgba(13, 124, 143, ${Math.min(line.alpha + 0.15, 0.45)})`;
+                            ctx.fillStyle = '#9AA8B4';
                             ctx.fillText(distStats.fmt(line.val), x, chartArea.bottom + 14);
                         }
                     });
@@ -897,6 +897,78 @@ const ChartUtils = {
                 ctx.restore();
             }
         };
+
+        // Dot strip hover/click interaction
+        let hoveredDotIdx = -1;
+        const dotStripHoverPlugin = {
+            id: 'dotStripHover',
+            afterDatasetsDraw(chart) {
+                if (hoveredDotIdx < 0 || hoveredDotIdx >= stateValues.length) return;
+                const { ctx: c, scales } = chart;
+                const xScale = scales.x;
+                const s = stateValues[hoveredDotIdx];
+                const x = xScale.getPixelForValue(s.value);
+                const y = chart.chartArea.top - 35;
+                c.save();
+                // Enlarged dot
+                c.beginPath();
+                c.arc(x, y, 6, 0, Math.PI * 2);
+                c.fillStyle = hoveredDotIdx === hiIdx ? '#0D7C8F' : '#7A8A9A';
+                c.fill();
+                c.strokeStyle = '#fff';
+                c.lineWidth = 1.5;
+                c.stroke();
+                // Label above
+                const abbr = s.state.length > 2 ? (s.state.substring(0, 2).toUpperCase()) : s.state;
+                const text = `${abbr} ${fmt(s.value, unit)}`;
+                c.font = '600 10px Inter, sans-serif';
+                c.textAlign = 'center';
+                c.fillStyle = '#444';
+                c.fillText(text, x, y - 12);
+                c.restore();
+            }
+        };
+        const canvasEl = ctx.canvas || ctx;
+        const findDot = (e) => {
+            const chart = Chart.getChart(canvasEl);
+            if (!chart) return -1;
+            const rect = canvasEl.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            const dotY = chart.chartArea.top - 35;
+            if (Math.abs(my - dotY) > 12) return -1;
+            const xScale = chart.scales.x;
+            let closest = -1, closestDist = 15;
+            stateValues.forEach((s, i) => {
+                const dx = Math.abs(mx - xScale.getPixelForValue(s.value));
+                if (dx < closestDist) { closestDist = dx; closest = i; }
+            });
+            return closest;
+        };
+        canvasEl.addEventListener('mousemove', (e) => {
+            const idx = findDot(e);
+            if (idx !== hoveredDotIdx) {
+                hoveredDotIdx = idx;
+                canvasEl.style.cursor = idx >= 0 ? 'pointer' : '';
+                const chart = Chart.getChart(canvasEl);
+                if (chart) chart.draw();
+            }
+        });
+        canvasEl.addEventListener('mouseleave', () => {
+            if (hoveredDotIdx >= 0) {
+                hoveredDotIdx = -1;
+                const chart = Chart.getChart(canvasEl);
+                if (chart) chart.draw();
+            }
+        });
+        canvasEl.addEventListener('click', (e) => {
+            const idx = findDot(e);
+            if (idx >= 0) {
+                hoveredDotIdx = idx;
+                const chart = Chart.getChart(canvasEl);
+                if (chart) chart.draw();
+            }
+        });
 
         const self = this;
         return new Chart(ctx, {
@@ -952,7 +1024,7 @@ const ChartUtils = {
                 },
                 animation: { duration: 400 }
             },
-            plugins: [rowBgPlugin, dotStripPlugin, {
+            plugins: [rowBgPlugin, dotStripPlugin, dotStripHoverPlugin, {
                 id: 'valueLabels',
                 afterDatasetsDraw(chart) {
                     const { ctx, chartArea } = chart;
