@@ -9,7 +9,7 @@
 //
 // Data sources:
 //   Census ACS 1-Year: ba_or_higher_pct, broadband_subscription_pct,
-//       renter_cost_burden_pct, uninsured_rate, transit_mode_share,
+//       renter_cost_burden_pct, uninsured_rate,
 //       home_price_to_income, labor_force_participation
 //   BEA: real_per_capita_income
 //   BLS LAUS: unemployment_rate, labor_force_participation (fallback)
@@ -167,15 +167,6 @@ async function fetchUninsured() {
     }, ACS_YEARS, true);
 }
 
-async function fetchTransitMode() {
-    return fetchACSCounty("Public transit commuters (B08301)", 'B08301_001E,B08301_010E', (row) => {
-        const total = parseFloat(row['B08301_001E']);
-        const transit = parseFloat(row['B08301_010E']);
-        if (isNaN(total) || isNaN(transit) || total <= 0) return null;
-        const pct = transit / total;
-        return pct >= 0 ? parseFloat(pct.toFixed(4)) : null;
-    });
-}
 
 async function fetchHomePriceToIncome() {
     return fetchACSCounty("Home price-to-income (B25077/B19013)", 'B25077_001E,B19013_001E', (row) => {
@@ -503,7 +494,6 @@ async function main() {
         ['broadband_subscription_pct', fetchBroadband],
         ['renter_cost_burden_pct', fetchRenterCostBurden],
         ['uninsured_rate', fetchUninsured],
-        ['transit_mode_share', fetchTransitMode],
         ['home_price_to_income', fetchHomePriceToIncome],
         ['labor_force_participation', fetchLaborForceParticipation],
     ];
@@ -585,7 +575,7 @@ async function main() {
     const targetMetrics = [
         'unemployment_rate', 'labor_force_participation', 'ba_or_higher_pct',
         'broadband_subscription_pct', 'renter_cost_burden_pct', 'uninsured_rate',
-        'transit_mode_share', 'home_price_to_income', 'real_per_capita_income',
+        'home_price_to_income', 'real_per_capita_income',
         'net_domestic_migration_rate', 'estabs_entry_rate', 'net_employer_formation',
         'violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'suicide_rate',
         'unsheltered_homeless_rate', 'voter_participation_rate',

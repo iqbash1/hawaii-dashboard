@@ -143,10 +143,10 @@ python3 scripts/generate-og-pages.py
 ```
 
 This reads `js/data.js` + `js/state-data.js` and produces:
-- 27 trend OG images (`assets/og/{slug}.png`)
-- 27 rankings OG images (`assets/og/{slug}_rankings.png`)
+- 26 trend OG images (`assets/og/{slug}.png`)
+- 26 rankings OG images (`assets/og/{slug}_rankings.png`)
 - 26 trend redirect pages (`t/{slug}/index.html`)
-- 27 rankings redirect pages (`r/{slug}/index.html`)
+- 26 rankings redirect pages (`r/{slug}/index.html`)
 
 ---
 
