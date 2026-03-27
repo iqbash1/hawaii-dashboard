@@ -656,7 +656,7 @@ const App = {
                 ${unitSuffix}
             </div>
             <div class="stat-card">
-                <div class="stat-label">Other State Avg (${latestAvg.year || '-'})</div>
+                <div class="stat-label">Other-states average (${latestAvg.year || '-'})</div>
                 <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, effective.unit, isDecimal)}</div>
                 ${unitSuffix}
             </div>
@@ -1116,7 +1116,7 @@ const App = {
             ? ` · Using ${year} data (latest with all states)`
             : '';
         document.getElementById('rankings-rank').textContent =
-            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote}`;
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states (#1 = best)${yearNote}`;
 
         // Compute distribution stats (shared between dot strip and rankings chart)
         const sortedVals = stateValues.map(s => s.value).sort((a, b) => a - b);
