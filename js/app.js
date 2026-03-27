@@ -1101,8 +1101,9 @@ const App = {
             canvas, stateValues, metricData.goodDirection, metricData.unit, distStats
         );
 
-        // Dot strip distribution plot
-        this.buildDotStrip(stateValues, metricData.unit, hawaiiRank, distStats);
+        // Hide the separate dot strip container (now integrated into chart)
+        const dotStripEl = document.getElementById('dot-strip-container');
+        if (dotStripEl) dotStripEl.innerHTML = '';
 
         // Show scroll hint
         const hint = document.getElementById('rankings-scroll-hint');

@@ -17,7 +17,7 @@ js/
   data.js               Metric definitions + Hawaiʻi/other-state-avg time series
   state-data.js          Per-state data for all 50 states (used for rankings)
   county-data.js         Per-county data for Honolulu, Hawaiʻi, Maui, Kauai
-methods/index.html      Methodology page (metric registry, comparator rules)
+about/index.html        About page (metric registry, comparator rules)
 t/{slug}/index.html     Detail view redirect pages (with OG tags)
 r/{slug}/index.html     Rankings view redirect pages (with OG tags)
 c/{slug}/index.html     County view redirect pages (with OG tags)

@@ -2,12 +2,166 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="canonical" href="/methods/">
-    <meta http-equiv="refresh" content="0;url=/methods/">
-    <title>Redirecting to Methods &amp; Sources</title>
-    <script>window.location.replace("/methods/");</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About the Dashboard - Hawai&#x02BB;i Dashboard</title>
+    <meta name="description" content="About the Hawai&#x02BB;i Dashboard: selection criteria, data sources, metric definitions, and methodology.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23384B5B' stroke='%23fff' stroke-width='2'/%3E%3Cpolygon points='32,6 36,28 32,32 28,28' fill='%23e74c3c'/%3E%3Cpolygon points='32,58 28,36 32,32 36,36' fill='%23fff'/%3E%3Cpolygon points='6,32 28,28 32,32 28,36' fill='%23fff'/%3E%3Cpolygon points='58,32 36,36 32,32 36,28' fill='%23fff'/%3E%3Ccircle cx='32' cy='32' r='3' fill='%23fff'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        body { background: var(--bg); font-family: var(--font); color: var(--text); }
+        .methods-header { background: var(--bg); padding: 1.5rem 1.5rem 1rem; text-align: center; }
+        .methods-header h1 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
+        .methods-header .back-link { color: var(--hawaii-blue); text-decoration: none; font-size: 0.82rem; font-weight: 500; }
+        .methods-header .back-link:hover { text-decoration: underline; }
+        .methods-content { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+        .methods-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+        .methods-section h2 { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--hawaii-blue); margin-bottom: 0.75rem; }
+        .methods-section p, .methods-section li { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+        .methods-section ol li::marker { font-weight: 700; }
+        .methods-section p + p { margin-top: 0.4rem; }
+
+        .registry-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 0.5rem; }
+        .registry-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        .registry-table thead th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+        .registry-table tbody td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); }
+        .registry-table tbody tr:hover td { background: #f9f9f9; }
+        .registry-table .metric-name { font-weight: 500; color: var(--text); }
+        .registry-table .area-cell { white-space: nowrap; }
+        .registry-table .direction-cell { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+        .registry-table a { color: var(--hawaii-blue); text-decoration: none; }
+        .registry-table a:hover { text-decoration: underline; }
+
+        .gov-table { border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; }
+        .gov-table th { text-align: left; padding: 0.35rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; }
+        .gov-table td { padding: 0.3rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); }
+        .gov-table .party-d { color: #2563EB; font-weight: 600; }
+        .gov-table .party-r { color: #C0392B; font-weight: 600; }
+
+        .update-list { list-style: disc; padding-left: 1.25rem; }
+        .update-list li { padding: 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); }
+        .update-date { font-weight: 600; color: var(--text); }
+        .methods-footer-note { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
+
+        @media (max-width: 640px) {
+            .methods-section { padding: 1rem; }
+            .methods-header h1 { font-size: 1.25rem; }
+            .registry-table { min-width: 600px; }
+        }
+    </style>
 </head>
 <body>
-    <p>Redirecting to <a href="/methods/">Methods &amp; Sources</a>...</p>
+
+    <header class="methods-header">
+        <h1>About the Dashboard</h1>
+        <a href="../" class="back-link">&larr; Back to Dashboard</a>
+    </header>
+
+    <div class="methods-content">
+
+        <section class="methods-section">
+            <h2>Why This Dashboard</h2>
+            <p>Hawai&#x02BB;i has strong, detailed data by sector through organizations like UHERO, DBEDT, and individual state agencies. But it is still difficult to quickly see the full picture of outcomes that matter most to residents.</p>
+            <p>This dashboard is meant to fill that gap. It tracks a small set of key outcomes across housing, health, education, economy, and workforce to provide a clear view of how Hawai&#x02BB;i is doing overall, and where the state is ahead or falling behind.</p>
+            <p>We hope this can help support broader alignment across government and community partners around shared priorities for the state.</p>
+        </section>
+
+        <section class="methods-section">
+            <h2>Why These 27 Metrics</h2>
+            <p>Every metric on this dashboard must pass seven criteria. A metric that fails any one of them is excluded, regardless of how interesting it might be.</p>
+            <ol style="padding-left: 1.25rem; margin-top: 0.5rem;">
+                <li style="padding: 0.3rem 0;"><strong>Relevant to residents.</strong> Captures something that directly affects daily life in Hawai&#x02BB;i: safety, health, cost of living, jobs, education, infrastructure.</li>
+                <li style="padding: 0.3rem 0;"><strong>Outcome-based.</strong> Measures what residents actually experience, not government activity or output. For example: we track the violent crime rate (the outcome a resident feels), not the number of police officers hired (activity) or arrests made (output).</li>
+                <li style="padding: 0.3rem 0;"><strong>Influenced by state policy.</strong> The state government has meaningful levers to move the needle, whether through legislation, regulation, funding, or executive action.</li>
+                <li style="padding: 0.3rem 0;"><strong>Consistent and nonpartisan.</strong> Sourced from authoritative federal agencies or established nonpartisan research organizations (FBI, Census Bureau, BLS, BEA, CDC, EIA, HUD, NCES, HRSA, FHWA, and others) that report data using the same methodology for all 50 states.</li>
+                <li style="padding: 0.3rem 0;"><strong>Long time series.</strong> Available over enough years to show real trends, not just a single snapshot. Most metrics span multiple decades.</li>
+                <li style="padding: 0.3rem 0;"><strong>Clear direction.</strong> Every metric has an unambiguous "better" or "worse" direction. No metrics where reasonable people would disagree on the goal.</li>
+                <li style="padding: 0.3rem 0;"><strong>Non-redundant.</strong> Each metric tells a distinct part of the story. We avoid stacking multiple metrics that say the same thing.</li>
+            </ol>
+            <p style="margin-top: 0.75rem;">Of the 27 metrics, 13 also include county-level breakdowns (Honolulu, Hawai&#x02BB;i, Maui, and Kauai) where the underlying federal data supports it, allowing for more granular analysis within the state.</p>
+        </section>
+
+        <section class="methods-section">
+            <h2>How We Compare</h2>
+            <p><strong>"Other State Average"</strong> is the simple mean of the 49 other states (excluding Hawai&#x02BB;i). DC is excluded from rankings.</p>
+            <p>All data comes from federal agencies and established public research organizations that report consistently across all 50 states.</p>
+            <p><strong>"Better" and "Worse"</strong> reflect the direction of each metric. Lower crime and unemployment are better, while higher graduation rates and incomes are better.</p>
+            <p><strong>Rankings</strong> run from #1 (best) to #50 (worst).</p>
+        </section>
+
+        <section class="methods-section">
+            <h2>Metric Registry</h2>
+            <p>All 27 metrics, with linked sources, unit, time span, and direction.</p>
+            <div class="registry-wrap">
+                <table class="registry-table">
+                    <thead>
+                        <tr><th>Metric</th><th>Area</th><th>Source</th><th>Unit</th><th>Years</th><th>Direction</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="metric-name">Violent Crime Rate</td><td class="area-cell">Crime</td><td><a href="https://cde.ucr.cjis.gov/" target="_blank" rel="noopener">FBI Crime Data Explorer</a></td><td>per 100K</td><td>1985-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Property Crime Rate</td><td class="area-cell">Crime</td><td><a href="https://cde.ucr.cjis.gov/" target="_blank" rel="noopener">FBI UCR</a></td><td>per 100K</td><td>1985-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Primary Care Physicians (civilian)</td><td class="area-cell">Health</td><td><a href="https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf" target="_blank" rel="noopener">HRSA AHRF</a></td><td>per 100K</td><td>2010-2023</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Uninsured Rate</td><td class="area-cell">Health</td><td><a href="https://www.kff.org/topic/uninsured/" target="_blank" rel="noopener">Census ACS / KFF</a></td><td>%</td><td>2010-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Suicide Rate</td><td class="area-cell">Health</td><td><a href="https://www.cdc.gov/suicide/facts/data.html" target="_blank" rel="noopener">CDC NVSS</a></td><td>per 100K</td><td>1999-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Renters Paying 30%+ for Housing</td><td class="area-cell">Cost of Living</td><td><a href="https://data.census.gov/" target="_blank" rel="noopener">Census ACS</a></td><td>%</td><td>2012-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Home Price-to-Income Ratio</td><td class="area-cell">Cost of Living</td><td><a href="https://data.census.gov/" target="_blank" rel="noopener">Census ACS</a></td><td>&times;</td><td>2005-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Unsheltered Homeless</td><td class="area-cell">Cost of Living</td><td><a href="https://www.huduser.gov/portal/datasets/ahar.html" target="_blank" rel="noopener">HUD PIT Count</a></td><td>per 10K</td><td>2012-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Residential Electricity Price</td><td class="area-cell">Energy</td><td><a href="https://www.eia.gov/electricity/data/state/" target="_blank" rel="noopener">EIA</a></td><td>&cent;/kWh</td><td>1990-2025</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Electricity from Renewables</td><td class="area-cell">Energy</td><td><a href="https://www.eia.gov/electricity/data/state/" target="_blank" rel="noopener">EIA</a></td><td>%</td><td>2003-2025</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Food Insecurity Rate</td><td class="area-cell">Food Security</td><td><a href="https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us" target="_blank" rel="noopener">USDA ERS</a></td><td>%</td><td>2006-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Unemployment Rate</td><td class="area-cell">Employment</td><td><a href="https://www.bls.gov/lau/" target="_blank" rel="noopener">BLS LAUS</a></td><td>%</td><td>1976-2024</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Labor Force Participation</td><td class="area-cell">Employment</td><td><a href="https://www.bls.gov/lau/" target="_blank" rel="noopener">BLS LAUS</a></td><td>%</td><td>1976-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Labor Productivity</td><td class="area-cell">Economy</td><td><a href="https://www.bls.gov/lpc/state-productivity.htm" target="_blank" rel="noopener">BLS</a></td><td>Index</td><td>2007-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Per Capita Income (cost-of-living adj.)</td><td class="area-cell">Economy</td><td><a href="https://www.bea.gov/data/income-saving/personal-income-by-state" target="_blank" rel="noopener">BEA SARPI</a></td><td>$</td><td>2008-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">New Business Entry Rate</td><td class="area-cell">Business</td><td><a href="https://www.census.gov/programs-surveys/bds.html" target="_blank" rel="noopener">Census BDS</a></td><td>%</td><td>1978-2023</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Net Employer Business Formation</td><td class="area-cell">Business</td><td><a href="https://www.census.gov/programs-surveys/bds.html" target="_blank" rel="noopener">Census BDS</a></td><td>%</td><td>1978-2023</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">NAEP 8th Grade Math</td><td class="area-cell">Education</td><td><a href="https://www.nationsreportcard.gov/mathematics/states/scores/?grade=8" target="_blank" rel="noopener">NAEP</a></td><td>score</td><td>2003-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">NAEP 8th Grade Reading</td><td class="area-cell">Education</td><td><a href="https://www.nationsreportcard.gov/reading/states/scores/?grade=8" target="_blank" rel="noopener">NAEP</a></td><td>score</td><td>2003-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">High School Graduation Rate</td><td class="area-cell">Education</td><td><a href="https://nces.ed.gov/programs/digest/d23/tables/dt23_219.46.asp" target="_blank" rel="noopener">NCES</a></td><td>%</td><td>2011-2022</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Adults with Bachelor's Degree+</td><td class="area-cell">Education</td><td><a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener">Census ACS / FRED</a></td><td>%</td><td>2008-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Roads in Poor Condition</td><td class="area-cell">Infrastructure</td><td><a href="https://www.fhwa.dot.gov/policyinformation/statistics.cfm" target="_blank" rel="noopener">FHWA HM-64</a></td><td>%</td><td>2007-2023</td><td class="direction-cell">Lower is better</td></tr>
+                        <tr><td class="metric-name">Households with Broadband</td><td class="area-cell">Infrastructure</td><td><a href="https://data.census.gov/" target="_blank" rel="noopener">Census ACS</a></td><td>%</td><td>2016-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Public Transit Commuters</td><td class="area-cell">Infrastructure</td><td><a href="https://data.census.gov/" target="_blank" rel="noopener">Census ACS</a></td><td>%</td><td>2006-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Rainy Day Fund</td><td class="area-cell">Fiscal</td><td><a href="https://www.nasbo.org/reports-data/fiscal-survey-of-states" target="_blank" rel="noopener">NASBO</a></td><td>%</td><td>2012-2025</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">Voter Participation Rate</td><td class="area-cell">Public Confidence</td><td><a href="https://www.electproject.org/election-data/voter-turnout-data" target="_blank" rel="noopener">US Elections Project</a></td><td>%</td><td>2002-2024</td><td class="direction-cell">Higher is better</td></tr>
+                        <tr><td class="metric-name">People Moving In vs. Out</td><td class="area-cell">Public Confidence</td><td><a href="https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html" target="_blank" rel="noopener">Census PEP</a></td><td>per 10K</td><td>2001-2024</td><td class="direction-cell">Higher is better</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="methods-section">
+            <h2>Governor Terms</h2>
+            <p>Detail charts show alternating bands indicating which governor was in office. This provides political context and highest level of accountability without implying causation.</p>
+            <table class="gov-table">
+                <thead><tr><th>Governor</th><th>Party</th><th>Term</th></tr></thead>
+                <tbody>
+                    <tr><td>William Quinn</td><td class="party-r">R</td><td>1959-1962</td></tr>
+                    <tr><td>John Burns</td><td class="party-d">D</td><td>1962-1974</td></tr>
+                    <tr><td>George Ariyoshi</td><td class="party-d">D</td><td>1974-1986</td></tr>
+                    <tr><td>John Waihee III</td><td class="party-d">D</td><td>1986-1994</td></tr>
+                    <tr><td>Ben Cayetano</td><td class="party-d">D</td><td>1994-2002</td></tr>
+                    <tr><td>Linda Lingle</td><td class="party-r">R</td><td>2002-2010</td></tr>
+                    <tr><td>Neil Abercrombie</td><td class="party-d">D</td><td>2010-2014</td></tr>
+                    <tr><td>David Ige</td><td class="party-d">D</td><td>2014-2022</td></tr>
+                    <tr><td>Josh Green</td><td class="party-d">D</td><td>2022-present</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="methods-section">
+            <h2>Update Log</h2>
+            <p><strong>March 2026:</strong> Initial launch with 27 metrics across 12 policy areas.</p>
+            <p class="methods-footer-note">Data is refreshed monthly via automated pipelines.</p>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <p><a href="../">&larr; Back to Dashboard</a></p>
+    </footer>
+
 </body>
 </html>

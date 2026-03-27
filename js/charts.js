@@ -727,11 +727,17 @@ const ChartUtils = {
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
 
-        const labels = stateValues.map(s => s.state);
+        const abbreviateState = (name) => {
+            const m = {'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY','Hawaii':'HI','Hawai\u02BBi':'HI'};
+            return m[name] || name.slice(0, 2).toUpperCase();
+        };
+
+        const labels = stateValues.map(s => abbreviateState(s.state));
         const values = stateValues.map(s => s.value);
-        // Dynamic height: 22px per bar, minimum 500px
+        // Dynamic height: 22px per bar + 70px top for dot strip, minimum 500px
+        const dotStripHeight = 70;
         const barHeight = 22;
-        const chartHeight = Math.max(500, stateValues.length * barHeight);
+        const chartHeight = Math.max(500, stateValues.length * barHeight + dotStripHeight);
         canvas.style.height = chartHeight + 'px';
         canvas.parentElement.style.height = chartHeight + 'px';
 
@@ -761,7 +767,7 @@ const ChartUtils = {
 
         // Precompute formatted value labels and Hawaii index
         const formattedLabels = values.map(v => fmt(v, unit));
-        const hawaiiIdx = labels.findIndex(l => this.isHawaii(l));
+        const hawaiiIdx = labels.findIndex(l => l === 'HI');
 
         // 3 evenly spaced x-axis ticks: start, middle, end
         const minVal = Math.min(...values);
@@ -777,57 +783,111 @@ const ChartUtils = {
         const xMid = niceRound((xStart + xEnd) / 2, roundStep);
         const xTicks = [xStart, xMid, xEnd];
 
-        // Smooth background gradient plugin
+        // Background gradient anchored to median position
+        // Find which bar index is closest to the median value
+        const medianIdx = distStats
+            ? values.reduce((best, v, i) => Math.abs(v - distStats.median) < Math.abs(values[best] - distStats.median) ? i : best, 0)
+            : Math.floor(n / 2);
         const rowBgPlugin = {
             id: 'rowBackground',
             beforeDatasetsDraw(chart) {
                 const { ctx, chartArea } = chart;
                 const { top, bottom, left, right } = chartArea;
+                const medFrac = (medianIdx + 0.5) / n;
                 ctx.save();
                 const grad = ctx.createLinearGradient(0, top, 0, bottom);
-                grad.addColorStop(0, `rgba(34,197,94,0.55)`);
-                grad.addColorStop(0.5, `rgba(255,255,255,0.0)`);
-                grad.addColorStop(1, `rgba(239,68,68,0.55)`);
+                grad.addColorStop(0, 'rgba(34,197,94,0.45)');
+                grad.addColorStop(Math.max(0, medFrac - 0.08), 'rgba(34,197,94,0.08)');
+                grad.addColorStop(medFrac, 'rgba(255,255,255,0.0)');
+                grad.addColorStop(Math.min(1, medFrac + 0.08), 'rgba(239,68,68,0.08)');
+                grad.addColorStop(1, 'rgba(239,68,68,0.45)');
                 ctx.fillStyle = grad;
                 ctx.fillRect(left, top, right - left, bottom - top);
                 ctx.restore();
             }
         };
 
-        // Distribution reference lines (Q1, median, Q3)
-        const distLinesPlugin = {
-            id: 'distributionLines',
+        // Integrated dot strip + distribution lines plugin
+        const hiIdx = labels.findIndex(l => l === 'HI');
+        const dotStripPlugin = {
+            id: 'dotStripAndDistLines',
             afterDatasetsDraw(chart) {
-                if (!distStats) return;
                 const { ctx, chartArea, scales } = chart;
                 const xScale = scales.x;
-                const { top, bottom } = chartArea;
+                const dotY = chartArea.top - 35;
+                const topEdge = chartArea.top - dotStripHeight + 5;
                 ctx.save();
 
-                // Q1 and Q3: subtle dashed lines
-                [distStats.q1, distStats.q3].forEach(val => {
-                    const x = xScale.getPixelForValue(val);
-                    if (x >= chartArea.left && x <= chartArea.right) {
-                        ctx.beginPath();
-                        ctx.setLineDash([4, 4]);
-                        ctx.strokeStyle = 'rgba(13, 124, 143, 0.15)';
-                        ctx.lineWidth = 1;
-                        ctx.moveTo(x, top);
-                        ctx.lineTo(x, bottom);
-                        ctx.stroke();
-                    }
+                // Distribution lines: run from dot strip through entire chart
+                if (distStats) {
+                    // IQR shaded band in dot strip area
+                    const q1x = xScale.getPixelForValue(distStats.q1);
+                    const q3x = xScale.getPixelForValue(distStats.q3);
+                    ctx.fillStyle = 'rgba(13, 124, 143, 0.04)';
+                    ctx.fillRect(q1x, topEdge, q3x - q1x, chartArea.bottom - topEdge);
+
+                    // Q1, Median, Q3 lines with labels
+                    const lines = [
+                        { val: distStats.q1, label: '25th', dash: [4, 4], alpha: 0.15, width: 1 },
+                        { val: distStats.median, label: '50th', dash: [6, 3], alpha: 0.3, width: 1.5 },
+                        { val: distStats.q3, label: '75th', dash: [4, 4], alpha: 0.15, width: 1 },
+                    ];
+                    lines.forEach(line => {
+                        const x = xScale.getPixelForValue(line.val);
+                        if (x >= chartArea.left && x <= chartArea.right) {
+                            ctx.beginPath();
+                            ctx.setLineDash(line.dash);
+                            ctx.strokeStyle = `rgba(13, 124, 143, ${line.alpha})`;
+                            ctx.lineWidth = line.width;
+                            ctx.moveTo(x, topEdge + 10);
+                            ctx.lineTo(x, chartArea.bottom);
+                            ctx.stroke();
+                            // Percentile label at top
+                            ctx.setLineDash([]);
+                            ctx.font = '600 8px Inter, sans-serif';
+                            ctx.fillStyle = `rgba(13, 124, 143, ${Math.min(line.alpha + 0.2, 0.55)})`;
+                            ctx.textAlign = 'center';
+                            ctx.fillText(line.label, x, topEdge + 6);
+                        }
+                    });
+                }
+
+                // Dot strip dots
+                ctx.setLineDash([]);
+                stateValues.forEach((s, i) => {
+                    const x = xScale.getPixelForValue(s.value);
+                    const isHi = (i === hiIdx);
+                    const r = isHi ? 5.5 : 3;
+                    ctx.beginPath();
+                    ctx.arc(x, dotY, r, 0, Math.PI * 2);
+                    ctx.fillStyle = isHi ? '#0D7C8F' : '#C3CDD7';
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = isHi ? 1.5 : 0.5;
+                    ctx.stroke();
                 });
 
-                // Median: slightly more prominent
-                const medX = xScale.getPixelForValue(distStats.median);
-                if (medX >= chartArea.left && medX <= chartArea.right) {
-                    ctx.beginPath();
-                    ctx.setLineDash([6, 3]);
-                    ctx.strokeStyle = 'rgba(13, 124, 143, 0.3)';
-                    ctx.lineWidth = 1.5;
-                    ctx.moveTo(medX, top);
-                    ctx.lineTo(medX, bottom);
-                    ctx.stroke();
+                // Labels for Hawaii and endpoints
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                // Hawaii
+                if (hiIdx >= 0) {
+                    const hx = xScale.getPixelForValue(values[hiIdx]);
+                    ctx.font = '700 9px Inter, sans-serif';
+                    ctx.fillStyle = '#0D7C8F';
+                    ctx.fillText('HI', hx, dotY + 8);
+                }
+                // First (best) state
+                const firstX = xScale.getPixelForValue(values[0]);
+                ctx.font = '500 8px Inter, sans-serif';
+                ctx.fillStyle = '#999';
+                if (Math.abs(firstX - xScale.getPixelForValue(values[hiIdx])) > 35) {
+                    ctx.fillText(labels[0], firstX, dotY + 8);
+                }
+                // Last (worst) state
+                const lastX = xScale.getPixelForValue(values[n - 1]);
+                if (Math.abs(lastX - xScale.getPixelForValue(values[hiIdx])) > 35) {
+                    ctx.fillText(labels[n - 1], lastX, dotY + 8);
                 }
 
                 ctx.restore();
@@ -852,11 +912,15 @@ const ChartUtils = {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: { right: 10 } },
+                layout: { padding: { right: 10, top: dotStripHeight } },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
+                            title: (items) => {
+                                const idx = items[0]?.dataIndex;
+                                return idx != null ? stateValues[idx].state : '';
+                            },
                             label: (ctx) => fmt(ctx.raw, unit)
                         }
                     }
@@ -890,10 +954,10 @@ const ChartUtils = {
                             font: (ctx) => ({
                                 size: 11,
                                 family: "'Inter', sans-serif",
-                                weight: self.isHawaii(ctx.tick?.label) ? 'bold' : 'normal',
+                                weight: ctx.tick?.label === 'HI' ? 'bold' : 'normal',
                             }),
                             color: (ctx) => {
-                                return self.isHawaii(ctx.tick?.label)
+                                return ctx.tick?.label === 'HI'
                                     ? self.HAWAII_BLUE : '#555';
                             },
                         }
@@ -901,7 +965,7 @@ const ChartUtils = {
                 },
                 animation: { duration: 400 }
             },
-            plugins: [rowBgPlugin, distLinesPlugin, {
+            plugins: [rowBgPlugin, dotStripPlugin, {
                 id: 'valueLabels',
                 afterDatasetsDraw(chart) {
                     const { ctx, chartArea } = chart;
