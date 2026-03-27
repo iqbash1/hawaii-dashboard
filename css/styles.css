@@ -606,6 +606,87 @@ body {
     color: var(--text);
 }
 
+/* --- Trend comparison --- */
+.trend-comparison {
+    margin: 0.5rem 0;
+}
+
+.trend-pair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+}
+
+.trend-period {
+    text-align: center;
+    min-width: 80px;
+}
+
+.trend-period-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.2rem;
+}
+
+.trend-period-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+.trend-period-note {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+.trend-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+}
+
+.trend-arrow-icon {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.trend-arrow-pct {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.trend-arrow-verdict {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.trend-improving {
+    color: var(--better-green);
+    background: rgba(20, 148, 138, 0.06);
+}
+
+.trend-worsening {
+    color: var(--worse-red);
+    background: rgba(208, 49, 53, 0.06);
+}
+
+.trend-context {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin-top: 0.6rem;
+}
+
 .modal-source {
     font-size: 0.8rem;
     color: var(--text-muted);

@@ -454,23 +454,46 @@ const App = {
         document.getElementById('modal-vintage').textContent = vintageText;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
-        const insightSection = document.getElementById('modal-insight-section');
-        const insightText = document.getElementById('modal-insight');
-        if (metricData.insight) {
-            insightText.textContent = metricData.insight;
-            insightSection.style.display = '';
+        // 3-year vs prior 3-year trend comparison
+        const trendSection = document.getElementById('modal-trend-section');
+        const trendComp = document.getElementById('modal-trend-comparison');
+        const trendContext = document.getElementById('modal-trend-context');
+        const trendResult = this.computeTrendComparison(effective, metricData);
+        if (trendResult) {
+            document.getElementById('modal-trend-title').textContent = `Recent direction (${trendResult.recentLabel} vs ${trendResult.priorLabel})`;
+            const isDecimal = ChartUtils.isDecimalPctMetric(effective);
+            const fmtVal = (v) => ChartUtils.formatValue(v, effective.unit, isDecimal);
+            const pctChange = ((trendResult.recentAvg - trendResult.priorAvg) / Math.abs(trendResult.priorAvg) * 100);
+            const isUp = pctChange > 0;
+            const improving = (metricData.goodDirection === 'up') === isUp;
+            const arrow = isUp ? '\u2191' : '\u2193';
+            const verdictClass = improving ? 'trend-improving' : 'trend-worsening';
+            const verdictText = improving ? 'Improving' : 'Worsening';
+            trendComp.innerHTML = `
+                <div class="trend-pair">
+                    <div class="trend-period">
+                        <div class="trend-period-label">${trendResult.priorLabel}</div>
+                        <div class="trend-period-value">${fmtVal(trendResult.priorAvg)}</div>
+                        <div class="trend-period-note">avg of ${trendResult.priorYears.length} yr</div>
+                    </div>
+                    <div class="trend-arrow ${verdictClass}">
+                        <span class="trend-arrow-icon">${arrow}</span>
+                        <span class="trend-arrow-pct">${Math.abs(pctChange).toFixed(1)}%</span>
+                        <span class="trend-arrow-verdict">${verdictText}</span>
+                    </div>
+                    <div class="trend-period">
+                        <div class="trend-period-label">${trendResult.recentLabel}</div>
+                        <div class="trend-period-value">${fmtVal(trendResult.recentAvg)}</div>
+                        <div class="trend-period-note">avg of ${trendResult.recentYears.length} yr</div>
+                    </div>
+                </div>`;
+            // Context from insight + crossInsight
+            const contextParts = [metricData.insight, metricData.crossInsight].filter(Boolean);
+            trendContext.textContent = contextParts.length ? contextParts[0] : '';
+            trendContext.style.display = contextParts.length ? '' : 'none';
+            trendSection.style.display = '';
         } else {
-            insightSection.style.display = 'none';
-        }
-
-        // Cross-metric insight
-        const crossInsightSection = document.getElementById('modal-cross-insight-section');
-        const crossInsightText = document.getElementById('modal-cross-insight');
-        if (metricData.crossInsight) {
-            crossInsightText.textContent = metricData.crossInsight;
-            crossInsightSection.style.display = '';
-        } else {
-            crossInsightSection.style.display = 'none';
+            trendSection.style.display = 'none';
         }
 
         // Policy levers
@@ -1024,8 +1047,8 @@ const App = {
             ['Why It Matters', m.whyItMatters.replace(/<[^>]*>/g, '')],
             ['How To Read It', m.howToRead],
         );
-        if (m.insight) methRows.push(['Latest Trend', m.insight]);
-        if (m.crossInsight) methRows.push(['Insight', m.crossInsight]);
+        if (m.insight) methRows.push(['Context', m.insight]);
+        if (m.crossInsight) methRows.push(['Cross-metric Context', m.crossInsight]);
         if (m.policyLevers) methRows.push(['Main Policy Levers', m.policyLevers]);
         if (m.dataNote) methRows.push([], ['Data Note', m.dataNote]);
         methRows.push(
@@ -1390,6 +1413,31 @@ const App = {
         labelDiv.textContent = `Distribution of all ${n} states`;
         container.appendChild(labelDiv);
         container.appendChild(svg);
+    },
+
+    /** Compute 3-year avg vs prior 3-year avg for Hawaii data */
+    computeTrendComparison(effective, metricData) {
+        const years = Object.keys(effective.hawaii).map(Number).sort((a, b) => a - b);
+        if (years.length < 4) return null;
+        // Take the last 3 years and the 3 before that
+        const recent = years.slice(-3);
+        const prior = years.slice(-6, -3);
+        if (prior.length < 2) return null; // need at least 2 years in each window
+        const avg = (yrs) => {
+            const vals = yrs.map(y => effective.hawaii[y]).filter(v => v != null);
+            return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+        };
+        const recentAvg = avg(recent);
+        const priorAvg = avg(prior);
+        if (recentAvg == null || priorAvg == null || priorAvg === 0) return null;
+        return {
+            recentYears: recent,
+            priorYears: prior,
+            recentAvg,
+            priorAvg,
+            recentLabel: `${recent[0]}-${String(recent[recent.length - 1]).slice(-2)}`,
+            priorLabel: `${prior[0]}-${String(prior[prior.length - 1]).slice(-2)}`,
+        };
     },
 
     abbreviateState(name) {
