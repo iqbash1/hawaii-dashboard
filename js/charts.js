@@ -844,13 +844,13 @@ const ChartUtils = {
                             ctx.stroke();
                             // Percentile label at top
                             ctx.setLineDash([]);
-                            ctx.font = '600 10px Inter, sans-serif';
+                            ctx.font = '500 12px Inter, sans-serif';
                             ctx.fillStyle = '#7A8A9A';
                             ctx.textAlign = 'center';
                             ctx.fillText(line.label, x, topEdge + 8);
                             // Value at bottom of chart
-                            ctx.font = '500 9px Inter, sans-serif';
-                            ctx.fillStyle = '#9AA8B4';
+                            ctx.font = '500 11px Inter, sans-serif';
+                            ctx.fillStyle = '#7A8A9A';
                             ctx.fillText(distStats.fmt(line.val), x, chartArea.bottom + 14);
                         }
                     });
