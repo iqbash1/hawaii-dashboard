@@ -899,14 +899,14 @@ const App = {
             XLSX.utils.book_append_sheet(wb, wsStates, 'Raw Data');
         }
 
-        // --- Tab 2: "Chart Data" (Hawaiʻi + Other State Avg, derived from raw data) ---
+        // --- Tab 2: "Chart Data" (Hawaiʻi + Other-states average, derived from raw data) ---
         const effective = this.getEffectiveData(slug);
         const chartRows = [
             [`${m.metric} (${m.unit}) - Dashboard Chart Data`],
             [`Source: ${m.source}`],
-            sd ? ['Note: Hawaiʻi and Other State Avg are computed from the Raw Data tab'] : [],
+            sd ? ['Note: Hawaiʻi and Other-states average are computed from the Raw Data tab'] : [],
             [],
-            ['Year', 'Hawai\u02BBi', 'Other State Avg'],
+            ['Year', 'Hawai\u02BBi', 'Other-states average'],
         ];
         const chartYears = [...new Set([
             ...Object.keys(effective.hawaii),
@@ -1116,7 +1116,7 @@ const App = {
             ? ` · Using ${year} data (latest with all states)`
             : '';
         document.getElementById('rankings-rank').textContent =
-            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states (#1 = best)${yearNote}`;
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote}`;
 
         // Compute distribution stats (shared between dot strip and rankings chart)
         const sortedVals = stateValues.map(s => s.value).sort((a, b) => a - b);
@@ -1259,21 +1259,50 @@ const App = {
         };
         const hideTooltip = () => { tooltip.style.opacity = '0'; };
 
+        // Hover label group (hidden by default, shown on dot hover)
+        let activeHoverGroup = null;
+        const showDotLabel = (dot, s, i, x) => {
+            if (activeHoverGroup) activeHoverGroup.remove();
+            dot.setAttribute('r', '6');
+            dot.setAttribute('fill', '#7A8A9A');
+            const g = document.createElementNS(ns, 'g');
+            g.setAttribute('class', 'dot-hover-label');
+            const abbr = this.abbreviateState(s.state);
+            const label = document.createElementNS(ns, 'text');
+            label.setAttribute('x', x);
+            label.setAttribute('y', dotY - 14);
+            label.setAttribute('text-anchor', 'middle');
+            label.setAttribute('font-size', '8.5');
+            label.setAttribute('font-weight', '600');
+            label.setAttribute('fill', '#555');
+            label.setAttribute('font-family', 'Inter, sans-serif');
+            label.textContent = `${abbr} ${fmt(s.value)}`;
+            g.appendChild(label);
+            svg.appendChild(g);
+            activeHoverGroup = g;
+        };
+        const hideDotLabel = (dot) => {
+            dot.setAttribute('r', '3.5');
+            dot.setAttribute('fill', '#C3CDD7');
+            if (activeHoverGroup) { activeHoverGroup.remove(); activeHoverGroup = null; }
+        };
+
         // All state dots (non-labeled ones first, smaller)
         stateValues.forEach((s, i) => {
             if (labelIndices.has(i)) return;
+            const x = px(s.value);
             const dot = document.createElementNS(ns, 'circle');
-            dot.setAttribute('cx', px(s.value));
+            dot.setAttribute('cx', x);
             dot.setAttribute('cy', dotY);
             dot.setAttribute('r', 3.5);
             dot.setAttribute('fill', '#C3CDD7');
             dot.setAttribute('stroke', '#fff');
             dot.setAttribute('stroke-width', '0.5');
             dot.setAttribute('class', 'dot-strip-dot');
-            const tipText = `${this.abbreviateState(s.state)}: ${fmt(s.value)} (#${i + 1})`;
-            dot.addEventListener('mouseenter', (e) => { showTooltip(e, tipText); });
-            dot.addEventListener('mouseleave', hideTooltip);
-            dot.addEventListener('click', (e) => { showTooltip(e, tipText); });
+            dot.style.cursor = 'pointer';
+            dot.addEventListener('mouseenter', () => showDotLabel(dot, s, i, x));
+            dot.addEventListener('mouseleave', () => hideDotLabel(dot));
+            dot.addEventListener('click', () => showDotLabel(dot, s, i, x));
             svg.appendChild(dot);
         });
 
@@ -1440,7 +1469,7 @@ const App = {
         // Section 2: Hawaii Time Series
         const years = Object.keys(effective.hawaii);
         html += '<thead><tr class="section-header"><td colspan="3">Hawaii Time Series</td></tr>'
-            + '<tr><th>Year</th><th>Hawaii</th><th>Other State Avg</th></tr></thead><tbody>';
+            + '<tr><th>Year</th><th>Hawai\u02BBi</th><th>Other-states average</th></tr></thead><tbody>';
         for (const year of years) {
             const hi = effective.hawaii[year];
             const avg = effective.otherStateAvg[year];

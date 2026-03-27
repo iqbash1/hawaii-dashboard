@@ -931,21 +931,9 @@ const ChartUtils = {
                 },
                 scales: {
                     x: {
-                        display: true,
+                        display: false,
                         min: xTicks[0],
                         max: xTicks[2],
-                        afterBuildTicks(axis) {
-                            axis.ticks = xTicks.map(v => ({ value: v }));
-                        },
-                        grid: {
-                            display: false,
-                        },
-                        border: { display: false },
-                        ticks: {
-                            font: { size: 10, family: "'Inter', sans-serif" },
-                            color: '#aaa',
-                            callback: (v) => fmt(v, unit),
-                        },
                     },
                     y: {
                         grid: { display: false },
