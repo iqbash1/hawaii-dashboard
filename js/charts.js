@@ -778,7 +778,7 @@ const ChartUtils = {
         // Pick rounding step based on range
         const mag = Math.pow(10, Math.floor(Math.log10(Math.max(range, 1))));
         const roundStep = mag >= range / 2 ? mag / 5 : mag / 2;
-        const xStart = minVal <= 0 ? niceRound(minVal, roundStep) : Math.max(0, niceRound(minVal - range * 0.05, roundStep));
+        const xStart = minVal <= 0 ? niceRound(minVal - range * 0.12, roundStep) : Math.max(0, niceRound(minVal - range * 0.05, roundStep));
         const xEnd = niceRound(maxVal + range * 0.05, roundStep);
         const xMid = niceRound((xStart + xEnd) / 2, roundStep);
         const xTicks = [xStart, xMid, xEnd];
@@ -1039,18 +1039,22 @@ const ChartUtils = {
                         const textW = ctx.measureText(label).width;
                         const barEnd = meta.x;
                         const barBase = meta.base;
-                        // Place label after the longer end of the bar
-                        let x = barEnd + 6;
+                        const isNegative = barEnd < barBase;
                         ctx.fillStyle = '#555';
-                        if (x < chartArea.left + 4) {
-                            // Bar extends left past chart area -- place label at right end
-                            x = Math.max(barBase, barEnd) + 6;
-                        } else if (x + textW > chartArea.right - 2) {
-                            // Bar extends right past chart area -- place inside
-                            const insideX = barEnd - textW - 6;
-                            if (insideX >= chartArea.left + 4) {
-                                x = insideX;
-                                ctx.fillStyle = '#fff';
+                        let x;
+                        if (isNegative) {
+                            // Negative bar: label to the left of the bar tip
+                            x = barEnd - textW - 6;
+                            if (x < chartArea.left) x = chartArea.left;
+                        } else {
+                            // Positive bar: label to the right of the bar tip
+                            x = barEnd + 6;
+                            if (x + textW > chartArea.right - 2) {
+                                const insideX = barEnd - textW - 6;
+                                if (insideX >= chartArea.left + 4) {
+                                    x = insideX;
+                                    ctx.fillStyle = '#fff';
+                                }
                             }
                         }
                         ctx.fillText(label, x, meta.y);
