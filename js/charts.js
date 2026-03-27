@@ -988,7 +988,7 @@ const ChartUtils = {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: { right: 10, top: dotStripHeight } },
+                layout: { padding: { right: 10, top: dotStripHeight, bottom: 20 } },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -1038,13 +1038,20 @@ const ChartUtils = {
                         const label = formattedLabels[i];
                         const textW = ctx.measureText(label).width;
                         const barEnd = meta.x;
-                        // Place label after bar, but clamp inside chart area
+                        const barBase = meta.base;
+                        // Place label after the longer end of the bar
                         let x = barEnd + 6;
-                        if (x + textW > chartArea.right - 2) {
-                            x = barEnd - textW - 6;
-                            ctx.fillStyle = '#fff';
-                        } else {
-                            ctx.fillStyle = '#555';
+                        ctx.fillStyle = '#555';
+                        if (x < chartArea.left + 4) {
+                            // Bar extends left past chart area -- place label at right end
+                            x = Math.max(barBase, barEnd) + 6;
+                        } else if (x + textW > chartArea.right - 2) {
+                            // Bar extends right past chart area -- place inside
+                            const insideX = barEnd - textW - 6;
+                            if (insideX >= chartArea.left + 4) {
+                                x = insideX;
+                                ctx.fillStyle = '#fff';
+                            }
                         }
                         ctx.fillText(label, x, meta.y);
                     });
