@@ -1,6 +1,6 @@
 # Hawaiʻi Dashboard
 
-A statewide scorecard of outcomes and the conditions that shape them, tracking 26 key measures across 12 policy areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
+A statewide scorecard of outcomes and the conditions that shape them, tracking 26 key measures across 5 areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
 
 **Live site**: [hawaiidashboard.org](https://hawaiidashboard.org)
 
@@ -57,18 +57,11 @@ Generates per-metric OG images (detail, rankings, county) and redirect pages wit
 
 | Area | Metrics | County |
 |------|---------|--------|
-| Crime | Violent Crime Rate, Property Crime Rate | Yes |
-| Health | Primary Care Physicians, Uninsured Rate, Suicide Rate | Partial |
-| Cost of Living | Renter Cost Burden, Home Price-to-Income, Unsheltered Homeless | Yes |
-| Energy | Residential Electricity Price, Renewables Share | No |
-| Food Security | Food Insecurity Rate | No |
-| Employment | Unemployment Rate, Labor Force Participation | Yes |
-| Economy | Labor Productivity, Real Per Capita Income | Partial |
-| Business | Establishment Entry Rate, Net Employer Formation | Yes |
+| Safety & Health | Violent Crime, Property Crime, PCP Access, Uninsured, Suicide | Partial |
+| Housing & Cost of Living | Renter Cost Burden, Home Price-to-Income, Unsheltered Homeless, Electricity Price, Food Insecurity | Partial |
+| Economy & Workforce | Unemployment, Labor Force Participation, Labor Productivity, Per Capita Income, Business Entry, Net Employer Formation | Partial |
 | Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
-| Infrastructure | Road Quality, Broadband | Partial |
-| Fiscal Stewardship | Rainy Day Fund | No |
-| Demographics | Voter Participation, Net Domestic Migration | No |
+| Infra, Energy, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
 
 ## Design principles
 

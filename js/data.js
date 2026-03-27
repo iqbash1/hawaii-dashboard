@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 26 metrics across 12 policy areas.
+// 26 metrics across 5 areas.
 // Hawaii values and Other State Avg (simple mean of 49 states,
 // excluding HI and DC) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
@@ -8,7 +8,7 @@
 
 const DASHBOARD_DATA = {
   "violent_crime_rate": {
-    "area": "Crime",
+    "area": "Safety & Health",
     "areaIcon": "🛡️",
     "metric": "Violent Crime Rate",
     "unit": "per 100K",
@@ -103,10 +103,11 @@ const DASHBOARD_DATA = {
       "2022": 358.8403,
       "2023": 351.2,
       "2024": 339.5
-    }
+    },
+    "policyLevers": "Violence prevention and behavioral health; prosecution, sentencing, and reentry policy; victim services and youth intervention."
   },
   "property_crime_rate": {
-    "area": "Crime",
+    "area": "Safety & Health",
     "areaIcon": "🛡️",
     "metric": "Property Crime Rate",
     "officialName": "Estimated Property Crime Rate (Burglary, Larceny-Theft, Motor Vehicle Theft)",
@@ -202,11 +203,12 @@ const DASHBOARD_DATA = {
       "2022": 1902.42,
       "2023": 1846.51,
       "2024": 1668.06
-    }
+    },
+    "policyLevers": "Substance-use treatment and diversion; prosecution and reentry policy; theft, fraud, and neighborhood prevention."
   },
   "pcp_per_100k": {
-    "area": "Health",
-    "areaIcon": "🏥",
+    "area": "Safety & Health",
+    "areaIcon": "🛡️",
     "metric": "Primary Care Physicians (civilian)",
     "officialName": "Non-Federal Primary Care Physicians per 100,000 Civilian Population",
     "unit": "per 100K",
@@ -249,11 +251,12 @@ const DASHBOARD_DATA = {
       "2021": 77.5,
       "2022": 77.4,
       "2023": 77.3
-    }
+    },
+    "policyLevers": "Provider recruitment and retention; Medicaid payment and access policy; training pipelines and rural clinic support."
   },
   "uninsured_rate": {
-    "area": "Health",
-    "areaIcon": "🏥",
+    "area": "Safety & Health",
+    "areaIcon": "🛡️",
     "metric": "Uninsured Rate",
     "unit": "%",
     "goodDirection": "down",
@@ -294,11 +297,12 @@ const DASHBOARD_DATA = {
       "2022": 0.0748,
       "2023": 0.0736,
       "2024": 0.0768
-    }
+    },
+    "policyLevers": "Med-QUEST eligibility and renewals; enrollment outreach and navigator support; regulation of private coverage."
   },
   "suicide_rate": {
-    "area": "Health",
-    "areaIcon": "🏥",
+    "area": "Safety & Health",
+    "areaIcon": "🛡️",
     "metric": "Suicide Rate",
     "officialName": "Age-Adjusted Death Rate for Intentional Self-Harm (Suicide)",
     "unit": "per 100K",
@@ -362,7 +366,8 @@ const DASHBOARD_DATA = {
       "2022": 17.3,
       "2023": 17,
       "2024": 16.96
-    }
+    },
+    "policyLevers": "Behavioral health access; school and community prevention; crisis response and post-attempt care."
   },
   "acgr": {
     "area": "Education",
@@ -403,11 +408,12 @@ const DASHBOARD_DATA = {
       "2020": 86,
       "2021": 85.5,
       "2022": 85.9
-    }
+    },
+    "policyLevers": "Attendance and dropout prevention; counseling, credit recovery, and student supports; college and career pathways."
   },
   "ba_or_higher_pct": {
     "area": "Education",
-    "areaIcon": "📚",
+    "areaIcon": "🎓",
     "metric": "Adults with Bachelor’s Degree+",
     "officialName": "Percent of Persons 25+ with Bachelor’s Degree or Higher",
     "unit": "%",
@@ -455,7 +461,8 @@ const DASHBOARD_DATA = {
       "2022": 0.3463,
       "2023": 0.3512,
       "2024": 0.3575
-    }
+    },
+    "policyLevers": "College affordability; transfer, retention, and completion support; adult learner and workforce-aligned degree pathways."
   },
   "naep_math_8": {
     "area": "Education",
@@ -496,7 +503,8 @@ const DASHBOARD_DATA = {
       "2019": 281.35,
       "2022": 273.31,
       "2024": 272.81
-    }
+    },
+    "policyLevers": "Strong math instruction; teacher pipeline and support; tutoring, attendance, and targeted intervention."
   },
   "naep_reading_8": {
     "area": "Education",
@@ -537,10 +545,11 @@ const DASHBOARD_DATA = {
       "2019": 262.61,
       "2022": 258.83,
       "2024": 256.94
-    }
+    },
+    "policyLevers": "Early literacy and reading support; teacher pipeline and coaching; attendance and family support."
   },
   "unemployment_rate": {
-    "area": "Employment",
+    "area": "Economy & Workforce",
     "areaIcon": "💼",
     "metric": "Unemployment Rate",
     "unit": "%",
@@ -652,10 +661,11 @@ const DASHBOARD_DATA = {
       "2022": 0.0323,
       "2023": 0.0307,
       "2024": 0.0369
-    }
+    },
+    "policyLevers": "Sector growth and job creation; training and job matching; unemployment insurance and rapid reemployment."
   },
   "labor_force_participation": {
-    "area": "Employment",
+    "area": "Economy & Workforce",
     "areaIcon": "💼",
     "metric": "Labor Force Participation Rate",
     "officialName": "Civilian Labor Force Participation Rate, Annual Average",
@@ -768,11 +778,12 @@ const DASHBOARD_DATA = {
       "2022": 62.6,
       "2023": 62.9,
       "2024": 63
-    }
+    },
+    "policyLevers": "Childcare and work supports; skills training and career pathways; return-to-work and barrier reduction."
   },
   "real_per_capita_income": {
-    "area": "Economy",
-    "areaIcon": "💰",
+    "area": "Economy & Workforce",
+    "areaIcon": "💼",
     "metric": "Per Capita Income (cost-of-living adj.)",
     "officialName": "Real Per Capita Personal Income, RPP-adjusted (BEA SARPI)",
     "unit": "$",
@@ -821,10 +832,11 @@ const DASHBOARD_DATA = {
       "2022": 66341,
       "2023": 70034,
       "2024": 72898
-    }
+    },
+    "policyLevers": "Wage and tax policy; skills and career mobility; economic diversification into higher-value sectors."
   },
   "renter_cost_burden_pct": {
-    "area": "Cost of Living",
+    "area": "Housing & Cost of Living",
     "areaIcon": "🏠",
     "metric": "Renters Paying 30%+ for Housing",
     "officialName": "Gross Rent as a Percentage of Household Income: 30.0 Percent or More",
@@ -863,10 +875,11 @@ const DASHBOARD_DATA = {
       "2022": 0.4952,
       "2023": 0.4933,
       "2024": 0.4535
-    }
+    },
+    "policyLevers": "Housing production and permitting reform; rental assistance and tenant stability; infrastructure that unlocks new housing."
   },
   "home_price_to_income": {
-    "area": "Cost of Living",
+    "area": "Housing & Cost of Living",
     "areaIcon": "🏠",
     "metric": "Home Price-to-Income Ratio",
     "unit": "×",
@@ -918,10 +931,11 @@ const DASHBOARD_DATA = {
       "2022": 4.2,
       "2023": 4.3,
       "2024": 4.3
-    }
+    },
+    "policyLevers": "Housing supply and land use reform; affordable financing and down-payment support; job and wage growth."
   },
   "unsheltered_homeless_rate": {
-    "area": "Cost of Living",
+    "area": "Housing & Cost of Living",
     "areaIcon": "🏠",
     "metric": "Unsheltered Homeless",
     "officialName": "Unsheltered Homeless Individuals per 10,000 Population (HUD PIT Count)",
@@ -961,10 +975,11 @@ const DASHBOARD_DATA = {
       "2022": 4.1754,
       "2023": 4.8458,
       "2024": 5.5
-    }
+    },
+    "policyLevers": "Permanent supportive housing; shelter, outreach, and case management; mental health, substance use, and eviction prevention."
   },
   "road_poor_pct": {
-    "area": "Infrastructure",
+    "area": "Infrastructure, Energy, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "Roads in Poor Condition",
     "unit": "%",
@@ -1008,10 +1023,11 @@ const DASHBOARD_DATA = {
       "2020": 0.0944,
       "2022": 0.0887,
       "2023": 0.0885
-    }
+    },
+    "policyLevers": "Pavement preservation funding; asset management and maintenance delivery; capital planning and resilience upgrades."
   },
   "broadband_subscription_pct": {
-    "area": "Infrastructure",
+    "area": "Infrastructure, Energy, Resilience & Trust",
     "areaIcon": "🛣️",
     "metric": "Households with Broadband",
     "officialName": "Percent of Households with a Broadband Internet Subscription (ACS B28002)",
@@ -1043,11 +1059,12 @@ const DASHBOARD_DATA = {
       "2022": 0.9048,
       "2023": 0.9161,
       "2024": 0.9278
-    }
+    },
+    "policyLevers": "Last-mile deployment; affordability and adoption support; digital skills and device access."
   },
   "residential_price_cpkwh": {
-    "area": "Energy",
-    "areaIcon": "⚡",
+    "area": "Housing & Cost of Living",
+    "areaIcon": "🏠",
     "metric": "Residential Electricity Price",
     "unit": "¢/kWh",
     "goodDirection": "down",
@@ -1132,11 +1149,12 @@ const DASHBOARD_DATA = {
       "2023": 16.2,
       "2024": 16.5,
       "2025": 17.4
-    }
+    },
+    "policyLevers": "Utility regulation and rate design; energy efficiency and bill relief; generation, fuel, and grid planning."
   },
   "renewables_share_gen": {
-    "area": "Energy",
-    "areaIcon": "⚡",
+    "area": "Infrastructure, Energy, Resilience & Trust",
+    "areaIcon": "🛣️",
     "metric": "Electricity from Renewables",
     "officialName": "Renewable Sources as Share of Total Electricity Generation (EIA-923)",
     "unit": "%",
@@ -1196,11 +1214,12 @@ const DASHBOARD_DATA = {
       "2023": 0.2632,
       "2024": 0.2739,
       "2025": 0.2867
-    }
+    },
+    "policyLevers": "Renewable procurement and permitting; grid upgrades and storage; utility planning and interconnection."
   },
   "food_insecurity_rate": {
-    "area": "Food Security",
-    "areaIcon": "🍽️",
+    "area": "Housing & Cost of Living",
+    "areaIcon": "🏠",
     "metric": "Food Insecurity Rate",
     "unit": "%",
     "goodDirection": "down",
@@ -1248,11 +1267,12 @@ const DASHBOARD_DATA = {
       "2020-2022": 0.1086,
       "2021-2023": 0.118,
       "2022-2024": 0.1295
-    }
+    },
+    "policyLevers": "SNAP and WIC access; school and summer meals; local food access and emergency food support."
   },
   "rainy_day_fund_pct": {
-    "area": "Fiscal Stewardship",
-    "areaIcon": "🏦",
+    "area": "Infrastructure, Energy, Resilience & Trust",
+    "areaIcon": "🛣️",
     "metric": "Rainy Day Fund",
     "officialName": "Budget Stabilization Fund Balance as Percent of General Fund Expenditures (NASBO)",
     "unit": "%",
@@ -1294,11 +1314,12 @@ const DASHBOARD_DATA = {
       "2023": 0.164,
       "2024": 0.1581,
       "2025": 0.1672
-    }
+    },
+    "policyLevers": "Reserve deposit rules; revenue forecasting and spending discipline; disaster readiness and recovery planning."
   },
   "voter_participation_rate": {
-    "area": "Public Confidence",
-    "areaIcon": "🗳️",
+    "area": "Infrastructure, Energy, Resilience & Trust",
+    "areaIcon": "🛣️",
     "metric": "Voter Participation Rate",
     "unit": "%",
     "goodDirection": "up",
@@ -1336,11 +1357,12 @@ const DASHBOARD_DATA = {
       "2020": 0.6792,
       "2022": 0.4769,
       "2024": 0.6557
-    }
+    },
+    "policyLevers": "Statewide election rules and ballot access; registration and update pathways; voter education and trust."
   },
   "net_domestic_migration_rate": {
-    "area": "Public Confidence",
-    "areaIcon": "🗳️",
+    "area": "Infrastructure, Energy, Resilience & Trust",
+    "areaIcon": "🛣️",
     "metric": "People Moving In vs. Out",
     "officialName": "Net Domestic Migration Rate per 10,000 Population (Census PEP)",
     "unit": "per 10K",
@@ -1401,11 +1423,12 @@ const DASHBOARD_DATA = {
       "2022": 14.7,
       "2023": 11.6,
       "2024": 10.9
-    }
+    },
+    "policyLevers": "Housing cost and supply; job quality and wages; schools, safety, and disaster resilience."
   },
   "estabs_entry_rate": {
-    "area": "Business",
-    "areaIcon": "🏢",
+    "area": "Economy & Workforce",
+    "areaIcon": "💼",
     "metric": "New Business Entry Rate",
     "unit": "%",
     "goodDirection": "up",
@@ -1510,11 +1533,12 @@ const DASHBOARD_DATA = {
       "2021": 10.3,
       "2022": 11,
       "2023": 10.2
-    }
+    },
+    "policyLevers": "Licensing and permit speed; access to capital; startup assistance and procurement access."
   },
   "net_employer_formation": {
-    "area": "Business",
-    "areaIcon": "🏢",
+    "area": "Economy & Workforce",
+    "areaIcon": "💼",
     "metric": "Net Employer Business Formation",
     "unit": "%",
     "goodDirection": "up",
@@ -1619,11 +1643,12 @@ const DASHBOARD_DATA = {
       "2021": 0.9004,
       "2022": 1.8,
       "2023": 1.1
-    }
+    },
+    "policyLevers": "Business climate and permitting; infrastructure and site readiness; capital access and sector development."
   },
   "labor_productivity": {
-    "area": "Economy",
-    "areaIcon": "💰",
+    "area": "Economy & Workforce",
+    "areaIcon": "💼",
     "metric": "Labor Productivity (Output per Hour)",
     "unit": "Index (2017=100)",
     "goodDirection": "up",
@@ -1672,6 +1697,7 @@ const DASHBOARD_DATA = {
       "2022": 108.9,
       "2023": 111.1,
       "2024": 113.9
-    }
+    },
+    "policyLevers": "Infrastructure and technology adoption; workforce skills; business environment and innovation support."
   }
 };

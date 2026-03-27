@@ -54,18 +54,11 @@ const App = {
     // 5. Is the government competent with my tax dollars?
     // 6. The verdict: are people actually staying?
     AREA_ORDER: [
-        { area: 'Crime', metrics: ['violent_crime_rate', 'property_crime_rate'] },
-        { area: 'Health', metrics: ['pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
-        { area: 'Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate'] },
-        { area: 'Energy', metrics: ['residential_price_cpkwh', 'renewables_share_gen'] },
-        { area: 'Food Security', metrics: ['food_insecurity_rate'] },
-        { area: 'Employment', metrics: ['unemployment_rate', 'labor_force_participation'] },
-        { area: 'Economy', metrics: ['labor_productivity', 'real_per_capita_income'] },
-        { area: 'Business', metrics: ['estabs_entry_rate', 'net_employer_formation'] },
+        { area: 'Safety & Health', metrics: ['violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
+        { area: 'Housing & Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate', 'residential_price_cpkwh', 'food_insecurity_rate'] },
+        { area: 'Economy & Workforce', metrics: ['unemployment_rate', 'labor_force_participation', 'labor_productivity', 'real_per_capita_income', 'estabs_entry_rate', 'net_employer_formation'] },
         { area: 'Education', metrics: ['naep_math_8', 'naep_reading_8', 'acgr', 'ba_or_higher_pct'] },
-        { area: 'Infrastructure', metrics: ['road_poor_pct', 'broadband_subscription_pct'] },
-        { area: 'Fiscal Stewardship', metrics: ['rainy_day_fund_pct'] },
-        { area: 'Public Confidence', metrics: ['voter_participation_rate', 'net_domestic_migration_rate'] },
+        { area: 'Infrastructure, Energy, Resilience & Trust', metrics: ['road_poor_pct', 'broadband_subscription_pct', 'renewables_share_gen', 'rainy_day_fund_pct', 'voter_participation_rate', 'net_domestic_migration_rate'] },
     ],
 
     init() {
@@ -467,6 +460,16 @@ const App = {
             crossInsightSection.style.display = '';
         } else {
             crossInsightSection.style.display = 'none';
+        }
+
+        // Policy levers
+        const policyLeversSection = document.getElementById('modal-policy-levers-section');
+        const policyLeversText = document.getElementById('modal-policy-levers');
+        if (metricData.policyLevers) {
+            policyLeversText.textContent = metricData.policyLevers;
+            policyLeversSection.style.display = '';
+        } else {
+            policyLeversSection.style.display = 'none';
         }
 
         // Data quality note
@@ -1012,6 +1015,7 @@ const App = {
         );
         if (m.insight) methRows.push(['Latest Trend', m.insight]);
         if (m.crossInsight) methRows.push(['Insight', m.crossInsight]);
+        if (m.policyLevers) methRows.push(['Main Policy Levers', m.policyLevers]);
         if (m.dataNote) methRows.push([], ['Data Note', m.dataNote]);
         methRows.push(
             [],

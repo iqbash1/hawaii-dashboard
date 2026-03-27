@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state government performance across **26 metrics** and **12 policy areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state government performance across **26 metrics** and **5 areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -77,32 +77,32 @@ hawaii-dashboard/
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
-| 1 | Crime | Violent Crime Rate | per 100K | Down | FBI UCR |
-| 2 | Crime | Property Crime Rate | per 100K | Down | FBI UCR |
-| 3 | Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
-| 4 | Health | Uninsured Rate | % | Down | Census ACS / KFF |
-| 5 | Health | Suicide Rate | per 100K | Down | CDC NCHS |
-| 6 | Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
-| 7 | Cost of Living | Home Price to Income Ratio | × | Down | Census ACS |
-| 8 | Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
-| 9 | Energy | Residential Electricity Price | ¢/kWh | Down | EIA |
-| 10 | Energy | Electricity from Renewables | % | Up | EIA |
-| 11 | Food Security | Food Insecurity Rate | % | Down | USDA ERS |
-| 12 | Employment | Unemployment Rate | % | Down | BLS LAUS |
-| 13 | Employment | Labor Force Participation Rate | % | Up | BLS LAUS |
-| 14 | Economy | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
-| 15 | Economy | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
-| 16 | Business | New Business Entry Rate | % | Up | Census BDS |
-| 17 | Business | Net Employer Business Formation | % | Up | Census BFS |
-| 18 | Education | NAEP 8th Grade Math | score | Up | NAEP |
-| 19 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
-| 20 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
-| 21 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
-| 22 | Infrastructure | Roads in Poor Condition | % | Down | FHWA |
-| 23 | Infrastructure | Broadband Subscriptions | % | Up | Census ACS |
-| 25 | Fiscal Stewardship | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 26 | Public Confidence | Voter Participation Rate | % | Up | EAC |
-| 27 | Public Confidence | Net Domestic Migration | per 10K | Up | Census PEP |
+| 1 | Safety & Health | Violent Crime Rate | per 100K | Down | FBI UCR |
+| 2 | Safety & Health | Property Crime Rate | per 100K | Down | FBI UCR |
+| 3 | Safety & Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
+| 4 | Safety & Health | Uninsured Rate | % | Down | Census ACS / KFF |
+| 5 | Safety & Health | Suicide Rate | per 100K | Down | CDC NCHS |
+| 6 | Housing & Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
+| 7 | Housing & Cost of Living | Home Price to Income Ratio | x | Down | Census ACS |
+| 8 | Housing & Cost of Living | Unsheltered Homeless Rate | per 10K | Down | HUD PIT Count |
+| 9 | Housing & Cost of Living | Residential Electricity Price | c/kWh | Down | EIA |
+| 10 | Housing & Cost of Living | Food Insecurity Rate | % | Down | USDA ERS |
+| 11 | Economy & Workforce | Unemployment Rate | % | Down | BLS LAUS |
+| 12 | Economy & Workforce | Labor Force Participation Rate | % | Up | BLS LAUS |
+| 13 | Economy & Workforce | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
+| 14 | Economy & Workforce | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
+| 15 | Economy & Workforce | New Business Entry Rate | % | Up | Census BDS |
+| 16 | Economy & Workforce | Net Employer Business Formation | % | Up | Census BFS |
+| 17 | Education | NAEP 8th Grade Math | score | Up | NAEP |
+| 18 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
+| 19 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
+| 20 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
+| 21 | Infra, Energy, Resilience & Trust | Roads in Poor Condition | % | Down | FHWA |
+| 22 | Infra, Energy, Resilience & Trust | Broadband Subscriptions | % | Up | Census ACS |
+| 23 | Infra, Energy, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
+| 24 | Infra, Energy, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 25 | Infra, Energy, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
+| 26 | Infra, Energy, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -330,7 +330,7 @@ Main application controller.
 
 | Property/Method | Description |
 |----------------|-------------|
-| `AREA_ORDER` | Array defining the 12 areas and which metrics belong to each |
+| `AREA_ORDER` | Array defining the 5 areas and which metrics belong to each |
 | `GOVERNORS` | Array of 7 governors: `{ name, party, start, end }` from 1974–2027 |
 | `init()` | Renders cards, sets up modal, handles URL routing |
 | `renderCards()` | Creates all 26 card DOM elements with sparklines and comparisons |
