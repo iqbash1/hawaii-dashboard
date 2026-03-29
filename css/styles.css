@@ -460,8 +460,9 @@ body {
 /* --- Modal Tabs --- */
 .modal-tabs {
     display: flex;
-    gap: 0;
-    padding: 0.75rem 2rem 0;
+    gap: 0.4rem;
+    padding: 0.75rem 2rem;
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
 }
 
@@ -469,23 +470,25 @@ body {
     font-family: var(--font-heading);
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    padding: 0.5rem 1rem;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 1rem;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color var(--transition), border-color var(--transition);
+    transition: color var(--transition), background var(--transition), border-color var(--transition);
 }
 
 .modal-tab:hover {
     color: var(--text);
+    background: #fff;
+    border-color: #bcc5ce;
 }
 
 .modal-tab.active {
-    color: var(--hawaii-blue);
-    border-bottom-color: var(--hawaii-blue);
+    color: #fff;
+    background: var(--hawaii-blue);
+    border-color: var(--hawaii-blue);
 }
 
 .modal-tab .tab-rank {
@@ -496,8 +499,8 @@ body {
 }
 
 .modal-tab.active .tab-rank {
-    color: var(--hawaii-blue);
-    opacity: 0.7;
+    color: #fff;
+    opacity: 0.8;
 }
 
 .modal-chart-container {
