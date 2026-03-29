@@ -169,19 +169,31 @@
                 status = isGoodDirection ? 'improving' : 'worsening';
             }
 
-            // Format change for display
+            // Format change for display (plain language, no jargon)
             let changeText;
             const sign = absChange > 0 ? '+' : '';
             if (isDec) {
-                changeText = sign + (absChange * 100).toFixed(1) + ' pp';
+                changeText = sign + (absChange * 100).toFixed(1) + ' pts';
             } else if (m.unit === '%') {
-                changeText = sign + absChange.toFixed(1) + ' pp';
+                changeText = sign + absChange.toFixed(1) + ' pts';
             } else if (m.unit === '$') {
-                changeText = (absChange >= 0 ? '+$' : '-$') + Math.abs(Math.round(absChange)).toLocaleString();
-            } else if (m.unit === 'x' || m.unit === '\u00d7') {
+                const absDollar = Math.abs(Math.round(absChange));
+                if (absDollar >= 1000) {
+                    changeText = (absChange >= 0 ? '+$' : '-$') + (absDollar / 1000).toFixed(1) + 'K';
+                } else {
+                    changeText = (absChange >= 0 ? '+$' : '-$') + absDollar.toLocaleString();
+                }
+            } else if (m.unit === '\u00d7') {
                 changeText = sign + absChange.toFixed(1) + '\u00d7';
-            } else if (m.unit === 'Index') {
-                changeText = sign + absChange.toFixed(1);
+            } else if (m.unit === '\u00a2/kWh') {
+                changeText = sign + absChange.toFixed(1) + '\u00a2';
+            } else if (m.unit === 'per 100K') {
+                const rounded = Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1);
+                changeText = sign + rounded.toLocaleString() + ' per 100K';
+            } else if (m.unit === 'per 10K') {
+                changeText = sign + absChange.toFixed(1) + ' per 10K';
+            } else if (m.unit === 'Index (2017=100)') {
+                changeText = sign + absChange.toFixed(1) + ' pts';
             } else {
                 const rounded = Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1);
                 changeText = sign + rounded.toLocaleString();
@@ -212,15 +224,20 @@
 
         function generateCommentary(r) {
             const total = r.improving.length + r.worsening.length + r.littleChange.length;
+
+            // Find which area has the most worsening metrics
+            const areaCounts = {};
+            r.worsening.forEach(m => { areaCounts[m.area] = (areaCounts[m.area] || 0) + 1; });
+            const topWorseArea = Object.entries(areaCounts).sort((a, b) => b[1] - a[1])[0];
+
             let s = `Of Hawai\u02BBi's ${total} tracked metrics, ${r.worsening.length} worsened, ${r.improving.length} improved, and ${r.littleChange.length} showed little change over the past five years.`;
-            if (r.worsening.length > 0 && r.improving.length > 0) {
-                s += ` The biggest worsening was in ${r.worsening[0].metric}; the biggest improvement was in ${r.improving[0].metric}.`;
+
+            if (topWorseArea && r.improving.length > 0) {
+                s += ` The biggest pressures are concentrated in ${topWorseArea[0]}.`;
+                s += ` The strongest improvement was in ${r.improving[0].metric}.`;
             }
-            if (r.worsening.length > r.improving.length) {
-                s += ' More metrics moved in the wrong direction than the right one.';
-            } else if (r.improving.length > r.worsening.length) {
-                s += ' On balance, more metrics moved in the right direction.';
-            }
+
+            s += ' Years shown reflect the latest available data for each metric.';
             return s;
         }
 
