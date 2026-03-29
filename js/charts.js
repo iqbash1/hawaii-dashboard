@@ -448,14 +448,7 @@ const ChartUtils = {
                             bestText = shortest;
                         }
                     }
-                    // Last resort: single initial if band is at least 15px
-                    if (!bestText && bandWidth >= 15) {
-                        const initial = c.variants[c.variants.length - 1].charAt(0);
-                        const iw = ctx.measureText(initial).width;
-                        if (c.centerX - iw / 2 >= prevRight + gap) {
-                            bestText = initial;
-                        }
-                    }
+                    // Skip if no variant fits -- a single initial is not useful
                     if (!bestText) return; // skip this label entirely
                     const tw = ctx.measureText(bestText).width;
                     // Center within the band, but do not overlap previous label
