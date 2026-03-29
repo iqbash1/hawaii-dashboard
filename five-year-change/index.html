@@ -214,7 +214,7 @@
             const total = r.improving.length + r.worsening.length + r.littleChange.length;
             let s = `Of Hawai\u02BBi's ${total} tracked metrics, ${r.worsening.length} worsened, ${r.improving.length} improved, and ${r.littleChange.length} showed little change over the past five years.`;
             if (r.worsening.length > 0 && r.improving.length > 0) {
-                s += ` The steepest decline was in ${r.worsening[0].metric}; the largest gain was in ${r.improving[0].metric}.`;
+                s += ` The biggest worsening was in ${r.worsening[0].metric}; the biggest improvement was in ${r.improving[0].metric}.`;
             }
             if (r.worsening.length > r.improving.length) {
                 s += ' More metrics moved in the wrong direction than the right one.';
