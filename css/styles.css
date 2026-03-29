@@ -767,6 +767,17 @@ body {
     padding: 0 1rem;
 }
 
+.county-note {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    padding: 0.6rem 1rem 0.6rem 1.25rem;
+    margin: 0.75rem 1rem 0;
+    border-left: 3px solid #d4a843;
+    background: rgba(212, 168, 67, 0.04);
+    border-radius: 0 4px 4px 0;
+}
+
 .county-chart-container {
     height: 440px;
 }

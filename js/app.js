@@ -1476,16 +1476,46 @@ const App = {
         document.getElementById('modal-rankings').style.display = 'none';
         document.getElementById('modal-county').style.display = 'block';
 
+        const isSmoothed = countyData.smoothCounty === true;
         document.getElementById('county-subtitle').textContent =
-            `${metricData.metric} by County`;
+            `${metricData.metric} by County${isSmoothed ? ' (3-year rolling avg)' : ''}`;
+
+        // County reliability note
+        const noteEl = document.getElementById('county-note');
+        if (countyData.countyNote) {
+            noteEl.textContent = countyData.countyNote;
+            noteEl.style.display = '';
+        } else {
+            noteEl.style.display = 'none';
+        }
+
+        // Apply 3-year centered rolling average if flagged
+        let chartData = countyData;
+        if (isSmoothed) {
+            const smoothed = { ...countyData, data: {} };
+            for (const county of countyData.counties) {
+                const raw = countyData.data[county];
+                const years = Object.keys(raw).sort();
+                const out = {};
+                for (let i = 0; i < years.length; i++) {
+                    const window = [];
+                    for (let j = Math.max(0, i - 1); j <= Math.min(years.length - 1, i + 1); j++) {
+                        if (raw[years[j]] != null) window.push(raw[years[j]]);
+                    }
+                    out[years[i]] = window.length ? +(window.reduce((a, b) => a + b, 0) / window.length).toFixed(4) : null;
+                }
+                smoothed.data[county] = out;
+            }
+            chartData = smoothed;
+        }
 
         const canvas = document.getElementById('county-chart');
-        const labels = Object.keys(Object.values(countyData.data)[0]).sort();
+        const labels = Object.keys(Object.values(chartData.data)[0]).sort();
         const govBoxes = this.getGovernorBoxes(labels);
 
         const stateRef = countyData.hideStateLine ? null : metricData.hawaii;
         this.countyChart = ChartUtils.createCountyChart(
-            canvas, countyData, metricData, govBoxes, this.COUNTY_COLORS, stateRef
+            canvas, chartData, metricData, govBoxes, this.COUNTY_COLORS, stateRef
         );
     },
 
