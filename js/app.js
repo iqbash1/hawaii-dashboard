@@ -665,14 +665,15 @@ const App = {
             vsAvgWord = isBetter ? 'Better' : 'Worse';
         }
 
-        // vs Prior Year
+        // 3-year avg trend (matches card comparison)
         let vsYearHtml = '';
-        if (latest.value !== null && prior.value !== null) {
-            const change = latest.value - prior.value;
-            const pctChange = prior.value !== 0 ? ((change / Math.abs(prior.value)) * 100) : 0;
-            const isImproving = effective.goodDirection === 'up' ? change > 0 : change < 0;
-            const isFlat = Math.abs(pctChange) < 0.1;
-            const arrow = change > 0 ? '\u2191' : change < 0 ? '\u2193' : '\u2192';
+        const trendForStats = this.computeTrendComparison(effective, metricData);
+        if (trendForStats) {
+            const pctChange = ((trendForStats.recentAvg - trendForStats.priorAvg) / Math.abs(trendForStats.priorAvg) * 100);
+            const isUp = pctChange > 0;
+            const isImproving = (effective.goodDirection === 'up') === isUp;
+            const isFlat = Math.abs(pctChange) < 0.5;
+            const arrow = isUp ? '\u2191' : '\u2193';
             const absPct = Math.abs(pctChange);
             let pctLabel = isFlat ? 'Flat' : (absPct > 100 ? `${arrow} ${absPct.toFixed(0)}%` : `${arrow} ${absPct.toFixed(1)}%`);
             const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
@@ -680,7 +681,7 @@ const App = {
 
             vsYearHtml = `
                 <div class="stat-card">
-                    <div class="stat-label">vs ${prior.year}</div>
+                    <div class="stat-label">${trendForStats.recentLabel} vs ${trendForStats.priorLabel}</div>
                     <div class="stat-value ${cls}">${pctLabel}</div>
                     <div class="stat-sub ${cls}">${word}</div>
                 </div>

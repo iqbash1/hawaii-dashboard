@@ -971,15 +971,27 @@ body {
         max-height: 95vh;
     }
 
+    .modal-actions {
+        gap: 0.25rem;
+        margin-right: 0.5rem;
+    }
+
+    .modal-share-btn .share-label {
+        display: none;
+    }
+
+    .modal-share-btn {
+        padding: 0 0.5rem;
+    }
+
     .modal-header {
         padding: 1.25rem 1rem 0;
-        padding-right: 3rem;
+        padding-right: 5.5rem;
         align-items: flex-start;
     }
 
     .modal-close {
         top: 0.75rem;
-        margin-right: 0.75rem;
         width: 32px;
         height: 32px;
         font-size: 1.1rem;
