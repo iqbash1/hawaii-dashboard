@@ -32,6 +32,37 @@
     --transition: 0.15s ease;
 }
 
+/* --- Top Navigation --- */
+.top-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.6rem 1rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+}
+
+.top-nav-link {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.35rem 1rem;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition), background var(--transition);
+}
+
+.top-nav-link:hover {
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.top-nav-link.active {
+    color: var(--hawaii-blue);
+    font-weight: 700;
+}
+
 .skip-link {
     position: absolute;
     top: -100%;
