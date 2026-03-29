@@ -495,13 +495,9 @@ body {
 
 .modal-tab .tab-rank {
     font-size: 0.7rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-left: 0.3rem;
-}
-
-.modal-tab.active .tab-rank {
-    color: var(--hawaii-blue);
+    font-weight: inherit;
+    color: inherit;
+    margin-left: 0.2rem;
 }
 
 .modal-chart-container {
