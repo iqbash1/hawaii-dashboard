@@ -382,101 +382,42 @@ const ChartUtils = {
                 const { ctx, chartArea, scales } = chart;
                 const xScale = scales.x;
                 ctx.save();
-                const pillPad = 5;
-                const pillH = 18;
-                const yScale = chart.scales.y;
-                const midY = (yScale.top + yScale.bottom) / 2;
-                const avgPixel = yScale.getPixelForValue(dataAvg);
-                const dataInTopHalf = avgPixel < midY;
-                const pillY = dataInTopHalf
-                    ? chartArea.bottom - pillH - 4
-                    : chartArea.top + 2;
-                ctx.font = '400 11px "Inter", sans-serif';
-                const gap = 6;
                 const step = xScale.ticks.length > 1
                     ? (xScale.getPixelForValue(1) - xScale.getPixelForValue(0)) : 0;
-                const candidates = govBoxes.map((gov, gi) => {
+                const bands = govBoxes.map((gov, gi) => {
                     const x1 = xScale.getPixelForValue(gov.startIdx) - step * 0.5;
                     const x2 = xScale.getPixelForValue(gov.endIdx) + step * 0.5;
                     const left = Math.max(x1, chartArea.left);
                     const right = Math.min(x2, chartArea.right);
                     const parts = gov.name.split(' ');
                     const lastName = parts[parts.length - 1];
-                    const variants = [
-                        `${gov.name} (${gov.party})`,
-                        `${lastName} (${gov.party})`,
-                        lastName,
-                    ];
-                    return { gov, left, right, variants, idx: gi, centerX: (left + right) / 2 };
+                    return { gov, left, right, lastName, idx: gi, centerX: (left + right) / 2 };
                 });
-                // Always draw alternating background bands
-                candidates.forEach(c => {
-                    if (c.idx % 2 === 0) {
+                // Draw alternating background bands
+                bands.forEach(b => {
+                    if (b.idx % 2 === 0) {
                         ctx.fillStyle = 'rgba(0, 0, 0, 0.025)';
-                        ctx.fillRect(c.left, chartArea.top, c.right - c.left, chartArea.bottom - chartArea.top);
+                        ctx.fillRect(b.left, chartArea.top, b.right - b.left, chartArea.bottom - chartArea.top);
                     }
                 });
-                // On narrow charts, skip text labels and only show bands
-                const chartWidth = chartArea.right - chartArea.left;
-                if (chartWidth < 500) {
-                    ctx.restore();
-                    return;
-                }
-                // Inset from left edge so labels do not overlap y-axis values
-                const leftInset = chartArea.left + 30;
-                // Filter out governors whose band is too narrow for any label
-                const minLabelWidth = 15;
-                const fittable = candidates.filter(c => (c.right - c.left) >= minLabelWidth);
-                let prevRight = leftInset;
-                const placed = [];
-                fittable.forEach(c => {
-                    // Find the longest variant that fits within the band
-                    let bestText = null;
-                    const bandWidth = c.right - c.left;
-                    for (const v of c.variants) {
-                        const w = ctx.measureText(v).width;
-                        if (w + pillPad * 2 <= bandWidth && c.left >= prevRight) {
-                            bestText = v;
-                            break;
-                        }
-                    }
-                    // Fall back to shortest variant if it fits with gap from previous
-                    if (!bestText) {
-                        const shortest = c.variants[c.variants.length - 1];
-                        const sw = ctx.measureText(shortest).width;
-                        if (c.centerX - sw / 2 >= prevRight + gap) {
-                            bestText = shortest;
-                        }
-                    }
-                    // Skip if no variant fits -- a single initial is not useful
-                    if (!bestText) return; // skip this label entirely
-                    const tw = ctx.measureText(bestText).width;
-                    // Center within the band, but do not overlap previous label
-                    let px = c.centerX - tw / 2;
-                    if (px < prevRight + gap) px = prevRight + gap;
-                    if (px + tw > chartArea.right) px = chartArea.right - tw;
-                    prevRight = px + tw;
-                    placed.push({ ...c, labelText: bestText, textX: px + tw / 2 });
-                });
-                const lastIdx = placed.length - 1;
-                placed.forEach((c, i) => {
-                    const partyColor = c.gov.party === 'R' ? ChartUtils.PARTY_REP : ChartUtils.PARTY_DEM;
+                // Vertical governor labels along right edge of each band
+                ctx.font = '400 10px "Inter", sans-serif';
+                const chartHeight = chartArea.bottom - chartArea.top;
+                bands.forEach(b => {
+                    const bandWidth = b.right - b.left;
+                    if (bandWidth < 10) return;
+                    const partyColor = b.gov.party === 'R' ? ChartUtils.PARTY_REP : ChartUtils.PARTY_DEM;
                     ctx.fillStyle = partyColor;
-                    ctx.textBaseline = 'top';
-                    // Right-align the last governor label if it would clip
-                    if (i === lastIdx) {
-                        const tw = ctx.measureText(c.labelText).width;
-                        if (c.textX + tw / 2 > chartArea.right) {
-                            ctx.textAlign = 'right';
-                            ctx.fillText(c.labelText, Math.min(c.centerX, chartArea.right - 5), pillY + 3);
-                        } else {
-                            ctx.textAlign = 'center';
-                            ctx.fillText(c.labelText, c.textX, pillY + 3);
-                        }
-                    } else {
-                        ctx.textAlign = 'center';
-                        ctx.fillText(c.labelText, c.textX, pillY + 3);
-                    }
+                    // Pick best label: "LastName (P)" or just "LastName"
+                    const fullLabel = `${b.lastName} (${b.gov.party})`;
+                    const labelText = ctx.measureText(fullLabel).width < chartHeight - 20 ? fullLabel : b.lastName;
+                    ctx.save();
+                    ctx.translate(b.centerX, chartArea.top + 8);
+                    ctx.rotate(Math.PI / 2);
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(labelText, 0, 0);
+                    ctx.restore();
                 });
                 ctx.restore();
             }
