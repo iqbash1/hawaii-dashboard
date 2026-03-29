@@ -468,8 +468,8 @@ body {
 .modal-tab {
     font-family: var(--font-heading);
     font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-muted);
+    font-weight: 500;
+    color: #adb5bd;
     background: none;
     border: 1px solid transparent;
     border-bottom: none;
@@ -481,12 +481,13 @@ body {
 }
 
 .modal-tab:hover {
-    color: var(--text);
-    background: rgba(0, 0, 0, 0.025);
+    color: var(--text-secondary);
+    background: rgba(0, 0, 0, 0.02);
 }
 
 .modal-tab.active {
-    color: var(--text);
+    color: var(--hawaii-blue);
+    font-weight: 700;
     background: var(--card-bg);
     border-color: var(--border);
     border-bottom-color: var(--card-bg);
