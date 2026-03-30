@@ -751,32 +751,30 @@ const ChartUtils = {
 
                 // Distribution lines: run from dot strip through entire chart
                 if (distStats) {
-                    const q1x = xScale.getPixelForValue(distStats.q1);
-                    const q3x = xScale.getPixelForValue(distStats.q3);
+                    const q1x    = xScale.getPixelForValue(distStats.q1);
+                    const q3x    = xScale.getPixelForValue(distStats.q3);
+                    const bestX  = xScale.getPixelForValue(values[0]);       // rank 1 state
+                    const worstX = xScale.getPixelForValue(values[n - 1]);   // rank n state
                     const isGoodDown = goodDirection === 'down';
 
-                    // Top 25% zone (good side) in green, Bottom 25% zone (bad side) in red
-                    if (isGoodDown) {
-                        // Lower = better: good zone is left of Q1
-                        ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
-                        ctx.fillRect(chartArea.left, topEdge, q1x - chartArea.left, chartArea.bottom - topEdge);
-                        ctx.fillStyle = 'rgba(192, 57, 43, 0.06)';
-                        ctx.fillRect(q3x, topEdge, chartArea.right - q3x, chartArea.bottom - topEdge);
-                    } else {
-                        // Higher = better: good zone is right of Q3
-                        ctx.fillStyle = 'rgba(192, 57, 43, 0.06)';
-                        ctx.fillRect(chartArea.left, topEdge, q1x - chartArea.left, chartArea.bottom - topEdge);
-                        ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
-                        ctx.fillRect(q3x, topEdge, chartArea.right - q3x, chartArea.bottom - topEdge);
-                    }
+                    // Shaded zones anchored to rank-1 / rank-n state values (not chart edges)
+                    // down-is-better: bestX(left) → q1x = Top 25%;  q3x → worstX(right) = Bottom 25%
+                    // up-is-better:   q3x → bestX(right) = Top 25%; worstX(left) → q1x = Bottom 25%
+                    const topZoneLeft  = isGoodDown ? bestX : q3x;
+                    const topZoneRight = isGoodDown ? q1x   : bestX;
+                    const botZoneLeft  = isGoodDown ? q3x   : worstX;
+                    const botZoneRight = isGoodDown ? worstX : q1x;
 
-                    // Q1, Median, Q3 lines with labels
-                    const q1Label = isGoodDown ? 'Top 25%' : 'Bottom 25%';
-                    const q3Label = isGoodDown ? 'Bottom 25%' : 'Top 25%';
+                    ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
+                    ctx.fillRect(topZoneLeft, topEdge, topZoneRight - topZoneLeft, chartArea.bottom - topEdge);
+                    ctx.fillStyle = 'rgba(192, 57, 43, 0.06)';
+                    ctx.fillRect(botZoneLeft, topEdge, botZoneRight - botZoneLeft, chartArea.bottom - topEdge);
+
+                    // Q1, Median, Q3 dashed reference lines (Q1/Q3 have no inline label — zone labels below)
                     const lines = [
-                        { val: distStats.q1, label: q1Label, dash: [4, 4], alpha: 0.2, width: 1 },
-                        { val: distStats.median, label: 'Median', dash: [6, 3], alpha: 0.3, width: 1.5 },
-                        { val: distStats.q3, label: q3Label, dash: [4, 4], alpha: 0.2, width: 1 },
+                        { val: distStats.q1,     dash: [4, 4], alpha: 0.2, width: 1   },
+                        { val: distStats.median, dash: [6, 3], alpha: 0.3, width: 1.5, label: 'Median' },
+                        { val: distStats.q3,     dash: [4, 4], alpha: 0.2, width: 1   },
                     ];
                     lines.forEach(line => {
                         const x = xScale.getPixelForValue(line.val);
@@ -788,18 +786,31 @@ const ChartUtils = {
                             ctx.moveTo(x, topEdge + 14);
                             ctx.lineTo(x, chartArea.bottom);
                             ctx.stroke();
-                            // Percentile label at top
                             ctx.setLineDash([]);
-                            ctx.font = '500 11px Inter, sans-serif';
-                            ctx.fillStyle = '#7A8A9A';
-                            ctx.textAlign = 'center';
-                            ctx.fillText(line.label, x, topEdge + 8);
+                            // Only draw inline label for Median
+                            if (line.label) {
+                                ctx.font = '500 11px Inter, sans-serif';
+                                ctx.fillStyle = '#7A8A9A';
+                                ctx.textAlign = 'center';
+                                ctx.fillText(line.label, x, topEdge + 8);
+                            }
                             // Value at bottom of chart
                             ctx.font = '500 11px Inter, sans-serif';
                             ctx.fillStyle = '#7A8A9A';
+                            ctx.textAlign = 'center';
                             ctx.fillText(distStats.fmt(line.val), x, chartArea.bottom + 14);
                         }
                     });
+
+                    // Zone labels centered within their shaded regions
+                    const topLabelX = (topZoneLeft + topZoneRight) / 2;
+                    const botLabelX = (botZoneLeft + botZoneRight) / 2;
+                    ctx.setLineDash([]);
+                    ctx.font = '500 11px Inter, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#7A8A9A';
+                    ctx.fillText('Top 25%',    topLabelX, topEdge + 8);
+                    ctx.fillText('Bottom 25%', botLabelX, topEdge + 8);
                 }
 
                 // Dot strip dots
