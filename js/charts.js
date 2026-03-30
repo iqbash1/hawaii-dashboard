@@ -1213,8 +1213,14 @@ const ChartUtils = {
                         callbacks: {
                             title: (items) => items.length ? years[items[0].dataIndex] : '',
                             label: (item) => {
-                                const name = item.datasetIndex === 0 ? 'Hawai\u02BBi' : (compState || '');
-                                return name ? `${name}: #${item.raw}` : '';
+                                if (item.raw == null) return '';
+                                return `Hawai\u02BBi: #${item.raw}`;
+                            },
+                            afterBody: (items) => {
+                                if (!compState || !items.length) return [];
+                                const yr = years[items[0].dataIndex];
+                                const rank = stateRanks[compState] && stateRanks[compState][yr];
+                                return rank ? [`${compState}: #${rank}`] : [];
                             }
                         },
                         backgroundColor: 'rgba(51,51,51,0.92)',
