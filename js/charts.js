@@ -1066,7 +1066,7 @@ const ChartUtils = {
 
         let hoveredDotState = null;
 
-        const DOT_STRIP_H = 76; // px of top padding reserved for strip
+        const DOT_STRIP_H = 108; // px of top padding reserved for strip
 
         // Chart height
         const rowH = Math.max(12, Math.min(14, 700 / totalStates));
@@ -1192,30 +1192,32 @@ const ChartUtils = {
             afterDraw(chart) {
                 if (dotStripData.length === 0) return;
                 const { ctx: c, chartArea: { left, right, top } } = chart;
-                const dotY = top - 24;
-                const stripTop = top - DOT_STRIP_H + 2;
+                const dotY = top - 32;          // dots sit 32px above chart area
+                const stripTop = top - DOT_STRIP_H + 4;
+                const refLineTop = stripTop + 20; // where reference lines begin
+                const sepY = top - 12;            // separator line, 12px above chart
 
                 c.save();
 
-                // Subtle separator line between strip and chart
-                c.strokeStyle = '#efefef';
+                // Separator line — clear gap between strip and rank chart
+                c.strokeStyle = '#e8e8e8';
                 c.lineWidth = 1;
                 c.beginPath();
-                c.moveTo(left, top - 4);
-                c.lineTo(right, top - 4);
+                c.moveTo(left, sepY);
+                c.lineTo(right, sepY);
                 c.stroke();
 
                 // IQR shaded band (between Q1 and Q3 values)
                 const q1x = valToX(left, right, dsQ1);
                 const q3x = valToX(left, right, dsQ3);
-                c.fillStyle = 'rgba(13,124,143,0.06)';
-                c.fillRect(q1x, stripTop + 14, q3x - q1x, dotY - stripTop - 20);
+                c.fillStyle = 'rgba(13,124,143,0.07)';
+                c.fillRect(q1x, refLineTop, q3x - q1x, dotY - refLineTop - 4);
 
                 // Q1 / Median / Q3 dashed lines + labels
                 const refLines = [
-                    { val: dsQ1,    label: '25th',   alpha: 0.28, w: 0.8 },
-                    { val: dsMedian, label: 'Median', alpha: 0.50, w: 1.2 },
-                    { val: dsQ3,    label: '75th',   alpha: 0.28, w: 0.8 },
+                    { val: dsQ1,     label: '25th',   alpha: 0.45, w: 1.0 },
+                    { val: dsMedian, label: 'Median',  alpha: 0.75, w: 1.5 },
+                    { val: dsQ3,     label: '75th',   alpha: 0.45, w: 1.0 },
                 ];
                 for (const ref of refLines) {
                     const x = valToX(left, right, ref.val);
@@ -1225,15 +1227,16 @@ const ChartUtils = {
                     c.lineWidth = ref.w;
                     c.setLineDash([4, 3]);
                     c.beginPath();
-                    c.moveTo(x, stripTop + 13);
-                    c.lineTo(x, dotY - 7);
+                    c.moveTo(x, refLineTop);
+                    c.lineTo(x, dotY - 8);
                     c.stroke();
                     c.setLineDash([]);
-                    c.font = '500 8px Inter, sans-serif';
-                    c.fillStyle = `rgba(13,124,143,${ref.alpha + 0.1})`;
+                    // Label above the line
+                    c.font = ref.label === 'Median' ? '700 10px Inter, sans-serif' : '600 9px Inter, sans-serif';
+                    c.fillStyle = `rgba(13,124,143,${ref.alpha})`;
                     c.textAlign = 'center';
-                    c.textBaseline = 'top';
-                    c.fillText(ref.label, x, stripTop + 4);
+                    c.textBaseline = 'bottom';
+                    c.fillText(ref.label, x, refLineTop - 2);
                     c.restore();
                 }
 
@@ -1244,27 +1247,27 @@ const ChartUtils = {
                     const x = valToX(left, right, e.value);
                     const isHov = (e.state === hoveredDotState);
                     c.beginPath();
-                    c.arc(x, dotY, isHov ? 4 : 2.5, 0, Math.PI * 2);
+                    c.arc(x, dotY, isHov ? 4.5 : 3, 0, Math.PI * 2);
                     c.fillStyle = isHov ? '#7A8A9A' : '#C3CDD7';
                     c.fill();
-                    if (isHov) { c.strokeStyle = '#fff'; c.lineWidth = 1; c.stroke(); }
+                    if (isHov) { c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.stroke(); }
                 }
 
                 // Hawaii dot on top
                 if (hiEntry) {
                     const hx = valToX(left, right, hiEntry.value);
                     c.beginPath();
-                    c.arc(hx, dotY, 5, 0, Math.PI * 2);
+                    c.arc(hx, dotY, 6, 0, Math.PI * 2);
                     c.fillStyle = '#0D7C8F';
                     c.fill();
                     c.strokeStyle = '#fff';
-                    c.lineWidth = 1.5;
+                    c.lineWidth = 2;
                     c.stroke();
-                    c.font = '700 8px Inter, sans-serif';
+                    c.font = '700 10px Inter, sans-serif';
                     c.fillStyle = '#0D7C8F';
                     c.textAlign = 'center';
                     c.textBaseline = 'top';
-                    c.fillText('HI', hx, dotY + 7);
+                    c.fillText('HI', hx, dotY + 8);
                 }
 
                 // Best and worst state labels (skip if too close to HI)
@@ -1272,12 +1275,12 @@ const ChartUtils = {
                 [dotStripData[0], dotStripData[dotStripData.length - 1]].forEach(e => {
                     if (!e || e.state === hiKey) return;
                     const x = valToX(left, right, e.value);
-                    if (Math.abs(x - hiX) < 28) return;
-                    c.font = '500 7px Inter, sans-serif';
-                    c.fillStyle = '#bbb';
+                    if (Math.abs(x - hiX) < 32) return;
+                    c.font = '600 9px Inter, sans-serif';
+                    c.fillStyle = '#999';
                     c.textAlign = 'center';
                     c.textBaseline = 'top';
-                    c.fillText(abbr(e.state), x, dotY + 7);
+                    c.fillText(abbr(e.state), x, dotY + 8);
                 });
 
                 // Hover tooltip for a dot
@@ -1286,25 +1289,25 @@ const ChartUtils = {
                     if (hov) {
                         const hx = valToX(left, right, hov.value);
                         const txt = `${abbr(hov.state)}  #${hov.rank}  ${fmtVal(hov.value)}`;
-                        c.font = '600 10px Inter, sans-serif';
+                        c.font = '600 11px Inter, sans-serif';
                         const tw = c.measureText(txt).width;
-                        const bx = Math.min(Math.max(hx - tw / 2 - 6, left), right - tw - 12);
-                        const by = dotY - 28;
-                        c.fillStyle = 'rgba(40,40,40,0.88)';
-                        c.fillRect(bx, by, tw + 12, 18);
+                        const bx = Math.min(Math.max(hx - tw / 2 - 7, left), right - tw - 14);
+                        const by = dotY - 32;
+                        c.fillStyle = 'rgba(40,40,40,0.9)';
+                        c.fillRect(bx, by, tw + 14, 20);
                         c.fillStyle = '#fff';
                         c.textAlign = 'left';
                         c.textBaseline = 'top';
-                        c.fillText(txt, bx + 6, by + 4);
+                        c.fillText(txt, bx + 7, by + 5);
                     }
                 }
 
                 // Strip section label
-                c.font = '500 8px Inter, sans-serif';
-                c.fillStyle = '#ccc';
+                c.font = '600 9px Inter, sans-serif';
+                c.fillStyle = '#aaa';
                 c.textAlign = 'left';
                 c.textBaseline = 'top';
-                c.fillText('Value distribution \u00b7 ' + latestYear, left, stripTop + 3);
+                c.fillText('Value distribution \u00b7 ' + latestYear, left, stripTop + 2);
 
                 c.restore();
             }
