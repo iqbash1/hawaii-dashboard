@@ -1066,7 +1066,7 @@ const ChartUtils = {
 
         let hoveredDotState = null;
 
-        const DOT_STRIP_H = 108; // px of top padding reserved for strip
+        const DOT_STRIP_H = 148; // px of top padding reserved for strip
 
         // Chart height
         const rowH = Math.max(12, Math.min(14, 700 / totalStates));
@@ -1193,20 +1193,30 @@ const ChartUtils = {
             afterDraw(chart) {
                 if (dotStripData.length === 0) return;
                 const { ctx: c, chartArea: { left, right, top } } = chart;
-                const dotY = top - 32;          // dots sit 32px above chart area
                 const stripTop = top - DOT_STRIP_H + 4;
-                const refLineTop = stripTop + 20; // where reference lines begin
-                const sepY = top - 12;            // separator line, 12px above chart
+                const sepY = top - 22;            // divider between strip and rank chart
+                const dotY = sepY - 28;           // dots centred in the strip
+                const refLineTop = stripTop + 22; // where reference lines begin
 
                 c.save();
 
-                // Separator line — clear gap between strip and rank chart
-                c.strokeStyle = '#e8e8e8';
-                c.lineWidth = 1;
+                // Faint background behind the dot strip to distinguish it visually
+                c.fillStyle = 'rgba(246,248,250,0.95)';
+                c.fillRect(left - 8, stripTop - 2, right - left + 16, sepY - stripTop + 2);
+
+                // Divider — labeled on both sides so both panels are named
+                c.strokeStyle = '#c8c8c8';
+                c.lineWidth = 1.5;
                 c.beginPath();
                 c.moveTo(left, sepY);
                 c.lineTo(right, sepY);
                 c.stroke();
+                // "Ranking trend" label below the divider (right-aligned so it doesn't crowd)
+                c.font = '600 9px Inter, sans-serif';
+                c.fillStyle = '#aaa';
+                c.textAlign = 'right';
+                c.textBaseline = 'top';
+                c.fillText('Ranking trend \u2193', right, sepY + 4);
 
                 // IQR shaded band (between Q1 and Q3 values)
                 const q1x = valToX(left, right, dsQ1);
@@ -1303,12 +1313,16 @@ const ChartUtils = {
                     }
                 }
 
-                // Strip section label
+                // "Value distribution" label at top-left of strip
                 c.font = '600 9px Inter, sans-serif';
                 c.fillStyle = '#aaa';
                 c.textAlign = 'left';
                 c.textBaseline = 'top';
                 c.fillText('Value distribution \u00b7 ' + latestYear, left, stripTop + 2);
+                // Mirror label right-aligned above the divider
+                c.textAlign = 'right';
+                c.textBaseline = 'bottom';
+                c.fillText('\u2191 Value distribution', right, sepY - 4);
 
                 c.restore();
             }
