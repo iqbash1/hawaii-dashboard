@@ -90,7 +90,7 @@
         .fyc-rank-breakdown-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
         .fyc-tier-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.5rem 1rem; border-bottom: 1px solid #f2f4f6; }
         .fyc-tier-row:last-child { border-bottom: none; }
-        .fyc-tier-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; min-width: 90px; padding-top: 3px; }
+        .fyc-tier-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; min-width: 72px; padding-top: 3px; }
         .fyc-tier-items { display: flex; flex-wrap: wrap; gap: 0.3rem; }
         .fyc-tier-tag { font-size: 0.75rem; padding: 0.18rem 0.55rem; border-radius: 4px; text-decoration: none; transition: opacity 0.15s; color: inherit; }
         .fyc-tier-tag:hover { opacity: 0.75; }
@@ -760,7 +760,7 @@
                     <div class="fyc-chips">
                         <div class="fyc-chip rank-up">
                             <div class="fyc-chip-count">${rankMoveTiers.improved.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
-                            <div class="fyc-chip-label">Ranking improved</div>
+                            <div class="fyc-chip-label">Improved</div>
                         </div>
                         <div class="fyc-chip rank-same">
                             <div class="fyc-chip-count">${rankMoveTiers.stable.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
@@ -768,7 +768,7 @@
                         </div>
                         <div class="fyc-chip rank-down">
                             <div class="fyc-chip-count">${rankMoveTiers.worsened.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
-                            <div class="fyc-chip-label">Ranking worsened</div>
+                            <div class="fyc-chip-label">Worsened</div>
                         </div>
                     </div>
                 </div>`;
@@ -836,9 +836,9 @@
             const rankChangeHtml = `
                 <div class="fyc-rank-breakdown">
                     <div class="fyc-rank-breakdown-title">Change in national ranking (5-year)</div>
-                    ${renderMoveTierRow('Ranking improved', rankMoveTiers.improved, 'tier-top25', false)}
+                    ${renderMoveTierRow('Improved', rankMoveTiers.improved, 'tier-top25', false)}
                     ${renderMoveTierRow('Little change', rankMoveTiers.stable, 'tier-average', true)}
-                    ${renderMoveTierRow('Ranking worsened', rankMoveTiers.worsened, 'tier-bottom25', false)}
+                    ${renderMoveTierRow('Worsened', rankMoveTiers.worsened, 'tier-bottom25', false)}
                 </div>`;
 
             // 4. Executive summary
