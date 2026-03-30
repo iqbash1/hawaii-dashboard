@@ -704,7 +704,7 @@
             }
 
             // 3. Rank change counts (computed here so chips can use them)
-            const RANK_SHIFT = 5;
+            const RANK_SHIFT = 2;
             const rankMoveTiers = { improved: [], stable: [], worsened: [] };
             for (const r of allResults) {
                 if (!r.standing || r.standing.endRank == null) continue;
@@ -804,12 +804,14 @@
                 </div>`;
 
             // 3c. Rank change detail section (uses rankMoveTiers computed above)
-            function renderMoveTierRow(label, items, cssClass) {
+            function renderMoveTierRow(label, items, cssClass, isStable) {
                 const tags = items.length
                     ? items.map(({ r, move }) => {
-                        const rankLabel = r.standing.startRank != null
-                            ? `#${r.standing.startRank}\u2192#${r.standing.endRank}`
-                            : `#${r.standing.endRank}`;
+                        // Stable tier: show only current rank (change is trivial)
+                        // Improved/worsened: show start→end to highlight the move
+                        const rankLabel = (isStable || r.standing.startRank == null)
+                            ? `#${r.standing.endRank}`
+                            : `#${r.standing.startRank}\u2192#${r.standing.endRank}`;
                         return `<a href="../#${r.slug}" class="fyc-tier-tag">${r.metric}<span class="fyc-tier-rank">${rankLabel}</span></a>`;
                       }).join('')
                     : `<span class="fyc-tier-none">none</span>`;
@@ -821,9 +823,9 @@
             const rankChangeHtml = `
                 <div class="fyc-rank-breakdown">
                     <div class="fyc-rank-breakdown-title">Change in national ranking (5-year)</div>
-                    ${renderMoveTierRow('Ranking improved', rankMoveTiers.improved, 'tier-top25')}
-                    ${renderMoveTierRow('Ranking stable', rankMoveTiers.stable, 'tier-average')}
-                    ${renderMoveTierRow('Ranking worsened', rankMoveTiers.worsened, 'tier-bottom25')}
+                    ${renderMoveTierRow('Ranking improved', rankMoveTiers.improved, 'tier-top25', false)}
+                    ${renderMoveTierRow('Ranking stable', rankMoveTiers.stable, 'tier-average', true)}
+                    ${renderMoveTierRow('Ranking worsened', rankMoveTiers.worsened, 'tier-bottom25', false)}
                 </div>`;
 
             // 4. Executive summary
