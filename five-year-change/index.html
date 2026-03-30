@@ -225,7 +225,7 @@
 
             if (isPCP) {
                 // FIPS-keyed (pcp_per_100k): entries have { name, "2020": val, ... }
-                for (const tryYear of [targetYear, targetYear - 1, targetYear + 1]) {
+                for (const tryYear of [targetYear, targetYear - 1, targetYear + 1, targetYear - 2, targetYear + 2]) {
                     stateValues = [];
                     let count = 0;
                     Object.values(sd.data).forEach(entry => {
@@ -238,8 +238,10 @@
                 }
             } else {
                 // Year-keyed: { "2023": { "Alabama": val, ... } }
-                for (const tryYear of [targetYear, targetYear - 1, targetYear + 1]) {
-                    const yearData = sd.data[String(tryYear)];
+                // Also supports range year keys like "2022-2024" via parseYear matching
+                for (const tryYear of [targetYear, targetYear - 1, targetYear + 1, targetYear - 2, targetYear + 2]) {
+                    const matchedKey = Object.keys(sd.data).find(k => parseYear(k) === tryYear);
+                    const yearData = matchedKey ? sd.data[matchedKey] : null;
                     if (!yearData) continue;
                     const entries = Object.entries(yearData).filter(([, v]) => v != null);
                     if (entries.length >= 25) {
@@ -402,10 +404,28 @@
             return `<div class="fyc-line4">Counties: ${parts.join(' \u00b7 ')}</div>`;
         }
 
-        /* ── Status chip labels ── */
-        function statusLabel(status) {
-            if (status === 'improving') return 'Improving';
-            if (status === 'worsening') return 'Worsening';
+        /* ── Status chip labels with national-ranking context ── */
+        function statusLabel(status, standing) {
+            // Rank move: positive = rank number fell (e.g. #10→#6 = +4, better)
+            const move = (standing && standing.startRank != null && standing.endRank != null)
+                ? standing.startRank - standing.endRank
+                : null;
+            const gaining  = move != null && move >=  3;
+            const trailing = move != null && move <= -3;
+
+            if (status === 'improving') {
+                if (gaining)  return 'Improving, outpacing the rest';
+                if (trailing) return 'Improving, but behind the rest';
+                return 'Improving, in step with the rest';
+            }
+            if (status === 'worsening') {
+                if (gaining)  return 'Worsening less than the rest';
+                if (trailing) return 'Worsening faster than the rest';
+                return 'Worsening, in step with the rest';
+            }
+            // little-change
+            if (gaining)  return 'Stable, while others worsen';
+            if (trailing) return 'Stable, while others improve';
             return 'Little change';
         }
 
@@ -687,15 +707,22 @@
             const RANK_SHIFT = 5;
             const rankMoveTiers = { improved: [], stable: [], worsened: [] };
             for (const r of allResults) {
-                if (!r.standing || r.standing.endRank == null || r.standing.startRank == null) continue;
-                const move = r.standing.startRank - r.standing.endRank;
-                if (move >= RANK_SHIFT)       rankMoveTiers.improved.push({ r, move });
-                else if (move <= -RANK_SHIFT) rankMoveTiers.worsened.push({ r, move });
-                else                          rankMoveTiers.stable.push({ r, move });
+                if (!r.standing || r.standing.endRank == null) continue;
+                const move = r.standing.startRank != null
+                    ? r.standing.startRank - r.standing.endRank
+                    : null; // no prior rank data
+                if (move != null && move >= RANK_SHIFT)       rankMoveTiers.improved.push({ r, move });
+                else if (move != null && move <= -RANK_SHIFT) rankMoveTiers.worsened.push({ r, move });
+                else                                          rankMoveTiers.stable.push({ r, move });
             }
             rankMoveTiers.improved.sort((a, b) => b.move - a.move);
             rankMoveTiers.worsened.sort((a, b) => a.move - b.move);
-            rankMoveTiers.stable.sort((a, b) => Math.abs(a.move) - Math.abs(b.move));
+            rankMoveTiers.stable.sort((a, b) => {
+                if (a.move == null && b.move == null) return 0;
+                if (a.move == null) return 1;
+                if (b.move == null) return -1;
+                return Math.abs(a.move) - Math.abs(b.move);
+            });
             const rankMoveN = rankMoveTiers.improved.length + rankMoveTiers.stable.length + rankMoveTiers.worsened.length;
 
             // 3. Render chips (two rows: 5-year outcome + ranking change)
@@ -779,9 +806,12 @@
             // 3c. Rank change detail section (uses rankMoveTiers computed above)
             function renderMoveTierRow(label, items, cssClass) {
                 const tags = items.length
-                    ? items.map(({ r, move }) =>
-                        `<a href="../#${r.slug}" class="fyc-tier-tag">${r.metric}<span class="fyc-tier-rank">#${r.standing.startRank}\u2192#${r.standing.endRank}</span></a>`
-                      ).join('')
+                    ? items.map(({ r, move }) => {
+                        const rankLabel = r.standing.startRank != null
+                            ? `#${r.standing.startRank}\u2192#${r.standing.endRank}`
+                            : `#${r.standing.endRank}`;
+                        return `<a href="../#${r.slug}" class="fyc-tier-tag">${r.metric}<span class="fyc-tier-rank">${rankLabel}</span></a>`;
+                      }).join('')
                     : `<span class="fyc-tier-none">none</span>`;
                 return `<div class="fyc-tier-row ${cssClass}">
                     <div class="fyc-tier-label">${label}</div>
@@ -819,7 +849,7 @@
                         <a href="../#${r.slug}" class="fyc-row">
                             <div class="fyc-line1">
                                 <span class="fyc-metric-name">${r.metric}</span>
-                                <span class="fyc-status ${r.status}">${statusLabel(r.status)}</span>
+                                <span class="fyc-status ${r.status}">${statusLabel(r.status, r.standing)}</span>
                             </div>
                             <div class="fyc-line2">Hawai\u02BBi trend: <span class="${r.status === 'improving' ? 'fyc-val-pos' : r.status === 'worsening' ? 'fyc-val-neg' : ''}">${r.changeText}</span> ${yearRange}</div>
                             ${standingLine ? `<div class="fyc-line3">${standingLine}</div>` : ''}
