@@ -424,8 +424,8 @@
                 return 'Worsening, in step with the rest';
             }
             // little-change
-            if (gaining)  return 'Stable, while others worsen';
-            if (trailing) return 'Stable, while others improve';
+            if (gaining)  return 'Little change, while others worsen';
+            if (trailing) return 'Little change, while others improve';
             return 'Little change';
         }
 
@@ -498,7 +498,7 @@
                     const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
                     s.push(`Hawai\u02BBi holds a relatively strong national position here, though the trend is mixed: ${improving.length} ${pl(improving.length, 'metric')} improved while ${worsening.length} worsened, with ${best.metric} showing the most improvement (${best.changeText}).`);
                 } else {
-                    s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have been largely stable over the last 5 years.`);
+                    s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have changed little over the last 5 years.`);
                 }
             } else if (rankQual === 'weak') {
                 if (improving.length === 0 && worsening.length > 0) {
@@ -751,7 +751,7 @@
                         </div>
                         <div class="fyc-chip rank-same">
                             <div class="fyc-chip-count">${rankMoveTiers.stable.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
-                            <div class="fyc-chip-label">Ranking stable</div>
+                            <div class="fyc-chip-label">Little change</div>
                         </div>
                         <div class="fyc-chip rank-down">
                             <div class="fyc-chip-count">${rankMoveTiers.worsened.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
@@ -824,7 +824,7 @@
                 <div class="fyc-rank-breakdown">
                     <div class="fyc-rank-breakdown-title">Change in national ranking (5-year)</div>
                     ${renderMoveTierRow('Ranking improved', rankMoveTiers.improved, 'tier-top25', false)}
-                    ${renderMoveTierRow('Ranking stable', rankMoveTiers.stable, 'tier-average', true)}
+                    ${renderMoveTierRow('Little change', rankMoveTiers.stable, 'tier-average', true)}
                     ${renderMoveTierRow('Ranking worsened', rankMoveTiers.worsened, 'tier-bottom25', false)}
                 </div>`;
 
