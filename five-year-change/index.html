@@ -303,11 +303,11 @@
                 const startGapText = fmtGap(startGap, unit, isDec, startBW);
                 const betterThen = isBetterThanMedian(startRank.hawaiiValue, startRank.medianValue);
 
-                standingText = `Standing: Rank now #${endRank.rank} (was #${startRank.rank}) \u00b7 Gap vs median now ${endGapText} (was ${startGapText})`;
+                standingText = `National standing: Rank now #${endRank.rank} (was #${startRank.rank}) \u00b7 Gap vs median now ${endGapText} (was ${startGapText})`;
                 return { standingText, endRank: endRank.rank, startRank: startRank.rank, betterNow, betterThen };
             }
 
-            standingText = `Standing: Rank now #${endRank.rank} of ${endRank.total} \u00b7 Gap vs median now ${endGapText}`;
+            standingText = `National standing: Rank now #${endRank.rank} of ${endRank.total} \u00b7 Gap vs median now ${endGapText}`;
             return { standingText, endRank: endRank.rank, startRank: null, betterNow, betterThen: null };
         }
 
@@ -427,19 +427,51 @@
                 }
             }
 
-            // ── Sentence 1: Lead with the headline story ──
-            if (worsening.length === 0 && improving.length > 0) {
-                const bestImprover = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                s.push(`This is one of Hawai\u02BBi's stronger areas, with ${improving.length} of ${n} ${pl(n, 'metric')} improving and none worsening, led by ${bestImprover.metric} (${bestImprover.changeText}).`);
-            } else if (improving.length === 0 && worsening.length > 0) {
-                const worstMetric = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                s.push(`This area is under pressure: ${worsening.length} of ${n} ${pl(n, 'metric')} worsened and none improved, with the most notable worsening in ${worstMetric.metric} (${worstMetric.changeText}).`);
-            } else if (improving.length > 0 && worsening.length > 0) {
-                const bestImprover = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                const worstMetric = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                s.push(`A mixed picture: ${improving.length} ${pl(improving.length, 'metric')} improved while ${worsening.length} worsened. The strongest improvement was ${bestImprover.metric} (${bestImprover.changeText}), while ${worstMetric.metric} worsened the most (${worstMetric.changeText}).`);
+            // ── Sentence 1: Lead with rank-based area qualifier + trend detail ──
+            // Qualification is driven by current national rank, not just 5-yr trend direction.
+            const metricsWithRank = metrics.filter(r => r.standing && r.standing.endRank != null);
+            const aboveMedianCount = metricsWithRank.filter(r => r.standing.endRank <= 25).length;
+            const belowMedianCount = metricsWithRank.filter(r => r.standing.endRank > 25).length;
+            // "strong" = majority rank in top half nationally; "weak" = majority in bottom half
+            const rankQual = metricsWithRank.length > 0
+                ? (aboveMedianCount > belowMedianCount ? 'strong' : belowMedianCount > aboveMedianCount ? 'weak' : 'neutral')
+                : null;
+
+            if (rankQual === 'strong') {
+                if (worsening.length === 0 && improving.length > 0) {
+                    const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    s.push(`This is one of Hawai\u02BBi's stronger areas nationally, with ${improving.length} of ${n} ${pl(n, 'metric')} improving and none worsening, led by ${best.metric} (${best.changeText}).`);
+                } else if (improving.length > 0 && worsening.length > 0) {
+                    const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    s.push(`Hawai\u02BBi holds a relatively strong national position here, though the trend is mixed: ${improving.length} ${pl(improving.length, 'metric')} improved while ${worsening.length} worsened, with ${best.metric} leading the gains (${best.changeText}).`);
+                } else {
+                    s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have been largely stable over the last 5 years.`);
+                }
+            } else if (rankQual === 'weak') {
+                if (improving.length === 0 && worsening.length > 0) {
+                    const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    s.push(`This area is under pressure nationally, with ${worsening.length} of ${n} ${pl(n, 'metric')} worsening and none improving, with the most notable decline in ${worst.metric} (${worst.changeText}).`);
+                } else if (improving.length > 0 && worsening.length > 0) {
+                    const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    s.push(`This remains a relative weakness nationally, with a mixed trend: ${worsening.length} ${pl(worsening.length, 'metric')} worsened while ${improving.length} improved; ${worst.metric} saw the most concerning decline (${worst.changeText}).`);
+                } else {
+                    s.push(`This area is a relative weakness nationally and has shown little change over the last 5 years.`);
+                }
             } else {
-                s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last 5 years.`);
+                // Neutral rank split or no rank data: fall back to trend-based language
+                if (worsening.length === 0 && improving.length > 0) {
+                    const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    s.push(`A positive trend: ${improving.length} of ${n} ${pl(n, 'metric')} improved and none worsened, led by ${best.metric} (${best.changeText}).`);
+                } else if (improving.length === 0 && worsening.length > 0) {
+                    const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    s.push(`A challenging trend: ${worsening.length} of ${n} ${pl(n, 'metric')} worsened and none improved, with the most notable decline in ${worst.metric} (${worst.changeText}).`);
+                } else if (improving.length > 0 && worsening.length > 0) {
+                    const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                    s.push(`A mixed picture: ${improving.length} ${pl(improving.length, 'metric')} improved while ${worsening.length} worsened. The strongest improvement was ${best.metric} (${best.changeText}), while ${worst.metric} worsened the most (${worst.changeText}).`);
+                } else {
+                    s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last 5 years.`);
+                }
             }
 
             // ── Sentence 2-3: Ranking narrative (biggest moves, or overall pattern) ──
