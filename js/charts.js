@@ -1129,26 +1129,27 @@ const ChartUtils = {
 
                 // Q1 / Median / Q3 reference lines
                 const refs = [
-                    { rank: 12.5, label: 'Q1', color: 'rgba(5,150,105,0.35)' },
-                    { rank: 25.5, label: 'Median', color: 'rgba(120,120,120,0.4)' },
-                    { rank: 37.5, label: 'Q3', color: 'rgba(192,57,43,0.35)' },
+                    { rank: 12.5, label: 'Top 25%',    color: 'rgba(5,150,105,0.55)',   lw: 1.2 },
+                    { rank: 25.5, label: 'Median',      color: 'rgba(100,100,100,0.55)', lw: 1.5 },
+                    { rank: 37.5, label: 'Bottom 25%',  color: 'rgba(192,57,43,0.55)',   lw: 1.2 },
                 ];
                 for (const ref of refs) {
                     const y = yScale.getPixelForValue(ref.rank);
                     c.save();
                     c.strokeStyle = ref.color;
-                    c.lineWidth = 1;
+                    c.lineWidth = ref.lw;
                     c.setLineDash([5, 4]);
                     c.beginPath();
                     c.moveTo(left, y);
                     c.lineTo(right, y);
                     c.stroke();
                     c.setLineDash([]);
-                    // Label at left edge, just above the line
+                    // Label at left edge, above the line
                     c.fillStyle = ref.color;
-                    c.font = 'italic 8px Inter, sans-serif';
+                    c.font = 'italic 600 9px Inter, sans-serif';
                     c.textAlign = 'left';
-                    c.fillText(ref.label, left + 3, y - 3);
+                    c.textBaseline = 'bottom';
+                    c.fillText(ref.label, left + 3, y - 2);
                     c.restore();
                 }
             }
@@ -1215,9 +1216,9 @@ const ChartUtils = {
 
                 // Q1 / Median / Q3 dashed lines + labels
                 const refLines = [
-                    { val: dsQ1,     label: '25th',   alpha: 0.45, w: 1.0 },
-                    { val: dsMedian, label: 'Median',  alpha: 0.75, w: 1.5 },
-                    { val: dsQ3,     label: '75th',   alpha: 0.45, w: 1.0 },
+                    { val: dsQ1,     label: 'Top 25%',   alpha: 0.65, w: 1.2 },
+                    { val: dsMedian, label: 'Median',     alpha: 0.85, w: 1.5 },
+                    { val: dsQ3,     label: 'Bottom 25%', alpha: 0.65, w: 1.2 },
                 ];
                 for (const ref of refLines) {
                     const x = valToX(left, right, ref.val);
@@ -1232,7 +1233,7 @@ const ChartUtils = {
                     c.stroke();
                     c.setLineDash([]);
                     // Label above the line
-                    c.font = ref.label === 'Median' ? '700 10px Inter, sans-serif' : '600 9px Inter, sans-serif';
+                    c.font = ref.label === 'Median' ? '700 11px Inter, sans-serif' : '700 10px Inter, sans-serif';
                     c.fillStyle = `rgba(13,124,143,${ref.alpha})`;
                     c.textAlign = 'center';
                     c.textBaseline = 'bottom';
