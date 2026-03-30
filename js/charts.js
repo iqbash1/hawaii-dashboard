@@ -751,17 +751,32 @@ const ChartUtils = {
 
                 // Distribution lines: run from dot strip through entire chart
                 if (distStats) {
-                    // IQR shaded band in dot strip area
                     const q1x = xScale.getPixelForValue(distStats.q1);
                     const q3x = xScale.getPixelForValue(distStats.q3);
-                    ctx.fillStyle = 'rgba(13, 124, 143, 0.04)';
-                    ctx.fillRect(q1x, topEdge, q3x - q1x, chartArea.bottom - topEdge);
+                    const isGoodDown = goodDirection === 'down';
+
+                    // Top 25% zone (good side) in green, Bottom 25% zone (bad side) in red
+                    if (isGoodDown) {
+                        // Lower = better: good zone is left of Q1
+                        ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
+                        ctx.fillRect(chartArea.left, topEdge, q1x - chartArea.left, chartArea.bottom - topEdge);
+                        ctx.fillStyle = 'rgba(192, 57, 43, 0.06)';
+                        ctx.fillRect(q3x, topEdge, chartArea.right - q3x, chartArea.bottom - topEdge);
+                    } else {
+                        // Higher = better: good zone is right of Q3
+                        ctx.fillStyle = 'rgba(192, 57, 43, 0.06)';
+                        ctx.fillRect(chartArea.left, topEdge, q1x - chartArea.left, chartArea.bottom - topEdge);
+                        ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
+                        ctx.fillRect(q3x, topEdge, chartArea.right - q3x, chartArea.bottom - topEdge);
+                    }
 
                     // Q1, Median, Q3 lines with labels
+                    const q1Label = isGoodDown ? 'Top 25%' : 'Bottom 25%';
+                    const q3Label = isGoodDown ? 'Bottom 25%' : 'Top 25%';
                     const lines = [
-                        { val: distStats.q1, label: '25th', dash: [4, 4], alpha: 0.15, width: 1 },
+                        { val: distStats.q1, label: q1Label, dash: [4, 4], alpha: 0.2, width: 1 },
                         { val: distStats.median, label: 'Median', dash: [6, 3], alpha: 0.3, width: 1.5 },
-                        { val: distStats.q3, label: '75th', dash: [4, 4], alpha: 0.15, width: 1 },
+                        { val: distStats.q3, label: q3Label, dash: [4, 4], alpha: 0.2, width: 1 },
                     ];
                     lines.forEach(line => {
                         const x = xScale.getPixelForValue(line.val);
@@ -775,7 +790,7 @@ const ChartUtils = {
                             ctx.stroke();
                             // Percentile label at top
                             ctx.setLineDash([]);
-                            ctx.font = '500 12px Inter, sans-serif';
+                            ctx.font = '500 11px Inter, sans-serif';
                             ctx.fillStyle = '#7A8A9A';
                             ctx.textAlign = 'center';
                             ctx.fillText(line.label, x, topEdge + 8);
@@ -835,12 +850,22 @@ const ChartUtils = {
             id: 'dotStripHover',
             afterDatasetsDraw(chart) {
                 if (hoveredDotIdx < 0 || hoveredDotIdx >= stateValues.length) return;
-                const { ctx: c, scales } = chart;
+                const { ctx: c, scales, chartArea } = chart;
                 const xScale = scales.x;
                 const s = stateValues[hoveredDotIdx];
                 const x = xScale.getPixelForValue(s.value);
-                const y = chart.chartArea.top - 35;
+                const y = chartArea.top - 35;
+                const lineTop = chartArea.top - dotStripHeight + 5;
                 c.save();
+                // Ghost vertical line spanning from top of dot strip to bottom of rank chart
+                c.beginPath();
+                c.setLineDash([4, 3]);
+                c.strokeStyle = 'rgba(100, 100, 100, 0.25)';
+                c.lineWidth = 1;
+                c.moveTo(x, lineTop);
+                c.lineTo(x, chartArea.bottom);
+                c.stroke();
+                c.setLineDash([]);
                 // Enlarged dot
                 c.beginPath();
                 c.arc(x, y, 6, 0, Math.PI * 2);
@@ -866,10 +891,16 @@ const ChartUtils = {
             const rect = canvasEl.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
-            const dotY = chart.chartArea.top - 35;
-            if (Math.abs(my - dotY) > 12) return -1;
+            const ca = chart.chartArea;
+            const lineTop = ca.top - dotStripHeight + 5;
+            // Accept hover anywhere in the chart column (dot strip + bar area)
+            if (my < lineTop || my > ca.bottom || mx < ca.left || mx > ca.right) return -1;
+            const dotY = ca.top - 35;
+            // Near the dot strip: snap to closest dot within 15px
+            // Over the bar area: snap to closest value column within 20px
+            const snapRadius = Math.abs(my - dotY) <= 12 ? 15 : 20;
             const xScale = chart.scales.x;
-            let closest = -1, closestDist = 15;
+            let closest = -1, closestDist = snapRadius;
             stateValues.forEach((s, i) => {
                 const dx = Math.abs(mx - xScale.getPixelForValue(s.value));
                 if (dx < closestDist) { closestDist = dx; closest = i; }
