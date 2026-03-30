@@ -1069,14 +1069,12 @@ const ChartUtils = {
             }
         };
 
-        // Gridlines for every rank + state labels on right
-        const stateLabelsPlugin = {
-            id: 'rankTrendStateLabels',
-            afterDraw(chart) {
-                const { ctx: c, chartArea: { left, right, top, bottom } } = chart;
+        // Gridlines drawn early (beforeDatasetsDraw) so tooltip renders on top
+        const gridlinesPlugin = {
+            id: 'rankTrendGridlines',
+            beforeDatasetsDraw(chart) {
+                const { ctx: c, chartArea: { left, right } } = chart;
                 const yScale = chart.scales.y;
-
-                // Draw fine gridlines for every rank
                 for (let r = 1; r <= totalStates; r++) {
                     const y = yScale.getPixelForValue(r);
                     c.strokeStyle = (r % 10 === 0) ? '#e0e0e0' : '#f2f2f2';
@@ -1086,8 +1084,15 @@ const ChartUtils = {
                     c.lineTo(right, y);
                     c.stroke();
                 }
+            }
+        };
 
-                // State codes on right edge
+        // State labels on right edge drawn after datasets (on top of lines)
+        const stateLabelsPlugin = {
+            id: 'rankTrendStateLabels',
+            afterDraw(chart) {
+                const { ctx: c, chartArea: { right } } = chart;
+                const yScale = chart.scales.y;
                 c.textAlign = 'left';
                 for (const entry of latestYearRanked) {
                     const y = yScale.getPixelForValue(entry.rank);
@@ -1220,7 +1225,7 @@ const ChartUtils = {
                     }
                 }
             },
-            plugins: [quartilePlugin, overlayPlugin, stateLabelsPlugin]
+            plugins: [quartilePlugin, gridlinesPlugin, overlayPlugin, stateLabelsPlugin]
         });
 
         // --- Click interaction: detect state label clicks on right side ---
