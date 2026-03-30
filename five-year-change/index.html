@@ -31,6 +31,14 @@
         .fyc-chip.worsening .fyc-chip-count { color: var(--negative); }
         .fyc-chip.little-change .fyc-chip-count { color: var(--text-muted); }
         .fyc-chip.median .fyc-chip-count { color: var(--hawaii-blue); }
+        /* Ranking-change chip variants */
+        .fyc-chips-group { margin-bottom: 1.5rem; }
+        .fyc-chips-group .fyc-chips { margin-bottom: 0; }
+        .fyc-chips-row-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); text-align: center; margin: 0.75rem 0 0.4rem; }
+        .fyc-chips-row-label:first-child { margin-top: 0; }
+        .fyc-chip.rank-up .fyc-chip-count { color: var(--hawaii-blue); }
+        .fyc-chip.rank-same .fyc-chip-count { color: var(--text-muted); }
+        .fyc-chip.rank-down .fyc-chip-count { color: #b45309; }
 
         /* Executive summary */
         .fyc-exec { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; max-width: 700px; margin: 0 auto 2rem; text-align: center; }
@@ -675,20 +683,53 @@
                 else if (ratio <= 0.2) countyPattern = 'diverging';
             }
 
-            // 3. Render chips (trend summary)
+            // 3. Rank change counts (computed here so chips can use them)
+            const RANK_SHIFT = 5;
+            const rankMoveTiers = { improved: [], stable: [], worsened: [] };
+            for (const r of allResults) {
+                if (!r.standing || r.standing.endRank == null || r.standing.startRank == null) continue;
+                const move = r.standing.startRank - r.standing.endRank;
+                if (move >= RANK_SHIFT)       rankMoveTiers.improved.push({ r, move });
+                else if (move <= -RANK_SHIFT) rankMoveTiers.worsened.push({ r, move });
+                else                          rankMoveTiers.stable.push({ r, move });
+            }
+            rankMoveTiers.improved.sort((a, b) => b.move - a.move);
+            rankMoveTiers.worsened.sort((a, b) => a.move - b.move);
+            rankMoveTiers.stable.sort((a, b) => Math.abs(a.move) - Math.abs(b.move));
+            const rankMoveN = rankMoveTiers.improved.length + rankMoveTiers.stable.length + rankMoveTiers.worsened.length;
+
+            // 3. Render chips (two rows: 5-year outcome + ranking change)
             const chipsHtml = `
-                <div class="fyc-chips">
-                    <div class="fyc-chip improving">
-                        <div class="fyc-chip-count">${improved}</div>
-                        <div class="fyc-chip-label">Improved</div>
+                <div class="fyc-chips-group">
+                    <div class="fyc-chips-row-label">5-year outcome</div>
+                    <div class="fyc-chips">
+                        <div class="fyc-chip improving">
+                            <div class="fyc-chip-count">${improved}</div>
+                            <div class="fyc-chip-label">Improved</div>
+                        </div>
+                        <div class="fyc-chip worsening">
+                            <div class="fyc-chip-count">${worsened}</div>
+                            <div class="fyc-chip-label">Worsened</div>
+                        </div>
+                        <div class="fyc-chip little-change">
+                            <div class="fyc-chip-count">${littleChange}</div>
+                            <div class="fyc-chip-label">Little change</div>
+                        </div>
                     </div>
-                    <div class="fyc-chip worsening">
-                        <div class="fyc-chip-count">${worsened}</div>
-                        <div class="fyc-chip-label">Worsened</div>
-                    </div>
-                    <div class="fyc-chip little-change">
-                        <div class="fyc-chip-count">${littleChange}</div>
-                        <div class="fyc-chip-label">Little change</div>
+                    <div class="fyc-chips-row-label">Ranking change (5-year)</div>
+                    <div class="fyc-chips">
+                        <div class="fyc-chip rank-up">
+                            <div class="fyc-chip-count">${rankMoveTiers.improved.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
+                            <div class="fyc-chip-label">Ranking improved</div>
+                        </div>
+                        <div class="fyc-chip rank-same">
+                            <div class="fyc-chip-count">${rankMoveTiers.stable.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
+                            <div class="fyc-chip-label">Ranking stable</div>
+                        </div>
+                        <div class="fyc-chip rank-down">
+                            <div class="fyc-chip-count">${rankMoveTiers.worsened.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
+                            <div class="fyc-chip-label">Ranking worsened</div>
+                        </div>
                     </div>
                 </div>`;
 
@@ -735,21 +776,7 @@
                     ${renderTierRow('Bottom 3', rankTiers.bottom3, 'tier-bottom3')}
                 </div>`;
 
-            // 3c. Rank change section (5-year ranking movement)
-            // Threshold: ≥5 spots = meaningful shift
-            const RANK_SHIFT = 5;
-            const rankMoveTiers = { improved: [], stable: [], worsened: [] };
-            for (const r of allResults) {
-                if (!r.standing || r.standing.endRank == null || r.standing.startRank == null) continue;
-                const move = r.standing.startRank - r.standing.endRank; // positive = climbed (better)
-                if (move >= RANK_SHIFT)        rankMoveTiers.improved.push({ r, move });
-                else if (move <= -RANK_SHIFT)  rankMoveTiers.worsened.push({ r, move });
-                else                           rankMoveTiers.stable.push({ r, move });
-            }
-            rankMoveTiers.improved.sort((a, b) => b.move - a.move);   // biggest gain first
-            rankMoveTiers.worsened.sort((a, b) => a.move - b.move);   // biggest loss first
-            rankMoveTiers.stable.sort((a, b) => Math.abs(a.move) - Math.abs(b.move));
-
+            // 3c. Rank change detail section (uses rankMoveTiers computed above)
             function renderMoveTierRow(label, items, cssClass) {
                 const tags = items.length
                     ? items.map(({ r, move }) =>
