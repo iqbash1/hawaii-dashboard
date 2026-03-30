@@ -54,7 +54,7 @@
         .fyc-chip.rank-down .fyc-chip-count { color: #b45309; }
 
         /* Executive summary */
-        .fyc-exec { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; max-width: 700px; margin: 0 auto 2rem; text-align: center; }
+        .fyc-exec { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; max-width: 700px; margin: 0 auto 2rem; text-align: left; }
 
         /* Area sections */
         .fyc-area { margin-top: 2rem; }
@@ -85,24 +85,28 @@
         /* Method note */
         .fyc-method { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); line-height: 1.5; }
 
-        /* Rank breakdown section */
+        /* National standing table */
         .fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
         .fyc-rank-breakdown-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
+        .fyc-rank-header { display: flex; align-items: center; gap: 0.65rem; padding: 0.28rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
+        .fyc-rank-hdr-rank { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); min-width: 30px; text-align: right; flex-shrink: 0; }
+        .fyc-rank-hdr-name { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; }
+        .fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); min-width: 48px; text-align: right; flex-shrink: 0; }
         .fyc-rank-list { padding: 0.15rem 0; }
         .fyc-rank-item { display: flex; align-items: center; gap: 0.65rem; padding: 0.32rem 1rem; text-decoration: none; border-bottom: 1px solid #f5f6f8; transition: background 0.12s; }
         .fyc-rank-item:last-child { border-bottom: none; }
         .fyc-rank-item:hover { background: #f7f9fa; }
         .fyc-rank-num { font-size: 0.72rem; font-weight: 700; min-width: 30px; text-align: right; flex-shrink: 0; }
-        .fyc-rank-name { font-size: 0.78rem; color: var(--text); }
-        .fyc-rank-item.rank-top3    .fyc-rank-num { color: var(--hawaii-blue); }
-        .fyc-rank-item.rank-top25   .fyc-rank-num { color: var(--positive); }
-        .fyc-rank-item.rank-avg     .fyc-rank-num { color: var(--text-muted); }
-        .fyc-rank-item.rank-bottom25 .fyc-rank-num { color: #b45309; }
-        .fyc-rank-item.rank-bottom3  .fyc-rank-num { color: var(--negative); }
-        /* Tier colors (used by rank change section) */
-        .fyc-tier-tag { font-size: 0.75rem; padding: 0.18rem 0.55rem; border-radius: 4px; text-decoration: none; transition: opacity 0.15s; color: inherit; }
-        .fyc-tier-tag:hover { opacity: 0.75; }
-        .fyc-tier-rank { font-weight: 700; margin-left: 3px; font-size: 0.7rem; opacity: 0.75; }
+        .fyc-rank-name { font-size: 0.78rem; color: var(--text); flex: 1; }
+        /* 3-tier rank colors: green / grey / red */
+        .fyc-rank-item.rank-good   .fyc-rank-num { color: var(--positive); }
+        .fyc-rank-item.rank-mid    .fyc-rank-num { color: var(--text-muted); }
+        .fyc-rank-item.rank-bad    .fyc-rank-num { color: var(--negative); }
+        /* 5-year move column */
+        .fyc-rank-move { font-size: 0.68rem; font-weight: 700; min-width: 48px; text-align: right; flex-shrink: 0; }
+        .fyc-rank-move.move-up     { color: var(--positive); }
+        .fyc-rank-move.move-down   { color: var(--negative); }
+        .fyc-rank-move.move-stable { color: var(--text-muted); font-weight: 400; }
 
         /* Mobile */
         @media (max-width: 700px) {
@@ -119,7 +123,7 @@
             .fyc-line4 { font-size: 0.68rem; }
             .fyc-rank-num { font-size: 0.68rem; min-width: 26px; }
             .fyc-rank-name { font-size: 0.73rem; }
-            .fyc-tier-tag { font-size: 0.7rem; padding: 0.15rem 0.4rem; }
+            .fyc-rank-move { font-size: 0.63rem; min-width: 40px; }
         }
     </style>
 </head>
@@ -770,23 +774,40 @@
                     </div>
                 </div>`;
 
-            // 3b. Rank breakdown -- sorted list, best to worst
+            // 3b. Combined national standing + 5-year rank change table
             const allRanked = allResults
                 .filter(r => r.standing && r.standing.endRank != null)
                 .sort((a, b) => a.standing.endRank - b.standing.endRank);
 
             function rankColorClass(rank, tot) {
                 const pct = rank / tot;
-                if (rank <= 3)        return 'rank-top3';
-                if (pct <= 0.25)      return 'rank-top25';
-                if (rank > tot - 3)   return 'rank-bottom3';
-                if (pct >= 0.75)      return 'rank-bottom25';
-                return 'rank-avg';
+                if (pct <= 0.33) return 'rank-good';   // top third
+                if (pct <= 0.67) return 'rank-mid';    // middle third
+                return 'rank-bad';                      // bottom third
             }
 
-            const rankBreakdownHtml = `
+            function rankMoveHtml(r) {
+                if (!r.standing || r.standing.startRank == null) {
+                    return `<span class="fyc-rank-move move-stable">&mdash;</span>`;
+                }
+                const move = r.standing.startRank - r.standing.endRank; // positive = climbed
+                if (move >= RANK_SHIFT) {
+                    return `<span class="fyc-rank-move move-up">\u2191${move}</span>`;
+                } else if (move <= -RANK_SHIFT) {
+                    return `<span class="fyc-rank-move move-down">\u2193${Math.abs(move)}</span>`;
+                }
+                const label = move === 0 ? '\u2014' : (move > 0 ? `+${move}` : `${move}`);
+                return `<span class="fyc-rank-move move-stable">${label}</span>`;
+            }
+
+            const rankTableHtml = `
                 <div class="fyc-rank-breakdown">
-                    <div class="fyc-rank-breakdown-title">National ranking</div>
+                    <div class="fyc-rank-breakdown-title">National standing &amp; 5-year rank change</div>
+                    <div class="fyc-rank-header">
+                        <span class="fyc-rank-hdr-rank">Rank</span>
+                        <span class="fyc-rank-hdr-name">Metric</span>
+                        <span class="fyc-rank-hdr-move">5-yr</span>
+                    </div>
                     <div class="fyc-rank-list">
                         ${allRanked.map(r => {
                             const tot = r.standing.endTotal || 50;
@@ -794,34 +815,10 @@
                             return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                                 <span class="fyc-rank-num">#${r.standing.endRank}</span>
                                 <span class="fyc-rank-name">${r.metric}</span>
+                                ${rankMoveHtml(r)}
                             </a>`;
                         }).join('')}
                     </div>
-                </div>`;
-
-            // 3c. Rank change detail section (uses rankMoveTiers computed above)
-            function renderMoveTierRow(label, items, cssClass, isStable) {
-                const tags = items.length
-                    ? items.map(({ r, move }) => {
-                        // Stable tier: show only current rank (change is trivial)
-                        // Improved/worsened: show start→end to highlight the move
-                        const rankLabel = (isStable || r.standing.startRank == null)
-                            ? `#${r.standing.endRank}`
-                            : `#${r.standing.startRank}\u2192#${r.standing.endRank}`;
-                        return `<a href="../#${r.slug}" class="fyc-tier-tag">${r.metric}<span class="fyc-tier-rank">${rankLabel}</span></a>`;
-                      }).join('')
-                    : `<span class="fyc-tier-none">none</span>`;
-                return `<div class="fyc-tier-row ${cssClass}">
-                    <div class="fyc-tier-label">${label}</div>
-                    <div class="fyc-tier-items">${tags}</div>
-                </div>`;
-            }
-            const rankChangeHtml = `
-                <div class="fyc-rank-breakdown">
-                    <div class="fyc-rank-breakdown-title">Change in national ranking (5-year)</div>
-                    ${renderMoveTierRow('Improved', rankMoveTiers.improved, 'tier-top25', false)}
-                    ${renderMoveTierRow('Little change', rankMoveTiers.stable, 'tier-average', true)}
-                    ${renderMoveTierRow('Worsened', rankMoveTiers.worsened, 'tier-bottom25', false)}
                 </div>`;
 
             // 4. Executive summary
@@ -867,7 +864,7 @@
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
             // Assemble
-            document.getElementById('fyc-content').innerHTML = chipsHtml + rankBreakdownHtml + rankChangeHtml + execHtml + areasHtml + methodHtml;
+            document.getElementById('fyc-content').innerHTML = chipsHtml + rankTableHtml + execHtml + areasHtml + methodHtml;
         }
 
         render();
