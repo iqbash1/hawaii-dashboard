@@ -1410,8 +1410,23 @@ const ChartUtils = {
                         title: { display: false },
                     },
                     x: {
+                        border: { display: false },
                         grid: { display: false },
-                        ticks: { font: { size: 10 }, color: '#999', maxRotation: 0 },
+                        ticks: {
+                            font: { size: 9 },
+                            color: '#999',
+                            maxRotation: 0,
+                            autoSkip: false,
+                            padding: 2,
+                            callback: function(value, index, ticks) {
+                                const total = ticks.length;
+                                const label = this.getLabelForValue(value);
+                                if (index === 0 || index === total - 1) return label;
+                                const mid = Math.round(total / 2);
+                                if (total > 5 && index === mid) return label;
+                                return '';
+                            },
+                        },
                     }
                 },
                 animation: { duration: 300 },
