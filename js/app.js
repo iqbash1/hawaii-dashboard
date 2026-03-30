@@ -1182,9 +1182,9 @@ const App = {
             });
         } else {
             // Year-keyed: { "2023": { "Alabama": 0.25, ... } }
-            // Pick latest year with at least 25 states for meaningful rankings
+            // Pick latest year with at least 25 non-null state values for meaningful rankings
             const years = Object.keys(sd.data).sort();
-            year = years.reverse().find(y => Object.keys(sd.data[y]).length >= 25)
+            year = years.reverse().find(y => Object.values(sd.data[y]).filter(v => v != null).length >= 25)
                 || years[0];
             const yearData = sd.data[year];
             if (!yearData) return null;
