@@ -710,7 +710,7 @@ const ChartUtils = {
         const mag = Math.pow(10, Math.floor(Math.log10(Math.max(range, 1))));
         const roundStep = mag >= range / 2 ? mag / 5 : mag / 2;
         const xStart = minVal <= 0 ? niceRound(minVal - range * 0.12, roundStep) : Math.max(0, niceRound(minVal - range * 0.05, roundStep));
-        const xEnd = niceRound(maxVal + range * 0.05, roundStep);
+        const xEnd = niceRound(maxVal + range * 0.15, roundStep);
         const xMid = niceRound((xStart + xEnd) / 2, roundStep);
         const xTicks = [xStart, xMid, xEnd];
 
@@ -961,7 +961,7 @@ const ChartUtils = {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: { right: 10, top: dotStripHeight, bottom: 20 } },
+                layout: { padding: { right: 20, top: dotStripHeight, bottom: 20 } },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
