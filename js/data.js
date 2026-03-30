@@ -993,7 +993,21 @@ const DASHBOARD_DATA = {
       "2024": 5.5
     },
     "policyLevers": "Permanent supportive housing; shelter, outreach, and case management; mental health, substance use, and eviction prevention.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawai\u02BBi has ranked last in the nation on unsheltered homelessness every year in this period. State programs place people into housing at roughly the rate new residents fall into homelessness, and severe land and regulatory constraints prevent the housing supply expansion needed to change that.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Virginia",
+          "text": "Virginia cut unsheltered homelessness 47% from 2010 to 2019 by requiring every provider statewide to share one database and one housing waitlist, backed by a dedicated Housing Trust Fund. Hawai\u02BBi already has the Housing First statute and a state coordination office; the missing piece is Virginia\u2019s binding data-sharing requirement across all providers, which eliminated the fragmentation that allows people to fall through the gaps."
+        }
+      ],
+      "caution": {
+        "state": "Oregon",
+        "text": "Oregon spent $1.7 billion on homelessness from 2019 to 2024 while unsheltered counts rose 17% and homeless deaths quadrupled. Spending on services without expanding housing supply failed; Hawai\u02BBi faces the same structural risk."
+      }
+    }
   },
   "road_poor_pct": {
     "area": "Infrastructure, Resilience & Trust",

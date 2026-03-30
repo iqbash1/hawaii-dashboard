@@ -1584,6 +1584,44 @@ const App = {
             const hintEl = document.getElementById('rank-history-hint');
             if (hintEl) hintEl.style.display = '';
         };
+
+        // Render policy narrative if available for this metric
+        const narrativeEl = document.getElementById('rank-history-narrative');
+        const narr = metricData.rankHistoryNarrative;
+        if (narr && narrativeEl) {
+            let html = `<div class="rh-narr-section">
+                <h3 class="rh-narr-heading">Hawai\u02BBi\u2019s track record</h3>
+                <p class="rh-narr-text">${narr.summary}</p>
+            </div>`;
+
+            if (narr.benchmarks && narr.benchmarks.length) {
+                html += `<div class="rh-narr-section">
+                    <h3 class="rh-narr-heading">States to learn from</h3>`;
+                narr.benchmarks.forEach(b => {
+                    html += `<div class="rh-narr-item">
+                        <div class="rh-narr-state">${b.state}</div>
+                        <p class="rh-narr-text">${b.text}</p>
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+
+            if (narr.caution) {
+                html += `<div class="rh-narr-section">
+                    <h3 class="rh-narr-heading">What to avoid</h3>
+                    <div class="rh-narr-item">
+                        <div class="rh-narr-state">${narr.caution.state}</div>
+                        <p class="rh-narr-text">${narr.caution.text}</p>
+                    </div>
+                </div>`;
+            }
+
+            narrativeEl.innerHTML = html;
+            narrativeEl.style.display = '';
+        } else if (narrativeEl) {
+            narrativeEl.innerHTML = '';
+            narrativeEl.style.display = 'none';
+        }
     },
 
     showCounty(slug) {

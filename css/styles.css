@@ -676,6 +676,44 @@ body {
     border-color: var(--negative);
 }
 
+/* --- Rank History Narrative --- */
+.rh-narrative {
+    padding: 1.25rem 2rem 1.5rem;
+    border-top: 1px solid var(--border);
+}
+.rh-narr-section {
+    margin-bottom: 1.1rem;
+}
+.rh-narr-section:last-child {
+    margin-bottom: 0;
+}
+.rh-narr-heading {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+.rh-narr-item {
+    margin-bottom: 0.75rem;
+}
+.rh-narr-item:last-child {
+    margin-bottom: 0;
+}
+.rh-narr-state {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+}
+.rh-narr-text {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
 /* --- County View --- */
 .modal-county {
     padding: 1rem 1rem 2rem;
