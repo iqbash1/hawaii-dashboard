@@ -21,6 +21,7 @@ about/index.html        About page (metric registry, comparator rules)
 t/{slug}/index.html     Detail view redirect pages (with OG tags)
 r/{slug}/index.html     Rankings view redirect pages (with OG tags)
 c/{slug}/index.html     County view redirect pages (with OG tags)
+rh/{slug}/index.html    Rank history redirect pages (with OG tags)
 assets/og/              Open Graph preview images (1200x630)
 ```
 
@@ -49,9 +50,10 @@ A GitHub Actions workflow (`.github/workflows/refresh-data.yml`) runs this month
 
 ```bash
 python3 scripts/generate-og-pages.py
+node scripts/screenshot-rank-history.js
 ```
 
-Generates per-metric OG images (detail, rankings, county) and redirect pages with matching meta tags. Requires `Pillow`.
+Generates per-metric OG images (detail, rankings, county, rank history) and redirect pages with matching meta tags. The detail/rankings/county images require `Pillow`. The rank history images are generated via Puppeteer (headless Chrome).
 
 ## Metrics (26)
 
@@ -68,7 +70,7 @@ Generates per-metric OG images (detail, rankings, county) and redirect pages wit
 - **Outcomes, not activity**: Measures what happened to residents, not what government spent
 - **Federal sources only**: All data from nonpartisan federal agencies, reported identically for all 50 states
 - **Two comparisons per metric**: Over time (trend) and against other states (ranking)
-- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 26 cards, 3 tabs per metric
+- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 26 cards, up to 4 tabs per metric
 - **Governor overlay**: Alternating bands show which governor was in office during each period
 
 ## Local development

@@ -36,14 +36,19 @@ hawaii-dashboard/
 ├── assets/
 │   ├── og-image.png        # Generic OG image (fallback)
 │   └── og/                 # Per-metric OG images (generated)
-│       ├── {slug}.png          # Trend view OG image (1200×630)
-│       └── {slug}_rankings.png # Rankings view OG image (1200×630)
+│       ├── {slug}.png              # Trend view OG image (1200×630)
+│       ├── {slug}_rankings.png     # Rankings view OG image (1200×630)
+│       └── {slug}_rank_history.png # Rank history OG image (1200×630)
 ├── t/                      # Trend redirect pages for OG sharing
 │   └── {slug}/index.html       # Metric-specific OG tags + JS redirect
 ├── r/                      # Rankings redirect pages for OG sharing
 │   └── {slug}/index.html       # Rankings-specific OG tags + JS redirect
 ├── c/                      # County redirect pages for OG sharing
 │   └── {slug}/index.html       # County-specific OG tags + JS redirect
+├── rh/                     # Rank history redirect pages for OG sharing
+│   └── {slug}/index.html       # Rank history OG tags + JS redirect
+├── five-year-change/
+│   └── index.html              # Ranking changes over a 5-year window for all 26 metrics (Improved / Little change / Worsened)
 ├── scripts/
 │   ├── generate-og-pages.py    # Generates all OG images + redirect pages
 │   ├── build-state-data.js     # Generates state-data.js from federal APIs
@@ -69,7 +74,7 @@ hawaii-dashboard/
 | Fonts | Inter via Google Fonts |
 | Hosting | Cloudflare Pages |
 | Source control | GitHub |
-| OG image generation | Python 3 + Pillow (PIL) |
+| OG image generation | Python 3 + Pillow (PIL) for trend/rankings/county; Puppeteer (headless Chrome) for rank history |
 
 ---
 
@@ -120,11 +125,13 @@ The dashboard uses **path-based URLs** so that every metric and rankings view ca
 | Metric trend | `/t/{slug}/` | `hawaiidashboard.org/t/naep_math_8/` |
 | State rankings | `/r/{slug}/` | `hawaiidashboard.org/r/naep_math_8/` |
 | County view | `/c/{slug}/` | `hawaiidashboard.org/c/unemployment_rate/` |
+| Rank history | `/rh/{slug}/` | `hawaiidashboard.org/rh/naep_math_8/` |
 | Legacy hash (still works) | `#{slug}` | `hawaiidashboard.org/#naep_math_8` |
 
 - **`/t/`** = **t**rend (sparkline + value + rank)
 - **`/r/`** = **r**ankings (bar chart of all 50 states)
 - **`/c/`** = **c**ounty (multi-line chart of 4 Hawaii counties)
+- **`/rh/`** = **r**ank **h**istory (line chart of Hawaiʻi's rank over time)
 
 ### How Sharing Works
 
@@ -140,13 +147,18 @@ When data changes, regenerate all OG images and redirect pages:
 
 ```bash
 python3 scripts/generate-og-pages.py
+node scripts/screenshot-rank-history.js
 ```
 
-This reads `js/data.js` + `js/state-data.js` and produces:
+`generate-og-pages.py` reads `js/data.js` + `js/state-data.js` and produces:
 - 26 trend OG images (`assets/og/{slug}.png`)
 - 26 rankings OG images (`assets/og/{slug}_rankings.png`)
 - 26 trend redirect pages (`t/{slug}/index.html`)
 - 26 rankings redirect pages (`r/{slug}/index.html`)
+
+`screenshot-rank-history.js` uses Puppeteer (headless Chrome) and produces:
+- 26 rank history OG images (`assets/og/{slug}_rank_history.png`)
+- 26 rank history redirect pages (`rh/{slug}/index.html`)
 
 ---
 
@@ -258,7 +270,7 @@ Cards are in a responsive CSS grid (auto-fill, 300px minimum).
 
 ### Detail Modal
 
-Wider overlay (max-width 1100px, max-height 92vh) with up to three tabs:
+Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: Detail | Rank | Rank history | County-level
 
 **Detail tab:**
 1. **Line chart** (Chart.js, 400px tall) - Hawaiʻi (solid, solid) vs. Other State Avg (gray, dashed)
@@ -268,9 +280,19 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to three tabs:
 5. **Source link + Download .xlsx + Share**
 
 **Rank tab:**
-1. **Horizontal bar chart** - all 50 states sorted best-to-worst
-2. **Gradient background** - green (best) to white to red (worst)
-3. **Hawaiʻi highlighted** with rank displayed
+1. **Value distribution dot strip** - all 50 states shown as dots above the bar chart
+2. **Horizontal bar chart** - all 50 states sorted best-to-worst
+3. **Top 25% zone** (green shading, anchored to rank-1 state's value) and **Bottom 25% zone** (red shading, anchored to rank-50 state's value), with direction-aware labels centered within each shaded region
+4. **Median dashed line** with "Median" label and value
+5. **Ghost vertical crosshair** on hover spanning both the dot strip and bar chart rows
+6. **Hawaiʻi highlighted** with rank displayed
+
+**Rank history tab:**
+1. **Line chart** - Hawaiʻi's rank position over time (y-axis inverted, rank 1 at top)
+2. **Green shading** for top quartile (ranks 1-12.5); **red shading** for bottom quartile (ranks 37.5-50)
+3. **Reference lines** at Top 25% (rank 12.5), Median (rank 25.5), Bottom 25% (rank 37.5)
+4. **State comparison** - click any state name on the right edge to overlay that state's rank history; "Comparing with [State]" UI shown below the chart
+5. Deep-linkable via `/rh/{slug}/`
 
 **County-level tab** (shown only for metrics with county data):
 1. **Multi-line chart** - 4 county lines in distinct colors (Honolulu=teal, Hawaiʻi=orange, Maui=purple, Kauai=green)
@@ -336,8 +358,10 @@ Main application controller.
 | `renderCards()` | Creates all 26 card DOM elements with sparklines and comparisons |
 | `openModal(slug, areaName, initialView)` | Opens detail/rankings view for a metric |
 | `closeModal()` | Closes the modal and resets URL to `/` |
-| `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, or `#{slug}` and opens the modal |
-| `switchTab(tab, slug)` | Switches between detail and rankings tabs, updates URL |
+| `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/`, or `#{slug}` and opens the modal |
+| `switchTab(tab, slug)` | Switches between the 4 tabs (detail, rank, rank history, county), updates URL |
+| `showRankHistory(slug)` | Renders rank history chart, sets up state comparison UI |
+| `hideRankHistory()` | Destroys rank history chart, hides panel |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
 | `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file |
 
@@ -349,7 +373,8 @@ Chart rendering utilities.
 |--------|-------------|
 | `createSparkline(canvas, data, goodDirection)` | Mini line chart for cards |
 | `createDetailChart(canvas, data, govBoxes)` | Full detail chart with governor overlay |
-| `createRankingsChart(canvas, stateValues, goodDirection, unit)` | Horizontal bar chart for rankings |
+| `createRankingsChart(canvas, stateValues, goodDirection, unit)` | Horizontal bar chart for rankings; includes value distribution dot strip, Top/Bottom 25% zone shading, median line, and ghost crosshair on hover |
+| `createRankHistoryChart(canvas, rankHistory, metricData, onCompare)` | Line chart showing Hawaiʻi's rank over time with optional state comparison |
 | `formatValue(value, unit, isDecimalPct)` | Full precision value formatting |
 | `formatCardValue(value, unit, isDecimalPct)` | Compact card display formatting |
 | `isDecimalPctMetric(metricData)` | Detects decimal-stored percentage metrics |
@@ -377,7 +402,8 @@ Every push to `main` auto-deploys within ~30 seconds.
 1. Edit `data.js` - add new year's value to `hawaii` and `otherStateAvg` for each metric
 2. Edit `state-data.js` - add new year's per-state values
 3. Run `python3 scripts/generate-og-pages.py` to regenerate OG images and redirect pages
-4. Commit and push
+4. Run `node scripts/screenshot-rank-history.js` to regenerate rank history OG images
+5. Commit and push
 
 ### Adding a new metric
 
@@ -387,7 +413,8 @@ Every push to `main` auto-deploys within ~30 seconds.
 4. Update the metric count in the header badge in `index.html`
 5. Add per-state data to `state-data.js`
 6. Run `python3 scripts/generate-og-pages.py` to generate OG assets for the new metric
-7. Commit and push
+7. Run `node scripts/screenshot-rank-history.js` to generate rank history OG images
+8. Commit and push
 
 ---
 
