@@ -624,8 +624,14 @@ const App = {
 
             tabDetail.onclick = () => this.switchTab('detail', slug);
             tabRankings.onclick = () => this.switchTab('rankings', slug);
+
+            // Rank trend tab
+            const tabRankTrend = document.getElementById('tab-rank-trend');
+            tabRankTrend.style.display = '';
+            tabRankTrend.onclick = () => this.switchTab('rank-trend', slug);
         } else {
             tabBar.style.display = 'none';
+            document.getElementById('tab-rank-trend').style.display = 'none';
         }
 
         // County tab - show only for metrics with county data
@@ -641,12 +647,15 @@ const App = {
 
         // Reset to detail view
         this.hideRankings();
+        this.hideRankTrend();
         this.hideCounty();
         document.getElementById('modal-detail-view').style.display = '';
         const tabDetailEl = document.getElementById('tab-detail');
         if (tabDetailEl) tabDetailEl.classList.add('active');
         const tabRankingsEl = document.getElementById('tab-rankings');
         if (tabRankingsEl) tabRankingsEl.classList.remove('active');
+        const tabRankTrendEl = document.getElementById('tab-rank-trend');
+        if (tabRankTrendEl) tabRankTrendEl.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
         // Stats use effective data so they match both charts
@@ -776,11 +785,13 @@ const App = {
     switchTab(tab, slug) {
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
+        const tabRankTrend = document.getElementById('tab-rank-trend');
         const tabCounty = document.getElementById('tab-county');
 
         // Clear all tabs
         tabDetail.classList.remove('active');
         tabRankings.classList.remove('active');
+        if (tabRankTrend) tabRankTrend.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
         // Update ARIA selected state
@@ -789,6 +800,7 @@ const App = {
         // Hide all views
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'none';
+        document.getElementById('modal-rank-trend').style.display = 'none';
         document.getElementById('modal-county').style.display = 'none';
 
         // Reset table toggle: hide on non-detail tabs, reset to chart view
@@ -815,6 +827,10 @@ const App = {
         if (tab !== 'rankings' && this.rankingsChart) {
             this.rankingsChart.destroy();
             this.rankingsChart = null;
+        }
+        if (tab !== 'rank-trend' && this.rankTrendChart) {
+            this.rankTrendChart.destroy();
+            this.rankTrendChart = null;
         }
         if (tab !== 'county' && this.countyChart) {
             this.countyChart.destroy();
@@ -847,6 +863,11 @@ const App = {
                     }
                 }
             }, 200);
+        } else if (tab === 'rank-trend') {
+            tabRankTrend.classList.add('active');
+            tabRankTrend.setAttribute('aria-selected', 'true');
+            this.showRankTrend(slug);
+            history.replaceState(null, '', '/rt/' + slug + '/');
         } else if (tab === 'county') {
             tabCounty.classList.add('active');
             tabCounty.setAttribute('aria-selected', 'true');
@@ -1465,6 +1486,144 @@ const App = {
             this.rankingsChart.destroy();
             this.rankingsChart = null;
         }
+    },
+
+    hideRankTrend() {
+        document.getElementById('modal-rank-trend').style.display = 'none';
+        if (this.rankTrendChart) {
+            this.rankTrendChart.destroy();
+            this.rankTrendChart = null;
+        }
+    },
+
+    computeRankHistory(slug) {
+        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        if (!sd || !sd.data) return null;
+        const m = DASHBOARD_DATA[slug];
+        const isDec = ChartUtils.isDecimalPctMetric(m);
+
+        const firstKey = Object.keys(sd.data)[0];
+        const isPCP = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+
+        // Collect all available years and state values per year
+        const yearData = {}; // { year: [{ state, value }] }
+
+        if (isPCP) {
+            // FIPS-keyed: each entry has { name, "2020": val, ... }
+            const allYears = new Set();
+            Object.values(sd.data).forEach(entry => {
+                Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
+            });
+            for (const yr of allYears) {
+                const vals = [];
+                Object.values(sd.data).forEach(entry => {
+                    if (entry[yr] != null) {
+                        vals.push({ state: entry.name, value: entry[yr] });
+                    }
+                });
+                if (vals.length >= 25) yearData[yr] = vals;
+            }
+        } else {
+            // Year-keyed: { "2023": { "Alabama": val, ... } }
+            for (const yr of Object.keys(sd.data)) {
+                const entries = Object.entries(sd.data[yr]).filter(([, v]) => v != null);
+                if (entries.length >= 25) {
+                    yearData[yr] = entries.map(([state, value]) => ({
+                        state,
+                        value: isDec ? value * 100 : value
+                    }));
+                }
+            }
+        }
+
+        const years = Object.keys(yearData).sort();
+        if (years.length === 0) return null;
+
+        // For each year, sort and assign ranks
+        const stateRanks = {}; // { stateName: { year: rank } }
+        const latestYearRanked = []; // [{ state, rank }] for the latest year
+
+        for (const yr of years) {
+            const vals = yearData[yr];
+            if (m.goodDirection === 'up') vals.sort((a, b) => b.value - a.value);
+            else vals.sort((a, b) => a.value - b.value);
+
+            vals.forEach((entry, idx) => {
+                const rank = idx + 1;
+                if (!stateRanks[entry.state]) stateRanks[entry.state] = {};
+                stateRanks[entry.state][yr] = rank;
+            });
+        }
+
+        // Build latest year ranking list
+        const latestYear = years[years.length - 1];
+        const latestVals = yearData[latestYear];
+        if (m.goodDirection === 'up') latestVals.sort((a, b) => b.value - a.value);
+        else latestVals.sort((a, b) => a.value - b.value);
+        latestVals.forEach((entry, idx) => {
+            latestYearRanked.push({ state: entry.state, rank: idx + 1 });
+        });
+
+        // Find Hawaii's key
+        const hiKey = Object.keys(stateRanks).find(s => s === 'Hawaii' || s === 'Hawai\u02BBi') || 'Hawaii';
+        const hiLatest = latestYearRanked.find(s => s.state === hiKey);
+
+        return {
+            years,
+            stateRanks,
+            latestYearRanked,
+            hiKey,
+            hiRank: hiLatest ? hiLatest.rank : null,
+            total: latestYearRanked.length
+        };
+    },
+
+    showRankTrend(slug) {
+        const rankHistory = this.computeRankHistory(slug);
+        if (!rankHistory) return;
+        const metricData = DASHBOARD_DATA[slug];
+
+        document.getElementById('modal-rank-trend').style.display = 'block';
+
+        // Update header text
+        const yearRange = rankHistory.years[0] + '-' + rankHistory.years[rankHistory.years.length - 1];
+        document.getElementById('rank-trend-subtitle').textContent =
+            `${metricData.metric} - Rank over time (${yearRange})`;
+        document.getElementById('rank-trend-rank').textContent =
+            rankHistory.hiRank ? `Hawai\u02BBi: #${rankHistory.hiRank} of ${rankHistory.total} (${rankHistory.years[rankHistory.years.length - 1]})` : '';
+
+        // Reset comparison UI
+        document.getElementById('rank-trend-compare').style.display = 'none';
+
+        // Create the chart
+        const canvas = document.getElementById('rank-trend-chart');
+        if (this.rankTrendChart) { this.rankTrendChart.destroy(); this.rankTrendChart = null; }
+
+        this.rankTrendChart = ChartUtils.createRankTrendChart(
+            canvas, rankHistory, metricData,
+            // onCompare callback
+            (stateName) => {
+                const abbr = STATE_ABBREVS[stateName] || stateName;
+                const el = document.getElementById('rank-trend-compare');
+                const nameEl = document.getElementById('rank-trend-compare-name');
+                if (stateName) {
+                    nameEl.textContent = stateName;
+                    el.style.display = '';
+                } else {
+                    el.style.display = 'none';
+                }
+            }
+        );
+
+        // Wire clear button
+        const clearBtn = document.getElementById('rank-trend-clear');
+        clearBtn.onclick = (e) => {
+            e.preventDefault();
+            if (this.rankTrendChart && this.rankTrendChart._clearComparison) {
+                this.rankTrendChart._clearComparison();
+            }
+            document.getElementById('rank-trend-compare').style.display = 'none';
+        };
     },
 
     showCounty(slug) {

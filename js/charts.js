@@ -994,5 +994,296 @@ const ChartUtils = {
                 }
             }]
         });
+    },
+
+    // ============================================================
+    // Rank Trend Chart - line chart showing Hawaii's rank over time
+    // with interactive state comparison
+    // ============================================================
+    createRankTrendChart(canvas, rankHistory, metricData, onCompare) {
+        const ctx = canvas.getContext('2d');
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) existingChart.destroy();
+
+        const { years, stateRanks, latestYearRanked, hiKey } = rankHistory;
+        const totalStates = latestYearRanked.length;
+
+        // Build Hawaii's rank array for each year
+        const hiRanks = years.map(yr => stateRanks[hiKey] ? (stateRanks[hiKey][yr] || null) : null);
+
+        // State currently being compared
+        let compState = null;
+        // State being hovered on right side
+        let hoverState = null;
+
+        // Abbreviation helper
+        const abbr = (name) => {
+            const map = typeof STATE_ABBREVS !== 'undefined' ? STATE_ABBREVS : {};
+            return map[name] || name.slice(0, 2).toUpperCase();
+        };
+
+        // Build comparison dataset data
+        function getCompRanks(stateName) {
+            if (!stateName || !stateRanks[stateName]) return years.map(() => null);
+            return years.map(yr => stateRanks[stateName][yr] || null);
+        }
+
+        // Chart height
+        const rowH = Math.max(12, Math.min(14, 700 / totalStates));
+        const chartHeight = Math.max(440, totalStates * rowH + 50);
+        canvas.style.height = chartHeight + 'px';
+
+        // Datasets
+        const datasets = [
+            {
+                label: 'Hawai\u02BBi',
+                data: hiRanks,
+                borderColor: this.HAWAII_BLUE,
+                borderWidth: 3,
+                pointRadius: hiRanks.map(v => v == null ? 0 : 3.5),
+                pointHoverRadius: 5,
+                pointBackgroundColor: this.HAWAII_BLUE,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+                tension: 0.15,
+                spanGaps: true,
+                order: 0,
+            },
+            {
+                label: 'Comparison',
+                data: years.map(() => null),
+                borderColor: '#A0A5AD',
+                borderWidth: 2,
+                pointRadius: 2.5,
+                pointHoverRadius: 4,
+                pointBackgroundColor: '#A0A5AD',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1,
+                tension: 0.15,
+                spanGaps: true,
+                order: 1,
+            }
+        ];
+
+        // Quartile shading plugin
+        const quartilePlugin = {
+            id: 'rankTrendQuartiles',
+            beforeDraw(chart) {
+                const { ctx: c, chartArea: { left, right, top, bottom } } = chart;
+                const yScale = chart.scales.y;
+                // Top quartile: ranks 1-12 (faint green)
+                const topY = yScale.getPixelForValue(0.5);
+                const topBottom = yScale.getPixelForValue(12.5);
+                c.fillStyle = 'rgba(5, 150, 105, 0.05)';
+                c.fillRect(left, topY, right - left, topBottom - topY);
+                // Bottom quartile: ranks 38-50 (faint red)
+                const botTop = yScale.getPixelForValue(37.5);
+                const botBottom = yScale.getPixelForValue(totalStates + 0.5);
+                c.fillStyle = 'rgba(192, 57, 43, 0.05)';
+                c.fillRect(left, botTop, right - left, botBottom - botTop);
+            }
+        };
+
+        // Gridlines for every rank + state labels on right
+        const stateLabelsPlugin = {
+            id: 'rankTrendStateLabels',
+            afterDraw(chart) {
+                const { ctx: c, chartArea: { left, right, top, bottom } } = chart;
+                const yScale = chart.scales.y;
+
+                // Draw fine gridlines for every rank
+                for (let r = 1; r <= totalStates; r++) {
+                    const y = yScale.getPixelForValue(r);
+                    c.strokeStyle = (r % 10 === 0) ? '#e0e0e0' : '#f2f2f2';
+                    c.lineWidth = (r % 10 === 0) ? 0.8 : 0.4;
+                    c.beginPath();
+                    c.moveTo(left, y);
+                    c.lineTo(right, y);
+                    c.stroke();
+                }
+
+                // State codes on right edge
+                c.textAlign = 'left';
+                for (const entry of latestYearRanked) {
+                    const y = yScale.getPixelForValue(entry.rank);
+                    const code = abbr(entry.state);
+                    const isHI = (entry.state === hiKey);
+                    const isComp = (entry.state === compState);
+                    const isHover = (entry.state === hoverState);
+
+                    if (isHI) {
+                        c.fillStyle = '#0D7C8F';
+                        c.font = '700 10px Inter';
+                    } else if (isComp) {
+                        c.fillStyle = '#555';
+                        c.font = '700 10px Inter';
+                    } else if (isHover) {
+                        c.fillStyle = '#777';
+                        c.font = '600 10px Inter';
+                    } else {
+                        c.fillStyle = '#bbb';
+                        c.font = '400 9px Inter';
+                    }
+                    c.fillText(code, right + 6, y + 3.5);
+                }
+            }
+        };
+
+        // Ghost preview line for hovered state
+        const ghostPlugin = {
+            id: 'rankTrendGhost',
+            beforeDatasetsDraw(chart) {
+                if (!hoverState || hoverState === hiKey || hoverState === compState) return;
+                const ranks = getCompRanks(hoverState);
+                const { ctx: c } = chart;
+                const xScale = chart.scales.x;
+                const yScale = chart.scales.y;
+
+                c.save();
+                c.strokeStyle = 'rgba(160, 165, 173, 0.35)';
+                c.lineWidth = 2;
+                c.setLineDash([4, 3]);
+                c.beginPath();
+                let started = false;
+                for (let i = 0; i < years.length; i++) {
+                    if (ranks[i] == null) continue;
+                    const x = xScale.getPixelForValue(i);
+                    const y = yScale.getPixelForValue(ranks[i]);
+                    if (!started) { c.moveTo(x, y); started = true; }
+                    else c.lineTo(x, y);
+                }
+                c.stroke();
+                c.setLineDash([]);
+                c.restore();
+            }
+        };
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: years.map(y => "'" + String(y).slice(2)), datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { right: 34, top: 5, bottom: 5, left: 5 } },
+                scales: {
+                    y: {
+                        reverse: true,
+                        min: 0.5,
+                        max: totalStates + 0.5,
+                        grid: { display: false },
+                        ticks: {
+                            stepSize: 10,
+                            callback: (v) => v >= 1 && v <= totalStates && v % 10 === 0 ? '#' + v : (v === 1 ? '#1' : ''),
+                            font: { size: 10 },
+                            color: '#aaa',
+                            padding: 4,
+                        },
+                        afterBuildTicks(scale) {
+                            scale.ticks = [{ value: 1 }];
+                            for (let r = 10; r <= totalStates; r += 10) scale.ticks.push({ value: r });
+                        },
+                        title: { display: false },
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 }, color: '#999', maxRotation: 0 },
+                    }
+                },
+                animation: { duration: 300 },
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        filter: (item) => item.raw != null,
+                        callbacks: {
+                            title: (items) => items.length ? years[items[0].dataIndex] : '',
+                            label: (item) => {
+                                const name = item.datasetIndex === 0 ? 'Hawai\u02BBi' : (compState || '');
+                                return name ? `${name}: #${item.raw}` : '';
+                            }
+                        },
+                        backgroundColor: 'rgba(51,51,51,0.92)',
+                        titleFont: { size: 11, weight: 600 },
+                        bodyFont: { size: 11 },
+                        padding: 8,
+                        cornerRadius: 5,
+                    }
+                }
+            },
+            plugins: [quartilePlugin, stateLabelsPlugin, ghostPlugin]
+        });
+
+        // --- Click interaction: detect state label clicks on right side ---
+        function getStateAtPosition(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const mx = (evt.clientX - rect.left) * (canvas.width / rect.width);
+            const my = (evt.clientY - rect.top) * (canvas.height / rect.height);
+            const { right } = chart.chartArea;
+            const yScale = chart.scales.y;
+
+            // Check if click is in the right label area
+            const labelX = right + 6;
+            if (mx >= labelX - 8 && mx <= labelX + 30) {
+                for (const entry of latestYearRanked) {
+                    const y = yScale.getPixelForValue(entry.rank);
+                    if (Math.abs(my - y) < (chart.chartArea.bottom - chart.chartArea.top) / totalStates * 0.6) {
+                        return entry.state;
+                    }
+                }
+            }
+            return null;
+        }
+
+        canvas.addEventListener('click', (evt) => {
+            const state = getStateAtPosition(evt);
+            if (state && state !== hiKey) {
+                if (compState === state) {
+                    // Toggle off
+                    compState = null;
+                    datasets[1].data = years.map(() => null);
+                    onCompare(null);
+                } else {
+                    compState = state;
+                    datasets[1].data = getCompRanks(state);
+                    onCompare(state);
+                }
+                chart.update('none');
+            }
+        });
+
+        canvas.addEventListener('mousemove', (evt) => {
+            const state = getStateAtPosition(evt);
+            if (state && state !== hiKey) {
+                canvas.style.cursor = 'pointer';
+                if (hoverState !== state) {
+                    hoverState = state;
+                    chart.update('none');
+                }
+            } else {
+                canvas.style.cursor = 'default';
+                if (hoverState !== null) {
+                    hoverState = null;
+                    chart.update('none');
+                }
+            }
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            if (hoverState !== null) {
+                hoverState = null;
+                chart.update('none');
+            }
+        });
+
+        // Expose clear function for external button
+        chart._clearComparison = () => {
+            compState = null;
+            hoverState = null;
+            datasets[1].data = years.map(() => null);
+            chart.update('none');
+        };
+
+        return chart;
     }
 };
