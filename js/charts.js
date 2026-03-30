@@ -1466,6 +1466,7 @@ const ChartUtils = {
                                 return [`${compState}: #${rank}${valStr}`];
                             }
                         },
+                        displayColors: false,
                         backgroundColor: 'rgba(51,51,51,0.92)',
                         titleFont: { size: 11, weight: 600 },
                         bodyFont: { size: 11 },
