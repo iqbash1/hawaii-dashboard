@@ -1045,38 +1045,10 @@ const ChartUtils = {
             return (v >= 100 ? Math.round(v) : +v.toFixed(1)).toLocaleString() + (unit ? ' ' + unit : '');
         }
 
-        // Dot strip: value distribution for latest year (value-based, not rank-based)
-        const latestYear = years[years.length - 1];
-        const dotStripData = latestYearRanked
-            .map(e => ({
-                state: e.state,
-                rank: e.rank,
-                value: (stateValues && stateValues[e.state]) ? stateValues[e.state][latestYear] : null,
-            }))
-            .filter(e => e.value != null);
-
-        // Distribution stats from actual values
-        const dsSorted = [...dotStripData].sort((a, b) => a.value - b.value).map(e => e.value);
-        const dsN = dsSorted.length;
-        const dsMin = dsSorted[0];
-        const dsMax = dsSorted[dsN - 1];
-        const dsQ1 = dsSorted[Math.floor((dsN - 1) * 0.25)];
-        const dsMedian = dsSorted[Math.floor((dsN - 1) * 0.5)];
-        const dsQ3 = dsSorted[Math.floor((dsN - 1) * 0.75)];
-        const dsPad = (dsMax - dsMin) * 0.05;
-        const dsScaleMin = dsMin - dsPad;
-        const dsScaleMax = dsMax + dsPad;
-        const valToX = (l, r, v) => l + (v - dsScaleMin) / (dsScaleMax - dsScaleMin) * (r - l);
-
-        let hoveredDotState = null;
-
-        const DOT_STRIP_H = 148; // px of top padding reserved for strip
-
         // Chart height: fixed 14px per rank row so all 50 rows + labels fit
         const rowH = 14;
         const rankChartH = totalStates * rowH + 60;
-        const chartHeight = rankChartH + DOT_STRIP_H;
-        canvas.style.height = chartHeight + 'px';
+        canvas.style.height = rankChartH + 'px';
 
         // Datasets - Hawaii only; comparison is drawn via custom plugin
         const datasets = [
@@ -1206,160 +1178,6 @@ const ChartUtils = {
             }
         };
 
-        // Value distribution dot strip drawn above the chart
-        const dotStripPlugin = {
-            id: 'rankTrendDotStrip',
-            afterDraw(chart) {
-                if (dotStripData.length === 0) return;
-                const { ctx: c, chartArea: { left, right, top } } = chart;
-                // Strip uses the full canvas width (state labels don't apply here)
-                const stripRight = chart.width - 6;
-                const stripTop = top - DOT_STRIP_H + 4;
-                const sepY = top - 22;            // divider between strip and rank chart
-                const dotY = sepY - 28;           // dots centred in the strip
-                const refLineTop = stripTop + 22; // where reference lines begin
-
-                c.save();
-
-                // Faint background behind the dot strip to distinguish it visually
-                c.fillStyle = 'rgba(246,248,250,0.95)';
-                c.fillRect(left - 8, stripTop - 2, stripRight - left + 14, sepY - stripTop + 2);
-
-                // Divider — labeled on both sides so both panels are named
-                c.strokeStyle = '#c8c8c8';
-                c.lineWidth = 1.5;
-                c.beginPath();
-                c.moveTo(left, sepY);
-                c.lineTo(stripRight, sepY);
-                c.stroke();
-                // "Ranking trend" label below the divider (right-aligned)
-                c.font = '600 9px Inter, sans-serif';
-                c.fillStyle = '#aaa';
-                c.textAlign = 'right';
-                c.textBaseline = 'top';
-                c.fillText('Ranking trend \u2193', stripRight, sepY + 4);
-
-                // Shade the top-performers zone (good side of the Top 25% line)
-                const q1x = valToX(left, stripRight, dsQ1);
-                const q3x = valToX(left, stripRight, dsQ3);
-                const isGoodDown = metricData.goodDirection === 'down';
-                c.fillStyle = 'rgba(13,124,143,0.07)';
-                if (isGoodDown) {
-                    // Low values = good: shade from left edge to Q1 line
-                    c.fillRect(left, refLineTop, q1x - left, dotY - refLineTop - 4);
-                } else {
-                    // High values = good: shade from Q3 line to right edge
-                    c.fillRect(q3x, refLineTop, stripRight - q3x, dotY - refLineTop - 4);
-                }
-
-                // Q1 / Median / Q3 dashed lines + labels (labels flip with goodDirection)
-                const refLines = isGoodDown ? [
-                    { val: dsQ1,     label: 'Top 25%',    alpha: 0.65, w: 1.2 },
-                    { val: dsMedian, label: 'Median',      alpha: 0.85, w: 1.5 },
-                    { val: dsQ3,     label: 'Bottom 25%',  alpha: 0.65, w: 1.2 },
-                ] : [
-                    { val: dsQ1,     label: 'Bottom 25%',  alpha: 0.65, w: 1.2 },
-                    { val: dsMedian, label: 'Median',       alpha: 0.85, w: 1.5 },
-                    { val: dsQ3,     label: 'Top 25%',     alpha: 0.65, w: 1.2 },
-                ];
-                for (const ref of refLines) {
-                    const x = valToX(left, stripRight, ref.val);
-                    if (x < left || x > stripRight) continue;
-                    c.save();
-                    c.strokeStyle = `rgba(13,124,143,${ref.alpha})`;
-                    c.lineWidth = ref.w;
-                    c.setLineDash([4, 3]);
-                    c.beginPath();
-                    c.moveTo(x, refLineTop);
-                    c.lineTo(x, dotY - 8);
-                    c.stroke();
-                    c.setLineDash([]);
-                    // Label above the line
-                    c.font = ref.label === 'Median' ? '700 11px Inter, sans-serif' : '700 10px Inter, sans-serif';
-                    c.fillStyle = `rgba(13,124,143,${ref.alpha})`;
-                    c.textAlign = 'center';
-                    c.textBaseline = 'bottom';
-                    c.fillText(ref.label, x, refLineTop - 2);
-                    c.restore();
-                }
-
-                // All non-HI dots
-                const hiEntry = dotStripData.find(e => e.state === hiKey);
-                for (const e of dotStripData) {
-                    if (e.state === hiKey) continue;
-                    const x = valToX(left, stripRight, e.value);
-                    const isHov = (e.state === hoveredDotState);
-                    c.beginPath();
-                    c.arc(x, dotY, isHov ? 4.5 : 3, 0, Math.PI * 2);
-                    c.fillStyle = isHov ? '#7A8A9A' : '#C3CDD7';
-                    c.fill();
-                    if (isHov) { c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.stroke(); }
-                }
-
-                // Hawaii dot on top
-                if (hiEntry) {
-                    const hx = valToX(left, stripRight, hiEntry.value);
-                    c.beginPath();
-                    c.arc(hx, dotY, 6, 0, Math.PI * 2);
-                    c.fillStyle = '#0D7C8F';
-                    c.fill();
-                    c.strokeStyle = '#fff';
-                    c.lineWidth = 2;
-                    c.stroke();
-                    c.font = '700 10px Inter, sans-serif';
-                    c.fillStyle = '#0D7C8F';
-                    c.textAlign = 'center';
-                    c.textBaseline = 'top';
-                    c.fillText('HI', hx, dotY + 8);
-                }
-
-                // Best and worst state labels (skip if too close to HI)
-                const hiX = hiEntry ? valToX(left, stripRight, hiEntry.value) : -999;
-                [dotStripData[0], dotStripData[dotStripData.length - 1]].forEach(e => {
-                    if (!e || e.state === hiKey) return;
-                    const x = valToX(left, stripRight, e.value);
-                    if (Math.abs(x - hiX) < 32) return;
-                    c.font = '600 9px Inter, sans-serif';
-                    c.fillStyle = '#999';
-                    c.textAlign = 'center';
-                    c.textBaseline = 'top';
-                    c.fillText(abbr(e.state), x, dotY + 8);
-                });
-
-                // Hover tooltip for a dot
-                if (hoveredDotState) {
-                    const hov = dotStripData.find(e => e.state === hoveredDotState);
-                    if (hov) {
-                        const hx = valToX(left, stripRight, hov.value);
-                        const txt = `${abbr(hov.state)}  #${hov.rank}  ${fmtVal(hov.value)}`;
-                        c.font = '600 11px Inter, sans-serif';
-                        const tw = c.measureText(txt).width;
-                        const bx = Math.min(Math.max(hx - tw / 2 - 7, left), stripRight - tw - 14);
-                        const by = dotY - 32;
-                        c.fillStyle = 'rgba(40,40,40,0.9)';
-                        c.fillRect(bx, by, tw + 14, 20);
-                        c.fillStyle = '#fff';
-                        c.textAlign = 'left';
-                        c.textBaseline = 'top';
-                        c.fillText(txt, bx + 7, by + 5);
-                    }
-                }
-
-                // "Value distribution" label at top-left of strip
-                c.font = '600 9px Inter, sans-serif';
-                c.fillStyle = '#aaa';
-                c.textAlign = 'left';
-                c.textBaseline = 'top';
-                c.fillText('Value distribution \u00b7 ' + latestYear, left, stripTop + 2);
-                // Mirror label right-aligned above the divider
-                c.textAlign = 'right';
-                c.textBaseline = 'bottom';
-                c.fillText('\u2191 Value distribution', stripRight, sepY - 4);
-
-                c.restore();
-            }
-        };
-
         // Helper: draw a line from rank data using raw canvas
         function drawRankLine(c, xScale, yScale, ranks, color, lineWidth, dashed, dotRadius) {
             c.save();
@@ -1419,7 +1237,7 @@ const ChartUtils = {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: { right: 34, top: DOT_STRIP_H, bottom: 5, left: 5 } },
+                layout: { padding: { right: 34, top: 10, bottom: 5, left: 5 } },
                 scales: {
                     y: {
                         reverse: true,
@@ -1486,7 +1304,7 @@ const ChartUtils = {
                     }
                 }
             },
-            plugins: [quartilePlugin, gridlinesPlugin, overlayPlugin, stateLabelsPlugin, dotStripPlugin]
+            plugins: [quartilePlugin, gridlinesPlugin, overlayPlugin, stateLabelsPlugin]
         });
 
         // --- Click interaction: detect state label clicks on right side ---
@@ -1522,56 +1340,26 @@ const ChartUtils = {
             }
         });
 
-        // Detect hover over dot strip dots
-        function getDotAtPosition(evt) {
-            if (dotStripData.length === 0) return null;
-            const mx = evt.offsetX;
-            const my = evt.offsetY;
-            const { left, top } = chart.chartArea;
-            const stripRight = chart.width - 6;
-            const sepY = top - 22;
-            const dotY = sepY - 28;
-            if (Math.abs(my - dotY) > 14) return null;
-            let closest = null, closestDist = 16;
-            for (const e of dotStripData) {
-                const dx = Math.abs(mx - valToX(left, stripRight, e.value));
-                if (dx < closestDist) { closestDist = dx; closest = e.state; }
-            }
-            return closest;
-        }
-
         canvas.addEventListener('mousemove', (evt) => {
-            const dotState = getDotAtPosition(evt);
             const labelState = getStateAtPosition(evt);
-
-            if (dotState !== null) {
-                canvas.style.cursor = 'default';
-                if (hoveredDotState !== dotState || hoverState !== null) {
-                    hoveredDotState = dotState;
-                    hoverState = null;
-                    chart.update('none');
-                }
-            } else if (labelState && labelState !== hiKey) {
+            if (labelState && labelState !== hiKey) {
                 canvas.style.cursor = 'pointer';
-                if (hoverState !== labelState || hoveredDotState !== null) {
+                if (hoverState !== labelState) {
                     hoverState = labelState;
-                    hoveredDotState = null;
                     chart.update('none');
                 }
             } else {
                 canvas.style.cursor = 'default';
-                if (hoverState !== null || hoveredDotState !== null) {
+                if (hoverState !== null) {
                     hoverState = null;
-                    hoveredDotState = null;
                     chart.update('none');
                 }
             }
         });
 
         canvas.addEventListener('mouseleave', () => {
-            if (hoverState !== null || hoveredDotState !== null) {
+            if (hoverState !== null) {
                 hoverState = null;
-                hoveredDotState = null;
                 chart.update('none');
             }
         });
@@ -1580,7 +1368,6 @@ const ChartUtils = {
         chart._clearComparison = () => {
             compState = null;
             hoverState = null;
-            hoveredDotState = null;
             chart.update('none');
         };
 
