@@ -1033,7 +1033,7 @@ const ChartUtils = {
         const chartHeight = Math.max(440, totalStates * rowH + 50);
         canvas.style.height = chartHeight + 'px';
 
-        // Datasets
+        // Datasets - Hawaii only; comparison is drawn via custom plugin
         const datasets = [
             {
                 label: 'Hawai\u02BBi',
@@ -1047,22 +1047,7 @@ const ChartUtils = {
                 pointBorderWidth: 2,
                 tension: 0.15,
                 spanGaps: true,
-                order: 0,
             },
-            {
-                label: 'Comparison',
-                data: years.map(() => null),
-                borderColor: '#A0A5AD',
-                borderWidth: 2,
-                pointRadius: 2.5,
-                pointHoverRadius: 4,
-                pointBackgroundColor: '#A0A5AD',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 1,
-                tension: 0.15,
-                spanGaps: true,
-                order: 1,
-            }
         ];
 
         // Quartile shading plugin
@@ -1129,32 +1114,56 @@ const ChartUtils = {
             }
         };
 
-        // Ghost preview line for hovered state
-        const ghostPlugin = {
-            id: 'rankTrendGhost',
+        // Helper: draw a line from rank data using raw canvas
+        function drawRankLine(c, xScale, yScale, ranks, color, lineWidth, dashed, dotRadius) {
+            c.save();
+            c.strokeStyle = color;
+            c.lineWidth = lineWidth;
+            if (dashed) c.setLineDash([4, 3]);
+            c.beginPath();
+            let started = false;
+            const points = [];
+            for (let i = 0; i < years.length; i++) {
+                if (ranks[i] == null) continue;
+                const x = xScale.getPixelForValue(i);
+                const y = yScale.getPixelForValue(ranks[i]);
+                if (!started) { c.moveTo(x, y); started = true; }
+                else c.lineTo(x, y);
+                points.push({ x, y });
+            }
+            c.stroke();
+            c.setLineDash([]);
+            // Draw dots at each year
+            if (dotRadius > 0) {
+                c.fillStyle = color;
+                for (const p of points) {
+                    c.beginPath();
+                    c.arc(p.x, p.y, dotRadius, 0, Math.PI * 2);
+                    c.fill();
+                }
+            }
+            c.restore();
+        }
+
+        // Ghost preview + comparison line plugin (both drawn via raw canvas)
+        const overlayPlugin = {
+            id: 'rankTrendOverlay',
             beforeDatasetsDraw(chart) {
-                if (!hoverState || hoverState === hiKey || hoverState === compState) return;
-                const ranks = getCompRanks(hoverState);
                 const { ctx: c } = chart;
                 const xScale = chart.scales.x;
                 const yScale = chart.scales.y;
 
-                c.save();
-                c.strokeStyle = 'rgba(160, 165, 173, 0.35)';
-                c.lineWidth = 2;
-                c.setLineDash([4, 3]);
-                c.beginPath();
-                let started = false;
-                for (let i = 0; i < years.length; i++) {
-                    if (ranks[i] == null) continue;
-                    const x = xScale.getPixelForValue(i);
-                    const y = yScale.getPixelForValue(ranks[i]);
-                    if (!started) { c.moveTo(x, y); started = true; }
-                    else c.lineTo(x, y);
+                // Draw solid comparison line first (behind Hawaii)
+                if (compState && compState !== hiKey) {
+                    const ranks = getCompRanks(compState);
+                    drawRankLine(c, xScale, yScale, ranks, '#555', 2.5, false, 3);
                 }
-                c.stroke();
-                c.setLineDash([]);
-                c.restore();
+
+                // Draw ghost preview for hovered state (dashed, transparent)
+                if (hoverState && hoverState !== hiKey && hoverState !== compState) {
+                    const ranks = getCompRanks(hoverState);
+                    drawRankLine(c, xScale, yScale, ranks, 'rgba(160, 165, 173, 0.4)', 2, true, 0);
+                }
             }
         };
 
@@ -1211,7 +1220,7 @@ const ChartUtils = {
                     }
                 }
             },
-            plugins: [quartilePlugin, stateLabelsPlugin, ghostPlugin]
+            plugins: [quartilePlugin, overlayPlugin, stateLabelsPlugin]
         });
 
         // --- Click interaction: detect state label clicks on right side ---
@@ -1238,16 +1247,8 @@ const ChartUtils = {
         canvas.addEventListener('click', (evt) => {
             const state = getStateAtPosition(evt);
             if (state && state !== hiKey) {
-                if (compState === state) {
-                    // Toggle off
-                    compState = null;
-                    datasets[1].data = years.map(() => null);
-                    onCompare(null);
-                } else {
-                    compState = state;
-                    datasets[1].data = getCompRanks(state);
-                    onCompare(state);
-                }
+                compState = (compState === state) ? null : state;
+                onCompare(compState);
                 chart.update('none');
             }
         });
@@ -1280,7 +1281,6 @@ const ChartUtils = {
         chart._clearComparison = () => {
             compState = null;
             hoverState = null;
-            datasets[1].data = years.map(() => null);
             chart.update('none');
         };
 
