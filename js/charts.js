@@ -1039,10 +1039,10 @@ const ChartUtils = {
     },
 
     // ============================================================
-    // Rank Trend Chart - line chart showing Hawaii's rank over time
+    // Rank History Chart - line chart showing Hawaii's rank over time
     // with interactive state comparison
     // ============================================================
-    createRankTrendChart(canvas, rankHistory, metricData, onCompare) {
+    createRankHistoryChart(canvas, rankHistory, metricData, onCompare) {
         const ctx = canvas.getContext('2d');
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
@@ -1111,7 +1111,7 @@ const ChartUtils = {
 
         // Quartile shading plugin
         const quartilePlugin = {
-            id: 'rankTrendQuartiles',
+            id: 'rankHistoryQuartiles',
             beforeDraw(chart) {
                 const { ctx: c, chartArea: { left, right, top, bottom } } = chart;
                 const yScale = chart.scales.y;
@@ -1139,7 +1139,7 @@ const ChartUtils = {
 
         // Gridlines + Q1/Median/Q3 reference lines drawn early so tooltip renders on top
         const gridlinesPlugin = {
-            id: 'rankTrendGridlines',
+            id: 'rankHistoryGridlines',
             beforeDatasetsDraw(chart) {
                 const { ctx: c, chartArea: { left, right } } = chart;
                 const yScale = chart.scales.y;
@@ -1188,7 +1188,7 @@ const ChartUtils = {
 
         // State labels on right edge drawn after datasets (on top of lines)
         const stateLabelsPlugin = {
-            id: 'rankTrendStateLabels',
+            id: 'rankHistoryStateLabels',
             afterDraw(chart) {
                 const { ctx: c, chartArea: { right } } = chart;
                 const yScale = chart.scales.y;
@@ -1253,7 +1253,7 @@ const ChartUtils = {
 
         // Ghost preview + comparison line plugin (both drawn via raw canvas)
         const overlayPlugin = {
-            id: 'rankTrendOverlay',
+            id: 'rankHistoryOverlay',
             beforeDatasetsDraw(chart) {
                 const { ctx: c } = chart;
                 const xScale = chart.scales.x;

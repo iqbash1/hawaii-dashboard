@@ -625,13 +625,13 @@ const App = {
             tabDetail.onclick = () => this.switchTab('detail', slug);
             tabRankings.onclick = () => this.switchTab('rankings', slug);
 
-            // Rank trend tab
-            const tabRankTrend = document.getElementById('tab-rank-trend');
+            // Rank history tab
+            const tabRankTrend = document.getElementById('tab-rank-history');
             tabRankTrend.style.display = '';
-            tabRankTrend.onclick = () => this.switchTab('rank-trend', slug);
+            tabRankTrend.onclick = () => this.switchTab('rank-history', slug);
         } else {
             tabBar.style.display = 'none';
-            document.getElementById('tab-rank-trend').style.display = 'none';
+            document.getElementById('tab-rank-history').style.display = 'none';
         }
 
         // County tab - show only for metrics with county data
@@ -647,14 +647,14 @@ const App = {
 
         // Reset to detail view
         this.hideRankings();
-        this.hideRankTrend();
+        this.hideRankHistory();
         this.hideCounty();
         document.getElementById('modal-detail-view').style.display = '';
         const tabDetailEl = document.getElementById('tab-detail');
         if (tabDetailEl) tabDetailEl.classList.add('active');
         const tabRankingsEl = document.getElementById('tab-rankings');
         if (tabRankingsEl) tabRankingsEl.classList.remove('active');
-        const tabRankTrendEl = document.getElementById('tab-rank-trend');
+        const tabRankTrendEl = document.getElementById('tab-rank-history');
         if (tabRankTrendEl) tabRankTrendEl.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
@@ -779,15 +779,15 @@ const App = {
             this.switchTab('rankings', slug);
         } else if (initialView === 'county' && hasCountyData) {
             this.switchTab('county', slug);
-        } else if (initialView === 'rank-trend' && hasStateData) {
-            this.switchTab('rank-trend', slug);
+        } else if (initialView === 'rank-history' && hasStateData) {
+            this.switchTab('rank-history', slug);
         }
     },
 
     switchTab(tab, slug) {
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
-        const tabRankTrend = document.getElementById('tab-rank-trend');
+        const tabRankTrend = document.getElementById('tab-rank-history');
         const tabCounty = document.getElementById('tab-county');
 
         // Clear all tabs
@@ -802,7 +802,7 @@ const App = {
         // Hide all views
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'none';
-        document.getElementById('modal-rank-trend').style.display = 'none';
+        document.getElementById('modal-rank-history').style.display = 'none';
         document.getElementById('modal-county').style.display = 'none';
 
         // Reset table toggle: hide on non-detail tabs, reset to chart view
@@ -830,9 +830,9 @@ const App = {
             this.rankingsChart.destroy();
             this.rankingsChart = null;
         }
-        if (tab !== 'rank-trend' && this.rankTrendChart) {
-            this.rankTrendChart.destroy();
-            this.rankTrendChart = null;
+        if (tab !== 'rank-history' && this.rankHistoryChart) {
+            this.rankHistoryChart.destroy();
+            this.rankHistoryChart = null;
         }
         if (tab !== 'county' && this.countyChart) {
             this.countyChart.destroy();
@@ -865,11 +865,11 @@ const App = {
                     }
                 }
             }, 200);
-        } else if (tab === 'rank-trend') {
+        } else if (tab === 'rank-history') {
             tabRankTrend.classList.add('active');
             tabRankTrend.setAttribute('aria-selected', 'true');
-            this.showRankTrend(slug);
-            history.replaceState(null, '', '/rt/' + slug + '/');
+            this.showRankHistory(slug);
+            history.replaceState(null, '', '/rh/' + slug + '/');
         } else if (tab === 'county') {
             tabCounty.classList.add('active');
             tabCounty.setAttribute('aria-selected', 'true');
@@ -1537,11 +1537,11 @@ const App = {
         }
     },
 
-    hideRankTrend() {
-        document.getElementById('modal-rank-trend').style.display = 'none';
-        if (this.rankTrendChart) {
-            this.rankTrendChart.destroy();
-            this.rankTrendChart = null;
+    hideRankHistory() {
+        document.getElementById('modal-rank-history').style.display = 'none';
+        if (this.rankHistoryChart) {
+            this.rankHistoryChart.destroy();
+            this.rankHistoryChart = null;
         }
     },
 
@@ -1631,38 +1631,38 @@ const App = {
         };
     },
 
-    showRankTrend(slug) {
+    showRankHistory(slug) {
         const rankHistory = this.computeRankHistory(slug);
         if (!rankHistory) return;
         const metricData = DASHBOARD_DATA[slug];
 
-        document.getElementById('modal-rank-trend').style.display = 'block';
+        document.getElementById('modal-rank-history').style.display = 'block';
 
         // Update header text
         const yearRange = rankHistory.years[0] + '-' + rankHistory.years[rankHistory.years.length - 1];
-        document.getElementById('rank-trend-subtitle').textContent =
+        document.getElementById('rank-history-subtitle').textContent =
             `${metricData.metric} - Rank over time (${yearRange})`;
-        document.getElementById('rank-trend-rank').textContent =
+        document.getElementById('rank-history-rank').textContent =
             rankHistory.hiRank ? `Hawai\u02BBi: #${rankHistory.hiRank} of ${rankHistory.total} (${rankHistory.years[rankHistory.years.length - 1]})` : '';
 
         // Reset comparison UI
-        document.getElementById('rank-trend-compare').style.display = 'none';
+        document.getElementById('rank-history-compare').style.display = 'none';
 
         // Create the chart
-        const canvas = document.getElementById('rank-trend-chart');
-        if (this.rankTrendChart) { this.rankTrendChart.destroy(); this.rankTrendChart = null; }
+        const canvas = document.getElementById('rank-history-chart');
+        if (this.rankHistoryChart) { this.rankHistoryChart.destroy(); this.rankHistoryChart = null; }
 
         // Force a synchronous layout reflow so Chart.js reads the correct canvas
         // width (not 0 from a previously-hidden parent element).
         void canvas.offsetWidth;
 
-        this.rankTrendChart = ChartUtils.createRankTrendChart(
+        this.rankHistoryChart = ChartUtils.createRankTrendChart(
             canvas, rankHistory, metricData,
             // onCompare callback
             (stateName) => {
                 const abbr = STATE_ABBREVS[stateName] || stateName;
-                const el = document.getElementById('rank-trend-compare');
-                const nameEl = document.getElementById('rank-trend-compare-name');
+                const el = document.getElementById('rank-history-compare');
+                const nameEl = document.getElementById('rank-history-compare-name');
                 if (stateName) {
                     nameEl.textContent = stateName;
                     el.style.display = '';
@@ -1673,13 +1673,13 @@ const App = {
         );
 
         // Wire clear button
-        const clearBtn = document.getElementById('rank-trend-clear');
+        const clearBtn = document.getElementById('rank-history-clear');
         clearBtn.onclick = (e) => {
             e.preventDefault();
-            if (this.rankTrendChart && this.rankTrendChart._clearComparison) {
-                this.rankTrendChart._clearComparison();
+            if (this.rankHistoryChart && this.rankHistoryChart._clearComparison) {
+                this.rankHistoryChart._clearComparison();
             }
-            document.getElementById('rank-trend-compare').style.display = 'none';
+            document.getElementById('rank-history-compare').style.display = 'none';
         };
     },
 
@@ -1825,11 +1825,11 @@ const App = {
         let slug = '';
         let view = '';
 
-        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county), /rt/{slug}/ (rank-trend)
+        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county), /rh/{slug}/ (rank-history)
         const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
         const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
         const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/?$/);
-        const rankTrendMatch = window.location.pathname.match(/^\/rt\/([^/]+)\/?$/);
+        const rankHistoryMatch = window.location.pathname.match(/^\/rt\/([^/]+)\/?$/);
         if (detailMatch) {
             slug = detailMatch[1];
         } else if (rankMatch) {
@@ -1838,9 +1838,9 @@ const App = {
         } else if (countyMatch) {
             slug = countyMatch[1];
             view = 'county';
-        } else if (rankTrendMatch) {
-            slug = rankTrendMatch[1];
-            view = 'rank-trend';
+        } else if (rankHistoryMatch) {
+            slug = rankHistoryMatch[1];
+            view = 'rank-history';
         }
 
         // Fall back to legacy hash route: #{slug} or #{slug}/rankings
@@ -1866,7 +1866,7 @@ const App = {
             }
         }
 
-        const initialView = (view === 'rankings') ? 'rankings' : (view === 'county') ? 'county' : (view === 'rank-trend') ? 'rank-trend' : undefined;
+        const initialView = (view === 'rankings') ? 'rankings' : (view === 'county') ? 'county' : (view === 'rank-history') ? 'rank-history' : undefined;
         this.openModal(slug, areaName, initialView);
     },
 };
