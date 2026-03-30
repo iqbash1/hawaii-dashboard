@@ -1021,7 +1021,7 @@ const ChartUtils = {
     // Rank History Chart - line chart showing Hawaii's rank over time
     // with interactive state comparison
     // ============================================================
-    createRankHistoryChart(canvas, rankHistory, metricData, onCompare) {
+    createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare) {
         const ctx = canvas.getContext('2d');
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
@@ -1087,6 +1087,9 @@ const ChartUtils = {
                 spanGaps: true,
             },
         ];
+
+        // Governor bands plugin (same as Trend tab)
+        const governorPlugin = ChartUtils._buildGovernorPlugin(govBoxes || [], 0);
 
         // Quartile shading plugin
         const quartilePlugin = {
@@ -1325,7 +1328,7 @@ const ChartUtils = {
                     }
                 }
             },
-            plugins: [quartilePlugin, gridlinesPlugin, overlayPlugin, stateLabelsPlugin]
+            plugins: [governorPlugin, quartilePlugin, gridlinesPlugin, overlayPlugin, stateLabelsPlugin]
         });
 
         // --- Click interaction: detect state label clicks on right side ---

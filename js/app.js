@@ -1555,8 +1555,10 @@ const App = {
         // width (not 0 from a previously-hidden parent element).
         void canvas.offsetWidth;
 
+        const rankGovBoxes = this.getGovernorBoxes(rankHistory.years.map(String));
+
         this.rankHistoryChart = ChartUtils.createRankHistoryChart(
-            canvas, rankHistory, metricData,
+            canvas, rankHistory, metricData, rankGovBoxes,
             // onCompare callback
             (stateName) => {
                 const el = document.getElementById('rank-history-compare');
