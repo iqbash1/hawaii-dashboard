@@ -1011,27 +1011,9 @@ const ChartUtils = {
         // Build Hawaii's rank array for each year
         const hiRanks = years.map(yr => stateRanks[hiKey] ? (stateRanks[hiKey][yr] || null) : null);
 
-        // Adaptive y-axis bounds: zoom in on the rank range that matters,
-        // so charts where Hawaii is consistently top/bottom don't have huge empty areas.
-        function computeYBounds(compRanks) {
-            const all = [...hiRanks.filter(r => r != null)];
-            if (compRanks) all.push(...compRanks.filter(r => r != null));
-            if (!all.length) return [0.5, totalStates];
-            const lo = Math.min(...all);
-            const hi = Math.max(...all);
-            const span = hi - lo + 1;
-            const pad = Math.max(6, Math.round(span * 0.4));
-            let yMin = Math.max(1, lo - pad);
-            let yMax = Math.min(totalStates, hi + pad);
-            // Enforce minimum 20-rank visible range
-            while (yMax - yMin < 20) {
-                if (yMin > 1) yMin = Math.max(1, yMin - 1);
-                else if (yMax < totalStates) yMax = Math.min(totalStates, yMax + 1);
-                else break;
-            }
-            return [yMin === 1 ? 0.5 : yMin - 0.5, yMax];
-        }
-        let [yBoundsMin, yBoundsMax] = computeYBounds(null);
+        // Always show the full rank range 1–N so all state codes are visible on both axes
+        const yBoundsMin = 0.5;
+        const yBoundsMax = totalStates;
 
         // State currently being compared
         let compState = null;
@@ -1090,10 +1072,9 @@ const ChartUtils = {
 
         const DOT_STRIP_H = 148; // px of top padding reserved for strip
 
-        // Chart height based on the visible rank range (adaptive bounds)
-        const rowH = Math.max(12, Math.min(14, 700 / totalStates));
-        const visibleRankCount = Math.ceil(yBoundsMax - Math.max(1, yBoundsMin));
-        const rankChartH = Math.max(260, visibleRankCount * rowH + 60);
+        // Chart height: fixed 14px per rank row so all 50 rows + labels fit
+        const rowH = 14;
+        const rankChartH = totalStates * rowH + 60;
         const chartHeight = rankChartH + DOT_STRIP_H;
         canvas.style.height = chartHeight + 'px';
 
@@ -1435,17 +1416,15 @@ const ChartUtils = {
                         max: yBoundsMax,
                         grid: { display: false },
                         ticks: {
-                            stepSize: 10,
-                            callback: (v) => v >= 1 && v % 10 === 0 ? '#' + v : (v === 1 ? '#1' : ''),
-                            font: { size: 10 },
+                            callback: (v) => Number.isInteger(v) && v >= 1 ? '#' + v : '',
+                            font: { size: 9 },
                             color: '#aaa',
-                            padding: 4,
+                            padding: 3,
                         },
                         afterBuildTicks(scale) {
-                            scale.ticks = [];
-                            if (scale.min <= 1) scale.ticks.push({ value: 1 });
-                            for (let r = 10; r <= totalStates; r += 10) {
-                                if (r > scale.min && r <= scale.max) scale.ticks.push({ value: r });
+                            scale.ticks = [{ value: 1 }];
+                            for (let r = 5; r <= totalStates; r += 5) {
+                                scale.ticks.push({ value: r });
                             }
                         },
                         title: { display: false },
@@ -1527,11 +1506,6 @@ const ChartUtils = {
             if (state && state !== hiKey) {
                 compState = (compState === state) ? null : state;
                 onCompare(compState);
-                // Recompute y bounds to include comparison state's rank range
-                const compRanks = compState ? getCompRanks(compState) : null;
-                const [newMin, newMax] = computeYBounds(compRanks);
-                chart.options.scales.y.min = newMin;
-                chart.options.scales.y.max = newMax;
                 chart.update('none');
             }
         });
@@ -1595,10 +1569,6 @@ const ChartUtils = {
             compState = null;
             hoverState = null;
             hoveredDotState = null;
-            // Reset y bounds to Hawaii-only range
-            const [resetMin, resetMax] = computeYBounds(null);
-            chart.options.scales.y.min = resetMin;
-            chart.options.scales.y.max = resetMax;
             chart.update('none');
         };
 
