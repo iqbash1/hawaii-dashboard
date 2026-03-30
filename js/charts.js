@@ -1193,6 +1193,8 @@ const ChartUtils = {
             afterDraw(chart) {
                 if (dotStripData.length === 0) return;
                 const { ctx: c, chartArea: { left, right, top } } = chart;
+                // Strip uses the full canvas width (state labels don't apply here)
+                const stripRight = chart.width - 6;
                 const stripTop = top - DOT_STRIP_H + 4;
                 const sepY = top - 22;            // divider between strip and rank chart
                 const dotY = sepY - 28;           // dots centred in the strip
@@ -1202,25 +1204,25 @@ const ChartUtils = {
 
                 // Faint background behind the dot strip to distinguish it visually
                 c.fillStyle = 'rgba(246,248,250,0.95)';
-                c.fillRect(left - 8, stripTop - 2, right - left + 16, sepY - stripTop + 2);
+                c.fillRect(left - 8, stripTop - 2, stripRight - left + 14, sepY - stripTop + 2);
 
                 // Divider — labeled on both sides so both panels are named
                 c.strokeStyle = '#c8c8c8';
                 c.lineWidth = 1.5;
                 c.beginPath();
                 c.moveTo(left, sepY);
-                c.lineTo(right, sepY);
+                c.lineTo(stripRight, sepY);
                 c.stroke();
-                // "Ranking trend" label below the divider (right-aligned so it doesn't crowd)
+                // "Ranking trend" label below the divider (right-aligned)
                 c.font = '600 9px Inter, sans-serif';
                 c.fillStyle = '#aaa';
                 c.textAlign = 'right';
                 c.textBaseline = 'top';
-                c.fillText('Ranking trend \u2193', right, sepY + 4);
+                c.fillText('Ranking trend \u2193', stripRight, sepY + 4);
 
                 // IQR shaded band (between Q1 and Q3 values)
-                const q1x = valToX(left, right, dsQ1);
-                const q3x = valToX(left, right, dsQ3);
+                const q1x = valToX(left, stripRight, dsQ1);
+                const q3x = valToX(left, stripRight, dsQ3);
                 c.fillStyle = 'rgba(13,124,143,0.07)';
                 c.fillRect(q1x, refLineTop, q3x - q1x, dotY - refLineTop - 4);
 
@@ -1231,8 +1233,8 @@ const ChartUtils = {
                     { val: dsQ3,     label: 'Bottom 25%', alpha: 0.65, w: 1.2 },
                 ];
                 for (const ref of refLines) {
-                    const x = valToX(left, right, ref.val);
-                    if (x < left || x > right) continue;
+                    const x = valToX(left, stripRight, ref.val);
+                    if (x < left || x > stripRight) continue;
                     c.save();
                     c.strokeStyle = `rgba(13,124,143,${ref.alpha})`;
                     c.lineWidth = ref.w;
@@ -1255,7 +1257,7 @@ const ChartUtils = {
                 const hiEntry = dotStripData.find(e => e.state === hiKey);
                 for (const e of dotStripData) {
                     if (e.state === hiKey) continue;
-                    const x = valToX(left, right, e.value);
+                    const x = valToX(left, stripRight, e.value);
                     const isHov = (e.state === hoveredDotState);
                     c.beginPath();
                     c.arc(x, dotY, isHov ? 4.5 : 3, 0, Math.PI * 2);
@@ -1266,7 +1268,7 @@ const ChartUtils = {
 
                 // Hawaii dot on top
                 if (hiEntry) {
-                    const hx = valToX(left, right, hiEntry.value);
+                    const hx = valToX(left, stripRight, hiEntry.value);
                     c.beginPath();
                     c.arc(hx, dotY, 6, 0, Math.PI * 2);
                     c.fillStyle = '#0D7C8F';
@@ -1282,10 +1284,10 @@ const ChartUtils = {
                 }
 
                 // Best and worst state labels (skip if too close to HI)
-                const hiX = hiEntry ? valToX(left, right, hiEntry.value) : -999;
+                const hiX = hiEntry ? valToX(left, stripRight, hiEntry.value) : -999;
                 [dotStripData[0], dotStripData[dotStripData.length - 1]].forEach(e => {
                     if (!e || e.state === hiKey) return;
-                    const x = valToX(left, right, e.value);
+                    const x = valToX(left, stripRight, e.value);
                     if (Math.abs(x - hiX) < 32) return;
                     c.font = '600 9px Inter, sans-serif';
                     c.fillStyle = '#999';
@@ -1298,11 +1300,11 @@ const ChartUtils = {
                 if (hoveredDotState) {
                     const hov = dotStripData.find(e => e.state === hoveredDotState);
                     if (hov) {
-                        const hx = valToX(left, right, hov.value);
+                        const hx = valToX(left, stripRight, hov.value);
                         const txt = `${abbr(hov.state)}  #${hov.rank}  ${fmtVal(hov.value)}`;
                         c.font = '600 11px Inter, sans-serif';
                         const tw = c.measureText(txt).width;
-                        const bx = Math.min(Math.max(hx - tw / 2 - 7, left), right - tw - 14);
+                        const bx = Math.min(Math.max(hx - tw / 2 - 7, left), stripRight - tw - 14);
                         const by = dotY - 32;
                         c.fillStyle = 'rgba(40,40,40,0.9)';
                         c.fillRect(bx, by, tw + 14, 20);
@@ -1322,7 +1324,7 @@ const ChartUtils = {
                 // Mirror label right-aligned above the divider
                 c.textAlign = 'right';
                 c.textBaseline = 'bottom';
-                c.fillText('\u2191 Value distribution', right, sepY - 4);
+                c.fillText('\u2191 Value distribution', stripRight, sepY - 4);
 
                 c.restore();
             }
@@ -1484,12 +1486,14 @@ const ChartUtils = {
             if (dotStripData.length === 0) return null;
             const mx = evt.offsetX;
             const my = evt.offsetY;
-            const { left, right, top } = chart.chartArea;
-            const dotY = top - 24;
+            const { left, top } = chart.chartArea;
+            const stripRight = chart.width - 6;
+            const sepY = top - 22;
+            const dotY = sepY - 28;
             if (Math.abs(my - dotY) > 14) return null;
             let closest = null, closestDist = 16;
             for (const e of dotStripData) {
-                const dx = Math.abs(mx - valToX(left, right, e.value));
+                const dx = Math.abs(mx - valToX(left, stripRight, e.value));
                 if (dx < closestDist) { closestDist = dx; closest = e.state; }
             }
             return closest;
