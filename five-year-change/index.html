@@ -446,39 +446,39 @@
             if (bigClimbs.length > 0 && bigDrops.length > 0) {
                 const topClimb = bigClimbs[0];
                 const topDrop = bigDrops[0];
-                s.push(`National rankings shifted in both directions: ${topClimb.metric} climbed ${topClimb.move} spots to #${topClimb.endRank}, while ${topDrop.metric} fell ${-topDrop.move} spots to #${topDrop.endRank}.`);
+                s.push(`National rankings improved and worsened within the same area: ${topClimb.metric} improved ${topClimb.move} spots to #${topClimb.endRank}, while ${topDrop.metric} worsened ${-topDrop.move} spots to #${topDrop.endRank}.`);
             } else if (bigClimbs.length > 0) {
                 const topClimb = bigClimbs[0];
-                s.push(`The standout ranking move was ${topClimb.metric}, which climbed ${topClimb.move} spots to #${topClimb.endRank}.`);
+                s.push(`The standout ranking gain was ${topClimb.metric}, which improved ${topClimb.move} spots nationally to #${topClimb.endRank}.`);
                 if (bigClimbs.length > 1) {
                     const second = bigClimbs[1];
-                    s.push(`${second.metric} also rose ${second.move} spots to #${second.endRank}.`);
+                    s.push(`${second.metric} also improved ${second.move} spots to #${second.endRank}.`);
                 }
             } else if (bigDrops.length > 0) {
                 const topDrop = bigDrops[0];
-                s.push(`The most concerning ranking shift was ${topDrop.metric}, which fell ${-topDrop.move} spots to #${topDrop.endRank}.`);
+                s.push(`The most concerning ranking shift was ${topDrop.metric}, which worsened ${-topDrop.move} spots nationally to #${topDrop.endRank}.`);
                 if (bigDrops.length > 1) {
                     const second = bigDrops[1];
-                    s.push(`${second.metric} also dropped ${-second.move} spots to #${second.endRank}.`);
+                    s.push(`${second.metric} also worsened ${-second.move} spots to #${second.endRank}.`);
                 }
             } else {
                 // No big moves, describe the general position
                 const rankUpCount = rankMoves.filter(m => m.move > 0).length;
                 const rankDownCount = rankMoves.filter(m => m.move < 0).length;
                 if (rankUpCount > rankDownCount) {
-                    s.push(`Rankings edged up on most metrics, though no single move exceeded 5 spots.`);
+                    s.push(`National rankings improved modestly on most metrics, though no single move exceeded 5 spots.`);
                 } else if (rankDownCount > rankUpCount) {
-                    s.push(`Rankings slipped on most metrics, though no single move exceeded 5 spots.`);
+                    s.push(`National rankings worsened modestly on most metrics, though no single move exceeded 5 spots.`);
                 } else {
-                    s.push(`National rankings were largely stable, with no metric moving more than a few spots in either direction.`);
+                    s.push(`National rankings were largely stable, with no metric moving more than a few spots.`);
                 }
             }
 
             // ── Sentence 4: Median standing with interpretation ──
             if (betterNow > betterThen) {
-                s.push(`Hawai\u02BBi now outperforms the median state on ${betterNow} of ${n} metrics, up from ${betterThen} five years ago.`);
+                s.push(`Hawai\u02BBi now outperforms the median state on ${betterNow} of ${n} metrics; five years ago, it outperformed the median on ${betterThen}.`);
             } else if (betterNow < betterThen) {
-                s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics, down from ${betterThen} five years ago.`);
+                s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics; five years ago, that figure was ${betterThen}.`);
             } else if (betterNow === 0) {
                 s.push(`Hawai\u02BBi remains below the median state on every metric in this area.`);
             } else if (betterNow === n) {
@@ -640,7 +640,7 @@
                 </div>`;
 
             // 4. Executive summary
-            const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi moved up in rank on ${rankUp} metrics and down on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
+            const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi improved its national ranking on ${rankUp} metrics and worsened on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
 
             // 5. Area sections
             let areasHtml = '';
