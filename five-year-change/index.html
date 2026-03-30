@@ -735,6 +735,40 @@
                     ${renderTierRow('Bottom 3', rankTiers.bottom3, 'tier-bottom3')}
                 </div>`;
 
+            // 3c. Rank change section (5-year ranking movement)
+            // Threshold: ≥5 spots = meaningful shift
+            const RANK_SHIFT = 5;
+            const rankMoveTiers = { improved: [], stable: [], worsened: [] };
+            for (const r of allResults) {
+                if (!r.standing || r.standing.endRank == null || r.standing.startRank == null) continue;
+                const move = r.standing.startRank - r.standing.endRank; // positive = climbed (better)
+                if (move >= RANK_SHIFT)        rankMoveTiers.improved.push({ r, move });
+                else if (move <= -RANK_SHIFT)  rankMoveTiers.worsened.push({ r, move });
+                else                           rankMoveTiers.stable.push({ r, move });
+            }
+            rankMoveTiers.improved.sort((a, b) => b.move - a.move);   // biggest gain first
+            rankMoveTiers.worsened.sort((a, b) => a.move - b.move);   // biggest loss first
+            rankMoveTiers.stable.sort((a, b) => Math.abs(a.move) - Math.abs(b.move));
+
+            function renderMoveTierRow(label, items, cssClass) {
+                const tags = items.length
+                    ? items.map(({ r, move }) =>
+                        `<a href="../#${r.slug}" class="fyc-tier-tag">${r.metric}<span class="fyc-tier-rank">#${r.standing.startRank}\u2192#${r.standing.endRank}</span></a>`
+                      ).join('')
+                    : `<span class="fyc-tier-none">none</span>`;
+                return `<div class="fyc-tier-row ${cssClass}">
+                    <div class="fyc-tier-label">${label}</div>
+                    <div class="fyc-tier-items">${tags}</div>
+                </div>`;
+            }
+            const rankChangeHtml = `
+                <div class="fyc-rank-breakdown">
+                    <div class="fyc-rank-breakdown-title">Change in national ranking (5-year)</div>
+                    ${renderMoveTierRow('Ranking improved', rankMoveTiers.improved, 'tier-top25')}
+                    ${renderMoveTierRow('Ranking stable', rankMoveTiers.stable, 'tier-average')}
+                    ${renderMoveTierRow('Ranking worsened', rankMoveTiers.worsened, 'tier-bottom25')}
+                </div>`;
+
             // 4. Executive summary
             const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi improved its national ranking on ${rankUp} metrics and worsened on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
 
@@ -778,7 +812,7 @@
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
             // Assemble
-            document.getElementById('fyc-content').innerHTML = chipsHtml + rankBreakdownHtml + execHtml + areasHtml + methodHtml;
+            document.getElementById('fyc-content').innerHTML = chipsHtml + rankBreakdownHtml + rankChangeHtml + execHtml + areasHtml + methodHtml;
         }
 
         render();
