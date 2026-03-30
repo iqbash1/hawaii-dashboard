@@ -713,6 +713,14 @@ body {
     color: var(--text-secondary);
     margin: 0;
 }
+.rh-narr-explore {
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--border);
+    margin-bottom: 0.6rem;
+}
+.rh-narr-explore:last-child {
+    margin-bottom: 0;
+}
 
 /* --- County View --- */
 .modal-county {

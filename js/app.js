@@ -1606,6 +1606,15 @@ const App = {
                 html += `</div>`;
             }
 
+            if (narr.explore && narr.explore.length) {
+                html += `<div class="rh-narr-section">
+                    <h3 class="rh-narr-heading">Directions worth exploring</h3>`;
+                narr.explore.forEach(point => {
+                    html += `<p class="rh-narr-text rh-narr-explore">${point}</p>`;
+                });
+                html += `</div>`;
+            }
+
             if (narr.caution) {
                 html += `<div class="rh-narr-section">
                     <h3 class="rh-narr-heading">What to avoid</h3>

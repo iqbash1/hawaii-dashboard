@@ -995,17 +995,21 @@ const DASHBOARD_DATA = {
     "policyLevers": "Permanent supportive housing; shelter, outreach, and case management; mental health, substance use, and eviction prevention.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawai\u02BBi has ranked last in the nation on unsheltered homelessness every year in this period. State programs place people into housing at roughly the rate new residents fall into homelessness, and severe land and regulatory constraints prevent the housing supply expansion needed to change that.",
+      "summary": "Hawai\u02BBi has ranked last or near-last every year since 2012. Hawai\u02BBi has adopted Housing First in statute, launched the Kauhale Initiative (918 beds across 25 village sites), and runs a Return to Home relocation program with a 2% recidivism rate. The count has not declined because placements are outpaced by new inflow, and only a fraction of the land needed for affordable housing is available under current zoning and environmental rules.",
       "mode": "learn",
       "benchmarks": [
         {
           "state": "Virginia",
-          "text": "Virginia cut unsheltered homelessness 47% from 2010 to 2019 by requiring every provider statewide to share one database and one housing waitlist, backed by a dedicated Housing Trust Fund. Hawai\u02BBi already has the Housing First statute and a state coordination office; the missing piece is Virginia\u2019s binding data-sharing requirement across all providers, which eliminated the fragmentation that allows people to fall through the gaps."
+          "text": "Virginia cut unsheltered homelessness 47% from 2010 to 2019 by requiring every provider statewide to share one database and one housing waitlist, backed by a dedicated Housing Trust Fund. Hawai\u02BBi has the Housing First statute and a state coordination office; the gap is Virginia\u2019s binding data-sharing requirement, which eliminated provider fragmentation and drove placements at scale."
         }
+      ],
+      "explore": [
+        "The Kauhale Initiative achieves $20,000 per unit on surplus state and federal land, compared to $200,000-plus for conventional affordable housing. Scaling it to 5,000 units would require more military and state surplus land transfers, the primary lever Hawai\u02BBi controls that most states do not.",
+        "The Return to Home program costs $500,000 per year, relocates mainland-connected individuals at a 2% return rate, and died in the 2025 legislature. Making it permanent addresses a documented subset of inflow at very low cost."
       ],
       "caution": {
         "state": "Oregon",
-        "text": "Oregon spent $1.7 billion on homelessness from 2019 to 2024 while unsheltered counts rose 17% and homeless deaths quadrupled. Spending on services without expanding housing supply failed; Hawai\u02BBi faces the same structural risk."
+        "text": "Oregon spent $1.7 billion on homelessness from 2019 to 2024 while unsheltered counts rose 17% and homeless deaths quadrupled. Spending on services without expanding housing supply did not work; Hawai\u02BBi faces the same structural risk."
       }
     }
   },
