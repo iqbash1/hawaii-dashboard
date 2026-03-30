@@ -53,6 +53,8 @@
         .fyc-status.little-change { color: var(--text-muted); background: #f0f2f4; }
 
         .fyc-line2 { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.3rem; }
+        .fyc-val-pos { color: var(--positive); font-weight: 600; }
+        .fyc-val-neg { color: var(--negative); font-weight: 600; }
         .fyc-line3 { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
         .fyc-line4 { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
         .county-improved { color: var(--positive); font-weight: 600; }
@@ -662,7 +664,7 @@
                                 <span class="fyc-metric-name">${r.metric}</span>
                                 <span class="fyc-status ${r.status}">${statusLabel(r.status)}</span>
                             </div>
-                            <div class="fyc-line2">Hawai\u02BBi trend: ${r.changeText} ${yearRange}</div>
+                            <div class="fyc-line2">Hawai\u02BBi trend: <span class="${r.status === 'improving' ? 'fyc-val-pos' : r.status === 'worsening' ? 'fyc-val-neg' : ''}">${r.changeText}</span> ${yearRange}</div>
                             ${standingLine ? `<div class="fyc-line3">${standingLine}</div>` : ''}
                             ${countyLine}
                         </a>`;
