@@ -326,12 +326,6 @@ body {
     margin-top: 0.1rem;
 }
 
-.comp-context {
-    font-size: 0.58rem;
-    color: var(--text-muted);
-    margin-top: 0.1rem;
-    opacity: 0.7;
-}
 
 .card-comp.positive .comp-verdict {
     color: var(--positive);
@@ -536,83 +530,6 @@ body {
     height: 440px;
 }
 
-.modal-stats {
-    display: flex;
-    gap: 0.75rem;
-    padding: 0 2rem 1rem;
-    flex-wrap: wrap;
-}
-
-.stat-card {
-    flex: 1;
-    min-width: 120px;
-    background: var(--bg);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 0.85rem 0.75rem;
-    text-align: center;
-}
-
-.stat-label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    margin-bottom: 0.3rem;
-}
-
-.stat-value {
-    font-family: var(--font-heading);
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--text);
-}
-
-.stat-value.hawaii-color {
-    color: var(--hawaii-blue);
-}
-
-.stat-value.avg-color {
-    color: var(--avg-gray);
-}
-
-.stat-value.positive {
-    color: var(--positive);
-}
-
-.stat-value.negative {
-    color: var(--negative);
-}
-
-.stat-value.neutral {
-    color: var(--text-secondary);
-}
-
-.stat-unit {
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-top: 0.1rem;
-}
-
-.stat-sub {
-    font-size: 0.7rem;
-    font-weight: 600;
-    margin-top: 0.15rem;
-}
-
-.stat-sub.positive {
-    color: var(--positive);
-}
-
-.stat-sub.negative {
-    color: var(--negative);
-}
-
-.stat-sub.neutral {
-    color: var(--text-secondary);
-}
 
 .modal-body {
     padding: 0 2rem 2rem;
@@ -637,79 +554,6 @@ body {
     color: var(--text);
 }
 
-/* --- Trend comparison --- */
-.trend-comparison {
-    margin: 0.5rem 0;
-}
-
-.trend-pair {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.25rem;
-}
-
-.trend-period {
-    text-align: center;
-    min-width: 80px;
-}
-
-.trend-period-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 0.2rem;
-}
-
-.trend-period-value {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.2;
-}
-
-.trend-period-note {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    margin-top: 0.1rem;
-}
-
-.trend-arrow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1rem;
-    padding: 0.4rem 0.6rem;
-    border-radius: 8px;
-}
-
-.trend-arrow-icon {
-    font-size: 1.1rem;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.trend-arrow-pct {
-    font-size: 0.85rem;
-    font-weight: 700;
-}
-
-.trend-arrow-verdict {
-    font-size: 0.6rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.trend-improving {
-    color: var(--better-green);
-    background: rgba(20, 148, 138, 0.06);
-}
-
-.trend-worsening {
-    color: var(--worse-red);
-    background: rgba(208, 49, 53, 0.06);
-}
 
 .modal-source {
     font-size: 0.8rem;
@@ -793,19 +637,43 @@ body {
     position: relative;
     width: 100%;
 }
-.rank-history-compare {
-    font-size: 0.82rem;
-    color: var(--hawaii-blue);
-    font-weight: 500;
-    padding: 0 1rem;
-    margin-bottom: 0.5rem;
+.rank-history-bench {
+    margin: 0.75rem 1rem 0.5rem;
 }
-.rank-history-hint {
-    font-size: 0.75rem;
+.rank-history-hint,
+.rank-history-compare {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--hawaii-blue-light);
+    border: 1px solid rgba(13, 124, 143, 0.22);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--hawaii-blue);
+    line-height: 1.3;
+}
+.bench-icon {
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+.bench-clear {
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 600;
     color: var(--text-muted);
-    text-align: center;
-    margin-top: 0.75rem;
-    padding: 0 1rem;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 3px;
+    padding: 0.15rem 0.5rem;
+    white-space: nowrap;
+    transition: color var(--transition), border-color var(--transition);
+}
+.bench-clear:hover {
+    color: var(--negative);
+    border-color: var(--negative);
 }
 
 /* --- County View --- */
@@ -1019,10 +887,6 @@ body {
         font-size: 0.6rem;
     }
 
-    .comp-context {
-        font-size: 0.6rem;
-    }
-
     .card-comp {
         min-width: 0;
         overflow: hidden;
@@ -1075,17 +939,6 @@ body {
         height: 280px;
     }
 
-    .modal-stats {
-        padding: 0 1rem 1rem;
-        gap: 0.5rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .stat-card {
-        min-width: 0;
-    }
-
     .modal-body {
         padding: 0 1rem 1.5rem;
     }
@@ -1131,10 +984,6 @@ body {
     }
 
     .comp-detail {
-        font-size: 0.6rem;
-    }
-
-    .comp-context {
         font-size: 0.6rem;
     }
 
@@ -1261,15 +1110,11 @@ body {
         color: #333;
     }
 
-    .card-comp.positive .comp-verdict,
-    .stat-value.positive,
-    .stat-sub.positive {
+    .card-comp.positive .comp-verdict {
         color: var(--positive) !important;
     }
 
-    .card-comp.negative .comp-verdict,
-    .stat-value.negative,
-    .stat-sub.negative {
+    .card-comp.negative .comp-verdict {
         color: var(--negative) !important;
     }
 

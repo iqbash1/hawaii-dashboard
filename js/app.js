@@ -255,9 +255,8 @@ const App = {
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
-                <div class="comp-label">vs Other States</div>
-                <div class="comp-verdict">${isBetter ? 'Better' : 'Worse'}</div>
-                <div class="comp-detail">avg ${avgFormatted}</div>
+                <div class="comp-label">State avg</div>
+                <div class="comp-detail">${avgFormatted}</div>
                 ${rankHtml}
             </div>
         `;
@@ -291,10 +290,6 @@ const App = {
         else pctLabel = `${arrow} ${absPct.toFixed(1)}%`;
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
-        const word = isFlat ? 'Flat' : (isImproving ? 'Improving' : 'Worsening');
-
-        const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
-        const formattedPrior = ChartUtils.formatCardValue(priorAvg, metricData.unit, isDecimal);
         const priorLabel = `${prior[0]}-${String(prior[prior.length - 1]).slice(-2)}`;
         const recentLabel = `${recent[0]}-${String(recent[recent.length - 1]).slice(-2)}`;
 
@@ -302,8 +297,6 @@ const App = {
             <div class="card-comp ${cls}">
                 <div class="comp-label">${recentLabel} vs ${priorLabel}</div>
                 <div class="comp-verdict">${pctLabel}</div>
-                <div class="comp-detail">${word}</div>
-                <div class="comp-context">prior avg ${formattedPrior}</div>
             </div>
         `;
     },
@@ -465,43 +458,7 @@ const App = {
         document.getElementById('modal-vintage').textContent = vintageText;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
-        // 3-year vs prior 3-year trend comparison
-        const trendSection = document.getElementById('modal-trend-section');
-        const trendComp = document.getElementById('modal-trend-comparison');
-        const trendContext = document.getElementById('modal-trend-context');
-        const trendResult = this.computeTrendComparison(effective, metricData);
-        if (trendResult) {
-            document.getElementById('modal-trend-title').textContent = `Recent trend (${trendResult.recentLabel} vs ${trendResult.priorLabel})`;
-            const isDecimal = ChartUtils.isDecimalPctMetric(effective);
-            const fmtVal = (v) => ChartUtils.formatValue(v, effective.unit, isDecimal);
-            const pctChange = ((trendResult.recentAvg - trendResult.priorAvg) / Math.abs(trendResult.priorAvg) * 100);
-            const isUp = pctChange > 0;
-            const improving = (metricData.goodDirection === 'up') === isUp;
-            const arrow = isUp ? '\u2191' : '\u2193';
-            const verdictClass = improving ? 'trend-improving' : 'trend-worsening';
-            const verdictText = improving ? 'Improving' : 'Worsening';
-            trendComp.innerHTML = `
-                <div class="trend-pair">
-                    <div class="trend-period">
-                        <div class="trend-period-label">${trendResult.priorLabel}</div>
-                        <div class="trend-period-value">${fmtVal(trendResult.priorAvg)}</div>
-                        <div class="trend-period-note">avg of ${trendResult.priorYears.length} yr</div>
-                    </div>
-                    <div class="trend-arrow ${verdictClass}">
-                        <span class="trend-arrow-icon">${arrow}</span>
-                        <span class="trend-arrow-pct">${Math.abs(pctChange).toFixed(1)}%</span>
-                        <span class="trend-arrow-verdict">${verdictText}</span>
-                    </div>
-                    <div class="trend-period">
-                        <div class="trend-period-label">${trendResult.recentLabel}</div>
-                        <div class="trend-period-value">${fmtVal(trendResult.recentAvg)}</div>
-                        <div class="trend-period-note">avg of ${trendResult.recentYears.length} yr</div>
-                    </div>
-                </div>`;
-            trendSection.style.display = '';
-        } else {
-            trendSection.style.display = 'none';
-        }
+        document.getElementById('modal-trend-section').style.display = 'none';
 
         // Policy levers
         const policyLeversSection = document.getElementById('modal-policy-levers-section');
@@ -657,68 +614,9 @@ const App = {
         if (tabRankHistoryEl) tabRankHistoryEl.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
-        // Stats use effective data so they match both charts
-        const latest = this.getLatestValue(effective.hawaii);
-        const latestAvg = this.getLatestValue(effective.otherStateAvg);
-        const prior = this.getPriorValue(effective.hawaii);
-        const isDecimal = ChartUtils.isDecimalPctMetric(effective);
-
-        // vs Other States
-        let vsAvgClass = 'neutral';
-        let vsAvgWord = '-';
-        if (latest.value !== null && latestAvg.value !== null) {
-            const diff = latest.value - latestAvg.value;
-            const isBetter = effective.goodDirection === 'up' ? diff > 0 : diff < 0;
-            vsAvgClass = isBetter ? 'positive' : 'negative';
-            vsAvgWord = isBetter ? 'Better' : 'Worse';
-        }
-
-        // 3-year avg trend (matches card comparison)
-        let vsYearHtml = '';
-        const trendForStats = this.computeTrendComparison(effective, metricData);
-        if (trendForStats) {
-            const pctChange = ((trendForStats.recentAvg - trendForStats.priorAvg) / Math.abs(trendForStats.priorAvg) * 100);
-            const isUp = pctChange > 0;
-            const isImproving = (effective.goodDirection === 'up') === isUp;
-            const isFlat = Math.abs(pctChange) < 0.5;
-            const arrow = isUp ? '\u2191' : '\u2193';
-            const absPct = Math.abs(pctChange);
-            let pctLabel = isFlat ? 'Flat' : (absPct > 100 ? `${arrow} ${absPct.toFixed(0)}%` : `${arrow} ${absPct.toFixed(1)}%`);
-            const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
-            const word = isFlat ? 'Flat' : (isImproving ? 'Improving' : 'Worsening');
-
-            vsYearHtml = `
-                <div class="stat-card">
-                    <div class="stat-label">${trendForStats.recentLabel} vs ${trendForStats.priorLabel}</div>
-                    <div class="stat-value ${cls}">${pctLabel}</div>
-                    <div class="stat-sub ${cls}">${word}</div>
-                </div>
-            `;
-        }
-
-        // Show unit suffix for rate-based metrics so visitors understand the numbers
-        const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(effective.unit)
-            ? `<div class="stat-unit">${effective.unit}</div>`
-            : '';
-
-        const statsContainer = document.getElementById('modal-stats');
-        statsContainer.innerHTML = `
-            <div class="stat-card">
-                <div class="stat-label">Hawaiʻi (${latest.year || '\u2014'})</div>
-                <div class="stat-value hawaii-color">${ChartUtils.formatValue(latest.value, effective.unit, isDecimal)}</div>
-                ${unitSuffix}
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Other-states average (${latestAvg.year || '-'})</div>
-                <div class="stat-value avg-color">${ChartUtils.formatValue(latestAvg.value, effective.unit, isDecimal)}</div>
-                ${unitSuffix}
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">vs Other States</div>
-                <div class="stat-value ${vsAvgClass}">${vsAvgWord}</div>
-            </div>
-            ${vsYearHtml}
-        `;
+        const statsEl = document.getElementById('modal-stats');
+        statsEl.innerHTML = '';
+        statsEl.style.display = 'none';
 
         // Chart uses effective data (trimmed to rankings year)
         const canvas = document.getElementById('modal-chart');
@@ -1646,6 +1544,8 @@ const App = {
 
         // Reset comparison UI
         document.getElementById('rank-history-compare').style.display = 'none';
+        const benchHint = document.getElementById('rank-history-hint');
+        if (benchHint) benchHint.style.display = '';
 
         // Create the chart
         const canvas = document.getElementById('rank-history-chart');
@@ -1659,14 +1559,16 @@ const App = {
             canvas, rankHistory, metricData,
             // onCompare callback
             (stateName) => {
-                const abbr = STATE_ABBREVS[stateName] || stateName;
                 const el = document.getElementById('rank-history-compare');
                 const nameEl = document.getElementById('rank-history-compare-name');
+                const hintEl = document.getElementById('rank-history-hint');
                 if (stateName) {
                     nameEl.textContent = stateName;
                     el.style.display = '';
+                    if (hintEl) hintEl.style.display = 'none';
                 } else {
                     el.style.display = 'none';
+                    if (hintEl) hintEl.style.display = '';
                 }
             }
         );
@@ -1679,6 +1581,8 @@ const App = {
                 this.rankHistoryChart._clearComparison();
             }
             document.getElementById('rank-history-compare').style.display = 'none';
+            const hintEl = document.getElementById('rank-history-hint');
+            if (hintEl) hintEl.style.display = '';
         };
     },
 
