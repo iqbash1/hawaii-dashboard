@@ -1011,6 +1011,28 @@ const ChartUtils = {
         // Build Hawaii's rank array for each year
         const hiRanks = years.map(yr => stateRanks[hiKey] ? (stateRanks[hiKey][yr] || null) : null);
 
+        // Adaptive y-axis bounds: zoom in on the rank range that matters,
+        // so charts where Hawaii is consistently top/bottom don't have huge empty areas.
+        function computeYBounds(compRanks) {
+            const all = [...hiRanks.filter(r => r != null)];
+            if (compRanks) all.push(...compRanks.filter(r => r != null));
+            if (!all.length) return [0.5, totalStates];
+            const lo = Math.min(...all);
+            const hi = Math.max(...all);
+            const span = hi - lo + 1;
+            const pad = Math.max(6, Math.round(span * 0.4));
+            let yMin = Math.max(1, lo - pad);
+            let yMax = Math.min(totalStates, hi + pad);
+            // Enforce minimum 20-rank visible range
+            while (yMax - yMin < 20) {
+                if (yMin > 1) yMin = Math.max(1, yMin - 1);
+                else if (yMax < totalStates) yMax = Math.min(totalStates, yMax + 1);
+                else break;
+            }
+            return [yMin === 1 ? 0.5 : yMin - 0.5, yMax];
+        }
+        let [yBoundsMin, yBoundsMax] = computeYBounds(null);
+
         // State currently being compared
         let compState = null;
         // State being hovered on right side
@@ -1068,9 +1090,11 @@ const ChartUtils = {
 
         const DOT_STRIP_H = 148; // px of top padding reserved for strip
 
-        // Chart height
+        // Chart height based on the visible rank range (adaptive bounds)
         const rowH = Math.max(12, Math.min(14, 700 / totalStates));
-        const chartHeight = Math.max(440, totalStates * rowH + 50) + DOT_STRIP_H;
+        const visibleRankCount = Math.ceil(yBoundsMax - Math.max(1, yBoundsMin));
+        const rankChartH = Math.max(260, visibleRankCount * rowH + 60);
+        const chartHeight = rankChartH + DOT_STRIP_H;
         canvas.style.height = chartHeight + 'px';
 
         // Datasets - Hawaii only; comparison is drawn via custom plugin
@@ -1096,16 +1120,25 @@ const ChartUtils = {
             beforeDraw(chart) {
                 const { ctx: c, chartArea: { left, right, top, bottom } } = chart;
                 const yScale = chart.scales.y;
-                // Top quartile: ranks 1-12 (faint green)
-                const topY = yScale.getPixelForValue(0.5);
-                const topBottom = yScale.getPixelForValue(12.5);
-                c.fillStyle = 'rgba(5, 150, 105, 0.05)';
-                c.fillRect(left, topY, right - left, topBottom - topY);
-                // Bottom quartile: ranks 38-50 (faint red)
-                const botTop = yScale.getPixelForValue(37.5);
-                const botBottom = yScale.getPixelForValue(totalStates);
-                c.fillStyle = 'rgba(192, 57, 43, 0.05)';
-                c.fillRect(left, botTop, right - left, botBottom - botTop);
+                c.save();
+                c.beginPath();
+                c.rect(left, top, right - left, bottom - top);
+                c.clip();
+                // Top quartile: ranks 1-12.5 (faint green)
+                const topY = yScale.getPixelForValue(yScale.min);
+                const topBottom = yScale.getPixelForValue(Math.min(12.5, yScale.max));
+                if (topBottom > topY) {
+                    c.fillStyle = 'rgba(5, 150, 105, 0.05)';
+                    c.fillRect(left, topY, right - left, topBottom - topY);
+                }
+                // Bottom quartile: ranks 37.5-50 (faint red)
+                const botTop = yScale.getPixelForValue(Math.max(37.5, yScale.min));
+                const botBottom = yScale.getPixelForValue(yScale.max);
+                if (botBottom > botTop) {
+                    c.fillStyle = 'rgba(192, 57, 43, 0.05)';
+                    c.fillRect(left, botTop, right - left, botBottom - botTop);
+                }
+                c.restore();
             }
         };
 
@@ -1115,9 +1148,11 @@ const ChartUtils = {
             beforeDatasetsDraw(chart) {
                 const { ctx: c, chartArea: { left, right } } = chart;
                 const yScale = chart.scales.y;
+                const rMin = Math.ceil(yScale.min);
+                const rMax = Math.floor(yScale.max);
 
-                // Fine rank gridlines
-                for (let r = 1; r <= totalStates; r++) {
+                // Fine rank gridlines (only within visible range)
+                for (let r = rMin; r <= rMax; r++) {
                     const y = yScale.getPixelForValue(r);
                     c.strokeStyle = (r % 10 === 0) ? '#e0e0e0' : '#f2f2f2';
                     c.lineWidth = (r % 10 === 0) ? 0.8 : 0.4;
@@ -1127,13 +1162,14 @@ const ChartUtils = {
                     c.stroke();
                 }
 
-                // Q1 / Median / Q3 reference lines
+                // Q1 / Median / Q3 reference lines (skip if outside visible range)
                 const refs = [
                     { rank: 12.5, label: 'Top 25%',    color: 'rgba(5,150,105,0.55)',   lw: 1.2 },
                     { rank: 25.5, label: 'Median',      color: 'rgba(100,100,100,0.55)', lw: 1.5 },
                     { rank: 37.5, label: 'Bottom 25%',  color: 'rgba(192,57,43,0.55)',   lw: 1.2 },
                 ];
                 for (const ref of refs) {
+                    if (ref.rank < yScale.min || ref.rank > yScale.max) continue;
                     const y = yScale.getPixelForValue(ref.rank);
                     c.save();
                     c.strokeStyle = ref.color;
@@ -1163,6 +1199,8 @@ const ChartUtils = {
                 const yScale = chart.scales.y;
                 c.textAlign = 'left';
                 for (const entry of latestYearRanked) {
+                    // Skip labels whose rank falls outside the current visible range
+                    if (entry.rank < yScale.min || entry.rank > yScale.max) continue;
                     const y = yScale.getPixelForValue(entry.rank);
                     const code = abbr(entry.state);
                     const isHI = (entry.state === hiKey);
@@ -1385,7 +1423,7 @@ const ChartUtils = {
 
         const chart = new Chart(ctx, {
             type: 'line',
-            data: { labels: years.map(y => "'" + String(y).slice(2)), datasets },
+            data: { labels: years.map(y => String(y)), datasets },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -1393,19 +1431,22 @@ const ChartUtils = {
                 scales: {
                     y: {
                         reverse: true,
-                        min: 0.5,
-                        max: totalStates,
+                        min: yBoundsMin,
+                        max: yBoundsMax,
                         grid: { display: false },
                         ticks: {
                             stepSize: 10,
-                            callback: (v) => v >= 1 && v <= totalStates && v % 10 === 0 ? '#' + v : (v === 1 ? '#1' : ''),
+                            callback: (v) => v >= 1 && v % 10 === 0 ? '#' + v : (v === 1 ? '#1' : ''),
                             font: { size: 10 },
                             color: '#aaa',
                             padding: 4,
                         },
                         afterBuildTicks(scale) {
-                            scale.ticks = [{ value: 1 }];
-                            for (let r = 10; r <= totalStates; r += 10) scale.ticks.push({ value: r });
+                            scale.ticks = [];
+                            if (scale.min <= 1) scale.ticks.push({ value: 1 });
+                            for (let r = 10; r <= totalStates; r += 10) {
+                                if (r > scale.min && r <= scale.max) scale.ticks.push({ value: r });
+                            }
                         },
                         title: { display: false },
                     },
@@ -1413,19 +1454,10 @@ const ChartUtils = {
                         border: { display: false },
                         grid: { display: false },
                         ticks: {
-                            font: { size: 9 },
-                            color: '#999',
-                            maxRotation: 0,
+                            font: { size: 11 },
+                            color: '#888888',
+                            maxRotation: 45,
                             autoSkip: false,
-                            padding: 2,
-                            callback: function(value, index, ticks) {
-                                const total = ticks.length;
-                                const label = this.getLabelForValue(value);
-                                if (index === 0 || index === total - 1) return label;
-                                const mid = Math.round(total / 2);
-                                if (total > 5 && index === mid) return label;
-                                return '';
-                            },
                         },
                     }
                 },
@@ -1473,11 +1505,14 @@ const ChartUtils = {
             const my = evt.offsetY;
             const { right, top, bottom } = chart.chartArea;
             const yScale = chart.scales.y;
-            const rowH = (bottom - top) / totalStates;
+            // Row height based on visible range (adaptive bounds may show fewer than totalStates)
+            const visibleRange = yScale.max - yScale.min;
+            const rowH = (bottom - top) / visibleRange;
 
             // Hit zone: from chartArea right edge outward to cover the label text
             if (mx >= right - 4 && mx <= right + 50) {
                 for (const entry of latestYearRanked) {
+                    if (entry.rank < yScale.min || entry.rank > yScale.max) continue;
                     const y = yScale.getPixelForValue(entry.rank);
                     if (Math.abs(my - y) < rowH * 0.9) {
                         return entry.state;
@@ -1492,6 +1527,11 @@ const ChartUtils = {
             if (state && state !== hiKey) {
                 compState = (compState === state) ? null : state;
                 onCompare(compState);
+                // Recompute y bounds to include comparison state's rank range
+                const compRanks = compState ? getCompRanks(compState) : null;
+                const [newMin, newMax] = computeYBounds(compRanks);
+                chart.options.scales.y.min = newMin;
+                chart.options.scales.y.max = newMax;
                 chart.update('none');
             }
         });
@@ -1555,6 +1595,10 @@ const ChartUtils = {
             compState = null;
             hoverState = null;
             hoveredDotState = null;
+            // Reset y bounds to Hawaii-only range
+            const [resetMin, resetMax] = computeYBounds(null);
+            chart.options.scales.y.min = resetMin;
+            chart.options.scales.y.max = resetMax;
             chart.update('none');
         };
 

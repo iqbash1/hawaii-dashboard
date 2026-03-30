@@ -887,9 +887,9 @@ const App = {
 
     /**
      * Generate and download a multi-tab xlsx for the given metric.
-     * Tab order: Raw Data → Chart Data → Rankings → Methodology
-     * Raw data (state-data.js) is the single source of truth;
-     * chart data and rankings are derived from it.
+     * Sheet order: Raw Data → Chart Data → Rankings → All Data → County Data (if avail) → Methodology
+     * Raw data (state-data.js) is the single source of truth.
+     * Rankings = wide grid (State × Year). All Data = long format (Year | State | Value | Rank | N).
      */
     downloadData(slug) {
         const m = DASHBOARD_DATA[slug];
@@ -988,11 +988,13 @@ const App = {
         const wsChart = XLSX.utils.aoa_to_sheet(chartRows.filter(r => r.length > 0));
         XLSX.utils.book_append_sheet(wb, wsChart, 'Chart Data');
 
-        // --- Tab 3: "Rankings" (all states, all years) ---
+        // --- Tab 3: "Rankings" grid (State rows × Year columns) ---
+        // --- Tab 4: "All Data" long format (Year | State | Value | Rank | N) ---
         if (sd) {
             const rankHistory = this.computeRankHistory(slug);
             if (rankHistory && rankHistory.years.length > 0) {
-                const { years: rankYears, stateRanks, latestYearRanked } = rankHistory;
+                const { years: rankYears, stateRanks, stateValues, latestYearRanked, hiKey } = rankHistory;
+
                 // Sort states by latest-year rank (best first); unlisted states go to end
                 const latestRankMap = {};
                 latestYearRanked.forEach(e => { latestRankMap[e.state] = e.rank; });
@@ -1002,6 +1004,7 @@ const App = {
                     return ra - rb;
                 });
 
+                // Wide grid: State rows, Year columns, rank values
                 const rankRows = [
                     [`${m.metric} - National Rankings by Year`],
                     [`${m.goodDirection === 'up' ? 'Higher is better (rank 1 = highest value)' : 'Lower is better (rank 1 = lowest value)'}`],
@@ -1010,24 +1013,52 @@ const App = {
                     ['State', ...rankYears],
                 ];
                 allStates.forEach(state => {
-                    const isHI = (state === rankHistory.hiKey);
+                    const isHI = (state === hiKey);
                     const row = [isHI ? `${state} *` : state];
                     rankYears.forEach(yr => {
                         row.push(stateRanks[state][yr] != null ? stateRanks[state][yr] : '');
                     });
                     rankRows.push(row);
                 });
-
                 const wsRank = XLSX.utils.aoa_to_sheet(rankRows);
                 XLSX.utils.book_append_sheet(wb, wsRank, 'Rankings');
+
+                // Long format: one row per state per year, with value AND rank
+                const longRows = [
+                    [`${m.metric} - All States, All Years: Values and Rankings`],
+                    [`${m.goodDirection === 'up' ? 'Higher is better - rank 1 = highest value' : 'Lower is better - rank 1 = lowest value'}. Hawaiʻi rows marked *.`],
+                    [],
+                    ['Year', 'State', `Value (${m.unit})`, 'Rank', 'Out of N States'],
+                ];
+                rankYears.forEach(yr => {
+                    const yearEntries = allStates
+                        .filter(state => stateRanks[state]?.[yr] != null)
+                        .map(state => ({
+                            state,
+                            rank: stateRanks[state][yr],
+                            value: stateValues[state]?.[yr],
+                        }))
+                        .sort((a, b) => a.rank - b.rank);
+                    const n = yearEntries.length;
+                    yearEntries.forEach(({ state, rank, value }) => {
+                        const isHI = state === hiKey;
+                        longRows.push([
+                            yr,
+                            isHI ? `${state} *` : state,
+                            value != null ? value : '',
+                            rank,
+                            n,
+                        ]);
+                    });
+                });
+                const wsLong = XLSX.utils.aoa_to_sheet(longRows);
+                XLSX.utils.book_append_sheet(wb, wsLong, 'All Data');
             }
         }
 
-        // --- Tab 4 (conditional): "County Data" ---
+        // --- Tab 5: "County Data" (always included when available) ---
         const countyData = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
-        const countyTabActive = document.getElementById('tab-county')
-            && document.getElementById('tab-county').classList.contains('active');
-        if (countyData && countyTabActive) {
+        if (countyData) {
             const counties = countyData.counties || Object.keys(countyData.data);
             const allCountyYears = [...new Set(
                 counties.flatMap(c => Object.keys(countyData.data[c] || {}))
@@ -1051,7 +1082,7 @@ const App = {
             XLSX.utils.book_append_sheet(wb, wsCounty, 'County Data');
         }
 
-        // --- Tab 5: "Methodology" (reproducibility reference) ---
+        // --- Tab 6: "Methodology" (reproducibility reference) ---
         const methRows = [
             ['METRIC DEFINITION'],
             ['Metric', m.metric],
@@ -1618,6 +1649,10 @@ const App = {
         // Create the chart
         const canvas = document.getElementById('rank-trend-chart');
         if (this.rankTrendChart) { this.rankTrendChart.destroy(); this.rankTrendChart = null; }
+
+        // Force a synchronous layout reflow so Chart.js reads the correct canvas
+        // width (not 0 from a previously-hidden parent element).
+        void canvas.offsetWidth;
 
         this.rankTrendChart = ChartUtils.createRankTrendChart(
             canvas, rankHistory, metricData,
