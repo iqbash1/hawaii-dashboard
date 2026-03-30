@@ -468,17 +468,17 @@
                     s.push(`This is one of Hawai\u02BBi's stronger areas nationally, with ${improving.length} of ${n} ${pl(n, 'metric')} improving and none worsening, led by ${best.metric} (${best.changeText}).`);
                 } else if (improving.length > 0 && worsening.length > 0) {
                     const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                    s.push(`Hawai\u02BBi holds a relatively strong national position here, though the trend is mixed: ${improving.length} ${pl(improving.length, 'metric')} improved while ${worsening.length} worsened, with ${best.metric} leading the gains (${best.changeText}).`);
+                    s.push(`Hawai\u02BBi holds a relatively strong national position here, though the trend is mixed: ${improving.length} ${pl(improving.length, 'metric')} improved while ${worsening.length} worsened, with ${best.metric} showing the most improvement (${best.changeText}).`);
                 } else {
                     s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have been largely stable over the last 5 years.`);
                 }
             } else if (rankQual === 'weak') {
                 if (improving.length === 0 && worsening.length > 0) {
                     const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                    s.push(`This area is under pressure nationally, with ${worsening.length} of ${n} ${pl(n, 'metric')} worsening and none improving, with the most notable decline in ${worst.metric} (${worst.changeText}).`);
+                    s.push(`This area is under pressure nationally, with ${worsening.length} of ${n} ${pl(n, 'metric')} worsening and none improving, most notably ${worst.metric} (${worst.changeText}).`);
                 } else if (improving.length > 0 && worsening.length > 0) {
                     const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                    s.push(`This remains a relative weakness nationally, with a mixed trend: ${worsening.length} ${pl(worsening.length, 'metric')} worsened while ${improving.length} improved; ${worst.metric} saw the most concerning decline (${worst.changeText}).`);
+                    s.push(`This remains a relative weakness nationally, with a mixed trend: ${worsening.length} ${pl(worsening.length, 'metric')} worsened while ${improving.length} improved; ${worst.metric} worsened the most (${worst.changeText}).`);
                 } else {
                     s.push(`This area is a relative weakness nationally and has shown little change over the last 5 years.`);
                 }
@@ -489,7 +489,7 @@
                     s.push(`A positive trend: ${improving.length} of ${n} ${pl(n, 'metric')} improved and none worsened, led by ${best.metric} (${best.changeText}).`);
                 } else if (improving.length === 0 && worsening.length > 0) {
                     const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                    s.push(`A challenging trend: ${worsening.length} of ${n} ${pl(n, 'metric')} worsened and none improved, with the most notable decline in ${worst.metric} (${worst.changeText}).`);
+                    s.push(`A challenging trend: ${worsening.length} of ${n} ${pl(n, 'metric')} worsened and none improved, most notably ${worst.metric} (${worst.changeText}).`);
                 } else if (improving.length > 0 && worsening.length > 0) {
                     const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
                     const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
