@@ -988,20 +988,36 @@ const App = {
         const wsChart = XLSX.utils.aoa_to_sheet(chartRows.filter(r => r.length > 0));
         XLSX.utils.book_append_sheet(wb, wsChart, 'Chart Data');
 
-        // --- Tab 3: "Rankings" (state rankings for the latest year) ---
+        // --- Tab 3: "Rankings" (all states, all years) ---
         if (sd) {
-            const rankings = this.getStateRankings(slug);
-            if (rankings && rankings.stateValues.length > 0) {
-                const isDecimal = ChartUtils.isDecimalPctMetric(m);
-                const rankRows = [
-                    [`${m.metric} - State Rankings (${rankings.year})`],
-                    [`${m.goodDirection === 'up' ? 'Higher is better' : 'Lower is better'}`],
-                    [],
-                    ['Rank', 'State', `Value (${m.unit})`],
-                ];
-                rankings.stateValues.forEach((sv, i) => {
-                    rankRows.push([i + 1, sv.state, sv.value]);
+            const rankHistory = this.computeRankHistory(slug);
+            if (rankHistory && rankHistory.years.length > 0) {
+                const { years: rankYears, stateRanks, latestYearRanked } = rankHistory;
+                // Sort states by latest-year rank (best first); unlisted states go to end
+                const latestRankMap = {};
+                latestYearRanked.forEach(e => { latestRankMap[e.state] = e.rank; });
+                const allStates = Object.keys(stateRanks).sort((a, b) => {
+                    const ra = latestRankMap[a] || 999;
+                    const rb = latestRankMap[b] || 999;
+                    return ra - rb;
                 });
+
+                const rankRows = [
+                    [`${m.metric} - National Rankings by Year`],
+                    [`${m.goodDirection === 'up' ? 'Higher is better (rank 1 = highest value)' : 'Lower is better (rank 1 = lowest value)'}`],
+                    [`Ranks are among states with available data that year. Hawaiʻi rows are marked with *.`],
+                    [],
+                    ['State', ...rankYears],
+                ];
+                allStates.forEach(state => {
+                    const isHI = (state === rankHistory.hiKey);
+                    const row = [isHI ? `${state} *` : state];
+                    rankYears.forEach(yr => {
+                        row.push(stateRanks[state][yr] != null ? stateRanks[state][yr] : '');
+                    });
+                    rankRows.push(row);
+                });
+
                 const wsRank = XLSX.utils.aoa_to_sheet(rankRows);
                 XLSX.utils.book_append_sheet(wb, wsRank, 'Rankings');
             }
