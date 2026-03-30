@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5-Year Summary - Hawai&#x02BB;i Dashboard</title>
-    <meta name="description" content="Which statewide outcomes are improving, worsening, or holding steady over the last five years.">
+    <title>5-Year Change - Hawai&#x02BB;i Dashboard</title>
+    <meta name="description" content="How Hawaiʻi's statewide outcomes changed over the last five years: what improved, what worsened, where Hawaiʻi stands among states, and how county trends compare.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23384B5B' stroke='%23fff' stroke-width='2'/%3E%3Cpolygon points='32,6 36,28 32,32 28,28' fill='%23e74c3c'/%3E%3Cpolygon points='32,58 28,36 32,32 36,36' fill='%23fff'/%3E%3Cpolygon points='6,32 28,28 32,32 28,36' fill='%23fff'/%3E%3Cpolygon points='58,32 36,36 32,32 36,28' fill='%23fff'/%3E%3Ccircle cx='32' cy='32' r='3' fill='%23fff'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,104 +12,95 @@
     <link rel="stylesheet" href="../css/styles.css">
     <style>
         body { background: var(--bg); font-family: var(--font); color: var(--text); }
-        .fyc-header { background: var(--bg); padding: 1.5rem 1.5rem 0.5rem; text-align: center; }
-        .fyc-header h1 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
-        .fyc-header .back-link { color: var(--hawaii-blue); text-decoration: none; font-size: 0.82rem; font-weight: 500; }
-        .fyc-header .back-link:hover { text-decoration: underline; }
 
-        .fyc-container { max-width: 900px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+        /* Header */
+        .fyc-header { padding: 2rem 1.5rem 0; text-align: center; max-width: 740px; margin: 0 auto; }
+        .fyc-header h1 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+        .fyc-deck { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 0.5rem; }
+        .fyc-standing-note { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0; }
 
-        .fyc-explainer {
-            font-size: 0.88rem; color: var(--text-muted); text-align: center;
-            max-width: 640px; margin: 0 auto 1.5rem; line-height: 1.55;
-        }
+        /* Container */
+        .fyc-container { max-width: 860px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
 
-        .fyc-summary-boxes {
-            display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem;
-        }
-        .fyc-summary-box {
-            text-align: center; padding: 0.9rem 1.5rem; border-radius: var(--radius);
-            border: 1px solid var(--border); background: var(--card-bg); min-width: 130px;
-        }
-        .fyc-box-count { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
-        .fyc-box-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.15rem; }
-        .fyc-summary-box.worsening .fyc-box-count, .fyc-summary-box.worsening .fyc-box-label { color: var(--negative); }
-        .fyc-summary-box.improving .fyc-box-count, .fyc-summary-box.improving .fyc-box-label { color: var(--positive); }
-        .fyc-summary-box.little-change .fyc-box-count, .fyc-summary-box.little-change .fyc-box-label { color: var(--text-muted); }
+        /* Summary chips */
+        .fyc-chips { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
+        .fyc-chip { text-align: center; padding: 0.75rem 1rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card-bg); flex: 1; max-width: 180px; }
+        .fyc-chip-count { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+        .fyc-chip-label { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.15rem; }
+        .fyc-chip.improving .fyc-chip-count { color: var(--positive); }
+        .fyc-chip.worsening .fyc-chip-count { color: var(--negative); }
+        .fyc-chip.little-change .fyc-chip-count { color: var(--text-muted); }
+        .fyc-chip.median .fyc-chip-count { color: var(--hawaii-blue); }
 
-        .fyc-commentary {
-            font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;
-            max-width: 700px; margin: 0 auto 2rem; text-align: center;
-        }
+        /* Executive summary */
+        .fyc-exec { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; max-width: 700px; margin: 0 auto 2rem; text-align: center; }
 
-        .fyc-section { margin-bottom: 1.75rem; }
-        .fyc-section-title {
-            font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);
-            padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); margin-bottom: 0.15rem;
-        }
-        .fyc-section.worsening .fyc-section-title { color: var(--negative); border-color: var(--negative); }
-        .fyc-section.improving .fyc-section-title { color: var(--positive); border-color: var(--positive); }
+        /* Area sections */
+        .fyc-area { margin-top: 2rem; }
+        .fyc-area-head { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); padding-bottom: 0.4rem; border-bottom: 2px solid var(--border); margin-bottom: 0.15rem; }
+        .fyc-area-takeaway { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem; padding: 0.5rem 0; line-height: 1.6; }
 
-        .fyc-row {
-            display: grid; grid-template-columns: 1fr auto auto auto;
-            gap: 0.75rem; align-items: center; padding: 0.55rem 0.5rem;
-            border-bottom: 1px solid #f0f2f4; cursor: pointer;
-            transition: background 0.15s; border-radius: 4px;
-        }
+        /* Metric rows */
+        .fyc-row { display: block; text-decoration: none; color: inherit; padding: 1.25rem 0.5rem; border-bottom: 1px solid #f0f2f4; cursor: pointer; border-radius: 4px; transition: background 0.15s; }
         .fyc-row:hover { background: rgba(13, 124, 143, 0.04); }
         .fyc-row:last-child { border-bottom: none; }
 
-        .fyc-row-name { font-weight: 600; font-size: 0.88rem; color: var(--text); }
-        .fyc-row-area { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem; }
-        .fyc-row-change {
-            font-family: var(--font-heading); font-size: 0.88rem; font-weight: 600;
-            white-space: nowrap; text-align: right;
-        }
-        .fyc-row.worsening .fyc-row-change { color: var(--negative); }
-        .fyc-row.improving .fyc-row-change { color: var(--positive); }
-        .fyc-row.little-change .fyc-row-change { color: var(--text-muted); }
-        .fyc-row-years { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+        .fyc-line1 { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+        .fyc-metric-name { font-weight: 600; font-size: 0.88rem; color: var(--text); }
+        .fyc-status { font-size: 0.68rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+        .fyc-status.improving { color: var(--positive); background: var(--positive-bg); }
+        .fyc-status.worsening { color: var(--negative); background: var(--negative-bg); }
+        .fyc-status.little-change { color: var(--text-muted); background: #f0f2f4; }
 
-        .fyc-footnote {
-            font-size: 0.75rem; color: var(--text-muted); text-align: center;
-            margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); line-height: 1.5;
-        }
+        .fyc-line2 { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.3rem; }
+        .fyc-line3 { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
+        .fyc-line4 { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .county-improved { color: var(--positive); font-weight: 600; }
+        .county-worsened { color: var(--negative); font-weight: 600; }
+        .county-flat { color: var(--text-muted); }
 
+        /* Method note */
+        .fyc-method { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); line-height: 1.5; }
+
+        /* Mobile */
         @media (max-width: 700px) {
-            .fyc-container { padding: 1rem 1rem 2rem; }
+            .fyc-header { padding: 1.5rem 1rem 0; }
             .fyc-header h1 { font-size: 1.25rem; }
-            .fyc-summary-boxes { gap: 0.4rem; }
-            .fyc-summary-box { min-width: 0; flex: 1; padding: 0.7rem 0.5rem; }
-            .fyc-box-count { font-size: 1.4rem; }
-            .fyc-box-label { font-size: 0.6rem; }
-            .fyc-row { grid-template-columns: 1fr auto auto; gap: 0.5rem; padding: 0.5rem 0.25rem; }
-            .fyc-row-area { display: none; }
-            .fyc-row-name { font-size: 0.82rem; }
-            .fyc-row-change { font-size: 0.82rem; }
+            .fyc-container { padding: 1.25rem 1rem 2rem; }
+            .fyc-chips { flex-wrap: wrap; gap: 0.4rem; }
+            .fyc-chip { flex: 1 1 calc(50% - 0.2rem); max-width: none; padding: 0.6rem 0.5rem; }
+            .fyc-chip-count { font-size: 1.25rem; }
+            .fyc-chip-label { font-size: 0.6rem; }
+            .fyc-metric-name { font-size: 0.82rem; }
+            .fyc-line2 { font-size: 0.78rem; }
+            .fyc-line3 { font-size: 0.75rem; }
+            .fyc-line4 { font-size: 0.68rem; }
         }
     </style>
 </head>
 <body>
     <nav class="top-nav">
         <a href="/" class="top-nav-link">Dashboard</a>
-        <a href="/five-year-change/" class="top-nav-link active">Summary</a>
+        <a href="/five-year-change/" class="top-nav-link active">5-Year Change</a>
         <a href="/about/" class="top-nav-link">About</a>
     </nav>
 
     <header class="fyc-header">
-        <h1>5-Year Summary</h1>
+        <h1>How Hawai&#x02BB;i changed in the last 5 years</h1>
+        <p class="fyc-deck">A quick read on what improved, what worsened, where Hawai&#x02BB;i stands now among states, and how county trends compare where data exists.</p>
+        <p class="fyc-standing-note">Each row shows Hawai&#x02BB;i's 5-year change, where Hawai&#x02BB;i ranked 5 years ago and now, and county direction where available. Standing shows Hawai&#x02BB;i's rank among states and how far it is from the median of the other states.</p>
     </header>
 
-    <div class="fyc-container" id="fyc-container">
-        <p class="fyc-explainer">A snapshot of which statewide outcomes and conditions have improved, worsened, or seen little change over the last five years.</p>
+    <div class="fyc-container">
         <div id="fyc-content"></div>
     </div>
 
     <script src="../js/data.js"></script>
-    <script src="../js/charts.js"></script>
+    <script src="../js/state-data.js"></script>
+    <script src="../js/county-data.js"></script>
     <script>
     (function() {
+        /* ── Constants ── */
         const AREA_ORDER = [
             { area: 'Safety & Health', metrics: ['violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
             { area: 'Housing & Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate', 'residential_price_cpkwh', 'food_insecurity_rate'] },
@@ -118,17 +109,26 @@
             { area: 'Infrastructure, Resilience & Trust', metrics: ['road_poor_pct', 'broadband_subscription_pct', 'renewables_share_gen', 'rainy_day_fund_pct', 'voter_participation_rate', 'net_domestic_migration_rate'] },
         ];
 
-        // Parse year key: handles "2024" and "2022-2024" (3-year avg ranges)
+        /* ── Helpers (kept from original) ── */
         function parseYear(key) {
             const parts = key.split('-');
-            return Number(parts[parts.length - 1]); // end year
+            return Number(parts[parts.length - 1]);
         }
 
-        function getLatestValue(obj) {
-            const entries = Object.entries(obj).filter(([k, v]) => v !== null && v !== undefined && v !== 0);
-            if (!entries.length) return { year: null, yearKey: null, value: null };
+        function getVal(obj, targetYear) {
+            const entries = Object.entries(obj).filter(([, v]) => v !== null && v !== undefined && v !== 0);
+            for (const yr of [targetYear, targetYear - 1, targetYear + 1, targetYear - 2, targetYear + 2]) {
+                const found = entries.find(([k]) => parseYear(k) === yr);
+                if (found) return { yearKey: found[0], year: parseYear(found[0]), value: found[1] };
+            }
+            return null;
+        }
+
+        function getLatest(obj) {
+            const entries = Object.entries(obj).filter(([, v]) => v !== null && v !== undefined && v !== 0);
+            if (!entries.length) return null;
             const last = entries[entries.length - 1];
-            return { year: parseYear(last[0]), yearKey: last[0], value: last[1] };
+            return { yearKey: last[0], year: parseYear(last[0]), value: last[1] };
         }
 
         function isDecimalPct(m) {
@@ -137,152 +137,550 @@
             return vals.length > 0 && vals.every(v => Math.abs(v) <= 1);
         }
 
+        function fmtChange(absChange, unit, isDec) {
+            const sign = absChange > 0 ? '+' : '';
+            if (isDec) return sign + (absChange * 100).toFixed(1) + '%';
+            if (unit === '%') return sign + absChange.toFixed(1) + '%';
+            if (unit === '$') {
+                const a = Math.abs(Math.round(absChange));
+                return (absChange >= 0 ? '+$' : '-$') + (a >= 1000 ? (a / 1000).toFixed(1) + 'K' : a.toLocaleString());
+            }
+            if (unit === '\u00d7') return sign + absChange.toFixed(1) + '\u00d7';
+            if (unit === '\u00a2/kWh') return sign + absChange.toFixed(1) + '\u00a2';
+            if (unit === 'per 100K') { const r = Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1); return sign + r.toLocaleString() + ' per 100K'; }
+            if (unit === 'per 10K') return sign + absChange.toFixed(1) + ' per 10K';
+            if (unit === 'Index (2017=100)') return sign + absChange.toFixed(1) + ' points';
+            if (unit === 'score') return sign + (Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1)).toLocaleString() + ' points';
+            const r = Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1);
+            return sign + r.toLocaleString();
+        }
+
+        /* ── Format gap in native units (unsigned, with "better"/"worse") ── */
+        function fmtGap(gapValue, unit, isDec, betterOrWorse) {
+            // Gap values from getRankForYear are already in display units
+            // (decimal %s already multiplied by 100), so no isDec conversion needed
+            const v = Math.abs(gapValue);
+            let formatted;
+            if (unit === '%') formatted = v.toFixed(1) + '%';
+            else if (unit === '$') {
+                const a = Math.round(v);
+                formatted = '$' + (a >= 1000 ? (a / 1000).toFixed(1) + 'K' : a.toLocaleString());
+            }
+            else if (unit === '\u00d7') formatted = v.toFixed(1) + '\u00d7';
+            else if (unit === '\u00a2/kWh') formatted = v.toFixed(1) + '\u00a2';
+            else if (unit === 'per 100K') { const r = v >= 10 ? Math.round(v) : +v.toFixed(1); formatted = r.toLocaleString() + ' per 100K'; }
+            else if (unit === 'per 10K') formatted = v.toFixed(1) + ' per 10K';
+            else if (unit === 'Index (2017=100)' || unit === 'score') formatted = (v >= 10 ? Math.round(v) : +v.toFixed(1)).toLocaleString() + ' points';
+            else { const r = v >= 10 ? Math.round(v) : +v.toFixed(1); formatted = r.toLocaleString(); }
+            return formatted + ' ' + betterOrWorse;
+        }
+
+        /* ── Rank for a specific year ── */
+        function getRankForYear(slug, targetYear) {
+            const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+            if (!sd || !sd.data) return null;
+            const m = DASHBOARD_DATA[slug];
+            const isDec = isDecimalPct(m);
+
+            const firstKey = Object.keys(sd.data)[0];
+            const isPCP = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+
+            let stateValues = [];
+            let actualYear = null;
+
+            if (isPCP) {
+                // FIPS-keyed (pcp_per_100k): entries have { name, "2020": val, ... }
+                for (const tryYear of [targetYear, targetYear - 1, targetYear + 1]) {
+                    stateValues = [];
+                    let count = 0;
+                    Object.values(sd.data).forEach(entry => {
+                        if (entry[String(tryYear)] != null) {
+                            stateValues.push({ state: entry.name, value: entry[String(tryYear)] });
+                            count++;
+                        }
+                    });
+                    if (count >= 25) { actualYear = tryYear; break; }
+                }
+            } else {
+                // Year-keyed: { "2023": { "Alabama": val, ... } }
+                for (const tryYear of [targetYear, targetYear - 1, targetYear + 1]) {
+                    const yearData = sd.data[String(tryYear)];
+                    if (!yearData) continue;
+                    const entries = Object.entries(yearData).filter(([, v]) => v != null);
+                    if (entries.length >= 25) {
+                        stateValues = entries.map(([state, value]) => ({
+                            state,
+                            value: isDec ? value * 100 : value
+                        }));
+                        actualYear = tryYear;
+                        break;
+                    }
+                }
+            }
+
+            if (!actualYear || stateValues.length < 25) return null;
+
+            // Sort best-to-worst
+            if (m.goodDirection === 'up') stateValues.sort((a, b) => b.value - a.value);
+            else stateValues.sort((a, b) => a.value - b.value);
+
+            const hiIdx = stateValues.findIndex(s =>
+                s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
+            );
+            if (hiIdx < 0) return null;
+
+            const hawaiiValue = stateValues[hiIdx].value;
+
+            // Median: sort numerically, take middle
+            const sorted = stateValues.map(s => s.value).sort((a, b) => a - b);
+            const medianValue = sorted[Math.floor(sorted.length / 2)];
+
+            return {
+                rank: hiIdx + 1,
+                total: stateValues.length,
+                hawaiiValue,
+                medianValue,
+                year: actualYear
+            };
+        }
+
+        /* ── Compute 5-year change for a metric ── */
         function computeChange(slug) {
             const m = DASHBOARD_DATA[slug];
             if (!m) return null;
-            const latest = getLatestValue(m.hawaii);
-            if (latest.value === null) return null;
             const isDec = isDecimalPct(m);
-
-            // Find baseline ~5 years earlier
-            const entries = Object.entries(m.hawaii)
-                .filter(([k, v]) => v !== null && v !== undefined && v !== 0)
-                .map(([k, v]) => ({ key: k, year: parseYear(k), value: v }));
-            const target = latest.year - 5;
-            // Search order: exact 5yr, then -6, -4, -7, -3
-            const searchOrder = [target, target - 1, target + 1, target - 2, target + 2];
-            let base = null;
-            for (const yr of searchOrder) {
-                const found = entries.find(e => e.year === yr);
-                if (found) { base = { year: found.year, yearKey: found.key, value: found.value }; break; }
-            }
+            const latest = getLatest(m.hawaii);
+            if (!latest) return null;
+            const base = getVal(m.hawaii, latest.year - 5);
             if (!base) return null;
 
             const absChange = latest.value - base.value;
             const relChange = base.value !== 0 ? (absChange / Math.abs(base.value)) * 100 : 0;
 
             let status;
-            if (Math.abs(relChange) < 5) {
-                status = 'little-change';
-            } else {
-                const isGoodDirection = m.goodDirection === 'up' ? absChange > 0 : absChange < 0;
-                status = isGoodDirection ? 'improving' : 'worsening';
-            }
-
-            // Format change for display (plain language, no jargon)
-            let changeText;
-            const sign = absChange > 0 ? '+' : '';
-            if (isDec) {
-                changeText = sign + (absChange * 100).toFixed(1) + ' pts';
-            } else if (m.unit === '%') {
-                changeText = sign + absChange.toFixed(1) + ' pts';
-            } else if (m.unit === '$') {
-                const absDollar = Math.abs(Math.round(absChange));
-                if (absDollar >= 1000) {
-                    changeText = (absChange >= 0 ? '+$' : '-$') + (absDollar / 1000).toFixed(1) + 'K';
-                } else {
-                    changeText = (absChange >= 0 ? '+$' : '-$') + absDollar.toLocaleString();
-                }
-            } else if (m.unit === '\u00d7') {
-                changeText = sign + absChange.toFixed(1) + '\u00d7';
-            } else if (m.unit === '\u00a2/kWh') {
-                changeText = sign + absChange.toFixed(1) + '\u00a2';
-            } else if (m.unit === 'per 100K') {
-                const rounded = Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1);
-                changeText = sign + rounded.toLocaleString() + ' per 100K';
-            } else if (m.unit === 'per 10K') {
-                changeText = sign + absChange.toFixed(1) + ' per 10K';
-            } else if (m.unit === 'Index (2017=100)') {
-                changeText = sign + absChange.toFixed(1) + ' pts';
-            } else {
-                const rounded = Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1);
-                changeText = sign + rounded.toLocaleString();
-            }
-
-            // Find area name
-            let area = m.area;
-            for (const g of AREA_ORDER) {
-                if (g.metrics.includes(slug)) { area = g.area; break; }
-            }
+            if (Math.abs(relChange) < 5) status = 'little-change';
+            else status = (m.goodDirection === 'up' ? absChange > 0 : absChange < 0) ? 'improving' : 'worsening';
 
             return {
-                slug, metric: m.metric, area, unit: m.unit,
-                latestYearKey: latest.yearKey, baseYearKey: base.yearKey,
-                latestValue: latest.value, baseValue: base.value,
-                absChange, relChange, status, changeText, isDec
+                slug, metric: m.metric, unit: m.unit, isDec,
+                goodDirection: m.goodDirection,
+                latestYear: latest.year,
+                baseYear: base.year,
+                absChange, relChange, status,
+                changeText: fmtChange(absChange, m.unit, isDec),
             };
         }
 
-        function computeAll() {
-            const allSlugs = AREA_ORDER.flatMap(a => a.metrics);
-            const results = allSlugs.map(s => computeChange(s)).filter(Boolean);
-            const improving = results.filter(r => r.status === 'improving').sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange));
-            const worsening = results.filter(r => r.status === 'worsening').sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange));
-            const littleChange = results.filter(r => r.status === 'little-change').sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange));
-            return { improving, worsening, littleChange };
-        }
+        /* ── Rank + median gap for a metric ── */
+        function computeStanding(slug, baseYear, latestYear, isDec, unit, goodDirection) {
+            const endRank = getRankForYear(slug, latestYear);
+            const startRank = getRankForYear(slug, baseYear);
 
-        function generateCommentary(r) {
-            const total = r.improving.length + r.worsening.length + r.littleChange.length;
+            if (!endRank) return null;
 
-            // Find which area has the most worsening metrics
-            const areaCounts = {};
-            r.worsening.forEach(m => { areaCounts[m.area] = (areaCounts[m.area] || 0) + 1; });
-            const topWorseArea = Object.entries(areaCounts).sort((a, b) => b[1] - a[1])[0];
-
-            let s = `Of Hawai\u02BBi's ${total} tracked metrics, ${r.worsening.length} worsened, ${r.improving.length} improved, and ${r.littleChange.length} showed little change over the past five years.`;
-
-            if (topWorseArea && r.improving.length > 0) {
-                s += ` The biggest pressures are concentrated in ${topWorseArea[0]}.`;
-                s += ` The strongest improvement was in ${r.improving[0].metric}.`;
+            // Determine better/worse relative to median
+            function betterOrWorse(hawaiiVal, medianVal) {
+                if (goodDirection === 'up') return hawaiiVal >= medianVal ? 'better' : 'worse';
+                return hawaiiVal <= medianVal ? 'better' : 'worse';
             }
 
-            s += ' Years shown reflect the latest available data for each metric.';
-            return s;
+            function isBetterThanMedian(hawaiiVal, medianVal) {
+                if (goodDirection === 'up') return hawaiiVal > medianVal;
+                return hawaiiVal < medianVal;
+            }
+
+            const endBW = betterOrWorse(endRank.hawaiiValue, endRank.medianValue);
+            const endGap = Math.abs(endRank.hawaiiValue - endRank.medianValue);
+            const endGapText = fmtGap(endGap, unit, isDec, endBW);
+            const betterNow = isBetterThanMedian(endRank.hawaiiValue, endRank.medianValue);
+
+            let standingText;
+            if (startRank) {
+                const startBW = betterOrWorse(startRank.hawaiiValue, startRank.medianValue);
+                const startGap = Math.abs(startRank.hawaiiValue - startRank.medianValue);
+                const startGapText = fmtGap(startGap, unit, isDec, startBW);
+                const betterThen = isBetterThanMedian(startRank.hawaiiValue, startRank.medianValue);
+
+                standingText = `Standing: Rank now #${endRank.rank} (was #${startRank.rank}) \u00b7 Gap vs median now ${endGapText} (was ${startGapText})`;
+                return { standingText, endRank: endRank.rank, startRank: startRank.rank, betterNow, betterThen };
+            }
+
+            standingText = `Standing: Rank now #${endRank.rank} of ${endRank.total} \u00b7 Gap vs median now ${endGapText}`;
+            return { standingText, endRank: endRank.rank, startRank: null, betterNow, betterThen: null };
         }
 
-        function renderSection(title, items, statusClass) {
-            if (!items.length) return '';
-            const rows = items.map(r => `
-                <div class="fyc-row ${statusClass}" onclick="window.location.href='../#${r.slug}'" role="button" tabindex="0">
-                    <div>
-                        <div class="fyc-row-name">${r.metric}</div>
-                        <div class="fyc-row-area">${r.area}</div>
-                    </div>
-                    <div class="fyc-row-change">${r.changeText}</div>
-                    <div class="fyc-row-years">${r.baseYearKey} \u2192 ${r.latestYearKey}</div>
-                </div>
-            `).join('');
-            return `<div class="fyc-section ${statusClass}">
-                <h3 class="fyc-section-title">${title}</h3>
-                ${rows}
-            </div>`;
+        /* ── County directions ── */
+        function computeCountyDirections(slug) {
+            const cd = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
+            if (!cd) return null;
+            const m = DASHBOARD_DATA[slug];
+            const isDec = isDecimalPct(m);
+            const countyOrder = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
+            const results = [];
+
+            for (const county of countyOrder) {
+                const cData = cd.data[county];
+                if (!cData) { results.push({ county, direction: null }); continue; }
+                const cLatest = getLatest(cData);
+                if (!cLatest) { results.push({ county, direction: null }); continue; }
+                const cBase = getVal(cData, cLatest.year - 5);
+                if (!cBase) { results.push({ county, direction: null }); continue; }
+
+                const change = cLatest.value - cBase.value;
+                const rel = cBase.value !== 0 ? (change / Math.abs(cBase.value)) * 100 : 0;
+
+                let direction;
+                if (Math.abs(rel) < 5) direction = 'flat';
+                else if (m.goodDirection === 'up' ? change > 0 : change < 0) direction = 'improved';
+                else direction = 'worsened';
+
+                results.push({ county, direction });
+            }
+
+            const valid = results.filter(r => r.direction !== null);
+            if (valid.length < 2) return null;
+
+            // Check for compression
+            const dirs = valid.map(r => r.direction);
+            const allSame = dirs.every(d => d === dirs[0]);
+            if (allSame && valid.length === 4) {
+                if (dirs[0] === 'improved') return { compressed: true, text: 'Counties: all 4 improved' };
+                if (dirs[0] === 'worsened') return { compressed: true, text: 'Counties: all 4 worsened' };
+                if (dirs[0] === 'flat') return { compressed: true, text: 'Counties: all 4 little change' };
+            }
+
+            return { compressed: false, counties: results.filter(r => r.direction !== null) };
         }
 
+        /* ── Render county line HTML ── */
+        function renderCountyLine(countyData) {
+            if (!countyData) return '';
+            if (countyData.compressed) return `<div class="fyc-line4">${countyData.text}</div>`;
+
+            const parts = countyData.counties.map(c => {
+                let arrow, cls;
+                if (c.direction === 'improved') { arrow = '\u2191'; cls = 'county-improved'; }
+                else if (c.direction === 'worsened') { arrow = '\u2193'; cls = 'county-worsened'; }
+                else { arrow = '\u2192'; cls = 'county-flat'; }
+                return `${c.county} <span class="${cls}">${arrow}</span>`;
+            });
+            return `<div class="fyc-line4">Counties: ${parts.join(' \u00b7 ')}</div>`;
+        }
+
+        /* ── Status chip labels ── */
+        function statusLabel(status) {
+            if (status === 'improving') return 'Improving';
+            if (status === 'worsening') return 'Worsening';
+            return 'Little change';
+        }
+
+        function pl(count, singular, plural) { return count === 1 ? singular : (plural || singular + 's'); }
+
+        /* ── Area narrative (5-7 sentences: executive-summary style) ── */
+        function generateAreaNarrative(metrics) {
+            const n = metrics.length;
+            const improving = metrics.filter(r => r.status === 'improving');
+            const worsening = metrics.filter(r => r.status === 'worsening');
+            const s = [];
+
+            // ── Gather ranking data ──
+            const rankMoves = [];
+            for (const r of metrics) {
+                if (r.standing && r.standing.startRank != null) {
+                    const move = r.standing.startRank - r.standing.endRank; // positive = climbed
+                    rankMoves.push({ metric: r.metric, move, endRank: r.standing.endRank, startRank: r.standing.startRank, status: r.status, betterNow: r.standing.betterNow });
+                }
+            }
+            const bigClimbs = rankMoves.filter(m => m.move >= 5).sort((a, b) => b.move - a.move);
+            const bigDrops = rankMoves.filter(m => m.move <= -5).sort((a, b) => a.move - b.move);
+            const betterNow = metrics.filter(r => r.standing && r.standing.betterNow).length;
+            const betterThen = metrics.filter(r => r.standing && r.standing.betterThen != null && r.standing.betterThen).length;
+            const bottomQ = rankMoves.filter(m => m.endRank > (m.endRank <= 50 ? 37 : 37)); // rough bottom quartile
+            const bottomQMetrics = metrics.filter(r => r.standing && r.standing.endRank > 37);
+            const topQMetrics = metrics.filter(r => r.standing && r.standing.endRank <= 13);
+
+            // ── Gather county data ──
+            const withCounty = metrics.filter(r => r.county);
+            let countyDivergeCount = 0;
+            let countyAlignedCount = 0;
+            const countyOutliers = []; // specific county-metric pairs moving opposite to state
+            for (const r of withCounty) {
+                if (r.county.compressed) {
+                    countyAlignedCount++;
+                } else if (r.county.counties) {
+                    const dirs = r.county.counties.map(c => c.direction);
+                    const hasOpposites = dirs.includes('improved') && dirs.includes('worsened');
+                    if (hasOpposites) {
+                        countyDivergeCount++;
+                        // Find the outlier counties
+                        const majority = dirs.filter(d => d === 'improved').length >= dirs.filter(d => d === 'worsened').length ? 'improved' : 'worsened';
+                        for (const c of r.county.counties) {
+                            if (c.direction !== majority && c.direction !== 'flat') {
+                                countyOutliers.push({ county: c.county, direction: c.direction, metric: r.metric });
+                            }
+                        }
+                    } else {
+                        countyAlignedCount++;
+                    }
+                }
+            }
+
+            // ── Sentence 1: Lead with the headline story ──
+            if (worsening.length === 0 && improving.length > 0) {
+                const bestImprover = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                s.push(`This is one of Hawai\u02BBi's stronger areas, with ${improving.length} of ${n} ${pl(n, 'metric')} improving and none worsening, led by ${bestImprover.metric} (${bestImprover.changeText}).`);
+            } else if (improving.length === 0 && worsening.length > 0) {
+                const worstMetric = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                s.push(`This area is under pressure: ${worsening.length} of ${n} ${pl(n, 'metric')} worsened and none improved, with the most notable worsening in ${worstMetric.metric} (${worstMetric.changeText}).`);
+            } else if (improving.length > 0 && worsening.length > 0) {
+                const bestImprover = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                const worstMetric = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
+                s.push(`A mixed picture: ${improving.length} ${pl(improving.length, 'metric')} improved while ${worsening.length} worsened. The strongest improvement was ${bestImprover.metric} (${bestImprover.changeText}), while ${worstMetric.metric} worsened the most (${worstMetric.changeText}).`);
+            } else {
+                s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last 5 years.`);
+            }
+
+            // ── Sentence 2-3: Ranking narrative (biggest moves, or overall pattern) ──
+            if (bigClimbs.length > 0 && bigDrops.length > 0) {
+                const topClimb = bigClimbs[0];
+                const topDrop = bigDrops[0];
+                s.push(`National rankings shifted in both directions: ${topClimb.metric} climbed ${topClimb.move} spots to #${topClimb.endRank}, while ${topDrop.metric} fell ${-topDrop.move} spots to #${topDrop.endRank}.`);
+            } else if (bigClimbs.length > 0) {
+                const topClimb = bigClimbs[0];
+                s.push(`The standout ranking move was ${topClimb.metric}, which climbed ${topClimb.move} spots to #${topClimb.endRank}.`);
+                if (bigClimbs.length > 1) {
+                    const second = bigClimbs[1];
+                    s.push(`${second.metric} also rose ${second.move} spots to #${second.endRank}.`);
+                }
+            } else if (bigDrops.length > 0) {
+                const topDrop = bigDrops[0];
+                s.push(`The most concerning ranking shift was ${topDrop.metric}, which fell ${-topDrop.move} spots to #${topDrop.endRank}.`);
+                if (bigDrops.length > 1) {
+                    const second = bigDrops[1];
+                    s.push(`${second.metric} also dropped ${-second.move} spots to #${second.endRank}.`);
+                }
+            } else {
+                // No big moves, describe the general position
+                const rankUpCount = rankMoves.filter(m => m.move > 0).length;
+                const rankDownCount = rankMoves.filter(m => m.move < 0).length;
+                if (rankUpCount > rankDownCount) {
+                    s.push(`Rankings edged up on most metrics, though no single move exceeded 5 spots.`);
+                } else if (rankDownCount > rankUpCount) {
+                    s.push(`Rankings slipped on most metrics, though no single move exceeded 5 spots.`);
+                } else {
+                    s.push(`National rankings were largely stable, with no metric moving more than a few spots in either direction.`);
+                }
+            }
+
+            // ── Sentence 4: Median standing with interpretation ──
+            if (betterNow > betterThen) {
+                s.push(`Hawai\u02BBi now outperforms the median state on ${betterNow} of ${n} metrics, up from ${betterThen} five years ago.`);
+            } else if (betterNow < betterThen) {
+                s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics, down from ${betterThen} five years ago.`);
+            } else if (betterNow === 0) {
+                s.push(`Hawai\u02BBi remains below the median state on every metric in this area.`);
+            } else if (betterNow === n) {
+                s.push(`Hawai\u02BBi outperforms the median state on all ${n} metrics, holding that position from 5 years ago.`);
+            } else {
+                s.push(`Hawai\u02BBi outperforms the median state on ${betterNow} of ${n} metrics, unchanged from 5 years ago.`);
+            }
+
+            // ── Sentence 5: Bottom/top quartile callout if notable ──
+            if (bottomQMetrics.length >= 2) {
+                const names = bottomQMetrics.map(r => r.metric);
+                s.push(`${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} all sit in the bottom quartile nationally, signaling persistent structural challenges.`);
+            } else if (bottomQMetrics.length === 1) {
+                s.push(`${bottomQMetrics[0].metric} remains in the bottom quartile nationally (#${bottomQMetrics[0].standing.endRank}).`);
+            } else if (topQMetrics.length >= 2) {
+                const names = topQMetrics.map(r => r.metric);
+                s.push(`${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} all rank in the top quartile, a position of relative strength.`);
+            }
+
+            // ── Sentence 6-7: County pattern with specifics ──
+            if (withCounty.length === 0) {
+                s.push(`County-level data is not available for metrics in this area.`);
+            } else if (withCounty.length === 1) {
+                const r = withCounty[0];
+                if (r.county.compressed) {
+                    s.push(`County data is limited to ${r.metric}, where all four counties moved in the same direction as the state.`);
+                } else {
+                    // Name the specific divergence
+                    const outlier = r.county.counties.find(c => c.direction === 'worsened') || r.county.counties.find(c => c.direction === 'improved');
+                    if (outlier) {
+                        s.push(`County data is limited to ${r.metric}, where ${outlier.county} ${outlier.direction} while other counties did not.`);
+                    } else {
+                        s.push(`County data is limited to ${r.metric}, where island-level trends varied.`);
+                    }
+                }
+            } else {
+                if (countyDivergeCount === 0) {
+                    s.push(`Across the ${withCounty.length} metrics with county data, all four counties generally tracked the statewide trend, suggesting these patterns are broadly shared across islands.`);
+                } else {
+                    // Build a specific, memorable county sentence
+                    if (countyOutliers.length > 0) {
+                        // Find the most frequently diverging county
+                        const freq = {};
+                        countyOutliers.forEach(o => { freq[o.county] = (freq[o.county] || 0) + 1; });
+                        const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+                        const topCounty = sorted[0][0];
+                        const topCount = sorted[0][1];
+                        const topExamples = countyOutliers.filter(o => o.county === topCounty);
+
+                        if (topCount >= 2) {
+                            const metricNames = topExamples.map(o => o.metric);
+                            s.push(`At the county level, ${topCounty} stands out: it moved against the statewide direction on ${metricNames.join(' and ')}, suggesting island-specific conditions that the state average masks.`);
+                        } else {
+                            // Multiple counties diverging on different metrics
+                            const ex1 = countyOutliers[0];
+                            if (countyOutliers.length > 1) {
+                                const ex2 = countyOutliers.find(o => o.county !== ex1.county) || countyOutliers[1];
+                                s.push(`County trends split: ${ex1.county} ${ex1.direction} on ${ex1.metric} while the state moved the other way, and ${ex2.county} ${ex2.direction} on ${ex2.metric} against the statewide pattern.`);
+                            } else {
+                                s.push(`Most county trends track the state, but ${ex1.county} ${ex1.direction} on ${ex1.metric} while the rest of the state moved the other way.`);
+                            }
+                        }
+                    } else {
+                        s.push(`County trends are uneven across the ${withCounty.length} metrics with island-level data, with no single island consistently diverging from the state.`);
+                    }
+                }
+            }
+
+            return s.join(' ');
+        }
+
+        /* ── Build everything ── */
         function render() {
-            const r = computeAll();
-            const commentary = generateCommentary(r);
-            document.getElementById('fyc-content').innerHTML = `
-                <div class="fyc-summary-boxes">
-                    <div class="fyc-summary-box worsening">
-                        <div class="fyc-box-count">${r.worsening.length}</div>
-                        <div class="fyc-box-label">Worsening</div>
+            // 1. Compute all metric results
+            const allResults = [];
+            for (const areaGroup of AREA_ORDER) {
+                for (const slug of areaGroup.metrics) {
+                    const change = computeChange(slug);
+                    if (!change) continue;
+                    const standing = computeStanding(slug, change.baseYear, change.latestYear, change.isDec, change.unit, change.goodDirection);
+                    const county = computeCountyDirections(slug);
+
+                    // Refine status: "improving" requires both trend AND rank to improve;
+                    // "worsening" requires both trend AND rank to worsen.
+                    // If they conflict (trend good but rank dropped, or vice versa), it's little change.
+                    let status = change.status;
+                    if (standing && standing.startRank != null) {
+                        const rankImproved = standing.endRank < standing.startRank;
+                        const rankWorsened = standing.endRank > standing.startRank;
+                        if (status === 'improving' && !rankImproved) status = 'little-change';
+                        if (status === 'worsening' && !rankWorsened) status = 'little-change';
+                    }
+
+                    allResults.push({
+                        ...change,
+                        status,
+                        area: areaGroup.area,
+                        standing,
+                        county,
+                    });
+                }
+            }
+
+            // 2. Summary counts
+            const improved = allResults.filter(r => r.status === 'improving').length;
+            const worsened = allResults.filter(r => r.status === 'worsening').length;
+            const littleChange = allResults.filter(r => r.status === 'little-change').length;
+            const total = allResults.length;
+
+            let betterNow = 0, betterThen = 0, rankUp = 0, rankDown = 0;
+            for (const r of allResults) {
+                if (r.standing) {
+                    if (r.standing.betterNow) betterNow++;
+                    if (r.standing.betterThen) betterThen++;
+                    if (r.standing.startRank != null) {
+                        if (r.standing.endRank < r.standing.startRank) rankUp++;
+                        else if (r.standing.endRank > r.standing.startRank) rankDown++;
+                    }
+                }
+            }
+
+            // County pattern assessment
+            const metricsWithCounty = allResults.filter(r => r.county);
+            let countyPattern = 'mixed';
+            if (metricsWithCounty.length > 0) {
+                let alignedCount = 0;
+                for (const r of metricsWithCounty) {
+                    if (r.county.compressed) {
+                        // All same direction; check if it matches state direction
+                        if (r.county.text.includes('improved') && r.status === 'improving') alignedCount++;
+                        else if (r.county.text.includes('worsened') && r.status === 'worsening') alignedCount++;
+                        else if (r.county.text.includes('little change') && r.status === 'little-change') alignedCount++;
+                    }
+                }
+                const ratio = alignedCount / metricsWithCounty.length;
+                if (ratio >= 0.7) countyPattern = 'mostly aligned';
+                else if (ratio <= 0.2) countyPattern = 'diverging';
+            }
+
+            // 3. Render chips
+            const chipsHtml = `
+                <div class="fyc-chips">
+                    <div class="fyc-chip improving">
+                        <div class="fyc-chip-count">${improved}</div>
+                        <div class="fyc-chip-label">Improved</div>
                     </div>
-                    <div class="fyc-summary-box improving">
-                        <div class="fyc-box-count">${r.improving.length}</div>
-                        <div class="fyc-box-label">Improving</div>
+                    <div class="fyc-chip worsening">
+                        <div class="fyc-chip-count">${worsened}</div>
+                        <div class="fyc-chip-label">Worsened</div>
                     </div>
-                    <div class="fyc-summary-box little-change">
-                        <div class="fyc-box-count">${r.littleChange.length}</div>
-                        <div class="fyc-box-label">Little change</div>
+                    <div class="fyc-chip little-change">
+                        <div class="fyc-chip-count">${littleChange}</div>
+                        <div class="fyc-chip-label">Little change</div>
                     </div>
-                </div>
-                <p class="fyc-commentary">${commentary}</p>
-                ${renderSection('Worsening', r.worsening, 'worsening')}
-                ${renderSection('Improving', r.improving, 'improving')}
-                ${renderSection('Little change', r.littleChange, 'little-change')}
-                <p class="fyc-footnote">Years vary by metric because source data updates on different schedules. Each row shows the actual years compared.</p>
-            `;
+                    <div class="fyc-chip median">
+                        <div class="fyc-chip-count">${betterNow}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${total}</span></div>
+                        <div class="fyc-chip-label">Better than median now</div>
+                    </div>
+                </div>`;
+
+            // 4. Executive summary
+            const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi moved up in rank on ${rankUp} metrics and down on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
+
+            // 5. Area sections
+            let areasHtml = '';
+            for (const areaGroup of AREA_ORDER) {
+                const areaMetrics = allResults.filter(r => r.area === areaGroup.area);
+                if (!areaMetrics.length) continue;
+
+                // Area narrative (5-7 sentences covering trend, ranking, county)
+                const takeaway = generateAreaNarrative(areaMetrics);
+
+                // Render rows
+                let rowsHtml = '';
+                for (const r of areaMetrics) {
+                    const yearRange = `(${r.baseYear}\u2013${r.latestYear})`;
+                    const standingLine = r.standing ? r.standing.standingText : '';
+                    const countyLine = renderCountyLine(r.county);
+
+                    rowsHtml += `
+                        <a href="../#${r.slug}" class="fyc-row">
+                            <div class="fyc-line1">
+                                <span class="fyc-metric-name">${r.metric}</span>
+                                <span class="fyc-status ${r.status}">${statusLabel(r.status)}</span>
+                            </div>
+                            <div class="fyc-line2">Hawai\u02BBi trend: ${r.changeText} ${yearRange}</div>
+                            ${standingLine ? `<div class="fyc-line3">${standingLine}</div>` : ''}
+                            ${countyLine}
+                        </a>`;
+                }
+
+                areasHtml += `
+                    <div class="fyc-area">
+                        <div class="fyc-area-head">${areaGroup.area}</div>
+                        <div class="fyc-area-takeaway">${takeaway}</div>
+                        ${rowsHtml}
+                    </div>`;
+            }
+
+            // 6. Method note
+            const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
+
+            // Assemble
+            document.getElementById('fyc-content').innerHTML = chipsHtml + execHtml + areasHtml + methodHtml;
         }
 
         render();
