@@ -64,6 +64,29 @@
         /* Method note */
         .fyc-method { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); line-height: 1.5; }
 
+        /* Rank breakdown section */
+        .fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
+        .fyc-rank-breakdown-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
+        .fyc-tier-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.5rem 1rem; border-bottom: 1px solid #f2f4f6; }
+        .fyc-tier-row:last-child { border-bottom: none; }
+        .fyc-tier-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; min-width: 90px; padding-top: 3px; }
+        .fyc-tier-items { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .fyc-tier-tag { font-size: 0.75rem; padding: 0.18rem 0.55rem; border-radius: 4px; text-decoration: none; transition: opacity 0.15s; color: inherit; }
+        .fyc-tier-tag:hover { opacity: 0.75; }
+        .fyc-tier-rank { font-weight: 700; margin-left: 3px; font-size: 0.7rem; opacity: 0.75; }
+        .fyc-tier-none { font-size: 0.73rem; color: var(--text-muted); font-style: italic; padding-top: 3px; }
+        /* Tier colors */
+        .tier-top3 .fyc-tier-label { color: var(--hawaii-blue); }
+        .tier-top3 .fyc-tier-tag { background: rgba(13,124,143,0.1); color: var(--hawaii-blue); }
+        .tier-top25 .fyc-tier-label { color: var(--positive); }
+        .tier-top25 .fyc-tier-tag { background: var(--positive-bg); color: var(--positive); }
+        .tier-average .fyc-tier-label { color: var(--text-muted); }
+        .tier-average .fyc-tier-tag { background: #f0f2f4; color: var(--text-secondary); }
+        .tier-bottom25 .fyc-tier-label { color: #b45309; }
+        .tier-bottom25 .fyc-tier-tag { background: #fef3c7; color: #92400e; }
+        .tier-bottom3 .fyc-tier-label { color: var(--negative); }
+        .tier-bottom3 .fyc-tier-tag { background: var(--negative-bg); color: var(--negative); }
+
         /* Mobile */
         @media (max-width: 700px) {
             .fyc-header { padding: 1.5rem 1rem 0; }
@@ -77,6 +100,8 @@
             .fyc-line2 { font-size: 0.78rem; }
             .fyc-line3 { font-size: 0.75rem; }
             .fyc-line4 { font-size: 0.68rem; }
+            .fyc-tier-label { min-width: 76px; font-size: 0.62rem; }
+            .fyc-tier-tag { font-size: 0.7rem; padding: 0.15rem 0.4rem; }
         }
     </style>
 </head>
@@ -304,11 +329,11 @@
                 const betterThen = isBetterThanMedian(startRank.hawaiiValue, startRank.medianValue);
 
                 standingText = `National standing: Rank now #${endRank.rank} (was #${startRank.rank}) \u00b7 Gap vs median now ${endGapText} (was ${startGapText})`;
-                return { standingText, endRank: endRank.rank, startRank: startRank.rank, betterNow, betterThen };
+                return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: startRank.rank, betterNow, betterThen };
             }
 
             standingText = `National standing: Rank now #${endRank.rank} of ${endRank.total} \u00b7 Gap vs median now ${endGapText}`;
-            return { standingText, endRank: endRank.rank, startRank: null, betterNow, betterThen: null };
+            return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: null, betterNow, betterThen: null };
         }
 
         /* ── County directions ── */
@@ -650,7 +675,7 @@
                 else if (ratio <= 0.2) countyPattern = 'diverging';
             }
 
-            // 3. Render chips
+            // 3. Render chips (trend summary)
             const chipsHtml = `
                 <div class="fyc-chips">
                     <div class="fyc-chip improving">
@@ -665,10 +690,49 @@
                         <div class="fyc-chip-count">${littleChange}</div>
                         <div class="fyc-chip-label">Little change</div>
                     </div>
-                    <div class="fyc-chip median">
-                        <div class="fyc-chip-count">${betterNow}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${total}</span></div>
-                        <div class="fyc-chip-label">Better than median now</div>
-                    </div>
+                </div>`;
+
+            // 3b. Rank breakdown by tier
+            // Thresholds (percentile-based using each metric's endTotal):
+            //   Top 3        : rank ≤ 3
+            //   Top 25%      : rank > 3 && rank/total ≤ 0.25
+            //   About average: rank/total > 0.25 && rank/total < 0.75
+            //   Bottom 25%   : rank/total ≥ 0.75 && rank > total−3
+            //   Bottom 3     : rank > total−3  (i.e. ranks total−2, total−1, total)
+            const rankTiers = { top3: [], top25: [], average: [], bottom25: [], bottom3: [] };
+            for (const r of allResults) {
+                if (!r.standing || r.standing.endRank == null) continue;
+                const rank = r.standing.endRank;
+                const tot  = r.standing.endTotal || 50;
+                const pct  = rank / tot;
+                if (rank <= 3)              rankTiers.top3.push(r);
+                else if (pct <= 0.25)       rankTiers.top25.push(r);
+                else if (rank > tot - 3)    rankTiers.bottom3.push(r);
+                else if (pct >= 0.75)       rankTiers.bottom25.push(r);
+                else                        rankTiers.average.push(r);
+            }
+            // Sort each tier best-first
+            for (const t of Object.values(rankTiers)) t.sort((a, b) => a.standing.endRank - b.standing.endRank);
+
+            function renderTierRow(label, items, cssClass) {
+                const tags = items.length
+                    ? items.map(r =>
+                        `<a href="../#${r.slug}" class="fyc-tier-tag">${r.metric}<span class="fyc-tier-rank">#${r.standing.endRank}</span></a>`
+                      ).join('')
+                    : `<span class="fyc-tier-none">none</span>`;
+                return `<div class="fyc-tier-row ${cssClass}">
+                    <div class="fyc-tier-label">${label}</div>
+                    <div class="fyc-tier-items">${tags}</div>
+                </div>`;
+            }
+            const rankBreakdownHtml = `
+                <div class="fyc-rank-breakdown">
+                    <div class="fyc-rank-breakdown-title">National ranking</div>
+                    ${renderTierRow('Top 3', rankTiers.top3, 'tier-top3')}
+                    ${renderTierRow('Top 25%', rankTiers.top25, 'tier-top25')}
+                    ${renderTierRow('About average', rankTiers.average, 'tier-average')}
+                    ${renderTierRow('Bottom 25%', rankTiers.bottom25, 'tier-bottom25')}
+                    ${renderTierRow('Bottom 3', rankTiers.bottom3, 'tier-bottom3')}
                 </div>`;
 
             // 4. Executive summary
@@ -714,7 +778,7 @@
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
             // Assemble
-            document.getElementById('fyc-content').innerHTML = chipsHtml + execHtml + areasHtml + methodHtml;
+            document.getElementById('fyc-content').innerHTML = chipsHtml + rankBreakdownHtml + execHtml + areasHtml + methodHtml;
         }
 
         render();
