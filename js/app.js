@@ -774,11 +774,13 @@ const App = {
         // Update URL for permalink (use /t/ path for clean sharing)
         history.replaceState(null, '', '/t/' + slug + '/');
 
-        // If requested, switch to rankings tab immediately
+        // If requested, switch to the specified tab immediately
         if (initialView === 'rankings' && hasStateData) {
             this.switchTab('rankings', slug);
         } else if (initialView === 'county' && hasCountyData) {
             this.switchTab('county', slug);
+        } else if (initialView === 'rank-trend' && hasStateData) {
+            this.switchTab('rank-trend', slug);
         }
     },
 
@@ -1823,10 +1825,11 @@ const App = {
         let slug = '';
         let view = '';
 
-        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county)
+        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county), /rt/{slug}/ (rank-trend)
         const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
         const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
         const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/?$/);
+        const rankTrendMatch = window.location.pathname.match(/^\/rt\/([^/]+)\/?$/);
         if (detailMatch) {
             slug = detailMatch[1];
         } else if (rankMatch) {
@@ -1835,6 +1838,9 @@ const App = {
         } else if (countyMatch) {
             slug = countyMatch[1];
             view = 'county';
+        } else if (rankTrendMatch) {
+            slug = rankTrendMatch[1];
+            view = 'rank-trend';
         }
 
         // Fall back to legacy hash route: #{slug} or #{slug}/rankings
@@ -1860,7 +1866,7 @@ const App = {
             }
         }
 
-        const initialView = (view === 'rankings') ? 'rankings' : (view === 'county') ? 'county' : undefined;
+        const initialView = (view === 'rankings') ? 'rankings' : (view === 'county') ? 'county' : (view === 'rank-trend') ? 'rank-trend' : undefined;
         this.openModal(slug, areaName, initialView);
     },
 };
