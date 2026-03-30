@@ -1239,17 +1239,28 @@ const ChartUtils = {
                 c.textBaseline = 'top';
                 c.fillText('Ranking trend \u2193', stripRight, sepY + 4);
 
-                // IQR shaded band (between Q1 and Q3 values)
+                // Shade the top-performers zone (good side of the Top 25% line)
                 const q1x = valToX(left, stripRight, dsQ1);
                 const q3x = valToX(left, stripRight, dsQ3);
+                const isGoodDown = metricData.goodDirection === 'down';
                 c.fillStyle = 'rgba(13,124,143,0.07)';
-                c.fillRect(q1x, refLineTop, q3x - q1x, dotY - refLineTop - 4);
+                if (isGoodDown) {
+                    // Low values = good: shade from left edge to Q1 line
+                    c.fillRect(left, refLineTop, q1x - left, dotY - refLineTop - 4);
+                } else {
+                    // High values = good: shade from Q3 line to right edge
+                    c.fillRect(q3x, refLineTop, stripRight - q3x, dotY - refLineTop - 4);
+                }
 
-                // Q1 / Median / Q3 dashed lines + labels
-                const refLines = [
-                    { val: dsQ1,     label: 'Top 25%',   alpha: 0.65, w: 1.2 },
-                    { val: dsMedian, label: 'Median',     alpha: 0.85, w: 1.5 },
-                    { val: dsQ3,     label: 'Bottom 25%', alpha: 0.65, w: 1.2 },
+                // Q1 / Median / Q3 dashed lines + labels (labels flip with goodDirection)
+                const refLines = isGoodDown ? [
+                    { val: dsQ1,     label: 'Top 25%',    alpha: 0.65, w: 1.2 },
+                    { val: dsMedian, label: 'Median',      alpha: 0.85, w: 1.5 },
+                    { val: dsQ3,     label: 'Bottom 25%',  alpha: 0.65, w: 1.2 },
+                ] : [
+                    { val: dsQ1,     label: 'Bottom 25%',  alpha: 0.65, w: 1.2 },
+                    { val: dsMedian, label: 'Median',       alpha: 0.85, w: 1.5 },
+                    { val: dsQ3,     label: 'Top 25%',     alpha: 0.65, w: 1.2 },
                 ];
                 for (const ref of refLines) {
                     const x = valToX(left, stripRight, ref.val);
