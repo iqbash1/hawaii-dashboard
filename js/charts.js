@@ -751,18 +751,15 @@ const ChartUtils = {
 
                 // Distribution lines: run from dot strip through entire chart
                 if (distStats) {
-                    const q1x    = xScale.getPixelForValue(distStats.q1);
-                    const q3x    = xScale.getPixelForValue(distStats.q3);
-                    const bestX  = xScale.getPixelForValue(values[0]);       // rank 1 state
-                    const worstX = xScale.getPixelForValue(values[n - 1]);   // rank n state
+                    const q1x = xScale.getPixelForValue(distStats.q1);
+                    const q3x = xScale.getPixelForValue(distStats.q3);
+                    const bestX = xScale.getPixelForValue(values[0]);
+                    const worstX = xScale.getPixelForValue(values[n - 1]);
                     const isGoodDown = goodDirection === 'down';
 
-                    // Shaded zones anchored to rank-1 / rank-n state values (not chart edges)
-                    // down-is-better: bestX(left) → q1x = Top 25%;  q3x → worstX(right) = Bottom 25%
-                    // up-is-better:   q3x → bestX(right) = Top 25%; worstX(left) → q1x = Bottom 25%
-                    const topZoneLeft  = isGoodDown ? bestX : q3x;
-                    const topZoneRight = isGoodDown ? q1x   : bestX;
-                    const botZoneLeft  = isGoodDown ? q3x   : worstX;
+                    const topZoneLeft = isGoodDown ? bestX : q3x;
+                    const topZoneRight = isGoodDown ? q1x : bestX;
+                    const botZoneLeft = isGoodDown ? q3x : worstX;
                     const botZoneRight = isGoodDown ? worstX : q1x;
 
                     ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
@@ -770,11 +767,13 @@ const ChartUtils = {
                     ctx.fillStyle = 'rgba(192, 57, 43, 0.06)';
                     ctx.fillRect(botZoneLeft, topEdge, botZoneRight - botZoneLeft, chartArea.bottom - topEdge);
 
-                    // Q1, Median, Q3 dashed reference lines (Q1/Q3 have no inline label — zone labels below)
+                    ctx.font = '500 11px Inter, sans-serif';
+                    ctx.fillStyle = '#7A8A9A';
+                    ctx.textAlign = 'center';
                     const lines = [
-                        { val: distStats.q1,     dash: [4, 4], alpha: 0.2, width: 1   },
+                        { val: distStats.q1, dash: [4, 4], alpha: 0.2, width: 1 },
                         { val: distStats.median, dash: [6, 3], alpha: 0.3, width: 1.5, label: 'Median' },
-                        { val: distStats.q3,     dash: [4, 4], alpha: 0.2, width: 1   },
+                        { val: distStats.q3, dash: [4, 4], alpha: 0.2, width: 1 },
                     ];
                     lines.forEach(line => {
                         const x = xScale.getPixelForValue(line.val);
@@ -787,30 +786,13 @@ const ChartUtils = {
                             ctx.lineTo(x, chartArea.bottom);
                             ctx.stroke();
                             ctx.setLineDash([]);
-                            // Only draw inline label for Median
-                            if (line.label) {
-                                ctx.font = '500 11px Inter, sans-serif';
-                                ctx.fillStyle = '#7A8A9A';
-                                ctx.textAlign = 'center';
-                                ctx.fillText(line.label, x, topEdge + 8);
-                            }
-                            // Value at bottom of chart
-                            ctx.font = '500 11px Inter, sans-serif';
-                            ctx.fillStyle = '#7A8A9A';
-                            ctx.textAlign = 'center';
+                            if (line.label) ctx.fillText(line.label, x, topEdge + 8);
                             ctx.fillText(distStats.fmt(line.val), x, chartArea.bottom + 14);
                         }
                     });
 
-                    // Zone labels centered within their shaded regions
-                    const topLabelX = (topZoneLeft + topZoneRight) / 2;
-                    const botLabelX = (botZoneLeft + botZoneRight) / 2;
-                    ctx.setLineDash([]);
-                    ctx.font = '500 11px Inter, sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillStyle = '#7A8A9A';
-                    ctx.fillText('Top 25%',    topLabelX, topEdge + 8);
-                    ctx.fillText('Bottom 25%', botLabelX, topEdge + 8);
+                    ctx.fillText('Top 25%', (topZoneLeft + topZoneRight) / 2, topEdge + 8);
+                    ctx.fillText('Bottom 25%', (botZoneLeft + botZoneRight) / 2, topEdge + 8);
                 }
 
                 // Dot strip dots
@@ -896,19 +878,14 @@ const ChartUtils = {
             }
         };
         const canvasEl = ctx.canvas || ctx;
-        const findDot = (e) => {
-            const chart = Chart.getChart(canvasEl);
-            if (!chart) return -1;
+        const findDot = (e, chart) => {
             const rect = canvasEl.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
             const ca = chart.chartArea;
             const lineTop = ca.top - dotStripHeight + 5;
-            // Accept hover anywhere in the chart column (dot strip + bar area)
             if (my < lineTop || my > ca.bottom || mx < ca.left || mx > ca.right) return -1;
             const dotY = ca.top - 35;
-            // Near the dot strip: snap to closest dot within 15px
-            // Over the bar area: snap to closest value column within 20px
             const snapRadius = Math.abs(my - dotY) <= 12 ? 15 : 20;
             const xScale = chart.scales.x;
             let closest = -1, closestDist = snapRadius;
@@ -919,12 +896,13 @@ const ChartUtils = {
             return closest;
         };
         canvasEl.addEventListener('mousemove', (e) => {
-            const idx = findDot(e);
+            const chart = Chart.getChart(canvasEl);
+            if (!chart) return;
+            const idx = findDot(e, chart);
             if (idx !== hoveredDotIdx) {
                 hoveredDotIdx = idx;
                 canvasEl.style.cursor = idx >= 0 ? 'pointer' : '';
-                const chart = Chart.getChart(canvasEl);
-                if (chart) chart.draw();
+                chart.draw();
             }
         });
         canvasEl.addEventListener('mouseleave', () => {
@@ -935,11 +913,12 @@ const ChartUtils = {
             }
         });
         canvasEl.addEventListener('click', (e) => {
-            const idx = findDot(e);
+            const chart = Chart.getChart(canvasEl);
+            if (!chart) return;
+            const idx = findDot(e, chart);
             if (idx >= 0) {
                 hoveredDotIdx = idx;
-                const chart = Chart.getChart(canvasEl);
-                if (chart) chart.draw();
+                chart.draw();
             }
         });
 

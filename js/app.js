@@ -625,10 +625,9 @@ const App = {
             tabDetail.onclick = () => this.switchTab('detail', slug);
             tabRankings.onclick = () => this.switchTab('rankings', slug);
 
-            // Rank history tab
-            const tabRankTrend = document.getElementById('tab-rank-history');
-            tabRankTrend.style.display = '';
-            tabRankTrend.onclick = () => this.switchTab('rank-history', slug);
+            const tabRankHistory = document.getElementById('tab-rank-history');
+            tabRankHistory.style.display = '';
+            tabRankHistory.onclick = () => this.switchTab('rank-history', slug);
         } else {
             tabBar.style.display = 'none';
             document.getElementById('tab-rank-history').style.display = 'none';
@@ -654,8 +653,8 @@ const App = {
         if (tabDetailEl) tabDetailEl.classList.add('active');
         const tabRankingsEl = document.getElementById('tab-rankings');
         if (tabRankingsEl) tabRankingsEl.classList.remove('active');
-        const tabRankTrendEl = document.getElementById('tab-rank-history');
-        if (tabRankTrendEl) tabRankTrendEl.classList.remove('active');
+        const tabRankHistoryEl = document.getElementById('tab-rank-history');
+        if (tabRankHistoryEl) tabRankHistoryEl.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
         // Stats use effective data so they match both charts
@@ -787,13 +786,13 @@ const App = {
     switchTab(tab, slug) {
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
-        const tabRankTrend = document.getElementById('tab-rank-history');
+        const tabRankHistory = document.getElementById('tab-rank-history');
         const tabCounty = document.getElementById('tab-county');
 
         // Clear all tabs
         tabDetail.classList.remove('active');
         tabRankings.classList.remove('active');
-        if (tabRankTrend) tabRankTrend.classList.remove('active');
+        if (tabRankHistory) tabRankHistory.classList.remove('active');
         if (tabCounty) tabCounty.classList.remove('active');
 
         // Update ARIA selected state
@@ -866,8 +865,8 @@ const App = {
                 }
             }, 200);
         } else if (tab === 'rank-history') {
-            tabRankTrend.classList.add('active');
-            tabRankTrend.setAttribute('aria-selected', 'true');
+            tabRankHistory.classList.add('active');
+            tabRankHistory.setAttribute('aria-selected', 'true');
             this.showRankHistory(slug);
             history.replaceState(null, '', '/rh/' + slug + '/');
         } else if (tab === 'county') {
@@ -1656,7 +1655,7 @@ const App = {
         // width (not 0 from a previously-hidden parent element).
         void canvas.offsetWidth;
 
-        this.rankHistoryChart = ChartUtils.createRankTrendChart(
+        this.rankHistoryChart = ChartUtils.createRankHistoryChart(
             canvas, rankHistory, metricData,
             // onCompare callback
             (stateName) => {
@@ -1829,7 +1828,7 @@ const App = {
         const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
         const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
         const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/?$/);
-        const rankHistoryMatch = window.location.pathname.match(/^\/rt\/([^/]+)\/?$/);
+        const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/?$/);
         if (detailMatch) {
             slug = detailMatch[1];
         } else if (rankMatch) {
@@ -1866,7 +1865,7 @@ const App = {
             }
         }
 
-        const initialView = (view === 'rankings') ? 'rankings' : (view === 'county') ? 'county' : (view === 'rank-history') ? 'rank-history' : undefined;
+        const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;
         this.openModal(slug, areaName, initialView);
     },
 };
