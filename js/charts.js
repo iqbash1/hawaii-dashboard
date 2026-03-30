@@ -1040,11 +1040,11 @@ const ChartUtils = {
                 data: hiRanks,
                 borderColor: this.HAWAII_BLUE,
                 borderWidth: 3,
-                pointRadius: hiRanks.map(v => v == null ? 0 : 3.5),
-                pointHoverRadius: 5,
+                pointRadius: hiRanks.map(v => v == null ? 0 : 5),
+                pointHoverRadius: 7,
                 pointBackgroundColor: this.HAWAII_BLUE,
                 pointBorderColor: '#fff',
-                pointBorderWidth: 1.5,
+                pointBorderWidth: 2,
                 tension: 0.15,
                 spanGaps: true,
                 order: 0,
@@ -1078,7 +1078,7 @@ const ChartUtils = {
                 c.fillRect(left, topY, right - left, topBottom - topY);
                 // Bottom quartile: ranks 38-50 (faint red)
                 const botTop = yScale.getPixelForValue(37.5);
-                const botBottom = yScale.getPixelForValue(totalStates + 0.5);
+                const botBottom = yScale.getPixelForValue(totalStates);
                 c.fillStyle = 'rgba(192, 57, 43, 0.05)';
                 c.fillRect(left, botTop, right - left, botBottom - botTop);
             }
@@ -1169,7 +1169,7 @@ const ChartUtils = {
                     y: {
                         reverse: true,
                         min: 0.5,
-                        max: totalStates + 0.5,
+                        max: totalStates,
                         grid: { display: false },
                         ticks: {
                             stepSize: 10,
@@ -1216,18 +1216,18 @@ const ChartUtils = {
 
         // --- Click interaction: detect state label clicks on right side ---
         function getStateAtPosition(evt) {
-            const rect = canvas.getBoundingClientRect();
-            const mx = (evt.clientX - rect.left) * (canvas.width / rect.width);
-            const my = (evt.clientY - rect.top) * (canvas.height / rect.height);
-            const { right } = chart.chartArea;
+            // Use CSS pixel coordinates (offsetX/Y) to match Chart.js coordinate space
+            const mx = evt.offsetX;
+            const my = evt.offsetY;
+            const { right, top, bottom } = chart.chartArea;
             const yScale = chart.scales.y;
+            const rowH = (bottom - top) / totalStates;
 
-            // Check if click is in the right label area
-            const labelX = right + 6;
-            if (mx >= labelX - 8 && mx <= labelX + 30) {
+            // Hit zone: from chartArea right edge outward to cover the label text
+            if (mx >= right - 4 && mx <= right + 50) {
                 for (const entry of latestYearRanked) {
                     const y = yScale.getPixelForValue(entry.rank);
-                    if (Math.abs(my - y) < (chart.chartArea.bottom - chart.chartArea.top) / totalStates * 0.6) {
+                    if (Math.abs(my - y) < rowH * 0.9) {
                         return entry.state;
                     }
                 }
