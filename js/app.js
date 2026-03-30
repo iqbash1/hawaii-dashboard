@@ -1556,7 +1556,8 @@ const App = {
         if (years.length === 0) return null;
 
         // For each year, sort and assign ranks
-        const stateRanks = {}; // { stateName: { year: rank } }
+        const stateRanks = {};  // { stateName: { year: rank } }
+        const stateValues = {}; // { stateName: { year: displayValue } }
         const latestYearRanked = []; // [{ state, rank }] for the latest year
 
         for (const yr of years) {
@@ -1568,6 +1569,8 @@ const App = {
                 const rank = idx + 1;
                 if (!stateRanks[entry.state]) stateRanks[entry.state] = {};
                 stateRanks[entry.state][yr] = rank;
+                if (!stateValues[entry.state]) stateValues[entry.state] = {};
+                stateValues[entry.state][yr] = entry.value; // already in display units
             });
         }
 
@@ -1587,6 +1590,7 @@ const App = {
         return {
             years,
             stateRanks,
+            stateValues,
             latestYearRanked,
             hiKey,
             hiRank: hiLatest ? hiLatest.rank : null,

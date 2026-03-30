@@ -1005,7 +1005,7 @@ const ChartUtils = {
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
 
-        const { years, stateRanks, latestYearRanked, hiKey } = rankHistory;
+        const { years, stateRanks, stateValues, latestYearRanked, hiKey } = rankHistory;
         const totalStates = latestYearRanked.length;
 
         // Build Hawaii's rank array for each year
@@ -1026,6 +1026,19 @@ const ChartUtils = {
         function getCompRanks(stateName) {
             if (!stateName || !stateRanks[stateName]) return years.map(() => null);
             return years.map(yr => stateRanks[stateName][yr] || null);
+        }
+
+        // Format a raw metric value for display in tooltips
+        function fmtVal(v) {
+            if (v == null) return '';
+            const unit = metricData.unit || '';
+            if (unit === '%') return v.toFixed(1) + '%';
+            if (unit === '$') return '$' + (v >= 1000 ? (v / 1000).toFixed(1) + 'K' : Math.round(v).toLocaleString());
+            if (unit === '\u00a2/kWh') return v.toFixed(1) + '\u00a2/kWh';
+            if (unit === 'per 100K') return (v >= 10 ? Math.round(v) : +v.toFixed(1)).toLocaleString() + ' per 100K';
+            if (unit === 'per 10K') return v.toFixed(1) + ' per 10K';
+            if (unit === 'score' || unit === 'Index (2017=100)') return (+v.toFixed(1)).toLocaleString();
+            return (v >= 100 ? Math.round(v) : +v.toFixed(1)).toLocaleString() + (unit ? ' ' + unit : '');
         }
 
         // Chart height
@@ -1069,12 +1082,14 @@ const ChartUtils = {
             }
         };
 
-        // Gridlines drawn early (beforeDatasetsDraw) so tooltip renders on top
+        // Gridlines + Q1/Median/Q3 reference lines drawn early so tooltip renders on top
         const gridlinesPlugin = {
             id: 'rankTrendGridlines',
             beforeDatasetsDraw(chart) {
                 const { ctx: c, chartArea: { left, right } } = chart;
                 const yScale = chart.scales.y;
+
+                // Fine rank gridlines
                 for (let r = 1; r <= totalStates; r++) {
                     const y = yScale.getPixelForValue(r);
                     c.strokeStyle = (r % 10 === 0) ? '#e0e0e0' : '#f2f2f2';
@@ -1083,6 +1098,31 @@ const ChartUtils = {
                     c.moveTo(left, y);
                     c.lineTo(right, y);
                     c.stroke();
+                }
+
+                // Q1 / Median / Q3 reference lines
+                const refs = [
+                    { rank: 12.5, label: 'Q1', color: 'rgba(5,150,105,0.35)' },
+                    { rank: 25.5, label: 'Median', color: 'rgba(120,120,120,0.4)' },
+                    { rank: 37.5, label: 'Q3', color: 'rgba(192,57,43,0.35)' },
+                ];
+                for (const ref of refs) {
+                    const y = yScale.getPixelForValue(ref.rank);
+                    c.save();
+                    c.strokeStyle = ref.color;
+                    c.lineWidth = 1;
+                    c.setLineDash([5, 4]);
+                    c.beginPath();
+                    c.moveTo(left, y);
+                    c.lineTo(right, y);
+                    c.stroke();
+                    c.setLineDash([]);
+                    // Label at left edge, just above the line
+                    c.fillStyle = ref.color;
+                    c.font = 'italic 8px Inter, sans-serif';
+                    c.textAlign = 'left';
+                    c.fillText(ref.label, left + 3, y - 3);
+                    c.restore();
                 }
             }
         };
@@ -1214,13 +1254,19 @@ const ChartUtils = {
                             title: (items) => items.length ? years[items[0].dataIndex] : '',
                             label: (item) => {
                                 if (item.raw == null) return '';
-                                return `Hawai\u02BBi: #${item.raw}`;
+                                const yr = years[item.dataIndex];
+                                const val = stateValues && stateValues[hiKey] && stateValues[hiKey][yr];
+                                const valStr = val != null ? '  \u00b7  ' + fmtVal(val) : '';
+                                return `Hawai\u02BBi: #${item.raw}${valStr}`;
                             },
                             afterBody: (items) => {
                                 if (!compState || !items.length) return [];
                                 const yr = years[items[0].dataIndex];
                                 const rank = stateRanks[compState] && stateRanks[compState][yr];
-                                return rank ? [`${compState}: #${rank}`] : [];
+                                if (!rank) return [];
+                                const val = stateValues && stateValues[compState] && stateValues[compState][yr];
+                                const valStr = val != null ? '  \u00b7  ' + fmtVal(val) : '';
+                                return [`${compState}: #${rank}${valStr}`];
                             }
                         },
                         backgroundColor: 'rgba(51,51,51,0.92)',
