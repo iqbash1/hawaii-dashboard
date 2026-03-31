@@ -1870,6 +1870,24 @@ const DASHBOARD_DATA = {
       "2024": 112.4
     },
     "policyLevers": "Infrastructure and technology adoption; workforce skills; business environment and innovation support.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii's labor productivity rank is the most volatile on this dashboard, swinging from #19 in 2007 to #7 in 2018, then crashing to #48 in 2023 and settling at #46 in 2024. The volatility is not a measurement artifact: it directly reflects tourism's outsized role in Hawaii's GDP. Labor productivity measures real output per hour worked. When visitor spending surges (as in the 2017-2019 peak years), Hawaii's GDP rises sharply without proportional growth in hours worked, pushing the rank up. When tourism collapses (2020 COVID) and then rebuilds through labor-intensive hospitality employment (2021-2023), hours worked grow faster than output, pulling the rank down. Hawaii's workers are not less efficient than workers in higher-ranking states. Hawaii has fewer workers in high-output-per-hour sectors, specifically technology, financial services, life sciences, and advanced manufacturing.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Massachusetts",
+          "text": "Massachusetts has ranked #1 or #2 in labor productivity for most of the past two decades through deliberate concentration in sectors with inherently high output per hour: biotechnology, medical devices, financial technology, and defense research. The foundation is a 40-year investment in research university commercialization: the Massachusetts Technology Collaborative, the UMass system's tech transfer offices, and the Route 128 and Kendall Square innovation corridors. Specific policy: Massachusetts created the Massachusetts Life Sciences Center in 2008, a 10-year $1 billion initiative that funded research infrastructure, workforce training, and company formation. The program is widely credited with establishing Massachusetts as the dominant US biotech hub outside of San Diego. The transferable mechanism for Hawaii: a defined sector investment fund with a 10-year horizon, directed at the sectors where Hawaii has natural assets, ocean science, climate technology, and defense research."
+        }
+      ],
+      "explore": [
+        "Hawaii hosts some of the world's leading ocean research infrastructure, including HURL (Hawaii Undersea Research Laboratory), HIMB (Hawaii Institute of Marine Biology), and NOAA Pacific facilities. The ocean technology and blue economy sector generates inherently high value-added per employee. A cluster development strategy that links these research assets to private commercialization, similar to how San Diego linked Scripps Institution of Oceanography to a biotech cluster, could begin shifting Hawaii's GDP composition toward higher-productivity sectors.",
+        "The Maui wildfires of August 2023 destroyed roughly 3,000 structures and displaced thousands of workers and businesses. The acute economic disruption in 2023 likely contributed to the sharp productivity drop that year (from #34 in 2022 to #48 in 2023), as GDP losses in West Maui exceeded any adjustment in reported hours worked. The 2024 partial recovery to #46 reflects some restoration of economic activity."
+      ],
+      "caution": {
+        "state": "Nevada",
+        "text": "Nevada has spent two decades attempting to diversify beyond gaming and hospitality, including attracting the Tesla Gigafactory (2014), the Raiders stadium (2020), and data center development in the Las Vegas Valley. Despite these additions, Nevada's labor productivity has remained stuck in the bottom quartile because gaming and hospitality still employ the majority of the workforce and those sectors have structurally low output per hour. Individual high-profile projects do not shift the productivity distribution unless they generate enough employment in high-value sectors to change the aggregate. Hawaii faces the same risk: single large-employer announcements do not substitute for a systematic sector development strategy."
+      }
+    }
   }
 };
