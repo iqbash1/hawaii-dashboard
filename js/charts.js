@@ -1102,10 +1102,12 @@ const ChartUtils = {
                 const medFrac = Math.max(0, Math.min(1, (medY - top) / (bottom - top)));
                 c.save();
                 const grad = c.createLinearGradient(0, top, 0, bottom);
+                // Symmetric around median: equal fade zones above and below
                 grad.addColorStop(0, 'rgba(34,197,94,0.45)');
-                grad.addColorStop(Math.max(0, medFrac - 0.08), 'rgba(34,197,94,0.08)');
-                grad.addColorStop(medFrac, 'rgba(255,255,255,0.0)');
-                grad.addColorStop(Math.min(1, medFrac + 0.08), 'rgba(239,68,68,0.08)');
+                grad.addColorStop(Math.max(0, medFrac - 0.12), 'rgba(34,197,94,0.08)');
+                grad.addColorStop(Math.max(0, medFrac - 0.05), 'rgba(255,255,255,0.0)');
+                grad.addColorStop(Math.min(1, medFrac + 0.05), 'rgba(255,255,255,0.0)');
+                grad.addColorStop(Math.min(1, medFrac + 0.12), 'rgba(239,68,68,0.08)');
                 grad.addColorStop(1, 'rgba(239,68,68,0.45)');
                 c.fillStyle = grad;
                 c.fillRect(left, top, right - left, bottom - top);
