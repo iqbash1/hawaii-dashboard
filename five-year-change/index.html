@@ -76,7 +76,7 @@
         .fyc-scorecard-row.sc-weak   { border-left-color: var(--negative); }
         .fyc-scorecard-row.sc-mixed  { border-left-color: #e8a838; }
         .fyc-scorecard-area { font-size: 0.82rem; font-weight: 600; color: var(--text); flex: 1; }
-        .sc-stars { display: inline-flex; gap: 1px; align-items: center; flex: 0 0 90px; }
+        .sc-stars { display: flex; gap: 1px; align-items: center; justify-content: flex-start; flex: 0 0 90px; }
         .sc-star { font-size: 1rem; line-height: 1; }
         .sc-star.above { color: var(--positive); }
         .sc-star.below { color: #d0d5dc; }
@@ -725,7 +725,7 @@
                     `<span class="sc-star ${m.standing.betterNow ? 'above' : 'below'}" title="${m.metric}">${m.standing.betterNow ? '\u2605' : '\u2606'}</span>`
                 ).join('');
                 const standingText = withRank.length
-                    ? `${aboveMedian} of ${withRank.length} above average`
+                    ? `${aboveMedian} of ${withRank.length} above avg.`
                     : '';
 
                 // Trend arrows
