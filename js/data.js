@@ -1418,7 +1418,25 @@ const DASHBOARD_DATA = {
       "2024": 0.6557
     },
     "policyLevers": "Statewide election rules and ballot access; registration and update pathways; voter education and trust.",
-    "updateCadence": "Biennial (election years)"
+    "updateCadence": "Biennial (election years)",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked #50 in every presidential election year since 2004 and near the bottom in most midterms. Hawaii became the first state with universal vote-by-mail elections in 2020, and turnout did improve to #49 that year (55.7 percent, up from 43.2 percent in 2016). But 2024 saw a return to #50 at 50.3 percent, trailing the other-state average of 65.6 percent by 15 points. The logistical barriers are now lower than in almost any other state; the gap is rooted in structural disengagement. Hawaii has been a one-party state in presidential elections since 1988, which reduces perceived stakes. It also has large populations of recent immigrants, military residents who vote in their home states, and communities with limited English-language political engagement.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Colorado",
+          "text": "Colorado enacted universal vote-by-mail in 2013 (HB 1303, the Voter Access and Modernized Elections Act) paired with same-day voter registration at voting service centers and an aggressive automatic voter registration program through the DMV. Colorado went from below-average turnout in the early 2000s to consistently ranking in the top 10 by 2016. The critical addition beyond mail voting was same-day registration: approximately 15 to 20 percent of Colorado voters in recent elections registered on election day or in the final week. Hawaii enacted same-day registration effective 2018, and the evidence suggests it has contributed to modest turnout gains. What Colorado did additionally was establish a dense network of voter service centers with extended hours and multilingual staff, reducing the last-mile friction for non-mail voters who needed help. Hawaii's neighbor island and rural residents face an analogous friction point."
+        }
+      ],
+      "explore": [
+        "Hawaii's largest untapped lever is multilingual civic engagement. Roughly 27 percent of Hawaii residents speak a language other than English at home, a higher share than all but five states. Colorado, California, and New Mexico have invested in multilingual voter guides, translated ballots, and community-based election outreach in native languages. Hawaii's Office of Elections offers some translation but has limited resources for proactive outreach.",
+        "Political competition may be the ceiling constraint that logistical reforms cannot breach. In states where elections are genuinely competitive, mobilization efforts by both parties drive turnout. Hawaii's consistent one-party margins in statewide races reduce the financial and organizational incentive for either party to mobilize voters aggressively. This is not a policy lever the state controls directly."
+      ],
+      "caution": {
+        "state": "Oregon",
+        "text": "Oregon pioneered all-mail voting in 2000 and maintained above-average turnout for over a decade. But Oregon's ranking has declined as other states adopted mail voting without Oregon maintaining a comparable lead. Oregon's experience shows that vote-by-mail is a floor, not a ceiling: it removes barriers for motivated voters but does not independently create the civic engagement that drives high turnout. Hawaii already has the floor. The next increment requires demand-side interventions, not additional supply-side voting access reforms."
+      }
+    }
   },
   "net_domestic_migration_rate": {
     "area": "Infrastructure, Resilience & Trust",
