@@ -719,6 +719,18 @@ body {
 .rh-narr-explore:last-child {
     margin-bottom: 0;
 }
+.rh-narr-source {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--hawaii-blue);
+    text-decoration: none;
+    margin-top: 0.3rem;
+    opacity: 0.8;
+}
+.rh-narr-source:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
 
 /* --- County View --- */
 .modal-county {

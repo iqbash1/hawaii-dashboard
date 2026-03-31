@@ -1600,9 +1600,13 @@ const App = {
                 html += `<div class="rh-narr-section">
                     <h3 class="rh-narr-heading">States to learn from</h3>`;
                 narr.benchmarks.forEach(b => {
+                    const srcHtml = b.source
+                        ? `<a href="${b.source.url}" target="_blank" rel="noopener" class="rh-narr-source">\u2192 ${b.source.label}</a>`
+                        : '';
                     html += `<div class="rh-narr-item">
                         <div class="rh-narr-state">${b.state}</div>
                         <p class="rh-narr-text">${b.text}</p>
+                        ${srcHtml}
                     </div>`;
                 });
                 html += `</div>`;
@@ -1618,11 +1622,15 @@ const App = {
             }
 
             if (narr.caution) {
+                const srcHtml = narr.caution.source
+                    ? `<a href="${narr.caution.source.url}" target="_blank" rel="noopener" class="rh-narr-source">\u2192 ${narr.caution.source.label}</a>`
+                    : '';
                 html += `<div class="rh-narr-section">
                     <h3 class="rh-narr-heading">What to avoid</h3>
                     <div class="rh-narr-item">
                         <div class="rh-narr-state">${narr.caution.state}</div>
                         <p class="rh-narr-text">${narr.caution.text}</p>
+                        ${srcHtml}
                     </div>
                 </div>`;
             }
