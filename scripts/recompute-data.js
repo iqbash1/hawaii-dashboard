@@ -10,11 +10,11 @@
  *   uninsured_rate, home_price_to_income, unemployment_rate, violent_crime_rate,
  *   pcp_per_100k, estabs_entry_rate, net_employer_formation, acgr,
  *   residential_price_cpkwh, unsheltered_homeless_rate, food_insecurity_rate,
- *   real_per_capita_income, renewables_share_gen
+ *   real_per_capita_income, renewables_share_gen, road_poor_pct,
+ *   voter_participation_rate, net_domestic_migration_rate
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
- *   road_poor_pct (need to verify FHWA measure matches dashboard methodology)
- *   voter_participation_rate (need verified VEP turnout data)
+ *   (none — all 26 metrics verified against state-data.js)
  */
 
 const fs = require('fs');
@@ -37,7 +37,7 @@ eval(origContent.replace('const DASHBOARD_DATA', 'global.DASHBOARD_DATA'));
 const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
 const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
 
-// Metrics safe to recompute from state-data
+// Metrics safe to recompute from state-data (all 26 verified)
 const RECOMPUTE_METRICS = [
     'ba_or_higher_pct',
     'broadband_subscription_pct',
@@ -57,12 +57,11 @@ const RECOMPUTE_METRICS = [
     'renewables_share_gen',
     'voter_participation_rate',
     'net_domestic_migration_rate',
+    'road_poor_pct',
 ];
 
-// Metrics with known bad state-data (keep original data.js, rankings-only)
-const SKIP_METRICS = [
-    'road_poor_pct',              // state-data uses different methodology than data.js; removed from STATE_DATA
-];
+// No metrics excluded — all 26 derive from state-data.js
+const SKIP_METRICS = [];
 
 // ==========================================================
 // Step 1: Fix ACGR in STATE_DATA

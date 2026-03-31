@@ -43,6 +43,7 @@
 
     .modal-data-note { border-left: 3px solid #f0c36d; padding-left: 0.75rem; margin-top: 0.5rem; }
     .modal-data-note p { font-size: 0.8rem; color: #8a7548; margin: 0; line-height: 1.4; }
+    .modal-chart-note { font-size: 0.72rem; color: #999; text-align: right; padding: 0.1rem 0.5rem 0; margin: 0; }
     .table-toggle-wrap { text-align: right; padding: 0.25rem 2rem; font-size: 0.75rem; }
     .table-toggle { color: var(--hawaii-blue); text-decoration: none; border: 1px solid var(--border); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.7rem; }
     .table-toggle:hover { background: var(--hawaii-blue); color: #fff; border-color: var(--hawaii-blue); }
@@ -113,6 +114,7 @@
                 <div class="modal-chart-container">
                     <div class="modal-chart-skeleton" id="modal-chart-skeleton"></div>
                     <canvas id="modal-chart"></canvas>
+                    <p class="modal-chart-note" id="modal-chart-note" style="display:none;"></p>
                 </div>
                 <div class="table-toggle-wrap" id="table-toggle-wrap" style="display:none;">
                     <a href="#" class="table-toggle" id="table-toggle">View as table</a>

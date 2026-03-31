@@ -631,6 +631,27 @@ const App = {
         canvas.setAttribute('role', 'img');
         canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs other state average`);
 
+        // Chart-trimming note: shown when state-data has more recent years than the chart displays
+        const chartNoteEl = document.getElementById('modal-chart-note');
+        if (chartNoteEl) {
+            const hasSD = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+            if (hasSD) {
+                const computed = this.computeChartData(slug);
+                const fullHawaii = { ...metricData.hawaii, ...(computed ? computed.hawaii : {}) };
+                const allLast = Object.keys(fullHawaii).sort().pop();
+                const effectiveLast = Object.keys(effective.hawaii).sort().pop();
+                if (allLast && effectiveLast && allLast > effectiveLast) {
+                    chartNoteEl.textContent = `Chart shows data through ${effectiveLast} \u2014 the latest year with complete state rankings data`;
+                    chartNoteEl.style.display = '';
+                } else {
+                    chartNoteEl.textContent = '';
+                    chartNoteEl.style.display = 'none';
+                }
+            } else {
+                chartNoteEl.style.display = 'none';
+            }
+        }
+
         // Table toggle (data accessibility feature)
         const tableToggleWrap = document.getElementById('table-toggle-wrap');
         const tableToggle = document.getElementById('table-toggle');
@@ -868,10 +889,20 @@ const App = {
 
         // --- Tab 2: "Chart Data" (Hawaiʻi + Other-states average, derived from raw data) ---
         const effective = this.getEffectiveData(slug);
+        const isDecimalPct = ChartUtils.isDecimalPctMetric(m);
+        const sdYears = sd ? Object.keys(sd.data || {}).sort() : [];
+        const effectiveYears = Object.keys(effective.hawaii).sort();
+        const sdLastYear = sdYears[sdYears.length - 1];
+        const effectiveLastYear = effectiveYears[effectiveYears.length - 1];
+        const chartIsTrimmed = sd && sdLastYear && effectiveLastYear && effectiveLastYear < sdLastYear;
+        const chartNotes = [];
+        if (sd) chartNotes.push(['Note: Hawai\u02BBi and Other-states average are computed from the Raw Data tab']);
+        if (isDecimalPct) chartNotes.push(['Unit note: Values are decimal fractions (e.g. 0.2162 = 21.62%). Multiply by 100 to convert to percent.']);
+        if (chartIsTrimmed) chartNotes.push([`Year range note: Chart ends at ${effectiveLastYear}. Raw Data extends to ${sdLastYear}. Chart is trimmed to the latest year with complete state data for consistent rankings.`]);
         const chartRows = [
             [`${m.metric} (${m.unit}) - Dashboard Chart Data`],
             [`Source: ${m.source}`],
-            sd ? ['Note: Hawaiʻi and Other-states average are computed from the Raw Data tab'] : [],
+            ...chartNotes,
             [],
             ['Year', 'Hawai\u02BBi', 'Other-states average'],
         ];
@@ -1020,6 +1051,28 @@ const App = {
         }
         methRows.push(
             [],
+            ['DATA TRANSFORMATIONS'],
+        );
+        if (isDecimalPct) {
+            methRows.push(
+                ['Step 1 — Raw storage', `Values in the Raw Data tab are stored as decimal fractions (0 to 1). Example: 0.2162 = 21.62%.`],
+                ['Step 2 — Chart Data tab', 'Hawaiʻi and Other-states average are the same decimal fractions as Raw Data. Multiply by 100 to display as percentages.'],
+                ['Step 3 — Rankings / All Data tabs', 'Values are multiplied by 100 and shown as percentages (e.g. 21.62%).'],
+                ['Step 4 — Other-state average', 'Computed as the simple mean of all non-Hawaiʻi state values for that year (decimal form), then displayed as a percentage.'],
+            );
+        } else {
+            methRows.push(
+                ['Step 1 — Raw storage', `Values are stored in display units (${m.unit}). No unit scaling is applied.`],
+                ['Step 2 — Other-state average', 'Computed as the simple mean of all non-Hawaiʻi state values for that year.'],
+            );
+        }
+        if (chartIsTrimmed) {
+            methRows.push(
+                ['Step — Year trimming', `Chart Data ends at ${effectiveLastYear} (the latest year with complete state data). Raw Data extends to ${sdLastYear}. This keeps Hawaiʻi, the other-state average, and rankings consistent with the same endpoint.`],
+            );
+        }
+        methRows.push(
+            [],
             ['NARRATIVE'],
             ['Why It Matters', m.whyItMatters.replace(/<[^>]*>/g, '')],
             ['How To Read It', m.howToRead],
@@ -1028,10 +1081,13 @@ const App = {
         if (m.crossInsight) methRows.push(['Cross-metric Context', m.crossInsight]);
         if (m.policyLevers) methRows.push(['Main Policy Levers', m.policyLevers]);
         if (m.dataNote) methRows.push([], ['Data Note', m.dataNote]);
+        const reproText = isDecimalPct
+            ? `Pull raw variables from the source URL for all 50 states. Apply the calculation formula. Results are decimal fractions (0\u20131). Divide by 100 if needed to match Raw Data tab. Compute Other-state average as the simple mean excluding Hawai\u02BBi. Multiply by 100 to display as percentages.`
+            : `Pull raw variables from the source URL for all 50 states. Apply the calculation formula. Compute Other-state average as the simple mean excluding Hawai\u02BBi.`;
         methRows.push(
             [],
             ['REPRODUCIBILITY'],
-            ['To reproduce', 'Pull the raw variables from the source URL for all 50 states. Apply the calculation formula. Compute the other-state average as the simple mean excluding Hawai\u02BBi.'],
+            ['To reproduce', reproText],
             ['Dashboard', 'hawaiidashboard.org'],
             ['Data updated', document.getElementById('last-updated')?.textContent || ''],
         );
@@ -1763,6 +1819,8 @@ const App = {
         document.getElementById('table-toggle-wrap').style.display = 'none';
         document.getElementById('modal-table-container').style.display = 'none';
         document.querySelector('.modal-chart-container').style.display = '';
+        const chartNoteEl = document.getElementById('modal-chart-note');
+        if (chartNoteEl) { chartNoteEl.style.display = 'none'; chartNoteEl.textContent = ''; }
 
         // Clean up scroll hint listener
         if (this._rankingsScrollHandler) {
