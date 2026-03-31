@@ -63,14 +63,28 @@
         /* Area scorecard */
         .fyc-scorecard { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
         .fyc-scorecard-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
-        .fyc-scorecard-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.42rem 1rem; border-bottom: 1px solid #f5f6f8; text-decoration: none; color: inherit; transition: background 0.12s; }
+        .fyc-scorecard-header { display: flex; align-items: center; gap: 0.75rem; padding: 0.28rem 1rem 0.28rem 1.75rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
+        .fyc-scorecard-hdr { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
+        .fyc-scorecard-hdr-area { flex: 1; }
+        .fyc-scorecard-hdr-standing { flex: 0 0 210px; }
+        .fyc-scorecard-hdr-trend { flex: 0 0 110px; text-align: right; }
+        .fyc-scorecard-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem 0.5rem 0.75rem; border-bottom: 1px solid #f5f6f8; border-left: 3px solid transparent; text-decoration: none; color: inherit; transition: background 0.12s; }
         .fyc-scorecard-row:last-child { border-bottom: none; }
         .fyc-scorecard-row:hover { background: #f7f9fa; }
-        .fyc-scorecard-area { font-size: 0.78rem; font-weight: 600; color: var(--text); flex: 1; }
-        .fyc-scorecard-median { font-size: 0.7rem; color: var(--text-muted); flex: 0 0 130px; }
-        .fyc-scorecard-trend { font-size: 0.7rem; flex: 0 0 auto; text-align: right; white-space: nowrap; }
-        .fyc-scorecard-imp { color: var(--positive); font-weight: 600; }
-        .fyc-scorecard-wor { color: var(--negative); font-weight: 600; }
+        .fyc-scorecard-row.sc-strong { border-left-color: var(--positive); }
+        .fyc-scorecard-row.sc-weak   { border-left-color: var(--negative); }
+        .fyc-scorecard-row.sc-mixed  { border-left-color: #e8a838; }
+        .fyc-scorecard-area { font-size: 0.82rem; font-weight: 600; color: var(--text); flex: 1; }
+        .fyc-scorecard-standing { display: flex; align-items: center; gap: 6px; flex: 0 0 210px; }
+        .sc-dots { display: inline-flex; gap: 3px; align-items: center; flex-shrink: 0; }
+        .sc-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+        .sc-dot.above { background: var(--positive); opacity: 0.85; }
+        .sc-dot.below { background: #d8dde3; }
+        .fyc-scorecard-standing-text { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+        .fyc-scorecard-trend { display: flex; align-items: center; gap: 8px; flex: 0 0 110px; justify-content: flex-end; white-space: nowrap; }
+        .sc-trend-up   { font-size: 0.75rem; font-weight: 700; color: var(--positive); }
+        .sc-trend-down { font-size: 0.75rem; font-weight: 700; color: var(--negative); }
+        .sc-trend-flat { font-size: 0.75rem; color: var(--text-muted); }
 
         /* Area sections */
         .fyc-area { margin-top: 2rem; }
@@ -697,23 +711,42 @@
 
                 const areaId = areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
 
+                // Overall area signal
+                const abovePct = withRank.length ? aboveMedian / withRank.length : 0.5;
+                let areaClass = 'sc-mixed';
+                if (abovePct >= 0.6 && imp >= wor) areaClass = 'sc-strong';
+                else if (abovePct <= 0.4 && wor >= imp) areaClass = 'sc-weak';
+
+                // Per-metric dots (green = above average, gray = below)
+                const dots = withRank.map(m =>
+                    `<span class="sc-dot ${m.standing.betterNow ? 'above' : 'below'}" title="${m.metric}"></span>`
+                ).join('');
+                const standingText = withRank.length
+                    ? `${aboveMedian} of ${withRank.length} above average`
+                    : '';
+
+                // Trend arrows
                 const trendParts = [];
-                if (imp) trendParts.push(`<span class="fyc-scorecard-imp">${imp} improving</span>`);
-                if (wor) trendParts.push(`<span class="fyc-scorecard-wor">${wor} worsening</span>`);
-                if (lit && !imp && !wor) trendParts.push(`<span style="color:var(--text-muted)">${lit} little change</span>`);
+                if (imp) trendParts.push(`<span class="sc-trend-up">&#8593; ${imp} improving</span>`);
+                if (wor) trendParts.push(`<span class="sc-trend-down">&#8595; ${wor} worsening</span>`);
+                if (!imp && !wor) trendParts.push(`<span class="sc-trend-flat">&#8594; ${lit} unchanged</span>`);
 
-                const medianText = withRank.length
-                    ? `${aboveMedian} of ${withRank.length} above median`
-                    : 'No rank data';
-
-                rows += `<a href="#fyc-area-${areaId}" class="fyc-scorecard-row">
+                rows += `<a href="#fyc-area-${areaId}" class="fyc-scorecard-row ${areaClass}">
                     <span class="fyc-scorecard-area">${areaGroup.area}</span>
-                    <span class="fyc-scorecard-median">${medianText}</span>
-                    <span class="fyc-scorecard-trend">${trendParts.join(' \u00b7 ')}</span>
+                    <span class="fyc-scorecard-standing">
+                        <span class="sc-dots">${dots}</span>
+                        <span class="fyc-scorecard-standing-text">${standingText}</span>
+                    </span>
+                    <span class="fyc-scorecard-trend">${trendParts.join(' ')}</span>
                 </a>`;
             }
             return `<div class="fyc-scorecard">
                 <div class="fyc-scorecard-title">Policy area overview</div>
+                <div class="fyc-scorecard-header">
+                    <span class="fyc-scorecard-hdr fyc-scorecard-hdr-area">Area</span>
+                    <span class="fyc-scorecard-hdr fyc-scorecard-hdr-standing">National standing vs. other states</span>
+                    <span class="fyc-scorecard-hdr fyc-scorecard-hdr-trend">5-year trend</span>
+                </div>
                 ${rows}
             </div>`;
         }
