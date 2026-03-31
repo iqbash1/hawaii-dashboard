@@ -229,6 +229,13 @@ body {
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
+.card:focus-visible {
+    outline: 2px solid var(--hawaii-blue);
+    outline-offset: 2px;
+    border-color: var(--hawaii-blue);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+}
+
 
 .comp-rank {
     font-family: var(--font-heading);
@@ -494,7 +501,7 @@ body {
     font-family: var(--font-heading);
     font-size: 0.8rem;
     font-weight: 500;
-    color: #adb5bd;
+    color: var(--text-muted);
     background: none;
     border: 1px solid transparent;
     border-bottom: none;
@@ -508,6 +515,12 @@ body {
 .modal-tab:hover {
     color: var(--text-secondary);
     background: rgba(0, 0, 0, 0.02);
+}
+
+.modal-tab:focus-visible {
+    outline: 2px solid var(--hawaii-blue);
+    outline-offset: -2px;
+    color: var(--text-secondary);
 }
 
 .modal-tab.active {

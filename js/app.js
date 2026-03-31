@@ -607,12 +607,12 @@ const App = {
         this.hideCounty();
         document.getElementById('modal-detail-view').style.display = '';
         const tabDetailEl = document.getElementById('tab-detail');
-        if (tabDetailEl) tabDetailEl.classList.add('active');
+        if (tabDetailEl) { tabDetailEl.classList.add('active'); tabDetailEl.setAttribute('aria-selected', 'true'); }
         const tabRankingsEl = document.getElementById('tab-rankings');
-        if (tabRankingsEl) tabRankingsEl.classList.remove('active');
+        if (tabRankingsEl) { tabRankingsEl.classList.remove('active'); tabRankingsEl.setAttribute('aria-selected', 'false'); }
         const tabRankHistoryEl = document.getElementById('tab-rank-history');
-        if (tabRankHistoryEl) tabRankHistoryEl.classList.remove('active');
-        if (tabCounty) tabCounty.classList.remove('active');
+        if (tabRankHistoryEl) { tabRankHistoryEl.classList.remove('active'); tabRankHistoryEl.setAttribute('aria-selected', 'false'); }
+        if (tabCounty) { tabCounty.classList.remove('active'); tabCounty.setAttribute('aria-selected', 'false'); }
 
         const statsEl = document.getElementById('modal-stats');
         statsEl.innerHTML = '';
@@ -628,6 +628,8 @@ const App = {
         const govBoxes = this.getGovernorBoxes(labels);
 
         this.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes);
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs other state average`);
 
         // Table toggle (data accessibility feature)
         const tableToggleWrap = document.getElementById('table-toggle-wrap');
@@ -1145,6 +1147,8 @@ const App = {
         this.rankingsChart = ChartUtils.createRankingsChart(
             canvas, stateValues, metricData.goodDirection, metricData.unit, distStats
         );
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', `${metricData.metric} rankings: all 50 states sorted best to worst, Hawaiʻi ranked #${hawaiiRank}`);
 
         // Hide the separate dot strip container (now integrated into chart)
         const dotStripEl = document.getElementById('dot-strip-container');
@@ -1693,6 +1697,8 @@ const App = {
         this.countyChart = ChartUtils.createCountyChart(
             canvas, chartData, metricData, govBoxes, this.COUNTY_COLORS, stateRef
         );
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', `${metricData.metric} by Hawaiʻi county: Honolulu, Hawaiʻi, Maui, Kauai`);
     },
 
     hideCounty() {
