@@ -1078,7 +1078,25 @@ const DASHBOARD_DATA = {
       "2023": 0.0885
     },
     "policyLevers": "Pavement preservation funding; asset management and maintenance delivery; capital planning and resilience upgrades.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked #45 to #47 in road condition every year since 2007, with no sustained improvement. Roughly 20 percent of Hawaii's roads are rated in poor condition, more than twice the other-state average of about 9 percent. The core problem is a combination of harsh operating conditions and chronically deferred maintenance. Hawaii's roads face salt air corrosion on coastal routes, heavy rainfall and flooding damage, and volcanic soil movement on the Big Island. But the deeper issue is financial: when budgets tighten, preventive road maintenance is the first cut. Deferred maintenance converts a $1 problem into a $4 to $7 reconstruction problem over a decade, a cycle Hawaii has been in for over 30 years.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Virginia",
+          "text": "Virginia overhauled its transportation spending framework in 2015 with the SMART SCALE program, which uses a data-driven scoring system to rank all capital projects by cost-efficiency, safety, accessibility, and economic impact before committing funds. Separately, VDOT adopted a formal pavement management system with a published target of maintaining at least 82 percent of state-maintained roads in acceptable condition. Virginia's road condition rankings improved measurably in the five years following implementation. The transferable mechanism for Hawaii: a binding pavement condition target tied to budget allocation, rather than discretionary maintenance spending that is cut first in lean years. Hawaii's HDOT has no such enforceable standard."
+        }
+      ],
+      "explore": [
+        "Federal IIJA (Infrastructure Investment and Jobs Act, 2021) formula funds Hawaii approximately $510 million in highway apportionment over five years. The state-of-good-repair requirements attached to IIJA funds require that a larger share of apportionment go to maintenance before new construction. Maximizing Hawaii's formula draw and directing it toward preventive maintenance rather than new lane capacity is the highest-leverage federal policy tool currently available.",
+        "Neighbor island road maintenance is structurally more expensive per mile than Oahu because every piece of equipment and material must be shipped separately. A regional equipment depot or inter-island sharing program for heavy road maintenance equipment between counties could reduce per-job mobilization costs."
+      ],
+      "caution": {
+        "state": "Rhode Island",
+        "text": "Rhode Island had the worst-rated roads and bridges in the country for most of the 2000s and 2010s. After passing a $400 million infrastructure bond in 2014 (RhodeWorks), the state directed a significant share to high-visibility bridge repairs that generated political credit but left pavement conditions largely unchanged. By 2020, Rhode Island still ranked near the bottom in road quality despite the investment. The lesson: a large capital infusion without a systematic maintenance prioritization framework tends to fund the most visible projects, not the most cost-effective ones. Hawaii faces the same political incentive problem."
+      }
+    }
   },
   "broadband_subscription_pct": {
     "area": "Infrastructure, Resilience & Trust",
