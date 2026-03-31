@@ -1485,7 +1485,25 @@ const DASHBOARD_DATA = {
       "2024": 10.9
     },
     "policyLevers": "Housing cost and supply; job quality and wages; schools, safety, and disaster resilience.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii was near the national midpoint on domestic migration through 2003, shifted into growing outflow by 2007, and has ranked at or near last every year since 2016. A COVID window in 2020 and 2021 brought partial recovery as remote workers chose Hawaii for its natural environment, but the trend reversed sharply by 2022 as cost realities reasserted. In 2024, Hawaii lost roughly 65 residents per 10,000 to other states, ranking #50. The driver is economic math: Hawaii ranks last in home price-to-income ratio, near last in cost-of-living-adjusted income, and its job market is concentrated in tourism and hospitality, sectors with limited career advancement and below-average wages that cannot support ownership at current prices.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Utah",
+          "text": "Utah has maintained positive net domestic in-migration through a period of rapid housing cost increases by treating housing supply as a state-level responsibility. A series of reforms from 2022 to 2024 (including HB 462, which required cities to allow accessory dwelling units by right statewide, and SB 174, which required higher-density zoning near transit corridors) bypassed restrictive local ordinances. Utah consistently ranks among the top states for new housing permits per capita. The transferable element for Hawaii: state preemption of county zoning restrictions that constrain supply, paired with permit streamlining. Hawaii's four counties currently control land use and have used that authority to limit the housing production that would make staying economically viable for working families."
+        }
+      ],
+      "explore": [
+        "Hawaii's largest reservoirs of directly buildable state-controlled land sit under the Department of Hawaiian Home Lands, the Office of Hawaiian Affairs, and DLNR. A coordinated program to develop workforce housing on surplus state land, with binding production targets rather than aspirational goals, could produce units at well below market cost without requiring rezoning of private parcels.",
+        "Neighbor island out-migration is structurally different from Oahu: the issue is not only housing cost but the absence of professional-grade jobs. Diversifying the employment base through targeted sector recruitment in healthcare, clean energy, defense-related research, and marine science would reduce the economic pressure to leave independent of housing reform."
+      ],
+      "caution": {
+        "state": "California",
+        "text": "California has experienced among the largest domestic population losses of any state despite more than a decade of declared housing crises and a series of reform packages (SB 9, SB 10, ADU reform, builder's remedy). The primary failure mode: state-level zoning mandates were not matched with permit streamlining, environmental review reform, or litigation protection, so projects permitted under new state law still took three to seven years to break ground. Hawaii shares California's structural conditions: concentrated coastal land, local opposition to density, and a permitting process that averages over 400 days for a residential project on Oahu. Zoning reform without permit reform produces little actual housing production."
+      }
+    }
   },
   "estabs_entry_rate": {
     "area": "Economy & Workforce",
