@@ -1188,7 +1188,25 @@ const DASHBOARD_DATA = {
       "2025": 17.4
     },
     "policyLevers": "Utility regulation and rate design; energy efficiency and bill relief; generation, fuel, and grid planning.",
-    "updateCadence": "Monthly (shown annual)"
+    "updateCadence": "Monthly (shown annual)",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked #50 of 50 every year on record, making this the only metric on this dashboard where the rank has never moved. The root cause is geographic rather than a policy failure: Hawaii's grid has no mainland connection and historically ran on 70 to 75 percent imported petroleum. When global oil prices spiked in 2008 and again in 2022, Hawaii's residential electricity rate spiked nearly three times harder than the national average. The renewable transition, from roughly 10 percent of grid generation in 2012 to 40 percent by 2023, has not yet bent the price curve, because the capital costs of new solar and storage are passed through to ratepayers even as fuel costs decline. Hawaii's price was 1.8 times the national average in 2001 and is 2.3 times the average in 2025. The gap has widened, not closed.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Alaska (Kodiak Electric Association)",
+          "text": "Kodiak Island, a fishing community of 6,400 with an isolated diesel grid and no mainland connection, achieved 99 percent renewable electricity through a combination of wind turbines and battery-backed hydropower. The Kodiak Electric Association, a member-owned cooperative, used competitive grants from Alaska's Renewable Energy Fund (established 2008) to finance the transition over five years. Diesel imports fell from 2.3 million gallons per year to near zero, and rates stabilized while surrounding diesel-dependent communities continued to face volatile fuel costs. The transferable mechanism for Hawaii is the competitive grant structure and the wind-hydro-battery combination, the same technology stack HECO could deploy on neighbor islands with hydro resources."
+        }
+      ],
+      "explore": [
+        "Within Hawaii, the Kauai Island Utility Cooperative (KIUC) is the clearest proof of concept. KIUC was 92 percent petroleum-dependent in 2011. By signing long-term fixed-price solar-plus-storage contracts at 13.9 cents per kWh in 2015 and 11 cents per kWh in 2019, both below diesel's cost at the time, KIUC reached roughly 70 percent renewable by 2022. In May 2022, during the Russia-Ukraine oil price spike, KIUC posted Hawaii's lowest electricity rate for the first time in its history. HECO customers faced 10 to 20 percent bill increases that year; KIUC members faced 2 to 10 percent. The mechanism: competitive procurement of solar-plus-storage locked in at fixed prices for 20 to 25 years, below avoided diesel cost.",
+        "Hawaii enacted the nation's most comprehensive Performance-Based Regulation (PBR) framework for HECO in 2020, tying utility revenues to performance metrics rather than capital expenditure. In 2025, the PUC opened a traditional rate case that renewable advocates argue effectively reverts to the old cost-of-service model. Whether PBR remains intact will determine whether Hawaii captures the cost-discipline benefit of this regulatory structure."
+      ],
+      "caution": {
+        "state": "California",
+        "text": "California's electricity prices rose roughly 50 percent over the decade ending 2024 despite aggressive renewable mandates. The drivers: above-market contracts with ratepayer backstops, wildfire liability shifted to utility rates, and a regulatory model that allowed utility capital spending to balloon. Connecticut followed the same path and is now rolling back its renewable portfolio target. Mandate-only approaches without competitive procurement and cost caps tend to raise prices even as they increase renewable share, the precise trap Hawaii's Performance-Based Regulation was designed to avoid."
+      }
+    }
   },
   "renewables_share_gen": {
     "area": "Infrastructure, Resilience & Trust",
