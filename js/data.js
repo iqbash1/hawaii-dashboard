@@ -847,7 +847,25 @@ const DASHBOARD_DATA = {
       "2024": 72898
     },
     "policyLevers": "Wage and tax policy; skills and career mobility; economic diversification into higher-value sectors.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii ranked #34 in purchasing-power-adjusted per capita income in 2008 and has since fallen to #46 as of 2024. This metric uses BEA Regional Price Parities to convert nominal income to real purchasing power, so Hawaii's already-moderate wages are deflated further to reflect the high cost of living. The steepest drop came during COVID (2020-2021, rank #49), when the collapse of tourism eliminated Hawaii's primary employment base almost overnight. The partial recovery since 2022 tracks the return of visitor spending, not a structural change. The underlying problem is sector concentration: Hawaii's economy is roughly 20 percent tourism-dependent, the highest share of any state. Every hospitality recovery cycle rebuilds the same low-to-moderate-wage base while high-wage sectors such as technology, life sciences, and professional services remain underdeveloped.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Colorado",
+          "text": "Colorado was heavily dependent on energy, agriculture, and ski tourism through the 1990s and suffered repeated boom-bust income cycles tied to oil and gas prices. Starting in the early 2000s, the Colorado Office of Economic Development and International Trade (OEDIT) built a cluster development strategy targeting aerospace, bioscience, technology, and clean energy. The state coordinated university research commercialization (University of Colorado, Colorado State), site-ready infrastructure near Denver International Airport, and a skilled workforce pipeline through community college articulation agreements. By 2020, Colorado ranked in the top 20 for real per capita income, having climbed from the middle of the pack. The transferable mechanism: a defined sector strategy with dedicated state agency authority, coordinated incentives, and a workforce pipeline rather than generic business climate improvements."
+        }
+      ],
+      "explore": [
+        "Hawaii's defense sector (PACOM, Pacific Fleet, Army Garrison) represents roughly 9 percent of state GDP and is the most stable high-wage sector in the state. Defense-adjacent industries, including cybersecurity, satellite operations, unmanned systems, and ocean sensing, have grown around military installations in Virginia, San Diego, and Colorado Springs. Hawaii's own defense concentration has not generated the same civilian spillover, partly because state economic development policy has prioritized tourism. A targeted defense-adjacent cluster strategy, coordinated with DBEDT and HTDC, could grow high-wage civilian employment on existing military infrastructure.",
+        "Remote work created a temporary window from 2020 to 2022 when knowledge-economy workers moved to Hawaii. The state's Movers and Shakas program (2021) attracted roughly 4,000 remote workers who contributed an estimated $57 million to the local economy in the first cohort. Making this a sustained rather than temporary program, with housing support and community integration, targets the professional class whose income would directly raise Hawaii's adjusted per capita average."
+      ],
+      "caution": {
+        "state": "Alaska",
+        "text": "Alaska's per capita income was among the highest in the country during the 1980s oil boom, then fell sharply as oil prices collapsed and production declined. Alaska's Permanent Fund dividends and oil-funded public services masked the structural income problem for decades, but the state has now been drawing down reserves for years without replacing the income base. Hawaii is not at risk of a single commodity collapse, but the tourism concentration creates an analogous vulnerability: any sustained disruption (pandemic, geopolitical, climate) immediately collapses the sector that employs the largest share of residents. Single-sector dependence degrades real per capita income regardless of which sector it is."
+      }
+    }
   },
   "renter_cost_burden_pct": {
     "area": "Housing & Cost of Living",
