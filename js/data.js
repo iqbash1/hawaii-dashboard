@@ -206,7 +206,25 @@ const DASHBOARD_DATA = {
       "2024": 1668.06
     },
     "policyLevers": "Substance-use treatment and diversion; prosecution and reentry policy; theft, fraud, and neighborhood prevention.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii's property crime rate ranked #48 in 2013 and has improved to #36 by 2024, a 12-rank gain over 11 years and the most sustained improvement of any metric on this dashboard in terms of rank movement. The absolute rate fell 46 percent, from 3,584 per 100,000 in 2013 to 1,947 in 2024. Hawaii has outpaced the national average in rate of decline. The structural causes of Hawaii's historically elevated rate persist: high tourist density creates a target-rich environment for opportunistic theft, and methamphetamine-related acquisitive crime has historically been a significant driver. The improvement since 2013 tracks national trends but also reflects Hawaii-specific enforcement and diversion programs, including drug court expansion and problem-oriented policing by HPD. Hawaii is now below the top-third threshold, suggesting continued improvement is achievable with sustained investment in the mechanisms that have been working.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "New York",
+          "text": "New York City's property crime fell from over 200,000 incidents per year in 1990 to under 90,000 by 2010 through CompStat, a data-driven accountability system introduced by NYPD in 1994 that required precinct commanders to analyze weekly crime maps, identify concentrating crime patterns, and deploy resources proactively to specific locations. CompStat spread to state and municipal agencies across the country and is now considered standard practice. At the state level, New York combined CompStat policing with diversion programs (drug courts, mental health courts) that reduced recidivism in the populations driving the most repeat offenses. HPD has adopted elements of CompStat; the evidence-based component that Hawaii has applied less consistently is the diversion-court pipeline for repeat property offenders with substance use disorders, which is the primary driver of chronic property crime in Hawaii's tourist areas."
+        }
+      ],
+      "explore": [
+        "Visitor-targeted property crime, primarily theft from rental vehicles and hotel rooms, represents a disproportionate share of Hawaii's property crime incidents. Rental car agencies across the country have changed policies to prohibit storing valuables in trunks (visible from outside), but Hawaii's tourism industry has been slow to adopt the proactive visitor education campaigns that reduced vehicle break-ins in San Francisco's Fisherman's Wharf by an estimated 20 percent after a targeted campaign. A coordinated visitor security campaign between DBEDT, HTA, and HPD would address the highest-volume crime category at low cost.",
+        "Hawaii's methamphetamine interdiction approach has relied primarily on supply-side enforcement at ports of entry. Demand-side approaches, specifically expanding the Hawaii Drug Court system (currently operating in all four counties) and funding residential treatment at scale sufficient to absorb all court-eligible participants, would address the repeat-offender population that drives a disproportionate share of property crime. Hawaii Drug Court participants have a recidivism rate of roughly 25 percent versus 50 to 60 percent for the general criminal population."
+      ],
+      "caution": {
+        "state": "Oregon",
+        "text": "Oregon's Measure 110 (2020) decriminalized possession of small amounts of all illicit drugs and redirected cannabis tax revenue to treatment services. Property crime associated with drug addiction increased significantly in the years following implementation. By 2024, Oregon had reversed Measure 110, recriminalizing drug possession after property crime rates rose and the treatment infrastructure that was supposed to replace criminal deterrence was not built fast enough to absorb demand. The lesson is not that decriminalization is wrong but that any enforcement reduction requires a proportional treatment capacity investment to maintain the current level of diversion-driven crime reduction. Hawaii's own drug court programs work because they pair reduced incarceration with structured treatment, not because they reduce accountability."
+      }
+    }
   },
   "pcp_per_100k": {
     "area": "Safety & Health",
