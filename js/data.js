@@ -792,7 +792,25 @@ const DASHBOARD_DATA = {
       "2024": 63
     },
     "policyLevers": "Childcare and work supports; skills training and career pathways; return-to-work and barrier reduction.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii ranked #5 in labor force participation in 1976 and has declined nearly every decade since, reaching #39 in 2024. The 50-year decline spans multiple economic eras. The early high rank reflected a plantation and military economy where virtually everyone who could work did. As plantation agriculture collapsed (the last sugar mill closed in 2016), those workers were not absorbed into equivalent employment. Tourism and hospitality replaced them with a sector characterized by part-time schedules, seasonal patterns, and lower wages. Today, two structural forces drive continued disengagement: childcare costs that make workforce participation economically irrational for lower-income second earners (median Oahu childcare exceeds $20,000 per year), and an aging military-retiree population that enters Hawaii's labor statistics as working-age but non-participating.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Minnesota",
+          "text": "Minnesota has ranked #1 or #2 in labor force participation for most of the past four decades. The most transferable element is Minnesota's Child Care Assistance Program (CCAP), which provides subsidized childcare for families earning up to 67 percent of state median income on a sliding-fee scale. Minnesota's legislature doubled CCAP funding between 2019 and 2023 and expanded eligibility to cover more working families. Independent analysis by the Minnesota Department of Employment and Economic Development found that each dollar invested in CCAP generates between $1.36 and $1.83 in increased labor force participation and associated tax revenue. Hawaii has a comparable program (CCCH) but with a lower income eligibility threshold and a shorter benefit duration. Expanding CCCH's eligibility to match Minnesota's would directly address the primary economic barrier to participation for working parents with young children."
+        }
+      ],
+      "explore": [
+        "Hawaii's informal and gig economy is larger relative to measured employment than in most states, partly because the high cost of living makes informal income-supplementing activity widespread (informal accommodation rentals, informal care work, unregistered personal services). BLS labor force participation measures count only people actively working or actively seeking formal employment. The true economic activity rate may be higher than reported, but it is not captured in wages, benefits, or tax contributions in ways that support long-term worker stability.",
+        "The military retiree and veteran population in Hawaii is among the highest per capita of any state. Veterans who separate from service before age 65 often have disability ratings that provide income without requiring employment. This population counts as working-age non-participating in LFP statistics. State-level veteran reemployment programs that specifically target the 20-to-40-year-old separation cohort, who have the highest potential for civilian career transition, are the most targeted intervention available."
+      ],
+      "caution": {
+        "state": "West Virginia",
+        "text": "West Virginia has ranked last or near-last in labor force participation for over 20 years following the collapse of the coal industry. When the sector-defining employer leaves, workers over 50 who lose jobs do not typically retrain and re-enter the labor force: they exit permanently, often through disability claims. West Virginia's disability rate is among the highest in the country. Hawaii faces an analogous risk as hospitality automation (kiosks, AI customer service, automated housekeeping) displaces front-line workers over the next decade. Workers displaced from low-skill hospitality jobs at ages 50 to 60, without a retraining bridge, are at high risk of permanent labor force exit. Hawaii does not currently have a large-scale retraining program for this population."
+      }
+    }
   },
   "real_per_capita_income": {
     "area": "Economy & Workforce",
