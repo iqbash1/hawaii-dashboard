@@ -891,7 +891,25 @@ const DASHBOARD_DATA = {
       "2024": 0.4535
     },
     "policyLevers": "Housing production and permitting reform; rental assistance and tenant stability; infrastructure that unlocks new housing.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked #46 to #49 in renter cost burden every year since 2012. Over half of Hawaii renters pay more than 30 percent of their income on housing, compared to roughly 42 percent nationally. The rank briefly improved to #47 in 2018, fell back to #49 from 2019 through 2023, and improved to #46 in 2024. The driver is a severe supply shortage: Hawaii has built far fewer rental units than population growth and household formation require. Short-term rental platforms have converted an estimated 20,000 to 25,000 residential units to vacation use, directly competing with long-term renters for a constrained stock. High land and construction costs make new market-rate apartments financially unviable without subsidy, and affordable housing pipelines have not produced at the scale needed.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Texas",
+          "text": "Houston has maintained one of the lowest renter cost burdens of any major US metropolitan area through a combination of no citywide zoning restrictions and a permitting process that allows large apartment complexes to be approved and built in 12 to 18 months. When demand rises, supply follows quickly, which prevents sustained rent spikes. Texas as a state has among the lowest renter cost burden percentages in the country relative to income. The mechanism is not subsidized housing but supply-side permissiveness: no height limits in most areas, no minimum parking requirements that inflate construction costs, and no design review that adds months to project timelines. Hawaii's counties could adopt this model selectively in transit-served urban zones without applying it statewide."
+        }
+      ],
+      "explore": [
+        "Hawaii's counties have enacted short-term rental (STR) regulations with varying effectiveness. Maui County's 2023 STR crackdown, which targeted non-hosted vacation rentals in residential areas following the Lahaina fires, converted an estimated several thousand units to long-term availability. A statewide data-sharing mandate requiring STR platforms to report active listings to county tax authorities by address would enable consistent enforcement of existing rules, which differ by island.",
+        "The Low Income Housing Tax Credit (LIHTC) program is Hawaii's largest source of affordable rental production funding. Hawaii has consistently underutilized its LIHTC allocation relative to other states because state environmental review and permitting delays make projects financially unviable before they are built. Streamlining environmental review for projects on already-disturbed urban land would reduce the financing gap without requiring new state appropriations."
+      ],
+      "caution": {
+        "state": "California",
+        "text": "California has enacted the most comprehensive tenant protection and rent stabilization framework of any state, including statewide rent stabilization (AB 1482, 2019), just-cause eviction protections, and significant rent assistance programs. Renter cost burden in California has nonetheless remained among the highest in the country, because demand continues to exceed supply by a larger margin than the subsidies and protections can bridge. Hawaii's housing policy conversation is frequently dominated by tenant protection proposals. California's experience indicates that without parallel supply growth, protections redistribute who bears the cost rather than reducing the total cost burden."
+      }
+    }
   },
   "home_price_to_income": {
     "area": "Housing & Cost of Living",
