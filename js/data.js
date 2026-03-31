@@ -1722,7 +1722,25 @@ const DASHBOARD_DATA = {
       "2023": 10.2
     },
     "policyLevers": "Licensing and permit speed; access to capital; startup assistance and procurement access.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii ranked in the top 10 to 20 for new establishment entry through the early 1980s, when the tourism boom and plantation diversification were driving new business formation. The rate collapsed from the mid-1990s onward as agricultural employment disappeared and no replacement sectors emerged. Since 2000, Hawaii has oscillated between #27 and #46, with sharp COVID disruption (crashed to #46 in 2021) followed by a post-reopening bounce (rose to #19 in 2022). The 2023 reading of #37 reflects normalization. Hawaii's entry rate has structurally underperformed the US average for nearly 30 years. The primary barriers are well-documented: commercial space costs among the highest in the country, the General Excise Tax applied at every stage of the supply chain, a professional licensing system among the most expansive in the US, and a venture capital ecosystem that is a fraction of the size of comparable tech-oriented states.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Ohio",
+          "text": "Ohio launched the Ohio Third Frontier program in 2002, a 10-year, $1.4 billion state investment in technology commercialization infrastructure, early-stage capital access, and STEM startup formation. Rather than subsidizing individual companies directly, Third Frontier funded commercialization accelerators, proof-of-concept centers at universities, and early-stage venture funds that co-invested with private capital. Ohio's technology startup formation rate increased substantially over the program's first decade, and the state used it to build clusters in biomedical devices, advanced materials, and clean energy around its research universities. The transferable mechanism for Hawaii: directed investment in commercialization infrastructure between university research and viable early-stage companies, which is the gap where most University of Hawaii research currently sits without a clear path to business formation."
+        }
+      ],
+      "explore": [
+        "Hawaii's professional licensing burden is among the heaviest in the country: over 20 percent of workers require a state license to practice their occupation, compared to roughly 5 percent in the 1950s nationally. Many of these licenses were designed to protect incumbents rather than consumers. A sunset review of occupational licensing requirements, similar to what Arizona and Montana have enacted, would remove barriers to self-employment in a range of service occupations without affecting public safety outcomes.",
+        "The GET's cascading structure (applied at each stage of a supply chain, including business-to-business transactions) makes Hawaii uniquely expensive to operate a multi-vendor business relative to states with simple sales taxes. Restructuring the GET to exempt business inputs from the tax (moving to a true sales tax model) has been proposed multiple times in the Legislature but not enacted. The Joint Economic Committee has estimated that restructuring would reduce the effective tax burden on new businesses by 15 to 20 percent."
+      ],
+      "caution": {
+        "state": "Connecticut",
+        "text": "Connecticut has chronic low new establishment formation rates despite significant state investment in business development programs, economic development authorities, and targeted sector incentives. The state's own analyses have found that entry-level barriers (commercial lease costs, complex multi-agency permitting, high workers' compensation costs, and corporate tax structure) deter formation regardless of the incentives offered at the other end. Incentives that reduce taxes for established businesses do not address the friction that prevents new businesses from reaching the formation stage. Hawaii faces the same dynamic: its current business incentive programs (Act 221 credits, enterprise zones, HIDA programs) primarily benefit companies that have already formed, not the would-be founders who never start."
+      }
+    }
   },
   "net_employer_formation": {
     "area": "Economy & Workforce",
