@@ -54,7 +54,7 @@
         .fyc-chip.rank-down .fyc-chip-count { color: #b45309; }
 
         /* Executive summary / lede (now appears at top of content) */
-        .fyc-exec { font-size: 0.93rem; color: var(--text); line-height: 1.7; margin: 0 0 1.75rem; padding: 0 0 0 0.9rem; border-left: 3px solid var(--hawaii-blue); text-align: left; }
+        .fyc-exec { font-size: 0.93rem; color: var(--text); line-height: 1.7; margin: 0 0 1.75rem; text-align: left; }
 
         /* Print button */
         .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: 0.7rem; padding: 0.25rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }
@@ -71,9 +71,6 @@
         .fyc-scorecard-trend { font-size: 0.7rem; flex: 0 0 auto; text-align: right; white-space: nowrap; }
         .fyc-scorecard-imp { color: var(--positive); font-weight: 600; }
         .fyc-scorecard-wor { color: var(--negative); font-weight: 600; }
-
-        /* Peer ranks line in national ranking table */
-        .fyc-rank-peers { font-size: 0.6rem; color: var(--text-muted); line-height: 1.4; margin-top: 0.08rem; }
 
         /* Area sections */
         .fyc-area { margin-top: 2rem; }
@@ -134,8 +131,7 @@
             .fyc-header { padding-top: 0.5rem; }
             body { font-size: 10.5pt; }
             a { text-decoration: none; color: inherit !important; }
-            .fyc-exec { border-left-color: #555; }
-            .fyc-row:hover, .fyc-rank-item:hover, .fyc-scorecard-row:hover { background: none !important; }
+.fyc-row:hover, .fyc-rank-item:hover, .fyc-scorecard-row:hover { background: none !important; }
             .fyc-area { break-inside: avoid; }
             .fyc-row { break-inside: avoid; }
         }
@@ -183,15 +179,6 @@
     <script>
     (function() {
         /* ── Constants ── */
-
-        // Peer states shown in the national ranking table (abbreviation + STATE_DATA name)
-        // Edit this list to change which states appear as comparators.
-        const PEER_STATES = [
-            { abbr: 'CA', name: 'California' },
-            { abbr: 'OR', name: 'Oregon' },
-            { abbr: 'WA', name: 'Washington' },
-            { abbr: 'AK', name: 'Alaska' },
-        ];
 
         const AREA_ORDER = [
             { area: 'Safety & Health', metrics: ['violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
@@ -339,17 +326,6 @@
                 medianValue,
                 year
             };
-        }
-
-        /* ── Ranks for PEER_STATES for a given metric + year ── */
-        function getPeerRanks(slug, targetYear) {
-            const all = getAllRanksForYear(slug, targetYear);
-            if (!all) return [];
-            const { stateValues } = all;
-            return PEER_STATES.map(({ abbr, name }) => {
-                const idx = stateValues.findIndex(s => s.state === name);
-                return { abbr, rank: idx >= 0 ? idx + 1 : null };
-            }).filter(p => p.rank !== null);
         }
 
         /* ── Compute 5-year change for a metric ── */
@@ -911,13 +887,9 @@
                         ${allRanked.map(r => {
                             const tot = r.standing.endTotal || 50;
                             const cls = rankColorClass(r.standing.endRank, tot);
-                            const peers = getPeerRanks(r.slug, r.latestYear);
-                            const peersLine = peers.length
-                                ? `<div class="fyc-rank-peers">${peers.map(p => `${p.abbr}\u00a0#${p.rank}`).join(' \u00b7 ')}</div>`
-                                : '';
                             return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                                 <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
-                                <span class="fyc-rank-name">${r.metric}${peersLine}</span>
+                                <span class="fyc-rank-name">${r.metric}</span>
                                 ${rankMoveHtml(r)}
                             </a>`;
                         }).join('')}
