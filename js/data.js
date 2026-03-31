@@ -105,7 +105,25 @@ const DASHBOARD_DATA = {
       "2024": 339.5
     },
     "policyLevers": "Violence prevention and behavioral health; prosecution, sentencing, and reentry policy; victim services and youth intervention.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked #5 to #12 in violent crime every year on record, running 35 to 40 percent below the national average for four decades. The 2024 rate of 218 per 100K is the lowest on record. Geographic isolation limits trafficking of weapons that drives violence in landlocked states, and tight multigenerational community networks provide informal social cohesion.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "Maine",
+          "text": "Maine has ranked #1 or #2 in violent crime rate for most of the past three decades and has maintained that position through significant economic and demographic shifts. Maine's rate has stayed below 130 per 100K for most of the past decade, roughly a third of the national average. The core factors are consistent: low population density that limits anonymity, very low gang activity, and community-centered law enforcement that emphasizes relationship-based approaches over reactive response."
+        }
+      ],
+      "explore": [
+        "Hawaii's low violent crime coexists with the highest unsheltered homelessness rate in the country, a divergence from the typical pattern where high homelessness correlates with elevated crime. Hawaii's informal community support networks and cultural norms appear to buffer the violence pathway that homelessness triggers in other states.",
+        "The FBI's 2021 transition from UCR to NIBRS reporting expanded the offense definitions counted as violent crime. States that adopted NIBRS earlier show apparent rate increases that reflect methodology, not actual change. Hawaii's pre- and post-2021 comparisons should account for this reporting shift."
+      ],
+      "caution": {
+        "state": "New Mexico",
+        "text": "New Mexico ranked near the national midpoint for violent crime through the 1990s and now consistently ranks last. The deterioration tracks the expansion of drug trafficking corridors through the state, the hollowing out of rural social services, and a collapse of community trust in law enforcement. New Mexico's drug trafficking exposure and rural service erosion represent a pattern of preconditions Hawaii recognizes in its own methamphetamine supply chain and neighbor island service gaps."
+      }
+    }
   },
   "property_crime_rate": {
     "area": "Safety & Health",
@@ -273,7 +291,25 @@ const DASHBOARD_DATA = {
       "2023": 77.3
     },
     "policyLevers": "Provider recruitment and retention; Medicaid payment and access policy; training pipelines and rural clinic support.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked in the top 10 for primary care physician density every year on record, consistently running about 14 percent above the other-state average. The statewide count masks a sharp geographic divide: Oahu concentrates physicians due to the John A. Burns School of Medicine, residency programs, and VA and military facilities, while neighbor island communities hold federal Health Professional Shortage Area designations. After peaking at 96.7 per 100K in 2020, the count fell to 86.8 in 2022 before stabilizing at 88.1 in 2023.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "Vermont",
+          "text": "Vermont has ranked in the top 5 for primary care physician density for most of the past two decades despite having one of the most rural and geographically dispersed populations in the country. Vermont's Blueprint for Health (enacted 2006) created a statewide primary care coordination framework with community health teams embedded in practices, improving physician retention by reducing administrative burden. Vermont also operates a loan repayment program requiring multi-year rural service commitments."
+        }
+      ],
+      "explore": [
+        "Hawaii's J-1 visa waiver program places international medical graduates in designated shortage areas in exchange for service commitments, a federal tool the state actively uses to fill neighbor island gaps. The number of J-1 waiver slots Hawaii requests annually determines how many physicians reach rural communities.",
+        "Physicians who train at JABSOM or complete residencies on Oahu rarely relocate to neighbor islands after establishing practices and families in Honolulu. Neighbor island pipeline programs tied to JABSOM admissions targets have been proposed but not sustained."
+      ],
+      "caution": {
+        "state": "Oklahoma",
+        "text": "Oklahoma ranked in the top half for primary care physician density through the 2000s and has since declined as rural hospital closures reduced the practice environments that attract physicians. Fourteen rural hospitals closed in Oklahoma between 2010 and 2023, and physicians do not locate near closed hospitals. Hawaii's neighbor island hospitals face similar financial pressures, and their closure would accelerate the physician shortage the J-1 program currently offsets."
+      }
+    }
   },
   "uninsured_rate": {
     "area": "Safety & Health",
@@ -320,7 +356,25 @@ const DASHBOARD_DATA = {
       "2024": 0.0768
     },
     "policyLevers": "Med-QUEST eligibility and renewals; enrollment outreach and navigator support; regulation of private coverage.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked #1 or #2 in health coverage every year on record. The foundation is the Prepaid Health Care Act of 1974, the nation's first employer health insurance mandate, which required coverage for workers logging 20 or more hours per week. The uninsured rate fell from 7.9 percent in 2010 to 2.8 percent in 2023 following ACA expansion, then ticked to 3.5 percent in 2024 as federal continuous Medicaid enrollment ended and redetermination reviews removed some enrollees.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "Massachusetts",
+          "text": "Massachusetts has ranked #1 in health coverage since 2008. Chapter 58 (2006, RomneyCare) combined an individual coverage mandate, employer contribution requirements, and Medicaid expansion, reducing the uninsured rate from 10 percent in 2005 to below 3 percent by 2010. Massachusetts retained its lead after the ACA because its mandate and state-level premium subsidies cover a gap population that earns too much for Medicaid but may forgo coverage without an incentive."
+        }
+      ],
+      "explore": [
+        "Hawaii's Prepaid Health Care Act does not cover workers below the 20-hour threshold, a gap that falls disproportionately on part-time tourism and hospitality workers. This population is the primary driver of Hawaii's remaining 3.5 percent uninsured rate.",
+        "The ACA's Medicaid expansion in Hawaii reached residents earning up to 138 percent of the federal poverty level. The 2024 uptick in uninsured rates reflects the end of pandemic-era continuous enrollment, not a structural policy change."
+      ],
+      "caution": {
+        "state": "Tennessee",
+        "text": "Tennessee operated TennCare, one of the broadest Medicaid programs in the country through the early 2000s, covering roughly 1.3 million residents and ranking among the highest-coverage states. Facing budget pressures, Tennessee disenrolled roughly 190,000 members in 2005 in a single year. Uninsured rates rose sharply and Tennessee fell from near the top of coverage rankings to below average."
+      }
+    }
   },
   "suicide_rate": {
     "area": "Safety & Health",
@@ -392,7 +446,25 @@ const DASHBOARD_DATA = {
       "2024": 16.96
     },
     "policyLevers": "Behavioral health access; school and community prevention; crisis response and post-attempt care.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked among the lowest states in suicide mortality for most of the past 25 years, though its position has weakened since 2017 as rates climbed nationwide and Hawaii's own rate rose from around 12 to the mid-teens per 100,000. The structural factors underlying Hawaii's lower rate include dense urban population patterns, warm climate, cultural emphasis on family interdependence, and a public insurance system that provides broad access to primary and behavioral health care.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "New Jersey",
+          "text": "New Jersey has ranked #1 or #2 in lowest suicide rate for most of the past decade, consistently below 8 per 100,000. The state operates a statewide network of community mental health centers with designated mobile crisis teams in every county, funded through a combination of state appropriations and federal Community Mental Health Block Grants. New Jersey also maintains a suicide prevention infrastructure office within its Department of Human Services that coordinates school-based programs, crisis line training, and means restriction outreach."
+        }
+      ],
+      "explore": [
+        "Hawaii's rate has risen from a low of 8.2 in 2005 to 17.1 in 2022, a more than doubling, even as the uninsured rate fell to near zero. This suggests that coverage alone does not determine mental health outcomes; workforce availability and geographic access to specialists are distinct constraints.",
+        "Neighbor island counties have limited psychiatric provider capacity. Telehealth expansion since 2020 has partially closed this gap, but rural and outer-island residents still face longer wait times for in-person behavioral health services than urban Oahu residents."
+      ],
+      "caution": {
+        "state": "Montana",
+        "text": "Montana has ranked among the highest states in suicide mortality for decades. Rural isolation, high rates of firearm ownership, limited mental health provider density, and a small Medicaid population combine to create persistent structural barriers to care. Montana's rate has remained above 25 per 100,000 even as prevention investment increased, illustrating that geography and means access can dominate policy interventions in dispersed populations."
+      }
+    }
   },
   "acgr": {
     "area": "Education",
@@ -435,7 +507,25 @@ const DASHBOARD_DATA = {
       "2022": 85.9
     },
     "policyLevers": "Attendance and dropout prevention; counseling, credit recovery, and student supports; college and career pathways.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii ranked #29 in high school graduation rate in 2022, roughly matching the national average at 86 percent. Hawaii improved 6 percentage points from 2011 to 2022, but most states improved faster during the same period. As the only state with a single statewide school district, Hawaii's graduation rate is directly a function of state policy with no local variation to mask overall performance.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Virginia",
+          "text": "Virginia climbed from 87 percent in 2011 to 93 percent in 2022, moving from below-average to near the top of the national rankings. Virginia restructured its diploma pathways in 2012 to add a Career and Technical Education (CTE) diploma option that allowed students to count industry certifications toward graduation requirements. The state also set a counselor-to-student ratio target of 1:250 and invested in school counselor hiring through the Lottery-funded At-Risk Add-On program. These structural changes created multiple on-ramps to graduation for students who did not fit the traditional academic track."
+        }
+      ],
+      "explore": [
+        "Hawaii's statewide district structure means that policy changes propagate uniformly, which can accelerate improvement if the right levers are pulled but also means there is no local lab for experimentation.",
+        "The gap between Hawaii's graduation rate and its NAEP test scores suggests that dropout risk is concentrated among students facing economic and logistical barriers rather than academic underpreparedness."
+      ],
+      "caution": {
+        "state": "Louisiana",
+        "text": "Louisiana increased its reported graduation rate from 67 percent in 2012 to 78 percent by 2016, a 10-point gain in four years. Subsequent analysis found that much of the increase came from aggressive use of credit recovery programs that allowed students to replace failed courses with online alternatives that did not improve tested knowledge. NAEP scores did not rise over the same period, indicating that the graduation rate gain was not matched by learning gains. Louisiana's experience illustrates the risk of rate inflation through pathway manipulation rather than genuine improvement."
+      }
+    }
   },
   "ba_or_higher_pct": {
     "area": "Education",
@@ -489,7 +579,25 @@ const DASHBOARD_DATA = {
       "2024": 0.3575
     },
     "policyLevers": "College affordability; transfer, retention, and completion support; adult learner and workforce-aligned degree pathways.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked near the middle of states in bachelor's degree attainment throughout the 2010s, rising from 29.1 percent in 2008 to 37.8 percent in 2024 and tracking 1 to 2 points above the other-state average. The state's rank has held roughly steady despite the share itself rising, because most states improved at similar rates. In-migration of college-educated military and federal employees inflates Hawaii's attainment rate relative to what resident graduates alone would produce.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "Colorado",
+          "text": "Colorado has ranked #1 or #2 in bachelor's degree attainment for most of the past decade, reaching 45 percent of adults by 2023. Colorado's rate reflects a combination of a large in-state public university system, a technology and aerospace sector that attracts graduates, and relatively low tuition at flagship institutions through the College Opportunity Fund voucher program enacted in 2004. The tech economy creates a self-reinforcing cycle: degree-holders move to Colorado for jobs, raising attainment, which then attracts more employers."
+        }
+      ],
+      "explore": [
+        "Hawaii's attainment rate is partly a product of in-migration rather than homegrown graduate retention. Military, federal, and professional in-migrants hold degrees at high rates, raising the statewide number even as some Hawaii-raised graduates leave for mainland opportunities.",
+        "University of Hawaii system enrollment declined through the early 2020s. Sustained attainment growth depends on whether resident students can complete degrees in-state rather than leaving or forgoing college."
+      ],
+      "caution": {
+        "state": "West Virginia",
+        "text": "West Virginia ranked near the bottom in bachelor's degree attainment through the 2010s and early 2020s, with a rate near 22 percent. The decline of the coal and manufacturing economy removed well-paying jobs that did not require degrees, but the resulting out-migration hit educated workers disproportionately. Workers with degrees left for better labor markets, leaving behind a population with lower average attainment. West Virginia illustrates that attainment rates can fall or stagnate when an economy fails to retain the graduates it produces."
+      }
+    }
   },
   "naep_math_8": {
     "area": "Education",
@@ -593,7 +701,25 @@ const DASHBOARD_DATA = {
       "2024": 256.94
     },
     "policyLevers": "Early literacy and reading support; teacher pipeline and coaching; attendance and family support.",
-    "updateCadence": "Biennial"
+    "updateCadence": "Biennial",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii ranked below the national average in 8th grade reading for two decades, with a gap of roughly 10 to 12 points persisting from 2003 through the early 2010s. The gap has closed sharply since 2013, driven by both Hawaii improving and the national average declining. In 2024, Hawaii's score of 257 matched the other-state average for the first time on record.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Mississippi",
+          "text": "Mississippi was consistently last or near-last in reading scores through 2018. The state enacted the Mississippi Literacy Act in 2019, which required all third-grade reading teachers to be trained in structured literacy, placed literacy coaches in every school, and barred third-grade promotion for students not reading at grade level. By 2022, Mississippi's 4th grade reading scores rose 3 points on NAEP while the national average fell 3 points, the largest positive divergence in the country. Mississippi's 8th grade reading scores also improved against national trends."
+        }
+      ],
+      "explore": [
+        "Hawaii's reading convergence with the national average since 2013 has come partly from the rest of the country declining rather than Hawaii accelerating. A structural literacy program similar to Mississippi's, applied to Hawaii's single statewide district, could potentially drive genuine gains rather than relative convergence.",
+        "Hawaii's multilingual population, with many students whose first language is not English, creates both challenges for standard reading assessments and a need for evidence-based instructional approaches that account for language transfer."
+      ],
+      "caution": {
+        "state": "Kentucky",
+        "text": "Kentucky scored above the national average in 8th grade reading in 2011 and maintained that position through the mid-2010s. By 2022, Kentucky had fallen below the national average. Kentucky did not adopt a structured literacy requirement until 2022 legislation, and the delay coincided with a period when states that did adopt phonics-based mandates pulled ahead while Kentucky's scores declined. Kentucky illustrates that a good starting position does not protect a state's rank if instructional practices stagnate."
+      }
+    }
   },
   "unemployment_rate": {
     "area": "Economy & Workforce",
@@ -710,7 +836,25 @@ const DASHBOARD_DATA = {
       "2024": 0.0369
     },
     "policyLevers": "Sector growth and job creation; training and job matching; unemployment insurance and rapid reemployment.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked among the lowest unemployment states for most of the past 40 years, typically ranking #3 to #8. The exception was 2020, when Hawaii's tourism-dependent economy shed jobs faster than any other state, driving unemployment to 11.6 percent and the rank to near last. Recovery took until 2022 to return Hawaii to the top 10, illustrating the structural volatility that accompanies a single-sector-dependent economy.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "Nebraska",
+          "text": "Nebraska has ranked #1 or #2 in lowest unemployment for most of the past three decades. Nebraska's economy spreads risk across agriculture, food processing, financial services, insurance, healthcare, and manufacturing. During the COVID downturn, Nebraska's unemployment peaked at roughly 8 percent in April 2020, compared to Hawaii's 11.6 percent annual average and peak rates above 20 percent in individual months. Nebraska recovered to near pre-pandemic levels within 12 months."
+        }
+      ],
+      "explore": [
+        "Hawaii's low normal-year unemployment reflects strong demand for workers in tourism and hospitality, not economic diversification. When visitor arrivals fall sharply, as in 2020, the labor market has no offsetting sector to absorb displaced workers.",
+        "Recovery from the 2020 spike to 3 percent by 2024 was driven almost entirely by the return of tourism rather than the growth of new sectors. The same volatility risk that existed in 2019 exists today."
+      ],
+      "caution": {
+        "state": "Nevada",
+        "text": "Nevada, like Hawaii, concentrates employment in tourism and hospitality. Nevada has chronically ranked among the most volatile unemployment states, spiking to 14 percent in the 2008 recession and 30 percent in early 2020. Unlike Hawaii, Nevada has not recovered as quickly between downturns because its labor market has no large anchor sector outside gaming and conventions. Nevada's persistent unemployment volatility illustrates the long-term cost of concentrated tourism dependence."
+      }
+    }
   },
   "labor_force_participation": {
     "area": "Economy & Workforce",
@@ -1223,7 +1367,25 @@ const DASHBOARD_DATA = {
       "2024": 0.9278
     },
     "policyLevers": "Last-mile deployment; affordability and adoption support; digital skills and device access.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked in the top quarter of states in broadband subscription rates since 2016, consistently 1 to 2 points above the other-state average. The subscription rate climbed from 83 percent in 2016 to 93 percent in 2024, tracking the national trend closely. Hawaii's lead reflects relatively high household income and urban density on Oahu, with the remaining unsubscribed households concentrated in rural neighbor island areas where affordability rather than infrastructure availability is the primary constraint.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "Utah",
+          "text": "Utah has ranked among the top five states in broadband subscription for most of the past decade. Utah's performance is anchored by UTOPIA Fiber, a municipal fiber consortium formed in 2002 by eleven cities that built open-access gigabit infrastructure available to any competing provider. Utah also established a state broadband office in 2020 that coordinates deployment funding and tracks coverage gaps at the census block level. Utah's rural broadband subscription rates have consistently ranked higher than comparably rural states."
+        }
+      ],
+      "explore": [
+        "Hawaii's overall subscription rate masks a county-level gap. Oahu's subscription rate is near or above the national top tier, while rural Maui, Hawaii County, and Molokai have rates closer to the national average or below.",
+        "The remaining unsubscribed population in Hawaii is primarily a cost barrier, not an infrastructure gap. The federal Affordable Connectivity Program, which expired in 2024, covered roughly 50,000 Hawaii households. Its expiration likely contributed to any stagnation in subscription rates going forward."
+      ],
+      "caution": {
+        "state": "Mississippi",
+        "text": "Mississippi received substantial federal and state infrastructure investment to extend broadband access during the 2010s, building out last-mile fiber to previously unserved rural communities. Despite increased infrastructure availability, subscription rates remained near the bottom of national rankings through 2023. The Mississippi experience illustrates that building infrastructure does not automatically translate into higher subscription rates when households face cost barriers, and that affordability programs are necessary alongside deployment investment."
+      }
+    }
   },
   "residential_price_cpkwh": {
     "area": "Housing & Cost of Living",
@@ -1398,7 +1560,25 @@ const DASHBOARD_DATA = {
       "2025": 0.2867
     },
     "policyLevers": "Renewable procurement and permitting; grid upgrades and storage; utility planning and interconnection.",
-    "updateCadence": "Monthly (shown annual)"
+    "updateCadence": "Monthly (shown annual)",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked below the national average in renewables generation share for most of its recorded history, starting at 5.6 percent in 2003 when the other-state average was already near 13 percent. The gap widened through the 2010s as mainland states rapidly added wind capacity. Hawaii's share reached 22 percent by 2025, but the other-state average reached 29 percent over the same period, meaning Hawaii has improved in absolute terms while falling further behind in relative terms.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Iowa",
+          "text": "Iowa enacted the first state Renewable Portfolio Standard in the nation in 1983. By the early 2000s, Iowa had developed long-term fixed-price wind contracts with utilities that made wind development financially predictable. Iowa's wind energy share crossed 60 percent of total generation by 2020, the highest of any large state. The fixed-price contract structure allowed developers to finance projects without relying on volatile wholesale electricity prices, and the state's transmission investment kept interconnection costs low enough to sustain continued development."
+        }
+      ],
+      "explore": [
+        "Hawaii's island grid structure creates both a constraint and an opportunity. Each island must balance supply and demand independently without interconnection to neighboring grids, which limits how much intermittent renewable generation can be added without battery storage. However, the same isolation means Hawaii's cost savings from replacing oil-fired generation are larger per kilowatt-hour than for any other state.",
+        "Hawaii's rooftop solar penetration, roughly one in three homes, is the highest in the nation. However, rooftop generation counts differently in utility planning than utility-scale generation, and the grid management challenge of high residential solar penetration has at times slowed interconnection approvals for new projects."
+      ],
+      "caution": {
+        "state": "Arizona",
+        "text": "Arizona had among the highest rooftop solar adoption rates in the country through 2013, driven by net metering policies that credited solar customers at retail rates. In 2013, the Arizona Corporation Commission approved a monthly fixed charge on new solar customers after utilities argued that solar adopters were shifting grid costs to non-solar customers. New rooftop solar installations fell roughly 90 percent within months of the change. Arizona's experience illustrates how rate structure decisions by a state utility commission can rapidly reverse solar adoption gains independent of resource availability."
+      }
+    }
   },
   "food_insecurity_rate": {
     "area": "Housing & Cost of Living",
@@ -1452,7 +1632,25 @@ const DASHBOARD_DATA = {
       "2022-2024": 0.1295
     },
     "policyLevers": "SNAP and WIC access; school and summer meals; local food access and emergency food support.",
-    "updateCadence": "3-year average"
+    "updateCadence": "3-year average",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked in the top quarter of states in food security for most of the past decade, reaching #9 in the 2022-2024 period with a rate of 10.8 percent. The state improved substantially from a post-recession peak of 14 percent in 2010-2012 before rising again after 2022 as grocery prices increased sharply. Hawaii's strong position relative to its cost of living reflects robust federal nutrition program enrollment, including SNAP, WIC, and school meals, rather than low grocery prices.",
+      "mode": "protect",
+      "benchmarks": [
+        {
+          "state": "Minnesota",
+          "text": "Minnesota has ranked among the top five states in food security for most of the past decade. Minnesota's low food insecurity rate reflects high SNAP and WIC enrollment rates relative to eligible population, strong school meal participation above the national average, and a regional food bank network anchored by Second Harvest Heartland that operates one of the largest food distribution systems in the country. Minnesota also provides state-funded food assistance that supplements federal programs for residents who do not qualify for SNAP."
+        }
+      ],
+      "explore": [
+        "Hawaii imports over 80 percent of its food, making grocery prices highly sensitive to shipping costs, fuel prices, and supply chain disruptions. This structural import dependence means that national inflation events hit Hawaii households harder in dollar terms than most other states.",
+        "The 2022-2024 uptick in food insecurity preceded the expiration of the federal enhanced SNAP benefits that had been in place since 2020. The return to pre-pandemic SNAP allotments in 2023 coincided with elevated grocery prices, a combination that pushed food insecurity higher across most states."
+      ],
+      "caution": {
+        "state": "Arkansas",
+        "text": "Arkansas implemented SNAP work requirements in 2018 through a federal waiver, requiring able-bodied adults without dependents to document work or job training activities to maintain benefits. In the year following implementation, SNAP enrollment declined sharply and food insecurity rates rose in affected counties. Arkansas illustrates that eligibility restrictions on nutrition assistance programs can worsen food security outcomes when the underlying economic conditions that make people eligible for assistance have not changed."
+      }
+    }
   },
   "rainy_day_fund_pct": {
     "area": "Infrastructure, Resilience & Trust",
@@ -1500,7 +1698,25 @@ const DASHBOARD_DATA = {
       "2025": 0.1672
     },
     "policyLevers": "Reserve deposit rules; revenue forecasting and spending discipline; disaster readiness and recovery planning.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii ranked near the bottom of states in rainy day fund reserves for most of the 2010s, holding less than 2 percent of general fund expenditures against a national average near 10 percent. The fund dropped to 0.7 percent during COVID before recovering rapidly as tourism revenues returned. By 2024, Hawaii crossed 14 percent, reaching the 10 percent minimum threshold recommended by the Government Finance Officers Association for the first time and rising to roughly the national median rank.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "North Carolina",
+          "text": "North Carolina has ranked among the top states in rainy day fund adequacy for over a decade. State law requires that a fixed percentage of surplus revenues be automatically deposited into the Budget Stabilization Reserve each fiscal year, removing the deposit decision from the annual appropriations process. North Carolina's reserve balance grew steadily through the 2010s, and credit rating agencies cited the reserve structure in multiple upgrade decisions. Moody's upgraded North Carolina's bond rating citing fiscal reserves as a primary factor."
+        }
+      ],
+      "explore": [
+        "Hawaii's fund balance grew from 0.7 percent in 2020 to 14.1 percent in 2024, a gain almost entirely driven by the return of tourism revenue rather than by a structural change to deposit rules. Without a statutory automatic deposit mechanism, the reserve remains vulnerable to discretionary decisions in future budget cycles.",
+        "Hawaii's island isolation and exposure to natural disasters including hurricanes, tsunamis, and volcanic events creates a stronger-than-average argument for maintaining a large reserve. Disaster response costs fall disproportionately on island states with limited mutual aid options."
+      ],
+      "caution": {
+        "state": "New Jersey",
+        "text": "New Jersey maintained a rainy day fund balance below 1 percent of general fund expenditures for most of the decade from 2010 to 2020, far below the national average. Moody's and S&P both issued credit downgrades to New Jersey during this period, citing the thin reserve and structural budget imbalance as primary factors. Higher borrowing costs compounded the underlying fiscal stress, requiring larger debt service payments that further constrained the budget. New Jersey illustrates how chronically low reserves create a self-reinforcing cycle of fiscal pressure."
+      }
+    }
   },
   "voter_participation_rate": {
     "area": "Infrastructure, Resilience & Trust",

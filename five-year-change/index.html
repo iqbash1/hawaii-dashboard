@@ -56,9 +56,6 @@
         /* Executive summary / lede (now appears at top of content) */
         .fyc-exec { font-size: 0.93rem; color: var(--text); line-height: 1.7; margin: 0 0 1.75rem; padding: 0 0 0 0.9rem; border-left: 3px solid var(--hawaii-blue); text-align: left; }
 
-        /* Data vintage */
-        .fyc-vintage { font-size: 0.72rem; color: var(--text-muted); text-align: left; margin: 0 0 1.25rem; }
-
         /* Print button */
         .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: 0.7rem; padding: 0.25rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }
         .fyc-print-btn:hover { background: var(--border); }
@@ -173,8 +170,7 @@
 
     <header class="fyc-header">
         <h1>How Hawai&#x02BB;i changed in the last 5 years</h1>
-        <p class="fyc-deck">A quick read on what improved, what worsened, where Hawai&#x02BB;i stands now among states, and how county trends compare where data exists.</p>
-        <p class="fyc-standing-note">Each row shows Hawai&#x02BB;i's 5-year change, where Hawai&#x02BB;i ranked 5 years ago and now, and county direction where available. Standing shows Hawai&#x02BB;i's rank among states and how far it is from the median of the other states.</p>
+        <p class="fyc-deck">What improved, what worsened, where Hawai&#x02BB;i stands among states, and how counties moved where data exists.</p>
     </header>
 
     <div class="fyc-container">
@@ -874,13 +870,7 @@
             // 3b. Executive summary (lede)
             const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi improved its national ranking on ${rankUp} metrics and worsened on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
 
-            // 3c. Data vintage
-            const vintageYears = allResults.map(r => r.latestYear).filter(Boolean);
-            const vintageMin = Math.min(...vintageYears);
-            const vintageMax = Math.max(...vintageYears);
-            const vintageHtml = `<p class="fyc-vintage">Source data: ${vintageMin}\u2013${vintageMax} (varies by metric)</p>`;
-
-            // 3d. Area scorecard
+            // 3c. Area scorecard
             const scorecardHtml = buildAreaScorecard(allResults);
 
             // 3e. National ranking table
@@ -974,8 +964,8 @@
             // 6. Method note
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
-            // Assemble: lede → vintage → scorecard → chips → ranking table → area detail → method
-            document.getElementById('fyc-content').innerHTML = execHtml + vintageHtml + scorecardHtml + chipsHtml + rankTableHtml + areasHtml + methodHtml;
+            // Assemble: lede → scorecard → chips → ranking table → area detail → method
+            document.getElementById('fyc-content').innerHTML = execHtml + scorecardHtml + chipsHtml + rankTableHtml + areasHtml + methodHtml;
         }
 
         render();
