@@ -46,6 +46,7 @@ const RECOMPUTE_METRICS = [
     'home_price_to_income',
     'unemployment_rate',
     'violent_crime_rate',
+    'property_crime_rate',
     'pcp_per_100k',
     'estabs_entry_rate',
     'net_employer_formation',
@@ -58,6 +59,12 @@ const RECOMPUTE_METRICS = [
     'voter_participation_rate',
     'net_domestic_migration_rate',
     'road_poor_pct',
+    'labor_productivity',
+    'rainy_day_fund_pct',
+    'naep_math_8',
+    'naep_reading_8',
+    'labor_force_participation',
+    'suicide_rate',
 ];
 
 // No metrics excluded — all 26 derive from state-data.js
