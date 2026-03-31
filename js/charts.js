@@ -1091,30 +1091,24 @@ const ChartUtils = {
         // Governor bands plugin (same as Trend tab)
         const governorPlugin = ChartUtils._buildGovernorPlugin(govBoxes || [], 0);
 
-        // Quartile shading plugin
+        // Background gradient: green (best/top) → transparent (median) → red (worst/bottom)
         const quartilePlugin = {
             id: 'rankHistoryQuartiles',
             beforeDraw(chart) {
                 const { ctx: c, chartArea: { left, right, top, bottom } } = chart;
                 const yScale = chart.scales.y;
+                // Fraction of chart height where rank 25.5 (median) sits
+                const medY = yScale.getPixelForValue(25.5);
+                const medFrac = Math.max(0, Math.min(1, (medY - top) / (bottom - top)));
                 c.save();
-                c.beginPath();
-                c.rect(left, top, right - left, bottom - top);
-                c.clip();
-                // Top quartile: ranks 1-12.5 (faint green)
-                const topY = yScale.getPixelForValue(yScale.min);
-                const topBottom = yScale.getPixelForValue(Math.min(12.5, yScale.max));
-                if (topBottom > topY) {
-                    c.fillStyle = 'rgba(5, 150, 105, 0.05)';
-                    c.fillRect(left, topY, right - left, topBottom - topY);
-                }
-                // Bottom quartile: ranks 37.5-50 (faint red)
-                const botTop = yScale.getPixelForValue(Math.max(37.5, yScale.min));
-                const botBottom = yScale.getPixelForValue(yScale.max);
-                if (botBottom > botTop) {
-                    c.fillStyle = 'rgba(192, 57, 43, 0.05)';
-                    c.fillRect(left, botTop, right - left, botBottom - botTop);
-                }
+                const grad = c.createLinearGradient(0, top, 0, bottom);
+                grad.addColorStop(0, 'rgba(34,197,94,0.45)');
+                grad.addColorStop(Math.max(0, medFrac - 0.08), 'rgba(34,197,94,0.08)');
+                grad.addColorStop(medFrac, 'rgba(255,255,255,0.0)');
+                grad.addColorStop(Math.min(1, medFrac + 0.08), 'rgba(239,68,68,0.08)');
+                grad.addColorStop(1, 'rgba(239,68,68,0.45)');
+                c.fillStyle = grad;
+                c.fillRect(left, top, right - left, bottom - top);
                 c.restore();
             }
         };
