@@ -6,7 +6,7 @@ A statewide scorecard of outcomes and the conditions that shape them, tracking 2
 
 ## Architecture
 
-Static site hosted on GitHub Pages. No backend, no database, no build step for the frontend.
+Static site hosted on Cloudflare Pages. No backend, no database, no build step for the frontend.
 
 ```
 index.html              Main page (single-page app)
