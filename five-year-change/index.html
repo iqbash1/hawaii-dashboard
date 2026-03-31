@@ -53,13 +53,35 @@
         .fyc-chip.rank-same .fyc-chip-count { color: var(--text-muted); }
         .fyc-chip.rank-down .fyc-chip-count { color: #b45309; }
 
-        /* Executive summary */
-        .fyc-exec { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; max-width: none; margin: 0 0 1.25rem; padding: 0 1rem; text-align: left; }
+        /* Executive summary / lede (now appears at top of content) */
+        .fyc-exec { font-size: 0.93rem; color: var(--text); line-height: 1.7; margin: 0 0 1.75rem; padding: 0 0 0 0.9rem; border-left: 3px solid var(--hawaii-blue); text-align: left; }
+
+        /* Data vintage */
+        .fyc-vintage { font-size: 0.72rem; color: var(--text-muted); text-align: left; margin: 0 0 1.25rem; }
+
+        /* Print button */
+        .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: 0.7rem; padding: 0.25rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }
+        .fyc-print-btn:hover { background: var(--border); }
+
+        /* Area scorecard */
+        .fyc-scorecard { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
+        .fyc-scorecard-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
+        .fyc-scorecard-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.42rem 1rem; border-bottom: 1px solid #f5f6f8; text-decoration: none; color: inherit; transition: background 0.12s; }
+        .fyc-scorecard-row:last-child { border-bottom: none; }
+        .fyc-scorecard-row:hover { background: #f7f9fa; }
+        .fyc-scorecard-area { font-size: 0.78rem; font-weight: 600; color: var(--text); flex: 1; }
+        .fyc-scorecard-median { font-size: 0.7rem; color: var(--text-muted); flex: 0 0 130px; }
+        .fyc-scorecard-trend { font-size: 0.7rem; flex: 0 0 auto; text-align: right; white-space: nowrap; }
+        .fyc-scorecard-imp { color: var(--positive); font-weight: 600; }
+        .fyc-scorecard-wor { color: var(--negative); font-weight: 600; }
+
+        /* Peer ranks line in national ranking table */
+        .fyc-rank-peers { font-size: 0.6rem; color: var(--text-muted); line-height: 1.4; margin-top: 0.08rem; }
 
         /* Area sections */
         .fyc-area { margin-top: 2rem; }
         .fyc-area-head { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); padding-bottom: 0.4rem; border-bottom: 2px solid var(--border); margin-bottom: 0.15rem; }
-        .fyc-area-takeaway { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem; padding: 0.5rem 0; line-height: 1.6; }
+        .fyc-area-takeaway { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.5rem; padding: 0.5rem 0; line-height: 1.6; }
 
         /* Metric rows */
         .fyc-row { display: block; text-decoration: none; color: inherit; padding: 1.25rem 0.5rem; border-bottom: 1px solid #f0f2f4; cursor: pointer; border-radius: 4px; transition: background 0.15s; }
@@ -67,13 +89,13 @@
         .fyc-row:last-child { border-bottom: none; }
 
         .fyc-line1 { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
-        .fyc-metric-name { font-weight: 600; font-size: 0.88rem; color: var(--text); }
+        .fyc-metric-name { font-weight: 600; font-size: 0.92rem; color: var(--text); }
         .fyc-status { font-size: 0.68rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
         .fyc-status.improving { color: var(--positive); background: var(--positive-bg); }
         .fyc-status.worsening { color: var(--negative); background: var(--negative-bg); }
         .fyc-status.little-change { color: var(--text-muted); background: #f0f2f4; }
 
-        .fyc-line2 { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.3rem; }
+        .fyc-line2 { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem; }
         .fyc-val-pos { color: var(--positive); font-weight: 600; }
         .fyc-val-neg { color: var(--negative); font-weight: 600; }
         .fyc-line3 { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
@@ -109,6 +131,18 @@
         .fyc-rank-move.move-down   { color: var(--negative); }
         .fyc-rank-move.move-stable { color: var(--text-muted); font-weight: 400; }
 
+        /* Print */
+        @media print {
+            .top-nav, .fyc-print-btn { display: none !important; }
+            .fyc-header { padding-top: 0.5rem; }
+            body { font-size: 10.5pt; }
+            a { text-decoration: none; color: inherit !important; }
+            .fyc-exec { border-left-color: #555; }
+            .fyc-row:hover, .fyc-rank-item:hover, .fyc-scorecard-row:hover { background: none !important; }
+            .fyc-area { break-inside: avoid; }
+            .fyc-row { break-inside: avoid; }
+        }
+
         /* Mobile */
         @media (max-width: 700px) {
             .fyc-header { padding: 1.5rem 1rem 0; }
@@ -135,6 +169,8 @@
         <a href="/about/" class="top-nav-link">About</a>
     </nav>
 
+    <button class="fyc-print-btn" onclick="window.print()">Print / Save PDF</button>
+
     <header class="fyc-header">
         <h1>How Hawai&#x02BB;i changed in the last 5 years</h1>
         <p class="fyc-deck">A quick read on what improved, what worsened, where Hawai&#x02BB;i stands now among states, and how county trends compare where data exists.</p>
@@ -151,6 +187,16 @@
     <script>
     (function() {
         /* ── Constants ── */
+
+        // Peer states shown in the national ranking table (abbreviation + STATE_DATA name)
+        // Edit this list to change which states appear as comparators.
+        const PEER_STATES = [
+            { abbr: 'CA', name: 'California' },
+            { abbr: 'OR', name: 'Oregon' },
+            { abbr: 'WA', name: 'Washington' },
+            { abbr: 'AK', name: 'Alaska' },
+        ];
+
         const AREA_ORDER = [
             { area: 'Safety & Health', metrics: ['violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
             { area: 'Housing & Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate', 'residential_price_cpkwh', 'food_insecurity_rate'] },
@@ -225,8 +271,8 @@
             return formatted + ' ' + betterOrWorse;
         }
 
-        /* ── Rank for a specific year ── */
-        function getRankForYear(slug, targetYear) {
+        /* ── Build sorted all-state rankings for a given metric + year ── */
+        function getAllRanksForYear(slug, targetYear) {
             const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
             if (!sd || !sd.data) return null;
             const m = DASHBOARD_DATA[slug];
@@ -239,7 +285,6 @@
             let actualYear = null;
 
             if (isPCP) {
-                // FIPS-keyed (pcp_per_100k): entries have { name, "2020": val, ... }
                 for (const tryYear of [targetYear, targetYear - 1, targetYear + 1, targetYear - 2, targetYear + 2]) {
                     stateValues = [];
                     let count = 0;
@@ -252,8 +297,6 @@
                     if (count >= 25) { actualYear = tryYear; break; }
                 }
             } else {
-                // Year-keyed: { "2023": { "Alabama": val, ... } }
-                // Also supports range year keys like "2022-2024" via parseYear matching
                 for (const tryYear of [targetYear, targetYear - 1, targetYear + 1, targetYear - 2, targetYear + 2]) {
                     const matchedKey = Object.keys(sd.data).find(k => parseYear(k) === tryYear);
                     const yearData = matchedKey ? sd.data[matchedKey] : null;
@@ -272,9 +315,17 @@
 
             if (!actualYear || stateValues.length < 25) return null;
 
-            // Sort best-to-worst
             if (m.goodDirection === 'up') stateValues.sort((a, b) => b.value - a.value);
             else stateValues.sort((a, b) => a.value - b.value);
+
+            return { stateValues, year: actualYear };
+        }
+
+        /* ── Rank for a specific year (Hawai'i) ── */
+        function getRankForYear(slug, targetYear) {
+            const all = getAllRanksForYear(slug, targetYear);
+            if (!all) return null;
+            const { stateValues, year } = all;
 
             const hiIdx = stateValues.findIndex(s =>
                 s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
@@ -282,8 +333,6 @@
             if (hiIdx < 0) return null;
 
             const hawaiiValue = stateValues[hiIdx].value;
-
-            // Median: sort numerically, take middle
             const sorted = stateValues.map(s => s.value).sort((a, b) => a - b);
             const medianValue = sorted[Math.floor(sorted.length / 2)];
 
@@ -292,8 +341,19 @@
                 total: stateValues.length,
                 hawaiiValue,
                 medianValue,
-                year: actualYear
+                year
             };
+        }
+
+        /* ── Ranks for PEER_STATES for a given metric + year ── */
+        function getPeerRanks(slug, targetYear) {
+            const all = getAllRanksForYear(slug, targetYear);
+            if (!all) return [];
+            const { stateValues } = all;
+            return PEER_STATES.map(({ abbr, name }) => {
+                const idx = stateValues.findIndex(s => s.state === name);
+                return { abbr, rank: idx >= 0 ? idx + 1 : null };
+            }).filter(p => p.rank !== null);
         }
 
         /* ── Compute 5-year change for a metric ── */
@@ -650,6 +710,42 @@
             return s.join(' ');
         }
 
+        /* ── Area scorecard (one row per policy area) ── */
+        function buildAreaScorecard(allResults) {
+            let rows = '';
+            for (const areaGroup of AREA_ORDER) {
+                const metrics = allResults.filter(r => r.area === areaGroup.area);
+                if (!metrics.length) continue;
+
+                const withRank = metrics.filter(r => r.standing && r.standing.endRank != null);
+                const aboveMedian = withRank.filter(r => r.standing.betterNow).length;
+                const imp = metrics.filter(r => r.status === 'improving').length;
+                const wor = metrics.filter(r => r.status === 'worsening').length;
+                const lit = metrics.filter(r => r.status === 'little-change').length;
+
+                const areaId = areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+
+                const trendParts = [];
+                if (imp) trendParts.push(`<span class="fyc-scorecard-imp">${imp} improving</span>`);
+                if (wor) trendParts.push(`<span class="fyc-scorecard-wor">${wor} worsening</span>`);
+                if (lit && !imp && !wor) trendParts.push(`<span style="color:var(--text-muted)">${lit} little change</span>`);
+
+                const medianText = withRank.length
+                    ? `${aboveMedian} of ${withRank.length} above median`
+                    : 'No rank data';
+
+                rows += `<a href="#fyc-area-${areaId}" class="fyc-scorecard-row">
+                    <span class="fyc-scorecard-area">${areaGroup.area}</span>
+                    <span class="fyc-scorecard-median">${medianText}</span>
+                    <span class="fyc-scorecard-trend">${trendParts.join(' \u00b7 ')}</span>
+                </a>`;
+            }
+            return `<div class="fyc-scorecard">
+                <div class="fyc-scorecard-title">Policy area overview</div>
+                ${rows}
+            </div>`;
+        }
+
         /* ── Build everything ── */
         function render() {
             // 1. Compute all metric results
@@ -775,7 +871,19 @@
                     </div>
                 </div>`;
 
-            // 3b. Combined national standing + 5-year rank change table
+            // 3b. Executive summary (lede)
+            const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi improved its national ranking on ${rankUp} metrics and worsened on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
+
+            // 3c. Data vintage
+            const vintageYears = allResults.map(r => r.latestYear).filter(Boolean);
+            const vintageMin = Math.min(...vintageYears);
+            const vintageMax = Math.max(...vintageYears);
+            const vintageHtml = `<p class="fyc-vintage">Source data: ${vintageMin}\u2013${vintageMax} (varies by metric)</p>`;
+
+            // 3d. Area scorecard
+            const scorecardHtml = buildAreaScorecard(allResults);
+
+            // 3e. National ranking table
             const allRanked = allResults
                 .filter(r => r.standing && r.standing.endRank != null)
                 .sort((a, b) => a.standing.endRank - b.standing.endRank);
@@ -791,7 +899,7 @@
                 if (!r.standing || r.standing.startRank == null) {
                     return `<span class="fyc-rank-move move-stable">&mdash;</span>`;
                 }
-                const move = r.standing.startRank - r.standing.endRank; // positive = climbed
+                const move = r.standing.startRank - r.standing.endRank;
                 if (move >= RANK_SHIFT) {
                     return `<span class="fyc-rank-move move-up">\u2191${move}</span>`;
                 } else if (move <= -RANK_SHIFT) {
@@ -801,13 +909,9 @@
                 return `<span class="fyc-rank-move move-stable">${label}</span>`;
             }
 
-            // 4. Executive summary
-            const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi improved its national ranking on ${rankUp} metrics and worsened on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
-
             const rankTableHtml = `
                 <div class="fyc-rank-breakdown">
                     <div class="fyc-rank-breakdown-title">National ranking</div>
-                    ${execHtml}
                     <div class="fyc-rank-header">
                         <span class="fyc-rank-hdr-rank">Rank</span>
                         <span class="fyc-rank-hdr-name">Metric</span>
@@ -817,9 +921,13 @@
                         ${allRanked.map(r => {
                             const tot = r.standing.endTotal || 50;
                             const cls = rankColorClass(r.standing.endRank, tot);
+                            const peers = getPeerRanks(r.slug, r.latestYear);
+                            const peersLine = peers.length
+                                ? `<div class="fyc-rank-peers">${peers.map(p => `${p.abbr}\u00a0#${p.rank}`).join(' \u00b7 ')}</div>`
+                                : '';
                             return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                                 <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
-                                <span class="fyc-rank-name">${r.metric}</span>
+                                <span class="fyc-rank-name">${r.metric}${peersLine}</span>
                                 ${rankMoveHtml(r)}
                             </a>`;
                         }).join('')}
@@ -854,8 +962,9 @@
                         </a>`;
                 }
 
+                const areaId = areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
                 areasHtml += `
-                    <div class="fyc-area">
+                    <div class="fyc-area" id="fyc-area-${areaId}">
                         <div class="fyc-area-head">${areaGroup.area}</div>
                         <div class="fyc-area-takeaway">${takeaway}</div>
                         ${rowsHtml}
@@ -865,8 +974,8 @@
             // 6. Method note
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
-            // Assemble
-            document.getElementById('fyc-content').innerHTML = chipsHtml + rankTableHtml + areasHtml + methodHtml;
+            // Assemble: lede → vintage → scorecard → chips → ranking table → area detail → method
+            document.getElementById('fyc-content').innerHTML = execHtml + vintageHtml + scorecardHtml + chipsHtml + rankTableHtml + areasHtml + methodHtml;
         }
 
         render();
