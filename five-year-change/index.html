@@ -63,25 +63,25 @@
         /* Area scorecard */
         .fyc-scorecard { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
         .fyc-scorecard-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
-        .fyc-scorecard-header { display: flex; align-items: center; gap: 1rem; padding: 0.28rem 1rem 0.28rem 1.75rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
+        /* shared grid template: area | stars | standing text | trend */
+        .fyc-scorecard-header,
+        .fyc-scorecard-row { display: grid; grid-template-columns: 1fr 115px 155px 145px; gap: 1rem; align-items: center; }
+        .fyc-scorecard-header { padding: 0.28rem 1rem 0.28rem 1.75rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
         .fyc-scorecard-hdr { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
-        .fyc-scorecard-hdr-area { flex: 1; }
-        .fyc-scorecard-hdr-stars { flex: 0 0 90px; }
-        .fyc-scorecard-hdr-standing { flex: 0 0 160px; }
-        .fyc-scorecard-hdr-trend { flex: 0 0 140px; text-align: right; }
-        .fyc-scorecard-row { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem 0.5rem 0.75rem; border-bottom: 1px solid #f5f6f8; border-left: 3px solid transparent; text-decoration: none; color: inherit; transition: background 0.12s; }
+        .fyc-scorecard-hdr-trend { text-align: right; }
+        .fyc-scorecard-row { padding: 0.5rem 1rem 0.5rem 0.75rem; border-bottom: 1px solid #f5f6f8; border-left: 3px solid transparent; text-decoration: none; color: inherit; transition: background 0.12s; }
         .fyc-scorecard-row:last-child { border-bottom: none; }
         .fyc-scorecard-row:hover { background: #f7f9fa; }
         .fyc-scorecard-row.sc-strong { border-left-color: var(--positive); }
         .fyc-scorecard-row.sc-weak   { border-left-color: var(--negative); }
         .fyc-scorecard-row.sc-mixed  { border-left-color: #e8a838; }
-        .fyc-scorecard-area { font-size: 0.82rem; font-weight: 600; color: var(--text); flex: 1; }
-        .sc-stars { display: flex; gap: 1px; align-items: center; justify-content: flex-start; flex: 0 0 90px; }
-        .sc-star { font-size: 1rem; line-height: 1; }
+        .fyc-scorecard-area { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+        .sc-stars { display: flex; gap: 2px; align-items: center; }
+        .sc-star { font-size: 1rem; line-height: 1; flex-shrink: 0; }
         .sc-star.above { color: var(--positive); }
         .sc-star.below { color: #d0d5dc; }
-        .fyc-scorecard-standing-text { flex: 0 0 160px; font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
-        .fyc-scorecard-trend { display: flex; align-items: center; gap: 8px; flex: 0 0 140px; justify-content: flex-end; white-space: nowrap; }
+        .fyc-scorecard-standing-text { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+        .fyc-scorecard-trend { display: flex; align-items: center; gap: 8px; justify-content: flex-end; white-space: nowrap; }
         .sc-trend-up   { font-size: 0.75rem; font-weight: 700; color: var(--positive); }
         .sc-trend-down { font-size: 0.75rem; font-weight: 700; color: var(--negative); }
         .sc-trend-flat { font-size: 0.75rem; color: var(--text-muted); }
