@@ -948,7 +948,25 @@ const DASHBOARD_DATA = {
       "2024": 4.3
     },
     "policyLevers": "Housing supply and land use reform; affordable financing and down-payment support; job and wage growth.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii has ranked #50 in home price-to-income ratio every year since 2008. The ratio was 7.8 in 2005 (first data point, already #49) and stands at 8.7 in 2024, meaning the median home costs nearly nine times the median annual household income. The national average is roughly 4.3 times. Hawaii's ratio has worsened through every business cycle: the post-2008 recovery, the post-2015 tourism boom, and the post-COVID demand surge all drove prices higher. Income growth has not kept pace in any period. The causes are structural: geographically constrained island land, construction costs elevated by the Jones Act on shipped materials, single-family zoning on most residentially designated land, and a real estate market where vacation and investment properties compete with primary residents.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Minneapolis, Minnesota",
+          "text": "Minneapolis enacted the nation's first citywide elimination of single-family zoning in 2020 through its Minneapolis 2040 comprehensive plan, allowing duplexes and triplexes on every residential lot by right, with taller buildings permitted near transit. By 2022, Minneapolis had added new housing units at a significantly faster pace than comparable peer cities. Research by the Pew Charitable Trusts and independent economists found that rent growth in Minneapolis moderated relative to similar metros from 2020 to 2023. Minnesota followed with statewide reform in 2023 allowing multiplexes in all cities over 1,000 people. The transferable mechanism for Hawaii: state preemption of single-family-only zoning in areas served by infrastructure, removing the bottleneck that concentrates demand on the few parcels where multi-family is permitted. Hawaii's four counties control this lever."
+        }
+      ],
+      "explore": [
+        "Hawaii's construction cost premium is estimated at 20 to 40 percent above comparable mainland projects, driven by the Jones Act surcharge on shipped materials and skilled labor scarcity on neighbor islands. A focused workforce development pipeline for construction trades, paired with modular and pre-fabricated housing procurement (which reduces on-site labor intensity), could meaningfully reduce per-unit costs without requiring changes to federal law.",
+        "Short-term rental platforms have converted an estimated 20,000 to 25,000 residential units in Hawaii to full-time vacation rentals, directly reducing housing supply available to residents. Several counties have begun enforcement and permit caps; state-level data-sharing requirements between platforms and county tax authorities would enable more systematic tracking and enforcement of existing rules."
+      ],
+      "caution": {
+        "state": "San Francisco, California",
+        "text": "San Francisco has the worst home price-to-income ratio of any major US city, despite decades of housing advocacy and over $1 billion in public subsidy for affordable units. The primary constraint: environmental review litigation and neighborhood opposition have blocked or delayed tens of thousands of units permitted under state law. Hawaii's permitting and environmental review process shares the same vulnerability. Each layer of review that can be triggered by a project objector adds 12 to 36 months and can price a project out of financial viability. Reform of the permitting and litigation pathway is as consequential as zoning reform itself."
+      }
+    }
   },
   "unsheltered_homeless_rate": {
     "area": "Housing & Cost of Living",
