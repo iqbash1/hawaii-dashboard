@@ -532,7 +532,25 @@ const DASHBOARD_DATA = {
       "2024": 272.81
     },
     "policyLevers": "Strong math instruction; teacher pipeline and support; tutoring, attendance, and targeted intervention.",
-    "updateCadence": "Biennial"
+    "updateCadence": "Biennial",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii's NAEP 8th grade math rank has improved more than any other metric on this dashboard over the past two decades: from #47 in 2003 to #30 in 2024, a 17-rank improvement. The score itself rose from 265.7 to 270.0, which is modest in absolute terms but reflects sustained outperformance of the national trend, particularly in the 2022-2024 COVID recovery period when most states continued to fall. Hawaii's 2024 rank of #30 is the best on record and places Hawaii at the midpoint of the national distribution for the first time. The structural challenges remain: Hawaii is the nation's only statewide single school district, with high concentrations of English language learners, high teacher turnover driven by cost-of-living, and historically significant variation in school quality across islands and socioeconomic groups. The improvement is real but still leaves Hawaii below the performance of states with similar demographics and investment levels.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Massachusetts",
+          "text": "Massachusetts has ranked #1 or #2 in NAEP 8th grade math for over 25 years, with scores comparable to top-performing countries internationally. The foundation is the Massachusetts Education Reform Act of 1993, which established standards-based accountability, redirected funding from wealthy to high-need districts through a foundation budget formula, and created rigorous content-specific teacher licensure requirements including a separate mathematics content exam (MTEL) required for all math teachers regardless of grade level. Massachusetts is the only state to require teachers to demonstrate subject-matter mastery in the specific content area they teach, not just general pedagogy. Hawaii's teacher licensure pathway does not have an equivalent mathematics-specific content threshold. Requiring demonstrated mathematical competency as a precondition for teaching mathematics, not just certification in secondary education, is the most directly transferable mechanism from Massachusetts's sustained success."
+        }
+      ],
+      "explore": [
+        "Hawaii's single statewide school district creates a structural advantage that no other state has: the ability to deploy curriculum and professional development uniformly at scale without negotiating with 100 or more separate districts. When HIDOE adopted the Illustrative Mathematics curriculum (2020 to 2022), it could implement it in every school simultaneously. The question is whether implementation quality has matched rollout speed. A systematic implementation audit, comparing NAEP score changes in schools with high versus low curriculum fidelity, would identify where the gains are concentrated and where additional support is needed.",
+        "Hawaii's teacher shortage is most acute in STEM subjects on neighbor islands. A compensation differential for math and science teachers on Maui, Hawaii Island, and Kauai (similar to federal rural physician bonuses) paired with subsidized housing access would directly address the supply constraint that limits mathematics instruction quality in the schools that need it most."
+      ],
+      "caution": {
+        "state": "Florida",
+        "text": "Florida's third-grade reading retention law (enacted 2002, renewed 2023) was widely cited as driving NAEP score improvements in early grades, and Florida's 4th grade reading scores did rise significantly after implementation. However, independent researchers found that a substantial share of the apparent improvement reflected testing cohort effects: retained students who failed the reading threshold were excluded from the grade-level NAEP sample in subsequent years, making the measured cohort look stronger without underlying learning gains. Eighth-grade math, which measures the same students years later, improved more modestly and less consistently than 4th-grade reading. Hawaii should be cautious about interventions that improve measured scores at the intervention point without improving longer-term outcomes like high school graduation rates, which Hawaii's own data show remain well below average despite the NAEP improvements."
+      }
+    }
   },
   "naep_reading_8": {
     "area": "Education",
