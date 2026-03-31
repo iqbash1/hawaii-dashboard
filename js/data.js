@@ -1815,7 +1815,25 @@ const DASHBOARD_DATA = {
       "2023": 1.1
     },
     "policyLevers": "Business climate and permitting; infrastructure and site readiness; capital access and sector development.",
-    "updateCadence": "Annual"
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii's net employer formation rate is the most cyclical metric on this dashboard. Hawaii ranked in the top 5 during the late-1980s tourism boom, crashed to #49 to #50 through the entire 1993-1999 period (post-Gulf War recession, Hurricane Iniki, Asian financial crisis), recovered through the 2000s, crashed again in 2010-2012, and recorded its worst COVID reading of #50 in 2021. The 2022 bounce to #9 reflects pent-up post-COVID business formation as tourism reopened. The 2023 drop to #43 reflects normalization plus the economic disruption from the Lahaina fires. The pattern reveals a structural problem: Hawaii's business formation tracks visitor arrival data more closely than any other economic indicator. When tourists stop coming, businesses stop forming. That coupling is the core risk.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Florida",
+          "text": "Florida consistently ranks among the top five states for new employer business formation through a combination of low administrative friction and intensive early-stage support. Florida streamlined its business registration process to a one-business-day approval cycle at $125 to $138 per entity, among the lowest combined costs in the country. Florida operates one of the largest small business development center (SBDC) networks in the US, with 41 locations providing free consulting to early-stage businesses. The specific mechanism: removing administrative barriers so that the decision to formalize a business is not delayed by process costs, combined with accessible early-stage support that improves survival rates. Hawaii's business registration is slower and more expensive, and the General Excise Tax applies at multiple stages of the supply chain in a way that raises the complexity threshold for starting any business."
+        }
+      ],
+      "explore": [
+        "Hawaii's Act 221 (2001, extended and modified through 2010) provided high-technology business investment tax credits and generated significant venture activity in its early years. The program was criticized for subsidizing passive investments rather than active company building, and audits found the state paid roughly $4 in credits for each $1 of qualifying investment retained in Hawaii. A redesigned version focused on employer-of-record requirements, minimum hiring thresholds, and sector targeting toward ocean technology, clean energy, and defense-adjacent companies would retain more economic benefit per dollar of tax expenditure.",
+        "The Maui business community suffered an estimated $5.5 billion in economic losses from the August 2023 fires. The state's Maui Economic Recovery and Resilience Plan (2024) includes business formation support specifically for Lahaina area entrepreneurs. Whether this program produces measurable improvement in West Maui's employer formation rate over the next three to five years is a live test of Hawaii's recovery policy effectiveness."
+      ],
+      "caution": {
+        "state": "Louisiana",
+        "text": "Louisiana invested over $250 million per year in film and entertainment tax incentives starting in 2002, specifically to stimulate business formation and diversification beyond oil and gas. The incentive did generate new business formations in the film sector but at an estimated cost of $17 in incentives per $1 of lasting economic activity, based on state legislative auditor reviews. Louisiana's overall employer formation rate remained in the bottom quarter of states throughout the incentive period. Narrow sector incentives, without addressing the underlying barriers to broad business formation, shift the composition of who forms businesses without raising the overall rate."
+      }
+    }
   },
   "labor_productivity": {
     "area": "Economy & Workforce",
