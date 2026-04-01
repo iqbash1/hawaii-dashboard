@@ -460,7 +460,10 @@ const App = {
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         // Vintage line: data years and update cadence
         const hiYears = Object.keys(effective.hawaii).sort();
-        const vintageText = `Data: ${hiYears[0]}-${hiYears[hiYears.length - 1]}  ·  ${metricData.updateCadence || 'Annual'}  ·  ${metricData.source}`;
+        const keyEnd = (k) => { const p = k.split('-'); return Number(p[p.length - 1]); };
+        const vintageStart = this.parseYearLabel(hiYears[0]);
+        const vintageEnd = keyEnd(hiYears[hiYears.length - 1]);
+        const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}  ·  ${metricData.source}`;
         document.getElementById('modal-vintage').textContent = vintageText;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
@@ -1577,7 +1580,8 @@ const App = {
         document.getElementById('modal-rank-history').style.display = 'block';
 
         // Update header text
-        const yearRange = rankHistory.years[0] + '-' + rankHistory.years[rankHistory.years.length - 1];
+        const _keyEnd = (k) => { const p = String(k).split('-'); return Number(p[p.length - 1]); };
+        const yearRange = this.parseYearLabel(String(rankHistory.years[0])) + '-' + _keyEnd(rankHistory.years[rankHistory.years.length - 1]);
         document.getElementById('rank-history-subtitle').textContent =
             `${metricData.metric} - Rank over time (${yearRange})`;
         document.getElementById('rank-history-rank').textContent =
