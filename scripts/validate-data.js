@@ -45,8 +45,9 @@ const STATE_DATA = fs.existsSync(statePath) ? loadJSConst(statePath, 'STATE_DATA
 //         'rate' means per-100K/10K value, 'dollar' means dollar amount, 'score'/'index'
 
 const METRIC_RULES = {
-    // Crime: UCR methodology shifts can cause 50%+ swings in a single year
-    violent_crime_rate:         { min: 50,    max: 800,    maxYoYPct: 0.75, format: 'rate' },
+    // Crime: UCR methodology shifts and pre-1985 reporting coverage gaps can cause large swings;
+    // min=15 for pre-1965 HI/low-crime states; maxYoY=2.0 for 1960s-70s coverage artifacts
+    violent_crime_rate:         { min: 15,    max: 800,    maxYoYPct: 2.00, format: 'rate' },
     property_crime_rate:        { min: 500,   max: 8000,   maxYoYPct: 0.40, format: 'rate' },
     pcp_per_100k:               { min: 40,    max: 200,    maxYoYPct: 0.20, format: 'rate' },
     // Uninsured: county-level ACS samples are small; Kauai can swing 97% in a single year
