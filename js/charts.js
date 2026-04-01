@@ -1083,7 +1083,7 @@ const ChartUtils = {
                 pointBackgroundColor: this.HAWAII_BLUE,
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
-                tension: 0.15,
+                tension: 0,
                 spanGaps: true,
             },
         ];
