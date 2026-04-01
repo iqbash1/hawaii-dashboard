@@ -69,7 +69,8 @@ const METRIC_RULES = {
     road_poor_pct:              { min: 0.01,  max: 0.50,   maxYoYPct: 0.40, format: 'decimal_pct' },
     // Broadband: pre-2016 data stripped (Census variable change); 2016+ values are 0.70-0.96
     broadband_subscription_pct: { min: 0.50,  max: 1.0,    maxYoYPct: 0.15, format: 'decimal_pct' },
-    residential_price_cpkwh:    { min: 5,     max: 60,     maxYoYPct: 0.40, format: 'cents' },
+    // 1970 national avg was 2.3¢/kWh; min=2 for pre-oil-crisis prices; maxYoY=0.60 for 1979-81 oil shock (+50% real)
+    residential_price_cpkwh:    { min: 2,     max: 60,     maxYoYPct: 0.60, format: 'cents' },
     renewables_share_gen:       { min: 0.01,  max: 0.60,   maxYoYPct: 0.40, format: 'decimal_pct' },
     food_insecurity_rate:       { min: 0.03,  max: 0.25,   maxYoYPct: 0.30, format: 'decimal_pct' },
     // Rainy day fund: policy-driven; a single legislative deposit/withdrawal can 3-5x the balance
