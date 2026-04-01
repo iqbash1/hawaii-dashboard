@@ -20,11 +20,11 @@ const STATE_ABBREVS = {
 };
 
 const AREA_ICONS = {
-    'Safety & Health': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-    'Housing & Cost of Living': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-    'Economy & Workforce': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
-    'Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>',
-    'Infrastructure, Resilience & Trust': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d03135" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
+    'Safety & Health': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    'Housing & Cost of Living': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+    'Economy & Workforce': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+    'Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>',
+    'Infrastructure, Resilience & Trust': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
 };
 
 const App = {
@@ -264,13 +264,16 @@ const App = {
 
     /** Build "vs Prior Year" comparison HTML for a card */
     buildVsYearHtml(metricData) {
-        const years = Object.keys(metricData.hawaii).map(Number).sort((a, b) => a - b);
-        if (years.length < 4) return '';
-        const recent = years.slice(-3);
-        const prior = years.slice(-6, -3);
+        // keyEnd: parse "2022" → 2022 or "2022-2024" → 2024 (rolling-average range keys)
+        const keyEnd = (k) => { const p = k.split('-'); return Number(p[p.length - 1]); };
+        const keyStart = (k) => Number(k.split('-')[0]);
+        const sortedKeys = Object.keys(metricData.hawaii).sort((a, b) => keyEnd(a) - keyEnd(b));
+        if (sortedKeys.length < 4) return '';
+        const recent = sortedKeys.slice(-3);
+        const prior = sortedKeys.slice(-6, -3);
         if (prior.length < 2) return '';
-        const avg = (yrs) => {
-            const vals = yrs.map(y => metricData.hawaii[y]).filter(v => v != null);
+        const avg = (keys) => {
+            const vals = keys.map(k => metricData.hawaii[k]).filter(v => v != null);
             return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
         };
         const recentAvg = avg(recent);
@@ -290,8 +293,8 @@ const App = {
         else pctLabel = `${arrow} ${absPct.toFixed(1)}%`;
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
-        const priorLabel = `${prior[0]}-${String(prior[prior.length - 1]).slice(-2)}`;
-        const recentLabel = `${recent[0]}-${String(recent[recent.length - 1]).slice(-2)}`;
+        const priorLabel = `${keyStart(prior[0])}-${String(keyEnd(prior[prior.length - 1])).slice(-2)}`;
+        const recentLabel = `${keyStart(recent[0])}-${String(keyEnd(recent[recent.length - 1])).slice(-2)}`;
 
         return `
             <div class="card-comp ${cls}">
@@ -1449,31 +1452,6 @@ const App = {
         labelDiv.textContent = `Distribution of all ${n} states`;
         container.appendChild(labelDiv);
         container.appendChild(svg);
-    },
-
-    /** Compute 3-year avg vs prior 3-year avg for Hawaii data */
-    computeTrendComparison(effective, metricData) {
-        const years = Object.keys(effective.hawaii).map(Number).sort((a, b) => a - b);
-        if (years.length < 4) return null;
-        // Take the last 3 years and the 3 before that
-        const recent = years.slice(-3);
-        const prior = years.slice(-6, -3);
-        if (prior.length < 2) return null; // need at least 2 years in each window
-        const avg = (yrs) => {
-            const vals = yrs.map(y => effective.hawaii[y]).filter(v => v != null);
-            return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
-        };
-        const recentAvg = avg(recent);
-        const priorAvg = avg(prior);
-        if (recentAvg == null || priorAvg == null || priorAvg === 0) return null;
-        return {
-            recentYears: recent,
-            priorYears: prior,
-            recentAvg,
-            priorAvg,
-            recentLabel: `${recent[0]}-${String(recent[recent.length - 1]).slice(-2)}`,
-            priorLabel: `${prior[0]}-${String(prior[prior.length - 1]).slice(-2)}`,
-        };
     },
 
     abbreviateState(name) {

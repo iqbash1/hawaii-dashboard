@@ -63,6 +63,9 @@
 .top-nav-link.active {
     color: var(--hawaii-blue);
     font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 2px;
 }
 
 .skip-link {
@@ -248,7 +251,7 @@ body {
     margin-top: 0.15rem;
     opacity: 0.85;
     border: 1px solid rgba(13, 124, 143, 0.5);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     padding: 1px 5px;
     display: inline-block;
     transition: opacity var(--transition), background-color 0.15s ease;
@@ -497,6 +500,13 @@ body {
     gap: 0;
     padding: 0 2rem;
     border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.modal-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .modal-tab {
@@ -677,11 +687,11 @@ body {
     margin-left: auto;
     font-size: 0.72rem;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     text-decoration: none;
-    border: 1px solid var(--border);
+    border: 1px solid #c0c7ce;
     background: #fff;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     padding: 0.15rem 0.5rem;
     white-space: nowrap;
     transition: color var(--transition), border-color var(--transition);
@@ -766,8 +776,8 @@ body {
     color: var(--text-muted);
     padding: 0.6rem 1rem 0.6rem 1.25rem;
     margin: 0.75rem 1rem 0;
-    border-left: 3px solid #d4a843;
-    background: rgba(212, 168, 67, 0.04);
+    border-left: 3px solid var(--neutral);
+    background: var(--neutral-bg);
     border-radius: 0 4px 4px 0;
 }
 
@@ -1022,9 +1032,14 @@ body {
         font-size: 1.1rem;
     }
 
+    .modal-tabs {
+        padding: 0 1rem;
+    }
+
     .modal-tab {
         font-size: 0.7rem;
         padding: 0.5rem 0.6rem;
+        white-space: nowrap;
     }
 
     .modal-rankings {
