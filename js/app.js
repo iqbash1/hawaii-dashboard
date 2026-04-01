@@ -265,10 +265,7 @@ const App = {
     /** Build "vs Prior Year" comparison HTML for a card */
     buildVsYearHtml(metricData) {
         // Handles both plain year keys ("2022") and rolling-average range keys ("2022-2024").
-        // keyEnd extracts the end year so range keys sort chronologically.
-        // keyStart reuses parseYearLabel which extracts the first year from any format.
-        const keyEnd = (k) => { const p = k.split('-'); return Number(p[p.length - 1]); };
-        const sortedKeys = Object.keys(metricData.hawaii).sort((a, b) => keyEnd(a) - keyEnd(b));
+        const sortedKeys = Object.keys(metricData.hawaii).sort((a, b) => this.keyEnd(a) - this.keyEnd(b));
         if (sortedKeys.length < 4) return '';
         const recent = sortedKeys.slice(-3);
         const prior = sortedKeys.slice(-6, -3);
@@ -406,12 +403,16 @@ const App = {
         });
     },
 
-    /** Parse a year label (handles "2012", "2012-2013", "2006-2008" etc.) to a numeric year */
+    /** Parse a year label to the start year: "2022" → 2022, "2022-2024" → 2022 */
     parseYearLabel(label) {
-        const str = label.toString();
-        // Handle range formats: "2012-2013", "2006-2008"
-        const match = str.match(/(\d{4})/);
+        const match = label.toString().match(/(\d{4})/);
         return match ? parseInt(match[1]) : null;
+    },
+
+    /** Extract the end year from a year key: "2022" → 2022, "2022-2024" → 2024 */
+    keyEnd(k) {
+        const p = String(k).split('-');
+        return Number(p[p.length - 1]);
     },
 
     /** Get governor term boxes for the chart x-axis labels */
@@ -460,9 +461,8 @@ const App = {
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         // Vintage line: data years and update cadence
         const hiYears = Object.keys(effective.hawaii).sort();
-        const keyEnd = (k) => { const p = k.split('-'); return Number(p[p.length - 1]); };
         const vintageStart = this.parseYearLabel(hiYears[0]);
-        const vintageEnd = keyEnd(hiYears[hiYears.length - 1]);
+        const vintageEnd = this.keyEnd(hiYears[hiYears.length - 1]);
         const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}  ·  ${metricData.source}`;
         document.getElementById('modal-vintage').textContent = vintageText;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
@@ -1585,8 +1585,7 @@ const App = {
         document.getElementById('modal-rank-history').style.display = 'block';
 
         // Update header text
-        const _keyEnd = (k) => { const p = String(k).split('-'); return Number(p[p.length - 1]); };
-        const yearRange = this.parseYearLabel(String(rankHistory.years[0])) + '-' + _keyEnd(rankHistory.years[rankHistory.years.length - 1]);
+        const yearRange = this.parseYearLabel(String(rankHistory.years[0])) + '-' + this.keyEnd(rankHistory.years[rankHistory.years.length - 1]);
         document.getElementById('rank-history-subtitle').textContent =
             `${metricData.metric} - Rank over time (${yearRange})`;
         document.getElementById('rank-history-rank').textContent =
