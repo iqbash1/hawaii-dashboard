@@ -241,8 +241,8 @@ const DASHBOARD_DATA = {
           "state": "New York",
           "text": "New York adopted CompStat in 1994, a data-driven policing system requiring precinct-level crime analysis and targeted resource deployment. The state paired enforcement accountability with drug courts and mental health diversion programs, reducing the repeat-offender population driving the most chronic property crime. New York's property crime rate fell over 50 percent between 1995 and 2015. Hawaii has adopted both approaches, including drug courts in all four counties.",
           "source": {
-            "label": "CompStat: A Crime Reduction Management Tool — Harvard Government Innovators Network",
-            "url": "https://www.innovations.harvard.edu/compstat-crime-reduction-management-tool"
+            "label": "CompStat: An Important Administrative Innovation in Policing — Harvard Kennedy School",
+            "url": "https://www.hks.harvard.edu/publications/sizing-compstat-important-administrative-innovation-policing"
           }
         }
       ],
@@ -556,8 +556,8 @@ const DASHBOARD_DATA = {
           "state": "Virginia",
           "text": "Virginia climbed from 87 percent in 2011 to 93 percent in 2022, moving from below-average to near the top of the national rankings. Virginia restructured its diploma pathways in 2012 to add a Career and Technical Education (CTE) diploma option that allowed students to count industry certifications toward graduation requirements. The state also set a counselor-to-student ratio target of 1:250 and invested in school counselor hiring through the Lottery-funded At-Risk Add-On program. These structural changes created multiple on-ramps to graduation for students who did not fit the traditional academic track.",
           "source": {
-            "label": "Virginia CTE Program Administration — Virginia Department of Education",
-            "url": "https://www.doe.virginia.gov/teaching-learning-assessment/k-12-standards-instruction/career-and-technical-education-cte/administration"
+            "label": "Career and Technical Education (CTE) — Virginia Department of Education",
+            "url": "https://www.doe.virginia.gov/teaching-learning-assessment/instruction/career-and-technical-education-cte"
           }
         }
       ],
@@ -1439,8 +1439,8 @@ const DASHBOARD_DATA = {
           "state": "Virginia",
           "text": "Virginia overhauled its transportation spending in 2015 with the SMART SCALE program, a data-driven project scoring system that ranks capital investments by cost-efficiency, safety, accessibility, and economic impact before committing funds. VDOT adopted a formal pavement management system with a published target of maintaining at least 82 percent of state-maintained roads in acceptable condition. Virginia's road condition rankings improved measurably in the five years following implementation.",
           "source": {
-            "label": "SMART SCALE Project Prioritization — Virginia DOT / FHWA",
-            "url": "https://highways.dot.gov/safety/zero-deaths/virginia-dot-project-prioritization"
+            "label": "SMART SCALE: How It Works — Virginia's Official Program Site",
+            "url": "https://smartscale.virginia.gov/how-it-works/"
           }
         }
       ],
@@ -2041,8 +2041,8 @@ const DASHBOARD_DATA = {
         "state": "California",
         "text": "California enacted statewide zoning mandates (SB 9, SB 10, ADU reform) and declared repeated housing crises over more than a decade. Domestic population loss has continued because state-level zoning mandates were not matched with permit streamlining or environmental review reform. Projects permitted under new state law still took three to seven years to break ground.",
         "source": {
-          "label": "California's Domestic Migration Losses — Brookings Institution",
-          "url": "https://www.brookings.edu/articles/whats-behind-californias-population-decline/"
+          "label": "U.S. Population Growth Has Nearly Flatlined — Brookings Institution",
+          "url": "https://www.brookings.edu/articles/u-s-population-growth-has-nearly-flatlined-new-census-data-shows/"
         }
       }
     }
