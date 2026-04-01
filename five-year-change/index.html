@@ -715,11 +715,11 @@
 
                 const areaId = areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
 
-                // Overall area signal
+                // Overall area signal — driven by national standing alone
                 const abovePct = withRank.length ? aboveMedian / withRank.length : 0.5;
                 let areaClass = 'sc-mixed';
-                if (abovePct >= 0.6 && imp >= wor) areaClass = 'sc-strong';
-                else if (abovePct <= 0.4 && wor >= imp) areaClass = 'sc-weak';
+                if (abovePct >= 0.6) areaClass = 'sc-strong';
+                else if (abovePct <= 0.4) areaClass = 'sc-weak';
 
                 // Stars: filled left-to-right (above = filled green, below = empty gray)
                 const starsSorted = [...withRank].sort((a, b) =>
