@@ -23,9 +23,10 @@ from PIL import Image, ImageDraw, ImageFont
 # ── Paths ──────────────────────────────────────────────────────────
 BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 ASSETS_OG = os.path.join(BASE_DIR, 'assets', 'og')
-REDIRECT_DIR_T = os.path.join(BASE_DIR, 't')   # /t/{slug}/ trend pages
-REDIRECT_DIR_R = os.path.join(BASE_DIR, 'r')   # /r/{slug}/ rankings pages
-REDIRECT_DIR_C = os.path.join(BASE_DIR, 'c')   # /c/{slug}/ county pages
+REDIRECT_DIR_T  = os.path.join(BASE_DIR, 't')    # /t/{slug}/  trend pages
+REDIRECT_DIR_R  = os.path.join(BASE_DIR, 'r')    # /r/{slug}/  rankings pages
+REDIRECT_DIR_C  = os.path.join(BASE_DIR, 'c')    # /c/{slug}/  county pages
+REDIRECT_DIR_RH = os.path.join(BASE_DIR, 'rh')   # /rh/{slug}/ rank-history pages
 SITE_URL = 'https://hawaiidashboard.org'
 
 # ── Colors (matching dashboard CSS variables) ─────────────────────
@@ -555,9 +556,9 @@ def generate_county_og_image(slug, metric, area, county_data, output_path):
 
 # ── Redirect HTML Generation ─────────────────────────────────────
 def generate_redirect_html(slug, metric, area, rankings, output_path,
-                           view='detail', county_data=None):
+                           view='detail', county_data=None, rank_history=None):
     """Generate a redirect page with metric-specific OG tags.
-    view: 'detail', 'rankings', or 'county'
+    view: 'detail', 'rankings', 'county', or 'rank-history'
     """
     metric_name = metric.get('metric', slug)
     unit = metric.get('unit', '')
@@ -567,7 +568,20 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
     latest_year, latest_val = get_latest(hawaii)
     formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
 
-    if view == 'rankings':
+    if view == 'rank-history':
+        title = f"{metric_name} - Rank History | Hawai\u02BBi Dashboard"
+        image_url = f"{SITE_URL}/assets/og/{slug}_rank_history.png"
+        page_url = f"{SITE_URL}/rh/{slug}/"
+        redirect_hash = f"#{slug}/rank-history"
+        if rank_history and rank_history.get('hi_rank_latest'):
+            hi_rank = rank_history['hi_rank_latest']
+            total = rank_history['total']
+            yr = str(rank_history['latest_year'])
+            description = (f"Hawai\u02BBi ranks #{hi_rank} of {total} states in {metric_name}. "
+                           f"Current value: {formatted} ({yr})")
+        else:
+            description = f"Rank history for {metric_name} - Hawai\u02BBi Dashboard."
+    elif view == 'rankings':
         title = f"{metric_name} Rankings | Hawai\u02BBi Dashboard"
         image_url = f"{SITE_URL}/assets/og/{slug}_rankings.png"
         page_url = f"{SITE_URL}/r/{slug}/"
@@ -631,6 +645,192 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
         f.write(html)
 
 
+# ── Rank History Computation (port of App.computeRankHistory) ────
+def parse_year_label(key):
+    """Return the start year as int from a plain or range key ('2022' or '2022-2024')."""
+    return int(str(key).split('-')[0])
+
+def key_end(key):
+    """Return the end year as int from a plain or range key."""
+    parts = str(key).split('-')
+    return int(parts[-1])
+
+def compute_rank_history(slug, dashboard, state_data):
+    """Compute rank history for Hawaii across all available years.
+    Returns dict with years, hi_ranks, total_states, hi_key, or None."""
+    sd = state_data.get(slug)
+    if not sd or 'data' not in sd:
+        return None
+    metric = dashboard[slug]
+    data = sd['data']
+    good_dir = metric.get('goodDirection', 'up')
+    dec = is_decimal_pct(metric)
+
+    first_key = list(data.keys())[0]
+    is_pcp = isinstance(data[first_key], dict) and 'name' in data[first_key]
+
+    year_data = {}  # { year_key: [{ state, value }] }
+
+    if is_pcp:
+        all_years = set()
+        for entry in data.values():
+            for k in entry:
+                if k != 'name':
+                    all_years.add(k)
+        for yr in all_years:
+            vals = []
+            for entry in data.values():
+                if entry.get(yr) is not None:
+                    vals.append({'state': entry['name'], 'value': entry[yr]})
+            if len(vals) >= 25:
+                year_data[yr] = vals
+    else:
+        for yr, yr_dict in data.items():
+            entries = [(s, v) for s, v in yr_dict.items() if v is not None]
+            if len(entries) >= 25:
+                adj_vals = [{'state': s, 'value': v * 100 if dec else v}
+                            for s, v in entries]
+                year_data[yr] = adj_vals
+
+    years = sorted(year_data.keys(), key=parse_year_label)
+    if not years:
+        return None
+
+    hi_ranks = {}  # { year_key: rank }
+    total_by_year = {}
+
+    for yr in years:
+        vals = year_data[yr][:]
+        if good_dir == 'up':
+            vals.sort(key=lambda x: x['value'], reverse=True)
+        else:
+            vals.sort(key=lambda x: x['value'])
+        total_by_year[yr] = len(vals)
+        for idx, entry in enumerate(vals):
+            if entry['state'] in ('Hawaii', 'Hawai\u02BBi'):
+                hi_ranks[yr] = idx + 1
+                break
+
+    latest_yr = years[-1]
+    return {
+        'years': years,
+        'hi_ranks': hi_ranks,
+        'total': total_by_year.get(latest_yr, 50),
+        'latest_year': latest_yr,
+        'hi_rank_latest': hi_ranks.get(latest_yr),
+    }
+
+
+# ── Rank History OG Image ─────────────────────────────────────────
+def generate_rank_history_og_image(slug, metric, area, rank_history, output_path):
+    """Generate a clean 1200x630 branded OG card for the rank history view."""
+    W, H = 1200, 630
+    im = Image.new('RGB', (W, H), BG)
+    d = ImageDraw.Draw(im)
+
+    metric_name = metric.get('metric', slug)
+    years      = rank_history['years']
+    hi_ranks   = rank_history['hi_ranks']
+    total      = rank_history['total']
+    latest_yr  = rank_history['latest_year']
+    hi_rank    = rank_history['hi_rank_latest']
+
+    # Top accent bar
+    d.rectangle([0, 0, W, 5], fill=TEAL)
+
+    # Branding
+    d.text((70, 40), "Hawai\u02BBi Dashboard", fill=TEXT_SEC, font=font(20))
+
+    # Area + metric name
+    d.text((70, 100), area.upper(), fill=TEAL, font=font(15))
+    d.text((70, 125), metric_name, fill=TEXT_PRI, font=font(38))
+
+    # Central card
+    cx, cy, cw, ch = 70, 190, 1060, 355
+    d.rounded_rectangle([cx, cy, cx + cw, cy + ch],
+                        radius=12, fill=CARD_BG, outline=DIVIDER, width=1)
+
+    # Big rank number
+    if hi_rank:
+        rank_str = f"Rank #{hi_rank} of {total}"
+        f_rank = font(52)
+        d.text((cx + 40, cy + 18), rank_str, fill=TEAL, font=f_rank)
+        yr_label = str(latest_yr)
+        d.text((cx + 40, cy + 80), f"({yr_label})", fill=TEXT_TER, font=font(20))
+    else:
+        d.text((cx + 40, cy + 18), "Rank history", fill=TEXT_SEC, font=font(36))
+
+    # ── Rank trend chart ──
+    # Only draw if we have multiple years with Hawaii data
+    hi_pts_years = [(yr, hi_ranks[yr]) for yr in years if yr in hi_ranks]
+
+    if len(hi_pts_years) >= 2:
+        chart_x = cx + 40
+        chart_y = cy + 115
+        chart_w = cw - 80
+        chart_h = 195
+
+        # Y axis: rank 1 at top, total at bottom (inverted)
+        rank_max = max(r for _, r in hi_pts_years)
+        rank_min = 1
+        # Add a little padding
+        y_max = min(total, rank_max + max(2, int(total * 0.08)))
+        y_min = max(1, rank_min - 1)
+        y_range = y_max - y_min if y_max != y_min else 1
+
+        def rank_to_py(r):
+            # rank 1 = top (chart_y), y_max = bottom (chart_y + chart_h)
+            return chart_y + ((r - y_min) / y_range) * chart_h
+
+        def year_to_px(idx):
+            return chart_x + (idx / max(1, len(hi_pts_years) - 1)) * chart_w
+
+        # Faint median reference line
+        median_rank = total / 2.0
+        if y_min < median_rank < y_max:
+            med_py = rank_to_py(median_rank)
+            seg_len, gap_len = 12, 6
+            x = chart_x
+            while x < chart_x + chart_w:
+                d.line([(x, med_py), (min(x + seg_len, chart_x + chart_w), med_py)],
+                       fill=(210, 210, 210), width=1)
+                x += seg_len + gap_len
+
+        # Hawaii rank line
+        pts = [(year_to_px(i), rank_to_py(r)) for i, (_, r) in enumerate(hi_pts_years)]
+        if len(pts) >= 2:
+            d.line(pts, fill=TEAL, width=3)
+        # Dots at each data point
+        for px, py in pts:
+            d.ellipse([px - 4, py - 4, px + 4, py + 4], fill=TEAL)
+
+        # Year labels (first and last) -- use parse_year_label for range keys
+        f_yr = font(13)
+        first_lbl = f"'{parse_year_label(hi_pts_years[0][0]) % 100:02d}"
+        last_lbl  = f"'{parse_year_label(hi_pts_years[-1][0]) % 100:02d}"
+        d.text((chart_x, chart_y + chart_h + 6), first_lbl, fill=TEXT_TER, font=f_yr)
+        bb = d.textbbox((0, 0), last_lbl, font=f_yr)
+        d.text((chart_x + chart_w - (bb[2] - bb[0]), chart_y + chart_h + 6),
+               last_lbl, fill=TEXT_TER, font=f_yr)
+
+        # Rank axis labels (top and bottom of chart)
+        f_axis = font(12)
+        d.text((chart_x - 30, chart_y - 2), "#1", fill=TEXT_TER, font=f_axis)
+        d.text((chart_x - 36, chart_y + chart_h - 8), f"#{y_max}", fill=TEXT_TER, font=f_axis)
+
+    else:
+        d.text((cx + 40, cy + 130), "Rank history available on dashboard",
+               fill=TEXT_TER, font=font(20))
+
+    # Footer
+    d.rectangle([0, H - 46, W, H], fill=FOOTER_BG)
+    d.line([(0, H - 46), (W, H - 46)], fill=DIVIDER, width=1)
+    d.text((70, H - 34), "hawaiidashboard.org", fill=TEXT_SEC, font=font(16))
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    im.save(output_path, 'PNG', optimize=True)
+
+
 # ── Main ──────────────────────────────────────────────────────────
 def main():
     print("Extracting data from JS files...")
@@ -676,11 +876,21 @@ def main():
                                    os.path.join(REDIRECT_DIR_C, slug, 'index.html'),
                                    view='county', county_data=cd)
 
+        # Rank history OG image + redirect page -> /rh/{slug}/
+        rh = compute_rank_history(slug, dashboard, state_data)
+        if rh:
+            generate_rank_history_og_image(slug, metric, area, rh,
+                                           os.path.join(ASSETS_OG, f'{slug}_rank_history.png'))
+            generate_redirect_html(slug, metric, area, rankings,
+                                   os.path.join(REDIRECT_DIR_RH, slug, 'index.html'),
+                                   view='rank-history', rank_history=rh)
+
         rank_str = f"#{rankings['hawaiiRank']}/{rankings['total']}" if rankings and rankings['hawaiiRank'] > 0 else "no rank"
         county_str = " +county" if cd else ""
-        print(f"  {slug}: {rank_str}{county_str}")
+        rh_str = f" +rh({len(rh['years'])}yr)" if rh else ""
+        print(f"  {slug}: {rank_str}{county_str}{rh_str}")
 
-    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/")
+    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/  RankHistory: {REDIRECT_DIR_RH}/")
 
 
 if __name__ == '__main__':
