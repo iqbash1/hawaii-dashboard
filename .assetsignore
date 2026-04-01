@@ -1,0 +1,13 @@
+node_modules/
+tests/
+scripts/
+.github/
+.gitignore
+.assetsignore
+package.json
+package-lock.json
+*.md
+*.py
+*.jsonl
+*.toml
+*.jsonc
