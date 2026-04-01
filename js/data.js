@@ -114,7 +114,7 @@ const DASHBOARD_DATA = {
           "state": "Maine",
           "text": "Maine has ranked #1 or #2 in violent crime rate for most of the past three decades and has maintained that position through significant economic and demographic shifts. Maine's rate has stayed below 130 per 100K for most of the past decade, roughly a third of the national average. The core factors are consistent: low population density that limits anonymity, very low gang activity, and community-centered law enforcement that emphasizes relationship-based approaches over reactive response.",
           "source": {
-            "label": "FBI Crime Data Explorer — FBI UCR",
+            "label": "FBI Crime Data Explorer - FBI UCR",
             "url": "https://cde.ucr.cjis.gov/"
           }
         }
@@ -127,7 +127,7 @@ const DASHBOARD_DATA = {
         "state": "New Mexico",
         "text": "New Mexico ranked near the national midpoint for violent crime through the 1990s and now consistently ranks last. The deterioration tracks the expansion of drug trafficking corridors through the state, the hollowing out of rural social services, and a collapse of community trust in law enforcement. New Mexico's drug trafficking exposure and rural service erosion represent a pattern of preconditions Hawaii recognizes in its own methamphetamine supply chain and neighbor island service gaps.",
         "source": {
-          "label": "New Mexico Uniform Crime Reports — NM Department of Public Safety",
+          "label": "New Mexico Uniform Crime Reports - NM Department of Public Safety",
           "url": "https://www.dps.nm.gov/107-uniform-crime-reports/"
         }
       }
@@ -241,7 +241,7 @@ const DASHBOARD_DATA = {
           "state": "New York",
           "text": "New York adopted CompStat in 1994, a data-driven policing system requiring precinct-level crime analysis and targeted resource deployment. The state paired enforcement accountability with drug courts and mental health diversion programs, reducing the repeat-offender population driving the most chronic property crime. New York's property crime rate fell over 50 percent between 1995 and 2015. Hawaii has adopted both approaches, including drug courts in all four counties.",
           "source": {
-            "label": "CompStat: An Important Administrative Innovation in Policing — Harvard Kennedy School",
+            "label": "CompStat: An Important Administrative Innovation in Policing - Harvard Kennedy School",
             "url": "https://www.hks.harvard.edu/publications/sizing-compstat-important-administrative-innovation-policing"
           }
         }
@@ -254,7 +254,7 @@ const DASHBOARD_DATA = {
         "state": "Oregon",
         "text": "Oregon's Measure 110 (2020) decriminalized possession of small amounts of drugs and redirected cannabis tax revenue to treatment. Property crime rose significantly in subsequent years, and Oregon reversed the policy in 2024. The reversal followed a documented failure to build treatment capacity at the scale the policy assumed.",
         "source": {
-          "label": "Oregon Starts Drug Possession Recriminalization — OPB",
+          "label": "Oregon Starts Drug Possession Recriminalization - OPB",
           "url": "https://www.opb.org/article/2024/09/01/oregon-starts-drug-possession-recriminalization/"
         }
       }
@@ -316,7 +316,7 @@ const DASHBOARD_DATA = {
           "state": "Vermont",
           "text": "Vermont has ranked in the top 5 for primary care physician density for most of the past two decades despite having one of the most rural and geographically dispersed populations in the country. Vermont's Blueprint for Health (enacted 2006) created a statewide primary care coordination framework with community health teams embedded in practices, improving physician retention by reducing administrative burden. Vermont also operates a loan repayment program requiring multi-year rural service commitments.",
           "source": {
-            "label": "Vermont Blueprint for Health — blueprintforhealth.vermont.gov",
+            "label": "Vermont Blueprint for Health - blueprintforhealth.vermont.gov",
             "url": "https://blueprintforhealth.vermont.gov/about-blueprint"
           }
         }
@@ -329,7 +329,7 @@ const DASHBOARD_DATA = {
         "state": "Oklahoma",
         "text": "Oklahoma ranked in the top half for primary care physician density through the 2000s and has since declined as rural hospital closures reduced the practice environments that attract physicians. Fourteen rural hospitals closed in Oklahoma between 2010 and 2023, and physicians do not locate near closed hospitals. Hawaii's neighbor island hospitals face similar financial pressures, and their closure would accelerate the physician shortage the J-1 program currently offsets.",
         "source": {
-          "label": "Health Professional Shortage Area Designation — Oklahoma.gov",
+          "label": "Health Professional Shortage Area Designation - Oklahoma.gov",
           "url": "https://oklahoma.gov/health/health-education/community-outreach/community-development-services/office-of-primary-care-and-rural-health-development/health-professional-shortage-area-designation.html"
         }
       }
@@ -487,7 +487,7 @@ const DASHBOARD_DATA = {
           "state": "New Jersey",
           "text": "New Jersey has ranked #1 or #2 in lowest suicide rate for most of the past decade, consistently below 8 per 100,000. The state operates a statewide network of community mental health centers with designated mobile crisis teams in every county, funded through a combination of state appropriations and federal Community Mental Health Block Grants. New Jersey also maintains a suicide prevention infrastructure office within its Department of Human Services that coordinates school-based programs, crisis line training, and means restriction outreach.",
           "source": {
-            "label": "NJ DMHAS Mobile Crisis Outreach Response Teams (MCORTs) — nj.gov",
+            "label": "NJ DMHAS Mobile Crisis Outreach Response Teams (MCORTs) - nj.gov",
             "url": "https://www.nj.gov/humanservices/dmhas/crisis/index.shtml"
           }
         }
@@ -500,7 +500,7 @@ const DASHBOARD_DATA = {
         "state": "Montana",
         "text": "Montana has ranked among the highest states in suicide mortality for decades. Rural isolation, high rates of firearm ownership, limited mental health provider density, and a small Medicaid population combine to create persistent structural barriers to care. Montana's rate has remained above 25 per 100,000 even as prevention investment increased, illustrating that geography and means access can dominate policy interventions in dispersed populations.",
         "source": {
-          "label": "CDC Suicide Rates by State — cdc.gov",
+          "label": "CDC Suicide Rates by State - cdc.gov",
           "url": "https://www.cdc.gov/suicide/facts/rates-by-state.html"
         }
       }
@@ -556,7 +556,7 @@ const DASHBOARD_DATA = {
           "state": "Virginia",
           "text": "Virginia climbed from 87 percent in 2011 to 93 percent in 2022, moving from below-average to near the top of the national rankings. Virginia restructured its diploma pathways in 2012 to add a Career and Technical Education (CTE) diploma option that allowed students to count industry certifications toward graduation requirements. The state also set a counselor-to-student ratio target of 1:250 and invested in school counselor hiring through the Lottery-funded At-Risk Add-On program. These structural changes created multiple on-ramps to graduation for students who did not fit the traditional academic track.",
           "source": {
-            "label": "Career and Technical Education (CTE) — Virginia Department of Education",
+            "label": "Career and Technical Education (CTE) - Virginia Department of Education",
             "url": "https://www.doe.virginia.gov/teaching-learning-assessment/instruction/career-and-technical-education-cte"
           }
         }
@@ -569,7 +569,7 @@ const DASHBOARD_DATA = {
         "state": "Louisiana",
         "text": "Louisiana increased its reported graduation rate from 67 percent in 2012 to 78 percent by 2016, a 10-point gain in four years. Subsequent analysis found that much of the increase came from aggressive use of credit recovery programs that allowed students to replace failed courses with online alternatives that did not improve tested knowledge. NAEP scores did not rise over the same period, indicating that the graduation rate gain was not matched by learning gains. Louisiana's experience illustrates the risk of rate inflation through pathway manipulation rather than genuine improvement.",
         "source": {
-          "label": "Louisiana High School Performance Data — Louisiana Department of Education",
+          "label": "Louisiana High School Performance Data - Louisiana Department of Education",
           "url": "https://doe.louisiana.gov/data-and-reports/high-school-performance"
         }
       }
@@ -634,7 +634,7 @@ const DASHBOARD_DATA = {
           "state": "Colorado",
           "text": "Colorado has ranked #1 or #2 in bachelor's degree attainment for most of the past decade, reaching 45 percent of adults by 2023. Colorado's rate reflects a combination of a large in-state public university system, a technology and aerospace sector that attracts graduates, and relatively low tuition at flagship institutions through the College Opportunity Fund voucher program enacted in 2004. The tech economy creates a self-reinforcing cycle: degree-holders move to Colorado for jobs, raising attainment, which then attracts more employers.",
           "source": {
-            "label": "College Opportunity Fund (COF) Stipend — Colorado Department of Higher Education",
+            "label": "College Opportunity Fund (COF) Stipend - Colorado Department of Higher Education",
             "url": "https://cdhe.colorado.gov/college-opportunity-fund-cof-stipend"
           }
         }
@@ -647,7 +647,7 @@ const DASHBOARD_DATA = {
         "state": "West Virginia",
         "text": "West Virginia ranked near the bottom in bachelor's degree attainment through the 2010s and early 2020s, with a rate near 22 percent. The decline of the coal and manufacturing economy removed well-paying jobs that did not require degrees, but the resulting out-migration hit educated workers disproportionately. Workers with degrees left for better labor markets, leaving behind a population with lower average attainment. West Virginia illustrates that attainment rates can fall or stagnate when an economy fails to retain the graduates it produces.",
         "source": {
-          "label": "Educational Attainment: West Virginia — U.S. Census Bureau QuickFacts",
+          "label": "Educational Attainment: West Virginia - U.S. Census Bureau QuickFacts",
           "url": "https://www.census.gov/quickfacts/fact/table/WV/EDU635223"
         }
       }
@@ -703,7 +703,7 @@ const DASHBOARD_DATA = {
           "state": "Massachusetts",
           "text": "Massachusetts has ranked #1 or #2 in NAEP 8th grade math for over 25 years. The Massachusetts Education Reform Act of 1993 established standards-based accountability, redirected funding toward high-need districts through a foundation budget formula, and created mathematics-specific teacher licensure requirements. Massachusetts requires math teachers to pass a separate subject-matter exam (MTEL) distinct from general teaching certification.",
           "source": {
-            "label": "Massachusetts Tests for Educator Licensure (MTEL) — Massachusetts DESE",
+            "label": "Massachusetts Tests for Educator Licensure (MTEL) - Massachusetts DESE",
             "url": "https://www.doe.mass.edu/mtel/"
           }
         }
@@ -716,7 +716,7 @@ const DASHBOARD_DATA = {
         "state": "Florida",
         "text": "Florida's third-grade reading retention law (enacted 2002) was widely credited with raising 4th-grade NAEP reading scores. Independent researchers later found that a substantial share of the improvement reflected cohort effects: retained students below the threshold were excluded from the grade-level sample, making the measured cohort appear stronger. Eighth-grade math outcomes improved more modestly and less consistently.",
         "source": {
-          "label": "NAEP State and District Snapshots — NCES",
+          "label": "NAEP State and District Snapshots - NCES",
           "url": "https://nces.ed.gov/nationsreportcard/snapshots/"
         }
       }
@@ -772,7 +772,7 @@ const DASHBOARD_DATA = {
           "state": "Mississippi",
           "text": "Mississippi was consistently last or near-last in reading scores through 2018. The state enacted the Mississippi Literacy Act in 2019, which required all third-grade reading teachers to be trained in structured literacy, placed literacy coaches in every school, and barred third-grade promotion for students not reading at grade level. By 2022, Mississippi's 4th grade reading scores rose 3 points on NAEP while the national average fell 3 points, the largest positive divergence in the country. Mississippi's 8th grade reading scores also improved against national trends.",
           "source": {
-            "label": "Mississippi Literacy-Based Promotion Act — Mississippi Department of Education",
+            "label": "Mississippi Literacy-Based Promotion Act - Mississippi Department of Education",
             "url": "https://mdek12.org/literacy/lbpa/"
           }
         }
@@ -785,7 +785,7 @@ const DASHBOARD_DATA = {
         "state": "Kentucky",
         "text": "Kentucky scored above the national average in 8th grade reading in 2011 and maintained that position through the mid-2010s. By 2022, Kentucky had fallen below the national average. Kentucky did not adopt a structured literacy requirement until 2022 legislation, and the delay coincided with a period when states that did adopt phonics-based mandates pulled ahead while Kentucky's scores declined. Kentucky illustrates that a good starting position does not protect a state's rank if instructional practices stagnate.",
         "source": {
-          "label": "Prichard Committee for Academic Excellence — prichardcommittee.org",
+          "label": "Prichard Committee for Academic Excellence - prichardcommittee.org",
           "url": "https://prichardcommittee.org/"
         }
       }
@@ -915,7 +915,7 @@ const DASHBOARD_DATA = {
           "state": "Nebraska",
           "text": "Nebraska has ranked #1 or #2 in lowest unemployment for most of the past three decades. Nebraska's economy spreads risk across agriculture, food processing, financial services, insurance, healthcare, and manufacturing. During the COVID downturn, Nebraska's unemployment peaked at roughly 8 percent in April 2020, compared to Hawaii's 11.6 percent annual average and peak rates above 20 percent in individual months. Nebraska recovered to near pre-pandemic levels within 12 months.",
           "source": {
-            "label": "Unemployment Rates for States, Historical Highs and Lows — Bureau of Labor Statistics",
+            "label": "Unemployment Rates for States, Historical Highs and Lows - Bureau of Labor Statistics",
             "url": "https://www.bls.gov/web/laus/lauhsthl.htm"
           }
         }
@@ -928,7 +928,7 @@ const DASHBOARD_DATA = {
         "state": "Nevada",
         "text": "Nevada, like Hawaii, concentrates employment in tourism and hospitality. Nevada has chronically ranked among the most volatile unemployment states, spiking to 14 percent in the 2008 recession and 30 percent in early 2020. Unlike Hawaii, Nevada has not recovered as quickly between downturns because its labor market has no large anchor sector outside gaming and conventions. Nevada's persistent unemployment volatility illustrates the long-term cost of concentrated tourism dependence.",
         "source": {
-          "label": "Nevada Economy at a Glance — Bureau of Labor Statistics",
+          "label": "Nevada Economy at a Glance - Bureau of Labor Statistics",
           "url": "https://www.bls.gov/eag/eag.nv.htm"
         }
       }
@@ -1059,7 +1059,7 @@ const DASHBOARD_DATA = {
           "state": "Minnesota",
           "text": "Minnesota has ranked #1 or #2 in labor force participation for most of the past four decades. The state's Child Care Assistance Program (CCAP) provides subsidized childcare on a sliding-fee scale for families earning up to 67 percent of state median income. Minnesota doubled CCAP funding between 2019 and 2023 and expanded eligibility thresholds. State analysis found each dollar invested in CCAP generated between $1.36 and $1.83 in increased labor force participation and associated tax revenue.",
           "source": {
-            "label": "Child Care Assistance Program — Minnesota Department of Children, Youth, and Families",
+            "label": "Child Care Assistance Program - Minnesota Department of Children, Youth, and Families",
             "url": "https://dcyf.mn.gov/programs-directory/child-care-assistance-program"
           }
         }
@@ -1072,7 +1072,7 @@ const DASHBOARD_DATA = {
         "state": "West Virginia",
         "text": "West Virginia has ranked last or near-last in labor force participation for over 20 years after the coal industry collapsed. Workers displaced at ages 50 and above rarely retrain and re-enter; West Virginia's disability claim rate is among the highest in the country. The pattern shows that sector collapse affecting older workers tends to produce permanent labor force exit rather than retraining.",
         "source": {
-          "label": "Labor Force Participation Rate for West Virginia (LBSSA54) — FRED, St. Louis Fed",
+          "label": "Labor Force Participation Rate for West Virginia (LBSSA54) - FRED, St. Louis Fed",
           "url": "https://fred.stlouisfed.org/series/LBSSA54"
         }
       }
@@ -1140,7 +1140,7 @@ const DASHBOARD_DATA = {
           "state": "Colorado",
           "text": "Colorado diversified away from energy and agriculture through a cluster development strategy coordinated by the Colorado Office of Economic Development and International Trade (OEDIT) starting in the early 2000s. OEDIT targeted aerospace, bioscience, technology, and clean energy with coordinated university research commercialization, site-ready infrastructure, and community college workforce pipelines. By 2020, Colorado had climbed from mid-pack to the top 20 in real per capita income.",
           "source": {
-            "label": "Industries Overview — Colorado Office of Economic Development and International Trade",
+            "label": "Industries Overview - Colorado Office of Economic Development and International Trade",
             "url": "https://oedit.colorado.gov/industries"
           }
         }
@@ -1153,7 +1153,7 @@ const DASHBOARD_DATA = {
         "state": "Alaska",
         "text": "Alaska's per capita income was among the highest in the country during the 1980s oil boom and declined significantly as production fell and prices collapsed. Permanent Fund dividends and oil-funded public services masked the structural income problem for decades, but the state has drawn down reserves for years without replacing the income base. Single-sector dependence creates structural income vulnerability regardless of which sector it is.",
         "source": {
-          "label": "Oil Production in Alaska Reaches Lowest Level in Over 40 Years — EIA",
+          "label": "Oil Production in Alaska Reaches Lowest Level in Over 40 Years - EIA",
           "url": "https://www.eia.gov/todayinenergy/detail.php?id=47696"
         }
       }
@@ -1210,7 +1210,7 @@ const DASHBOARD_DATA = {
           "state": "Texas",
           "text": "Texas maintains one of the lowest renter cost burden rates in the country relative to income through permissive land-use regulation at the state level. Texas preempts local rent control and does not mandate design review, minimum parking requirements, or height limits in most zoning jurisdictions, which allows apartment supply to expand quickly in response to demand. When demand rose sharply from 2020 to 2022, new supply followed and limited sustained rent increases.",
           "source": {
-            "label": "How Local Rules Fuel High Housing Costs in Texas — Texas Tribune",
+            "label": "How Local Rules Fuel High Housing Costs in Texas - Texas Tribune",
             "url": "https://apps.texastribune.org/features/2024/texas-housing-affordability-zoning/"
           }
         }
@@ -1223,7 +1223,7 @@ const DASHBOARD_DATA = {
         "state": "California",
         "text": "California enacted statewide rent stabilization (AB 1482, 2019), just-cause eviction protections, and significant rent assistance programs. Renter cost burden has remained among the highest in the country because demand continues to exceed supply by a larger margin than protections can bridge.",
         "source": {
-          "label": "AB 1482: Tenant Protection Act of 2019 — California Legislature",
+          "label": "AB 1482: Tenant Protection Act of 2019 - California Legislature",
           "url": "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200AB1482"
         }
       }
@@ -1293,7 +1293,7 @@ const DASHBOARD_DATA = {
           "state": "Minnesota",
           "text": "Minnesota enacted statewide zoning reform in 2023 (SF 3) allowing multiplexes in all cities over 1,000 people, following Minneapolis's 2040 comprehensive plan that eliminated single-family-only zoning citywide in 2020. Research found that rent growth in Minneapolis moderated relative to peer cities from 2020 to 2023 and new housing unit production accelerated. Minnesota is the first state to enact statewide single-family zoning elimination.",
           "source": {
-            "label": "Minneapolis 2040 Plan Data Tool — Federal Reserve Bank of Minneapolis",
+            "label": "Minneapolis 2040 Plan Data Tool - Federal Reserve Bank of Minneapolis",
             "url": "https://www.minneapolisfed.org/article/2024/minneapolis-2040-plan-data-tool-prepared-to-measure-impacts"
           }
         }
@@ -1306,7 +1306,7 @@ const DASHBOARD_DATA = {
         "state": "California",
         "text": "California enacted statewide zoning mandates (SB 9, SB 10, ADU reform) over the past decade. Housing production has not increased proportionally because environmental review litigation and neighborhood opposition delayed or blocked projects permitted under state law. Zoning reform without parallel permitting reform has produced limited actual construction.",
         "source": {
-          "label": "SB 9 Fact Sheet — California Department of Housing and Community Development",
+          "label": "SB 9 Fact Sheet - California Department of Housing and Community Development",
           "url": "https://www.hcd.ca.gov/sites/default/files/docs/planning-and-community/sb-9-fact-sheet.pdf"
         }
       }
@@ -1364,7 +1364,7 @@ const DASHBOARD_DATA = {
           "state": "Virginia",
           "text": "Virginia cut unsheltered homelessness 47% from 2010 to 2019 by requiring every provider statewide to share one database and one housing waitlist, backed by a dedicated Housing Trust Fund. Hawaiʻi has the Housing First statute and a state coordination office; the gap is Virginia’s binding data-sharing requirement, which eliminated provider fragmentation and drove placements at scale.",
           "source": {
-            "label": "Virginia Housing Trust Fund Homeless Reduction Grants — DHCD",
+            "label": "Virginia Housing Trust Fund Homeless Reduction Grants - DHCD",
             "url": "https://www.dhcd.virginia.gov/vhtf-homeless-reduction"
           }
         }
@@ -1377,7 +1377,7 @@ const DASHBOARD_DATA = {
         "state": "Oregon",
         "text": "Oregon spent $1.7 billion on homelessness from 2019 to 2024 while unsheltered counts rose 17% and homeless deaths quadrupled. Spending on services without expanding housing supply did not work; Hawaiʻi faces the same structural risk.",
         "source": {
-          "label": "Oregon Statewide Homelessness Estimates 2024 — Oregon Legislative Assembly",
+          "label": "Oregon Statewide Homelessness Estimates 2024 - Oregon Legislative Assembly",
           "url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/CommitteeMeetingDocument/288059"
         }
       }
@@ -1439,7 +1439,7 @@ const DASHBOARD_DATA = {
           "state": "Virginia",
           "text": "Virginia overhauled its transportation spending in 2015 with the SMART SCALE program, a data-driven project scoring system that ranks capital investments by cost-efficiency, safety, accessibility, and economic impact before committing funds. VDOT adopted a formal pavement management system with a published target of maintaining at least 82 percent of state-maintained roads in acceptable condition. Virginia's road condition rankings improved measurably in the five years following implementation.",
           "source": {
-            "label": "SMART SCALE: How It Works — Virginia's Official Program Site",
+            "label": "SMART SCALE: How It Works - Virginia's Official Program Site",
             "url": "https://smartscale.virginia.gov/how-it-works/"
           }
         }
@@ -1452,7 +1452,7 @@ const DASHBOARD_DATA = {
         "state": "Rhode Island",
         "text": "Rhode Island passed a major transportation funding package in 2016 (RhodeWorks) and directed a significant share to high-visibility bridge repairs. By 2020, Rhode Island still ranked near the bottom in road quality despite the investment. Capital infusions without systematic maintenance prioritization fund visible projects rather than cost-effective ones.",
         "source": {
-          "label": "RI Bridges Improving After 5 Years of RhodeWorks — WPRI",
+          "label": "RI Bridges Improving After 5 Years of RhodeWorks - WPRI",
           "url": "https://www.wpri.com/target-12/ri-bridges-improving-after-5-years-of-rhodeworks-tolls-still-in-legal-limbo/"
         }
       }
@@ -1502,7 +1502,7 @@ const DASHBOARD_DATA = {
           "state": "Utah",
           "text": "Utah has ranked among the top five states in broadband subscription for most of the past decade. Utah's performance is anchored by UTOPIA Fiber, a municipal fiber consortium formed in 2002 by eleven cities that built open-access gigabit infrastructure available to any competing provider. Utah also established a state broadband office in 2020 that coordinates deployment funding and tracks coverage gaps at the census block level. Utah's rural broadband subscription rates have consistently ranked higher than comparably rural states.",
           "source": {
-            "label": "UTOPIA Fiber History — utopiafiber.com",
+            "label": "UTOPIA Fiber History - utopiafiber.com",
             "url": "https://www.utopiafiber.com/utopia-fiber-history/"
           }
         }
@@ -1515,7 +1515,7 @@ const DASHBOARD_DATA = {
         "state": "Mississippi",
         "text": "Mississippi received substantial federal and state infrastructure investment to extend broadband access during the 2010s, building out last-mile fiber to previously unserved rural communities. Despite increased infrastructure availability, subscription rates remained near the bottom of national rankings through 2023. The Mississippi experience illustrates that building infrastructure does not automatically translate into higher subscription rates when households face cost barriers, and that affordability programs are necessary alongside deployment investment.",
         "source": {
-          "label": "Exploring Broadband Adoption in Mississippi — MSU Extension Service",
+          "label": "Exploring Broadband Adoption in Mississippi - MSU Extension Service",
           "url": "https://extension.msstate.edu/publications/exploring-broadband-adoption-mississippi"
         }
       }
@@ -1619,7 +1619,7 @@ const DASHBOARD_DATA = {
           "state": "Alaska",
           "text": "Alaska established the Renewable Energy Fund in 2008, a competitive grant program for rural diesel-dependent communities to transition to renewable generation. Communities used the grants to combine wind turbines and battery-backed hydropower, with Kodiak Island achieving near-full renewable generation and reducing diesel imports from 2.3 million gallons per year to near zero. Rates in Kodiak stabilized while surrounding diesel-dependent communities continued to face volatile fuel costs.",
           "source": {
-            "label": "The Renewable Energy Fund — Alaska Renewable Energy Project (REAP)",
+            "label": "The Renewable Energy Fund - Alaska Renewable Energy Project (REAP)",
             "url": "https://alaskarenewableenergy.org/initiatives/the-renewable-energy-fund/"
           }
         }
@@ -1632,7 +1632,7 @@ const DASHBOARD_DATA = {
         "state": "California",
         "text": "California's electricity prices rose roughly 50 percent over the decade ending 2024 despite aggressive renewable mandates. Above-market contracts with ratepayer backstops, wildfire liability shifted to utility rates, and uncapped utility capital spending drove costs up even as renewable share increased. Connecticut followed a similar path and began rolling back its renewable portfolio target.",
         "source": {
-          "label": "Why Are California's Electricity Prices So High? — California Legislative Analyst's Office",
+          "label": "Why Are California's Electricity Prices So High? - California Legislative Analyst's Office",
           "url": "https://lao.ca.gov/Publications/Report/4793"
         }
       }
@@ -1711,7 +1711,7 @@ const DASHBOARD_DATA = {
           "state": "Iowa",
           "text": "Iowa enacted the first state Renewable Portfolio Standard in the nation in 1983. By the early 2000s, Iowa had developed long-term fixed-price wind contracts with utilities that made wind development financially predictable. Iowa's wind energy share crossed 60 percent of total generation by 2020, the highest of any large state. The fixed-price contract structure allowed developers to finance projects without relying on volatile wholesale electricity prices, and the state's transmission investment kept interconnection costs low enough to sustain continued development.",
           "source": {
-            "label": "Iowa State Energy Profile — U.S. Energy Information Administration",
+            "label": "Iowa State Energy Profile - U.S. Energy Information Administration",
             "url": "https://www.eia.gov/state/print.php?sid=IA"
           }
         }
@@ -1724,7 +1724,7 @@ const DASHBOARD_DATA = {
         "state": "Arizona",
         "text": "Arizona had among the highest rooftop solar adoption rates in the country through 2013, driven by net metering policies that credited solar customers at retail rates. In 2013, the Arizona Corporation Commission approved a monthly fixed charge on new solar customers after utilities argued that solar adopters were shifting grid costs to non-solar customers. New rooftop solar installations fell roughly 90 percent within months of the change. Arizona's experience illustrates how rate structure decisions by a state utility commission can rapidly reverse solar adoption gains independent of resource availability.",
         "source": {
-          "label": "Arizona Corporation Commission Decision on Solar Fixed Charge — Vote Solar",
+          "label": "Arizona Corporation Commission Decision on Solar Fixed Charge - Vote Solar",
           "url": "https://votesolar.org/press-release-arizona-corporation-commission-decision-on-solar-step-down/"
         }
       }
@@ -1791,7 +1791,7 @@ const DASHBOARD_DATA = {
           "state": "Minnesota",
           "text": "Minnesota has ranked among the top five states in food security for most of the past decade. Minnesota's low food insecurity rate reflects high SNAP and WIC enrollment rates relative to eligible population, strong school meal participation above the national average, and a regional food bank network anchored by Second Harvest Heartland that operates one of the largest food distribution systems in the country. Minnesota also provides state-funded food assistance that supplements federal programs for residents who do not qualify for SNAP.",
           "source": {
-            "label": "About Hunger in Minnesota and Wisconsin — Second Harvest Heartland",
+            "label": "About Hunger in Minnesota and Wisconsin - Second Harvest Heartland",
             "url": "https://www.2harvest.org/about-us2/about-hunger"
           }
         }
@@ -1804,7 +1804,7 @@ const DASHBOARD_DATA = {
         "state": "Arkansas",
         "text": "Arkansas implemented SNAP work requirements in 2018 through a federal waiver, requiring able-bodied adults without dependents to document work or job training activities to maintain benefits. In the year following implementation, SNAP enrollment declined sharply and food insecurity rates rose in affected counties. Arkansas illustrates that eligibility restrictions on nutrition assistance programs can worsen food security outcomes when the underlying economic conditions that make people eligible for assistance have not changed.",
         "source": {
-          "label": "SNAP Work Requirements in Arkansas — Urban Institute",
+          "label": "SNAP Work Requirements in Arkansas - Urban Institute",
           "url": "https://www.urban.org/research/publication/snap-work-requirements-arkansas-adults-without-dependents-or-disabilities"
         }
       }
@@ -1865,7 +1865,7 @@ const DASHBOARD_DATA = {
           "state": "North Carolina",
           "text": "North Carolina has ranked among the top states in rainy day fund adequacy for over a decade. State law requires that a fixed percentage of surplus revenues be automatically deposited into the Budget Stabilization Reserve each fiscal year, removing the deposit decision from the annual appropriations process. North Carolina's reserve balance grew steadily through the 2010s, and credit rating agencies cited the reserve structure in multiple upgrade decisions. Moody's upgraded North Carolina's bond rating citing fiscal reserves as a primary factor.",
           "source": {
-            "label": "Moody's AAA Rating for North Carolina General Obligation Bonds — NC State Treasurer",
+            "label": "Moody's AAA Rating for North Carolina General Obligation Bonds - NC State Treasurer",
             "url": "https://www.nctreasurer.gov/news/press-releases/2025/04/02/treasurer-brad-briner-announces-moodys-aaa-rating-outstanding-general-obligation-bonds-nc"
           }
         }
@@ -1878,7 +1878,7 @@ const DASHBOARD_DATA = {
         "state": "New Jersey",
         "text": "New Jersey maintained a rainy day fund balance below 1 percent of general fund expenditures for most of the decade from 2010 to 2020, far below the national average. Moody's and S&P both issued credit downgrades to New Jersey during this period, citing the thin reserve and structural budget imbalance as primary factors. Higher borrowing costs compounded the underlying fiscal stress, requiring larger debt service payments that further constrained the budget. New Jersey illustrates how chronically low reserves create a self-reinforcing cycle of fiscal pressure.",
         "source": {
-          "label": "New Jersey's Shrinking Rainy Day Fund — New Jersey Policy Perspective",
+          "label": "New Jersey's Shrinking Rainy Day Fund - New Jersey Policy Perspective",
           "url": "https://www.njpp.org/publications/blog-category/lets-not-forget-to-fix-new-jerseys-shrinking-rainy-day-fund/"
         }
       }
@@ -1935,7 +1935,7 @@ const DASHBOARD_DATA = {
           "state": "Colorado",
           "text": "Colorado enacted universal vote-by-mail in 2013 (HB 1303) paired with same-day voter registration at voting service centers and automatic voter registration through the DMV. Colorado went from below-average turnout in the early 2000s to consistently ranking in the top 10 by 2016. Approximately 15 to 20 percent of Colorado voters in recent elections registered on election day or in the final week, a direct result of same-day registration availability.",
           "source": {
-            "label": "HB13-1303 Voter Access and Modernized Elections Act — ACLU of Colorado",
+            "label": "HB13-1303 Voter Access and Modernized Elections Act - ACLU of Colorado",
             "url": "https://www.aclu-co.org/legislation/hb13-1303-voter-access-modernized-elections-act"
           }
         }
@@ -1948,7 +1948,7 @@ const DASHBOARD_DATA = {
         "state": "Oregon",
         "text": "Oregon pioneered all-mail voting in 2000 and maintained above-average turnout for over a decade. Oregon's ranking has since declined as other states adopted mail voting without Oregon maintaining a comparable lead. Vote-by-mail removes logistical barriers for motivated voters but does not independently create the civic engagement that drives high turnout.",
         "source": {
-          "label": "All-Mail Voting in Colorado Increases Turnout and Reduces Inequality — PMC/PNAS",
+          "label": "All-Mail Voting in Colorado Increases Turnout and Reduces Inequality - PMC/PNAS",
           "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9756790/"
         }
       }
@@ -2028,7 +2028,7 @@ const DASHBOARD_DATA = {
           "state": "Utah",
           "text": "Utah maintained positive net domestic in-migration through a period of rapid housing cost increases through state-level supply reforms from 2022 to 2024. HB 462 required cities to allow accessory dwelling units by right statewide, and SB 174 required higher-density zoning near transit corridors. Utah consistently ranked among the top states for new housing permits per capita following these reforms.",
           "source": {
-            "label": "HB 0462 Housing Affordability Amendments (2022) — Utah State Legislature",
+            "label": "HB 0462 Housing Affordability Amendments (2022) - Utah State Legislature",
             "url": "https://le.utah.gov/~2022/bills/static/HB0462.html"
           }
         }
@@ -2041,7 +2041,7 @@ const DASHBOARD_DATA = {
         "state": "California",
         "text": "California enacted statewide zoning mandates (SB 9, SB 10, ADU reform) and declared repeated housing crises over more than a decade. Domestic population loss has continued because state-level zoning mandates were not matched with permit streamlining or environmental review reform. Projects permitted under new state law still took three to seven years to break ground.",
         "source": {
-          "label": "U.S. Population Growth Has Nearly Flatlined — Brookings Institution",
+          "label": "U.S. Population Growth Has Nearly Flatlined - Brookings Institution",
           "url": "https://www.brookings.edu/articles/u-s-population-growth-has-nearly-flatlined-new-census-data-shows/"
         }
       }
@@ -2165,7 +2165,7 @@ const DASHBOARD_DATA = {
           "state": "Ohio",
           "text": "Ohio launched the Ohio Third Frontier program in 2002, a 10-year $1.4 billion state investment in technology commercialization infrastructure, early-stage capital access, and STEM startup formation. Rather than subsidizing individual companies directly, Third Frontier funded commercialization accelerators at universities and early-stage venture funds that co-invested with private capital. Ohio's technology startup formation rate increased substantially over the program's first decade, building clusters in biomedical devices, advanced materials, and clean energy.",
           "source": {
-            "label": "Ohio Third Frontier Program Overview — Ohio Manufacturing Association",
+            "label": "Ohio Third Frontier Program Overview - Ohio Manufacturing Association",
             "url": "https://www.ohiomfg.com/wp-content/uploads/2024/02/ohio_third_frontier_program_overview.pdf"
           }
         }
@@ -2178,7 +2178,7 @@ const DASHBOARD_DATA = {
         "state": "Connecticut",
         "text": "Connecticut has chronic low new establishment formation rates despite significant state investment in business development programs and targeted sector incentives. State analyses found that entry-level barriers, including complex multi-agency permitting and high workers' compensation costs, deter formation regardless of incentives offered downstream. Incentive programs that benefit established businesses do not address friction that prevents formation.",
         "source": {
-          "label": "Business Dynamics Statistics — U.S. Census Bureau",
+          "label": "Business Dynamics Statistics - U.S. Census Bureau",
           "url": "https://www.census.gov/programs-surveys/bds.html"
         }
       }
@@ -2302,7 +2302,7 @@ const DASHBOARD_DATA = {
           "state": "Florida",
           "text": "Florida consistently ranks among the top five states for new employer business formation. Florida streamlined its business registration to a one-business-day approval cycle at $125 to $138 per entity, among the lowest combined costs in the country. Florida also operates one of the largest small business development center (SBDC) networks in the US, with 41 locations providing free consulting to early-stage businesses.",
           "source": {
-            "label": "Florida SBDC Network — floridasbdc.org",
+            "label": "Florida SBDC Network - floridasbdc.org",
             "url": "https://floridasbdc.org/"
           }
         }
@@ -2315,7 +2315,7 @@ const DASHBOARD_DATA = {
         "state": "Louisiana",
         "text": "Louisiana invested over $250 million per year in film and entertainment tax incentives starting in 2002 to stimulate business formation beyond oil and gas. State legislative auditor reviews estimated the program cost $17 in incentives per $1 of lasting economic activity. Louisiana's overall employer formation rate remained in the bottom quarter throughout the incentive period.",
         "source": {
-          "label": "Motion Picture Production Program — Louisiana Entertainment",
+          "label": "Motion Picture Production Program - Louisiana Entertainment",
           "url": "https://www.louisianaentertainment.gov/film/motion-picture-production-program"
         }
       }
@@ -2383,7 +2383,7 @@ const DASHBOARD_DATA = {
           "state": "Massachusetts",
           "text": "Massachusetts has ranked #1 or #2 in labor productivity for most of the past two decades through deliberate concentration in sectors with high output per hour: biotechnology, medical devices, financial technology, and defense research. Massachusetts created the Massachusetts Life Sciences Center in 2008, a 10-year $1 billion initiative funding research infrastructure, workforce training, and company formation. The program is credited with establishing Massachusetts as the dominant US biotech hub outside of San Diego.",
           "source": {
-            "label": "Massachusetts Life Sciences Center — masslifesciences.com",
+            "label": "Massachusetts Life Sciences Center - masslifesciences.com",
             "url": "https://www.masslifesciences.com/"
           }
         }
@@ -2396,7 +2396,7 @@ const DASHBOARD_DATA = {
         "state": "Nevada",
         "text": "Nevada spent two decades attracting high-profile employers including the Tesla Gigafactory (2014) and the Raiders stadium (2020). Nevada's labor productivity has remained stuck in the bottom quartile because gaming and hospitality still employ the majority of the workforce. Individual large-employer announcements do not shift the productivity distribution unless they generate enough employment in high-value sectors to change the aggregate.",
         "source": {
-          "label": "State and Metro Area Labor Productivity — Bureau of Labor Statistics",
+          "label": "State and Metro Area Labor Productivity - Bureau of Labor Statistics",
           "url": "https://www.bls.gov/lpc/state-productivity.htm"
         }
       }

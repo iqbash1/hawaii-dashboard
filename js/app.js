@@ -294,7 +294,7 @@ const App = {
         else pctLabel = `${arrow} ${absPct.toFixed(1)}%`;
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
-        // Compact labels: start year full, end year 2-digit — e.g. "2020-24 vs 2017-21"
+        // Compact labels: start year full, end year 2-digit - e.g. "2020-24 vs 2017-21"
         const priorLabel = `${this.parseYearLabel(prior[0])}-${String(keyEnd(prior[prior.length - 1])).slice(-2)}`;
         const recentLabel = `${this.parseYearLabel(recent[0])}-${String(keyEnd(recent[recent.length - 1])).slice(-2)}`;
 
@@ -1061,20 +1061,20 @@ const App = {
         );
         if (isDecimalPct) {
             methRows.push(
-                ['Step 1 — Raw storage', `Values in the Raw Data tab are stored as decimal fractions (0 to 1). Example: 0.2162 = 21.62%.`],
-                ['Step 2 — Chart Data tab', 'Hawaiʻi and Other-states average are the same decimal fractions as Raw Data. Multiply by 100 to display as percentages.'],
-                ['Step 3 — Rankings / All Data tabs', 'Values are multiplied by 100 and shown as percentages (e.g. 21.62%).'],
-                ['Step 4 — Other-state average', 'Computed as the simple mean of all non-Hawaiʻi state values for that year (decimal form), then displayed as a percentage.'],
+                ['Step 1 - Raw storage', `Values in the Raw Data tab are stored as decimal fractions (0 to 1). Example: 0.2162 = 21.62%.`],
+                ['Step 2 - Chart Data tab', 'Hawaiʻi and Other-states average are the same decimal fractions as Raw Data. Multiply by 100 to display as percentages.'],
+                ['Step 3 - Rankings / All Data tabs', 'Values are multiplied by 100 and shown as percentages (e.g. 21.62%).'],
+                ['Step 4 - Other-state average', 'Computed as the simple mean of all non-Hawaiʻi state values for that year (decimal form), then displayed as a percentage.'],
             );
         } else {
             methRows.push(
-                ['Step 1 — Raw storage', `Values are stored in display units (${m.unit}). No unit scaling is applied.`],
-                ['Step 2 — Other-state average', 'Computed as the simple mean of all non-Hawaiʻi state values for that year.'],
+                ['Step 1 - Raw storage', `Values are stored in display units (${m.unit}). No unit scaling is applied.`],
+                ['Step 2 - Other-state average', 'Computed as the simple mean of all non-Hawaiʻi state values for that year.'],
             );
         }
         if (chartIsTrimmed) {
             methRows.push(
-                ['Step — Year trimming', `Chart Data ends at ${effectiveLastYear} (the latest year with complete state data). Raw Data extends to ${sdLastYear}. This keeps Hawaiʻi, the other-state average, and rankings consistent with the same endpoint.`],
+                ['Step - Year trimming', `Chart Data ends at ${effectiveLastYear} (the latest year with complete state data). Raw Data extends to ${sdLastYear}. This keeps Hawaiʻi, the other-state average, and rankings consistent with the same endpoint.`],
             );
         }
         methRows.push(

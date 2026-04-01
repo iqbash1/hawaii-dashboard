@@ -1,0 +1,15 @@
+{
+  "name": "hawaii-dashboard-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smoke tests for the Hawaii Dashboard",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "http-server": "^14.1.1"
+  }
+}

@@ -14,7 +14,7 @@
  *   voter_participation_rate, net_domestic_migration_rate
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
- *   (none — all 26 metrics verified against state-data.js)
+ *   (none - all 26 metrics verified against state-data.js)
  */
 
 const fs = require('fs');
@@ -67,7 +67,7 @@ const RECOMPUTE_METRICS = [
     'suicide_rate',
 ];
 
-// No metrics excluded — all 26 derive from state-data.js
+// No metrics excluded - all 26 derive from state-data.js
 const SKIP_METRICS = [];
 
 // ==========================================================

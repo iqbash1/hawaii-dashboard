@@ -54,6 +54,14 @@ hawaii-dashboard/
 │   ├── build-state-data.js     # Generates state-data.js from federal APIs
 │   ├── build-county-data.js    # Generates county-data.js from federal APIs
 │   └── ...                     # Other data processing scripts
+├── tests/
+│   ├── package.json            # Playwright + http-server dependencies
+│   ├── playwright.config.js    # Test runner config (port 8765, http-server webServer)
+│   └── smoke.spec.js           # Critical-path smoke tests
+├── .github/
+│   └── workflows/
+│       ├── refresh-data.yml    # Monthly data refresh via federal APIs
+│       └── tests.yml           # Smoke tests on every push to main
 └── DOCUMENTATION.md
 ```
 
@@ -221,7 +229,7 @@ rankHistoryNarrative: {
       state: "State name",
       text: "2-3 sentences: what this state did and what happened",
       source: {                       // optional citation link rendered below the text
-        label: "Display text — Organization",
+        label: "Display text - Organization",
         url: "https://..."
       }
     }
@@ -233,7 +241,7 @@ rankHistoryNarrative: {
     state: "State name",
     text: "2-3 sentences: what this state did that Hawaii should avoid replicating",
     source: {                         // optional citation link rendered below the text
-      label: "Display text — Organization",
+      label: "Display text - Organization",
       url: "https://..."
     }
   }
@@ -345,11 +353,11 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: Detail |
 
 A standalone summary page for policymakers. All logic is self-contained in `five-year-change/index.html` (inline JS, no shared modules). Key sections rendered by `render()`:
 
-1. **Summary chips** — two rows (5-Year Trends / 5-Year Ranking Changes), each with three color-coded counts in red → amber → green order (Worsened / Little Change / Improved)
-2. **Policy Area Overview scorecard** — one row per area; columns: Area name, National Rank (filled stars = above national average, left-to-right), standing text, 5-year trend arrows. Rows sorted red → amber → green by national standing. Left border color signals overall area health. Click any row to jump to that area section.
-3. **Area sections** — collapsed by default; 2-sentence narrative summary with an expand toggle ("Show N metrics ▾ / Hide metrics ▴"). Each expanded section lists all metrics in that area with trend, standing, and county data.
-4. **National Ranking table** — all ranked metrics sorted by rank (default). Headers for Rank, Category, and 5-yr Change in rank are clickable to re-sort; active column highlighted with ▲/▼ indicator.
-5. **Method note** — one-line footer explaining year variation.
+1. **Summary chips** - two rows (5-Year Trends / 5-Year Ranking Changes), each with three color-coded counts in red → amber → green order (Worsened / Little Change / Improved)
+2. **Policy Area Overview scorecard** - one row per area; columns: Area name, National Rank (filled stars = above national average, left-to-right), standing text, 5-year trend arrows. Rows sorted red → amber → green by national standing. Left border color signals overall area health. Click any row to jump to that area section.
+3. **Area sections** - collapsed by default; 2-sentence narrative summary with an expand toggle ("Show N metrics ▾ / Hide metrics ▴"). Each expanded section lists all metrics in that area with trend, standing, and county data.
+4. **National Ranking table** - all ranked metrics sorted by rank (default). Headers for Rank, Category, and 5-yr Change in rank are clickable to re-sort; active column highlighted with ▲/▼ indicator.
+5. **Method note** - one-line footer explaining year variation.
 
 **Helper functions (five-year-change/index.html):**
 
@@ -489,6 +497,43 @@ Every push to `main` auto-deploys within ~30 seconds.
 6. Run `python3 scripts/generate-og-pages.py` to generate OG assets for the new metric
 7. Run `node scripts/screenshot-rank-history.js` to generate rank history OG images
 8. Commit and push
+
+---
+
+## Testing
+
+The project uses [Playwright](https://playwright.dev/) smoke tests to catch regressions before they reach production.
+
+### Running tests locally
+
+```bash
+cd tests
+npm install
+npx playwright install chromium  # first time only
+npm test
+```
+
+Tests run against a local static server on port 8765 (http-server serves the project root).
+
+### What the tests cover
+
+| Test | What it catches |
+|------|----------------|
+| Page loads without JS errors | Any runtime exception on startup |
+| 26 metric cards render | Metric data missing or AREA_ORDER misconfigured |
+| All 3 modal tabs visible | CSS overflow clipping `margin-bottom: -1px` tabs |
+| Trend chart visible after clicking tab | Wrong canvas ID or chart not rendering |
+| Rank tab shows chart | Rankings panel broken |
+| Rank history tab loads | Rank history computation error |
+| `food_insecurity_rate` shows comparison badge | Range-key format ("YYYY-YYYY") parsing broken |
+| County tab shows chart | County data missing or tab hidden incorrectly |
+| Five-year-change page loads | JS errors on the /five-year-change/ page |
+
+### CI
+
+Tests run automatically on every push to `main` and on all pull requests via `.github/workflows/tests.yml`. A failing test blocks merge.
+
+If tests fail locally but pass in CI (or vice versa), run `npm run test:headed` for a visible browser, or `npm run test:ui` for Playwright's interactive UI mode.
 
 ---
 
