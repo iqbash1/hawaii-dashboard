@@ -201,6 +201,7 @@ Each metric follows this structure:
 - Exception: `acgr` in `state-data.js` stores whole numbers (e.g., `93.2`)
 - NAEP scores stored as raw numbers (e.g., `270.04`)
 - A value of `0` is treated as missing data (mapped to `null` in charts)
+- `food_insecurity_rate` uses **3-year rolling averages** with range keys like `"2022-2024"` instead of single-year keys. Chart and comparison logic handles both formats via `parseYearLabel` (start year) and `keyEnd` (end year).
 
 **Narrative pattern** (whyItMatters / howToRead / insight):
 - `whyItMatters`: headline number + state's role (what and why)
@@ -385,13 +386,21 @@ A custom Chart.js plugin renders governor names and dashed term boundaries:
 
 | Variable | Hex | Usage |
 |----------|-----|-------|
-| `--hawaii-blue` | `#0D7C8F` | Hawaiʻi data line, accents, area labels |
+| `--hawaii-blue` | `#0D7C8F` | Hawaiʻi data line, accents, area section icons, area labels |
+| `--hawaii-blue-light` | `#EEF8FA` | Hint/callout box backgrounds (teal tint) |
 | `--avg-gray` | `#666666` | Other state average line |
-| `--positive` | `#059669` | "Better" / "Improving" indicators |
-| `--negative` | `#C0392B` | "Worse" / "Worsening" indicators |
+| `--positive` | `#059669` | "Better" / "Improving" / green status indicators |
+| `--positive-bg` | `#ECFDF5` | Background for positive status chips |
+| `--negative` | `#C0392B` | "Worse" / "Worsening" / red status indicators |
+| `--negative-bg` | `#FDF0EE` | Background for negative status chips |
+| `--neutral` | `#c08a1a` | "Little change" / amber status indicators |
+| `--neutral-bg` | `#fef9e7` | Background for neutral status chips and callout borders |
 | `--text` | `#333333` | Primary body text |
+| `--text-secondary` | `#555555` | Secondary body text |
+| `--text-muted` | `#666666` | Labels, metadata |
 | `--bg` | `#F5F5F5` | Page background |
 | `--card-bg` | `#FFFFFF` | Card/modal background |
+| `--border` | `#EAEAEA` | All borders, dividers |
 
 ### Typography
 
@@ -426,6 +435,8 @@ Main application controller.
 | `showRankHistory(slug)` | Renders rank history chart, sets up state comparison UI |
 | `hideRankHistory()` | Destroys rank history chart, hides panel |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
+| `buildVsYearHtml(metricData)` | Builds the "prior period vs recent" card badge; handles plain year keys (`"2022"`) and rolling-average range keys (`"2022-2024"`) |
+| `parseYearLabel(label)` | Extracts the start year from any key format: `"2022"` → 2022, `"2022-2024"` → 2022. Used by `buildVsYearHtml` and the governor overlay |
 | `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file |
 
 ### `ChartUtils` (charts.js)

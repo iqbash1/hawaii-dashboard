@@ -264,9 +264,10 @@ const App = {
 
     /** Build "vs Prior Year" comparison HTML for a card */
     buildVsYearHtml(metricData) {
-        // keyEnd: parse "2022" → 2022 or "2022-2024" → 2024 (rolling-average range keys)
+        // Handles both plain year keys ("2022") and rolling-average range keys ("2022-2024").
+        // keyEnd extracts the end year so range keys sort chronologically.
+        // keyStart reuses parseYearLabel which extracts the first year from any format.
         const keyEnd = (k) => { const p = k.split('-'); return Number(p[p.length - 1]); };
-        const keyStart = (k) => Number(k.split('-')[0]);
         const sortedKeys = Object.keys(metricData.hawaii).sort((a, b) => keyEnd(a) - keyEnd(b));
         if (sortedKeys.length < 4) return '';
         const recent = sortedKeys.slice(-3);
@@ -293,8 +294,9 @@ const App = {
         else pctLabel = `${arrow} ${absPct.toFixed(1)}%`;
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
-        const priorLabel = `${keyStart(prior[0])}-${String(keyEnd(prior[prior.length - 1])).slice(-2)}`;
-        const recentLabel = `${keyStart(recent[0])}-${String(keyEnd(recent[recent.length - 1])).slice(-2)}`;
+        // Compact labels: start year full, end year 2-digit — e.g. "2020-24 vs 2017-21"
+        const priorLabel = `${this.parseYearLabel(prior[0])}-${String(keyEnd(prior[prior.length - 1])).slice(-2)}`;
+        const recentLabel = `${this.parseYearLabel(recent[0])}-${String(keyEnd(recent[recent.length - 1])).slice(-2)}`;
 
         return `
             <div class="card-comp ${cls}">

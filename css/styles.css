@@ -689,8 +689,8 @@ body {
     font-weight: 600;
     color: var(--text-secondary);
     text-decoration: none;
-    border: 1px solid #c0c7ce;
-    background: #fff;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
     border-radius: var(--radius-sm);
     padding: 0.15rem 0.5rem;
     white-space: nowrap;
