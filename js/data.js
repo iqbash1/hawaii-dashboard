@@ -107,7 +107,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Violence prevention and behavioral health; prosecution, sentencing, and reentry policy; victim services and youth intervention.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii has ranked #5 to #12 in violent crime every year on record, running 35 to 40 percent below the national average for four decades. The 2024 rate of 218 per 100K is the lowest on record. Geographic isolation limits trafficking of weapons that drives violence in landlocked states, and tight multigenerational community networks provide informal social cohesion.",
+      "summary": "Hawaii has ranked #5 to #21 in violent crime since 1985, mostly in the #8 to #14 range, running 35 to 40 percent below the national average for four decades. The 2024 rate of 218 per 100K is the lowest on record. Geographic isolation limits trafficking of weapons that drives violence in landlocked states, and tight multigenerational community networks provide informal social cohesion.",
       "mode": "protect",
       "benchmarks": [
         {
@@ -234,7 +234,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Substance-use treatment and diversion; prosecution and reentry policy; theft, fraud, and neighborhood prevention.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii ranked #48 in property crime in 2013 and improved to #36 in 2024, a 12-rank gain as the absolute rate fell 46 percent. Hawaii's historically elevated rate reflects two structural factors: high tourist density creates a concentrated target environment for opportunistic theft, and methamphetamine-related acquisitive crime has historically driven a disproportionate share of incidents.",
+      "summary": "Hawaii ranked around #37 to #45 in property crime from 1985 through the early 2010s, briefly reached #32 in 2012, then appeared to worsen sharply to #48 in 2013 when the data source changed from CORGIS to the FBI Crime Data Explorer. Since 2013, the rank has improved to #36 in 2024 as the absolute rate fell 46 percent. Two structural factors have kept Hawaii elevated throughout: high tourist density concentrates targets for opportunistic theft, and methamphetamine-related acquisitive crime has historically driven a disproportionate share of incidents.",
       "mode": "learn",
       "benchmarks": [
         {
@@ -1612,7 +1612,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Utility regulation and rate design; energy efficiency and bill relief; generation, fuel, and grid planning.",
     "updateCadence": "Monthly (shown annual)",
     "rankHistoryNarrative": {
-      "summary": "Hawaii has ranked #50 in residential electricity price every year on record, the only metric on this dashboard where the rank has never moved. Hawaii's isolated grids have no mainland connection and historically ran on 70 to 75 percent imported petroleum. When oil prices spiked in 2008 and again in 2022, Hawaii's residential rate spiked nearly three times harder than the national average. By 2025, Hawaii's rate stands at 40.6 cents per kWh, 2.3 times the other-state average of 17.4 cents. Renewable generation has grown from roughly 10 percent in 2012 to over 40 percent by 2025, but transition capital costs are passed through to ratepayers and the price gap has widened, not closed.",
+      "summary": "Hawaii has ranked #50 in residential electricity price every year since 1996, and ranked #44 to #49 in the early 1990s before petroleum dependency fully set the price floor. Hawaii's isolated grids have no mainland connection and historically ran on 70 to 75 percent imported petroleum. When oil prices spiked in 2008 and again in 2022, Hawaii's residential rate spiked nearly three times harder than the national average. By 2025, Hawaii's rate stands at 40.6 cents per kWh, 2.3 times the other-state average of 17.4 cents. Renewable generation has grown from roughly 10 percent in 2012 to over 40 percent by 2025, but transition capital costs are passed through to ratepayers and the price gap has widened, not closed.",
       "mode": "learn",
       "benchmarks": [
         {
