@@ -1175,10 +1175,17 @@ const DASHBOARD_DATA = {
     "source": "Census ACS",
     "sourceUrl": "https://data.census.gov/",
     "whyItMatters": "The federal government defines renters paying more than 30% of income on housing as \"cost-burdened.\" The State controls zoning, building permits, and rent assistance programs that determine how much housing gets built and what it costs. Hawaiʻi's chronic housing shortage keeps cost burden well above the national norm.",
-    "howToRead": "Both lines should fall. Hawaiʻi has been persistently above the other-state average for the entire decade.",
-    "insight": "Rent burden hovered near 55-60% from 2012 through 2023, then dropped to 50.6% in 2024, the lowest reading in the series. Whether this reflects a real improvement or a data blip remains to be seen; the structural housing shortage has not eased.",
+    "howToRead": "Both lines should fall. Hawaiʻi has ranked last or near-last for nearly two decades. In 2005, 50% of renters were cost-burdened versus 47% nationally; by 2023 the gap had widened to 60% versus 49%.",
+    "insight": "In 2005, 50.0% of Hawaiʻi renters already paid 30%+ of income on housing, the highest share in the nation. Cost burden climbed through the housing crisis and peaked at 60.2% in 2023, then fell to 50.6% in 2024. The structural housing shortage has not eased; the 2024 drop may reflect rising incomes more than falling rents.",
     "crossInsight": "Renters bear the sharpest edge of Hawaiʻi's affordability crisis. Homeowners who bought before the price surge have locked-in costs; renters face the full weight of the current market. This makes renter burden a more sensitive barometer of cost-of-living pressure than median home price alone.",
     "hawaii": {
+      "2005": 0.5004,
+      "2006": 0.5163,
+      "2007": 0.5316,
+      "2008": 0.5544,
+      "2009": 0.5707,
+      "2010": 0.5621,
+      "2011": 0.589,
       "2012": 0.5531,
       "2013": 0.556,
       "2014": 0.5749,
@@ -1193,6 +1200,13 @@ const DASHBOARD_DATA = {
       "2024": 0.5059
     },
     "otherStateAvg": {
+      "2005": 0.47,
+      "2006": 0.4758,
+      "2007": 0.4681,
+      "2008": 0.4767,
+      "2009": 0.4933,
+      "2010": 0.5083,
+      "2011": 0.5119,
       "2012": 0.4976,
       "2013": 0.4936,
       "2014": 0.4947,
@@ -1209,7 +1223,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Housing production and permitting reform; rental assistance and tenant stability; infrastructure that unlocks new housing.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii has ranked #46 to #49 in renter cost burden every year since 2012. In 2024, 50.6 percent of Hawaii renters pay more than 30 percent of their income on housing, compared to 45.4 percent as the other-state average. The driver is supply: Hawaii has built far fewer rental units than household formation requires, and short-term rental platforms have converted an estimated 20,000 to 25,000 residential units to vacation use.",
+      "summary": "Hawaii has ranked #46 to #49 in renter cost burden every year from 2005 through 2024. In 2005, 50.0 percent of Hawaii renters were already cost-burdened versus 47.0 percent nationally. Cost burden climbed to a peak of 60.2 percent in 2023, then fell to 50.6 percent in 2024, compared to 45.4 percent for the other-state average. The driver is supply: Hawaii has built far fewer rental units than household formation requires, and short-term rental platforms have converted an estimated 20,000 to 25,000 residential units to vacation use.",
       "mode": "learn",
       "benchmarks": [
         {
