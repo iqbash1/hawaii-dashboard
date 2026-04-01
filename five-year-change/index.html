@@ -125,8 +125,8 @@
         .fyc-rank-header { display: flex; align-items: center; gap: 0.65rem; padding: 0.28rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
         .fyc-rank-hdr-rank { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); min-width: 52px; text-align: right; flex-shrink: 0; }
         .fyc-rank-hdr-name { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; }
-        .fyc-rank-hdr-cat  { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); min-width: 100px; flex-shrink: 0; }
-        .fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); min-width: 60px; text-align: right; flex-shrink: 0; }
+        .fyc-rank-hdr-cat  { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; flex-shrink: 0; }
+        .fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 120px; text-align: right; flex-shrink: 0; }
         .fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; }
         .fyc-rank-hdr-sortable:hover { color: var(--text); }
         .fyc-rank-hdr-sortable.active { color: var(--text); }
@@ -138,13 +138,13 @@
         .fyc-rank-num { font-size: 0.72rem; font-weight: 700; min-width: 52px; text-align: right; flex-shrink: 0; }
         .fyc-rank-year { font-weight: 400; font-size: 0.66rem; color: var(--text-muted); }
         .fyc-rank-name { font-size: 0.78rem; color: var(--text); flex: 1; }
-        .fyc-rank-cat { font-size: 0.68rem; color: var(--text-muted); min-width: 100px; flex-shrink: 0; }
+        .fyc-rank-cat { font-size: 0.68rem; color: var(--text-muted); width: 130px; flex-shrink: 0; }
         /* 3-tier rank colors: green / grey / red */
         .fyc-rank-item.rank-good   .fyc-rank-num { color: var(--positive); }
         .fyc-rank-item.rank-mid    .fyc-rank-num { color: var(--text-muted); }
         .fyc-rank-item.rank-bad    .fyc-rank-num { color: var(--negative); }
         /* 5-year move column */
-        .fyc-rank-move { font-size: 0.68rem; font-weight: 700; min-width: 60px; text-align: right; flex-shrink: 0; }
+        .fyc-rank-move { font-size: 0.68rem; font-weight: 700; width: 120px; text-align: right; flex-shrink: 0; }
         .fyc-rank-move.move-up     { color: var(--positive); }
         .fyc-rank-move.move-down   { color: var(--negative); }
         .fyc-rank-move.move-stable { color: var(--text-muted); font-weight: 400; }
@@ -951,9 +951,13 @@
                 ['rank', 'category', 'move'].forEach(col => {
                     const hdr = document.getElementById('fyc-rhdr-' + col);
                     if (!hdr) return;
-                    hdr.classList.toggle('active', rankSortBy === col);
+                    const isActive = rankSortBy === col;
+                    hdr.classList.toggle('active', isActive);
                     const ind = hdr.querySelector('.fyc-rank-sort-ind');
-                    if (ind) ind.textContent = rankSortBy === col ? (rankSortDir === 1 ? ' ▲' : ' ▼') : ' ⇅';
+                    if (ind) {
+                        ind.textContent = isActive ? (rankSortDir === 1 ? ' ▲' : ' ▼') : ' ▲';
+                        ind.style.opacity = isActive ? '1' : '0.3';
+                    }
                 });
             }
 
@@ -969,8 +973,8 @@
                     <div class="fyc-rank-header">
                         <span class="fyc-rank-hdr-rank fyc-rank-hdr-sortable active" id="fyc-rhdr-rank" onclick="window._fycRankSort('rank')">Rank<span class="fyc-rank-sort-ind"> ▲</span></span>
                         <span class="fyc-rank-hdr-name">Metric</span>
-                        <span class="fyc-rank-hdr-cat fyc-rank-hdr-sortable" id="fyc-rhdr-category" onclick="window._fycRankSort('category')">Category<span class="fyc-rank-sort-ind"> ⇅</span></span>
-                        <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">5-yr Change in rank<span class="fyc-rank-sort-ind"> ⇅</span></span>
+                        <span class="fyc-rank-hdr-cat fyc-rank-hdr-sortable" id="fyc-rhdr-category" onclick="window._fycRankSort('category')">Category<span class="fyc-rank-sort-ind" style="opacity:0.3"> ▲</span></span>
+                        <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">5-yr Change in rank<span class="fyc-rank-sort-ind" style="opacity:0.3"> ▲</span></span>
                     </div>
                     <div class="fyc-rank-list" id="fyc-rank-list"></div>
                 </div>`;
