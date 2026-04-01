@@ -42,6 +42,8 @@ const App = {
 
     // Hawaiʻi Governors - for chart overlay
     GOVERNORS: [
+        { name: 'Quinn',    party: 'R', start: 1959, end: 1962 },
+        { name: 'Burns',    party: 'D', start: 1962, end: 1974 },
         { name: 'Ariyoshi', party: 'D', start: 1974, end: 1986 },
         { name: 'Waihee', party: 'D', start: 1986, end: 1994 },
         { name: 'Cayetano', party: 'D', start: 1994, end: 2002 },

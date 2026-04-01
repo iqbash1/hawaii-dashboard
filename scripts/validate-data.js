@@ -452,6 +452,48 @@ if (STATE_DATA) {
 }
 
 // ============================================================
+// 4. GOVERNOR BAND COVERAGE
+// ============================================================
+// Ensures every metric's earliest data year is covered by a governor band.
+// If data is extended before the earliest governor start, this will error.
+
+{
+    console.log('\n--- Section 4a: Governor Band Coverage ---');
+
+    const appPath = path.join(__dirname, '..', 'js', 'app.js');
+    let earliestGovYear = null;
+
+    try {
+        const appSrc = fs.readFileSync(appPath, 'utf8');
+        // Extract all start: YYYY values from the GOVERNORS array
+        const starts = [...appSrc.matchAll(/\bstart:\s*(\d{4})\b/g)].map(m => parseInt(m[1]));
+        if (starts.length > 0) {
+            earliestGovYear = Math.min(...starts);
+            console.log(`  Earliest governor start year: ${earliestGovYear}`);
+        } else {
+            warn('Could not parse GOVERNORS array from app.js');
+        }
+    } catch (e) {
+        warn(`Could not read app.js to check governor coverage: ${e.message}`);
+    }
+
+    if (earliestGovYear !== null) {
+        for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
+            const hawaii = metric.hawaii;
+            if (!hawaii) continue;
+            const dataYears = Object.keys(hawaii)
+                .map(y => parseInt(y))
+                .filter(y => !isNaN(y));
+            if (dataYears.length === 0) continue;
+            const earliestDataYear = Math.min(...dataYears);
+            if (earliestDataYear < earliestGovYear) {
+                error(`[${slug}] data starts at ${earliestDataYear} but earliest governor band starts at ${earliestGovYear} -- add earlier governors to GOVERNORS array in app.js`);
+            }
+        }
+    }
+}
+
+// ============================================================
 // 4. NARRATIVE STALENESS
 // ============================================================
 
