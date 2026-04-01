@@ -706,6 +706,10 @@
             return s.join(' ');
         }
 
+        function areaId(area) {
+            return area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+        }
+
         /* ── Area scorecard (one row per policy area) ── */
         function buildAreaScorecard(allResults) {
             const rowItems = [];
@@ -719,7 +723,7 @@
                 const wor = metrics.filter(r => r.status === 'worsening').length;
                 const lit = metrics.filter(r => r.status === 'little-change').length;
 
-                const areaId = areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+                const id = areaId(areaGroup.area);
 
                 // Overall area signal — driven by national standing alone
                 const abovePct = withRank.length ? aboveMedian / withRank.length : 0.5;
@@ -745,7 +749,7 @@
                 if (!imp && !wor) trendParts.push(`<span class="sc-trend-flat">&#8594; ${lit} unchanged</span>`);
 
                 const sortOrder = areaClass === 'sc-weak' ? 0 : areaClass === 'sc-mixed' ? 1 : 2;
-                rowItems.push({ sortOrder, html: `<a href="#fyc-area-${areaId}" class="fyc-scorecard-row ${areaClass}">
+                rowItems.push({ sortOrder, html: `<a href="#fyc-area-${id}" class="fyc-scorecard-row ${areaClass}">
                     <span class="fyc-scorecard-area">${areaGroup.area}</span>
                     <span class="sc-stars">${stars}</span>
                     <span class="fyc-scorecard-standing-text">${standingText}</span>
@@ -888,9 +892,9 @@
 
             function rankColorClass(rank, tot) {
                 const pct = rank / tot;
-                if (pct <= 0.33) return 'rank-good';   // top third
-                if (pct <= 0.67) return 'rank-mid';    // middle third
-                return 'rank-bad';                      // bottom third
+                if (pct <= 0.33) return 'rank-good';
+                if (pct <= 0.67) return 'rank-mid';
+                return 'rank-bad';
             }
 
             function rankMoveHtml(r) {
@@ -1013,10 +1017,10 @@
                         </a>`;
                 }
 
-                const areaId = areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
-                const rowsId = `fyc-rows-${areaId}`;
+                const id = areaId(areaGroup.area);
+                const rowsId = `fyc-rows-${id}`;
                 areasHtml += `
-                    <div class="fyc-area" id="fyc-area-${areaId}">
+                    <div class="fyc-area" id="fyc-area-${id}">
                         <div class="fyc-area-head">${areaGroup.area}</div>
                         <div class="fyc-area-takeaway">${takeaway}</div>
                         <button class="fyc-area-toggle" onclick="(function(btn){var el=document.getElementById('${rowsId}');var exp=el.classList.toggle('expanded');btn.textContent=exp?'Hide metrics \u25b4':'Show ${areaMetrics.length} metrics \u25be';})(this)">Show ${areaMetrics.length} metrics &#9662;</button>

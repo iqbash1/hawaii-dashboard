@@ -48,7 +48,7 @@ hawaii-dashboard/
 ├── rh/                     # Rank history redirect pages for OG sharing
 │   └── {slug}/index.html       # Rank history OG tags + JS redirect
 ├── five-year-change/
-│   └── index.html              # Ranking changes over a 5-year window for all 26 metrics (Improved / Little change / Worsened)
+│   └── index.html              # 5-year summary page: chips, policy area scorecard, collapsible area sections, sortable national ranking table
 ├── scripts/
 │   ├── generate-og-pages.py    # Generates all OG images + redirect pages
 │   ├── build-state-data.js     # Generates state-data.js from federal APIs
@@ -306,6 +306,8 @@ Each of the 26 metrics gets its own card displaying:
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum).
 
+Each card element has `id="{slug}"` (e.g. `id="violent_crime_rate"`), so links from the five-year-change page (`../#slug`) navigate directly to the correct card and open its modal.
+
 ### Detail Modal
 
 Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: Detail | Rank | Rank history | County-level
@@ -337,6 +339,29 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: Detail |
 2. **State reference line** - bold dashed black line showing the statewide value as a benchmark
 3. **Governor term overlay** - same overlay as the detail chart
 4. **Legend** - county dots + dashed state line indicator
+
+### Five-Year Change Page (`/five-year-change/`)
+
+A standalone summary page for policymakers. All logic is self-contained in `five-year-change/index.html` (inline JS, no shared modules). Key sections rendered by `render()`:
+
+1. **Summary chips** — two rows (5-Year Trends / 5-Year Ranking Changes), each with three color-coded counts in red → amber → green order (Worsened / Little Change / Improved)
+2. **Policy Area Overview scorecard** — one row per area; columns: Area name, National Rank (filled stars = above national average, left-to-right), standing text, 5-year trend arrows. Rows sorted red → amber → green by national standing. Left border color signals overall area health. Click any row to jump to that area section.
+3. **Area sections** — collapsed by default; 2-sentence narrative summary with an expand toggle ("Show N metrics ▾ / Hide metrics ▴"). Each expanded section lists all metrics in that area with trend, standing, and county data.
+4. **National Ranking table** — all ranked metrics sorted by rank (default). Headers for Rank, Category, and 5-yr Change in rank are clickable to re-sort; active column highlighted with ▲/▼ indicator.
+5. **Method note** — one-line footer explaining year variation.
+
+**Helper functions (five-year-change/index.html):**
+
+| Function | Description |
+|----------|-------------|
+| `areaId(area)` | Slugifies an area name to a DOM-safe id (e.g. `"Safety & Health"` → `"safety-health"`) |
+| `computeChange(slug)` | Computes 5-year absolute/relative change + status for one metric |
+| `computeStanding(slug, ...)` | Returns rank, median gap, and betterNow/betterThen flags |
+| `buildAreaScorecard(allResults)` | Renders the policy area overview table |
+| `generateAreaNarrative(metrics)` | Generates a 5-7 sentence narrative (truncated to 2 for display) |
+| `first2Sentences(text)` | Trims a narrative to its first 2 sentences |
+| `renderRankRows()` | Re-renders the ranking table rows in the current sort order |
+| `window._fycRankSort(col)` | Sort handler exposed to inline onclick attributes |
 
 ### Governor Term Overlay
 
