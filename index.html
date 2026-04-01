@@ -226,11 +226,16 @@
         <p class="footer-updated">Data last updated: 1 April 2026 at 11:57 AM HST
     </footer>
 
+    <!-- Emergency polyfill: defines global keyEnd() so the dashboard renders
+         even if the CDN serves a cached app.js that calls bare keyEnd().
+         Safe to keep after CDN cache clears -- it is never called by correct code. -->
+    <script>window.keyEnd = function(k){var p=String(k).split('-');return Number(p[p.length-1]);};</script>
+
     <!-- Scripts -->
     <script src="js/data.js"></script>
     <script src="js/state-data.js"></script>
     <script src="js/county-data.js"></script>
     <script src="js/charts.js"></script>
-    <script src="js/app.r1.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
