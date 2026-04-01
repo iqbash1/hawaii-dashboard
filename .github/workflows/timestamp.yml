@@ -1,0 +1,33 @@
+name: Update footer timestamp
+
+on:
+  push:
+    branches: [main]
+
+# Skip if triggered by this workflow's own commit
+jobs:
+  stamp:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Write Hawaii timestamp into footer
+        run: |
+          TIMESTAMP=$(TZ="Pacific/Honolulu" date +"%-d %B %Y at %-I:%M %p HST")
+          sed -i "s|Data last updated:.*|Data last updated: ${TIMESTAMP}|" index.html
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet index.html; then
+            git add index.html
+            git commit -m "chore: update footer timestamp [skip ci]"
+            git push
+          fi
