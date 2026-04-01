@@ -848,10 +848,6 @@
             const chipsHtml = `<div class="fyc-chips-group">
                 <div class="fyc-chips-row-label">5-Year Trends</div>
                 <div class="fyc-chips">
-                    <div class="fyc-chip improving">
-                        <div class="fyc-chip-count">${improved}</div>
-                        <div class="fyc-chip-label">Improved</div>
-                    </div>
                     <div class="fyc-chip worsening">
                         <div class="fyc-chip-count">${worsened}</div>
                         <div class="fyc-chip-label">Worsened</div>
@@ -860,20 +856,24 @@
                         <div class="fyc-chip-count">${littleChange}</div>
                         <div class="fyc-chip-label">Little Change</div>
                     </div>
+                    <div class="fyc-chip improving">
+                        <div class="fyc-chip-count">${improved}</div>
+                        <div class="fyc-chip-label">Improved</div>
+                    </div>
                 </div>
                 <div class="fyc-chips-row-label">5-Year Ranking Changes</div>
                 <div class="fyc-chips">
-                    <div class="fyc-chip rank-up">
-                        <div class="fyc-chip-count">${rankMoveTiers.improved.length}</div>
-                        <div class="fyc-chip-label">Improved</div>
+                    <div class="fyc-chip rank-down">
+                        <div class="fyc-chip-count">${rankMoveTiers.worsened.length}</div>
+                        <div class="fyc-chip-label">Worsened</div>
                     </div>
                     <div class="fyc-chip rank-same">
                         <div class="fyc-chip-count">${rankMoveTiers.stable.length}</div>
                         <div class="fyc-chip-label">Little Change</div>
                     </div>
-                    <div class="fyc-chip rank-down">
-                        <div class="fyc-chip-count">${rankMoveTiers.worsened.length}</div>
-                        <div class="fyc-chip-label">Worsened</div>
+                    <div class="fyc-chip rank-up">
+                        <div class="fyc-chip-count">${rankMoveTiers.improved.length}</div>
+                        <div class="fyc-chip-label">Improved</div>
                     </div>
                 </div>
             </div>`;
