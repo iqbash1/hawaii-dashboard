@@ -36,25 +36,25 @@
         .fyc-container { max-width: 860px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
 
         /* Summary chips */
-        .fyc-chips { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
-        .fyc-chip { text-align: center; padding: 0.75rem 1rem; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card-bg); flex: 1; max-width: 180px; }
-        .fyc-chip-count { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
-        .fyc-chip-label { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.15rem; }
-        .fyc-chip.improving .fyc-chip-count { color: var(--positive); }
-        .fyc-chip.worsening .fyc-chip-count { color: var(--negative); }
-        .fyc-chip.little-change .fyc-chip-count { color: var(--text-muted); }
-        .fyc-chip.median .fyc-chip-count { color: var(--hawaii-blue); }
-        /* Ranking-change chip variants */
         .fyc-chips-group { margin-bottom: 1.5rem; }
-        .fyc-chips-group .fyc-chips { margin-bottom: 0; }
-        .fyc-chips-row-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); text-align: center; margin: 0.75rem 0 0.4rem; }
+        .fyc-chips-row-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; margin-top: 0.75rem; }
         .fyc-chips-row-label:first-child { margin-top: 0; }
-        .fyc-chip.rank-up .fyc-chip-count { color: var(--hawaii-blue); }
-        .fyc-chip.rank-same .fyc-chip-count { color: var(--text-muted); }
-        .fyc-chip.rank-down .fyc-chip-count { color: #b45309; }
-
-        /* Executive summary / lede (now appears at top of content) */
-        .fyc-exec { font-size: 0.93rem; color: var(--text); line-height: 1.7; margin: 0 0 1.75rem; text-align: left; }
+        .fyc-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+        .fyc-chip { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); padding: 0.9rem 1rem; text-align: center; }
+        .fyc-chip-count { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+        .fyc-chip-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
+        .fyc-chip.improving .fyc-chip-count,
+        .fyc-chip.improving .fyc-chip-label,
+        .fyc-chip.rank-up .fyc-chip-count,
+        .fyc-chip.rank-up .fyc-chip-label { color: var(--positive); }
+        .fyc-chip.little-change .fyc-chip-count,
+        .fyc-chip.little-change .fyc-chip-label,
+        .fyc-chip.rank-same .fyc-chip-count,
+        .fyc-chip.rank-same .fyc-chip-label { color: #c08a1a; }
+        .fyc-chip.worsening .fyc-chip-count,
+        .fyc-chip.worsening .fyc-chip-label,
+        .fyc-chip.rank-down .fyc-chip-count,
+        .fyc-chip.rank-down .fyc-chip-label { color: var(--negative); }
 
         /* Print button */
         .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: 0.7rem; padding: 0.25rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }
@@ -69,7 +69,7 @@
         .fyc-scorecard-header { padding: 0.28rem 1rem 0.28rem 1.75rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
         .fyc-scorecard-hdr { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
         .fyc-scorecard-hdr-trend { text-align: right; }
-        .fyc-scorecard-row { padding: 0.5rem 1rem 0.5rem 0.75rem; border-bottom: 1px solid #f5f6f8; border-left: 3px solid transparent; text-decoration: none; color: inherit; transition: background 0.12s; }
+        .fyc-scorecard-row { padding: 0.5rem 1rem 0.5rem 0.75rem; border-bottom: 1px solid #f5f6f8; border-left: 5px solid transparent; text-decoration: none; color: inherit; transition: background 0.12s; }
         .fyc-scorecard-row:last-child { border-bottom: none; }
         .fyc-scorecard-row:hover { background: #f7f9fa; }
         .fyc-scorecard-row.sc-strong { border-left-color: var(--positive); }
@@ -90,6 +90,10 @@
         .fyc-area { margin-top: 2rem; }
         .fyc-area-head { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); padding-bottom: 0.4rem; border-bottom: 2px solid var(--border); margin-bottom: 0.15rem; }
         .fyc-area-takeaway { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.5rem; padding: 0.5rem 0; line-height: 1.6; }
+        .fyc-area-rows { display: none; }
+        .fyc-area-rows.expanded { display: block; }
+        .fyc-area-toggle { background: none; border: none; cursor: pointer; font-size: 0.74rem; color: #0D7C8F; padding: 0.3rem 0 0.6rem; font-family: var(--font); }
+        .fyc-area-toggle:hover { text-decoration: underline; }
 
         /* Metric rows */
         .fyc-row { display: block; text-decoration: none; color: inherit; padding: 1.25rem 0.5rem; border-bottom: 1px solid #f0f2f4; cursor: pointer; border-radius: 4px; transition: background 0.15s; }
@@ -698,7 +702,7 @@
 
         /* ── Area scorecard (one row per policy area) ── */
         function buildAreaScorecard(allResults) {
-            let rows = '';
+            const rowItems = [];
             for (const areaGroup of AREA_ORDER) {
                 const metrics = allResults.filter(r => r.area === areaGroup.area);
                 if (!metrics.length) continue;
@@ -734,13 +738,16 @@
                 if (wor) trendParts.push(`<span class="sc-trend-down">&#8595; ${wor} worsening</span>`);
                 if (!imp && !wor) trendParts.push(`<span class="sc-trend-flat">&#8594; ${lit} unchanged</span>`);
 
-                rows += `<a href="#fyc-area-${areaId}" class="fyc-scorecard-row ${areaClass}">
+                const sortOrder = areaClass === 'sc-weak' ? 0 : areaClass === 'sc-mixed' ? 1 : 2;
+                rowItems.push({ sortOrder, html: `<a href="#fyc-area-${areaId}" class="fyc-scorecard-row ${areaClass}">
                     <span class="fyc-scorecard-area">${areaGroup.area}</span>
                     <span class="sc-stars">${stars}</span>
                     <span class="fyc-scorecard-standing-text">${standingText}</span>
                     <span class="fyc-scorecard-trend">${trendParts.join(' ')}</span>
-                </a>`;
+                </a>` });
             }
+            rowItems.sort((a, b) => a.sortOrder - b.sortOrder);
+            let rows = rowItems.map(i => i.html).join('');
             return `<div class="fyc-scorecard">
                 <div class="fyc-scorecard-title">Policy area overview</div>
                 <div class="fyc-scorecard-header">
@@ -821,65 +828,49 @@
                 else if (ratio <= 0.2) countyPattern = 'diverging';
             }
 
-            // 3. Rank change counts (computed here so chips can use them)
+            // 3. Rank change counts
             const RANK_SHIFT = 2;
             const rankMoveTiers = { improved: [], stable: [], worsened: [] };
             for (const r of allResults) {
                 if (!r.standing || r.standing.endRank == null) continue;
-                const move = r.standing.startRank != null
-                    ? r.standing.startRank - r.standing.endRank
-                    : null; // no prior rank data
+                const move = r.standing.startRank != null ? r.standing.startRank - r.standing.endRank : null;
                 if (move != null && move >= RANK_SHIFT)       rankMoveTiers.improved.push({ r, move });
                 else if (move != null && move <= -RANK_SHIFT) rankMoveTiers.worsened.push({ r, move });
                 else                                          rankMoveTiers.stable.push({ r, move });
             }
-            rankMoveTiers.improved.sort((a, b) => b.move - a.move);
-            rankMoveTiers.worsened.sort((a, b) => a.move - b.move);
-            rankMoveTiers.stable.sort((a, b) => {
-                if (a.move == null && b.move == null) return 0;
-                if (a.move == null) return 1;
-                if (b.move == null) return -1;
-                return Math.abs(a.move) - Math.abs(b.move);
-            });
-            const rankMoveN = rankMoveTiers.improved.length + rankMoveTiers.stable.length + rankMoveTiers.worsened.length;
 
-            // 3. Render chips (two rows: 5-year outcome + ranking change)
-            const chipsHtml = `
-                <div class="fyc-chips-group">
-                    <div class="fyc-chips-row-label">5-year outcome</div>
-                    <div class="fyc-chips">
-                        <div class="fyc-chip improving">
-                            <div class="fyc-chip-count">${improved}</div>
-                            <div class="fyc-chip-label">Improved</div>
-                        </div>
-                        <div class="fyc-chip worsening">
-                            <div class="fyc-chip-count">${worsened}</div>
-                            <div class="fyc-chip-label">Worsened</div>
-                        </div>
-                        <div class="fyc-chip little-change">
-                            <div class="fyc-chip-count">${littleChange}</div>
-                            <div class="fyc-chip-label">Little change</div>
-                        </div>
+            const chipsHtml = `<div class="fyc-chips-group">
+                <div class="fyc-chips-row-label">5-Year Trends</div>
+                <div class="fyc-chips">
+                    <div class="fyc-chip improving">
+                        <div class="fyc-chip-count">${improved}</div>
+                        <div class="fyc-chip-label">Improved</div>
                     </div>
-                    <div class="fyc-chips-row-label">Ranking change (5-year)</div>
-                    <div class="fyc-chips">
-                        <div class="fyc-chip rank-up">
-                            <div class="fyc-chip-count">${rankMoveTiers.improved.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
-                            <div class="fyc-chip-label">Improved</div>
-                        </div>
-                        <div class="fyc-chip rank-same">
-                            <div class="fyc-chip-count">${rankMoveTiers.stable.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
-                            <div class="fyc-chip-label">Little change</div>
-                        </div>
-                        <div class="fyc-chip rank-down">
-                            <div class="fyc-chip-count">${rankMoveTiers.worsened.length}<span style="font-size:0.55em;font-weight:500;color:var(--text-muted)">/${rankMoveN}</span></div>
-                            <div class="fyc-chip-label">Worsened</div>
-                        </div>
+                    <div class="fyc-chip worsening">
+                        <div class="fyc-chip-count">${worsened}</div>
+                        <div class="fyc-chip-label">Worsened</div>
                     </div>
-                </div>`;
-
-            // 3b. Executive summary (lede)
-            const execHtml = `<p class="fyc-exec">Over the last 5 years, Hawai\u02BBi improved on ${improved} metrics, worsened on ${worsened}, and saw little change on ${littleChange}. Relative to other states, Hawai\u02BBi improved its national ranking on ${rankUp} metrics and worsened on ${rankDown}. Hawai\u02BBi now performs better than the median state on ${betterNow} of ${total} metrics, compared with ${betterThen} five years ago. Where county data exists, the pattern is ${countyPattern}.</p>`;
+                    <div class="fyc-chip little-change">
+                        <div class="fyc-chip-count">${littleChange}</div>
+                        <div class="fyc-chip-label">Little Change</div>
+                    </div>
+                </div>
+                <div class="fyc-chips-row-label">5-Year Ranking Changes</div>
+                <div class="fyc-chips">
+                    <div class="fyc-chip rank-up">
+                        <div class="fyc-chip-count">${rankMoveTiers.improved.length}</div>
+                        <div class="fyc-chip-label">Improved</div>
+                    </div>
+                    <div class="fyc-chip rank-same">
+                        <div class="fyc-chip-count">${rankMoveTiers.stable.length}</div>
+                        <div class="fyc-chip-label">Little Change</div>
+                    </div>
+                    <div class="fyc-chip rank-down">
+                        <div class="fyc-chip-count">${rankMoveTiers.worsened.length}</div>
+                        <div class="fyc-chip-label">Worsened</div>
+                    </div>
+                </div>
+            </div>`;
 
             // 3c. Area scorecard
             const scorecardHtml = buildAreaScorecard(allResults);
@@ -932,13 +923,19 @@
                 </div>`;
 
             // 5. Area sections
+            function first2Sentences(text) {
+                const m = text.match(/[^.!?]+[.!?]+/g);
+                if (!m || m.length <= 2) return text;
+                return m.slice(0, 2).join('').trim();
+            }
+
             let areasHtml = '';
             for (const areaGroup of AREA_ORDER) {
                 const areaMetrics = allResults.filter(r => r.area === areaGroup.area);
                 if (!areaMetrics.length) continue;
 
-                // Area narrative (5-7 sentences covering trend, ranking, county)
-                const takeaway = generateAreaNarrative(areaMetrics);
+                // Area narrative (2-sentence summary)
+                const takeaway = first2Sentences(generateAreaNarrative(areaMetrics));
 
                 // Render rows
                 let rowsHtml = '';
@@ -960,19 +957,23 @@
                 }
 
                 const areaId = areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+                const rowsId = `fyc-rows-${areaId}`;
                 areasHtml += `
                     <div class="fyc-area" id="fyc-area-${areaId}">
                         <div class="fyc-area-head">${areaGroup.area}</div>
                         <div class="fyc-area-takeaway">${takeaway}</div>
-                        ${rowsHtml}
+                        <button class="fyc-area-toggle" onclick="(function(btn){var el=document.getElementById('${rowsId}');var exp=el.classList.toggle('expanded');btn.textContent=exp?'Hide metrics \u25b4':'Show ${areaMetrics.length} metrics \u25be';})(this)">Show ${areaMetrics.length} metrics &#9662;</button>
+                        <div class="fyc-area-rows" id="${rowsId}">
+                            ${rowsHtml}
+                        </div>
                     </div>`;
             }
 
             // 6. Method note
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
-            // Assemble: lede → scorecard → chips → ranking table → area detail → method
-            document.getElementById('fyc-content').innerHTML = execHtml + scorecardHtml + chipsHtml + rankTableHtml + areasHtml + methodHtml;
+            // Assemble: chips → scorecard → areas → ranking table → method
+            document.getElementById('fyc-content').innerHTML = chipsHtml + scorecardHtml + areasHtml + rankTableHtml + methodHtml;
         }
 
         render();
