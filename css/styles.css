@@ -24,6 +24,8 @@
     --positive-bg: #ECFDF5;
     --negative: #C0392B;
     --negative-bg: #FDF0EE;
+    --neutral: #c08a1a;
+    --neutral-bg: #fef9e7;
     --border: #EAEAEA;
     --radius: 8px;
     --radius-sm: 6px;
@@ -343,7 +345,7 @@ body {
 }
 
 .card-comp.neutral .comp-verdict {
-    color: var(--text-secondary);
+    color: var(--neutral);
 }
 
 /* --- Modal --- */

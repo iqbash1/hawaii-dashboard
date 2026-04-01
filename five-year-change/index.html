@@ -50,7 +50,7 @@
         .fyc-chip.little-change .fyc-chip-count,
         .fyc-chip.little-change .fyc-chip-label,
         .fyc-chip.rank-same .fyc-chip-count,
-        .fyc-chip.rank-same .fyc-chip-label { color: #c08a1a; }
+        .fyc-chip.rank-same .fyc-chip-label { color: var(--neutral); }
         .fyc-chip.worsening .fyc-chip-count,
         .fyc-chip.worsening .fyc-chip-label,
         .fyc-chip.rank-down .fyc-chip-count,
@@ -74,7 +74,7 @@
         .fyc-scorecard-row:hover { background: #f7f9fa; }
         .fyc-scorecard-row.sc-strong { border-left-color: var(--positive); }
         .fyc-scorecard-row.sc-weak   { border-left-color: var(--negative); }
-        .fyc-scorecard-row.sc-mixed  { border-left-color: #e8a838; }
+        .fyc-scorecard-row.sc-mixed  { border-left-color: var(--neutral); }
         .fyc-scorecard-area { font-size: 0.82rem; font-weight: 600; color: var(--text); }
         .sc-stars { display: flex; gap: 2px; align-items: center; }
         .sc-star { font-size: 1rem; line-height: 1; flex-shrink: 0; }
@@ -84,7 +84,7 @@
         .fyc-scorecard-trend { display: flex; align-items: center; gap: 8px; justify-content: flex-end; white-space: nowrap; }
         .sc-trend-up   { font-size: 0.75rem; font-weight: 700; color: var(--positive); }
         .sc-trend-down { font-size: 0.75rem; font-weight: 700; color: var(--negative); }
-        .sc-trend-flat { font-size: 0.75rem; color: var(--text-muted); }
+        .sc-trend-flat { font-size: 0.75rem; color: var(--neutral); }
 
         /* Area sections */
         .fyc-area { margin-top: 2rem; }
@@ -105,7 +105,7 @@
         .fyc-status { font-size: 0.68rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
         .fyc-status.improving { color: var(--positive); background: var(--positive-bg); }
         .fyc-status.worsening { color: var(--negative); background: var(--negative-bg); }
-        .fyc-status.little-change { color: var(--text-muted); background: #f0f2f4; }
+        .fyc-status.little-change { color: var(--neutral); background: var(--neutral-bg); }
 
         .fyc-line2 { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem; }
         .fyc-val-pos { color: var(--positive); font-weight: 600; }
@@ -114,7 +114,7 @@
         .fyc-line4 { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
         .county-improved { color: var(--positive); font-weight: 600; }
         .county-worsened { color: var(--negative); font-weight: 600; }
-        .county-flat { color: var(--text-muted); }
+        .county-flat { color: var(--neutral); }
 
         /* Method note */
         .fyc-method { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); line-height: 1.5; }
@@ -141,13 +141,13 @@
         .fyc-rank-cat { font-size: 0.68rem; color: var(--text-muted); width: 130px; flex-shrink: 0; }
         /* 3-tier rank colors: green / grey / red */
         .fyc-rank-item.rank-good   .fyc-rank-num { color: var(--positive); }
-        .fyc-rank-item.rank-mid    .fyc-rank-num { color: var(--text-muted); }
+        .fyc-rank-item.rank-mid    .fyc-rank-num { color: var(--neutral); }
         .fyc-rank-item.rank-bad    .fyc-rank-num { color: var(--negative); }
         /* 5-year move column */
         .fyc-rank-move { font-size: 0.68rem; font-weight: 700; width: 120px; text-align: right; flex-shrink: 0; }
         .fyc-rank-move.move-up     { color: var(--positive); }
         .fyc-rank-move.move-down   { color: var(--negative); }
-        .fyc-rank-move.move-stable { color: var(--text-muted); font-weight: 400; }
+        .fyc-rank-move.move-stable { color: var(--neutral); font-weight: 400; }
 
         /* Print */
         @media print {
