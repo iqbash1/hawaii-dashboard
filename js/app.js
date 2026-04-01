@@ -640,9 +640,15 @@ const App = {
         canvas.setAttribute('role', 'img');
         canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs other state average`);
 
-        // Chart-trimming note: shown when state-data has more recent years than the chart displays
+        // Chart note: always shows smoothing disclosure; also shows trim-year note when applicable
         const chartNoteEl = document.getElementById('modal-chart-note');
         if (chartNoteEl) {
+            // Detect range-key data (e.g. "2022-2024") -- means each point is a multi-year average
+            const firstKey = Object.keys(effective.hawaii)[0] || '';
+            const isRangeKey = /^\d{4}-\d{4}$/.test(firstKey);
+            const smoothingNote = isRangeKey
+                ? 'Each data point is a 3-year average. Trend line is smoothed for readability.'
+                : 'Trend line is smoothed for readability. Dots mark actual data values.';
             const hasSD = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
             if (hasSD) {
                 const computed = this.computeChartData(slug);
@@ -650,15 +656,14 @@ const App = {
                 const allLast = Object.keys(fullHawaii).sort().pop();
                 const effectiveLast = Object.keys(effective.hawaii).sort().pop();
                 if (allLast && effectiveLast && allLast > effectiveLast) {
-                    chartNoteEl.textContent = `Chart shows data through ${effectiveLast} \u2014 the latest year with complete state rankings data`;
-                    chartNoteEl.style.display = '';
+                    chartNoteEl.textContent = `${smoothingNote}  Chart shows data through ${effectiveLast} - the latest year with complete state rankings data.`;
                 } else {
-                    chartNoteEl.textContent = '';
-                    chartNoteEl.style.display = 'none';
+                    chartNoteEl.textContent = smoothingNote;
                 }
             } else {
-                chartNoteEl.style.display = 'none';
+                chartNoteEl.textContent = smoothingNote;
             }
+            chartNoteEl.style.display = '';
         }
 
         // Table toggle (data accessibility feature)
