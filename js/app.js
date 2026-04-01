@@ -325,6 +325,7 @@ const App = {
 
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.id = slug;
                 card.dataset.metric = slug;
 
                 const latest = this.getLatestValue(effective.hawaii);
