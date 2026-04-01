@@ -3,6 +3,7 @@
 //
 // Renders metric cards, manages the detail modal, and
 // uses embedded data updated quarterly.
+// Build: 2026-04-01
 // ============================================================
 
 const STATE_ABBREVS = {
