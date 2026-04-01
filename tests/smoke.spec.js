@@ -108,6 +108,20 @@ test.describe('5-year comparison badges', () => {
         const count = await badges.count();
         expect(count, 'food_insecurity_rate should show at least 1 comparison badge').toBeGreaterThanOrEqual(1);
     });
+
+    // Regression: buildVsYearHtml used bare keyEnd() which broke when refactored to this.keyEnd().
+    // This test verifies all 26 cards render their comparison badges (proving renderCards() ran fully).
+    test('all 26 cards render without JS errors (buildVsYearHtml regression)', async ({ page }) => {
+        const jsErrors = [];
+        page.on('pageerror', (err) => jsErrors.push(err.message));
+
+        await page.goto('/');
+        await page.waitForSelector('[data-metric]', { timeout: 10_000 });
+
+        const cards = await page.locator('[data-metric]').all();
+        expect(cards.length, 'all 26 metric cards should render').toBe(26);
+        expect(jsErrors, `JS errors during renderCards: ${jsErrors.join('; ')}`).toHaveLength(0);
+    });
 });
 
 // ---------------------------------------------------------------------------
