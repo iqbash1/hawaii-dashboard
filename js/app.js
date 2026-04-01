@@ -292,8 +292,8 @@ const App = {
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
         // Compact labels: start year full, end year 2-digit - e.g. "2020-24 vs 2017-21"
-        const priorLabel = `${this.parseYearLabel(prior[0])}-${String(keyEnd(prior[prior.length - 1])).slice(-2)}`;
-        const recentLabel = `${this.parseYearLabel(recent[0])}-${String(keyEnd(recent[recent.length - 1])).slice(-2)}`;
+        const priorLabel = `${this.parseYearLabel(prior[0])}-${String(this.keyEnd(prior[prior.length - 1])).slice(-2)}`;
+        const recentLabel = `${this.parseYearLabel(recent[0])}-${String(this.keyEnd(recent[recent.length - 1])).slice(-2)}`;
 
         return `
             <div class="card-comp ${cls}">

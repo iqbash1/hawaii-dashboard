@@ -585,10 +585,13 @@ const DASHBOARD_DATA = {
     "source": "Census ACS / FRED",
     "sourceUrl": "https://fred.stlouisfed.org/",
     "whyItMatters": "The University of Hawaiʻi system, tuition policy, and scholarships largely determine whether residents can earn degrees without leaving the islands. Hawaiʻi's slim edge over the national average could slip if UH enrollment declines or if degree-holders continue migrating to the mainland for higher-paying jobs.",
-    "howToRead": "Both lines rise steadily. Hawaiʻi has tracked about 1 to 2 points above the other-state average throughout the decade. A rising line means a growing share of adults hold four-year degrees.",
-    "insight": "Rose from 29.1% in 2008 to 37.8% in 2024. This metric moves slowly since it reflects all adults 25 and older. Keeping UH affordable is critical to holding this edge.",
+    "howToRead": "Both lines rise steadily over nearly two decades. Hawaiʻi has tracked about 1 to 2 points above the other-state average since 2005. A rising line means a growing share of adults hold four-year degrees.",
+    "insight": "Rose from 28.0% in 2005 to 37.8% in 2024. This metric moves slowly since it reflects all adults 25 and older. Keeping UH affordable is critical to holding this edge.",
     "crossInsight": "Bachelor's attainment (#17) outperforms Hawaiʻi's K-12 rankings, likely boosted by in-migration of degree-holders for military, federal, and professional roles. The question is whether homegrown graduates can afford to stay or whether the state is importing its educated workforce.",
     "hawaii": {
+      "2005": 0.2795,
+      "2006": 0.2967,
+      "2007": 0.2923,
       "2008": 0.2911,
       "2009": 0.2957,
       "2010": 0.2951,
@@ -607,6 +610,9 @@ const DASHBOARD_DATA = {
       "2024": 0.378
     },
     "otherStateAvg": {
+      "2005": 0.2638,
+      "2006": 0.2628,
+      "2007": 0.2668,
       "2008": 0.2689,
       "2009": 0.2712,
       "2010": 0.2745,
@@ -627,7 +633,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "College affordability; transfer, retention, and completion support; adult learner and workforce-aligned degree pathways.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii has ranked near the middle of states in bachelor's degree attainment throughout the 2010s, rising from 29.1 percent in 2008 to 37.8 percent in 2024 and tracking 1 to 2 points above the other-state average. The state's rank has held roughly steady despite the share itself rising, because most states improved at similar rates. In-migration of college-educated military and federal employees inflates Hawaii's attainment rate relative to what resident graduates alone would produce.",
+      "summary": "Hawaii has ranked near the middle of states in bachelor's degree attainment since 2005, rising from 28.0 percent in 2005 to 37.8 percent in 2024 and tracking 1 to 2 points above the other-state average. The state's rank has held roughly steady despite the share itself rising, because most states improved at similar rates. In-migration of college-educated military and federal employees inflates Hawaii's attainment rate relative to what resident graduates alone would produce.",
       "mode": "protect",
       "benchmarks": [
         {

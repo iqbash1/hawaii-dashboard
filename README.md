@@ -50,10 +50,9 @@ A GitHub Actions workflow (`.github/workflows/refresh-data.yml`) runs this month
 
 ```bash
 python3 scripts/generate-og-pages.py
-node scripts/screenshot-rank-history.js
 ```
 
-Generates per-metric OG images (detail, rankings, county, rank history) and redirect pages with matching meta tags. The detail/rankings/county images require `Pillow`. The rank history images are generated via Puppeteer (headless Chrome).
+Generates all per-metric OG images (detail, rankings, county, rank history) and redirect pages with matching meta tags. Requires `Pillow` (`pip3 install Pillow`).
 
 ## Metrics (26)
 
