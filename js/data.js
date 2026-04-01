@@ -145,7 +145,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State sets criminal penalties, funds law enforcement, and shapes policing priorities for burglary, larceny-theft, and motor vehicle theft. Tourism-dependent areas, open-air living conditions, and high cost of living all contribute to persistent property crime challenges that state policy must address.",
     "howToRead": "Hawaiʻi has consistently run above the other-state average. Both lines have declined substantially since the early 1990s peak, but Hawaiʻi's gap above the average has persisted.",
     "insight": "Hawaiʻi's property crime rate peaked at 6,903 per 100K in 1995 and has since fallen 72% to 1,947 in 2024. The gap with the national average has also narrowed, from 1.57x in 1995 to 1.17x today.",
-    "crossInsight": "One of the steepest sustained property crime declines of any state, yet Hawaiʻi still runs above average, suggesting a floor set by tourism-area opportunity crime that state policy hasn't cracked.",
+    "crossInsight": "A 72% drop in 30 years, one of the biggest crime declines in the country. Yet Hawaiʻi still ranks above average. A stubborn floor, likely tied to tourism, that the state has yet to solve.",
     "dataNote": "FBI transitioned from UCR to NIBRS in 2021; year-over-year comparisons across that boundary should be interpreted with caution",
     "hawaii": {
       "1985": 4981.1,
@@ -946,7 +946,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The State influences participation through workforce training programs, childcare subsidies, and tax policy that affect whether working-age residents stay in or re-enter the labor force. High cost of living, an aging population, and out-migration of younger workers all contribute to a decline that state investment in job training and affordable childcare could help reverse.",
     "howToRead": "Hawaiʻi was above the other-state average through the 1990s but crossed below it in the mid-2000s. Both lines have been falling, but Hawaiʻi's decline has been steeper. COVID caused a sharp drop in 2020.",
     "insight": "Hawaiʻi's participation rate was 69.3% in 1976, among the highest in the nation, and has fallen steadily to 59.9% in 2024. The 9.4-point decline is nearly double the national drop of 5.0 points over the same period, and the rate has barely moved since the 2020 trough of 59.1%.",
-    "crossInsight": "Participation (#39) has not recovered to pre-pandemic levels even as unemployment dropped to #7. The gap suggests a growing pool of discouraged workers, early retirees, and residents who left the formal labor force because available wages don't cover Hawaiʻi's cost of living.",
+    "crossInsight": "Thousands of working-age residents have quietly left the workforce - not because jobs are scarce, but because what those jobs pay doesn't cover what it costs to live here.",
     "hawaii": {
       "1976": 62.9,
       "1977": 63.3,
@@ -1895,7 +1895,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "The Legislature controls voter registration rules, early voting windows, ballot access policies, and the all-mail voting system adopted in 2020. Civic education funding, same-day registration, and multilingual ballot access are additional levers that shape whether eligible residents actually cast a vote.",
     "howToRead": "The zigzag pattern reflects presidential years (higher turnout) vs. midterm elections (lower). Hawaiʻi's line sits well below the other-state average across the entire period.",
     "insight": "Turnout jumped from 39.5% in 2018 to 55.7% in 2020 after all-mail voting launched, but fell back to 50.3% in 2024. The 2024 figure trails the other-state average of 65.6% by 15 points.",
-    "crossInsight": "Hawaiʻi adopted all-mail voting and same-day registration, yet turnout ranks #50. Removing logistical barriers didn't move the needle, suggesting deeper factors at play: political competition, cultural norms, or a sense that outcomes don't change regardless of who wins.",
+    "crossInsight": "Hawaiʻi adopted all-mail voting and same-day registration, yet turnout ranks #50. Removing logistical barriers didn't move the needle, suggesting deeper factors at play: political competition, cultural norms, or a belief that it doesn't matter who wins.",
     "dataNote": "Uses Voting Eligible Population (VEP) as denominator, not registered voters.",
     "hawaii": {
       "2002": 0.442,
@@ -2058,7 +2058,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "State business licensing, permitting speed, tax incentives, and small-business loan programs directly affect whether entrepreneurs start businesses. The general excise tax, high commercial rents shaped partly by state zoning, and a complex regulatory environment all raise the barrier to entry. DBEDT and the Hawaiʻi Technology Development Corporation run programs aimed at lowering these barriers.",
     "howToRead": "Higher is better. Hawaiʻi's line has run below the other-state average since the mid-1990s. A rising line means the pace of new business formation is accelerating.",
     "insight": "Hawaiʻi saw a spike to 11.4% in 2022 (pandemic-era startups) but fell back to 9.2% in 2023. The long-term gap of about 1 percentage point suggests high costs and regulations discourage new businesses from opening.",
-    "crossInsight": "Business entry (#37) and net employer formation (#43) are both below average while net migration is #50. Without new businesses creating new jobs, many residents face a choice between low-wage service work and leaving. The business climate and the migration crisis are directly connected.",
+    "crossInsight": "Business entry (#37) and net employer formation (#43) are both below average while net migration is #50. Without new businesses creating new jobs, many residents face a choice between low-wage service work and leaving. The business climate and the net outflow are two sides of the same problem.",
     "hawaii": {
       "1978": 16.491,
       "1979": 16.049,
