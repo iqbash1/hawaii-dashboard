@@ -73,7 +73,7 @@ const METRIC_RULES = {
     renewables_share_gen:       { min: 0.01,  max: 0.60,   maxYoYPct: 0.40, format: 'decimal_pct' },
     food_insecurity_rate:       { min: 0.03,  max: 0.25,   maxYoYPct: 0.30, format: 'decimal_pct' },
     // Rainy day fund: policy-driven; a single legislative deposit/withdrawal can 3-5x the balance
-    rainy_day_fund_pct:         { min: 0.001, max: 0.30,   maxYoYPct: 5.00, format: 'decimal_pct' },
+    rainy_day_fund_pct:         { min: 0.0,   max: 0.30,   maxYoYPct: 5.00, format: 'decimal_pct' },
     // Voter turnout: presidential vs midterm swings of 40-60% are normal
     voter_participation_rate:   { min: 0.25,  max: 0.85,   maxYoYPct: 0.60, format: 'decimal_pct' },
     // Migration: small base numbers make % changes meaningless; use absolute range instead
