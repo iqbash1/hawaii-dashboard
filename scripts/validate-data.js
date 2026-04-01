@@ -84,6 +84,8 @@ const METRIC_RULES = {
     estabs_entry_rate:          { min: 4,     max: 25,     maxYoYPct: 0.75, format: 'whole_pct' },
     net_employer_formation:     { min: -10,   max: 15,     maxYoYPct: Infinity, format: 'whole_pct' },
     labor_productivity:         { min: 70,    max: 150,    maxYoYPct: 0.10, format: 'index' },
+    // Pension: market-driven swings 10-15% in a single year are normal; GASB 67/68 break ~2016 allowed up to 20%
+    pension_funded_ratio:       { min: 0.20,  max: 1.50,   maxYoYPct: 0.25, format: 'decimal_pct' },
 };
 
 // Counties expected in county data

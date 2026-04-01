@@ -65,6 +65,7 @@ const RECOMPUTE_METRICS = [
     'naep_reading_8',
     'labor_force_participation',
     'suicide_rate',
+    'pension_funded_ratio',
 ];
 
 // No metrics excluded - all 26 derive from state-data.js

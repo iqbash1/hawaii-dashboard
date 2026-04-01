@@ -2607,5 +2607,100 @@ const DASHBOARD_DATA = {
         }
       }
     }
+  },
+  "pension_funded_ratio": {
+    "area": "Infrastructure, Resilience & Trust",
+    "areaIcon": "🛣️",
+    "metric": "Pension Funded Ratio",
+    "officialName": "State Public Pension Funded Ratio (Actuarial Assets / Actuarial Liabilities)",
+    "unit": "%",
+    "goodDirection": "up",
+    "source": "Public Plans Database",
+    "sourceUrl": "https://publicplansdata.org/",
+    "whyItMatters": "The Legislature sets employer contribution rates and benefit formulas for the Hawaii Employees' Retirement System. Chronic underfunding accumulates as a future tax liability: every dollar not contributed today requires more than a dollar in future contributions, crowding out spending on schools, roads, and services. The GFOA recommends a minimum funded ratio of 80%; Hawaiʻi has not met that threshold in over a decade.",
+    "howToRead": "A line at 100% means pension promises are fully backed by assets. The higher the line, the healthier the fund. Hawaiʻi started near the top in 2001 at 90.6%, then fell below the other-state average by 2004 and has not recovered. The drop around 2016 reflects updated actuarial assumptions required under GASB 67/68 accounting standards applied across most states that year.",
+    "insight": "Hawaiʻi's pension funded ratio fell from 90.6% in 2001 to 54.7% by 2016 as the state repeatedly contributed below actuarial minimums after each market downturn. Increased contributions since 2019 have lifted the ratio to 63.0% in 2024, but Hawaiʻi still ranks among the bottom 10 states and well below the other-state average.",
+    "crossInsight": "The rainy day fund grew from near-zero to 14.5% (#22), yet the pension is only 63% funded (#44). The state has addressed the short-term cash cushion while the long-term retirement obligation remains severely underwater. Both are measures of fiscal discipline; only one has been fixed.",
+    "dataNote": "State aggregate funded ratio = sum of all plan assets / sum of all plan liabilities (plan-level totals, weighted by scale). A drop appears around FY2016 across many states reflecting updated actuarial discount rate assumptions required by GASB 67/68; treat the series as directionally consistent rather than precisely continuous across that break.",
+    "hawaii": {
+      "2001": 0.90569,
+      "2002": 0.83987,
+      "2003": 0.7592,
+      "2004": 0.71688,
+      "2005": 0.6865,
+      "2006": 0.64996,
+      "2007": 0.67466,
+      "2008": 0.68771,
+      "2009": 0.6464,
+      "2010": 0.61382,
+      "2011": 0.59426,
+      "2012": 0.5919,
+      "2013": 0.60012,
+      "2014": 0.61394,
+      "2015": 0.62241,
+      "2016": 0.54662,
+      "2017": 0.54874,
+      "2018": 0.55194,
+      "2019": 0.55173,
+      "2020": 0.55318,
+      "2021": 0.58319,
+      "2022": 0.61218,
+      "2023": 0.62154,
+      "2024": 0.62989
+    },
+    "otherStateAvg": {
+      "2001": 0.9651,
+      "2002": 0.9165,
+      "2003": 0.869,
+      "2004": 0.8501,
+      "2005": 0.8259,
+      "2006": 0.826,
+      "2007": 0.8429,
+      "2008": 0.8245,
+      "2009": 0.7659,
+      "2010": 0.7397,
+      "2011": 0.7339,
+      "2012": 0.7106,
+      "2013": 0.715,
+      "2014": 0.7317,
+      "2015": 0.7347,
+      "2016": 0.7276,
+      "2017": 0.7261,
+      "2018": 0.7299,
+      "2019": 0.7303,
+      "2020": 0.7362,
+      "2021": 0.7569,
+      "2022": 0.7616,
+      "2023": 0.7626,
+      "2024": 0.7705
+    },
+    "policyLevers": "Employer contribution rates set by the Legislature; benefit formula and retirement age design; actuarial assumption oversight; supplemental deposits in surplus years.",
+    "updateCadence": "Annual",
+    "rankHistoryNarrative": {
+      "summary": "Hawaii's public pension funded ratio stood at 90.6 percent in 2001, among the better-funded systems nationally. A combination of investment losses in 2001-2003 and 2008-2009 and years of contributions below the actuarially required amount drove the ratio to 54.7 percent by 2016, placing Hawaii in the bottom 10 states. Increased statutory contributions since 2019 have pushed the ratio back to 63.0 percent in 2024, but Hawaii remains well below the GFOA recommended 80 percent minimum and below the other-state average. The unfunded liability represents a direct claim on future taxpayers and crowds out current spending.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "South Dakota",
+          "text": "South Dakota has maintained a fully funded or overfunded pension system for most of the past two decades. The South Dakota Retirement System uses a shared-risk model: when the fund falls below 100 percent funded, both employer contributions and cost-of-living adjustments are automatically adjusted without requiring legislative action. This automatic stabilizer prevents political inertia from allowing underfunding to compound. South Dakota's funded ratio has remained above 100 percent for extended periods, meaning no pension debt burdens future taxpayers.",
+          "source": {
+            "label": "SDRS Investment, Funding, and Benefits - South Dakota Retirement System",
+            "url": "https://sdrs.sd.gov/aboutSDRS/fundingstatus.aspx"
+          }
+        }
+      ],
+      "explore": [
+        "Hawaii ERS was nearly fully funded in 2001 at 90 percent. The 2001 and 2008 market downturns reduced asset values, but the more damaging factor was the Legislature's decision to contribute below the actuarially required amount for multiple years after each downturn, allowing the unfunded liability to compound at the assumed investment return rate (currently 7 percent). At 7 percent compounding, a $1 shortfall today becomes roughly $2 in ten years.",
+        "Hawaii's pension obligation is concentrated in a single statewide plan covering state and county employees. This creates political pressure to underfund during budget stress because consequences are deferred, but it also means the entire burden falls on the state general fund rather than being distributed across many local governments as in states with fragmented pension systems."
+      ],
+      "caution": {
+        "state": "Illinois",
+        "text": "Illinois allowed its five state pension systems to fall below 40 percent funded through decades of statutory minimum contributions below actuarial requirements. Illinois constitutionally guarantees pension benefits and cannot reduce them, so the state must fund the shortfall entirely through future tax increases and spending cuts. Pension debt service consumed over 25 percent of state general fund spending in recent years, crowding out education, infrastructure, and public safety. Illinois carries the lowest credit rating of any US state, and the pension obligation is the primary reason.",
+        "source": {
+          "label": "The State of Illinois Pension Problem - Civic Federation",
+          "url": "https://www.civicfed.org/civic-federation/blog/state-illinois-pension-problem"
+        }
+      }
+    }
   }
 };
