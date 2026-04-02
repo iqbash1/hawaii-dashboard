@@ -1,8 +1,6 @@
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
-
-/*.html
   Cache-Control: no-store, must-revalidate
 
 /js/*
