@@ -7,10 +7,11 @@
 //   1. Range checks - values within plausible bounds
 //   2. Year-over-year spike detection
 //   3. Completeness checks - missing years, empty series
-//   4. AREA_ORDER vs DASHBOARD_DATA cross-check
-//   5. Governor band coverage
-//   6. rankHistoryNarrative structure
-//   7. Narrative staleness (year references vs latest data year)
+//   4. Required display fields (officialName, unitLabel)
+//   5. AREA_ORDER vs DASHBOARD_DATA cross-check
+//   6. Governor band coverage
+//   7. rankHistoryNarrative structure
+//   8. Narrative staleness (year references vs latest data year)
 //   (county cross-consistency is woven into section 2)
 //
 // Usage: node scripts/validate-data.js          (normal: warnings ok)
@@ -121,9 +122,17 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
     console.log(`[${slug}]`);
 
     // Required fields
-    for (const field of ['area', 'metric', 'unit', 'goodDirection', 'source', 'hawaii', 'otherStateAvg']) {
+    for (const field of ['area', 'metric', 'unit', 'goodDirection', 'source', 'hawaii', 'otherStateAvg', 'officialName', 'unitLabel']) {
         if (!metric[field]) {
             error(`Missing required field: ${field}`);
+        }
+    }
+
+    // unitLabel sanity check - should be a short human-readable description (3-20 words)
+    if (metric.unitLabel) {
+        const wordCount = metric.unitLabel.trim().split(/\s+/).length;
+        if (wordCount < 3 || wordCount > 20) {
+            warn(`unitLabel has ${wordCount} words (expected 3-20): "${metric.unitLabel}"`);
         }
     }
 
@@ -579,7 +588,7 @@ if (STATE_DATA) {
             error(`[${slug}] rankHistoryNarrative.summary is missing or empty`);
         }
         if (!rhn.mode || !VALID_MODES.includes(rhn.mode)) {
-            error(`[${slug}] rankHistoryNarrative.mode must be "protect" or "learn from" (got: "${rhn.mode}")`);
+            error(`[${slug}] rankHistoryNarrative.mode must be "protect" or "learn" (got: "${rhn.mode}")`);
         }
         if (!Array.isArray(rhn.benchmarks) || rhn.benchmarks.length === 0) {
             warn(`[${slug}] rankHistoryNarrative.benchmarks is empty or missing`);
