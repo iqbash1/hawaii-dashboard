@@ -450,19 +450,18 @@ const App = {
         return boxes;
     },
 
-    /** Convert a state name to a URL-safe slug (e.g. "New York" → "new-york", "Hawai\u02BBi" → "hawaii") */
+    /** Convert a state name to its 2-letter code for use in URLs (e.g. "California" → "ca") */
     stateToSlug(name) {
-        return name
-            .toLowerCase()
-            .replace(/\u02BB/g, '')
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-|-$/g, '');
+        const code = STATE_ABBREVS[name];
+        return code ? code.toLowerCase() : name.slice(0, 2).toLowerCase();
     },
 
-    /** Reverse lookup: find the full state name from a URL slug */
+    /** Reverse lookup: find the full state name from a 2-letter URL code (e.g. "ca" → "California") */
     slugToState(slug) {
-        for (const name of Object.keys(STATE_ABBREVS)) {
-            if (this.stateToSlug(name) === slug) return name;
+        const upper = slug.toUpperCase();
+        for (const [name, code] of Object.entries(STATE_ABBREVS)) {
+            // Prefer the okina form for HI; skip bare 'Hawaii' duplicate entry
+            if (code === upper && name !== 'Hawaii') return name;
         }
         return null;
     },

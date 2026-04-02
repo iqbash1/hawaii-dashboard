@@ -44,14 +44,27 @@ COMPARISON_STATES = [
     'Wisconsin', 'Wyoming',
 ]
 
+# State name → 2-letter abbreviation (matches STATE_ABBREVS in app.js)
+STATE_ABBREVS = {
+    'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR',
+    'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT', 'Delaware': 'DE',
+    'Florida': 'FL', 'Georgia': 'GA', 'Idaho': 'ID', 'Illinois': 'IL',
+    'Indiana': 'IN', 'Iowa': 'IA', 'Kansas': 'KS', 'Kentucky': 'KY',
+    'Louisiana': 'LA', 'Maine': 'ME', 'Maryland': 'MD', 'Massachusetts': 'MA',
+    'Michigan': 'MI', 'Minnesota': 'MN', 'Mississippi': 'MS', 'Missouri': 'MO',
+    'Montana': 'MT', 'Nebraska': 'NE', 'Nevada': 'NV', 'New Hampshire': 'NH',
+    'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY',
+    'North Carolina': 'NC', 'North Dakota': 'ND', 'Ohio': 'OH', 'Oklahoma': 'OK',
+    'Oregon': 'OR', 'Pennsylvania': 'PA', 'Rhode Island': 'RI',
+    'South Carolina': 'SC', 'South Dakota': 'SD', 'Tennessee': 'TN', 'Texas': 'TX',
+    'Utah': 'UT', 'Vermont': 'VT', 'Virginia': 'VA', 'Washington': 'WA',
+    'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY',
+}
+
 
 def state_to_slug(name):
-    """Convert a state name to a URL-safe slug matching app.js stateToSlug()."""
-    s = name.lower()
-    s = s.replace('\u02BB', '')  # remove okina
-    s = re.sub(r'[^a-z0-9]+', '-', s)
-    s = s.strip('-')
-    return s
+    """Return lowercase 2-letter state code for use in URLs (e.g. 'California' → 'ca')."""
+    return STATE_ABBREVS.get(name, name[:2]).lower()
 
 # ── Colors (matching dashboard CSS variables) ─────────────────────
 BG         = (245, 245, 245)    # #F5F5F5  --bg  page background
