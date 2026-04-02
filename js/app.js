@@ -484,6 +484,17 @@ const App = {
         // Use effective data (trimmed to rankings year) for chart/stats
         const effective = this.getEffectiveData(slug);
 
+        // Guard: validate required data before rendering to avoid silent crashes
+        if (!effective || !effective.hawaii || !metricData.metric || !metricData.source) {
+            console.error(`[HI-DASH] openModal: missing required data for slug "${slug}"`, { effective, metricData });
+            overlay.classList.add('active');
+            const titleEl = document.getElementById('modal-title');
+            const whyEl   = document.getElementById('modal-why');
+            if (titleEl) titleEl.textContent = 'Data unavailable';
+            if (whyEl)   whyEl.textContent   = `Could not load data for "${slug}". Please try refreshing the page.`;
+            return;
+        }
+
         // Set modal content (text from original metricData)
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;

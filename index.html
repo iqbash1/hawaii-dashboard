@@ -233,6 +233,17 @@
          Safe to keep after CDN cache clears -- it is never called by correct code. -->
     <script>window.keyEnd = function(k){var p=String(k).split('-');return Number(p[p.length-1]);};</script>
 
+    <!-- Observability: surface JS errors in the browser console with a
+         [HI-DASH] prefix so they are easy to identify in support logs. -->
+    <script>
+    window.onerror = function(msg, src, line, col, err) {
+        console.error('[HI-DASH] Uncaught error:', msg, 'at', src + ':' + line + ':' + col, err || '');
+    };
+    window.addEventListener('unhandledrejection', function(e) {
+        console.error('[HI-DASH] Unhandled promise rejection:', e.reason);
+    });
+    </script>
+
     <!-- Scripts -->
     <script src="js/data.js?v=20260401"></script>
     <script src="js/state-data.js?v=20260401"></script>

@@ -3,6 +3,24 @@
    Flat design, Inter font, ocean teal (#0D7C8F) accent
    ============================================================ */
 
+/*
+ * Naming conventions (BEM-inspired):
+ *
+ * Blocks (components):       .card, .modal, .top-nav, .header
+ * Elements (children):       .card-title, .modal-title, .top-nav-link
+ *   -- separator: single hyphen between block and element name
+ * Modifiers (state/variant): .card--improving, .modal-tab.active
+ *   -- block modifiers use double-hyphen; state classes use plain adjective
+ *
+ * Page-scoped prefixes:
+ *   .fyc-*   Five-Year Change page components  (five-year-change/)
+ *   .sc-*    Scorecard sub-components          (five-year-change/)
+ *   .rh-*    Rank-history sub-components       (modal)
+ *
+ * CSS custom properties:  --hawaii-blue, --border, --radius, etc.
+ *   -- all defined in :root; never overridden inline except for theming
+ */
+
 /* --- Reset & Base --- */
 *, *::before, *::after {
     margin: 0;
