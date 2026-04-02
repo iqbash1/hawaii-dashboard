@@ -168,10 +168,10 @@ python3 scripts/generate-og-pages.py
 ```
 
 This single script reads `js/data.js`, `js/state-data.js`, and `js/county-data.js` and produces:
-- 27 trend OG cards (`assets/og/{slug}.png`)
-- 27 rankings OG cards (`assets/og/{slug}_rankings.png`)
-- 27 rank history OG cards (`assets/og/{slug}_rank_history.png`)
-- 1,323 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`) -- one per metric per state
+- 26 trend OG cards (`assets/og/{slug}.png`)
+- 26 rankings OG cards (`assets/og/{slug}_rankings.png`)
+- 26 rank history OG cards (`assets/og/{slug}_rank_history.png`)
+- 1,274 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`) -- one per metric per state (26 × 49)
 - Up to 13 county OG cards (`assets/og/{slug}_county.png`)
 - All redirect pages in `t/`, `r/`, `rh/`, `c/` (including `rh/{slug}/{code}/` comparison pages)
 
@@ -194,6 +194,7 @@ Each metric follows this structure:
   metric: "Full metric name",
   officialName: "Official Federal Name (optional)",
   unit: "%" | "$" | "per 100K" | "per 10K" | "per 1,000" | "¢/kWh" | "×" | "Index (2017=100)" | "score",
+  unitLabel: "Human-readable unit description shown on cards and in modal header (e.g. '% of eligible voters who cast a ballot')",
   goodDirection: "up" | "down",
   source: "Federal agency name",
   sourceUrl: "https://...",
@@ -502,7 +503,7 @@ The footer shows "Data last updated: [date + time] HST". This is updated automat
 
 ### Adding a new metric
 
-1. Add the metric object to `DASHBOARD_DATA` in `js/data.js`
+1. Add the metric object to `DASHBOARD_DATA` in `js/data.js` - include a `unitLabel` field (5-15 words describing what the number measures, e.g. `"% of eligible voters who cast a ballot"`)
 2. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `js/app.js`
 3. Add per-state data to `js/state-data.js`
 4. Add a validation rule entry to `METRIC_RULES` in `scripts/validate-data.js`
@@ -533,13 +534,24 @@ Tests run against a local static server on port 8765.
 |------|----------------|
 | Page loads without JS errors | Any runtime exception on startup |
 | 26 metric cards render | Missing metric data or AREA_ORDER misconfiguration |
-| All 4 modal tabs visible | CSS overflow clipping tab bar |
+| Each card shows a value and sparkline canvas | Card rendering incomplete |
+| All 3 modal tabs visible | CSS overflow clipping tab bar |
 | Trend chart renders | Wrong canvas ID or chart not initializing |
 | Rank tab shows chart | Rankings panel broken |
-| Rank history tab loads | Rank history computation error |
+| Rank history tab loads without errors | Rank history computation error |
+| Modal closes on X button | Close handler broken |
+| Ranked metric shows rank comparison badge | Comparison badge logic broken |
 | `food_insecurity_rate` shows range-key badge | "YYYY-YYYY" key format parsing broken |
-| County tab shows chart | County data missing or tab hidden incorrectly |
-| Five-year-change page loads | JS errors on `/five-year-change/` page |
+| All 26 cards render without JS errors | `buildVsYearHtml` regression guard |
+| County tab shows chart (metric with county data) | County data missing or tab hidden incorrectly |
+| County tab hidden for metric without county data | Tab incorrectly shown when no county data exists |
+| Hash route opens correct modal | Hash-based URL routing broken |
+| `/t/{slug}/` opens modal on Trend tab | Path routing for trend share links broken |
+| `/r/{slug}/` opens modal on Rank tab | Path routing for rankings share links broken |
+| `/rh/{slug}/` opens modal on Rank history tab | Path routing for rank history share links broken |
+| `/rh/{slug}/{code}/` opens Rank history with comparison active | Comparison URL parsing or `slugToState()` broken |
+| Five-year-change page loads without JS errors | JS errors on `/five-year-change/` page |
+| Five-year-change renders one row per metric (26 rows) | Missing metric in five-year-change AREA_ORDER |
 
 ### CI
 
