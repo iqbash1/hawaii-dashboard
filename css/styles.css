@@ -581,10 +581,12 @@ body {
 }
 
 .modal-official {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 0.4rem;
-    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: var(--bg);
+    border-left: 3px solid var(--border);
+    padding: 0.5rem 2rem;
+    margin: 0;
 }
 
 .modal-source a {

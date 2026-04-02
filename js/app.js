@@ -512,13 +512,21 @@ const App = {
             dataNoteCont.style.display = 'none';
         }
 
+        // Official federal name - shown just below the chart area
+        const officialEl = document.getElementById('modal-official-name');
+        if (officialEl) {
+            if (metricData.officialName) {
+                officialEl.textContent = `Federal metric: ${metricData.officialName}`;
+                officialEl.style.display = '';
+            } else {
+                officialEl.textContent = '';
+                officialEl.style.display = 'none';
+            }
+        }
+
         // Footer source line
-        const officialLine = metricData.officialName
-            ? `<div class="modal-official">Federal metric: ${metricData.officialName}</div>`
-            : '';
         const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
         document.getElementById('modal-source').innerHTML = `
-            ${officialLine}
             Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             <span class="csv-sep">&middot;</span>
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
