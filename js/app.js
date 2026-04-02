@@ -1,8 +1,9 @@
 // ============================================================
 // Hawaiʻi Dashboard - Main App
 //
-// Renders metric cards, manages the detail modal, and
-// uses embedded data updated quarterly.
+// Renders metric cards, manages the detail modal, handles
+// URL routing, and manages data export. Data is updated
+// annually from federal sources via the automated pipeline.
 // Build: 2026-04-01
 // ============================================================
 

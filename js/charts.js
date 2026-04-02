@@ -1,10 +1,14 @@
 // ============================================================
 // Hawaiʻi Dashboard - Chart Rendering (Chart.js v4)
 //
-// createSparkline()   - mini card charts with gap-scaled fill
-// createDetailChart() - full modal chart with governor overlays
-// formatValue()       - unit-aware number formatting
-// formatCardValue()   - compact formatting for card display
+// createSparkline()          - mini card charts with gap-scaled fill
+// createDetailChart()        - full modal chart with governor overlays
+// createCountyChart()        - multi-line county comparison chart
+// createRankingsChart()      - horizontal bar chart for all 50 states
+// createRankHistoryChart()   - rank-over-time line chart with quartile
+//                              zones, reference lines, and click-to-compare
+// formatValue()              - unit-aware number formatting
+// formatCardValue()          - compact formatting for card display
 // ============================================================
 
 // Set global Chart.js font to Inter

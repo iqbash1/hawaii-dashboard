@@ -1,1 +1,19 @@
-{}
+{
+  "name": "hawaii-dashboard",
+  "version": "1.0.0",
+  "description": "A statewide scorecard of outcomes for Hawaiʻi residents and policymakers.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iqbash1/hawaii-dashboard"
+  },
+  "homepage": "https://hawaiidashboard.org",
+  "license": "SEE LICENSE IN DOCUMENTATION.md",
+  "private": true,
+  "scripts": {
+    "validate": "node scripts/validate-data.js",
+    "validate:strict": "node scripts/validate-data.js --strict",
+    "recompute": "node scripts/recompute-data.js",
+    "og": "python3 scripts/generate-og-pages.py",
+    "serve": "python3 -m http.server 8080"
+  }
+}

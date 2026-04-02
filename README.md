@@ -1,6 +1,6 @@
 # Hawaiʻi Dashboard
 
-A statewide scorecard of outcomes and the conditions that shape them, tracking 26 key measures across 5 areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
+A statewide scorecard of outcomes and the conditions that shape them, tracking 27 key measures across 5 areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
 
 **Live site**: [hawaiidashboard.org](https://hawaiidashboard.org)
 
@@ -21,8 +21,9 @@ about/index.html        About page (metric registry, comparator rules)
 t/{slug}/index.html     Detail view redirect pages (with OG tags)
 r/{slug}/index.html     Rankings view redirect pages (with OG tags)
 c/{slug}/index.html     County view redirect pages (with OG tags)
-rh/{slug}/index.html    Rank history redirect pages (with OG tags)
-assets/og/              Open Graph preview images (1200x630)
+rh/{slug}/index.html         Rank history redirect pages (with OG tags)
+rh/{slug}/{code}/index.html  Rank history comparison redirect pages (49 per metric)
+assets/og/                   Open Graph preview images (1200x630)
 ```
 
 ## Data pipeline
@@ -54,7 +55,7 @@ python3 scripts/generate-og-pages.py
 
 Generates all per-metric OG images (detail, rankings, county, rank history) and redirect pages with matching meta tags. Requires `Pillow` (`pip3 install Pillow`).
 
-## Metrics (26)
+## Metrics (27)
 
 | Area | Metrics | County |
 |------|---------|--------|
@@ -62,14 +63,14 @@ Generates all per-metric OG images (detail, rankings, county, rank history) and 
 | Housing & Cost of Living | Renter Cost Burden, Home Price-to-Income, Unsheltered Homeless, Electricity Price, Food Insecurity | Partial |
 | Economy & Workforce | Unemployment, Labor Force Participation, Labor Productivity, Per Capita Income, Business Entry, Net Employer Formation | Partial |
 | Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
-| Infra, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
+| Infra, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Pension Funded Ratio, Voter Participation, Net Migration | Partial |
 
 ## Design principles
 
 - **Outcomes, not activity**: Measures what happened to residents, not what government spent
 - **Federal sources only**: All data from nonpartisan federal agencies, reported identically for all 50 states
 - **Two comparisons per metric**: Over time (trend) and against other states (ranking)
-- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 26 cards, up to 4 tabs per metric
+- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 27 cards, up to 4 tabs per metric
 - **Governor overlay**: Alternating bands show which governor was in office during each period
 
 ## Local development

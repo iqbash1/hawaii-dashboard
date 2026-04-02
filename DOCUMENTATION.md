@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state outcomes across **26 metrics** and **5 areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state outcomes across **27 metrics** and **5 areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -47,7 +47,8 @@ hawaii-dashboard/
 ├── c/                      # County redirect pages for OG sharing
 │   └── {slug}/index.html
 ├── rh/                     # Rank history redirect pages for OG sharing
-│   └── {slug}/index.html
+│   ├── {slug}/index.html
+│   └── {slug}/{code}/index.html   # Per-comparison redirect pages (49 per metric)
 ├── about/
 │   └── index.html          # About page: mission, methodology, data registry
 ├── five-year-change/
@@ -94,7 +95,7 @@ hawaii-dashboard/
 
 ---
 
-## The 26 Metrics
+## The 27 Metrics
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
@@ -122,8 +123,9 @@ hawaii-dashboard/
 | 22 | Infra, Resilience & Trust | Broadband Subscriptions | % | Up | Census ACS |
 | 23 | Infra, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
 | 24 | Infra, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
-| 26 | Infra, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
+| 25 | Infra, Resilience & Trust | Pension Funded Ratio | % | Up | Public Plans Database (Boston College CRR) |
+| 26 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
+| 27 | Infra, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -142,6 +144,7 @@ The dashboard uses **path-based URLs** so every metric view can be shared with a
 | State rankings | `/r/{slug}/` | `hawaiidashboard.org/r/naep_math_8/` |
 | County view | `/c/{slug}/` | `hawaiidashboard.org/c/unemployment_rate/` |
 | Rank history | `/rh/{slug}/` | `hawaiidashboard.org/rh/naep_math_8/` |
+| Rank history comparison | `/rh/{slug}/{code}/` | `hawaiidashboard.org/rh/violent_crime_rate/ca/` |
 | Legacy hash (still works) | `#{slug}` | `hawaiidashboard.org/#naep_math_8` |
 
 - **`/t/`** = **t**rend (sparkline + value + rank)
@@ -166,11 +169,12 @@ python3 scripts/generate-og-pages.py
 ```
 
 This single script reads `js/data.js`, `js/state-data.js`, and `js/county-data.js` and produces:
-- 26 trend OG cards (`assets/og/{slug}.png`)
-- 26 rankings OG cards (`assets/og/{slug}_rankings.png`)
-- 26 rank history OG cards (`assets/og/{slug}_rank_history.png`)
+- 27 trend OG cards (`assets/og/{slug}.png`)
+- 27 rankings OG cards (`assets/og/{slug}_rankings.png`)
+- 27 rank history OG cards (`assets/og/{slug}_rank_history.png`)
+- 1,323 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`) -- one per metric per state
 - Up to 13 county OG cards (`assets/og/{slug}_county.png`)
-- All 91 redirect pages (`t/`, `r/`, `rh/`, `c/`)
+- All redirect pages in `t/`, `r/`, `rh/`, `c/` (including `rh/{slug}/{code}/` comparison pages)
 
 All images are PIL-rendered (1200×630 PNG). No browser or Puppeteer dependency.
 
@@ -180,7 +184,7 @@ All images are PIL-rendered (1200×630 PNG). No browser or Puppeteer dependency.
 
 ### Embedded Baseline (`data.js`)
 
-All 26 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated by the monthly CI workflow or by editing the file directly (no live API calls at runtime).
+All 27 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated by the monthly CI workflow or by editing the file directly (no live API calls at runtime).
 
 Each metric follows this structure:
 
@@ -224,12 +228,12 @@ Each metric follows this structure:
 
 **`rankHistoryNarrative` structure:**
 
-All 26 metrics have a `rankHistoryNarrative` object that drives the written analysis in the Rank history tab. Structure:
+All 27 metrics have a `rankHistoryNarrative` object that drives the written analysis in the Rank history tab. Structure:
 
 ```js
 rankHistoryNarrative: {
   summary: "2-3 sentences: Hawaii's trajectory and the structural reasons behind it",
-  mode: "protect" | "learn from",   // "protect" = Hawaii is ahead; "learn from" = room to improve
+  mode: "protect" | "learn",   // "protect" = Hawaii is ahead; "learn" = room to improve
   benchmarks: [
     {
       state: "State name",
@@ -310,7 +314,7 @@ Structure:
 
 ### Card Grid (Landing Page)
 
-Each of the 26 metrics gets its own card displaying:
+Each of the 27 metrics gets its own card displaying:
 
 1. **Area icon + label** (e.g., "EDUCATION")
 2. **Metric name** (e.g., "NAEP 8th Grade Math")
@@ -366,17 +370,19 @@ A standalone summary page for policymakers. All logic is self-contained in `five
 
 ### Governor Term Overlay
 
-A custom Chart.js plugin renders governor names and dashed term boundaries on all trend and county charts.
+A custom Chart.js plugin renders governor names and dashed term boundaries on all trend and county charts. Coverage starts at 1959 (Hawaii statehood) so that metrics with historical data going back to the 1960s are fully annotated.
 
 | Governor | Party | Term |
 |----------|-------|------|
+| William Quinn | R | 1959-1962 |
+| John Burns | D | 1962-1974 |
 | George Ariyoshi | D | 1974-1986 |
 | John Waihee | D | 1986-1994 |
 | Ben Cayetano | D | 1994-2002 |
 | Linda Lingle | R | 2002-2010 |
 | Neil Abercrombie | D | 2010-2014 |
 | David Ige | D | 2014-2022 |
-| Josh Green | D | 2022-2027 |
+| Josh Green | D | 2022-present |
 
 ---
 
@@ -425,15 +431,17 @@ Main application controller.
 | Property/Method | Description |
 |----------------|-------------|
 | `AREA_ORDER` | Array defining the 5 areas and which metrics belong to each |
-| `GOVERNORS` | Array of 7 governors: `{ name, party, start, end }` from 1974-2027 |
+| `GOVERNORS` | Array of 9 governors: `{ name, party, start, end }` from 1959 (statehood) to present |
 | `init()` | Renders cards, sets up modal, handles URL routing |
-| `renderCards()` | Creates all 26 card DOM elements with sparklines and comparisons |
-| `openModal(slug, areaName, initialView)` | Opens detail/rankings/etc. view for a metric |
+| `renderCards()` | Creates all 27 card DOM elements with sparklines and comparisons |
+| `openModal(slug, areaName, initialView, initialCompare)` | Opens detail/rankings/etc. view for a metric; `initialCompare` pre-selects a comparison state in the Rank history tab |
 | `closeModal()` | Closes the modal and resets URL to `/` |
-| `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/`, `/c/{slug}/`, or `#{slug}` and opens the modal |
+| `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/`, `/rh/{slug}/{code}/`, `/c/{slug}/`, or `#{slug}` and opens the modal |
 | `switchTab(tab, slug)` | Switches between the 4 tabs; updates URL |
-| `showRankHistory(slug)` | Renders rank history chart, sets up state comparison UI |
+| `showRankHistory(slug)` | Renders rank history chart, restores comparison state from URL, sets up state comparison UI |
 | `computeRankHistory(slug)` | Computes Hawaiʻi's rank per year from STATE_DATA; handles year-keyed and FIPS-keyed formats |
+| `stateToSlug(name)` | Converts a state name to its 2-letter lowercase URL code (e.g. "California" → "ca") |
+| `slugToState(slug)` | Reverse lookup: finds the full state name from a 2-letter URL code (e.g. "ca" → "California") |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
 | `buildVsYearHtml(metricData)` | Builds the "prior period vs recent" card badge; handles plain and range year keys |
 | `parseYearLabel(label)` | Extracts the start year from any key format: `"2022"` → 2022, `"2022-2024"` → 2022 |
@@ -449,7 +457,7 @@ Chart rendering utilities.
 | `createSparkline(canvas, data, goodDirection)` | Mini line chart for cards |
 | `createDetailChart(canvas, data, govBoxes)` | Full detail chart with governor overlay; uses `tension: 0.3` Bezier smoothing |
 | `createRankingsChart(canvas, stateValues, goodDirection, unit)` | Horizontal bar chart with dot strip, quartile shading, median line, and crosshair hover |
-| `createRankHistoryChart(canvas, rankHistory, metricData, onCompare)` | Rank trend line chart with quartile zones, reference lines, and click-to-compare state interaction; `tension: 0` (no smoothing) |
+| `createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare, initialCompare)` | Rank trend line chart with quartile zones, reference lines, and click-to-compare state interaction; `tension: 0` (no smoothing); `initialCompare` pre-selects a comparison state on load |
 | `formatValue(value, unit, isDecimalPct)` | Full precision value formatting |
 | `formatCardValue(value, unit, isDecimalPct)` | Compact card display formatting |
 | `isDecimalPctMetric(metricData)` | Detects decimal-stored percentage metrics |
@@ -498,9 +506,10 @@ The footer shows "Data last updated: [date + time] HST". This is updated automat
 1. Add the metric object to `DASHBOARD_DATA` in `js/data.js`
 2. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `js/app.js`
 3. Add per-state data to `js/state-data.js`
-4. If county data is available, add to `js/county-data.js`
-5. Run `python3 scripts/generate-og-pages.py` to generate OG assets
-6. Commit and push
+4. Add a validation rule entry to `METRIC_RULES` in `scripts/validate-data.js`
+5. If county data is available, add to `js/county-data.js`
+6. Run `python3 scripts/generate-og-pages.py` to generate OG assets
+7. Commit and push
 
 ---
 
@@ -524,7 +533,7 @@ Tests run against a local static server on port 8765.
 | Test | What it catches |
 |------|----------------|
 | Page loads without JS errors | Any runtime exception on startup |
-| 26 metric cards render | Missing metric data or AREA_ORDER misconfiguration |
+| 27 metric cards render | Missing metric data or AREA_ORDER misconfiguration |
 | All 4 modal tabs visible | CSS overflow clipping tab bar |
 | Trend chart renders | Wrong canvas ID or chart not initializing |
 | Rank tab shows chart | Rankings panel broken |

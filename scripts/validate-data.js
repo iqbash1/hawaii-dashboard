@@ -7,8 +7,11 @@
 //   1. Range checks - values within plausible bounds
 //   2. Year-over-year spike detection
 //   3. Completeness checks - missing years, empty series
-//   4. Cross-consistency - county vs state data alignment
-//   5. Structural integrity - required fields, correct types
+//   4. AREA_ORDER vs DASHBOARD_DATA cross-check
+//   5. Governor band coverage
+//   6. rankHistoryNarrative structure
+//   7. Narrative staleness (year references vs latest data year)
+//   (county cross-consistency is woven into section 2)
 //
 // Usage: node scripts/validate-data.js          (normal: warnings ok)
 //        node scripts/validate-data.js --strict  (CI: warnings = errors)
@@ -454,19 +457,81 @@ if (STATE_DATA) {
 }
 
 // ============================================================
-// 4. GOVERNOR BAND COVERAGE
+// 4. AREA_ORDER vs DASHBOARD_DATA CROSS-CHECK
+// ============================================================
+// Ensures every slug in App.AREA_ORDER exists in DASHBOARD_DATA and vice versa,
+// and that no slug appears more than once in AREA_ORDER.
+
+{
+    console.log('\n=== AREA_ORDER vs DASHBOARD_DATA CROSS-CHECK ===\n');
+
+    const appPath = path.join(__dirname, '..', 'js', 'app.js');
+    let areaOrderSlugs = null;
+
+    try {
+        const appSrc = fs.readFileSync(appPath, 'utf8');
+        // Extract all metrics arrays from AREA_ORDER (handles both `= [` and `: [` syntax)
+        // Each area has: metrics: ['slug1', 'slug2', ...]
+        const metricArrays = [...appSrc.matchAll(/metrics\s*:\s*\[([^\]]*)\]/g)];
+        if (metricArrays.length > 0) {
+            areaOrderSlugs = [];
+            for (const ma of metricArrays) {
+                const inner = [...ma[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
+                areaOrderSlugs.push(...inner);
+            }
+        } else {
+            warn('Could not find metrics arrays in AREA_ORDER in app.js');
+        }
+    } catch (e) {
+        warn(`Could not read app.js for AREA_ORDER check: ${e.message}`);
+    }
+
+    if (areaOrderSlugs !== null) {
+        console.log(`  AREA_ORDER contains ${areaOrderSlugs.length} metric slugs`);
+
+        // Check for duplicates in AREA_ORDER
+        const seen = new Set();
+        for (const slug of areaOrderSlugs) {
+            if (seen.has(slug)) {
+                error(`AREA_ORDER duplicate: "${slug}" appears more than once`);
+            }
+            seen.add(slug);
+        }
+
+        // Every AREA_ORDER slug must exist in DASHBOARD_DATA
+        for (const slug of areaOrderSlugs) {
+            if (!DASHBOARD_DATA[slug]) {
+                error(`AREA_ORDER slug "${slug}" not found in DASHBOARD_DATA`);
+            }
+        }
+
+        // Every DASHBOARD_DATA key must appear in AREA_ORDER
+        for (const slug of Object.keys(DASHBOARD_DATA)) {
+            if (!seen.has(slug)) {
+                error(`DASHBOARD_DATA slug "${slug}" is missing from App.AREA_ORDER`);
+            }
+        }
+
+        if (areaOrderSlugs.length === Object.keys(DASHBOARD_DATA).length) {
+            info(`AREA_ORDER and DASHBOARD_DATA are in sync (${areaOrderSlugs.length} metrics)`);
+        }
+    }
+}
+
+// ============================================================
+// 5. GOVERNOR BAND COVERAGE
 // ============================================================
 // Ensures every metric's earliest data year is covered by a governor band.
 // If data is extended before the earliest governor start, this will error.
 
 {
-    console.log('\n--- Section 4a: Governor Band Coverage ---');
+    console.log('\n=== GOVERNOR BAND COVERAGE ===\n');
 
-    const appPath = path.join(__dirname, '..', 'js', 'app.js');
+    const govAppPath = path.join(__dirname, '..', 'js', 'app.js');
     let earliestGovYear = null;
 
     try {
-        const appSrc = fs.readFileSync(appPath, 'utf8');
+        const appSrc = fs.readFileSync(govAppPath, 'utf8');
         // Extract all start: YYYY values from the GOVERNORS array
         const starts = [...appSrc.matchAll(/\bstart:\s*(\d{4})\b/g)].map(m => parseInt(m[1]));
         if (starts.length > 0) {
@@ -496,11 +561,53 @@ if (STATE_DATA) {
 }
 
 // ============================================================
-// 4. NARRATIVE STALENESS
+// 6. RANKHISTORYNARRATIVE STRUCTURE
+// ============================================================
+// Validates that every metric has a rankHistoryNarrative with the required fields.
+
+{
+    console.log('\n=== RANKHISTORYNARRATIVE STRUCTURE ===\n');
+
+    const VALID_MODES = ['protect', 'learn'];
+
+    for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
+        const rhn = metric.rankHistoryNarrative;
+        if (!rhn) {
+            error(`[${slug}] missing rankHistoryNarrative`);
+            continue;
+        }
+        if (!rhn.summary || typeof rhn.summary !== 'string' || rhn.summary.trim().length === 0) {
+            error(`[${slug}] rankHistoryNarrative.summary is missing or empty`);
+        }
+        if (!rhn.mode || !VALID_MODES.includes(rhn.mode)) {
+            error(`[${slug}] rankHistoryNarrative.mode must be "protect" or "learn from" (got: "${rhn.mode}")`);
+        }
+        if (!Array.isArray(rhn.benchmarks) || rhn.benchmarks.length === 0) {
+            warn(`[${slug}] rankHistoryNarrative.benchmarks is empty or missing`);
+        } else {
+            for (let i = 0; i < rhn.benchmarks.length; i++) {
+                const b = rhn.benchmarks[i];
+                if (!b.state || !b.text) {
+                    error(`[${slug}] rankHistoryNarrative.benchmarks[${i}] missing state or text`);
+                }
+            }
+        }
+        if (!Array.isArray(rhn.explore) || rhn.explore.length === 0) {
+            warn(`[${slug}] rankHistoryNarrative.explore is empty or missing`);
+        }
+        if (!rhn.caution || !rhn.caution.state || !rhn.caution.text) {
+            warn(`[${slug}] rankHistoryNarrative.caution is missing or incomplete`);
+        }
+    }
+    info(`Checked rankHistoryNarrative structure for ${Object.keys(DASHBOARD_DATA).length} metrics`);
+}
+
+// ============================================================
+// 7. NARRATIVE STALENESS
 // ============================================================
 
 {
-    console.log('\n--- Section 4: Narrative Staleness ---');
+    console.log('\n=== NARRATIVE STALENESS ===\n');
 
     const NARRATIVE_FIELDS = ['insight', 'crossInsight'];
     const YEAR_RE = /\b(20[0-9]{2})\b/g;
@@ -534,7 +641,7 @@ if (STATE_DATA) {
 }
 
 // ============================================================
-// 5. SUMMARY
+// 8. SUMMARY
 // ============================================================
 
 console.log('\n=== VALIDATION SUMMARY ===\n');
