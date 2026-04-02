@@ -24,10 +24,10 @@ test.describe('Homepage', () => {
         expect(jsErrors, `JS errors on page load: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 
-    test('renders 26 metric cards', async ({ page }) => {
+    test('renders 27 metric cards', async ({ page }) => {
         await page.goto('/');
         const cards = await page.locator('.card[data-metric]').all();
-        expect(cards.length).toBe(26);
+        expect(cards.length).toBe(27);
     });
 
     test('each card shows a value and sparkline canvas', async ({ page }) => {
@@ -110,8 +110,8 @@ test.describe('5-year comparison badges', () => {
     });
 
     // Regression: buildVsYearHtml used bare keyEnd() which broke when refactored to this.keyEnd().
-    // This test verifies all 26 cards render their comparison badges (proving renderCards() ran fully).
-    test('all 26 cards render without JS errors (buildVsYearHtml regression)', async ({ page }) => {
+    // This test verifies all 27 cards render their comparison badges (proving renderCards() ran fully).
+    test('all 27 cards render without JS errors (buildVsYearHtml regression)', async ({ page }) => {
         const jsErrors = [];
         page.on('pageerror', (err) => jsErrors.push(err.message));
 
@@ -119,7 +119,7 @@ test.describe('5-year comparison badges', () => {
         await page.waitForSelector('[data-metric]', { timeout: 10_000 });
 
         const cards = await page.locator('[data-metric]').all();
-        expect(cards.length, 'all 26 metric cards should render').toBe(26);
+        expect(cards.length, 'all 27 metric cards should render').toBe(27);
         expect(jsErrors, `JS errors during renderCards: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 });
@@ -143,19 +143,58 @@ test.describe('County-level tab', () => {
         await expect(page.locator('#modal-county')).toBeVisible();
         await expect(page.locator('#county-chart')).toBeVisible();
     });
+
+    test('county tab is hidden for metrics without county data', async ({ page }) => {
+        await page.goto('/');
+        // naep_math_8 has no county-level data - tab must remain hidden
+        await page.locator('[data-metric="naep_math_8"]').click();
+        await expect(page.locator('#modal-overlay')).toBeVisible();
+        await expect(page.locator('#tab-county')).not.toBeVisible();
+    });
 });
 
 // ---------------------------------------------------------------------------
-// Deep-link / URL routing
+// URL routing - hash and path-based routes must all open the correct view
 // ---------------------------------------------------------------------------
 
 test.describe('URL routing', () => {
-    test('direct URL opens correct modal', async ({ page }) => {
+    test('hash route opens correct modal', async ({ page }) => {
         await page.goto('/#violent_crime_rate');
         await expect(page.locator('#modal-overlay')).toBeVisible();
-        // Modal title should contain the metric name
         const title = await page.locator('#modal-title').textContent();
         expect(title).toBeTruthy();
+    });
+
+    // /t/{slug}/ redirect pages serve the OG meta then redirect to /#slug
+    test('/t/{slug}/ opens modal on trend tab', async ({ page }) => {
+        await page.goto('/t/violent_crime_rate/');
+        await expect(page.locator('#modal-overlay')).toBeVisible();
+        await expect(page.locator('#modal-chart')).toBeVisible();
+    });
+
+    // /r/{slug}/ redirect pages redirect to /#slug/rankings
+    test('/r/{slug}/ opens modal on rank tab', async ({ page }) => {
+        await page.goto('/r/violent_crime_rate/');
+        await expect(page.locator('#modal-overlay')).toBeVisible();
+        await expect(page.locator('#modal-rankings canvas')).toBeVisible();
+    });
+
+    // /rh/{slug}/ redirect pages redirect to /#slug/rank-history
+    test('/rh/{slug}/ opens modal on rank history tab', async ({ page }) => {
+        await page.goto('/rh/violent_crime_rate/');
+        await expect(page.locator('#modal-overlay')).toBeVisible();
+        await expect(page.locator('#modal-rank-history')).toBeVisible();
+    });
+
+    // /rh/{slug}/{code}/ redirect pages redirect to /#slug/rank-history/{code}
+    // slugToState('ca') must resolve to 'California' and the comparison UI must activate
+    test('/rh/{slug}/{code}/ opens rank history with comparison state active', async ({ page }) => {
+        await page.goto('/rh/violent_crime_rate/ca/');
+        await expect(page.locator('#modal-overlay')).toBeVisible();
+        await expect(page.locator('#modal-rank-history')).toBeVisible();
+        await expect(page.locator('#rank-history-compare')).toBeVisible();
+        const name = await page.locator('#rank-history-compare-name').textContent();
+        expect(name).toBe('California');
     });
 });
 
@@ -175,11 +214,11 @@ test.describe('Five-year-change page', () => {
         expect(jsErrors, `JS errors: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 
-    test('renders metric rows', async ({ page }) => {
+    test('renders one row per metric (27 rows)', async ({ page }) => {
         await page.goto('/five-year-change/');
         // Rows are in collapsed accordions; wait for DOM attachment
         await page.waitForSelector('.fyc-row', { state: 'attached' });
         const rows = await page.locator('.fyc-row').all();
-        expect(rows.length).toBeGreaterThan(20);
+        expect(rows.length).toBeGreaterThanOrEqual(27);
     });
 });

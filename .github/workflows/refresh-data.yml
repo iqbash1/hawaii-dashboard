@@ -44,11 +44,13 @@ jobs:
       - name: Fetch state-level data
         run: node scripts/build-state-data.js
         env:
+          # Required for FHWA (road quality) API which serves a self-signed cert in CI environments
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
       - name: Fetch county-level data
         run: node scripts/build-county-data.js
         env:
+          # Same as above - FHWA and some Census endpoints require this in GitHub Actions
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
       # ----- Recompute derived values -----

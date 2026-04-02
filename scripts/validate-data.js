@@ -135,7 +135,8 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
 
     const rules = METRIC_RULES[slug];
     if (!rules) {
-        warn(`No validation rules defined for metric "${slug}"`);
+        // All 27 metrics have rules; a missing entry means a slug typo or incomplete setup
+        error(`No validation rules defined for metric "${slug}" -- add an entry to METRIC_RULES`);
         continue;
     }
 
@@ -239,7 +240,7 @@ for (const [slug, metric] of Object.entries(COUNTY_DATA)) {
 
     const rules = METRIC_RULES[slug];
     if (!rules) {
-        warn(`No validation rules defined for county metric "${slug}"`);
+        error(`No validation rules defined for county metric "${slug}" -- add an entry to METRIC_RULES`);
         continue;
     }
 
@@ -609,7 +610,8 @@ if (STATE_DATA) {
 {
     console.log('\n=== NARRATIVE STALENESS ===\n');
 
-    const NARRATIVE_FIELDS = ['insight', 'crossInsight'];
+    // whyItMatters is included because it routinely contains "In 20XX, Hawaiʻi..." language
+    const NARRATIVE_FIELDS = ['whyItMatters', 'insight', 'crossInsight'];
     const YEAR_RE = /\b(20[0-9]{2})\b/g;
 
     for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {

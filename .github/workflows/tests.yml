@@ -59,7 +59,7 @@ jobs:
       - name: Wait for Cloudflare deployment to propagate
         run: sleep 300
 
-      - name: Check live site renders 26 metric cards
+      - name: Check live site renders 27 metric cards
         run: |
           set -e
           echo "Checking https://hawaiidashboard.org/ ..."
@@ -67,11 +67,11 @@ jobs:
           # Fetch the homepage
           body=$(curl -fsSL --max-time 15 "https://hawaiidashboard.org/")
 
-          # Must include at least 26 data-metric attributes
+          # Must include at least 27 data-metric attributes
           count=$(echo "$body" | grep -o 'data-metric="' | wc -l | tr -d ' ')
           echo "data-metric count: $count"
-          if [ "$count" -lt 26 ]; then
-            echo "FAIL: expected 26+ data-metric attributes, got $count"
+          if [ "$count" -lt 27 ]; then
+            echo "FAIL: expected 27+ data-metric attributes, got $count"
             echo "This likely means the deployment failed or app.js threw an error."
             exit 1
           fi

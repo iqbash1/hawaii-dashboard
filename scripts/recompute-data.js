@@ -14,7 +14,7 @@
  *   voter_participation_rate, net_domestic_migration_rate
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
- *   (none - all 26 metrics verified against state-data.js)
+ *   (none - all 27 metrics verified against state-data.js)
  */
 
 const fs = require('fs');
@@ -37,7 +37,7 @@ eval(origContent.replace('const DASHBOARD_DATA', 'global.DASHBOARD_DATA'));
 const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
 const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
 
-// Metrics safe to recompute from state-data (all 26 verified)
+// Metrics safe to recompute from state-data (all 27 verified)
 const RECOMPUTE_METRICS = [
     'ba_or_higher_pct',
     'broadband_subscription_pct',
@@ -68,7 +68,7 @@ const RECOMPUTE_METRICS = [
     'pension_funded_ratio',
 ];
 
-// No metrics excluded - all 26 derive from state-data.js
+// No metrics excluded - all 27 derive from state-data.js
 const SKIP_METRICS = [];
 
 // ==========================================================
