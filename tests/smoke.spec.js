@@ -24,10 +24,10 @@ test.describe('Homepage', () => {
         expect(jsErrors, `JS errors on page load: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 
-    test('renders 27 metric cards', async ({ page }) => {
+    test('renders 26 metric cards', async ({ page }) => {
         await page.goto('/');
         const cards = await page.locator('.card[data-metric]').all();
-        expect(cards.length).toBe(27);
+        expect(cards.length).toBe(26);
     });
 
     test('each card shows a value and sparkline canvas', async ({ page }) => {
@@ -110,8 +110,8 @@ test.describe('5-year comparison badges', () => {
     });
 
     // Regression: buildVsYearHtml used bare keyEnd() which broke when refactored to this.keyEnd().
-    // This test verifies all 27 cards render their comparison badges (proving renderCards() ran fully).
-    test('all 27 cards render without JS errors (buildVsYearHtml regression)', async ({ page }) => {
+    // This test verifies all 26 cards render their comparison badges (proving renderCards() ran fully).
+    test('all 26 cards render without JS errors (buildVsYearHtml regression)', async ({ page }) => {
         const jsErrors = [];
         page.on('pageerror', (err) => jsErrors.push(err.message));
 
@@ -119,7 +119,7 @@ test.describe('5-year comparison badges', () => {
         await page.waitForSelector('[data-metric]', { timeout: 10_000 });
 
         const cards = await page.locator('[data-metric]').all();
-        expect(cards.length, 'all 27 metric cards should render').toBe(27);
+        expect(cards.length, 'all 26 metric cards should render').toBe(26);
         expect(jsErrors, `JS errors during renderCards: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 });
@@ -214,11 +214,11 @@ test.describe('Five-year-change page', () => {
         expect(jsErrors, `JS errors: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 
-    test('renders one row per metric (27 rows)', async ({ page }) => {
+    test('renders one row per metric (26 rows)', async ({ page }) => {
         await page.goto('/five-year-change/');
         // Rows are in collapsed accordions; wait for DOM attachment
         await page.waitForSelector('.fyc-row', { state: 'attached' });
         const rows = await page.locator('.fyc-row').all();
-        expect(rows.length).toBeGreaterThanOrEqual(27);
+        expect(rows.length).toBeGreaterThanOrEqual(26);
     });
 });

@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state outcomes across **27 metrics** and **5 areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state outcomes across **26 metrics** and **5 areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -95,7 +95,7 @@ hawaii-dashboard/
 
 ---
 
-## The 27 Metrics
+## The 26 Metrics
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
@@ -123,9 +123,8 @@ hawaii-dashboard/
 | 22 | Infra, Resilience & Trust | Broadband Subscriptions | % | Up | Census ACS |
 | 23 | Infra, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
 | 24 | Infra, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Infra, Resilience & Trust | Pension Funded Ratio | % | Up | Public Plans Database (Boston College CRR) |
-| 26 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
-| 27 | Infra, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
+| 25 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
+| 26 | Infra, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -184,7 +183,7 @@ All images are PIL-rendered (1200×630 PNG). No browser or Puppeteer dependency.
 
 ### Embedded Baseline (`data.js`)
 
-All 27 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated by the monthly CI workflow or by editing the file directly (no live API calls at runtime).
+All 26 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated by the monthly CI workflow or by editing the file directly (no live API calls at runtime).
 
 Each metric follows this structure:
 
@@ -228,7 +227,7 @@ Each metric follows this structure:
 
 **`rankHistoryNarrative` structure:**
 
-All 27 metrics have a `rankHistoryNarrative` object that drives the written analysis in the Rank history tab. Structure:
+All 26 metrics have a `rankHistoryNarrative` object that drives the written analysis in the Rank history tab. Structure:
 
 ```js
 rankHistoryNarrative: {
@@ -314,7 +313,7 @@ Structure:
 
 ### Card Grid (Landing Page)
 
-Each of the 27 metrics gets its own card displaying:
+Each of the 26 metrics gets its own card displaying:
 
 1. **Area icon + label** (e.g., "EDUCATION")
 2. **Metric name** (e.g., "NAEP 8th Grade Math")
@@ -433,7 +432,7 @@ Main application controller.
 | `AREA_ORDER` | Array defining the 5 areas and which metrics belong to each |
 | `GOVERNORS` | Array of 9 governors: `{ name, party, start, end }` from 1959 (statehood) to present |
 | `init()` | Renders cards, sets up modal, handles URL routing |
-| `renderCards()` | Creates all 27 card DOM elements with sparklines and comparisons |
+| `renderCards()` | Creates all 26 card DOM elements with sparklines and comparisons |
 | `openModal(slug, areaName, initialView, initialCompare)` | Opens detail/rankings/etc. view for a metric; `initialCompare` pre-selects a comparison state in the Rank history tab |
 | `closeModal()` | Closes the modal and resets URL to `/` |
 | `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/`, `/rh/{slug}/{code}/`, `/c/{slug}/`, or `#{slug}` and opens the modal |
@@ -533,7 +532,7 @@ Tests run against a local static server on port 8765.
 | Test | What it catches |
 |------|----------------|
 | Page loads without JS errors | Any runtime exception on startup |
-| 27 metric cards render | Missing metric data or AREA_ORDER misconfiguration |
+| 26 metric cards render | Missing metric data or AREA_ORDER misconfiguration |
 | All 4 modal tabs visible | CSS overflow clipping tab bar |
 | Trend chart renders | Wrong canvas ID or chart not initializing |
 | Rank tab shows chart | Rankings panel broken |

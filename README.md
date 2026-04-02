@@ -1,6 +1,6 @@
 # Hawaiʻi Dashboard
 
-A statewide scorecard of outcomes and the conditions that shape them, tracking 27 key measures across 5 areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
+A statewide scorecard of outcomes and the conditions that shape them, tracking 26 key measures across 5 areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
 
 **Live site**: [hawaiidashboard.org](https://hawaiidashboard.org)
 
@@ -55,7 +55,7 @@ python3 scripts/generate-og-pages.py
 
 Generates all per-metric OG images (detail, rankings, county, rank history) and redirect pages with matching meta tags. Requires `Pillow` (`pip3 install Pillow`).
 
-## Metrics (27)
+## Metrics (26)
 
 | Area | Metrics | County |
 |------|---------|--------|
@@ -63,14 +63,14 @@ Generates all per-metric OG images (detail, rankings, county, rank history) and 
 | Housing & Cost of Living | Renter Cost Burden, Home Price-to-Income, Unsheltered Homeless, Electricity Price, Food Insecurity | Partial |
 | Economy & Workforce | Unemployment, Labor Force Participation, Labor Productivity, Per Capita Income, Business Entry, Net Employer Formation | Partial |
 | Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
-| Infra, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Pension Funded Ratio, Voter Participation, Net Migration | Partial |
+| Infra, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
 
 ## Design principles
 
 - **Outcomes, not activity**: Measures what happened to residents, not what government spent
 - **Federal sources only**: All data from nonpartisan federal agencies, reported identically for all 50 states
 - **Two comparisons per metric**: Over time (trend) and against other states (ranking)
-- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 27 cards, up to 4 tabs per metric
+- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 26 cards, up to 4 tabs per metric
 - **Governor overlay**: Alternating bands show which governor was in office during each period
 
 ## Local development

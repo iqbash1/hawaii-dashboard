@@ -5,7 +5,7 @@
  * SELECTIVE: Only recomputes metrics where state-data.js has verified, correct data.
  * Metrics with known data quality issues are kept as-is in data.js.
  *
- * Quality-verified metrics (recompute from state-data, all 27):
+ * Quality-verified metrics (recompute from state-data, all 26):
  *   violent_crime_rate, property_crime_rate, pcp_per_100k, uninsured_rate,
  *   suicide_rate, acgr, ba_or_higher_pct, naep_math_8, naep_reading_8,
  *   unemployment_rate, labor_force_participation, real_per_capita_income,
@@ -13,7 +13,7 @@
  *   road_poor_pct, broadband_subscription_pct, residential_price_cpkwh,
  *   renewables_share_gen, food_insecurity_rate, rainy_day_fund_pct,
  *   voter_participation_rate, net_domestic_migration_rate, estabs_entry_rate,
- *   net_employer_formation, labor_productivity, pension_funded_ratio
+ *   net_employer_formation, labor_productivity
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
  *   (none - all 27 metrics verified against state-data.js)
@@ -39,7 +39,7 @@ eval(origContent.replace('const DASHBOARD_DATA', 'global.DASHBOARD_DATA'));
 const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
 const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
 
-// Metrics safe to recompute from state-data (all 27 verified)
+// Metrics safe to recompute from state-data (all 26 verified)
 const RECOMPUTE_METRICS = [
     'ba_or_higher_pct',
     'broadband_subscription_pct',
@@ -67,10 +67,9 @@ const RECOMPUTE_METRICS = [
     'naep_reading_8',
     'labor_force_participation',
     'suicide_rate',
-    'pension_funded_ratio',
 ];
 
-// No metrics excluded - all 27 derive from state-data.js
+// No metrics excluded - all 26 derive from state-data.js
 const SKIP_METRICS = [];
 
 // ==========================================================
