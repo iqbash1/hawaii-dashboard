@@ -733,7 +733,8 @@ def compute_rank_history(slug, dashboard, state_data):
     if not years:
         return None
 
-    hi_ranks = {}  # { year_key: rank }
+    hi_ranks = {}     # { year_key: rank }
+    state_ranks = {}  # { state_name: { year_key: rank } }
     total_by_year = {}
 
     for yr in years:
@@ -744,14 +745,18 @@ def compute_rank_history(slug, dashboard, state_data):
             vals.sort(key=lambda x: x['value'])
         total_by_year[yr] = len(vals)
         for idx, entry in enumerate(vals):
-            if entry['state'] in ('Hawaii', 'Hawai\u02BBi'):
+            sname = entry['state']
+            if sname not in state_ranks:
+                state_ranks[sname] = {}
+            state_ranks[sname][yr] = idx + 1
+            if sname in ('Hawaii', 'Hawai\u02BBi'):
                 hi_ranks[yr] = idx + 1
-                break
 
     latest_yr = years[-1]
     return {
         'years': years,
         'hi_ranks': hi_ranks,
+        'state_ranks': state_ranks,
         'total': total_by_year.get(latest_yr, 50),
         'latest_year': latest_yr,
         'hi_rank_latest': hi_ranks.get(latest_yr),
@@ -868,14 +873,146 @@ def generate_rank_history_og_image(slug, metric, area, rank_history, output_path
     im.save(output_path, 'PNG', optimize=True)
 
 
+# ── Rank History Comparison OG Image ─────────────────────────────
+def generate_rh_compare_og_image(slug, metric, area, rank_history, compare_state, output_path):
+    """Generate a 1200x630 OG image showing Hawaiʻi vs a specific state rank history."""
+    W, H = 1200, 630
+    im = Image.new('RGB', (W, H), BG)
+    d = ImageDraw.Draw(im)
+
+    metric_name = metric.get('metric', slug)
+    years      = rank_history['years']
+    hi_ranks   = rank_history['hi_ranks']
+    state_ranks = rank_history.get('state_ranks', {})
+    total      = rank_history['total']
+    latest_yr  = rank_history['latest_year']
+    hi_rank    = rank_history['hi_rank_latest']
+    comp_code  = STATE_ABBREVS.get(compare_state, compare_state[:2].upper())
+
+    # Find comparison state ranks -- PPD uses full state name, try both forms
+    comp_ranks = state_ranks.get(compare_state, {})
+    comp_rank_latest = comp_ranks.get(latest_yr)
+
+    # Top accent bar
+    d.rectangle([0, 0, W, 5], fill=TEAL)
+
+    # Branding
+    d.text((70, 40), "Hawai\u02BBi Dashboard", fill=TEXT_SEC, font=font(20))
+
+    # Area + metric name
+    d.text((70, 100), area.upper(), fill=TEAL, font=font(15))
+    d.text((70, 125), metric_name, fill=TEXT_PRI, font=font(34))
+
+    # Central card
+    cx, cy, cw, ch = 70, 190, 1060, 355
+    d.rounded_rectangle([cx, cy, cx + cw, cy + ch],
+                        radius=12, fill=CARD_BG, outline=DIVIDER, width=1)
+
+    # Header: "Hawaiʻi vs Michigan"
+    d.text((cx + 40, cy + 16), f"Hawai\u02BBi vs {compare_state}", fill=TEXT_PRI, font=font(30))
+
+    # Rank badges side-by-side
+    hi_rank_str  = f"HI: #{hi_rank} of {total}" if hi_rank else "HI: N/A"
+    comp_rank_str = f"{comp_code}: #{comp_rank_latest} of {total}" if comp_rank_latest else f"{comp_code}: N/A"
+    d.text((cx + 40,  cy + 60), hi_rank_str,   fill=TEAL,           font=font(18))
+    d.text((cx + 340, cy + 60), comp_rank_str, fill=(80, 80, 80),   font=font(18))
+    d.text((cx + cw - 130, cy + 60), f"({latest_yr})", fill=TEXT_TER, font=font(15))
+
+    # ── Chart ──
+    hi_pts_years   = [(yr, hi_ranks[yr])   for yr in years if yr in hi_ranks]
+    comp_pts_years = [(yr, comp_ranks[yr]) for yr in years if yr in comp_ranks]
+
+    if len(hi_pts_years) >= 2:
+        chart_x = cx + 50
+        chart_y = cy + 100
+        chart_w = cw - 130   # leave room for inline labels on right
+        chart_h = 205
+
+        # Y range: span both datasets, rank 1 at top
+        all_shown_ranks = ([r for _, r in hi_pts_years] +
+                           [r for _, r in comp_pts_years])
+        y_max = min(total, max(all_shown_ranks) + max(2, int(total * 0.08)))
+        y_min = max(1, 1 - 1)
+        y_range = y_max - y_min if y_max != y_min else 1
+
+        # Use a common x-axis across all available years
+        all_years_set = sorted(
+            set([yr for yr, _ in hi_pts_years] + [yr for yr, _ in comp_pts_years]),
+            key=parse_year_label
+        )
+        year_idx = {yr: i for i, yr in enumerate(all_years_set)}
+        n_years = max(1, len(all_years_set) - 1)
+
+        def rank_to_py(r):
+            return chart_y + ((r - y_min) / y_range) * chart_h
+
+        def yr_to_px(yr_key):
+            return chart_x + (year_idx.get(yr_key, 0) / n_years) * chart_w
+
+        # Faint median line
+        median_rank = total / 2.0
+        if y_min < median_rank < y_max:
+            med_py = rank_to_py(median_rank)
+            x = chart_x
+            while x < chart_x + chart_w:
+                d.line([(x, med_py), (min(x + 10, chart_x + chart_w), med_py)],
+                       fill=(210, 210, 210), width=1)
+                x += 16
+
+        # Comparison state line (drawn first, behind HI)
+        if len(comp_pts_years) >= 2:
+            comp_pts = [(yr_to_px(yr), rank_to_py(r)) for yr, r in comp_pts_years]
+            d.line(comp_pts, fill=(100, 100, 100), width=2)
+            last_px, last_py = comp_pts[-1]
+            d.text((chart_x + chart_w + 8, last_py - 7), comp_code,
+                   fill=(100, 100, 100), font=font(13))
+
+        # Hawaii line on top
+        hi_pts = [(yr_to_px(yr), rank_to_py(r)) for yr, r in hi_pts_years]
+        if len(hi_pts) >= 2:
+            d.line(hi_pts, fill=TEAL, width=3)
+        for px, py in hi_pts:
+            d.ellipse([px - 3, py - 3, px + 3, py + 3], fill=TEAL)
+        if hi_pts:
+            last_px, last_py = hi_pts[-1]
+            d.text((chart_x + chart_w + 8, last_py - 7), 'HI',
+                   fill=TEAL, font=font(13))
+
+        # Year labels (first and last)
+        f_yr = font(13)
+        first_lbl = f"'{parse_year_label(all_years_set[0])  % 100:02d}"
+        last_lbl  = f"'{parse_year_label(all_years_set[-1]) % 100:02d}"
+        d.text((chart_x, chart_y + chart_h + 6), first_lbl, fill=TEXT_TER, font=f_yr)
+        bb = d.textbbox((0, 0), last_lbl, font=f_yr)
+        d.text((chart_x + chart_w - (bb[2] - bb[0]), chart_y + chart_h + 6),
+               last_lbl, fill=TEXT_TER, font=f_yr)
+
+        # Rank axis: #1 at top
+        d.text((chart_x - 32, chart_y - 2), "#1", fill=TEXT_TER, font=font(12))
+
+    else:
+        d.text((cx + 40, cy + 130), "Rank history available on dashboard",
+               fill=TEXT_TER, font=font(20))
+
+    # Footer
+    d.rectangle([0, H - 46, W, H], fill=FOOTER_BG)
+    d.line([(0, H - 46), (W, H - 46)], fill=DIVIDER, width=1)
+    d.text((70, H - 34), "hawaiidashboard.org", fill=TEXT_SEC, font=font(16))
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    im.save(output_path, 'PNG', optimize=True)
+
+
 # ── Rank History Comparison Redirect Pages ───────────────────────
-def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, output_path):
+def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, output_path,
+                                  image_url=None):
     """Generate /rh/{slug}/{state-slug}/index.html for a Hawaiʻi-vs-state comparison."""
     metric_name = metric.get('metric', slug)
     state_slug = state_to_slug(compare_state)
     page_url = f"{SITE_URL}/rh/{slug}/{state_slug}/"
     redirect_hash = f"#{slug}/rank-history/{state_slug}"
-    image_url = f"{SITE_URL}/assets/og/{slug}_rank_history.png"
+    if image_url is None:
+        image_url = f"{SITE_URL}/assets/og/{slug}_rank_history.png"
 
     title = f"Hawai\u02BBi vs {compare_state}: {metric_name} Rank History | Hawai\u02BBi Dashboard"
 
@@ -975,11 +1112,17 @@ def main():
             generate_redirect_html(slug, metric, area, rankings,
                                    os.path.join(REDIRECT_DIR_RH, slug, 'index.html'),
                                    view='rank-history', rank_history=rh)
-            # Comparison pages -> /rh/{slug}/{state-slug}/
+            # Comparison images + pages -> /rh/{slug}/{state-slug}/
             for state in COMPARISON_STATES:
+                state_slug = state_to_slug(state)
+                img_filename = f'{slug}_rh_{state_slug}.png'
+                img_path = os.path.join(ASSETS_OG, img_filename)
+                img_url  = f"{SITE_URL}/assets/og/{img_filename}"
+                generate_rh_compare_og_image(slug, metric, area, rh, state, img_path)
                 generate_rh_compare_redirect(
                     slug, metric, state, rh,
-                    os.path.join(REDIRECT_DIR_RH, slug, state_to_slug(state), 'index.html')
+                    os.path.join(REDIRECT_DIR_RH, slug, state_slug, 'index.html'),
+                    image_url=img_url
                 )
 
         rank_str = f"#{rankings['hawaiiRank']}/{rankings['total']}" if rankings and rankings['hawaiiRank'] > 0 else "no rank"
