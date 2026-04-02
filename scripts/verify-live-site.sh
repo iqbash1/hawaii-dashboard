@@ -165,7 +165,9 @@ section "APP.JS INTEGRITY"
 
 # Must be present
 for marker in "modal-official-name" "modal-unit-label" "slugToState" \
-              "rankHistoryNarrative" "buildVsYearHtml" "unitLabel"; do
+              "rankHistoryNarrative" "buildVsYearHtml" "unitLabel" \
+              "sourceCategory" "categoryLabels" "Federal data" \
+              "State-reported" "Independent estimate"; do
     if echo "$js" | grep -q "$marker"; then
         ok "app.js contains: ${marker}"
     else
@@ -173,8 +175,8 @@ for marker in "modal-official-name" "modal-unit-label" "slugToState" \
     fi
 done
 
-# Must NOT be present
-for banned in "pension_funded_ratio"; do
+# Must NOT be present (stale strings)
+for banned in "pension_funded_ratio" "Federal metric:"; do
     if echo "$js" | grep -q "$banned"; then
         fail "app.js contains banned string: ${banned} (should have been removed)"
     else

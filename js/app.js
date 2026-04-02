@@ -512,11 +512,17 @@ const App = {
             dataNoteCont.style.display = 'none';
         }
 
-        // Official federal name - shown just below the chart area
+        // Source definition bar - shown just below the chart area
         const officialEl = document.getElementById('modal-official-name');
         if (officialEl) {
             if (metricData.officialName) {
-                officialEl.textContent = `Federal metric: ${metricData.officialName}`;
+                const categoryLabels = {
+                    'federal':     'Federal data',
+                    'state-assoc': 'State-reported',
+                    'academic':    'Independent estimate'
+                };
+                const prefix = categoryLabels[metricData.sourceCategory] || 'Federal data';
+                officialEl.textContent = `${prefix}: ${metricData.officialName}`;
                 officialEl.style.display = '';
             } else {
                 officialEl.textContent = '';
@@ -1064,7 +1070,7 @@ const App = {
         const methRows = [
             ['METRIC DEFINITION'],
             ['Metric', m.metric],
-            m.officialName ? ['Federal Name', m.officialName] : [],
+            m.officialName ? ['Metric definition', m.officialName] : [],
             ['Unit', m.unit],
             ['Area', m.area],
             ['Direction', m.goodDirection === 'up' ? 'Higher is better' : 'Lower is better'],

@@ -122,10 +122,16 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
     console.log(`[${slug}]`);
 
     // Required fields
-    for (const field of ['area', 'metric', 'unit', 'goodDirection', 'source', 'hawaii', 'otherStateAvg', 'officialName', 'unitLabel']) {
+    for (const field of ['area', 'metric', 'unit', 'goodDirection', 'source', 'hawaii', 'otherStateAvg', 'officialName', 'unitLabel', 'sourceCategory']) {
         if (!metric[field]) {
             error(`Missing required field: ${field}`);
         }
+    }
+
+    // sourceCategory must be one of the three valid values
+    const VALID_SOURCE_CATEGORIES = ['federal', 'state-assoc', 'academic'];
+    if (metric.sourceCategory && !VALID_SOURCE_CATEGORIES.includes(metric.sourceCategory)) {
+        error(`Invalid sourceCategory: "${metric.sourceCategory}" (must be one of: ${VALID_SOURCE_CATEGORIES.join(', ')})`);
     }
 
     // unitLabel sanity check - should be a short human-readable description (3-20 words)
