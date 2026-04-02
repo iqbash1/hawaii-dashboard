@@ -2076,7 +2076,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "US Elections Project",
     "sourceUrl": "https://www.electproject.org/election-data/voter-turnout-data",
-    "whyItMatters": "The Legislature controls voter registration rules, early voting windows, ballot access policies, and the all-mail voting system adopted in 2020. Civic education funding, same-day registration, and multilingual ballot access are additional levers that shape whether eligible residents actually cast a vote.",
+    "whyItMatters": "In 2024, only 50.3% of eligible Hawaiʻi voters cast a ballot, the lowest rate in the country and 15 points below the other-state average, even after adopting all-mail voting in 2020. Low turnout concentrates political influence among those who consistently show up, which can tilt policy outcomes away from the broader population's priorities.",
     "howToRead": "The zigzag pattern reflects presidential years (higher turnout) vs. midterm elections (lower). Hawaiʻi has trailed the other-state average for over 40 years, and the gap has widened: 8 points in 1980, 15 points in 2024.",
     "insight": "In 1980, Hawaiʻi's 49.2% turnout trailed the national average by 8 points. All-mail voting in 2020 briefly lifted turnout to 55.7%, but by 2024 it fell to 50.3%, 15 points below the other-state average. The gap has grown wider despite logistical improvements.",
     "crossInsight": "Hawaiʻi adopted all-mail voting and same-day registration, yet turnout ranks #50. Removing logistical barriers didn't move the needle, suggesting deeper factors at play: political competition, cultural norms, or a belief that it doesn't matter who wins.",
