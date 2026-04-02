@@ -31,17 +31,26 @@ section() { echo; echo "=== $* ==="; }
 
 # -----------------------------------------------------------------------------
 # 1. DEPLOYMENT DETECTION
-#    Poll until the ETag on app.js changes (new deployment), or time out.
+#    Poll until the content-hash of app.js changes (new deployment), or time out.
+#
+#    Uses MD5 of the full response body rather than the ETag header.
+#    Reason: Cloudflare can return a stale ETag on HEAD requests even when
+#    Cache-Control: no-store is set, because HEAD bypasses its content pipeline.
+#    A GET-based content hash is always accurate.
+#
+#    If the hash never changes (deploy already completed before script started,
+#    or CDN quirk), we warn and continue — the content checks in sections 3-8
+#    will catch a stale deployment just as reliably.
 # -----------------------------------------------------------------------------
 section "DEPLOYMENT DETECTION"
 
 if [ "$NO_WAIT" != "--no-wait" ]; then
     echo "  Polling for new deployment (up to 10 minutes)..."
 
-    # Record ETag before we start waiting
-    old_etag=$(curl -fsI --max-time 10 "${BASE}/js/app.js" 2>/dev/null \
-        | grep -i '^etag:' | tr -d '[:space:]' || echo "unknown")
-    echo "  Current app.js ETag: ${old_etag}"
+    # Record content hash before we start waiting (GET, not HEAD)
+    old_hash=$(curl -fsL --max-time 20 "${BASE}/js/app.js" 2>/dev/null \
+        | md5sum | cut -d' ' -f1 || echo "unknown")
+    echo "  Current app.js content hash: ${old_hash}"
 
     MAX_WAIT=600   # 10 minutes
     INTERVAL=20
@@ -52,25 +61,23 @@ if [ "$NO_WAIT" != "--no-wait" ]; then
         sleep "$INTERVAL"
         elapsed=$((elapsed + INTERVAL))
 
-        new_etag=$(curl -fsI --max-time 10 "${BASE}/js/app.js" 2>/dev/null \
-            | grep -i '^etag:' | tr -d '[:space:]' || echo "unknown")
+        new_hash=$(curl -fsL --max-time 20 "${BASE}/js/app.js" 2>/dev/null \
+            | md5sum | cut -d' ' -f1 || echo "unknown")
 
-        if [ "$new_etag" != "$old_etag" ]; then
-            echo "  New deployment detected after ${elapsed}s (ETag changed)"
-            echo "  New ETag: ${new_etag}"
+        if [ "$new_hash" != "$old_hash" ]; then
+            echo "  New deployment detected after ${elapsed}s (content hash changed)"
+            echo "  New hash: ${new_hash}"
             deployed=true
             break
         fi
 
-        echo "  ${elapsed}s elapsed - waiting (ETag unchanged)..."
+        echo "  ${elapsed}s elapsed - waiting (content unchanged)..."
     done
 
     if [ "$deployed" = "false" ]; then
-        fail "No new deployment detected after ${MAX_WAIT}s - ETag never changed"
-        fail "Check Cloudflare Workers dashboard for build errors"
-        echo
-        echo "=== RESULT: DEPLOYMENT FAILED - aborting further checks ==="
-        exit 1
+        warn "Content hash unchanged after ${MAX_WAIT}s"
+        warn "Deploy may have completed before this script started, or CDN is stable"
+        warn "Continuing with content checks to confirm live state..."
     fi
 else
     echo "  Skipping deployment wait (--no-wait)"
@@ -81,18 +88,29 @@ fi
 # -----------------------------------------------------------------------------
 section "FETCHING ASSETS"
 
+# Use LC_ALL=C throughout so grep handles non-ASCII bytes (e.g. the ʻokina
+# in Hawaiʻi, U+02BB) without "character not in range" errors on macOS/zsh.
+export LC_ALL=C
+
+# Download assets to temp files to avoid shell variable encoding issues
+# with large files containing Unicode characters.
+TMPDIR_VER=$(mktemp -d)
+trap 'rm -rf "$TMPDIR_VER"' EXIT
+
 html=$(curl -fsL --max-time 20 "${BASE}/" 2>/dev/null) \
     || { fail "Could not fetch homepage"; exit 1; }
 ok "Homepage fetched ($(echo "$html" | wc -c | tr -d ' ') bytes)"
 
-# Resolve versioned app.js URL from page source
+# Resolve versioned app.js URL from page source, download to temp file
 app_js_path=$(echo "$html" | grep -o 'js/app\.js[^"]*' | head -1)
-js=$(curl -fsL --max-time 20 "${BASE}/${app_js_path}" 2>/dev/null) \
+APP_JS_FILE="${TMPDIR_VER}/app.js"
+curl -fsL --max-time 30 "${BASE}/${app_js_path}" 2>/dev/null > "$APP_JS_FILE" \
     || { fail "Could not fetch app.js (${BASE}/${app_js_path})"; exit 1; }
-ok "app.js fetched (path: ${app_js_path})"
+ok "app.js fetched (path: ${app_js_path}, $(wc -c < "$APP_JS_FILE" | tr -d ' ') bytes)"
 
 css_path=$(echo "$html" | grep -o 'css/styles\.css[^"]*' | head -1)
-css=$(curl -fsL --max-time 20 "${BASE}/${css_path}" 2>/dev/null) \
+CSS_FILE="${TMPDIR_VER}/styles.css"
+curl -fsL --max-time 20 "${BASE}/${css_path}" 2>/dev/null > "$CSS_FILE" \
     || { fail "Could not fetch styles.css"; exit 1; }
 ok "styles.css fetched (path: ${css_path})"
 
@@ -144,15 +162,33 @@ fi
 # -----------------------------------------------------------------------------
 section "HOMEPAGE STRUCTURE"
 
-# Exactly 26 metric cards
-card_count=$(echo "$html" | grep -o 'data-metric="' | wc -l | tr -d ' ')
-if [ "$card_count" -eq 26 ]; then
-    ok "Exactly 26 metric cards (data-metric attributes)"
+# Note: metric cards are JS-rendered, not in static HTML.
+# Check data.js (source of truth) for exactly 26 metrics via goodDirection field.
+data_js=$(curl -fsL --max-time 20 "${BASE}/js/data.js" 2>/dev/null) \
+    || { fail "Could not fetch data.js"; data_js=""; }
+metric_count=$(echo "$data_js" | grep -c "goodDirection" 2>/dev/null || echo "0")
+if [ "$metric_count" -eq 26 ]; then
+    ok "data.js contains exactly 26 metrics (goodDirection entries)"
 else
-    fail "Expected 26 metric cards, found ${card_count}"
+    fail "data.js has ${metric_count} metrics (expected 26)"
 fi
 
-# Required DOM elements
+# Meta description confirms 26 metrics count (updated when metrics change)
+if echo "$html" | grep -q "26 metrics"; then
+    ok "index.html meta description references '26 metrics'"
+else
+    fail "index.html meta description does not reference '26 metrics'"
+fi
+
+# Skeleton cards confirm JS hydration shell is in place
+skel_count=$(echo "$html" | grep -c "card-skeleton" 2>/dev/null || echo "0")
+if [ "$skel_count" -gt 0 ]; then
+    ok "index.html has ${skel_count} skeleton card placeholders (JS hydration ready)"
+else
+    fail "index.html has no skeleton cards (JS hydration shell may be missing)"
+fi
+
+# Required DOM elements (these ARE in the static HTML as modal scaffolding)
 for element_id in "modal-official-name" "modal-unit-label" "modal-overlay" \
                   "modal-title" "modal-chart" "tab-detail" "tab-rankings"; do
     if echo "$html" | grep -q "id=\"${element_id}\""; then
@@ -167,12 +203,28 @@ done
 # -----------------------------------------------------------------------------
 section "APP.JS INTEGRITY"
 
+# Sentinel: unique string added in Phase 2 — confirms current build is live
+# Update this string whenever a new deployment adds a new identifiable marker.
+SENTINEL="[HI-DASH]"
+if grep -qF "$SENTINEL" "$APP_JS_FILE"; then
+    ok "app.js contains deployment sentinel: ${SENTINEL}"
+else
+    fail "app.js missing sentinel: ${SENTINEL} (stale build — Phase 2 code not live)"
+fi
+
+# Also confirm utils.js script tag is present in five-year-change page
+if echo "$fyc_html" | grep -q 'utils\.js'; then
+    ok "/five-year-change/ loads utils.js (Phase 2 module present)"
+else
+    fail "/five-year-change/ missing utils.js script tag (stale build)"
+fi
+
 # Must be present
 for marker in "modal-official-name" "modal-unit-label" "slugToState" \
               "rankHistoryNarrative" "buildVsYearHtml" "unitLabel" \
               "sourceCategory" "categoryLabels" "Federal data" \
               "State-reported" "Independent estimate"; do
-    if echo "$js" | grep -q "$marker"; then
+    if grep -q "$marker" "$APP_JS_FILE"; then
         ok "app.js contains: ${marker}"
     else
         fail "app.js missing: ${marker} (stale or broken deployment)"
@@ -181,7 +233,7 @@ done
 
 # Must NOT be present (stale strings)
 for banned in "pension_funded_ratio" "Federal metric:"; do
-    if echo "$js" | grep -q "$banned"; then
+    if grep -q "$banned" "$APP_JS_FILE"; then
         fail "app.js contains banned string: ${banned} (should have been removed)"
     else
         ok "app.js does not contain banned string: ${banned}"
@@ -189,11 +241,11 @@ for banned in "pension_funded_ratio" "Federal metric:"; do
 done
 
 # No bare keyEnd() calls (regression guard)
-if echo "$js" | grep -qP '(?<!this\.)keyEnd\(' 2>/dev/null || \
-   echo "$js" | grep -q "keyEnd(" && ! echo "$js" | grep -q "this.keyEnd("; then
+if grep -qP '(?<!this\.)keyEnd\(' "$APP_JS_FILE" 2>/dev/null || \
+   grep -q "keyEnd(" "$APP_JS_FILE" && ! grep -q "this.keyEnd(" "$APP_JS_FILE"; then
     # Simple check without perl regex
-    bare=$(echo "$js" | grep -c "keyEnd(" || true)
-    this_=$(echo "$js" | grep -c "this.keyEnd(" || true)
+    bare=$(grep -c "keyEnd(" "$APP_JS_FILE" || true)
+    this_=$(grep -c "this.keyEnd(" "$APP_JS_FILE" || true)
     if [ "$bare" -gt "$this_" ]; then
         fail "app.js may contain bare keyEnd() calls (regression)"
     else
@@ -210,7 +262,7 @@ section "CSS INTEGRITY"
 
 for marker in ".modal-official" ".modal-unit-label" ".card-unit" \
               ".rh-narrative" ".modal-header"; do
-    if echo "$css" | grep -q "$marker"; then
+    if grep -q "$marker" "$CSS_FILE"; then
         ok "styles.css contains: ${marker}"
     else
         fail "styles.css missing: ${marker} (stale deployment)"
@@ -218,7 +270,7 @@ for marker in ".modal-official" ".modal-unit-label" ".card-unit" \
 done
 
 # .modal-official must NOT be italic (we removed that)
-if echo "$css" | grep -A5 '\.modal-official' | grep -q 'font-style.*italic'; then
+if grep -A5 '\.modal-official' "$CSS_FILE" | grep -q 'font-style.*italic'; then
     fail ".modal-official still has font-style: italic (stale CSS)"
 else
     ok ".modal-official does not have italic styling"
@@ -229,12 +281,18 @@ fi
 # -----------------------------------------------------------------------------
 section "SECONDARY PAGES"
 
-# /five-year-change/ should have .fyc-row elements and exactly 26 rows
-fyc_count=$(echo "$fyc_html" | grep -o 'fyc-row' | wc -l | tr -d ' ')
-if [ "$fyc_count" -ge 26 ]; then
-    ok "/five-year-change/ has ${fyc_count} fyc-row elements (>= 26)"
+# /five-year-change/ rows are JS-rendered — verify the JS template and data are wired up.
+# Check 1: fyc-row class appears in the inline JS template literal (code is present)
+if echo "$fyc_html" | grep -q "fyc-row"; then
+    ok "/five-year-change/ JS template contains fyc-row class"
 else
-    fail "/five-year-change/ has only ${fyc_count} fyc-row elements (expected >= 26)"
+    fail "/five-year-change/ missing fyc-row in JS template (code may be broken)"
+fi
+# Check 2: data.js is loaded (26 metrics confirmed above; FYC uses the same data)
+if echo "$fyc_html" | grep -q "data\.js"; then
+    ok "/five-year-change/ loads data.js"
+else
+    fail "/five-year-change/ missing data.js script tag"
 fi
 
 # /about/ should mention "26 metrics"
