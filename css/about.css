@@ -24,11 +24,12 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .registry-table a { color: var(--hawaii-blue); text-decoration: none; }
 .registry-table a:hover { text-decoration: underline; }
 
-.gov-table { border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; }
+.gov-table { border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; width: 100%; }
 .gov-table th { text-align: left; padding: 0.35rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; }
-.gov-table td { padding: 0.3rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); }
+.gov-table td { padding: 0.3rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); vertical-align: top; }
 .gov-table .party-d { color: #2563EB !important; font-weight: 600; }
 .gov-table .party-r { color: #C0392B !important; font-weight: 600; }
+.gov-table .gov-notes { font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; }
 
 .update-list { list-style: disc; padding-left: 1.25rem; }
 .update-list li { padding: 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); }
