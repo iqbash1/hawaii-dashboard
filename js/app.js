@@ -510,6 +510,16 @@ const App = {
         document.getElementById('modal-how').textContent = metricData.howToRead;
         document.getElementById('modal-trend-section').style.display = 'none';
 
+        // Potential drivers
+        const driversSection = document.getElementById('modal-drivers-section');
+        const driversText = document.getElementById('modal-drivers');
+        if (metricData.potentialDrivers) {
+            driversText.innerHTML = metricData.potentialDrivers;
+            driversSection.style.display = '';
+        } else {
+            driversSection.style.display = 'none';
+        }
+
         // Policy levers
         const policyLeversSection = document.getElementById('modal-policy-levers-section');
         const policyLeversText = document.getElementById('modal-policy-levers');
@@ -1144,6 +1154,7 @@ const App = {
         );
         if (m.insight) methRows.push(['Context', m.insight]);
         if (m.crossInsight) methRows.push(['Cross-metric Context', m.crossInsight]);
+        if (m.potentialDrivers) methRows.push(['Potential Drivers', m.potentialDrivers.replace(/<[^>]*>/g, '')]);
         if (m.policyLevers) methRows.push(['Main Policy Levers', m.policyLevers]);
         if (m.dataNote) methRows.push([], ['Data Note', m.dataNote]);
         const reproText = isDecimalPct
