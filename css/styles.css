@@ -921,7 +921,7 @@ body {
 
 @media (max-width: 700px) {
     .header {
-        padding: 2rem 1rem 1.5rem;
+        padding: 1rem 1rem 0.75rem;
     }
 
     .header-title {
@@ -929,7 +929,7 @@ body {
     }
 
     .header-subtitle {
-        font-size: 0.95rem;
+        font-size: 0.8rem;
     }
 
     .header-meta {
@@ -982,9 +982,20 @@ body {
         max-height: 95vh;
     }
 
+    /* Actions become a full-width sticky strip so they never float over body text */
     .modal-actions {
+        position: sticky;
+        top: 0;
+        align-self: auto;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0;
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border);
+        padding: 0.4rem 0.5rem;
+        justify-content: flex-end;
         gap: 0.25rem;
-        margin-right: 0.5rem;
+        z-index: 10;
     }
 
     .modal-share-btn .share-label {
@@ -996,8 +1007,7 @@ body {
     }
 
     .modal-header {
-        padding: 1.25rem 1rem 0;
-        padding-right: 5.5rem;
+        padding: 1rem 1rem 0;
         align-items: flex-start;
     }
 
@@ -1023,6 +1033,11 @@ body {
 
     .modal-body {
         padding: 0.75rem 1rem 1.5rem;
+    }
+
+    .modal-section p {
+        font-size: 0.85rem;
+        line-height: 1.58;
     }
 
     .modal-official {
@@ -1058,6 +1073,22 @@ body {
 
     .modal-rankings {
         padding: 1rem 1rem 1.5rem;
+    }
+
+    /* Go Deeper: cap each link row to one line */
+    .go-deeper-list li {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Modal footer: tighten separator dots so row fits on one line */
+    .csv-sep {
+        margin: 0 0.2rem;
+    }
+
+    .modal-source {
+        font-size: 0.72rem;
     }
 }
 

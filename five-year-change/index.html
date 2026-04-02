@@ -162,25 +162,29 @@
 
         /* Mobile */
         @media (max-width: 700px) {
-            .fyc-scorecard { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            /* Policy area overview: drop stars + national-rank cols, show Area + Trend only */
+            .fyc-scorecard { overflow-x: visible; }
             .fyc-scorecard-header,
-            .fyc-scorecard-row { min-width: 520px; }
+            .fyc-scorecard-row { min-width: 0; grid-template-columns: 1fr auto; }
+            .fyc-scorecard-hdr-stars, .sc-stars,
+            .fyc-scorecard-hdr-standing, .fyc-scorecard-standing-text { display: none; }
             .fyc-header { padding: 1.5rem 1rem 0; }
             .fyc-header h1 { font-size: 1.25rem; }
             .fyc-container { padding: 1.25rem 1rem 2rem; }
             .fyc-chips { flex-wrap: wrap; gap: 0.4rem; }
-            .fyc-chip { flex: 1 1 calc(50% - 0.2rem); max-width: none; padding: 0.6rem 0.5rem; }
-            .fyc-chip-count { font-size: 1.25rem; }
-            .fyc-chip-label { font-size: 0.6rem; }
+            .fyc-chip { flex: 1 1 calc(50% - 0.2rem); max-width: none; padding: 0.5rem 0.4rem; }
+            .fyc-chip-count { font-size: 1.1rem; }
+            .fyc-chip-label { font-size: 0.58rem; }
             .fyc-metric-name { font-size: 0.82rem; }
             .fyc-line2 { font-size: 0.78rem; }
             .fyc-line3 { font-size: 0.75rem; }
             .fyc-line4 { font-size: 0.68rem; }
+            /* Ranking table: hide category column; ellipsis on metric name */
             .fyc-rank-header, .fyc-rank-item { gap: 0.4rem; }
-            .fyc-rank-num { font-size: 0.68rem; width: 80px; }
-            .fyc-rank-hdr-cat, .fyc-rank-cat { width: 90px; }
-            .fyc-rank-name { font-size: 0.73rem; }
-            .fyc-rank-move { font-size: 0.63rem; width: 80px; min-width: 40px; }
+            .fyc-rank-num { font-size: 0.68rem; width: 86px; }
+            .fyc-rank-hdr-cat, .fyc-rank-cat { display: none; }
+            .fyc-rank-name { font-size: 0.73rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .fyc-rank-move { font-size: 0.68rem; width: 52px; min-width: 52px; text-align: right; }
             .fyc-print-btn { top: auto; bottom: 1rem; right: 1rem; }
         }
     </style>
