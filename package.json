@@ -10,6 +10,7 @@
   "license": "SEE LICENSE IN DOCUMENTATION.md",
   "private": true,
   "scripts": {
+    "build": "bash build.sh",
     "validate": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict",
     "recompute": "node scripts/recompute-data.js",
