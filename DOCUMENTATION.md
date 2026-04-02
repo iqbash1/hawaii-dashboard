@@ -192,9 +192,9 @@ Each metric follows this structure:
   area: "Category name",
   areaIcon: "emoji",
   metric: "Full metric name",
-  officialName: "Official Federal Name (optional)",
+  officialName: "Full official federal metric name - shown as a definition bar below the chart in the modal (required; all 26 metrics have this)",
   unit: "%" | "$" | "per 100K" | "per 10K" | "per 1,000" | "¢/kWh" | "×" | "Index (2017=100)" | "score",
-  unitLabel: "Human-readable unit description shown on cards and in modal header (e.g. '% of eligible voters who cast a ballot')",
+  unitLabel: "Human-readable unit description (5-15 words) - shown on cards as the unit suffix and in the modal header below the title (e.g. '% of eligible voters who cast a ballot')",
   goodDirection: "up" | "down",
   source: "Federal agency name",
   sourceUrl: "https://...",
@@ -476,6 +476,10 @@ Chart rendering utilities.
 
 Every push to `main` auto-deploys within ~30 seconds.
 
+### Cache Busting
+
+All CSS and JS asset references in `index.html`, `five-year-change/index.html`, and `about/index.html` include a `?v=YYYYMMDD` query string (e.g. `css/styles.css?v=20260401`). This forces browsers to re-fetch the file after any significant change rather than serving a stale cached copy. When making changes to `styles.css`, `app.js`, `data.js`, `charts.js`, `state-data.js`, or `county-data.js`, bump the `?v=` date in all three HTML files to match the deployment date.
+
 ### Footer Timestamp
 
 The footer shows "Data last updated: [date + time] HST". This is updated automatically on every push to `main` by `.github/workflows/timestamp.yml`. The workflow writes the current Hawaii time into `index.html` and commits with `[skip ci]` to prevent a loop.
@@ -503,7 +507,7 @@ The footer shows "Data last updated: [date + time] HST". This is updated automat
 
 ### Adding a new metric
 
-1. Add the metric object to `DASHBOARD_DATA` in `js/data.js` - include a `unitLabel` field (5-15 words describing what the number measures, e.g. `"% of eligible voters who cast a ballot"`)
+1. Add the metric object to `DASHBOARD_DATA` in `js/data.js` - include both `officialName` (full federal metric name, shown below the chart) and `unitLabel` (5-15 words describing what the number measures, shown on cards and in the modal header, e.g. `"% of eligible voters who cast a ballot"`)
 2. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `js/app.js`
 3. Add per-state data to `js/state-data.js`
 4. Add a validation rule entry to `METRIC_RULES` in `scripts/validate-data.js`
