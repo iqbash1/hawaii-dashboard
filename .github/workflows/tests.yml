@@ -87,73 +87,17 @@ jobs:
           path: tests/playwright-report/
           retention-days: 7
 
-  # Runs ~5 minutes after deploy to catch CDN/CF deployment failures
-  # Only runs on pushes to main (not PRs, since the live site is not affected by PRs)
+  # Polls for deployment then runs full live site verification.
+  # Only runs on pushes to main (not PRs).
   prod-canary:
-    name: Production canary (live site)
+    name: Live site verification
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: smoke
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-      - name: Wait for Cloudflare deployment to propagate
-        run: sleep 300
+      - uses: actions/checkout@v4
 
-      - name: Check live site deployment is current
-        run: |
-          set -e
-          echo "Checking https://hawaiidashboard.org/ ..."
-
-          # Fetch the homepage
-          body=$(curl -fsSL --max-time 15 "https://hawaiidashboard.org/")
-
-          # Must include exactly 26 data-metric attributes (not 27 - catches stale deployments
-          # where a removed metric is still live, or a new metric was added but not configured)
-          count=$(echo "$body" | grep -o 'data-metric="' | wc -l | tr -d ' ')
-          echo "data-metric count: $count"
-          if [ "$count" -ne 26 ]; then
-            echo "FAIL: expected exactly 26 data-metric attributes, got $count"
-            echo "This likely means the deployment is stale or app.js threw an error."
-            exit 1
-          fi
-
-          # Homepage must contain cache-busting ?v= query strings on assets
-          # (absence means the deployment is serving a stale index.html)
-          if ! echo "$body" | grep -q '\.js?v='; then
-            echo "FAIL: live index.html is missing ?v= cache-busting strings on JS assets"
-            echo "This means a stale index.html is being served - check Cloudflare Pages deployment."
-            exit 1
-          fi
-
-          # Fetch live app.js (resolving the versioned URL from the page source)
-          app_js_url=$(echo "$body" | grep -o 'js/app\.js[^"]*' | head -1)
-          js=$(curl -fsSL --max-time 15 "https://hawaiidashboard.org/${app_js_url}")
-
-          # app.js must NOT contain pension_funded_ratio (regression guard - metric was removed)
-          if echo "$js" | grep -q 'pension_funded_ratio'; then
-            echo "FAIL: live app.js still contains pension_funded_ratio (removed metric)"
-            echo "This means a stale app.js is being served - check Cloudflare Pages deployment."
-            exit 1
-          fi
-
-          # app.js must contain modal-official-name (regression guard - added for officialName display)
-          if ! echo "$js" | grep -q 'modal-official-name'; then
-            echo "FAIL: live app.js is missing modal-official-name (stale deployment)"
-            exit 1
-          fi
-
-          # Must NOT contain bare keyEnd( -- regression guard
-          if echo "$js" | grep -qP '(?<!this\.)keyEnd\('; then
-            echo "FAIL: live app.js contains bare keyEnd() calls (regression)"
-            exit 1
-          fi
-
-          # Check Cache-Control headers on JS assets (should be no-store per _headers)
-          cc=$(curl -fsS --max-time 10 -I "https://hawaiidashboard.org/js/app.js" | grep -i 'cache-control' || true)
-          echo "app.js Cache-Control: $cc"
-          if ! echo "$cc" | grep -qi 'no-store'; then
-            echo "WARN: app.js Cache-Control does not include no-store - _headers may not be applied"
-          fi
-
-          echo "PASS: live site deployment is current and healthy"
+      - name: Verify live site (poll for deploy + full integrity checks)
+        run: bash scripts/verify-live-site.sh
