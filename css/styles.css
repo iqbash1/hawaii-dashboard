@@ -469,6 +469,12 @@ body {
     overflow-wrap: break-word;
 }
 
+.modal-unit-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
 .modal-area {
     font-size: 0.8rem;
     font-weight: 600;

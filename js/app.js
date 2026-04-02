@@ -337,8 +337,8 @@ const App = {
                 const latest = this.getLatestValue(effective.hawaii);
                 const latestAvg = this.getLatestValue(effective.otherStateAvg);
                 const isDecimal = ChartUtils.isDecimalPctMetric(effective);
-                const unitSuffix = ['per 100K', 'per 10K', 'per 1,000'].includes(effective.unit)
-                    ? `<span class="card-unit">${effective.unit}</span>`
+                const unitSuffix = effective.unitLabel
+                    ? `<span class="card-unit">${effective.unitLabel}</span>`
                     : '';
 
                 card.innerHTML = `
@@ -481,6 +481,7 @@ const App = {
         // Set modal content (text from original metricData)
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
+        document.getElementById('modal-unit-label').textContent = metricData.unitLabel || '';
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         // Vintage line: data years and update cadence
         const hiYears = Object.keys(effective.hawaii).sort();
