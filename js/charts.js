@@ -1244,7 +1244,7 @@ const ChartUtils = {
                 // Draw solid comparison line first (behind Hawaii)
                 if (compState && compState !== hiKey) {
                     const ranks = getCompRanks(compState);
-                    drawRankLine(c, xScale, yScale, ranks, '#555', 2.5, false, 3);
+                    drawRankLine(c, xScale, yScale, ranks, 'rgba(130, 135, 142, 0.55)', 1.8, false, 2.5);
                 }
 
                 // Draw ghost preview for hovered state (dashed, transparent)
