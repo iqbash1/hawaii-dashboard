@@ -123,8 +123,8 @@
         .fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
         .fyc-rank-breakdown-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
         .fyc-rank-header { display: flex; align-items: center; gap: 0.65rem; padding: 0.28rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
-        .fyc-rank-hdr-rank { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); min-width: 52px; text-align: right; flex-shrink: 0; }
-        .fyc-rank-hdr-name { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; }
+        .fyc-rank-hdr-rank { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 100px; flex-shrink: 0; text-align: left; }
+        .fyc-rank-hdr-name { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; text-align: left; }
         .fyc-rank-hdr-cat  { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; flex-shrink: 0; }
         .fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 120px; text-align: right; flex-shrink: 0; }
         .fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; }
@@ -135,9 +135,9 @@
         .fyc-rank-item { display: flex; align-items: center; gap: 0.65rem; padding: 0.32rem 1rem; text-decoration: none; border-bottom: 1px solid #f5f6f8; transition: background 0.12s; }
         .fyc-rank-item:last-child { border-bottom: none; }
         .fyc-rank-item:hover { background: #f7f9fa; }
-        .fyc-rank-num { font-size: 0.72rem; font-weight: 700; min-width: 52px; text-align: right; flex-shrink: 0; }
+        .fyc-rank-num { font-size: 0.72rem; font-weight: 700; width: 100px; flex-shrink: 0; text-align: left; }
         .fyc-rank-year { font-weight: 400; font-size: 0.66rem; color: var(--text-muted); }
-        .fyc-rank-name { font-size: 0.78rem; color: var(--text); flex: 1; }
+        .fyc-rank-name { font-size: 0.78rem; color: var(--text); flex: 1; text-align: left; }
         .fyc-rank-cat { font-size: 0.68rem; color: var(--text-muted); width: 130px; flex-shrink: 0; }
         /* 3-tier rank colors: green / grey / red */
         .fyc-rank-item.rank-good   .fyc-rank-num { color: var(--positive); }
@@ -177,7 +177,7 @@
             .fyc-line3 { font-size: 0.75rem; }
             .fyc-line4 { font-size: 0.68rem; }
             .fyc-rank-header, .fyc-rank-item { gap: 0.4rem; }
-            .fyc-rank-num { font-size: 0.68rem; min-width: 26px; }
+            .fyc-rank-num { font-size: 0.68rem; width: 80px; }
             .fyc-rank-hdr-cat, .fyc-rank-cat { width: 90px; }
             .fyc-rank-name { font-size: 0.73rem; }
             .fyc-rank-move { font-size: 0.63rem; width: 80px; min-width: 40px; }
