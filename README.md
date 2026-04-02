@@ -10,13 +10,18 @@ Static site hosted on Cloudflare Pages. No backend, no database, no build step f
 
 ```
 index.html              Main page (single-page app)
-css/styles.css          All styles
+css/
+  styles.css            All shared styles
+  fyc.css               Five-year-change page styles
+  about.css             About page styles
 js/
   app.js                Application logic (routing, modal, cards, data export)
   charts.js             Chart.js rendering (sparklines, detail, rankings, county)
+  utils.js              Shared pure functions (narrative, ranking helpers, county HTML)
   data.js               Metric definitions + Hawaiʻi/other-state-avg time series
-  state-data.js          Per-state data for all 50 states (used for rankings)
-  county-data.js         Per-county data for Honolulu, Hawaiʻi, Maui, Kauai
+  state-data.js         Per-state data for all 50 states (used for rankings)
+  county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauai
+five-year-change/       5-year summary page (uses utils.js)
 about/index.html        About page (metric registry, comparator rules)
 t/{slug}/index.html     Detail view redirect pages (with OG tags)
 r/{slug}/index.html     Rankings view redirect pages (with OG tags)
@@ -24,6 +29,11 @@ c/{slug}/index.html     County view redirect pages (with OG tags)
 rh/{slug}/index.html         Rank history redirect pages (with OG tags)
 rh/{slug}/{code}/index.html  Rank history comparison redirect pages (49 per metric)
 assets/og/                   Open Graph preview images (1200x630)
+tests/
+  utils.test.js         Unit tests for utils.js (Node.js built-in test runner)
+  smoke.spec.js         End-to-end smoke tests (Playwright)
+scripts/
+  verify-live-site.sh   Post-deploy verification (50 checks, run with --no-wait)
 ```
 
 ## Data pipeline
@@ -80,6 +90,30 @@ python3 -m http.server 8080
 ```
 
 Open `http://localhost:8080` in a browser.
+
+## Testing
+
+Unit tests (no dependencies, Node 18+):
+
+```bash
+cd tests
+node --test utils.test.js
+```
+
+End-to-end smoke tests (Playwright):
+
+```bash
+cd tests
+npm install
+npx playwright install chromium  # first time only
+npm test
+```
+
+Post-deploy verification against the live site:
+
+```bash
+bash scripts/verify-live-site.sh --no-wait
+```
 
 ## Style rules
 

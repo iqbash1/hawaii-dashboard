@@ -1,7 +1,10 @@
 dist/
 node_modules/
 tests/node_modules/
+tests/playwright-report/
 .DS_Store
 *.log
 .claude/
 .wrangler/
+__pycache__/
+scripts/__pycache__/
