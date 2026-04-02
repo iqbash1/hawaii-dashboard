@@ -3,10 +3,11 @@
 Generate per-metric Open Graph images and redirect pages.
 
 For each metric, creates:
-  - /assets/og/{slug}.png             (trend OG image)
-  - /assets/og/{slug}_rankings.png    (rankings OG image with bar chart)
-  - /t/{slug}/index.html              (trend redirect page)
-  - /r/{slug}/index.html              (rankings redirect page)
+  - /assets/og/{slug}.png                     (trend OG image)
+  - /assets/og/{slug}_rankings.png            (rankings OG image with bar chart)
+  - /t/{slug}/index.html                      (trend redirect page)
+  - /r/{slug}/index.html                      (rankings redirect page)
+  - /rh/{slug}/{state-slug}/index.html        (rank-history comparison redirect pages)
 
 Run from the repo root:
   python3 scripts/generate-og-pages.py
@@ -15,6 +16,7 @@ Run from the repo root:
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 
@@ -28,6 +30,28 @@ REDIRECT_DIR_R  = os.path.join(BASE_DIR, 'r')    # /r/{slug}/  rankings pages
 REDIRECT_DIR_C  = os.path.join(BASE_DIR, 'c')    # /c/{slug}/  county pages
 REDIRECT_DIR_RH = os.path.join(BASE_DIR, 'rh')   # /rh/{slug}/ rank-history pages
 SITE_URL = 'https://hawaiidashboard.org'
+
+# ── 49 comparison states (all US states except Hawaiʻi) ──────────
+COMPARISON_STATES = [
+    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+    'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Idaho', 'Illinois',
+    'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
+    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
+    'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico',
+    'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon',
+    'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
+    'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+    'Wisconsin', 'Wyoming',
+]
+
+
+def state_to_slug(name):
+    """Convert a state name to a URL-safe slug matching app.js stateToSlug()."""
+    s = name.lower()
+    s = s.replace('\u02BB', '')  # remove okina
+    s = re.sub(r'[^a-z0-9]+', '-', s)
+    s = s.strip('-')
+    return s
 
 # ── Colors (matching dashboard CSS variables) ─────────────────────
 BG         = (245, 245, 245)    # #F5F5F5  --bg  page background
@@ -831,6 +855,60 @@ def generate_rank_history_og_image(slug, metric, area, rank_history, output_path
     im.save(output_path, 'PNG', optimize=True)
 
 
+# ── Rank History Comparison Redirect Pages ───────────────────────
+def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, output_path):
+    """Generate /rh/{slug}/{state-slug}/index.html for a Hawaiʻi-vs-state comparison."""
+    metric_name = metric.get('metric', slug)
+    state_slug = state_to_slug(compare_state)
+    page_url = f"{SITE_URL}/rh/{slug}/{state_slug}/"
+    redirect_hash = f"#{slug}/rank-history/{state_slug}"
+    image_url = f"{SITE_URL}/assets/og/{slug}_rank_history.png"
+
+    title = f"Hawai\u02BBi vs {compare_state}: {metric_name} Rank History | Hawai\u02BBi Dashboard"
+
+    if rank_history and rank_history.get('hi_rank_latest'):
+        hi_rank = rank_history['hi_rank_latest']
+        total = rank_history['total']
+        yr = str(rank_history['latest_year'])
+        description = (
+            f"Rank history for {metric_name}: Hawai\u02BBi (#{ hi_rank} of {total}) "
+            f"compared with {compare_state} ({yr})."
+        )
+    else:
+        description = f"Rank history for {metric_name}: Hawai\u02BBi compared with {compare_state}."
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{title}</title>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{page_url}">
+  <meta property="og:title" content="{title}">
+  <meta property="og:description" content="{description}">
+  <meta property="og:image" content="{image_url}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Hawai\u02BBi Dashboard">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{title}">
+  <meta name="twitter:description" content="{description}">
+  <meta name="twitter:image" content="{image_url}">
+  <meta name="description" content="{description}">
+  <link rel="canonical" href="{page_url}">
+  <script>window.location.replace('/{redirect_hash}');</script>
+  <meta http-equiv="refresh" content="0;url={SITE_URL}/{redirect_hash}">
+</head>
+<body>
+  <p>Redirecting to <a href="{SITE_URL}/{redirect_hash}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>
+</body>
+</html>"""
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
 # ── Main ──────────────────────────────────────────────────────────
 def main():
     print("Extracting data from JS files...")
@@ -884,10 +962,16 @@ def main():
             generate_redirect_html(slug, metric, area, rankings,
                                    os.path.join(REDIRECT_DIR_RH, slug, 'index.html'),
                                    view='rank-history', rank_history=rh)
+            # Comparison pages -> /rh/{slug}/{state-slug}/
+            for state in COMPARISON_STATES:
+                generate_rh_compare_redirect(
+                    slug, metric, state, rh,
+                    os.path.join(REDIRECT_DIR_RH, slug, state_to_slug(state), 'index.html')
+                )
 
         rank_str = f"#{rankings['hawaiiRank']}/{rankings['total']}" if rankings and rankings['hawaiiRank'] > 0 else "no rank"
         county_str = " +county" if cd else ""
-        rh_str = f" +rh({len(rh['years'])}yr)" if rh else ""
+        rh_str = f" +rh({len(rh['years'])}yr, {len(COMPARISON_STATES)} compare pages)" if rh else ""
         print(f"  {slug}: {rank_str}{county_str}{rh_str}")
 
     print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/  RankHistory: {REDIRECT_DIR_RH}/")

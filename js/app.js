@@ -450,10 +450,30 @@ const App = {
         return boxes;
     },
 
-    openModal(slug, areaName, initialView) {
+    /** Convert a state name to a URL-safe slug (e.g. "New York" → "new-york", "Hawai\u02BBi" → "hawaii") */
+    stateToSlug(name) {
+        return name
+            .toLowerCase()
+            .replace(/\u02BB/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+    },
+
+    /** Reverse lookup: find the full state name from a URL slug */
+    slugToState(slug) {
+        for (const name of Object.keys(STATE_ABBREVS)) {
+            if (this.stateToSlug(name) === slug) return name;
+        }
+        return null;
+    },
+
+    openModal(slug, areaName, initialView, initialCompare) {
         const overlay = document.getElementById('modal-overlay');
         const metricData = DASHBOARD_DATA[slug];
         if (!metricData) return;
+
+        // Store any initial rank-history comparison state for showRankHistory to consume
+        this._pendingRhCompare = initialCompare || null;
 
         // Use effective data (trimmed to rankings year) for chart/stats
         const effective = this.getEffectiveData(slug);
@@ -1594,6 +1614,10 @@ const App = {
         document.getElementById('rank-history-rank').textContent =
             rankHistory.hiRank ? `Hawai\u02BBi: #${rankHistory.hiRank} of ${rankHistory.total} (${rankHistory.years[rankHistory.years.length - 1]})` : '';
 
+        // Consume any pending initial comparison state (set by openModal from URL routing)
+        const pendingCompare = this._pendingRhCompare || null;
+        this._pendingRhCompare = null;
+
         // Reset comparison UI
         document.getElementById('rank-history-compare').style.display = 'none';
         const benchHint = document.getElementById('rank-history-hint');
@@ -1609,23 +1633,33 @@ const App = {
 
         const rankGovBoxes = this.getGovernorBoxes(rankHistory.years.map(String));
 
+        // onCompare callback: updates the comparison banner UI and URL
+        const onCompareFn = (stateName) => {
+            const el = document.getElementById('rank-history-compare');
+            const nameEl = document.getElementById('rank-history-compare-name');
+            const hintEl = document.getElementById('rank-history-hint');
+            if (stateName) {
+                nameEl.textContent = stateName;
+                el.style.display = '';
+                if (hintEl) hintEl.style.display = 'none';
+                history.replaceState(null, '', '/rh/' + slug + '/' + this.stateToSlug(stateName) + '/');
+            } else {
+                el.style.display = 'none';
+                if (hintEl) hintEl.style.display = '';
+                history.replaceState(null, '', '/rh/' + slug + '/');
+            }
+        };
+
         this.rankHistoryChart = ChartUtils.createRankHistoryChart(
             canvas, rankHistory, metricData, rankGovBoxes,
-            // onCompare callback
-            (stateName) => {
-                const el = document.getElementById('rank-history-compare');
-                const nameEl = document.getElementById('rank-history-compare-name');
-                const hintEl = document.getElementById('rank-history-hint');
-                if (stateName) {
-                    nameEl.textContent = stateName;
-                    el.style.display = '';
-                    if (hintEl) hintEl.style.display = 'none';
-                } else {
-                    el.style.display = 'none';
-                    if (hintEl) hintEl.style.display = '';
-                }
-            }
+            onCompareFn,
+            pendingCompare
         );
+
+        // If a comparison was pre-set from the URL, update the UI to reflect it
+        if (pendingCompare) {
+            onCompareFn(pendingCompare);
+        }
 
         // Wire clear button
         const clearBtn = document.getElementById('rank-history-clear');
@@ -1637,6 +1671,7 @@ const App = {
             document.getElementById('rank-history-compare').style.display = 'none';
             const hintEl = document.getElementById('rank-history-hint');
             if (hintEl) hintEl.style.display = '';
+            history.replaceState(null, '', '/rh/' + slug + '/');
         };
 
         // Render policy narrative if available for this metric
@@ -1841,11 +1876,14 @@ const App = {
         let slug = '';
         let view = '';
 
-        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county), /rh/{slug}/ (rank-history)
+        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county),
+        // /rh/{slug}/ (rank-history), /rh/{slug}/{state-slug}/ (rank-history with comparison)
         const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
         const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
         const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/?$/);
+        const rankHistoryCompareMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([^/]+)\/?$/);
         const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/?$/);
+        let compareSlug = '';
         if (detailMatch) {
             slug = detailMatch[1];
         } else if (rankMatch) {
@@ -1854,18 +1892,23 @@ const App = {
         } else if (countyMatch) {
             slug = countyMatch[1];
             view = 'county';
+        } else if (rankHistoryCompareMatch) {
+            slug = rankHistoryCompareMatch[1];
+            view = 'rank-history';
+            compareSlug = rankHistoryCompareMatch[2];
         } else if (rankHistoryMatch) {
             slug = rankHistoryMatch[1];
             view = 'rank-history';
         }
 
-        // Fall back to legacy hash route: #{slug} or #{slug}/rankings
+        // Fall back to legacy hash route: #{slug} or #{slug}/rankings or #{slug}/rank-history/{state-slug}
         if (!slug) {
             const hash = window.location.hash.slice(1);
             if (!hash) return;
             const parts = hash.split('/');
             slug = parts[0];
             view = parts[1] || '';
+            if (view === 'rank-history' && parts[2]) compareSlug = parts[2];
         }
 
         if (slug && !DASHBOARD_DATA[slug]) {
@@ -1883,7 +1926,8 @@ const App = {
         }
 
         const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;
-        this.openModal(slug, areaName, initialView);
+        const initialCompare = compareSlug ? this.slugToState(compareSlug) : undefined;
+        this.openModal(slug, areaName, initialView, initialCompare);
     },
 };
 

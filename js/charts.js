@@ -1021,7 +1021,7 @@ const ChartUtils = {
     // Rank History Chart - line chart showing Hawaii's rank over time
     // with interactive state comparison
     // ============================================================
-    createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare) {
+    createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare, initialCompare) {
         const ctx = canvas.getContext('2d');
         const existingChart = Chart.getChart(canvas);
         if (existingChart) existingChart.destroy();
@@ -1036,8 +1036,8 @@ const ChartUtils = {
         const yBoundsMin = 0.5;
         const yBoundsMax = totalStates;
 
-        // State currently being compared
-        let compState = null;
+        // State currently being compared (may be pre-set from URL)
+        let compState = (initialCompare && stateRanks[initialCompare]) ? initialCompare : null;
         // State being hovered on right side
         let hoverState = null;
 
