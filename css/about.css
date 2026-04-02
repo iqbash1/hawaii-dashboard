@@ -29,7 +29,11 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .gov-table td { padding: 0.3rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); vertical-align: top; }
 .gov-table .party-d { color: #2563EB !important; font-weight: 600; }
 .gov-table .party-r { color: #C0392B !important; font-weight: 600; }
-.gov-table .gov-notes { font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; }
+.gov-table .gov-notes { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+.gov-notes strong { color: var(--text); font-weight: 600; }
+.gov-notes .rk-good { color: var(--positive); font-weight: 700; }
+.gov-notes .rk-mid  { color: var(--neutral);  font-weight: 700; }
+.gov-notes .rk-bad  { color: var(--negative); font-weight: 700; }
 
 .update-list { list-style: disc; padding-left: 1.25rem; }
 .update-list li { padding: 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); }
