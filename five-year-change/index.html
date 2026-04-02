@@ -913,8 +913,9 @@
                 } else if (move <= -RANK_SHIFT) {
                     return `<span class="fyc-rank-move move-down">\u2193${Math.abs(move)}</span>`;
                 }
-                const label = move === 0 ? 'FLAT' : (move > 0 ? `+${move}` : `${move}`);
-                return `<span class="fyc-rank-move move-stable">${label}</span>`;
+                if (move === 0) return `<span class="fyc-rank-move move-stable">FLAT</span>`;
+                if (move > 0) return `<span class="fyc-rank-move move-up">\u2191${move}</span>`;
+                return `<span class="fyc-rank-move move-down">\u2193${Math.abs(move)}</span>`;
             }
 
             const CAT_SHORT = {
