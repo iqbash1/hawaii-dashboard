@@ -120,13 +120,17 @@ for asset_path in "js/app.js" "css/styles.css"; do
     fi
 done
 
-cc_html=$(curl -fsI --max-time 10 "${BASE}/" 2>/dev/null \
-    | grep -i 'cache-control' | head -1 || true)
-if echo "$cc_html" | grep -qi 'no-store'; then
-    ok "index.html has Cache-Control: no-store"
-else
-    warn "index.html Cache-Control does not include no-store (got: ${cc_html:-none})"
-fi
+# Verify no-store on all HTML pages (directory-style URLs are covered by /* in _headers)
+for page_url in "" "five-year-change/" "about/"; do
+    page_label="${page_url:-index.html}"
+    cc_page=$(curl -fsI --max-time 10 "${BASE}/${page_url}" 2>/dev/null \
+        | grep -i 'cache-control' | head -1 || true)
+    if echo "$cc_page" | grep -qi 'no-store'; then
+        ok "${page_label} has Cache-Control: no-store"
+    else
+        warn "${page_label} Cache-Control does not include no-store (got: ${cc_page:-none})"
+    fi
+done
 
 # Version strings present in HTML (cache-busting active)
 if echo "$html" | grep -q '\.js?v='; then
@@ -239,6 +243,17 @@ if echo "$about_html" | grep -q '26 metric'; then
 else
     warn "/about/ does not mention '26 metric' - may need update"
 fi
+
+# Verify HTTP 200 for all primary pages
+for page in "/" "/five-year-change/" "/about/"; do
+    page_status=$(curl -fs --max-time 10 -o /dev/null -w "%{http_code}" \
+        "${BASE}${page}" 2>/dev/null || echo "000")
+    if [ "$page_status" = "200" ]; then
+        ok "${page} returns HTTP 200"
+    else
+        fail "${page} returned HTTP ${page_status} (expected 200)"
+    fi
+done
 
 # Spot-check a redirect page
 redirect_status=$(curl -fsL --max-time 10 -o /dev/null -w "%{http_code}" \

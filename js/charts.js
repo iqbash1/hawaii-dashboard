@@ -28,6 +28,14 @@ const ChartUtils = {
     // Standardized dash patterns
     DASH_AVG: [6, 4],
     DASH_STATE_REF: [8, 4],
+    // Rank history comparison line visual parameters
+    COMP_LINE_COLOR: 'rgba(130, 135, 142, 0.55)',  // solid line for pinned comparison state
+    COMP_LINE_WIDTH: 1.8,
+    COMP_DOT_RADIUS: 2.5,
+    HOVER_LINE_COLOR: 'rgba(160, 165, 173, 0.40)', // dashed ghost line for hovered state
+    HOVER_LINE_WIDTH: 2,
+    HOVER_DOT_RADIUS: 0,
+    COMP_LABEL_COLOR: '#555',
 
     /** Linear interpolation, rounded to integer */
     lerp(a, b, t) { return Math.round(a + (b - a) * t); },
@@ -1185,10 +1193,10 @@ const ChartUtils = {
                     const isHover = (entry.state === hoverState);
 
                     if (isHI) {
-                        c.fillStyle = '#0D7C8F';
+                        c.fillStyle = ChartUtils.HAWAII_BLUE;
                         c.font = '700 10px Inter';
                     } else if (isComp) {
-                        c.fillStyle = '#555';
+                        c.fillStyle = ChartUtils.COMP_LABEL_COLOR;
                         c.font = '700 10px Inter';
                     } else if (isHover) {
                         c.fillStyle = '#777';
@@ -1244,13 +1252,13 @@ const ChartUtils = {
                 // Draw solid comparison line first (behind Hawaii)
                 if (compState && compState !== hiKey) {
                     const ranks = getCompRanks(compState);
-                    drawRankLine(c, xScale, yScale, ranks, 'rgba(130, 135, 142, 0.55)', 1.8, false, 2.5);
+                    drawRankLine(c, xScale, yScale, ranks, ChartUtils.COMP_LINE_COLOR, ChartUtils.COMP_LINE_WIDTH, false, ChartUtils.COMP_DOT_RADIUS);
                 }
 
                 // Draw ghost preview for hovered state (dashed, transparent)
                 if (hoverState && hoverState !== hiKey && hoverState !== compState) {
                     const ranks = getCompRanks(hoverState);
-                    drawRankLine(c, xScale, yScale, ranks, 'rgba(160, 165, 173, 0.4)', 2, true, 0);
+                    drawRankLine(c, xScale, yScale, ranks, ChartUtils.HOVER_LINE_COLOR, ChartUtils.HOVER_LINE_WIDTH, true, ChartUtils.HOVER_DOT_RADIUS);
                 }
             }
         };

@@ -121,9 +121,12 @@ console.log('=== STATE-LEVEL DATA (data.js) ===\n');
 for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
     console.log(`[${slug}]`);
 
-    // Required fields
-    for (const field of ['area', 'metric', 'unit', 'goodDirection', 'source', 'hawaii', 'otherStateAvg', 'officialName', 'unitLabel', 'sourceCategory']) {
-        if (!metric[field]) {
+    // Required fields (use explicit null/undefined check to avoid false positives on numeric 0)
+    const REQUIRED_FIELDS = ['area', 'metric', 'unit', 'goodDirection', 'source',
+                             'hawaii', 'otherStateAvg', 'officialName', 'unitLabel', 'sourceCategory',
+                             'whyItMatters', 'howToRead'];
+    for (const field of REQUIRED_FIELDS) {
+        if (metric[field] == null || metric[field] === '') {
             error(`Missing required field: ${field}`);
         }
     }
@@ -592,6 +595,12 @@ if (STATE_DATA) {
         }
         if (!rhn.summary || typeof rhn.summary !== 'string' || rhn.summary.trim().length === 0) {
             error(`[${slug}] rankHistoryNarrative.summary is missing or empty`);
+        }
+        if (rhn.text == null || rhn.text === '') {
+            error(`[${slug}] rankHistoryNarrative.text is missing or null`);
+        }
+        if (rhn.baseYear == null || typeof rhn.baseYear !== 'number') {
+            error(`[${slug}] rankHistoryNarrative.baseYear is missing or not a number`);
         }
         if (!rhn.mode || !VALID_MODES.includes(rhn.mode)) {
             error(`[${slug}] rankHistoryNarrative.mode must be "protect" or "learn" (got: "${rhn.mode}")`);

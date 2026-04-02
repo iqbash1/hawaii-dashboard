@@ -84,7 +84,9 @@ const App = {
 
     },
 
-    // --- Helpers ---
+    // ----------------------------------------------------------------
+    // Helpers
+    // ----------------------------------------------------------------
 
     /** Cache for computed chart data from STATE_DATA */
     _chartDataCache: {},
@@ -307,8 +309,9 @@ const App = {
         `;
     },
 
-    // --- Card Rendering ---
-
+    // ----------------------------------------------------------------
+    // Card Rendering
+    // ----------------------------------------------------------------
     renderCards() {
         const grid = document.getElementById('dashboard-grid');
         grid.innerHTML = '';
@@ -467,6 +470,9 @@ const App = {
         return null;
     },
 
+    // ----------------------------------------------------------------
+    // Modal
+    // ----------------------------------------------------------------
     openModal(slug, areaName, initialView, initialCompare) {
         const overlay = document.getElementById('modal-overlay');
         const metricData = DASHBOARD_DATA[slug];
@@ -553,27 +559,20 @@ const App = {
             return 'https://hawaiidashboard.org/' + prefix + '/' + slug + '/';
         };
         const copyToClipboard = (text) => {
+            // Fallback: create a temporary textarea to copy via execCommand
+            const execFallback = () => {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;opacity:0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            };
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                return navigator.clipboard.writeText(text).catch(() => {
-                    // Fallback for HTTP or restricted contexts
-                    const ta = document.createElement('textarea');
-                    ta.value = text;
-                    ta.style.position = 'fixed';
-                    ta.style.opacity = '0';
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(ta);
-                });
+                return navigator.clipboard.writeText(text).catch(execFallback);
             }
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.opacity = '0';
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
+            execFallback();
             return Promise.resolve();
         };
         const copyShare = (feedbackEl, resetContent) => {
@@ -859,6 +858,9 @@ const App = {
         }
     },
 
+    // ----------------------------------------------------------------
+    // Export (XLSX / Share / Print)
+    // ----------------------------------------------------------------
     /**
      * Generate and download a multi-tab xlsx for the given metric.
      * Sheet order: Raw Data → Chart Data → Rankings → All Data → County Data (if avail) → Methodology
@@ -1886,6 +1888,9 @@ const App = {
         }
     },
 
+    // ----------------------------------------------------------------
+    // Routing
+    // ----------------------------------------------------------------
     /** Handle permalink routing: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county), or legacy #{slug} */
     handleRoute() {
         let slug = '';
