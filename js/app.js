@@ -71,7 +71,7 @@ const App = {
     ],
 
     init() {
-        // Render cards from embedded data (updated quarterly)
+        // Render cards from embedded data (updated annually)
         this.renderCards();
 
         // Set up modal events

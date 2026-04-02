@@ -5,13 +5,15 @@
  * SELECTIVE: Only recomputes metrics where state-data.js has verified, correct data.
  * Metrics with known data quality issues are kept as-is in data.js.
  *
- * Quality-verified metrics (recompute from state-data):
- *   ba_or_higher_pct, broadband_subscription_pct, renter_cost_burden_pct,
- *   uninsured_rate, home_price_to_income, unemployment_rate, violent_crime_rate,
- *   pcp_per_100k, estabs_entry_rate, net_employer_formation, acgr,
- *   residential_price_cpkwh, unsheltered_homeless_rate, food_insecurity_rate,
- *   real_per_capita_income, renewables_share_gen, road_poor_pct,
- *   voter_participation_rate, net_domestic_migration_rate
+ * Quality-verified metrics (recompute from state-data, all 27):
+ *   violent_crime_rate, property_crime_rate, pcp_per_100k, uninsured_rate,
+ *   suicide_rate, acgr, ba_or_higher_pct, naep_math_8, naep_reading_8,
+ *   unemployment_rate, labor_force_participation, real_per_capita_income,
+ *   renter_cost_burden_pct, home_price_to_income, unsheltered_homeless_rate,
+ *   road_poor_pct, broadband_subscription_pct, residential_price_cpkwh,
+ *   renewables_share_gen, food_insecurity_rate, rainy_day_fund_pct,
+ *   voter_participation_rate, net_domestic_migration_rate, estabs_entry_rate,
+ *   net_employer_formation, labor_productivity, pension_funded_ratio
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
  *   (none - all 27 metrics verified against state-data.js)
