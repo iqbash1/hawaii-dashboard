@@ -210,6 +210,8 @@ Each metric follows this structure:
   crossInsight: "How this metric relates to another metric (optional)",  // shown in .xlsx export
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
   potentialDrivers: "HTML string: research-backed drivers with hyperlinks to sources (optional)",  // shown in modal above policyLevers; rendered via innerHTML (supports <a> links)
+  countyNarrative: "Plain-text county-level breakdown (optional)",        // shown as 'County breakdown' section in consolidated layout; omit when no meaningful county variation exists
+  useConsolidated: true,                                                  // Boolean flag. When true, the modal body switches to the single-scroll consolidated layout (see below). Set on all metrics with potentialDrivers complete.
   policyLevers: "State-level levers for this outcome (optional)",         // shown as a section in modal
   hawaii: { "2012": 253.85, "2013": 232.48, ... },
   otherStateAvg: { "2012": 387.77, "2013": 372.01, ... },
@@ -338,13 +340,18 @@ The skeleton HTML in `index.html` mirrors the real grid exactly (5 area headings
 
 Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend | Rank | Rank history | County-level**
 
+**Two modal body layouts:**
+
+- **Standard layout** (default, `useConsolidated` not set): Narrative is split across tabs. Potential drivers and policy levers appear at the bottom of the Trend tab. The Rank history tab shows the written narrative from `rankHistoryNarrative`.
+- **Consolidated layout** (`useConsolidated: true`): The modal body switches to a single `#modal-consolidated` scrollable div directly below the chart area. All narrative content appears in one uninterrupted scroll using 8 ordered sections (see `_buildConsolidatedNarrative` below). The Rank history tab still shows its chart, but the written narrative is suppressed there (it appears in the consolidated section instead).
+
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. Other State Avg (gray dashed). Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
 3. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
-4. **Why it matters / How to read it / Insight** - context sections
-5. **Potential drivers** (if `potentialDrivers` present) - research-backed HTML section with hyperlinks to source documents, positioned above Main policy levers; rendered via `innerHTML`
-6. **Main policy levers** (if `policyLevers` present) - plain text policy levers section
+4. **Why it matters / How to read it / Insight** - context sections (standard layout only; in consolidated layout these appear in the consolidated section)
+5. **Potential drivers** (if `potentialDrivers` present, standard layout only) - research-backed HTML section with hyperlinks; rendered via `innerHTML`
+6. **Main policy levers** (if `policyLevers` present, standard layout only) - plain text policy levers section
 7. **Source link + Download .xlsx + Share**
 
 **Rank tab:**
@@ -360,7 +367,7 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend 
 2. **Quartile shading** - green for top 25% (ranks 1-12.5), red for bottom 25% (ranks 37.5-50)
 3. **Reference lines** at Top 25%, Median (25.5), Bottom 25%
 4. **State comparison** - click any state abbreviation on the right edge to overlay that state's rank history. A pulsing hint box below the chart explains the interaction. "Comparing with [State]" UI shown when active.
-5. **Written narrative** (below chart) - Hawaii's track record, states to learn from, directions to explore, what to avoid. Sourced from `rankHistoryNarrative` in `data.js`.
+5. **Written narrative** (below chart, standard layout only) - Hawaii's track record, states to learn from, directions to explore, what to avoid. Sourced from `rankHistoryNarrative` in `data.js`. Suppressed for consolidated-layout metrics (the same content moves to the consolidated section).
 6. Deep-linkable via `/rh/{slug}/`
 
 **County-level tab** (shown only for metrics with county data):
@@ -457,6 +464,7 @@ Main application controller.
 | `parseYearLabel(label)` | Extracts the start year from any key format: `"2022"` → 2022, `"2022-2024"` → 2022 |
 | `keyEnd(k)` | Extracts the end year from any key format: `"2022"` → 2022, `"2022-2024"` → 2024 |
 | `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file; includes `potentialDrivers` as stripped plain text if present |
+| `_buildConsolidatedNarrative(m)` | Builds the full-metric HTML for consolidated-layout metrics. Renders 8 sections in order: Why it matters, What the data shows (insight + crossInsight), National standing (rankHistoryNarrative.summary), County breakdown (countyNarrative, if present), Potential drivers, Lessons from other states (benchmarks + caution + explore), Policy levers, Data note. Triggered when `m.useConsolidated === true`. |
 | `_trackEvent(eventName, params)` | Fires a named analytics event to all connected platforms (Clarity `clarity('set'/'event')`, GA4 `dataLayer.push`). Called on every `openModal` with `{ slug, name, area }` |
 
 ### `Utils` (utils.js)
