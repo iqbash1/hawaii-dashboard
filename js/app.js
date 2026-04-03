@@ -105,6 +105,8 @@ const App = {
 
         const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
         const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
+        // DC and Puerto Rico are not states; always excluded from the 49-state average
+        const NON_STATES = new Set(['District of Columbia', 'Puerto Rico']);
 
         // Detect FIPS-keyed vs year-keyed
         const firstKey = Object.keys(sd.data)[0];
@@ -119,6 +121,7 @@ const App = {
             const yearValues = {}; // { year: { hi: val, others: [vals] } }
             Object.values(sd.data).forEach(entry => {
                 const name = entry.name;
+                if (NON_STATES.has(name)) return;
                 Object.entries(entry).forEach(([k, v]) => {
                     if (k === 'name' || v == null) return;
                     if (!yearValues[k]) yearValues[k] = { hi: null, others: [] };
@@ -141,7 +144,7 @@ const App = {
             for (const [year, yearData] of Object.entries(sd.data)) {
                 const otherVals = [];
                 for (const [state, val] of Object.entries(yearData)) {
-                    if (val == null) continue;
+                    if (val == null || NON_STATES.has(state)) continue;
                     if (isHawaii(state)) {
                         hawaii[year] = val;
                     } else {
