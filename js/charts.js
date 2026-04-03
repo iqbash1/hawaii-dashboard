@@ -102,8 +102,8 @@ const ChartUtils = {
         const latestAvg = avgValues.filter(v => v !== null).pop() || 0;
         const avgMid = (Math.abs(latestHI) + Math.abs(latestAvg)) / 2 || 1;
         const gapPct = Math.abs(latestHI - latestAvg) / avgMid;
-        // Map: 0-5% gap -> 0.12, 10% -> 0.17, 25% -> 0.25, 50%+ -> 0.40
-        const fillAlpha = Math.min(0.40, 0.12 + gapPct * 0.55);
+        // Map: 0% gap -> 0.22, 5% -> 0.25, 25% -> 0.37, 50%+ -> 0.50
+        const fillAlpha = Math.min(0.50, 0.22 + gapPct * 0.60);
 
         const goodColor = `rgba(5, 150, 105, ${fillAlpha.toFixed(2)})`;
         const badColor = `rgba(192, 57, 43, ${fillAlpha.toFixed(2)})`;
@@ -230,13 +230,13 @@ const ChartUtils = {
             ? nonNullHawaii.reduce((a, b) => a + b, 0) / nonNullHawaii.length : 0;
         const governorPlugin = ChartUtils._buildGovernorPlugin(govBoxes, hiDataAvg);
 
-        // Same gap-scaled fill as sparklines
+        // Gap-scaled fill: 0% gap -> 0.25, 5% -> 0.28, 25% -> 0.41, 50%+ -> 0.55
         const goodDir = data.goodDirection;
         const latestHI = hawaiiValues.filter(v => v !== null).pop() || 0;
         const latestAvgVal = avgValues.filter(v => v !== null).pop() || 0;
         const mid = (Math.abs(latestHI) + Math.abs(latestAvgVal)) / 2 || 1;
         const gap = Math.abs(latestHI - latestAvgVal) / mid;
-        const alpha = Math.min(0.45, 0.12 + gap * 0.55);
+        const alpha = Math.min(0.55, 0.25 + gap * 0.65);
         const detailGood = `rgba(5, 150, 105, ${alpha.toFixed(2)})`;
         const detailBad = `rgba(192, 57, 43, ${alpha.toFixed(2)})`;
 
