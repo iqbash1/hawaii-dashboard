@@ -124,6 +124,6 @@ Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings,
 - No em dashes in code or content
 - Use okina (ʻ) in "Hawaiʻi" (Unicode U+02BB)
 - "Other state average" excludes Hawaiʻi (average of the other 49 states + DC)
-- `potentialDrivers` field uses HTML strings (supports `<a>` links); rendered via `innerHTML`. All other narrative fields use plain text.
-- `countyNarrative` field is plain text; appears as the "County breakdown" section in the consolidated layout. Omit when no meaningful county variation exists for that metric.
+- `potentialDrivers` field uses HTML strings (supports `<a>` links); rendered via `innerHTML`. All other narrative fields use plain text except `countyNarrative`.
+- `countyNarrative` field supports HTML (rendered via template literal in `_buildConsolidatedNarrative`); appears as the "County breakdown" section in the consolidated layout. Omit when no meaningful county variation exists for that metric.
 - `useConsolidated: true` flag switches the modal from split-tab narrative to a single-scroll consolidated layout. Set on all metrics where `potentialDrivers` is complete.

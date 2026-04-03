@@ -210,7 +210,7 @@ Each metric follows this structure:
   crossInsight: "How this metric relates to another metric (optional)",  // shown in .xlsx export
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
   potentialDrivers: "HTML string: research-backed drivers with hyperlinks to sources (optional)",  // shown in modal above policyLevers; rendered via innerHTML (supports <a> links)
-  countyNarrative: "Plain-text county-level breakdown (optional)",        // shown as 'County breakdown' section in consolidated layout; omit when no meaningful county variation exists
+  countyNarrative: "HTML or plain-text county-level breakdown (optional)", // shown as 'County breakdown' section in consolidated layout; rendered via template literal (supports <a> links); omit when no meaningful county variation exists
   useConsolidated: true,                                                  // Boolean flag. When true, the modal body switches to the single-scroll consolidated layout (see below). Set on all metrics with potentialDrivers complete.
   policyLevers: "State-level levers for this outcome (optional)",         // shown as a section in modal
   hawaii: { "2012": 253.85, "2013": 232.48, ... },
