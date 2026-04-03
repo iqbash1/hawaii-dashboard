@@ -542,6 +542,18 @@ const App = {
             dataNoteCont.style.display = 'none';
         }
 
+        // Consolidated narrative vs per-tab narrative
+        const consolidatedEl = document.getElementById('modal-consolidated');
+        const narrativeBodyEl = document.getElementById('modal-narrative-body');
+        if (metricData.countyNarrative) {
+            consolidatedEl.innerHTML = this._buildConsolidatedNarrative(metricData);
+            consolidatedEl.style.display = '';
+            narrativeBodyEl.style.display = 'none';
+        } else {
+            consolidatedEl.style.display = 'none';
+            narrativeBodyEl.style.display = '';
+        }
+
         // Source definition bar - shown just below the chart area
         const officialEl = document.getElementById('modal-official-name');
         if (officialEl) {
@@ -1719,7 +1731,10 @@ const App = {
         // Render policy narrative if available for this metric
         const narrativeEl = document.getElementById('rank-history-narrative');
         const narr = metricData.rankHistoryNarrative;
-        if (narr && narrativeEl) {
+        // Consolidated layout: narrative lives in modal-consolidated, not here
+        if (metricData.countyNarrative) {
+            if (narrativeEl) narrativeEl.style.display = 'none';
+        } else if (narr && narrativeEl) {
             let html = `<div class="rh-narr-section">
                 <h3 class="rh-narr-heading">Hawai\u02BBi\u2019s track record</h3>
                 <p class="rh-narr-text">${narr.summary}</p>
@@ -1973,6 +1988,79 @@ const App = {
         const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;
         const initialCompare = compareSlug ? this.slugToState(compareSlug) : undefined;
         this.openModal(slug, areaName, initialView, initialCompare);
+    },
+
+    // ── Consolidated narrative builder ───────────────────────────────────
+    // Builds the full-metric narrative HTML for metrics with countyNarrative.
+    // Sections follow the reader's natural question arc:
+    // Why care? → What does data show? → National standing → County texture
+    //   → Drivers → Lessons → Action → Caveats
+    _buildConsolidatedNarrative(m) {
+        let h = '';
+
+        // 1. Why it matters
+        h += `<div class="cn-section">
+            <h3 class="cn-heading">Why it matters</h3>
+            <p class="cn-text">${m.whyItMatters}</p>
+        </div>`;
+
+        // 2. What the data shows (insight + crossInsight)
+        const dataText = [m.insight, m.crossInsight].filter(Boolean).join(' ');
+        if (dataText) h += `<div class="cn-section">
+            <h3 class="cn-heading">What the data shows</h3>
+            <p class="cn-text">${dataText}</p>
+        </div>`;
+
+        // 3. National standing (rank history summary)
+        if (m.rankHistoryNarrative && m.rankHistoryNarrative.summary) h += `<div class="cn-section">
+            <h3 class="cn-heading">National standing</h3>
+            <p class="cn-text">${m.rankHistoryNarrative.summary}</p>
+        </div>`;
+
+        // 4. County breakdown
+        if (m.countyNarrative) h += `<div class="cn-section">
+            <h3 class="cn-heading">County breakdown</h3>
+            <p class="cn-text">${m.countyNarrative}</p>
+        </div>`;
+
+        // 5. Potential drivers
+        if (m.potentialDrivers) h += `<div class="cn-section">
+            <h3 class="cn-heading">Potential drivers</h3>
+            <p class="cn-text">${m.potentialDrivers}</p>
+        </div>`;
+
+        // 6. Lessons from other states (benchmarks + caution + explore)
+        const narr = m.rankHistoryNarrative;
+        if (narr && (narr.benchmarks?.length || narr.caution || narr.explore?.length)) {
+            h += `<div class="cn-section"><h3 class="cn-heading">Lessons from other states</h3>`;
+            (narr.benchmarks || []).forEach(b => {
+                const src = b.source ? `<a href="${b.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${b.source.label}</a>` : '';
+                h += `<div class="cn-item"><div class="cn-state cn-state--learn">${b.state}</div><p class="cn-text">${b.text}</p>${src}</div>`;
+            });
+            if (narr.caution) {
+                const src = narr.caution.source ? `<a href="${narr.caution.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${narr.caution.source.label}</a>` : '';
+                h += `<div class="cn-item"><div class="cn-state cn-state--caution">${narr.caution.state}</div><p class="cn-text">${narr.caution.text}</p>${src}</div>`;
+            }
+            if (narr.explore && narr.explore.length) {
+                h += `<div class="cn-item cn-item--explore">`;
+                narr.explore.forEach(pt => { h += `<p class="cn-text">\u2192 ${pt}</p>`; });
+                h += `</div>`;
+            }
+            h += `</div>`;
+        }
+
+        // 7. Policy levers
+        if (m.policyLevers) h += `<div class="cn-section">
+            <h3 class="cn-heading">Policy levers</h3>
+            <p class="cn-text">${m.policyLevers}</p>
+        </div>`;
+
+        // 8. Data note
+        if (m.dataNote) h += `<div class="cn-section cn-data-note">
+            <p class="cn-text">\u26A0 ${m.dataNote}</p>
+        </div>`;
+
+        return h;
     },
 
     // ── Analytics helper ─────────────────────────────────────────────────

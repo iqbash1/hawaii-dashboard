@@ -776,6 +776,72 @@ body {
     text-decoration: underline;
 }
 
+/* --- Consolidated narrative (test: metrics with countyNarrative field) --- */
+.modal-consolidated {
+    padding: 1.25rem 2rem 2rem;
+    border-top: 1px solid var(--border);
+}
+.cn-section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+.cn-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.cn-heading {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+.cn-text {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin: 0 0 0.5rem;
+}
+.cn-text:last-child { margin-bottom: 0; }
+.cn-text a { color: var(--hawaii-blue); text-decoration: none; }
+.cn-text a:hover { text-decoration: underline; }
+.cn-item {
+    margin-bottom: 0.85rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--border);
+}
+.cn-item:last-child { margin-bottom: 0; }
+.cn-item--explore { border-left-color: var(--neutral); }
+.cn-state {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+.cn-state--learn { color: var(--positive); }
+.cn-state--caution { color: var(--negative); }
+.cn-source {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--hawaii-blue);
+    text-decoration: none;
+    margin-top: 0.3rem;
+    opacity: 0.8;
+}
+.cn-source:hover { opacity: 1; text-decoration: underline; }
+.cn-data-note {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+    border-left: 2px solid var(--neutral) !important;
+}
+.cn-data-note .cn-text {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
 /* --- County View --- */
 .modal-county {
     padding: 1rem 1rem 2rem;
