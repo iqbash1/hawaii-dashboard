@@ -35,7 +35,6 @@
         })(window,document,"clarity","script","w5pye8kkrb");
     </script>
     <!-- 3. Cloudflare Web Analytics — replace token value with your beacon token -->
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"PASTE_CF_TOKEN_HERE"}'></script>
     <!-- ──────────────────────────────────────────────────────────────── -->
 
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -95,6 +94,37 @@
 
     <!-- Grid of cards -->
     <main class="dashboard-grid" id="dashboard-grid">
+        <!-- Skeleton mirrors real grid: 5 area headings + 26 metric cards (matches AREA_ORDER) -->
+        <!-- Safety & Health (5) -->
+        <div class="area-section-heading" aria-hidden="true"><div class="skel-line" style="width:22%;height:13px;"></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <!-- Housing & Cost of Living (5) -->
+        <div class="area-section-heading" aria-hidden="true"><div class="skel-line" style="width:30%;height:13px;"></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <!-- Economy & Workforce (6) -->
+        <div class="area-section-heading" aria-hidden="true"><div class="skel-line" style="width:26%;height:13px;"></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <!-- Education (4) -->
+        <div class="area-section-heading" aria-hidden="true"><div class="skel-line" style="width:16%;height:13px;"></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
+        <!-- Infrastructure, Resilience & Trust (6) -->
+        <div class="area-section-heading" aria-hidden="true"><div class="skel-line" style="width:38%;height:13px;"></div></div>
         <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
         <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
         <div class="card card-skeleton" aria-hidden="true"><div class="skel-line skel-short"></div><div class="skel-line skel-medium"></div><div class="skel-line skel-large"></div><div class="skel-block"></div><div class="skel-row"><div class="skel-half"></div><div class="skel-half"></div></div></div>
