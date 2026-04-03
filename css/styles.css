@@ -664,6 +664,15 @@ body {
     margin-bottom: 1rem;
 }
 
+.rankings-rank:empty {
+    display: none;
+    margin: 0;
+}
+
+#trend-subtitle {
+    padding: 1rem 2rem 0;
+}
+
 .rankings-chart-wrap {
     position: relative;
     width: 100%;

@@ -509,6 +509,8 @@ const App = {
         const vintageEnd = this.keyEnd(hiYears[hiYears.length - 1]);
         const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}  ·  ${metricData.source}`;
         document.getElementById('modal-vintage').textContent = vintageText;
+        document.getElementById('trend-subtitle').textContent =
+            `Hawai\u02BBi vs. other state average \u00B7 ${vintageStart}\u2013${vintageEnd}`;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
         document.getElementById('modal-trend-section').style.display = 'none';
@@ -1664,8 +1666,7 @@ const App = {
         const yearRange = this.parseYearLabel(String(rankHistory.years[0])) + '-' + this.keyEnd(rankHistory.years[rankHistory.years.length - 1]);
         document.getElementById('rank-history-subtitle').textContent =
             `Rank over time \u00B7 ${yearRange}`;
-        document.getElementById('rank-history-rank').textContent =
-            rankHistory.hiRank ? `Hawai\u02BBi: #${rankHistory.hiRank} of ${rankHistory.total} (${rankHistory.years[rankHistory.years.length - 1]})` : '';
+        document.getElementById('rank-history-rank').textContent = '';
 
         // Consume any pending initial comparison state (set by openModal from URL routing)
         const pendingCompare = this._pendingRhCompare || null;
