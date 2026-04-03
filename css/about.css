@@ -40,6 +40,28 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .update-date { font-weight: 600; color: var(--text); }
 .methods-footer-note { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
 
+@media print {
+    .top-nav, .footer { display: none !important; }
+    body { background: white; color: black; font-size: 10.5pt; }
+    .methods-section {
+        break-inside: avoid;
+        border: 1px solid #ccc;
+        box-shadow: none;
+        background: white;
+    }
+    .methods-section h2 { color: black; }
+    .registry-wrap { overflow: visible; }
+    /* Expand source URLs inline for print */
+    .registry-table a::after,
+    .methods-section a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.6rem;
+        color: #555;
+        word-break: break-all;
+    }
+    h2 { page-break-after: avoid; }
+}
+
 @media (max-width: 640px) {
     .methods-section { padding: 1rem; }
     .methods-header h1 { font-size: 1.25rem; }

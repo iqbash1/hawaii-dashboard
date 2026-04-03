@@ -129,8 +129,14 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
     .top-nav, .fyc-print-btn { display: none !important; }
     .fyc-header { padding-top: 0.5rem; }
     body { font-size: 10.5pt; }
-    a { text-decoration: none; color: inherit !important; }
-.fyc-row:hover, .fyc-rank-item:hover, .fyc-scorecard-row:hover { background: none !important; }
+    a { color: inherit !important; }
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.6rem;
+        color: #555;
+        word-break: break-all;
+    }
+    .fyc-row:hover, .fyc-rank-item:hover, .fyc-scorecard-row:hover { background: none !important; }
     .fyc-area { break-inside: avoid; }
     .fyc-row { break-inside: avoid; }
 }
