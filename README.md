@@ -126,4 +126,4 @@ Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings,
 - "Other state average" excludes Hawaiʻi (average of the other 49 states + DC)
 - `potentialDrivers` field uses HTML strings (supports `<a>` links); rendered via `innerHTML`. All other narrative fields use plain text except `countyNarrative`.
 - `countyNarrative` field supports HTML (rendered via template literal in `_buildConsolidatedNarrative`); appears as the "County breakdown" section in the consolidated layout. Omit when no meaningful county variation exists for that metric.
-- `useConsolidated: true` flag switches the modal from split-tab narrative to a single-scroll consolidated layout. Set on all metrics where `potentialDrivers` is complete.
+- `useConsolidated: true` flag switches the modal from split-tab narrative to a single-scroll consolidated layout. Set on all 26 metrics.

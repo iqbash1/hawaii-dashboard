@@ -210,8 +210,8 @@ Each metric follows this structure:
   crossInsight: "How this metric relates to another metric (optional)",  // shown in .xlsx export
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
   potentialDrivers: "HTML string: research-backed drivers with hyperlinks to sources (optional)",  // shown in modal above policyLevers; rendered via innerHTML (supports <a> links)
-  countyNarrative: "HTML or plain-text county-level breakdown (optional)", // shown as 'County breakdown' section in consolidated layout; rendered via template literal (supports <a> links); omit when no meaningful county variation exists
-  useConsolidated: true,                                                  // Boolean flag. When true, the modal body switches to the single-scroll consolidated layout (see below). Set on all metrics with potentialDrivers complete.
+  countyNarrative: "HTML or plain-text county-level breakdown (optional)", // shown as 'County breakdown' section in consolidated layout; rendered via template literal (supports <a> links); omit when the metric has no county-level chart data in county-data.js
+  useConsolidated: true,                                                  // Boolean flag. When true, the modal body switches to the single-scroll consolidated layout (see below). Set on all 26 metrics.
   policyLevers: "State-level levers for this outcome (optional)",         // shown as a section in modal
   hawaii: { "2012": 253.85, "2013": 232.48, ... },
   otherStateAvg: { "2012": 387.77, "2013": 372.01, ... },
@@ -342,8 +342,8 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend 
 
 **Two modal body layouts:**
 
-- **Standard layout** (default, `useConsolidated` not set): Narrative is split across tabs. Potential drivers and policy levers appear at the bottom of the Trend tab. The Rank history tab shows the written narrative from `rankHistoryNarrative`.
-- **Consolidated layout** (`useConsolidated: true`): The modal body switches to a single `#modal-consolidated` scrollable div directly below the chart area. All narrative content appears in one uninterrupted scroll using 8 ordered sections (see `_buildConsolidatedNarrative` below). The Rank history tab still shows its chart, but the written narrative is suppressed there (it appears in the consolidated section instead).
+- **Standard layout** (default, `useConsolidated` not set): Narrative is split across tabs. Potential drivers and policy levers appear at the bottom of the Trend tab. The Rank history tab shows the written narrative from `rankHistoryNarrative`. Not used by any current metric (all 26 use consolidated).
+- **Consolidated layout** (`useConsolidated: true`): The modal body switches to a single `#modal-consolidated` scrollable div directly below the chart area. All narrative content appears in one uninterrupted scroll using 8 ordered sections (see `_buildConsolidatedNarrative` below). The Rank history tab still shows its chart, but the written narrative is suppressed there (it appears in the consolidated section instead). All 26 current metrics use this layout.
 
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. Other State Avg (gray dashed). Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
@@ -546,9 +546,10 @@ The footer shows "Data last updated: [date + time] HST". This is updated automat
 2. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `js/app.js`
 3. Add per-state data to `js/state-data.js`
 4. Add a validation rule entry to `METRIC_RULES` in `scripts/validate-data.js`
-5. If county data is available, add to `js/county-data.js`
-6. Run `python3 scripts/generate-og-pages.py` to generate OG assets
-7. Commit and push
+5. If county data is available, add to `js/county-data.js` and add a `countyNarrative` field to the metric object in `data.js`
+6. Add `potentialDrivers` (HTML string with hyperlinked citations) and set `useConsolidated: true` on the metric object
+7. Run `python3 scripts/generate-og-pages.py` to generate OG assets
+8. Commit and push
 
 ---
 
