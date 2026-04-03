@@ -478,6 +478,9 @@ const App = {
         const metricData = DASHBOARD_DATA[slug];
         if (!metricData) return;
 
+        // Analytics: report which metric was opened
+        this._trackEvent('modal_open', { slug, name: metricData.metric, area: metricData.area || areaName });
+
         // Store any initial rank-history comparison state for showRankHistory to consume
         this._pendingRhCompare = initialCompare || null;
 
@@ -1970,6 +1973,21 @@ const App = {
         const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;
         const initialCompare = compareSlug ? this.slugToState(compareSlug) : undefined;
         this.openModal(slug, areaName, initialView, initialCompare);
+    },
+
+    // ── Analytics helper ─────────────────────────────────────────────────
+    // Fires a named event + params to every connected analytics platform.
+    // Add new platforms here; callers never need to change.
+    _trackEvent(eventName, params) {
+        // Google Analytics 4 / GTM
+        if (window.dataLayer) {
+            window.dataLayer.push({ event: eventName, ...params });
+        }
+        // Microsoft Clarity: tag the session with the metric slug for filtering
+        if (window.clarity) {
+            window.clarity('set', 'metric_slug', params.slug || '');
+            window.clarity('event', eventName);
+        }
     },
 };
 
