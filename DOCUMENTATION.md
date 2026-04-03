@@ -209,6 +209,7 @@ Each metric follows this structure:
   insight: "A surprising detail, notable trend, or deeper context",
   crossInsight: "How this metric relates to another metric (optional)",  // shown in .xlsx export
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
+  potentialDrivers: "HTML string: research-backed drivers with hyperlinks to sources (optional)",  // shown in modal above policyLevers; rendered via innerHTML (supports <a> links)
   policyLevers: "State-level levers for this outcome (optional)",         // shown as a section in modal
   hawaii: { "2012": 253.85, "2013": 232.48, ... },
   otherStateAvg: { "2012": 387.77, "2013": 372.01, ... },
@@ -331,6 +332,8 @@ Each of the 26 metrics gets its own card displaying:
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum). Each card has `id="{slug}"` so direct links (`/#slug`) scroll to the card and open its modal.
 
+The skeleton HTML in `index.html` mirrors the real grid exactly (5 area headings + 26 cards matching `AREA_ORDER`) so the grid height barely changes when `renderCards()` fires, preventing Cumulative Layout Shift (CLS).
+
 ### Detail Modal
 
 Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend | Rank | Rank history | County-level**
@@ -340,7 +343,9 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend 
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
 3. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
 4. **Why it matters / How to read it / Insight** - context sections
-5. **Source link + Download .xlsx + Share**
+5. **Potential drivers** (if `potentialDrivers` present) - research-backed HTML section with hyperlinks to source documents, positioned above Main policy levers; rendered via `innerHTML`
+6. **Main policy levers** (if `policyLevers` present) - plain text policy levers section
+7. **Source link + Download .xlsx + Share**
 
 **Rank tab:**
 1. **Value distribution dot strip** - all 50 states shown as dots above the bar chart
@@ -451,7 +456,8 @@ Main application controller.
 | `buildVsYearHtml(metricData)` | Builds the "prior period vs recent" card badge; handles plain and range year keys |
 | `parseYearLabel(label)` | Extracts the start year from any key format: `"2022"` → 2022, `"2022-2024"` → 2022 |
 | `keyEnd(k)` | Extracts the end year from any key format: `"2022"` → 2022, `"2022-2024"` → 2024 |
-| `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file |
+| `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file; includes `potentialDrivers` as stripped plain text if present |
+| `_trackEvent(eventName, params)` | Fires a named analytics event to all connected platforms (Clarity `clarity('set'/'event')`, GA4 `dataLayer.push`). Called on every `openModal` with `{ slug, name, area }` |
 
 ### `Utils` (utils.js)
 
@@ -535,6 +541,30 @@ The footer shows "Data last updated: [date + time] HST". This is updated automat
 5. If county data is available, add to `js/county-data.js`
 6. Run `python3 scripts/generate-og-pages.py` to generate OG assets
 7. Commit and push
+
+---
+
+## Analytics
+
+Three platforms are active on all pages (`index.html`, `about/index.html`, `five-year-change/index.html`):
+
+| Platform | Purpose | Setup |
+|----------|---------|-------|
+| Cloudflare Web Analytics | Pageviews, Core Web Vitals, traffic sources, country/browser breakdown | Active via Cloudflare dashboard — no beacon tag needed in HTML |
+| Microsoft Clarity | Session recordings, heatmaps, rage-click detection | Project ID `w5pye8kkrb`; script tag in `<head>` of all 3 pages |
+| Google Search Console | Search queries, click-through rates, index coverage | Verified via Cloudflare DNS — no HTML meta tag needed |
+
+### Custom Events
+
+`App._trackEvent(eventName, params)` is a thin wrapper that routes events to every connected platform. It is called automatically inside `openModal()` on every metric click:
+
+```js
+this._trackEvent('modal_open', { slug, name: metricData.metric, area: metricData.area });
+```
+
+To add more events (e.g. tab switches, link clicks), call `this._trackEvent()` with any name and params object — no changes needed at the platform level.
+
+**What this enables in Clarity:** filter session recordings to only sessions where a user opened a specific metric (`metric_slug = property_crime_rate`, etc.), making it easy to see how users engage with any given modal.
 
 ---
 

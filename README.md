@@ -115,8 +115,13 @@ Post-deploy verification against the live site:
 bash scripts/verify-live-site.sh --no-wait
 ```
 
+## Analytics
+
+Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings, project `w5pye8kkrb`), and Google Search Console (search queries, verified via DNS) are active on all pages. `App._trackEvent()` fires a `modal_open` event on every metric click, tagging the slug/name/area to Clarity and GA4 dataLayer.
+
 ## Style rules
 
 - No em dashes in code or content
 - Use okina (ʻ) in "Hawaiʻi" (Unicode U+02BB)
 - "Other state average" excludes Hawaiʻi (average of the other 49 states + DC)
+- `potentialDrivers` field uses HTML strings (supports `<a>` links); rendered via `innerHTML`. All other narrative fields use plain text.
