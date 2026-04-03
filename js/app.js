@@ -855,25 +855,6 @@ const App = {
             this.currentSlug = slug;
             history.replaceState(null, '', '/r/' + slug + '/');
 
-            // Auto-scroll modal so Hawaii's bar is visible in rankings
-            setTimeout(() => {
-                const modal = document.querySelector('.modal');
-                const canvas = document.getElementById('rankings-chart');
-                if (modal && canvas && slug) {
-                    const rankings = this.getStateRankings(slug);
-                    if (rankings) {
-                        const hiIdx = rankings.stateValues.findIndex(s =>
-                            s.state === "Hawai\u02BBi" || s.state === "Hawaii");
-                        if (hiIdx >= 0) {
-                            const canvasRect = canvas.getBoundingClientRect();
-                            const modalRect = modal.getBoundingClientRect();
-                            const pct = hiIdx / rankings.stateValues.length;
-                            const barY = canvasRect.top - modalRect.top + modal.scrollTop + (canvasRect.height * pct);
-                            modal.scrollTop = Math.max(0, barY - (modalRect.height / 2));
-                        }
-                    }
-                }
-            }, 200);
         } else if (tab === 'rank-history') {
             tabRankHistory.classList.add('active');
             tabRankHistory.setAttribute('aria-selected', 'true');
@@ -890,10 +871,8 @@ const App = {
             document.getElementById('modal-detail-view').style.display = '';
             history.replaceState(null, '', '/t/' + slug + '/');
         }
-        // Scroll to top for Detail/County tabs (Rankings handles its own scroll)
-        if (tab !== 'rankings') {
-            document.querySelector('.modal').scrollTop = 0;
-        }
+        // Always reset modal scroll to top on tab switch
+        document.querySelector('.modal').scrollTop = 0;
     },
 
     // ----------------------------------------------------------------
