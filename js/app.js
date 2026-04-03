@@ -512,8 +512,10 @@ const App = {
         const vintageEnd = this.keyEnd(hiYears[hiYears.length - 1]);
         const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}  ·  ${metricData.source}`;
         document.getElementById('modal-vintage').textContent = vintageText;
-        document.getElementById('trend-subtitle').textContent =
-            `Hawai\u02BBi vs. other state average \u00B7 ${vintageStart}\u2013${vintageEnd}`;
+        const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
+        document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
+            ? `Hawai\u02BBi vs. other state average \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${vintageStart}\u2013${vintageEnd}`
+            : `Hawai\u02BBi vs. other state average \u00B7 ${vintageStart}\u2013${vintageEnd}`;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
         document.getElementById('modal-trend-section').style.display = 'none';
@@ -725,7 +727,7 @@ const App = {
             const firstKey = Object.keys(effective.hawaii)[0] || '';
             const isRangeKey = /^\d{4}-\d{4}$/.test(firstKey);
             const smoothingNote = isRangeKey
-                ? 'Each data point is a 3-year average. Trend line is smoothed for readability.'
+                ? 'Each point is a 3-year rolling average; the year range on the x-axis shows the window.'
                 : 'Trend line is smoothed for readability. Dots mark actual data values.';
             const hasSD = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
             if (hasSD) {
