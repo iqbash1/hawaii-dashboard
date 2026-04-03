@@ -412,7 +412,9 @@ const ChartUtils = {
                         ctx.fillRect(b.left, chartArea.top, b.right - b.left, chartArea.bottom - chartArea.top);
                     }
                 });
-                // Vertical governor labels along right edge of each band
+                // Vertical governor labels — only when chart is wide enough to read them
+                const chartWidth = chartArea.right - chartArea.left;
+                if (chartWidth < 420) return;
                 ctx.font = '400 10px "Inter", sans-serif';
                 const chartHeight = chartArea.bottom - chartArea.top;
                 bands.forEach(b => {
