@@ -261,7 +261,7 @@ const App = {
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
-                <div class="comp-label">State avg</div>
+                <div class="comp-label">Other state avg</div>
                 <div class="comp-detail">${avgFormatted}</div>
                 ${rankHtml}
             </div>
