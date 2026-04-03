@@ -499,7 +499,7 @@ Every push to `main` auto-deploys within ~30 seconds.
 
 ### Cache Busting
 
-All CSS and JS asset references in `index.html`, `five-year-change/index.html`, and `about/index.html` include a `?v=YYYYMMDD` query string (e.g. `css/styles.css?v=20260401`). This forces browsers to re-fetch the file after any significant change rather than serving a stale cached copy. When making changes to `styles.css`, `fyc.css`, `about.css`, `app.js`, `data.js`, `charts.js`, `utils.js`, `state-data.js`, or `county-data.js`, bump the `?v=` date in all three HTML files to match the deployment date.
+All CSS and JS asset references in `index.html`, `five-year-change/index.html`, and `about/index.html` include a `?v=YYYYMMDD` query string (e.g. `css/styles.css?v=20260401`). This forces browsers to re-fetch the file after any significant change rather than serving a stale cached copy. When making changes to `styles.css`, `fyc.css`, `about.css`, `app.js`, `data.js`, `charts.js`, `utils.js`, `state-data.js`, or `county-data.js`, bump the `?v=` date in all three HTML files to match the deployment date. **This must be done on every deploy that touches a JS or CSS file** — without it, CDN-cached users will not see the changes. Use `sed -i '' 's/v=YYYYMMDD/v=NEWDATE/g' index.html about/index.html five-year-change/index.html` to update all three files at once.
 
 ### Footer Timestamp
 
