@@ -1402,7 +1402,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Maui County's 2023 short-term rental crackdown, targeting non-hosted vacation rentals in residential areas following the Lahaina fires, converted an estimated several thousand units to long-term availability.",
+        "Maui County's Bill 9 (signed 2025), inspired by the 2023 Lahaina fires, phases out approximately 6,200 Minatoya-listed vacation rentals in apartment-zoned areas by 2029–2031, returning those units to long-term residential availability.",
         "Hawaii's LIHTC allocation is consistently underutilized relative to other states because state environmental review and permitting delays make projects financially unviable before they are built."
       ],
       "caution": {
