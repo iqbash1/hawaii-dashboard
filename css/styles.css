@@ -36,6 +36,8 @@
     --text-muted: #666666;
     --hawaii-blue: #0D7C8F;
     --hawaii-blue-light: #EEF8FA;
+    --hawaii-blue-hover: rgba(13, 124, 143, 0.3);
+    --text-vintage: #9AA8B4;
     --avg-gray: #666666;
     --avg-gray-light: #F3F4F6;
     --positive: #059669;
@@ -504,7 +506,7 @@ body {
 
 .modal-vintage {
     font-size: 0.72rem;
-    color: #9AA8B4;
+    color: var(--text-vintage);
     margin-top: 0.25rem;
     letter-spacing: 0.01em;
 }
@@ -536,7 +538,7 @@ body {
 
 .modal-tab:hover {
     color: var(--text);
-    border-bottom-color: rgba(13, 124, 143, 0.3);
+    border-bottom-color: var(--hawaii-blue-hover);
 }
 
 .modal-tab:focus-visible {
@@ -573,16 +575,16 @@ body {
 }
 
 .modal-section h3 {
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     color: var(--text-muted);
     margin-bottom: 0.4rem;
 }
 
 .modal-section p {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     line-height: 1.65;
     color: var(--text);
 }
@@ -669,7 +671,7 @@ body {
     margin: 0;
 }
 
-#trend-subtitle {
+.trend-subtitle {
     padding: 1rem 2rem 0;
 }
 
@@ -680,7 +682,7 @@ body {
 
 /* --- Rank History View --- */
 .modal-rank-history {
-    padding: 1rem 1rem 1.5rem;
+    padding: 1rem 2rem 1.5rem;
 }
 .rank-history-chart-wrap {
     position: relative;
@@ -735,7 +737,7 @@ body {
 
 /* --- Rank History Narrative --- */
 .rh-narrative {
-    padding: 1.25rem 2rem 1.5rem;
+    padding: 1.25rem 0 1.5rem;
     border-top: 1px solid var(--border);
 }
 .rh-narr-section {
@@ -765,7 +767,7 @@ body {
     margin-bottom: 0.2rem;
 }
 .rh-narr-text {
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0;
@@ -857,7 +859,7 @@ body {
 
 /* --- County View --- */
 .modal-county {
-    padding: 1rem 1rem 2rem;
+    padding: 1rem 2rem 2rem;
 }
 
 .county-subtitle {
@@ -865,14 +867,13 @@ body {
     font-weight: 600;
     color: var(--hawaii-blue);
     margin-bottom: 0.75rem;
-    padding: 0 1rem;
 }
 
 .county-note {
     font-size: 0.78rem;
     line-height: 1.5;
     color: var(--text-muted);
-    padding: 0.6rem 1rem 0.6rem 1.25rem;
+    padding: 0.6rem 1rem;
     margin: 0.75rem 1rem 0;
     border-left: 3px solid var(--neutral);
     background: var(--neutral-bg);
@@ -1121,7 +1122,11 @@ body {
     }
 
     .modal-county {
-        padding: 1rem 0.5rem 1.5rem;
+        padding: 1rem 1rem 1.5rem;
+    }
+
+    .modal-rank-history {
+        padding: 1rem 1rem 1.5rem;
     }
 
     .county-chart-container {
@@ -1401,21 +1406,21 @@ body {
     .modal-official {
         background: none;
         border: none;
-        border-top: 1px solid #ccc;
+        border-top: 1px solid var(--border);
         padding: 0.5rem 0;
         margin: 0.5rem 0 0;
     }
 
     .modal-source {
         position: static;
-        border-top: 1px solid #ccc;
-        background: white;
+        border-top: 1px solid var(--border);
+        background: var(--card-bg);
     }
 
     .modal-source a::after {
         content: " (" attr(href) ")";
         font-size: 0.7rem;
-        color: #666;
+        color: var(--text-muted);
     }
 
     .modal-rankings {
