@@ -545,7 +545,7 @@ const App = {
         // Consolidated narrative vs per-tab narrative
         const consolidatedEl = document.getElementById('modal-consolidated');
         const narrativeBodyEl = document.getElementById('modal-narrative-body');
-        if (metricData.countyNarrative) {
+        if (metricData.useConsolidated) {
             consolidatedEl.innerHTML = this._buildConsolidatedNarrative(metricData);
             consolidatedEl.style.display = '';
             narrativeBodyEl.style.display = 'none';
@@ -1732,7 +1732,7 @@ const App = {
         const narrativeEl = document.getElementById('rank-history-narrative');
         const narr = metricData.rankHistoryNarrative;
         // Consolidated layout: narrative lives in modal-consolidated, not here
-        if (metricData.countyNarrative) {
+        if (metricData.useConsolidated) {
             if (narrativeEl) narrativeEl.style.display = 'none';
         } else if (narr && narrativeEl) {
             let html = `<div class="rh-narr-section">
@@ -1991,7 +1991,7 @@ const App = {
     },
 
     // ── Consolidated narrative builder ───────────────────────────────────
-    // Builds the full-metric narrative HTML for metrics with countyNarrative.
+    // Builds the full-metric narrative HTML for metrics with useConsolidated: true.
     // Sections follow the reader's natural question arc:
     // Why care? → What does data show? → National standing → County texture
     //   → Drivers → Lessons → Action → Caveats
