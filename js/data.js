@@ -1396,6 +1396,7 @@ const DASHBOARD_DATA = {
     "howToRead": "A rising line means homes are becoming less affordable relative to local incomes. Hawaiʻi has been persistently above the national average for the entire period.",
     "insight": "Hawaiʻi's ratio peaked at 8.9× in 2022-23 and has eased slightly to 8.7× in 2024. Only California comes close among the 50 states.",
     "crossInsight": "At 8.7x income, this is the least affordable housing in the nation. This single metric cascades into renter burden (#46), homelessness (#48), and net migration (#50). No other metric has as many downstream effects.",
+    "potentialDrivers": "Hawaiʻi single-family homes sold at nearly twice the national price-to-income ratio in 2024, driven by limited inventory, demand for second and vacation homes, and high construction and land costs, per a <a href=\"https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf\" target=\"_blank\" rel=\"noopener\">DBEDT affordability analysis</a>. The state still needs 64,490 more units by 2027 but only 13,471 are in the pipeline (per the <a href=\"https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/\" target=\"_blank\" rel=\"noopener\">2024 Housing Planning Study</a>), and <a href=\"https://uhero.hawaii.edu/wp-content/uploads/2025/05/HawaiiHousingFactbook2025_Main.pdf\" target=\"_blank\" rel=\"noopener\">UHERO's 2025 Housing Factbook</a> found that regulatory barriers continue to slow construction while prices outpace income growth.",
     "hawaii": {
       "2005": 7.8,
       "2006": 8.7,
