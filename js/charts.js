@@ -803,8 +803,8 @@ const ChartUtils = {
                         }
                     });
 
-                    ctx.fillText('Top 25%', (topZoneLeft + topZoneRight) / 2, topEdge + 8);
-                    ctx.fillText('Bottom 25%', (botZoneLeft + botZoneRight) / 2, topEdge + 8);
+                    ctx.fillText('Top Ranked (25%)', (topZoneLeft + topZoneRight) / 2, topEdge + 8);
+                    ctx.fillText('Bottom Ranked (25%)', (botZoneLeft + botZoneRight) / 2, topEdge + 8);
                 }
 
                 // Dot strip dots
@@ -1149,9 +1149,9 @@ const ChartUtils = {
 
                 // Q1 / Median / Q3 reference lines (skip if outside visible range)
                 const refs = [
-                    { rank: 12.5, label: 'Top 25%',    color: 'rgba(5,150,105,0.55)',   lw: 1.2 },
-                    { rank: 25.5, label: 'Median',      color: 'rgba(100,100,100,0.55)', lw: 1.5 },
-                    { rank: 37.5, label: 'Bottom 25%',  color: 'rgba(192,57,43,0.55)',   lw: 1.2 },
+                    { rank: 12.5, label: 'Top Ranked (25%)',    color: 'rgba(5,150,105,0.55)',   lw: 1.2 },
+                    { rank: 25.5, label: 'Median',             color: 'rgba(100,100,100,0.55)', lw: 1.5 },
+                    { rank: 37.5, label: 'Bottom Ranked (25%)', color: 'rgba(192,57,43,0.55)',  lw: 1.2 },
                 ];
                 for (const ref of refs) {
                     if (ref.rank < yScale.min || ref.rank > yScale.max) continue;
