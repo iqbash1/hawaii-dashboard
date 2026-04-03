@@ -1271,12 +1271,11 @@ const App = {
         document.getElementById('modal-rankings').style.display = 'block';
 
         // Update subtitle and rank
-        document.getElementById('rankings-subtitle').textContent =
-            `${metricData.metric} (${metricData.unit}, ${year})`;
+        document.getElementById('rankings-subtitle').textContent = '';
         const latestDetailYear = this.getLatestValue(metricData.hawaii).year;
         const yearNote = (year !== latestDetailYear)
-            ? ` · Using ${year} data (latest with all states)`
-            : '';
+            ? ` \u00B7 ${year} (latest year with full state coverage)`
+            : ` \u00B7 ${year}`;
         document.getElementById('rankings-rank').textContent =
             `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote}`;
 
@@ -1664,7 +1663,7 @@ const App = {
         // Update header text
         const yearRange = this.parseYearLabel(String(rankHistory.years[0])) + '-' + this.keyEnd(rankHistory.years[rankHistory.years.length - 1]);
         document.getElementById('rank-history-subtitle').textContent =
-            `${metricData.metric} - Rank over time (${yearRange})`;
+            `Rank over time \u00B7 ${yearRange}`;
         document.getElementById('rank-history-rank').textContent =
             rankHistory.hiRank ? `Hawai\u02BBi: #${rankHistory.hiRank} of ${rankHistory.total} (${rankHistory.years[rankHistory.years.length - 1]})` : '';
 
@@ -1798,7 +1797,7 @@ const App = {
 
         const isSmoothed = countyData.smoothCounty === true;
         document.getElementById('county-subtitle').textContent =
-            `${metricData.metric} by County${isSmoothed ? ' (3-year rolling avg)' : ''}`;
+            `County breakdown${isSmoothed ? ' \u00B7 3-year rolling avg' : ''}`;
 
         // County reliability note
         const noteEl = document.getElementById('county-note');

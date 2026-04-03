@@ -646,14 +646,19 @@ body {
 }
 
 .rankings-subtitle {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.2rem;
+}
+
+.rankings-subtitle:empty {
+    display: none;
+    margin: 0;
 }
 
 .rankings-rank {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--hawaii-blue);
     font-weight: 600;
     margin-bottom: 1rem;
@@ -847,9 +852,9 @@ body {
 }
 
 .county-subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    color: var(--text);
+    color: var(--hawaii-blue);
     margin-bottom: 0.75rem;
     padding: 0 1rem;
 }
