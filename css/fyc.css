@@ -123,7 +123,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-hdr-rank { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 100px; flex-shrink: 0; text-align: left; }
 .fyc-rank-hdr-name { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; text-align: left; }
 .fyc-rank-hdr-cat  { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; flex-shrink: 0; }
-.fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 145px; text-align: right; flex-shrink: 0; }
+.fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 145px; text-align: left; flex-shrink: 0; }
 .fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; color: var(--text-secondary); border-radius: 3px; padding: 0.1rem 0.25rem; margin: -0.1rem -0.25rem; transition: background 0.1s, color 0.1s; }
 .fyc-rank-hdr-sortable:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 .fyc-rank-hdr-sortable.active { color: var(--text); }
@@ -143,7 +143,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-item.rank-mid    .fyc-rank-num { color: var(--neutral); }
 .fyc-rank-item.rank-bad    .fyc-rank-num { color: var(--negative); }
 /* 5-year move column */
-.fyc-rank-move { font-size: 0.68rem; font-weight: 700; width: 145px; text-align: right; flex-shrink: 0; }
+.fyc-rank-move { font-size: 0.68rem; font-weight: 700; width: 145px; text-align: left; flex-shrink: 0; }
 .fyc-rank-move.move-up     { color: var(--positive); }
 .fyc-rank-move.move-down   { color: var(--negative); }
 .fyc-rank-move.move-stable { color: var(--neutral); font-weight: 400; }
@@ -189,6 +189,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
     .fyc-rank-num { font-size: 0.68rem; width: 86px; }
     .fyc-rank-hdr-cat, .fyc-rank-cat { display: none; }
     .fyc-rank-name { font-size: 0.73rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .fyc-rank-move { font-size: 0.68rem; width: 52px; min-width: 52px; text-align: right; }
+    .fyc-rank-move { font-size: 0.68rem; width: 52px; min-width: 52px; text-align: left; }
     .fyc-print-btn { top: auto; bottom: 1rem; right: 1rem; }
 }
