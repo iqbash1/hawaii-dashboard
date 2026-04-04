@@ -663,7 +663,6 @@ const App = {
             : `Hawai\u02BBi vs. other state average \u00B7 ${vintageStart}\u2013${vintageEnd}`;
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
-        document.getElementById('modal-trend-section').style.display = 'none';
 
         // Potential drivers
         const driversSection = document.getElementById('modal-drivers-section');
@@ -906,10 +905,6 @@ const App = {
         const tabRankHistoryEl = document.getElementById('tab-rank-history');
         if (tabRankHistoryEl) { tabRankHistoryEl.classList.remove('active'); tabRankHistoryEl.setAttribute('aria-selected', 'false'); }
         if (tabCounty) { tabCounty.classList.remove('active'); tabCounty.setAttribute('aria-selected', 'false'); }
-
-        const statsEl = document.getElementById('modal-stats');
-        statsEl.innerHTML = '';
-        statsEl.style.display = 'none';
 
         // Chart uses effective data (trimmed to rankings year)
         const canvas = document.getElementById('modal-chart');
@@ -1509,9 +1504,6 @@ const App = {
         }
     },
 
-    abbreviateState(name) {
-        return STATE_ABBREVS[name] || name.slice(0, 2).toUpperCase();
-    },
 
     hideRankings() {
         document.getElementById('modal-rankings').style.display = 'none';

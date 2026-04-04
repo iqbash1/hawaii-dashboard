@@ -914,19 +914,6 @@ body {
     padding: 1rem 2rem 2rem;
 }
 
-.rankings-back {
-    display: inline-block;
-    font-size: 0.85rem;
-    color: var(--hawaii-blue);
-    text-decoration: none;
-    margin-bottom: 1rem;
-    cursor: pointer;
-}
-
-.rankings-back:hover {
-    text-decoration: underline;
-}
-
 .rankings-subtitle {
     font-size: var(--text-md);
     font-weight: 600;
