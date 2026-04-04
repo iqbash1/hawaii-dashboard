@@ -705,17 +705,11 @@ const App = {
             narrativeBodyEl.style.display = '';
         }
 
-        // Source definition bar - shown just below the chart area
+        // Source definition bar - shown below the tab bar, visible on all tabs
         const officialEl = document.getElementById('modal-official-name');
         if (officialEl) {
             if (metricData.officialName) {
-                const categoryLabels = {
-                    'federal':     'Federal data',
-                    'state-assoc': 'State-reported',
-                    'academic':    'Independent estimate'
-                };
-                const prefix = categoryLabels[metricData.sourceCategory] || 'Federal data';
-                officialEl.textContent = `${prefix}: ${metricData.officialName}`;
+                officialEl.textContent = `${metricData.source}: ${metricData.officialName}`;
                 officialEl.style.display = '';
             } else {
                 officialEl.textContent = '';
