@@ -620,6 +620,46 @@ body {
     opacity: 0.4;
 }
 
+/* --- Share & Cite panel --- */
+.source-line {
+    margin-bottom: 0.6rem;
+}
+
+.share-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.1rem;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+
+.share-btn:hover {
+    color: var(--hawaii-blue);
+    border-color: var(--hawaii-blue);
+    background: var(--avg-gray-light);
+}
+
+.share-btn.copied {
+    color: var(--positive);
+    border-color: var(--positive);
+    background: var(--card-bg);
+}
+
 /* --- Rankings View --- */
 .modal-rankings {
     padding: 1rem 2rem 2rem;
