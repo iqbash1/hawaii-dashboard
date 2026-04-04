@@ -869,7 +869,7 @@ const App = {
             const rankLabel = rankings && rankings.hawaiiRank > 0
                 ? `<span class="tab-rank">#${rankings.hawaiiRank}</span>`
                 : '';
-            tabRankings.innerHTML = `Rank ${rankLabel}`;
+            tabRankings.innerHTML = `<span>Rank ${rankLabel}</span><span class="tab-sub">National standing</span>`;
 
             tabDetail.onclick = () => this.switchTab('detail', slug);
             tabRankings.onclick = () => this.switchTab('rankings', slug);
