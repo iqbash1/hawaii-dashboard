@@ -42,7 +42,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260403ad">
+    <link rel="stylesheet" href="css/styles.css?v=20260403ae">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -196,16 +196,12 @@
                 <p class="rankings-subtitle" id="rank-history-subtitle"></p>
                 <p class="rankings-rank" id="rank-history-rank"></p>
                 <div class="rank-history-chart-wrap"><canvas id="rank-history-chart"></canvas></div>
-                <div class="rank-history-bench">
-                    <div class="rank-history-hint rank-history-hint--pulse" id="rank-history-hint">
-                        <svg class="bench-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="22" y2="6"/><polyline points="16 1 22 6 16 11"/><line x1="2" y1="18" x2="16" y2="18"/><polyline points="8 13 2 18 8 23"/></svg>
-                        <span><strong>Compare with any state:</strong> click a state abbreviation on the right side of the chart</span>
-                    </div>
-                    <div class="rank-history-compare" id="rank-history-compare" style="display:none;">
-                        <svg class="bench-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="22" y2="6"/><polyline points="16 1 22 6 16 11"/><line x1="2" y1="18" x2="16" y2="18"/><polyline points="8 13 2 18 8 23"/></svg>
-                        Comparing Hawai&#x02BB;i with <strong id="rank-history-compare-name"></strong>
-                        <a href="#" id="rank-history-clear" class="bench-clear">&#x2715; clear</a>
-                    </div>
+                <div class="rh-compare-bar">
+                    <label class="rh-compare-label" for="rh-compare-select">Compare with</label>
+                    <select id="rh-compare-select" class="rh-compare-select">
+                        <option value="">Select a state&hellip;</option>
+                    </select>
+                    <button id="rh-compare-clear" class="rh-compare-clear" style="display:none;">&#x2715; Clear</button>
                 </div>
                 <div class="rh-narrative" id="rank-history-narrative" style="display:none;"></div>
             </div>
@@ -289,8 +285,8 @@
     <script src="js/data.js?v=20260403ab"></script>
     <script src="js/state-data.js?v=20260403ab"></script>
     <script src="js/county-data.js?v=20260403ab"></script>
-    <script src="js/charts.js?v=20260403ab"></script>
+    <script src="js/charts.js?v=20260403ac"></script>
     <script src="js/bundles.js?v=20260403ad"></script>
-    <script src="js/app.js?v=20260403ak"></script>
+    <script src="js/app.js?v=20260403al"></script>
 </body>
 </html>

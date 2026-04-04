@@ -1554,10 +1554,35 @@ const App = {
         const pendingCompare = this._pendingRhCompare || null;
         this._pendingRhCompare = null;
 
-        // Reset comparison UI
-        document.getElementById('rank-history-compare').style.display = 'none';
-        const benchHint = document.getElementById('rank-history-hint');
-        if (benchHint) benchHint.style.display = '';
+        // Populate compare dropdown with all states except Hawai'i, sorted alphabetically
+        const compareSelect = document.getElementById('rh-compare-select');
+        const compareClear = document.getElementById('rh-compare-clear');
+        if (compareSelect) {
+            compareSelect.innerHTML = '<option value="">Select a state\u2026</option>';
+            rankHistory.latestYearRanked
+                .map(e => e.state)
+                .filter(s => s !== rankHistory.hiKey)
+                .sort()
+                .forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.textContent = s;
+                    compareSelect.appendChild(opt);
+                });
+            compareSelect.value = '';
+        }
+        if (compareClear) compareClear.style.display = 'none';
+
+        // onCompare callback: syncs dropdown + URL (also called by chart on label click)
+        const onCompareFn = (stateName) => {
+            if (compareSelect) compareSelect.value = stateName || '';
+            if (compareClear) compareClear.style.display = stateName ? '' : 'none';
+            if (stateName) {
+                history.replaceState(null, '', '/rh/' + slug + '/' + this.stateToSlug(stateName) + '/');
+            } else {
+                history.replaceState(null, '', '/rh/' + slug + '/');
+            }
+        };
 
         // Create the chart
         const canvas = document.getElementById('rank-history-chart');
@@ -1569,46 +1594,41 @@ const App = {
 
         const rankGovBoxes = this.getGovernorBoxes(rankHistory.years.map(String));
 
-        // onCompare callback: updates the comparison banner UI and URL
-        const onCompareFn = (stateName) => {
-            const el = document.getElementById('rank-history-compare');
-            const nameEl = document.getElementById('rank-history-compare-name');
-            const hintEl = document.getElementById('rank-history-hint');
-            if (stateName) {
-                nameEl.textContent = stateName;
-                el.style.display = '';
-                if (hintEl) hintEl.style.display = 'none';
-                history.replaceState(null, '', '/rh/' + slug + '/' + this.stateToSlug(stateName) + '/');
-            } else {
-                el.style.display = 'none';
-                if (hintEl) hintEl.style.display = '';
-                history.replaceState(null, '', '/rh/' + slug + '/');
-            }
-        };
-
         this.rankHistoryChart = ChartUtils.createRankHistoryChart(
             canvas, rankHistory, metricData, rankGovBoxes,
             onCompareFn,
             pendingCompare
         );
 
-        // If a comparison was pre-set from the URL, update the UI to reflect it
-        if (pendingCompare) {
-            onCompareFn(pendingCompare);
+        // If a comparison was pre-set from URL, sync dropdown + URL
+        if (pendingCompare) onCompareFn(pendingCompare);
+
+        // Wire dropdown change
+        if (compareSelect) {
+            compareSelect.onchange = () => {
+                const selected = compareSelect.value;
+                if (selected) {
+                    if (this.rankHistoryChart && this.rankHistoryChart._setComparison) {
+                        this.rankHistoryChart._setComparison(selected);
+                    }
+                } else {
+                    if (this.rankHistoryChart && this.rankHistoryChart._clearComparison) {
+                        this.rankHistoryChart._clearComparison();
+                    }
+                }
+                onCompareFn(selected || null);
+            };
         }
 
         // Wire clear button
-        const clearBtn = document.getElementById('rank-history-clear');
-        clearBtn.onclick = (e) => {
-            e.preventDefault();
-            if (this.rankHistoryChart && this.rankHistoryChart._clearComparison) {
-                this.rankHistoryChart._clearComparison();
-            }
-            document.getElementById('rank-history-compare').style.display = 'none';
-            const hintEl = document.getElementById('rank-history-hint');
-            if (hintEl) hintEl.style.display = '';
-            history.replaceState(null, '', '/rh/' + slug + '/');
-        };
+        if (compareClear) {
+            compareClear.onclick = () => {
+                if (this.rankHistoryChart && this.rankHistoryChart._clearComparison) {
+                    this.rankHistoryChart._clearComparison();
+                }
+                onCompareFn(null);
+            };
+        }
 
         // Render policy narrative if available for this metric
         const narrativeEl = document.getElementById('rank-history-narrative');

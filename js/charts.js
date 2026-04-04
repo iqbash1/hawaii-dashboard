@@ -1398,9 +1398,14 @@ const ChartUtils = {
             }
         });
 
-        // Expose clear function for external button
+        // Expose comparison controls for external UI
         chart._clearComparison = () => {
             compState = null;
+            hoverState = null;
+            chart.update('none');
+        };
+        chart._setComparison = (stateName) => {
+            compState = stateName || null;
             hoverState = null;
             chart.update('none');
         };
