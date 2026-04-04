@@ -112,7 +112,8 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-item:hover { background: #f7f9fa; }
 .fyc-rank-num { font-size: 0.72rem; font-weight: 700; width: 100px; flex-shrink: 0; text-align: left; }
 .fyc-rank-year { font-weight: 400; font-size: 0.66rem; color: var(--text-muted); }
-.fyc-rank-name { font-size: 0.78rem; color: var(--text); flex: 1; text-align: left; }
+.fyc-rank-name { font-size: 0.78rem; color: var(--hawaii-blue); flex: 1; text-align: left; }
+.fyc-rank-item:hover .fyc-rank-name { text-decoration: underline; }
 .fyc-rank-cat { font-size: 0.68rem; color: var(--text-muted); width: 130px; flex-shrink: 0; }
 /* 3-tier rank colors: green / grey / red */
 .fyc-rank-item.rank-good   .fyc-rank-num { color: var(--positive); }
