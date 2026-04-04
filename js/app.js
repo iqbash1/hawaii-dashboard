@@ -655,7 +655,7 @@ const App = {
         const hiYears = Object.keys(effective.hawaii).sort();
         const vintageStart = this.parseYearLabel(hiYears[0]);
         const vintageEnd = this.keyEnd(hiYears[hiYears.length - 1]);
-        const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}  ·  ${metricData.source}`;
+        const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}`;
         document.getElementById('modal-vintage').textContent = vintageText;
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
@@ -709,7 +709,7 @@ const App = {
         const officialEl = document.getElementById('modal-official-name');
         if (officialEl) {
             if (metricData.officialName) {
-                officialEl.textContent = `${metricData.officialName} Source: ${metricData.source}.`;
+                officialEl.textContent = metricData.officialName;
                 officialEl.style.display = '';
             } else {
                 officialEl.textContent = '';
