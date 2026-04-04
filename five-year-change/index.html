@@ -647,17 +647,23 @@
                 .slice(0, 5);
 
             const spotlightHtml = `<div class="fyc-spotlight">
-                <div class="fyc-spot-card fyc-spot-gains">
+                <div class="fyc-spot-col fyc-spot-gains">
                     <div class="fyc-spot-label">Biggest gains</div>
-                    ${gainers.length ? gainers.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    <div class="fyc-spot-card">
+                        ${gainers.length ? gainers.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    </div>
                 </div>
-                <div class="fyc-spot-card fyc-spot-offtrack">
+                <div class="fyc-spot-col fyc-spot-offtrack">
                     <div class="fyc-spot-label">Most off-track nationally</div>
-                    ${offTrack.length ? offTrack.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    <div class="fyc-spot-card">
+                        ${offTrack.length ? offTrack.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    </div>
                 </div>
-                <div class="fyc-spot-card fyc-spot-declines">
+                <div class="fyc-spot-col fyc-spot-declines">
                     <div class="fyc-spot-label">Biggest declines</div>
-                    ${decliners.length ? decliners.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    <div class="fyc-spot-card">
+                        ${decliners.length ? decliners.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    </div>
                 </div>
             </div>`;
 
