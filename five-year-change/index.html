@@ -32,8 +32,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/styles.css?v=20260403w">
-    <link rel="stylesheet" href="../css/fyc.css?v=20260403w">
+    <link rel="stylesheet" href="../css/styles.css?v=20260403x">
+    <link rel="stylesheet" href="../css/fyc.css?v=20260403x">
 </head>
 <body>
     <nav class="top-nav">
@@ -53,10 +53,10 @@
         <div id="fyc-content"></div>
     </div>
 
-    <script src="../js/data.js?v=20260403w"></script>
-    <script src="../js/state-data.js?v=20260403w"></script>
-    <script src="../js/county-data.js?v=20260403w"></script>
-    <script src="../js/utils.js?v=20260403w"></script>
+    <script src="../js/data.js?v=20260403x"></script>
+    <script src="../js/state-data.js?v=20260403x"></script>
+    <script src="../js/county-data.js?v=20260403x"></script>
+    <script src="../js/utils.js?v=20260403x"></script>
     <script>
     (function() {
         /* ── Constants ── */
@@ -617,8 +617,46 @@
             // 6. Method note
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
-            // Assemble: chips → scorecard → areas → ranking table → method
-            document.getElementById('fyc-content').innerHTML = chipsHtml + scorecardHtml + areasHtml + rankTableHtml + methodHtml;
+            // 0. Spotlight: Biggest gains, Biggest declines, Most off-track
+            function spotlightItem(r) {
+                return `<a href="../#${r.slug}" class="fyc-spot-item">
+                    <span class="fyc-spot-metric">${r.metric}</span>
+                    <span class="fyc-spot-detail">${r.changeText}${r.standing ? ` \u00b7 Rank #${r.standing.endRank}` : ''}</span>
+                </a>`;
+            }
+
+            const gainers = [...allResults]
+                .filter(r => r.status === 'improving')
+                .sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange))
+                .slice(0, 3);
+
+            const decliners = [...allResults]
+                .filter(r => r.status === 'worsening')
+                .sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange))
+                .slice(0, 3);
+
+            const offTrack = [...allResults]
+                .filter(r => r.standing && r.standing.endRank != null)
+                .sort((a, b) => b.standing.endRank - a.standing.endRank)
+                .slice(0, 3);
+
+            const spotlightHtml = `<div class="fyc-spotlight">
+                <div class="fyc-spot-card fyc-spot-gains">
+                    <div class="fyc-spot-label">Biggest gains</div>
+                    ${gainers.length ? gainers.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                </div>
+                <div class="fyc-spot-card fyc-spot-declines">
+                    <div class="fyc-spot-label">Biggest declines</div>
+                    ${decliners.length ? decliners.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                </div>
+                <div class="fyc-spot-card fyc-spot-offtrack">
+                    <div class="fyc-spot-label">Most off-track nationally</div>
+                    ${offTrack.length ? offTrack.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                </div>
+            </div>`;
+
+            // Assemble: spotlight → chips → scorecard → areas → ranking table → method
+            document.getElementById('fyc-content').innerHTML = spotlightHtml + chipsHtml + scorecardHtml + areasHtml + rankTableHtml + methodHtml;
             renderRankRows();
         }
 
