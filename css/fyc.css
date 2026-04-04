@@ -73,7 +73,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-scorecard-area { font-size: 0.82rem; font-weight: 600; color: var(--text); }
 .sc-stars { display: flex; gap: 2px; align-items: center; }
 .sc-star { font-size: 1rem; line-height: 1; flex-shrink: 0; }
-.sc-star.above { color: var(--positive); }
+.sc-strong .sc-star.above { color: var(--positive); }
+.sc-mixed  .sc-star.above { color: var(--neutral); }
+.sc-weak   .sc-star.above { color: var(--negative); }
 .sc-star.below { color: #d0d5dc; }
 .fyc-scorecard-standing-text { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
 .fyc-scorecard-trend { display: flex; align-items: center; gap: 8px; justify-content: flex-end; white-space: nowrap; }
