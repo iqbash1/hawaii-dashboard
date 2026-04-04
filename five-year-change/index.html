@@ -634,17 +634,17 @@
             const gainers = [...allResults]
                 .filter(r => r.status === 'improving')
                 .sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange))
-                .slice(0, 3);
+                .slice(0, 5);
 
             const decliners = [...allResults]
                 .filter(r => r.status === 'worsening')
                 .sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange))
-                .slice(0, 3);
+                .slice(0, 5);
 
             const offTrack = [...allResults]
                 .filter(r => r.standing && r.standing.endRank != null && r.standing.endRank >= 48)
                 .sort((a, b) => b.standing.endRank - a.standing.endRank)
-                .slice(0, 3);
+                .slice(0, 5);
 
             const spotlightHtml = `<div class="fyc-spotlight">
                 <div class="fyc-spot-card fyc-spot-gains">
