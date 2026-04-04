@@ -17,7 +17,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-spot-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding-left: 0.1rem; }
 .fyc-spot-gains   .fyc-spot-label { color: var(--positive); }
 .fyc-spot-declines .fyc-spot-label { color: var(--negative); }
-.fyc-spot-offtrack .fyc-spot-label { color: var(--neutral); }
+.fyc-spot-offtrack .fyc-spot-label { color: var(--negative); }
 .fyc-spot-item { display: flex; flex-direction: column; gap: 0.1rem; text-decoration: none; padding: 0.35rem 0; border-bottom: 1px solid #f5f6f8; }
 .fyc-spot-item:last-child { border-bottom: none; }
 .fyc-spot-item:hover .fyc-spot-metric { text-decoration: underline; }

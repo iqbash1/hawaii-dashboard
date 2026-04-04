@@ -653,16 +653,16 @@
                         ${gainers.length ? gainers.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
                     </div>
                 </div>
-                <div class="fyc-spot-col fyc-spot-offtrack">
-                    <div class="fyc-spot-label">Most off-track nationally</div>
-                    <div class="fyc-spot-card">
-                        ${offTrack.length ? offTrack.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
-                    </div>
-                </div>
                 <div class="fyc-spot-col fyc-spot-declines">
                     <div class="fyc-spot-label">Biggest declines</div>
                     <div class="fyc-spot-card">
                         ${decliners.length ? decliners.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    </div>
+                </div>
+                <div class="fyc-spot-col fyc-spot-offtrack">
+                    <div class="fyc-spot-label">Most off-track nationally</div>
+                    <div class="fyc-spot-card">
+                        ${offTrack.length ? offTrack.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
                     </div>
                 </div>
             </div>`;
