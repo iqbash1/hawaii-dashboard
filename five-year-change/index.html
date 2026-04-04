@@ -61,6 +61,8 @@
     (function() {
         /* ── Constants ── */
 
+        const NON_STATES = new Set(['District of Columbia', 'Puerto Rico']);
+
         const AREA_ORDER = [
             { area: 'Safety & Health', metrics: ['violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
             { area: 'Housing & Cost of Living', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate', 'residential_price_cpkwh', 'food_insecurity_rate'] },
@@ -153,7 +155,7 @@
                     stateValues = [];
                     let count = 0;
                     Object.values(sd.data).forEach(entry => {
-                        if (entry[String(tryYear)] != null) {
+                        if (entry[String(tryYear)] != null && !NON_STATES.has(entry.name)) {
                             stateValues.push({ state: entry.name, value: entry[String(tryYear)] });
                             count++;
                         }
@@ -165,7 +167,7 @@
                     const matchedKey = Object.keys(sd.data).find(k => parseYear(k) === tryYear);
                     const yearData = matchedKey ? sd.data[matchedKey] : null;
                     if (!yearData) continue;
-                    const entries = Object.entries(yearData).filter(([, v]) => v != null);
+                    const entries = Object.entries(yearData).filter(([state, v]) => v != null && !NON_STATES.has(state));
                     if (entries.length >= 25) {
                         stateValues = entries.map(([state, value]) => ({
                             state,
