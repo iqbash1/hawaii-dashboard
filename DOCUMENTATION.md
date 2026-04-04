@@ -386,14 +386,15 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend 
 - **Standard layout** (default, `useConsolidated` not set): Narrative is split across tabs. Potential drivers and policy levers appear at the bottom of the Trend tab. The Rank history tab shows the written narrative from `rankHistoryNarrative`. Not used by any current metric (all 26 use consolidated).
 - **Consolidated layout** (`useConsolidated: true`): The modal body switches to a single `#modal-consolidated` scrollable div directly below the chart area. All narrative content appears in one uninterrupted scroll using 8 ordered sections (see `_buildConsolidatedNarrative` below). The Rank history tab still shows its chart, but the written narrative is suppressed there (it appears in the consolidated section instead). All 26 current metrics use this layout.
 
+**Tab microcopy:** Every tab button shows a one-line subtitle via a `.tab-sub` `<span>` inside the button — "Performance over time" (Trend), "Standing vs. other states" (Rank), "Gaining or losing ground?" (Rank history). The subtitle inherits the active tab color at 70% opacity.
+
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. Other State Avg (gray dashed). Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
-3. **Four stat boxes:** Hawaiʻi value, Other State Avg, vs Other States verdict, vs Prior Year trend
-4. **Why it matters / How to read it / Insight** - context sections (standard layout only; in consolidated layout these appear in the consolidated section)
-5. **Potential drivers** (if `potentialDrivers` present, standard layout only) - research-backed HTML section with hyperlinks; rendered via `innerHTML`
-6. **Main policy levers** (if `policyLevers` present, standard layout only) - plain text policy levers section
-7. **Source link + Download .xlsx + Share & Cite panel** - four one-click buttons: Copy stat (value + year + source), Copy chart (PNG to clipboard or download fallback), Copy link (permalink for the active tab), Copy citation (formal APA-style citation with source URL and data note)
+3. **Why it matters / How to read it / Insight** - context sections (standard layout only; in consolidated layout these appear in the consolidated section)
+4. **Potential drivers** (if `potentialDrivers` present, standard layout only) - research-backed HTML section with hyperlinks; rendered via `innerHTML`
+5. **Main policy levers** (if `policyLevers` present, standard layout only) - plain text policy levers section
+6. **Source link + Download .xlsx + Share & Cite panel** - four one-click buttons: Copy stat (value + year + source), Copy chart (PNG to clipboard or download fallback), Copy link (permalink for the active tab), Copy citation (formal APA-style citation with source URL and data note)
 
 **Rank tab:**
 1. **Value distribution dot strip** - all 50 states shown as dots above the bar chart
@@ -538,7 +539,7 @@ Chart rendering utilities.
 |--------|-------------|
 | `createSparkline(canvas, data, goodDirection)` | Mini line chart for cards |
 | `createDetailChart(canvas, data, govBoxes)` | Full detail chart with governor overlay; uses `tension: 0.3` Bezier smoothing |
-| `createRankingsChart(canvas, stateValues, goodDirection, unit)` | Horizontal bar chart with dot strip, quartile shading, median line, and crosshair hover |
+| `createRankingsChart(canvas, stateValues, goodDirection, unit, distStats)` | Horizontal bar chart with dot strip, quartile shading, median line, and crosshair hover. `distStats` = `{ q1, median, q3, fmt }` pre-computed by `showRankings()` |
 | `createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare, initialCompare)` | Rank trend line chart with quartile zones, reference lines, and click-to-compare state interaction; `tension: 0` (no smoothing); `initialCompare` pre-selects a comparison state on load |
 | `formatValue(value, unit, isDecimalPct)` | Full precision value formatting |
 | `formatCardValue(value, unit, isDecimalPct)` | Compact card display formatting |
@@ -560,11 +561,21 @@ Every push to `main` auto-deploys within ~30 seconds.
 
 ### Cache Busting
 
-All CSS and JS asset references in `index.html`, `five-year-change/index.html`, and `about/index.html` include a `?v=YYYYMMDD` query string (e.g. `css/styles.css?v=20260401`). This forces browsers to re-fetch the file after any significant change rather than serving a stale cached copy. When making changes to `styles.css`, `fyc.css`, `about.css`, `app.js`, `data.js`, `charts.js`, `utils.js`, `state-data.js`, or `county-data.js`, bump the `?v=` date in all three HTML files to match the deployment date. **This must be done on every deploy that touches a JS or CSS file** — without it, CDN-cached users will not see the changes. Use `sed -i '' 's/v=YYYYMMDD/v=NEWDATE/g' index.html about/index.html five-year-change/index.html` to update all three files at once.
+All CSS and JS asset references in `index.html`, `five-year-change/index.html`, and `about/index.html` include a `?v=YYYYMMDDxx` query string where `xx` is a two-letter suffix that increments per deploy on a given date (e.g. `styles.css?v=20260403ad`). This forces browsers to re-fetch the file after any significant change rather than serving a stale cached copy.
+
+**Rules:**
+- Bump the suffix on **every deploy that touches a JS or CSS file** — without it, CDN-cached users will not see the changes
+- `index.html` tracks `styles.css`, `app.js`, `bundles.js` independently (each file gets its own suffix)
+- `five-year-change/index.html` and `about/index.html` track `styles.css`, `fyc.css`/`about.css` independently
+- The suffix sequence is: `a`, `b`, ... `z`, `aa`, `ab`, ... (single-letter first, then double)
+
+When making changes to `styles.css`, `fyc.css`, `about.css`, `app.js`, `bundles.js`, `data.js`, `charts.js`, `utils.js`, `state-data.js`, or `county-data.js`, bump the relevant `?v=` suffix in all three HTML files.
 
 ### Footer Timestamp
 
 The footer shows "Data last updated: [date + time] HST". This is updated automatically on every push to `main` by `.github/workflows/timestamp.yml`. The workflow writes the current Hawaii time into `index.html` and commits with `[skip ci]` to prevent a loop.
+
+The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadData()`) can read the timestamp and include it in the Methodology sheet's "Data updated" field.
 
 ---
 
