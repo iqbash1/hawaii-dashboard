@@ -709,7 +709,7 @@ const App = {
         const officialEl = document.getElementById('modal-official-name');
         if (officialEl) {
             if (metricData.officialName) {
-                officialEl.textContent = `Source: ${metricData.source}. ${metricData.officialName}`;
+                officialEl.textContent = `${metricData.officialName} Source: ${metricData.source}.`;
                 officialEl.style.display = '';
             } else {
                 officialEl.textContent = '';
