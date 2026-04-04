@@ -33,7 +33,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css?v=20260403aa">
-    <link rel="stylesheet" href="../css/fyc.css?v=20260403aa">
+    <link rel="stylesheet" href="../css/fyc.css?v=20260403ab">
 </head>
 <body>
     <nav class="top-nav">
@@ -550,8 +550,8 @@
                     hdr.classList.toggle('active', isActive);
                     const ind = hdr.querySelector('.fyc-rank-sort-ind');
                     if (ind) {
-                        ind.textContent = isActive ? (rankSortDir === 1 ? ' ▲' : ' ▼') : ' ↕';
-                        ind.style.opacity = isActive ? '1' : '0.55';
+                        ind.textContent = isActive ? (rankSortDir === 1 ? ' ▲' : ' ▼') : ' ▲';
+                        ind.style.opacity = '';
                     }
                 });
             }
@@ -567,9 +567,9 @@
                     <div class="fyc-rank-breakdown-title">National ranking</div>
                     <div class="fyc-rank-header">
                         <span class="fyc-rank-hdr-rank fyc-rank-hdr-sortable active" id="fyc-rhdr-rank" onclick="window._fycRankSort('rank')">Rank<span class="fyc-rank-sort-ind"> ▲</span></span>
-                        <span class="fyc-rank-hdr-name">Metric <span style="font-weight:400;opacity:0.6;font-size:0.65rem;">&#x2197; opens detail</span></span>
-                        <span class="fyc-rank-hdr-cat fyc-rank-hdr-sortable" id="fyc-rhdr-category" onclick="window._fycRankSort('category')">Category<span class="fyc-rank-sort-ind" style="opacity:0.3"> ▲</span></span>
-                        <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">5-yr Change in rank<span class="fyc-rank-sort-ind" style="opacity:0.3"> ▲</span></span>
+                        <span class="fyc-rank-hdr-name">Metric</span>
+                        <span class="fyc-rank-hdr-cat fyc-rank-hdr-sortable" id="fyc-rhdr-category" onclick="window._fycRankSort('category')">Category<span class="fyc-rank-sort-ind"> ▲</span></span>
+                        <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">5-yr Change in rank<span class="fyc-rank-sort-ind"> ▲</span></span>
                     </div>
                     <div class="fyc-rank-list" id="fyc-rank-list"></div>
                 </div>`;
