@@ -124,7 +124,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-hdr-name { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; text-align: left; }
 .fyc-rank-hdr-cat  { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; flex-shrink: 0; }
 .fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 145px; text-align: left; flex-shrink: 0; }
-.fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; color: var(--text-secondary); border-radius: 3px; padding: 0.1rem 0.25rem; margin: -0.1rem -0.25rem; transition: background 0.1s, color 0.1s; }
+.fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; color: var(--text-secondary); border-radius: 3px; transition: background 0.1s, color 0.1s; }
 .fyc-rank-hdr-sortable:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 .fyc-rank-hdr-sortable.active { color: var(--text); }
 .fyc-rank-sort-ind { font-size: 0.65rem; margin-left: 3px; color: #c0c5ce; }
