@@ -33,6 +33,7 @@ const App = {
     sparklineCharts: [],
     detailChart: null,
     countyChart: null,
+    _activeBundle: null,   // { id, title, description, metrics[] } or null
 
     COUNTY_COLORS: {
         'Honolulu': '#0D7C8F',
@@ -76,6 +77,13 @@ const App = {
 
         // Set up modal events
         this.setupModal();
+
+        // Render bundle chips
+        this.renderBundleChips();
+
+        // Restore bundle from URL param on load (e.g. /?bundle=affordability)
+        const initBundle = new URLSearchParams(window.location.search).get('bundle');
+        if (initBundle) this.activateBundle(initBundle);
 
         // Handle permalink routing (path-based /t/slug/ or legacy hash #slug)
         this.handleRoute();
@@ -396,6 +404,143 @@ const App = {
             });
         });
 
+    },
+
+    // ----------------------------------------------------------------
+    // Bundle Navigation
+    // ----------------------------------------------------------------
+    renderBundleChips() {
+        const container = document.getElementById('bundle-chips');
+        if (!container || typeof BUNDLES === 'undefined') return;
+
+        container.innerHTML = BUNDLES.map(b => `
+            <button class="bundle-chip" data-bundle="${b.id}" title="${b.description}">
+                ${b.title}
+            </button>
+        `).join('');
+
+        container.querySelectorAll('.bundle-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (this._activeBundle && this._activeBundle.id === btn.dataset.bundle) {
+                    this.clearBundle();
+                } else {
+                    this.activateBundle(btn.dataset.bundle);
+                }
+            });
+        });
+
+        const clearBtn = document.getElementById('bundle-bar-clear');
+        if (clearBtn) clearBtn.addEventListener('click', () => this.clearBundle());
+    },
+
+    activateBundle(bundleId) {
+        const bundle = (typeof BUNDLES !== 'undefined') && BUNDLES.find(b => b.id === bundleId);
+        if (!bundle) return;
+        this._activeBundle = bundle;
+
+        // Update chip UI
+        document.querySelectorAll('.bundle-chip').forEach(c => {
+            c.classList.toggle('active', c.dataset.bundle === bundleId);
+        });
+
+        // Show bundle bar above the grid
+        const bar = document.getElementById('bundle-bar');
+        if (bar) {
+            bar.querySelector('.bundle-bar-name').textContent = bundle.title;
+            bar.querySelector('.bundle-bar-desc').textContent = bundle.description + ' \u00b7 ' + bundle.metrics.length + ' metrics';
+            bar.classList.add('visible');
+        }
+
+        // Dim non-bundle cards, highlight bundle cards
+        const grid = document.getElementById('dashboard-grid');
+        grid.classList.add('bundle-active');
+        const bundleIds = new Set(bundle.metrics.map(m => m.id));
+        document.querySelectorAll('.card[data-metric]').forEach(card => {
+            card.classList.toggle('bundle-match', bundleIds.has(card.dataset.metric));
+        });
+
+        // Preserve bundle in URL without disrupting path routing
+        const url = new URL(window.location.href);
+        url.searchParams.set('bundle', bundleId);
+        history.replaceState(null, '', url.pathname + url.search);
+
+        // Scroll to first bundle card
+        const firstMatch = document.querySelector('.card.bundle-match');
+        if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    },
+
+    clearBundle() {
+        this._activeBundle = null;
+
+        document.querySelectorAll('.bundle-chip').forEach(c => c.classList.remove('active'));
+
+        const bar = document.getElementById('bundle-bar');
+        if (bar) bar.classList.remove('visible');
+
+        const grid = document.getElementById('dashboard-grid');
+        grid.classList.remove('bundle-active');
+        document.querySelectorAll('.card.bundle-match').forEach(c => c.classList.remove('bundle-match'));
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete('bundle');
+        history.replaceState(null, '', url.pathname + (url.search !== '?' ? url.search : ''));
+    },
+
+    /** Render bundle nav inside the modal for the given slug (if a bundle is active) */
+    renderBundleNav(slug) {
+        const nav = document.getElementById('bundle-nav');
+        if (!nav) return;
+        const bundle = this._activeBundle;
+        if (!bundle) { nav.classList.remove('visible'); return; }
+
+        const ids = bundle.metrics.map(m => m.id);
+        const idx = ids.indexOf(slug);
+        if (idx === -1) { nav.classList.remove('visible'); return; }
+
+        nav.classList.add('visible');
+        nav.querySelector('.bundle-nav-label').textContent = bundle.title;
+        nav.querySelector('.bundle-nav-counter').textContent = `${idx + 1} / ${ids.length}`;
+
+        const prevBtn = nav.querySelector('.bundle-nav-prev');
+        const nextBtn = nav.querySelector('.bundle-nav-next');
+
+        prevBtn.disabled = idx === 0;
+        nextBtn.disabled = idx === ids.length - 1;
+
+        // Replace to avoid stacking listeners
+        const newPrev = prevBtn.cloneNode(true);
+        const newNext = nextBtn.cloneNode(true);
+        prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+        nextBtn.parentNode.replaceChild(newNext, nextBtn);
+
+        if (idx > 0) {
+            const prevMetric = bundle.metrics[idx - 1];
+            newPrev.addEventListener('click', () => {
+                let area = '';
+                for (const ag of this.AREA_ORDER) { if (ag.metrics.includes(prevMetric.id)) { area = ag.area; break; } }
+                this.openModal(prevMetric.id, area, this._viewFromPrefix(prevMetric.view));
+            });
+        } else {
+            newPrev.disabled = true;
+        }
+
+        if (idx < ids.length - 1) {
+            const nextMetric = bundle.metrics[idx + 1];
+            newNext.addEventListener('click', () => {
+                let area = '';
+                for (const ag of this.AREA_ORDER) { if (ag.metrics.includes(nextMetric.id)) { area = ag.area; break; } }
+                this.openModal(nextMetric.id, area, this._viewFromPrefix(nextMetric.view));
+            });
+        } else {
+            newNext.disabled = true;
+        }
+    },
+
+    _viewFromPrefix(prefix) {
+        if (prefix === 'r')  return 'rankings';
+        if (prefix === 'rh') return 'rank-history';
+        if (prefix === 'c')  return 'county';
+        return undefined; // 't' = default detail view
     },
 
     // --- Modal ---
@@ -844,8 +989,12 @@ const App = {
         document.body.style.overflow = 'hidden';
         document.getElementById('modal').scrollTop = 0;
 
-        // Update URL for permalink (use /t/ path for clean sharing)
-        history.replaceState(null, '', '/t/' + slug + '/');
+        // Update URL for permalink (preserve bundle param if active)
+        const bundleParam = this._activeBundle ? '?bundle=' + this._activeBundle.id : '';
+        history.replaceState(null, '', '/t/' + slug + '/' + bundleParam);
+
+        // Render bundle nav (if a bundle is active)
+        this.renderBundleNav(slug);
 
         // If requested, switch to the specified tab immediately
         if (initialView === 'rankings' && hasStateData) {
@@ -1939,8 +2088,12 @@ const App = {
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
 
-        // Reset URL to root
-        history.replaceState(null, '', '/');
+        // Reset URL to root (preserve bundle param if active)
+        history.replaceState(null, '', this._activeBundle ? '/?bundle=' + this._activeBundle.id : '/');
+
+        // Hide bundle nav
+        const bundleNav = document.getElementById('bundle-nav');
+        if (bundleNav) bundleNav.classList.remove('visible');
 
         // Reset table toggle state
         document.getElementById('table-toggle-wrap').style.display = 'none';
