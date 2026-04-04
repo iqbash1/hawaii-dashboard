@@ -979,8 +979,6 @@ body {
     border-radius: var(--radius-sm);
     padding: 0.3rem 0.55rem;
     cursor: pointer;
-    flex: 1;
-    max-width: 220px;
 }
 .rh-compare-select:focus {
     outline: 2px solid var(--hawaii-blue);
