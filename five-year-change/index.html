@@ -633,14 +633,19 @@
                 </a>`;
             }
 
+            function absRankShift(r) {
+                return (r.standing && r.standing.startRank != null && r.standing.endRank != null)
+                    ? Math.abs(r.standing.startRank - r.standing.endRank) : 0;
+            }
+
             const gainers = [...allResults]
                 .filter(r => r.status === 'improving')
-                .sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange))
+                .sort((a, b) => absRankShift(b) - absRankShift(a))
                 .slice(0, 5);
 
             const decliners = [...allResults]
                 .filter(r => r.status === 'worsening')
-                .sort((a, b) => Math.abs(b.relChange) - Math.abs(a.relChange))
+                .sort((a, b) => absRankShift(b) - absRankShift(a))
                 .slice(0, 5);
 
             const offTrack = [...allResults]
