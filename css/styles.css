@@ -824,6 +824,91 @@ body {
     background: var(--card-bg);
 }
 
+/* --- Modal utilities (data table, chart note, toggle) --- */
+
+.modal-chart-note {
+    font-size: 0.7rem;
+    color: #999;
+    text-align: right;
+    padding: 0.1rem 0.5rem 0;
+    margin: 0;
+}
+
+.modal-data-note {
+    border-left: 3px solid #f0c36d;
+    padding-left: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.modal-data-note p {
+    font-size: 0.8rem;
+    color: #8a7548;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.table-toggle-wrap {
+    text-align: left;
+    padding: 0 2rem 0.25rem;
+}
+
+.table-toggle {
+    color: var(--hawaii-blue);
+    text-decoration: none;
+    border: 1px solid rgba(13,124,143,0.35);
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    background: var(--hawaii-blue-light);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.table-toggle:hover {
+    background: var(--hawaii-blue);
+    color: #fff;
+    border-color: var(--hawaii-blue);
+}
+
+.data-table {
+    width: auto;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin: 0 auto;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 0.4rem 0.8rem;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.data-table td {
+    padding: 0.35rem 0.8rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-table tr:hover td { background: #f9f9f9; }
+
+.data-table .hawaii-row td {
+    color: var(--hawaii-blue);
+    font-weight: 600;
+}
+
+.data-table .section-header td {
+    font-weight: 700;
+    padding-top: 1.5rem;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
 /* --- Rankings View --- */
 .modal-rankings {
     padding: 1rem 2rem 2rem;
@@ -873,6 +958,7 @@ body {
 .rankings-chart-wrap {
     position: relative;
     width: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* --- Rank History View --- */

@@ -4,7 +4,7 @@
 // Renders metric cards, manages the detail modal, handles
 // URL routing, and manages data export. Data is updated
 // annually from federal sources via the automated pipeline.
-// Build: 2026-04-01
+// Build: 2026-04-03
 // ============================================================
 
 const STATE_ABBREVS = {
@@ -1065,7 +1065,6 @@ const App = {
             tabRankings.classList.add('active');
             tabRankings.setAttribute('aria-selected', 'true');
             this.showRankings(slug);
-            this.currentSlug = slug;
             history.replaceState(null, '', '/r/' + slug + '/');
 
         } else if (tab === 'rank-history') {
@@ -1490,10 +1489,6 @@ const App = {
         canvas.setAttribute('role', 'img');
         canvas.setAttribute('aria-label', `${metricData.metric} rankings: all 50 states sorted best to worst, Hawaiʻi ranked #${hawaiiRank}`);
 
-        // Hide the separate dot strip container (now integrated into chart)
-        const dotStripEl = document.getElementById('dot-strip-container');
-        if (dotStripEl) dotStripEl.innerHTML = '';
-
         // Show scroll hint
         const hint = document.getElementById('rankings-scroll-hint');
         if (hint) {
@@ -1512,226 +1507,6 @@ const App = {
             modal.addEventListener('scroll', onScroll);
             this._rankingsScrollHandler = onScroll;
         }
-    },
-
-    buildDotStrip(stateValues, unit, hawaiiRank, distStats) {
-        const container = document.getElementById('dot-strip-container');
-        if (!container) return;
-        container.innerHTML = '';
-
-        const n = stateValues.length;
-        if (n < 3) return;
-
-        const values = stateValues.map(s => s.value);
-        const sorted = [...values].sort((a, b) => a - b);
-        const { q1, median, q3 } = distStats;
-        const minVal = sorted[0];
-        const maxVal = sorted[n - 1];
-        const range = maxVal - minVal || 1;
-        const pad = range * 0.06;
-        const scaleMin = minVal - pad;
-        const scaleMax = maxVal + pad;
-
-        // Hawaii index in the sorted-by-rank array (stateValues is already sorted best-to-worst)
-        const hiIdx = hawaiiRank - 1;
-        const hiVal = stateValues[hiIdx]?.value;
-        const hiState = stateValues[hiIdx]?.state;
-
-        // States to label: lowest (rank 1), highest (rank N), and Hawaii's immediate neighbors
-        const labelIndices = new Set();
-        labelIndices.add(0);           // best
-        labelIndices.add(n - 1);       // worst
-        if (hiIdx > 0) labelIndices.add(hiIdx - 1);   // neighbor above
-        if (hiIdx < n - 1) labelIndices.add(hiIdx + 1); // neighbor below
-        labelIndices.add(hiIdx);       // Hawaii itself
-
-        const fmt = (v) => ChartUtils.formatValue(v, unit, false);
-
-        // SVG dimensions
-        const svgW = 700;
-        const svgH = 72;
-        const padL = 12;
-        const padR = 12;
-        const plotW = svgW - padL - padR;
-        const dotY = 30;
-
-        const px = (v) => padL + ((v - scaleMin) / (scaleMax - scaleMin)) * plotW;
-
-        const ns = 'http://www.w3.org/2000/svg';
-        const svg = document.createElementNS(ns, 'svg');
-        svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
-        svg.setAttribute('class', 'dot-strip-svg');
-        svg.setAttribute('role', 'img');
-        svg.setAttribute('aria-label', `Distribution of all ${n} states`);
-
-        // IQR box
-        const iqr = document.createElementNS(ns, 'rect');
-        iqr.setAttribute('x', px(q1));
-        iqr.setAttribute('y', dotY - 10);
-        iqr.setAttribute('width', px(q3) - px(q1));
-        iqr.setAttribute('height', 20);
-        iqr.setAttribute('rx', 3);
-        iqr.setAttribute('fill', 'rgba(13, 124, 143, 0.06)');
-        iqr.setAttribute('stroke', 'rgba(13, 124, 143, 0.15)');
-        iqr.setAttribute('stroke-width', '1');
-        svg.appendChild(iqr);
-
-        // Median tick
-        const medLine = document.createElementNS(ns, 'line');
-        medLine.setAttribute('x1', px(median));
-        medLine.setAttribute('y1', dotY - 12);
-        medLine.setAttribute('x2', px(median));
-        medLine.setAttribute('y2', dotY + 12);
-        medLine.setAttribute('stroke', 'rgba(13, 124, 143, 0.35)');
-        medLine.setAttribute('stroke-width', '1.5');
-        svg.appendChild(medLine);
-
-        // Median label
-        const medLabel = document.createElementNS(ns, 'text');
-        medLabel.setAttribute('x', px(median));
-        medLabel.setAttribute('y', 12);
-        medLabel.setAttribute('text-anchor', 'middle');
-        medLabel.setAttribute('font-size', '9');
-        medLabel.setAttribute('font-weight', '500');
-        medLabel.setAttribute('fill', 'rgba(13, 124, 143, 0.5)');
-        medLabel.setAttribute('font-family', 'Inter, sans-serif');
-        medLabel.textContent = 'Median';
-        svg.appendChild(medLabel);
-
-        // HTML tooltip (shared across all dots)
-        let tooltip = document.getElementById('dot-strip-tooltip');
-        if (!tooltip) {
-            tooltip = document.createElement('div');
-            tooltip.id = 'dot-strip-tooltip';
-            tooltip.style.cssText = 'position:absolute;background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;font-family:Inter,sans-serif;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:100;white-space:nowrap;';
-            document.body.appendChild(tooltip);
-        }
-
-        const showTooltip = (e, text) => {
-            tooltip.textContent = text;
-            tooltip.style.opacity = '1';
-            const rect = e.target.getBoundingClientRect();
-            tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
-            tooltip.style.top = (rect.top - 28) + 'px';
-        };
-        const hideTooltip = () => { tooltip.style.opacity = '0'; };
-
-        // Hover label group (hidden by default, shown on dot hover)
-        let activeHoverGroup = null;
-        const showDotLabel = (dot, s, i, x) => {
-            if (activeHoverGroup) activeHoverGroup.remove();
-            dot.setAttribute('r', '6');
-            dot.setAttribute('fill', '#7A8A9A');
-            const g = document.createElementNS(ns, 'g');
-            g.setAttribute('class', 'dot-hover-label');
-            const abbr = this.abbreviateState(s.state);
-            const label = document.createElementNS(ns, 'text');
-            label.setAttribute('x', x);
-            label.setAttribute('y', dotY - 14);
-            label.setAttribute('text-anchor', 'middle');
-            label.setAttribute('font-size', '8.5');
-            label.setAttribute('font-weight', '600');
-            label.setAttribute('fill', '#555');
-            label.setAttribute('font-family', 'Inter, sans-serif');
-            label.textContent = `${abbr} ${fmt(s.value)}`;
-            g.appendChild(label);
-            svg.appendChild(g);
-            activeHoverGroup = g;
-        };
-        const hideDotLabel = (dot) => {
-            dot.setAttribute('r', '3.5');
-            dot.setAttribute('fill', '#C3CDD7');
-            if (activeHoverGroup) { activeHoverGroup.remove(); activeHoverGroup = null; }
-        };
-
-        // All state dots (non-labeled ones first, smaller)
-        stateValues.forEach((s, i) => {
-            if (labelIndices.has(i)) return;
-            const x = px(s.value);
-            const dot = document.createElementNS(ns, 'circle');
-            dot.setAttribute('cx', x);
-            dot.setAttribute('cy', dotY);
-            dot.setAttribute('r', 3.5);
-            dot.setAttribute('fill', '#C3CDD7');
-            dot.setAttribute('stroke', '#fff');
-            dot.setAttribute('stroke-width', '0.5');
-            dot.setAttribute('class', 'dot-strip-dot');
-            dot.style.cursor = 'pointer';
-            dot.addEventListener('mouseenter', () => showDotLabel(dot, s, i, x));
-            dot.addEventListener('mouseleave', () => hideDotLabel(dot));
-            dot.addEventListener('click', () => showDotLabel(dot, s, i, x));
-            svg.appendChild(dot);
-        });
-
-        // Labeled state dots (neighbors, min, max) with collision detection
-        // Hawaii label always placed first, then others skip if too close
-        const placedLabels = []; // array of {x, halfW} for collision checks
-        const minLabelGap = 40; // minimum px gap between label centers
-
-        const wouldCollide = (x) => {
-            return placedLabels.some(p => Math.abs(x - p.x) < minLabelGap);
-        };
-
-        const addLabeledDot = (idx, isHawaii) => {
-            const s = stateValues[idx];
-            if (!s) return;
-            const x = px(s.value);
-            const r = isHawaii ? 6 : 4.5;
-            const fill = isHawaii ? '#0D7C8F' : '#7A8A9A';
-
-            const dot = document.createElementNS(ns, 'circle');
-            dot.setAttribute('cx', x);
-            dot.setAttribute('cy', dotY);
-            dot.setAttribute('r', r);
-            dot.setAttribute('fill', fill);
-            dot.setAttribute('stroke', '#fff');
-            dot.setAttribute('stroke-width', isHawaii ? '2' : '1');
-            dot.setAttribute('class', 'dot-strip-dot');
-            const tipText = `${this.abbreviateState(s.state)}: ${fmt(s.value)} (#${idx + 1})`;
-            dot.addEventListener('mouseenter', (e) => { showTooltip(e, tipText); });
-            dot.addEventListener('mouseleave', hideTooltip);
-            dot.addEventListener('click', (e) => { showTooltip(e, tipText); });
-            svg.appendChild(dot);
-
-            // Skip text labels if they would collide with an already-placed label
-            if (!isHawaii && wouldCollide(x)) return;
-
-            const shortName = isHawaii ? 'Hawai\u02BBi' : this.abbreviateState(s.state);
-            const label = document.createElementNS(ns, 'text');
-            label.setAttribute('x', x);
-            label.setAttribute('y', dotY + 22);
-            label.setAttribute('text-anchor', 'middle');
-            label.setAttribute('font-size', isHawaii ? '9' : '8');
-            label.setAttribute('font-weight', isHawaii ? '700' : '500');
-            label.setAttribute('fill', isHawaii ? '#0D7C8F' : '#888');
-            label.setAttribute('font-family', 'Inter, sans-serif');
-            label.textContent = shortName;
-            svg.appendChild(label);
-
-            const valLabel = document.createElementNS(ns, 'text');
-            valLabel.setAttribute('x', x);
-            valLabel.setAttribute('y', dotY + 32);
-            valLabel.setAttribute('text-anchor', 'middle');
-            valLabel.setAttribute('font-size', '7.5');
-            valLabel.setAttribute('font-weight', '400');
-            valLabel.setAttribute('fill', isHawaii ? '#0D7C8F' : '#aaa');
-            valLabel.setAttribute('font-family', 'Inter, sans-serif');
-            valLabel.textContent = fmt(s.value);
-            svg.appendChild(valLabel);
-
-            placedLabels.push({ x });
-        };
-
-        // Hawaii first (always placed), then others check for collision
-        addLabeledDot(hiIdx, true);
-        [...labelIndices].filter(i => i !== hiIdx).forEach(i => addLabeledDot(i, false));
-
-        // Label
-        const labelDiv = document.createElement('div');
-        labelDiv.className = 'dot-strip-label';
-        labelDiv.textContent = `Distribution of all ${n} states`;
-        container.appendChild(labelDiv);
-        container.appendChild(svg);
     },
 
     abbreviateState(name) {

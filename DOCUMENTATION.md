@@ -34,7 +34,8 @@ hawaii-dashboard/
 │   ├── data.js             # Embedded metric data (Hawaiʻi vs. other state averages)
 │   ├── state-data.js       # Per-state data for all metrics (rankings + .xlsx export)
 │   ├── county-data.js      # Per-county data for 4 Hawaiʻi counties
-│   ├── app.js              # Main app: card rendering, modal logic, governor data
+│   ├── app.js              # Main app: card rendering, modal logic, bundle navigation, governor data
+│   ├── bundles.js          # Bundle config: 7 question-first entry point chips with metric lists
 │   ├── charts.js           # Chart.js sparklines, detail charts, rankings, governor overlay
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers, county HTML)
 ├── assets/
@@ -144,7 +145,9 @@ The dashboard uses **path-based URLs** so every metric view can be shared with a
 | View | URL Pattern | Example |
 |------|------------|---------|
 | Homepage | `/` | `hawaiidashboard.org` |
+| Homepage + active bundle | `/?bundle={id}` | `hawaiidashboard.org/?bundle=affordability` |
 | Metric trend | `/t/{slug}/` | `hawaiidashboard.org/t/naep_math_8/` |
+| Metric trend + bundle | `/t/{slug}/?bundle={id}` | `hawaiidashboard.org/t/naep_math_8/?bundle=student-outcomes` |
 | State rankings | `/r/{slug}/` | `hawaiidashboard.org/r/naep_math_8/` |
 | County view | `/c/{slug}/` | `hawaiidashboard.org/c/unemployment_rate/` |
 | Rank history | `/rh/{slug}/` | `hawaiidashboard.org/rh/naep_math_8/` |
@@ -320,6 +323,44 @@ Structure:
 
 ## UI Components
 
+### Bundle Entry Points
+
+Seven question-first chips appear between the header and the metric grid. Each chip highlights a curated subset of metrics with a default tab (trend, rank, rank history, or county).
+
+**Current bundles (in display order):**
+
+| ID | Title | Metrics |
+|----|-------|---------|
+| `affordability` | Affordability | Renter cost burden, Home price-to-income, Per capita income, Electricity price, Food insecurity, Net migration |
+| `keeping-residents` | Keeping Residents | Net migration, Renter cost burden, Home price-to-income, Per capita income, Unemployment, Labor force participation |
+| `jobs-and-pay` | Jobs & Pay | Unemployment, Labor force participation, Per capita income, Labor productivity |
+| `economic-opportunity` | Economic Opportunity | Business entry rate, Net employer formation, Labor productivity, Per capita income, Unemployment, Labor force participation |
+| `student-outcomes` | Student Outcomes | NAEP math, NAEP reading, Graduation rate |
+| `public-safety` | Public Safety | Violent crime, Property crime |
+| `health-coverage` | Health Coverage & Care | Uninsured rate, Primary care physicians |
+
+**Behavior:**
+- Clicking a chip highlights matching cards (other cards dim to 12% opacity + grayscale)
+- A status bar below the chips shows the bundle name, description, and metric count
+- Clicking the same chip a second time (or the "Clear filter" button) deactivates
+- The active bundle ID is preserved in the URL as `?bundle={id}` (survives refresh)
+- Opening a metric modal from a bundle adds a Prev/Next nav bar at the top of the modal
+- Defined in `js/bundles.js` as a `const BUNDLES` array; adding or reordering chips requires only editing that file
+
+**`bundles.js` entry format:**
+```js
+{
+  id: 'bundle-id',           // kebab-case, used in URL ?bundle= param
+  title: 'Display Title',    // shown in chip and bundle bar
+  description: 'One line',   // shown in bundle bar below the title
+  metrics: [
+    { id: 'metric_slug', view: 'rh' },  // view: 't' | 'r' | 'rh' | 'c'
+  ],
+}
+```
+
+`view` controls which tab opens when the user navigates Prev/Next through a bundle: `t` = Trend, `r` = Rank, `rh` = Rank history, `c` = County.
+
 ### Card Grid (Landing Page)
 
 Each of the 26 metrics gets its own card displaying:
@@ -352,7 +393,7 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend 
 4. **Why it matters / How to read it / Insight** - context sections (standard layout only; in consolidated layout these appear in the consolidated section)
 5. **Potential drivers** (if `potentialDrivers` present, standard layout only) - research-backed HTML section with hyperlinks; rendered via `innerHTML`
 6. **Main policy levers** (if `policyLevers` present, standard layout only) - plain text policy levers section
-7. **Source link + Download .xlsx + Share**
+7. **Source link + Download .xlsx + Share & Cite panel** - four one-click buttons: Copy stat (value + year + source), Copy chart (PNG to clipboard or download fallback), Copy link (permalink for the active tab), Copy citation (formal APA-style citation with source URL and data note)
 
 **Rank tab:**
 1. **Value distribution dot strip** - all 50 states shown as dots above the bar chart
@@ -449,10 +490,16 @@ Main application controller.
 |----------------|-------------|
 | `AREA_ORDER` | Array defining the 5 areas and which metrics belong to each |
 | `GOVERNORS` | Array of 9 governors: `{ name, party, start, end }` from 1959 (statehood) to present |
-| `init()` | Renders cards, sets up modal, handles URL routing |
+| `_activeBundle` | The currently active bundle object `{ id, title, description, metrics[] }`, or `null` |
+| `init()` | Renders cards, sets up modal, renders bundle chips, reads `?bundle=` from URL, handles routing |
 | `renderCards()` | Creates all 26 card DOM elements with sparklines and comparisons |
+| `renderBundleChips()` | Populates `#bundle-chips` from `BUNDLES`; wires click handlers and the "Clear filter" button |
+| `activateBundle(bundleId)` | Highlights matching cards, dims others, shows bundle bar, sets `?bundle=` URL param, scrolls to first match |
+| `clearBundle()` | Reverses `activateBundle`; removes URL param, hides bundle bar, clears card dimming |
+| `renderBundleNav(slug)` | Shows Prev/Next nav bar inside modal when a bundle is active; wires buttons to navigate within the bundle |
+| `_viewFromPrefix(prefix)` | Converts a bundle `view` prefix (`'t'`, `'r'`, `'rh'`, `'c'`) to the `initialView` string used by `openModal` |
 | `openModal(slug, areaName, initialView, initialCompare)` | Opens detail/rankings/etc. view for a metric; `initialCompare` pre-selects a comparison state in the Rank history tab |
-| `closeModal()` | Closes the modal and resets URL to `/` |
+| `closeModal()` | Closes the modal and resets URL to `/` (or `/?bundle={id}` if a bundle is active) |
 | `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/`, `/rh/{slug}/{code}/`, `/c/{slug}/`, or `#{slug}` and opens the modal |
 | `switchTab(tab, slug)` | Switches between the 4 tabs; updates URL |
 | `showRankHistory(slug)` | Renders rank history chart, restores comparison state from URL, sets up state comparison UI |
