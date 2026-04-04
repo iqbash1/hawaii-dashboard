@@ -19,6 +19,10 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .registry-table .metric-name { font-weight: 500; color: var(--text); }
 .registry-table .area-cell { white-space: nowrap; }
 .registry-table .direction-cell { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+.registry-table .latest-cell { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.registry-table .cadence-cell { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+.registry-table .county-cell { font-size: 0.72rem; white-space: nowrap; text-align: center; }
+.registry-table .county-cell:not(:empty) { color: var(--text-muted); }
 .registry-table .note-cell { font-size: 0.7rem; color: var(--text-muted); font-style: italic; }
 .registry-table td[rowspan] { vertical-align: middle; font-weight: 500; border-right: 2px solid var(--border); }
 .registry-table a { color: var(--hawaii-blue); text-decoration: none; }
