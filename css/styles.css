@@ -668,10 +668,29 @@ body {
     border: none;
     border-bottom: 3px solid transparent;
     border-radius: 0;
-    padding: 0.65rem 1.35rem;
+    padding: 0.55rem 1.35rem 0.6rem;
     margin-bottom: -2px;
     cursor: pointer;
     transition: color var(--transition), border-color var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+}
+
+.tab-sub {
+    font-size: 0.62rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+    line-height: 1;
+    display: block;
+}
+
+.modal-tab:hover .tab-sub,
+.modal-tab.active .tab-sub {
+    color: inherit;
+    opacity: 0.7;
 }
 
 .modal-tab:hover {
