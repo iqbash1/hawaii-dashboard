@@ -717,24 +717,14 @@ const App = {
             }
         }
 
-        // Footer source line + Share & Cite panel
+        // Footer source line
         const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
-        const svgClipboard = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-        const svgImage   = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
-        const svgLink    = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
-        const svgCite    = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
         document.getElementById('modal-source').innerHTML = `
             <div class="source-line">Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
             <span class="csv-sep">&middot;</span>
             <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
             <span class="csv-sep">&middot;</span>
             <a href="#" class="print-link" id="print-link">Print</a></div>
-            <div class="share-panel">
-                <button class="share-btn" id="share-copy-stat">${svgClipboard} Copy stat</button>
-                <button class="share-btn" id="share-copy-chart">${svgImage} Copy chart</button>
-                <button class="share-btn" id="share-copy-link">${svgLink} Copy link</button>
-                <button class="share-btn" id="share-copy-citation">${svgCite} Copy citation</button>
-            </div>
         `;
         document.getElementById('csv-download').addEventListener('click', (e) => {
             e.preventDefault();
@@ -763,67 +753,6 @@ const App = {
             execFallback();
             return Promise.resolve();
         };
-        const flashBtn = (btn, originalHTML) => {
-            btn.classList.add('copied');
-            btn.innerHTML = btn.innerHTML.replace(/Copy .+/, 'Copied!');
-            setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = originalHTML; }, 2000);
-        };
-        // Copy stat button
-        document.getElementById('share-copy-stat').addEventListener('click', () => {
-            const isDecimal = ChartUtils.isDecimalPctMetric(effective);
-            const latest = this.getLatestValue(effective.hawaii);
-            const fmtVal = ChartUtils.formatValue(latest.value, effective.unit, isDecimal);
-            const statText = `Hawai\u02BBi\u2019s ${metricData.metric}: ${fmtVal} (${latest.year}) \u2014 Source: ${metricData.source}`;
-            const btn = document.getElementById('share-copy-stat');
-            const orig = btn.innerHTML;
-            copyToClipboard(statText).then(() => flashBtn(btn, orig));
-        });
-        // Copy chart image button
-        document.getElementById('share-copy-chart').addEventListener('click', () => {
-            const btn = document.getElementById('share-copy-chart');
-            const orig = btn.innerHTML;
-            const canvas = document.getElementById('modal-chart');
-            if (!canvas) return;
-            canvas.toBlob(blob => {
-                if (navigator.clipboard && window.ClipboardItem) {
-                    navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-                        .then(() => flashBtn(btn, orig))
-                        .catch(() => {
-                            // Fallback: download
-                            const a = document.createElement('a');
-                            a.href = URL.createObjectURL(blob);
-                            a.download = slug + '-chart.png';
-                            a.click();
-                            flashBtn(btn, orig);
-                        });
-                } else {
-                    // Fallback: download
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = slug + '-chart.png';
-                    a.click();
-                    flashBtn(btn, orig);
-                }
-            });
-        });
-        // Copy link button
-        document.getElementById('share-copy-link').addEventListener('click', () => {
-            const btn = document.getElementById('share-copy-link');
-            const orig = btn.innerHTML;
-            copyToClipboard(getShareUrl()).then(() => flashBtn(btn, orig));
-        });
-        // Copy citation button
-        document.getElementById('share-copy-citation').addEventListener('click', () => {
-            const latest = this.getLatestValue(effective.hawaii);
-            const url = getShareUrl();
-            const noteFirstSentence = metricData.dataNote
-                ? metricData.dataNote.replace(/<[^>]*>/g, '').split(/\.\s+/)[0] + '.'
-                : '';
-            const citation = `Hawai\u02BBi Dashboard (${latest.year}). ${metricData.metric} [${metricData.unitLabel || metricData.unit}]. Data from: ${metricData.source} (${metricData.sourceUrl}). Retrieved from ${url}${noteFirstSentence ? ' Note: ' + noteFirstSentence : ''}`;
-            const btn = document.getElementById('share-copy-citation');
-            const orig = btn.innerHTML;
-            copyToClipboard(citation).then(() => flashBtn(btn, orig));
-        });
         // Header share button (copy link)
         const copyShare = (feedbackEl) => {
             copyToClipboard(getShareUrl());
