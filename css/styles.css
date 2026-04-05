@@ -168,6 +168,35 @@ body {
     margin-top: 0.25rem;
 }
 
+.capability-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.55rem;
+    margin-top: 1rem;
+}
+.capability-strip span,
+.capability-strip a {
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+.cap-sep {
+    color: var(--border);
+    font-variant: normal;
+    text-transform: none;
+}
+.cap-item {
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: color var(--transition);
+}
+.cap-item:hover {
+    color: var(--hawaii-blue);
+}
 
 /* --- Bundle entry points --- */
 .bundle-section {
