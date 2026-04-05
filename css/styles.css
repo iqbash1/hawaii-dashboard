@@ -200,10 +200,8 @@ body {
 
 /* --- Jump to metric dropdown --- */
 .metric-search-wrap {
-    max-width: 320px;
-    margin: 1.25rem auto 0;
-    padding: 0 1.5rem;
     position: relative;
+    flex-shrink: 0;
 }
 
 .metric-search-trigger {
@@ -244,8 +242,9 @@ body {
 .metric-search-dropdown {
     position: absolute;
     top: calc(100% + 3px);
-    left: 1.5rem;
-    right: 1.5rem;
+    right: 0;
+    left: auto;
+    min-width: 240px;
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -285,24 +284,18 @@ body {
 .bundle-section {
     background: var(--bg);
     border-bottom: 1px solid var(--border);
-    padding: 1rem 1.5rem;
-    text-align: center;
-}
-
-.bundle-section-label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-bottom: 0.6rem;
+    padding: 0.65rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .bundle-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 0;
 }
 
 .bundle-chip {
