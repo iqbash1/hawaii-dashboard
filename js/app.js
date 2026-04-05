@@ -646,6 +646,12 @@ const App = {
             return;
         }
 
+        // Highlight the active card
+        const prevActive = document.querySelector('.card.active');
+        if (prevActive) prevActive.classList.remove('active');
+        const activeCard = document.getElementById(slug);
+        if (activeCard) activeCard.classList.add('active');
+
         // Set modal content (text from original metricData)
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
@@ -1797,6 +1803,10 @@ const App = {
         overlay.classList.remove('active');
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
+
+        // Remove active card highlight
+        const activeCard = document.querySelector('.card.active');
+        if (activeCard) activeCard.classList.remove('active');
 
         // Reset URL to root (preserve bundle param if active)
         history.replaceState(null, '', this._activeBundle ? '/?bundle=' + this._activeBundle.id : '/');

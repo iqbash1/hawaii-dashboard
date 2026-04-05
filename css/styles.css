@@ -405,6 +405,11 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.10);
     transform: translateY(-2px);
 }
+.card.active {
+    border-color: var(--hawaii-blue);
+    background: var(--hawaii-blue-light);
+    box-shadow: 0 2px 8px rgba(13,124,143,0.12);
+}
 
 .card:active {
     transform: translateY(0);
@@ -663,12 +668,12 @@ body {
 }
 
 .modal-area {
-    font-size: 0.8rem;
+    font-size: 0.62rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--hawaii-blue);
-    margin-top: 0.15rem;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
 }
 
 .modal-vintage {
