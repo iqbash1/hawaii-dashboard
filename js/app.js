@@ -85,6 +85,9 @@ const App = {
         const initBundle = new URLSearchParams(window.location.search).get('bundle');
         if (initBundle) this.activateBundle(initBundle);
 
+        // Jump-to-metric search
+        this.initMetricSearch();
+
         // Handle permalink routing (path-based /t/slug/ or legacy hash #slug)
         this.handleRoute();
         window.addEventListener('hashchange', () => this.handleRoute());
@@ -1977,6 +1980,109 @@ const App = {
         </div>`;
 
         return h;
+    },
+
+    // ── Jump-to-metric search ────────────────────────────────────────────
+    initMetricSearch() {
+        const input    = document.getElementById('metric-search');
+        const dropdown = document.getElementById('metric-search-dropdown');
+        if (!input || !dropdown) return;
+
+        // Build flat search index from DASHBOARD_DATA
+        const index = [];
+        for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
+            index.push({ slug, name: m.metric || slug, area: m.area || '' });
+        }
+        // Sort alphabetically so results feel predictable
+        index.sort((a, b) => a.name.localeCompare(b.name));
+
+        let activeIdx = -1;
+
+        const hide = () => {
+            dropdown.style.display = 'none';
+            activeIdx = -1;
+        };
+
+        const select = (item) => {
+            input.value = '';
+            hide();
+            this.openModal(item.slug, item.area);
+            // Scroll the card into view so context is visible behind the modal
+            const card = document.getElementById(item.slug);
+            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+
+        const setActive = (idx) => {
+            const items = dropdown.querySelectorAll('.metric-search-item');
+            items.forEach(el => el.removeAttribute('aria-selected'));
+            activeIdx = (idx < 0) ? -1 : Math.min(idx, items.length - 1);
+            if (activeIdx >= 0) {
+                items[activeIdx].setAttribute('aria-selected', 'true');
+                items[activeIdx].scrollIntoView({ block: 'nearest' });
+            }
+        };
+
+        const render = (matches) => {
+            dropdown.innerHTML = '';
+            activeIdx = -1;
+            if (!matches.length) { hide(); return; }
+            matches.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'metric-search-item';
+                li.setAttribute('role', 'option');
+                li.setAttribute('data-slug', item.slug);
+                li.innerHTML = `<span>${item.name}</span><span class="metric-search-item-area">${item.area}</span>`;
+                li.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // keep focus on input until selection
+                    select(item);
+                });
+                dropdown.appendChild(li);
+            });
+            dropdown.style.display = 'block';
+        };
+
+        input.addEventListener('input', () => {
+            const q = input.value.trim().toLowerCase();
+            if (!q) { hide(); return; }
+            const matches = index
+                .filter(m => m.name.toLowerCase().includes(q) || m.area.toLowerCase().includes(q))
+                .slice(0, 8);
+            render(matches);
+        });
+
+        input.addEventListener('keydown', (e) => {
+            const items = dropdown.querySelectorAll('.metric-search-item');
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setActive(activeIdx + 1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setActive(Math.max(activeIdx - 1, 0));
+            } else if (e.key === 'Enter') {
+                if (activeIdx >= 0 && items[activeIdx]) {
+                    e.preventDefault();
+                    const slug = items[activeIdx].getAttribute('data-slug');
+                    const item = index.find(m => m.slug === slug);
+                    if (item) select(item);
+                }
+            } else if (e.key === 'Escape') {
+                hide();
+                input.blur();
+            }
+        });
+
+        // Hide dropdown when focus leaves the input (allow mousedown to fire first)
+        input.addEventListener('blur', () => { setTimeout(hide, 150); });
+
+        // '/' keyboard shortcut: focus search from anywhere on page
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target.tagName || '').toUpperCase();
+            if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && !e.metaKey && !e.ctrlKey) {
+                e.preventDefault();
+                input.focus();
+                input.select();
+            }
+        });
     },
 
     // ── Analytics helper ─────────────────────────────────────────────────

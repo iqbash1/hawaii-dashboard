@@ -198,6 +198,91 @@ body {
     color: var(--hawaii-blue);
 }
 
+/* --- Jump to metric search --- */
+.metric-search-wrap {
+    max-width: 480px;
+    margin: 1.25rem auto 0;
+    padding: 0 1.5rem;
+    position: relative;
+}
+
+.metric-search-input {
+    width: 100%;
+    padding: 0.55rem 1rem 0.55rem 2.25rem;
+    font-size: var(--text-md);
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0.65rem center;
+    background-size: 1rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.metric-search-input:focus {
+    border-color: var(--hawaii-blue);
+    box-shadow: 0 0 0 2px rgba(13,124,143,0.15);
+}
+.metric-search-dropdown {
+    position: absolute;
+    top: calc(100% + 3px);
+    left: 1.5rem;
+    right: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+    list-style: none;
+    z-index: 200;
+    max-height: 280px;
+    overflow-y: auto;
+}
+.metric-search-item {
+    padding: 0.55rem 1rem;
+    cursor: pointer;
+    font-size: var(--text-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.metric-search-item:last-child {
+    border-bottom: none;
+}
+.metric-search-item:hover,
+.metric-search-item[aria-selected="true"] {
+    background: var(--hawaii-blue-light);
+    color: var(--hawaii-blue);
+}
+.metric-search-item-area {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.metric-search-item:hover .metric-search-item-area,
+.metric-search-item[aria-selected="true"] .metric-search-item-area {
+    color: var(--hawaii-blue);
+    opacity: 0.75;
+}
+.metric-search-hint {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0 0.3rem;
+    vertical-align: middle;
+    font-family: monospace;
+}
+
 /* --- Bundle entry points --- */
 .bundle-section {
     background: var(--bg);
