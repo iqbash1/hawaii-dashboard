@@ -42,7 +42,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260404a">
+    <link rel="stylesheet" href="css/styles.css?v=20260404b">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -89,10 +89,13 @@
         <button class="bundle-bar-clear" id="bundle-bar-clear" aria-label="Clear bundle filter">&times; Clear filter</button>
     </div>
 
-    <!-- Jump to metric search -->
+    <!-- Jump to metric dropdown -->
     <div class="metric-search-wrap" id="metric-search-wrap">
-        <input type="search" id="metric-search" class="metric-search-input" placeholder="Jump to metric… (or press /)" autocomplete="off" aria-label="Jump to metric" aria-autocomplete="list" aria-haspopup="listbox">
-        <ul class="metric-search-dropdown" id="metric-search-dropdown" role="listbox" aria-label="Matching metrics" style="display:none;"></ul>
+        <button id="metric-search-trigger" class="metric-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Jump to metric">
+            <svg class="metric-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            <span class="metric-search-label">Jump to metric&hellip;</span>
+        </button>
+        <ul class="metric-search-dropdown" id="metric-search-dropdown" role="listbox" aria-label="Select a metric" style="display:none;"></ul>
     </div>
 
     <!-- Grid of cards -->
@@ -302,6 +305,6 @@
     <script src="js/county-data.js?v=20260403ab"></script>
     <script src="js/charts.js?v=20260403ac"></script>
     <script src="js/bundles.js?v=20260403ad"></script>
-    <script src="js/app.js?v=20260404a"></script>
+    <script src="js/app.js?v=20260404b"></script>
 </body>
 </html>

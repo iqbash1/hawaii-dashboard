@@ -1984,103 +1984,66 @@ const App = {
 
     // ── Jump-to-metric search ────────────────────────────────────────────
     initMetricSearch() {
-        const input    = document.getElementById('metric-search');
+        const trigger  = document.getElementById('metric-search-trigger');
         const dropdown = document.getElementById('metric-search-dropdown');
-        if (!input || !dropdown) return;
+        if (!trigger || !dropdown) return;
 
-        // Build flat search index from DASHBOARD_DATA
-        const index = [];
-        for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
-            index.push({ slug, name: m.metric || slug, area: m.area || '' });
-        }
-        // Sort alphabetically so results feel predictable
-        index.sort((a, b) => a.name.localeCompare(b.name));
+        let isOpen = false;
 
-        let activeIdx = -1;
+        // Populate once from AREA_ORDER so categories appear as section headers
+        for (const areaGroup of this.AREA_ORDER) {
+            const header = document.createElement('li');
+            header.className = 'metric-search-group-header';
+            header.setAttribute('aria-hidden', 'true');
+            header.textContent = areaGroup.area;
+            dropdown.appendChild(header);
 
-        const hide = () => {
-            dropdown.style.display = 'none';
-            activeIdx = -1;
-        };
-
-        const select = (item) => {
-            input.value = '';
-            hide();
-            this.openModal(item.slug, item.area);
-            // Scroll the card into view so context is visible behind the modal
-            const card = document.getElementById(item.slug);
-            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        };
-
-        const setActive = (idx) => {
-            const items = dropdown.querySelectorAll('.metric-search-item');
-            items.forEach(el => el.removeAttribute('aria-selected'));
-            activeIdx = (idx < 0) ? -1 : Math.min(idx, items.length - 1);
-            if (activeIdx >= 0) {
-                items[activeIdx].setAttribute('aria-selected', 'true');
-                items[activeIdx].scrollIntoView({ block: 'nearest' });
-            }
-        };
-
-        const render = (matches) => {
-            dropdown.innerHTML = '';
-            activeIdx = -1;
-            if (!matches.length) { hide(); return; }
-            matches.forEach(item => {
+            for (const slug of areaGroup.metrics) {
+                const m = DASHBOARD_DATA[slug];
+                if (!m) continue;
                 const li = document.createElement('li');
                 li.className = 'metric-search-item';
                 li.setAttribute('role', 'option');
-                li.setAttribute('data-slug', item.slug);
-                li.innerHTML = `<span>${item.name}</span><span class="metric-search-item-area">${item.area}</span>`;
-                li.addEventListener('mousedown', (e) => {
-                    e.preventDefault(); // keep focus on input until selection
-                    select(item);
+                li.setAttribute('data-slug', slug);
+                li.textContent = m.metric || slug;
+                li.addEventListener('click', () => {
+                    close();
+                    this.openModal(slug, areaGroup.area);
+                    const card = document.getElementById(slug);
+                    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 });
                 dropdown.appendChild(li);
-            });
+            }
+        }
+
+        const open = () => {
             dropdown.style.display = 'block';
+            trigger.setAttribute('aria-expanded', 'true');
+            isOpen = true;
         };
 
-        input.addEventListener('input', () => {
-            const q = input.value.trim().toLowerCase();
-            if (!q) { hide(); return; }
-            const matches = index
-                .filter(m => m.name.toLowerCase().includes(q) || m.area.toLowerCase().includes(q))
-                .slice(0, 8);
-            render(matches);
-        });
+        const close = () => {
+            dropdown.style.display = 'none';
+            trigger.setAttribute('aria-expanded', 'false');
+            isOpen = false;
+        };
 
-        input.addEventListener('keydown', (e) => {
-            const items = dropdown.querySelectorAll('.metric-search-item');
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                setActive(activeIdx + 1);
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                setActive(Math.max(activeIdx - 1, 0));
-            } else if (e.key === 'Enter') {
-                if (activeIdx >= 0 && items[activeIdx]) {
-                    e.preventDefault();
-                    const slug = items[activeIdx].getAttribute('data-slug');
-                    const item = index.find(m => m.slug === slug);
-                    if (item) select(item);
-                }
-            } else if (e.key === 'Escape') {
-                hide();
-                input.blur();
+        trigger.addEventListener('click', () => { isOpen ? close() : open(); });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (isOpen && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                close();
             }
         });
 
-        // Hide dropdown when focus leaves the input (allow mousedown to fire first)
-        input.addEventListener('blur', () => { setTimeout(hide, 150); });
-
-        // '/' keyboard shortcut: focus search from anywhere on page
+        // Keyboard: Escape closes; '/' from anywhere toggles
         document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isOpen) { close(); return; }
             const tag = (e.target.tagName || '').toUpperCase();
             if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && !e.metaKey && !e.ctrlKey) {
                 e.preventDefault();
-                input.focus();
-                input.select();
+                isOpen ? close() : open();
             }
         });
     },
