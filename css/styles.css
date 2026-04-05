@@ -946,8 +946,10 @@ body {
 }
 
 .modal-data-note {
+    display: flex;
+    align-items: center;
     border-left: 3px solid #f0c36d;
-    padding-left: 0.75rem;
+    padding: 0.35rem 0 0.35rem 0.75rem;
     margin-top: 0.5rem;
 }
 
