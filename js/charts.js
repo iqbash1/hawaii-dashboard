@@ -438,7 +438,18 @@ const ChartUtils = {
         };
     },
 
-    /** County-level multi-line chart with governor overlay and state reference line */
+    /**
+     * Create a multi-line county chart for the modal.
+     * Displays historical trends for Honolulu, Hawaiʻi, Maui, and Kauai
+     * with optional state-level reference line and governor term overlays.
+     * @param {HTMLCanvasElement} canvas - Target canvas element
+     * @param {Object} countyData - County data object: { counties, data }
+     * @param {Object} metricData - Metric metadata: { unit, goodDirection }
+     * @param {Array} govBoxes - Governor term annotation objects
+     * @param {Object} countyColors - Map of county names to hex color strings
+     * @param {Object} [stateData] - Optional state-level reference series
+     * @returns {Chart} Chart.js instance
+     */
     createCountyChart(canvas, countyData, metricData, govBoxes, countyColors, stateData) {
         const ctx = canvas.getContext('2d');
         const existingChart = Chart.getChart(canvas);
@@ -1031,10 +1042,19 @@ const ChartUtils = {
         });
     },
 
-    // ============================================================
-    // Rank History Chart - line chart showing Hawaii's rank over time
-    // with interactive state comparison
-    // ============================================================
+    /**
+     * Create a rank-over-time line chart showing Hawaiʻi's national standing.
+     * Features quartile zone backgrounds, governor overlays, interactive state
+     * comparison (click right-edge labels to pin, hover for ghost preview).
+     * Returns chart with _clearComparison() and _setComparison(state) methods.
+     * @param {HTMLCanvasElement} canvas - Target canvas element
+     * @param {Object} rankHistory - Pre-computed data from computeRankHistory()
+     * @param {Object} metricData - Metric metadata: { unit }
+     * @param {Array} govBoxes - Governor term annotation objects
+     * @param {Function} onCompare - Callback(stateName|null) on state pin/unpin
+     * @param {string} [initialCompare] - State to pre-select on load
+     * @returns {Chart} Augmented Chart.js instance
+     */
     createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare, initialCompare) {
         const ctx = canvas.getContext('2d');
         const existingChart = Chart.getChart(canvas);

@@ -41,13 +41,9 @@
     --text-xs: 0.7rem;
     --text-sm: 0.8rem;
     --text-md: 0.9rem;
-    --text-xl: 1.35rem;
-    --avg-gray: #666666;
     --avg-gray-light: #F3F4F6;
     --positive: #059669;
-    --positive-bg: #ECFDF5;
     --negative: #C0392B;
-    --negative-bg: #FDF0EE;
     --neutral: #c08a1a;
     --neutral-bg: #fef9e7;
     --border: #EAEAEA;
@@ -642,12 +638,13 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
 }
 
 .modal::-webkit-scrollbar { width: 4px; }
 .modal::-webkit-scrollbar-track { background: transparent; }
 .modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.modal { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
 .modal-actions {
     position: sticky;

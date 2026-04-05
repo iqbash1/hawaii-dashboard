@@ -4,7 +4,7 @@
 // Renders metric cards, manages the detail modal, handles
 // URL routing, and manages data export. Data is updated
 // annually from federal sources via the automated pipeline.
-// Build: 2026-04-03
+// Build: 2026-04-04
 // ============================================================
 
 const STATE_ABBREVS = {
@@ -71,21 +71,21 @@ const App = {
         { area: 'Infrastructure, Resilience & Trust', metrics: ['road_poor_pct', 'broadband_subscription_pct', 'renewables_share_gen', 'rainy_day_fund_pct', 'voter_participation_rate', 'net_domestic_migration_rate'] },
     ],
 
+    /**
+     * Initialize the dashboard: render cards, set up modal, bundle navigation,
+     * metric search, and URL routing. Called once when DOM is ready.
+     */
     init() {
-        // Render cards from embedded data (updated annually)
         this.renderCards();
 
-        // Set up modal events
         this.setupModal();
 
-        // Render bundle chips
         this.renderBundleChips();
 
         // Restore bundle from URL param on load (e.g. /?bundle=affordability)
         const initBundle = new URLSearchParams(window.location.search).get('bundle');
         if (initBundle) this.activateBundle(initBundle);
 
-        // Jump-to-metric search
         this.initMetricSearch();
 
         // Handle permalink routing (path-based /t/slug/ or legacy hash #slug)
@@ -326,6 +326,10 @@ const App = {
     // ----------------------------------------------------------------
     // Card Rendering
     // ----------------------------------------------------------------
+    /**
+     * Render all metric cards grouped by policy area.
+     * Creates area headings, card HTML, sparkline charts, and click handlers.
+     */
     renderCards() {
         const grid = document.getElementById('dashboard-grid');
         grid.innerHTML = '';
@@ -384,7 +388,6 @@ const App = {
                     }
                 });
 
-                // Click rank → open rankings directly
                 const rankEl = card.querySelector('.comp-rank');
                 if (rankEl) {
                     rankEl.addEventListener('click', (e) => {
@@ -393,14 +396,12 @@ const App = {
                     });
                 }
 
-                // Click card → open detail
                 card.addEventListener('click', () => {
                     this.openModal(slug, areaGroup.area);
                 });
 
                 grid.appendChild(card);
 
-                // Create sparkline
                 const canvas = card.querySelector('.card-sparkline canvas');
                 const chart = ChartUtils.createSparkline(canvas, effective, effective.goodDirection);
                 this.sparklineCharts.push(chart);
@@ -412,6 +413,10 @@ const App = {
     // ----------------------------------------------------------------
     // Bundle Navigation
     // ----------------------------------------------------------------
+    /**
+     * Render the bundle filter chips (Affordability, Keeping Residents, etc.)
+     * and wire click handlers to activate/deactivate bundles.
+     */
     renderBundleChips() {
         const container = document.getElementById('bundle-chips');
         if (!container || typeof BUNDLES === 'undefined') return;
@@ -436,17 +441,19 @@ const App = {
         if (clearBtn) clearBtn.addEventListener('click', () => this.clearBundle());
     },
 
+    /**
+     * Activate a named bundle: dim non-matching cards and update the URL.
+     * @param {string} bundleId - Bundle identifier (e.g. 'affordability')
+     */
     activateBundle(bundleId) {
         const bundle = (typeof BUNDLES !== 'undefined') && BUNDLES.find(b => b.id === bundleId);
         if (!bundle) return;
         this._activeBundle = bundle;
 
-        // Update chip UI
         document.querySelectorAll('.bundle-chip').forEach(c => {
             c.classList.toggle('active', c.dataset.bundle === bundleId);
         });
 
-        // Show bundle bar above the grid
         const bar = document.getElementById('bundle-bar');
         if (bar) {
             bar.querySelector('.bundle-bar-name').textContent = bundle.title;
@@ -472,6 +479,9 @@ const App = {
         if (firstMatch) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
     },
 
+    /**
+     * Deactivate the active bundle and restore normal card display.
+     */
     clearBundle() {
         this._activeBundle = null;
 
@@ -548,6 +558,10 @@ const App = {
 
     // --- Modal ---
 
+    /**
+     * Wire overlay click, close button, and Escape key to closeModal().
+     * Called once at init().
+     */
     setupModal() {
         const overlay = document.getElementById('modal-overlay');
         const closeBtn = document.getElementById('modal-close');
@@ -624,6 +638,15 @@ const App = {
     // ----------------------------------------------------------------
     // Modal
     // ----------------------------------------------------------------
+    /**
+     * Open the detail modal for a given metric.
+     * Highlights the active card, renders all tabs (Trend, Rank, Rank History, County),
+     * charts, and narrative. Updates browser history and preserves bundle state.
+     * @param {string} slug - Metric ID (e.g. 'violent_crime_rate')
+     * @param {string} areaName - Policy area name (e.g. 'Safety & Health')
+     * @param {string} [initialView] - Tab to open first: 'rankings' | 'rank-history' | 'county'
+     * @param {string} [initialCompare] - State name to pre-select in rank-history compare dropdown
+     */
     openModal(slug, areaName, initialView, initialCompare) {
         const overlay = document.getElementById('modal-overlay');
         const metricData = DASHBOARD_DATA[slug];
@@ -655,7 +678,6 @@ const App = {
         const activeCard = document.getElementById(slug);
         if (activeCard) activeCard.classList.add('active');
 
-        // Set modal content (text from original metricData)
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
         document.getElementById('modal-unit-label').textContent = metricData.unitLabel || '';
@@ -789,7 +811,6 @@ const App = {
             document.title = origTitle;
         });
 
-        // Set up tabs
         const tabBar = document.getElementById('modal-tabs');
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
@@ -902,7 +923,6 @@ const App = {
                 chartContainer.style.display = '';
                 freshToggle.textContent = 'View as table';
             } else {
-                // Build table and show it
                 this.buildDataTable(effective, slug);
                 chartContainer.style.display = 'none';
                 modalTableContainer.style.display = '';
@@ -910,7 +930,6 @@ const App = {
             }
         });
 
-        // Show modal
         overlay.classList.add('active');
         document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
@@ -933,6 +952,12 @@ const App = {
         }
     },
 
+    /**
+     * Switch the modal to a tab and render its content.
+     * Destroys off-screen charts to free memory.
+     * @param {string} tab - 'detail' | 'rankings' | 'rank-history' | 'county'
+     * @param {string} slug - Metric ID
+     */
     switchTab(tab, slug) {
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
@@ -1137,7 +1162,6 @@ const App = {
             if (rankHistory && rankHistory.years.length > 0) {
                 const { years: rankYears, stateRanks, stateValues, latestYearRanked, hiKey } = rankHistory;
 
-                // Sort states by latest-year rank (best first); unlisted states go to end
                 const latestRankMap = {};
                 latestYearRanked.forEach(e => { latestRankMap[e.state] = e.rank; });
                 const allStates = Object.keys(stateRanks).sort((a, b) => {
@@ -1379,6 +1403,10 @@ const App = {
         return { stateValues, year, hawaiiRank, total: stateValues.length };
     },
 
+    /**
+     * Render the Rankings tab: horizontal bar chart for all 50 states.
+     * @param {string} slug - Metric ID
+     */
     showRankings(slug) {
         const rankings = this.getStateRankings(slug);
         if (!rankings) return;
@@ -1386,11 +1414,9 @@ const App = {
         const metricData = DASHBOARD_DATA[slug];
         const { stateValues, year, hawaiiRank, total } = rankings;
 
-        // Hide detail view, show rankings
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'block';
 
-        // Update subtitle and rank
         document.getElementById('rankings-subtitle').textContent = '';
         const latestDetailYear = this.getLatestValue(metricData.hawaii).year;
         const yearNote = (year !== latestDetailYear)
@@ -1408,7 +1434,6 @@ const App = {
             fmt: (v) => ChartUtils.formatValue(v, metricData.unit, false),
         };
 
-        // Create chart with distribution lines
         const canvas = document.getElementById('rankings-chart');
         this.rankingsChart = ChartUtils.createRankingsChart(
             canvas, stateValues, metricData.goodDirection, metricData.unit, distStats
@@ -1416,7 +1441,6 @@ const App = {
         canvas.setAttribute('role', 'img');
         canvas.setAttribute('aria-label', `${metricData.metric} rankings: all 50 states sorted best to worst, Hawaiʻi ranked #${hawaiiRank}`);
 
-        // Show scroll hint
         const hint = document.getElementById('rankings-scroll-hint');
         if (hint) {
             hint.classList.remove('hidden');
@@ -1460,6 +1484,11 @@ const App = {
         }
     },
 
+    /**
+     * Compute year-by-year national rankings from STATE_DATA.
+     * @param {string} slug - Metric ID
+     * @returns {{ years, stateRanks, stateValues, latestYearRanked, hiKey, hiRank, total } | null}
+     */
     computeRankHistory(slug) {
         const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
         if (!sd || !sd.data) return null;
@@ -1522,7 +1551,6 @@ const App = {
             });
         }
 
-        // Build latest year ranking list
         const latestYear = years[years.length - 1];
         const latestVals = yearData[latestYear];
         if (m.goodDirection === 'up') latestVals.sort((a, b) => b.value - a.value);
@@ -1531,7 +1559,6 @@ const App = {
             latestYearRanked.push({ state: entry.state, rank: idx + 1 });
         });
 
-        // Find Hawaii's key
         const hiKey = Object.keys(stateRanks).find(s => s === 'Hawaii' || s === 'Hawai\u02BBi') || 'Hawaii';
         const hiLatest = latestYearRanked.find(s => s.state === hiKey);
 
@@ -1546,6 +1573,10 @@ const App = {
         };
     },
 
+    /**
+     * Render the Rank History tab: rank-over-time chart with state compare dropdown.
+     * @param {string} slug - Metric ID
+     */
     showRankHistory(slug) {
         const rankHistory = this.computeRankHistory(slug);
         if (!rankHistory) return;
@@ -1553,7 +1584,6 @@ const App = {
 
         document.getElementById('modal-rank-history').style.display = 'block';
 
-        // Update header text
         const yearRange = this.parseYearLabel(String(rankHistory.years[0])) + '-' + this.keyEnd(rankHistory.years[rankHistory.years.length - 1]);
         document.getElementById('rank-history-subtitle').textContent =
             `Rank over time \u00B7 ${yearRange}`;
@@ -1698,6 +1728,10 @@ const App = {
         }
     },
 
+    /**
+     * Render the County tab: multi-line chart for Honolulu, Hawaiʻi, Maui, and Kauai.
+     * @param {string} slug - Metric ID
+     */
     showCounty(slug) {
         const countyData = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
         if (!countyData) return;
@@ -1801,13 +1835,16 @@ const App = {
         table.innerHTML = html;
     },
 
+    /**
+     * Close the detail modal, destroy all charts, remove card highlight,
+     * clean up event listeners, and reset the URL.
+     */
     closeModal() {
         const overlay = document.getElementById('modal-overlay');
         overlay.classList.remove('active');
         document.body.classList.remove('modal-open');
         document.body.style.overflow = '';
 
-        // Remove active card highlight
         const activeCard = document.querySelector('.card.active');
         if (activeCard) activeCard.classList.remove('active');
 
@@ -1818,7 +1855,6 @@ const App = {
         const bundleNav = document.getElementById('bundle-nav');
         if (bundleNav) bundleNav.classList.remove('visible');
 
-        // Reset table toggle state
         document.getElementById('table-toggle-wrap').style.display = 'none';
         document.getElementById('modal-table-container').style.display = 'none';
         document.querySelector('.modal-chart-container').style.display = '';
@@ -1909,11 +1945,13 @@ const App = {
         this.openModal(slug, areaName, initialView, initialCompare);
     },
 
-    // ── Consolidated narrative builder ───────────────────────────────────
-    // Builds the full-metric narrative HTML for metrics with useConsolidated: true.
-    // Sections follow the reader's natural question arc:
-    // Why care? → What does data show? → National standing → County texture
-    //   → Drivers → Lessons → Action → Caveats
+    /**
+     * Build consolidated narrative HTML for metrics with useConsolidated: true.
+     * Assembles Why → What data shows → National standing → County → Drivers → Policy levers → Data notes.
+     * @param {Object} m - Metric data object from DASHBOARD_DATA
+     * @returns {string} HTML string
+     * @private
+     */
     _buildConsolidatedNarrative(m) {
         let h = '';
 
@@ -1982,7 +2020,10 @@ const App = {
         return h;
     },
 
-    // ── Jump-to-metric search ────────────────────────────────────────────
+    /**
+     * Build the jump-to-metric dropdown from AREA_ORDER and wire
+     * click, outside-click, Escape, and '/' keyboard handlers.
+     */
     initMetricSearch() {
         const trigger  = document.getElementById('metric-search-trigger');
         const dropdown = document.getElementById('metric-search-dropdown');
@@ -2048,9 +2089,13 @@ const App = {
         });
     },
 
-    // ── Analytics helper ─────────────────────────────────────────────────
-    // Fires a named event + params to every connected analytics platform.
-    // Add new platforms here; callers never need to change.
+    /**
+     * Fire a named analytics event to all connected platforms (GA4, Clarity).
+     * Add new platforms here — callers never need to change.
+     * @param {string} eventName - Event name (e.g. 'modal_open')
+     * @param {Object} params - Arbitrary event parameters
+     * @private
+     */
     _trackEvent(eventName, params) {
         // Google Analytics 4 / GTM
         if (window.dataLayer) {
