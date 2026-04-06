@@ -286,7 +286,11 @@ const App = {
         return result;
     },
 
-    // getLatestValue and getPriorValue are delegated to Compute (see below)
+    // Delegate to Compute (pure, testable in Node.js via compute.js)
+    parseYearLabel(label) { return Compute.parseYearLabel(label); },
+    keyEnd(k) { return Compute.keyEnd(k); },
+    getLatestValue(obj, az) { return Compute.getLatestValue(obj, az); },
+    getPriorValue(obj, az) { return Compute.getPriorValue(obj, az); },
 
     /**
      * For metrics with rankings, find the rankings year and return a

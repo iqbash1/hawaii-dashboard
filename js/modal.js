@@ -1103,7 +1103,4 @@ const Modal = {
 
         return brief;
     },
-
-    /**
-
 };
