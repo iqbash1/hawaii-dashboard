@@ -203,9 +203,9 @@ const App = {
         this.initMetricSearch();
 
         // Handle permalink routing (path-based /t/slug/ or legacy hash #slug)
-        this.handleRoute();
-        window.addEventListener('hashchange', () => this.handleRoute());
-        window.addEventListener('popstate', () => this.handleRoute());
+        Router.handleRoute();
+        window.addEventListener('hashchange', () => Router.handleRoute());
+        window.addEventListener('popstate', () => Router.handleRoute());
 
     },
 
@@ -870,21 +870,7 @@ const App = {
         return boxes;
     },
 
-    /** Convert a state name to its 2-letter code for use in URLs (e.g. "California" → "ca") */
-    stateToSlug(name) {
-        const code = STATE_ABBREVS[name];
-        return code ? code.toLowerCase() : name.slice(0, 2).toLowerCase();
-    },
-
-    /** Reverse lookup: find the full state name from a 2-letter URL code (e.g. "ca" → "California") */
-    slugToState(slug) {
-        const upper = slug.toUpperCase();
-        for (const [name, code] of Object.entries(STATE_ABBREVS)) {
-            // Prefer the okina form for HI; skip bare 'Hawaii' duplicate entry
-            if (code === upper && name !== 'Hawaii') return name;
-        }
-        return null;
-    },
+    // stateToSlug, slugToState: extracted to js/routing.js (Router.stateToSlug, Router.slugToState)
 
     // ----------------------------------------------------------------
     // Modal
@@ -1433,7 +1419,7 @@ const App = {
             if (compareSelect) compareSelect.value = stateName || '';
             if (compareClear) compareClear.style.display = stateName ? '' : 'none';
             if (stateName) {
-                history.replaceState(null, '', '/rh/' + slug + '/' + this.stateToSlug(stateName) + '/');
+                history.replaceState(null, '', '/rh/' + slug + '/' + Router.stateToSlug(stateName) + '/');
             } else {
                 history.replaceState(null, '', '/rh/' + slug + '/');
             }
@@ -1699,67 +1685,7 @@ const App = {
         }
     },
 
-    // ----------------------------------------------------------------
-    // Routing
-    // ----------------------------------------------------------------
-    /** Handle permalink routing: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county), or legacy #{slug} */
-    handleRoute() {
-        let slug = '';
-        let view = '';
-
-        // Check path-based routes: /t/{slug}/ (detail), /r/{slug}/ (rankings), /c/{slug}/ (county),
-        // /rh/{slug}/ (rank-history), /rh/{slug}/{state-slug}/ (rank-history with comparison)
-        const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
-        const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
-        const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/?$/);
-        const rankHistoryCompareMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([^/]+)\/?$/);
-        const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/?$/);
-        let compareSlug = '';
-        if (detailMatch) {
-            slug = detailMatch[1];
-        } else if (rankMatch) {
-            slug = rankMatch[1];
-            view = 'rankings';
-        } else if (countyMatch) {
-            slug = countyMatch[1];
-            view = 'county';
-        } else if (rankHistoryCompareMatch) {
-            slug = rankHistoryCompareMatch[1];
-            view = 'rank-history';
-            compareSlug = rankHistoryCompareMatch[2];
-        } else if (rankHistoryMatch) {
-            slug = rankHistoryMatch[1];
-            view = 'rank-history';
-        }
-
-        // Fall back to legacy hash route: #{slug} or #{slug}/rankings or #{slug}/rank-history/{state-slug}
-        if (!slug) {
-            const hash = window.location.hash.slice(1);
-            if (!hash) return;
-            const parts = hash.split('/');
-            slug = parts[0];
-            view = parts[1] || '';
-            if (view === 'rank-history' && parts[2]) compareSlug = parts[2];
-        }
-
-        if (slug && !DASHBOARD_DATA[slug]) {
-            history.replaceState(null, '', '/');
-            return;
-        }
-        if (!slug) return;
-
-        let areaName = '';
-        for (const areaGroup of this.AREA_ORDER) {
-            if (areaGroup.metrics.includes(slug)) {
-                areaName = areaGroup.area;
-                break;
-            }
-        }
-
-        const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;
-        const initialCompare = compareSlug ? this.slugToState(compareSlug) : undefined;
-        this.openModal(slug, areaName, initialView, initialCompare);
-    },
+    // handleRoute: extracted to js/routing.js (Router.handleRoute)
 
     /**
      * Build consolidated narrative HTML for metrics with useConsolidated: true.
