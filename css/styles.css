@@ -686,6 +686,35 @@ body {
     border-color: var(--positive);
 }
 
+.modal-brief-btn {
+    height: 36px;
+    padding: 0 0.75rem;
+    gap: 0.35rem;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: all var(--transition);
+}
+
+.modal-brief-btn:hover {
+    background: var(--avg-gray-light);
+    color: var(--hawaii-blue);
+    border-color: var(--hawaii-blue);
+}
+
+.modal-brief-btn.copied {
+    color: var(--positive);
+    border-color: var(--positive);
+}
+
 .modal-close {
     width: 36px;
     height: 36px;
@@ -1483,11 +1512,13 @@ body {
         z-index: 10;
     }
 
-    .modal-share-btn .share-label {
+    .modal-share-btn .share-label,
+    .modal-brief-btn .brief-label {
         display: none;
     }
 
-    .modal-share-btn {
+    .modal-share-btn,
+    .modal-brief-btn {
         padding: 0 0.5rem;
     }
 

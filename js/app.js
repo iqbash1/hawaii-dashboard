@@ -29,6 +29,116 @@ const AREA_ICONS = {
     'Infrastructure, Resilience & Trust': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
 };
 
+// Per-metric templates for the "Copy brief" feature.
+// Each entry has an `intro` (sentence opener with {{value}} / {{period}})
+// and a `caveat` ("Keep in mind" closer).
+const BRIEF_TEMPLATES = {
+    violent_crime_rate: {
+        intro: "Hawai\u02BBi's violent crime rate is {{value}} ({{period}})",
+        caveat: "pre-1985 coverage is incomplete, so long-run comparisons should lean on the later series."
+    },
+    property_crime_rate: {
+        intro: "Hawai\u02BBi's property crime rate is {{value}} ({{period}})",
+        caveat: "pre-1985 coverage is incomplete, so long-run comparisons should lean on the later series."
+    },
+    pcp_per_100k: {
+        intro: "Hawai\u02BBi has {{value}} primary care physicians per 100,000 residents ({{period}})",
+        caveat: "this measures provider supply, not actual patient access or wait times."
+    },
+    uninsured_rate: {
+        intro: "Hawai\u02BBi's uninsured rate is {{value}} ({{period}})",
+        caveat: "this is a survey estimate, so small differences may not be meaningful."
+    },
+    suicide_rate: {
+        intro: "Hawai\u02BBi's suicide rate is {{value}} ({{period}})",
+        caveat: "Hawai\u02BBi's small population makes this rate volatile, so single-year swings can mislead."
+    },
+    renter_cost_burden_pct: {
+        intro: "{{value}} of Hawai\u02BBi renters were housing-cost burdened in {{period}}",
+        caveat: "the 30% threshold is a convention, not a hard affordability cliff."
+    },
+    home_price_to_income: {
+        intro: "Hawai\u02BBi's home price-to-income ratio is {{value}} ({{period}})",
+        caveat: "this does not capture mortgage rates or other financing costs."
+    },
+    residential_price_cpkwh: {
+        intro: "Hawai\u02BBi's residential electricity price is {{value}} ({{period}})",
+        caveat: "the series changes across time, with different methodology before and after 1990."
+    },
+    unsheltered_homeless_rate: {
+        intro: "Hawai\u02BBi's unsheltered homeless rate is {{value}} ({{period}})",
+        caveat: "this is based on a one-night count and likely understates the true number."
+    },
+    food_insecurity_rate: {
+        intro: "Hawai\u02BBi's food insecurity rate is {{value}} ({{period}})",
+        caveat: "this is a 3-year rolling average, so it lags current conditions."
+    },
+    unemployment_rate: {
+        intro: "Hawai\u02BBi's unemployment rate is {{value}} ({{period}})",
+        caveat: "this excludes discouraged workers and is not a count of everyone without a job."
+    },
+    labor_force_participation: {
+        intro: "Hawai\u02BBi's labor force participation rate is {{value}} ({{period}})",
+        caveat: "this shows who is working or looking for work, not job quality or wages."
+    },
+    labor_productivity: {
+        intro: "Hawai\u02BBi's labor productivity index is {{value}} ({{period}})",
+        caveat: "productivity is not the same as worker pay or living standards."
+    },
+    real_per_capita_income: {
+        intro: "Hawai\u02BBi's cost-adjusted per capita income is {{value}} ({{period}})",
+        caveat: "this is an average, not the income of a typical household."
+    },
+    estabs_entry_rate: {
+        intro: "Hawai\u02BBi's new business entry rate is {{value}} ({{period}})",
+        caveat: "this covers employer businesses only, not all new firms."
+    },
+    net_employer_formation: {
+        intro: "Hawai\u02BBi's net employer business formation rate is {{value}} ({{period}})",
+        caveat: "net change can hide a lot of churn underneath."
+    },
+    naep_math_8: {
+        intro: "Hawai\u02BBi's NAEP 8th grade math score is {{value}} ({{period}})",
+        caveat: "this is a scale score, not a proficiency rate."
+    },
+    naep_reading_8: {
+        intro: "Hawai\u02BBi's NAEP 8th grade reading score is {{value}} ({{period}})",
+        caveat: "this is a scale score, not a proficiency rate."
+    },
+    acgr: {
+        intro: "Hawai\u02BBi's high school graduation rate is {{value}} ({{period}})",
+        caveat: "this tracks on-time diplomas, not college or career readiness."
+    },
+    ba_or_higher_pct: {
+        intro: "{{value}} of Hawai\u02BBi adults have a bachelor's degree or higher ({{period}})",
+        caveat: "this measures credential share, not skill or workforce fit."
+    },
+    broadband_subscription_pct: {
+        intro: "{{value}} of Hawai\u02BBi households have broadband access ({{period}})",
+        caveat: "this measures access, not speed or connection quality."
+    },
+    renewables_share_gen: {
+        intro: "{{value}} of Hawai\u02BBi's electricity generation came from renewables in {{period}}",
+        caveat: "this is a generation share, not Hawai\u02BBi's full energy mix or total consumption."
+    },
+    net_domestic_migration_rate: {
+        intro: "Hawai\u02BBi's net migration rate is {{value}} ({{period}})",
+        caveat: "this shows net movement, not why people are leaving or arriving."
+    },
+    road_poor_pct: {
+        intro: "{{value}} of Hawai\u02BBi roads were rated in poor condition in {{period}}",
+        caveat: "this is not a complete inventory of every road, especially local roads."
+    },
+    rainy_day_fund_pct: {
+        intro: "Hawai\u02BBi's rainy day fund was {{value}} of general fund spending in {{period}}",
+        caveat: "this covers the stabilization fund only, not total reserves."
+    },
+    voter_participation_rate: {
+        intro: "Hawai\u02BBi's voter participation rate was {{value}} in {{period}}",
+        caveat: "this is based on eligible voters, not all adults."
+    },
+};
+
 const App = {
     sparklineCharts: [],
     detailChart: null,
@@ -801,6 +911,24 @@ const App = {
             e.preventDefault();
             copyShare(document.getElementById('modal-share-btn'));
         });
+
+        // Copy brief button
+        const briefBtn = document.getElementById('modal-brief-btn');
+        briefBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const text = this.computeBrief(slug);
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                const label = briefBtn.querySelector('.brief-label');
+                briefBtn.classList.add('copied');
+                if (label) label.textContent = 'Copied!';
+                setTimeout(() => {
+                    briefBtn.classList.remove('copied');
+                    if (label) label.textContent = 'Copy brief';
+                }, 2000);
+            });
+        });
+
         document.getElementById('print-link').addEventListener('click', (e) => {
             e.preventDefault();
             const origTitle = document.title;
@@ -2018,6 +2146,92 @@ const App = {
         </div>`;
 
         return h;
+    },
+
+    // ── Copy-brief helpers ─────────────────────────────────────────────
+
+    /**
+     * Compute a neutral trend phrase comparing two 3-year windows.
+     * Uses the same window logic as the card 5-year change indicator.
+     * @param {string} slug - Metric ID
+     * @returns {string|null} e.g. "improved 8.2% from the 2019-21 to 2022-24 average"
+     */
+    computeTrendPhrase(slug) {
+        const effective = this.getEffectiveData(slug);
+        if (!effective || !effective.hawaii) return null;
+        const m = DASHBOARD_DATA[slug];
+
+        const sortedKeys = Object.keys(effective.hawaii)
+            .sort((a, b) => this.keyEnd(a) - this.keyEnd(b));
+        if (sortedKeys.length < 4) return null;
+
+        const recent = sortedKeys.slice(-3);
+        const prior  = sortedKeys.slice(-6, -3);
+        if (prior.length < 2) return null;
+
+        const avg = (keys) => {
+            const vals = keys.map(k => effective.hawaii[k]).filter(v => v != null);
+            return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+        };
+        const recentAvg = avg(recent);
+        const priorAvg  = avg(prior);
+        if (recentAvg == null || priorAvg == null || priorAvg === 0) return null;
+
+        const change   = recentAvg - priorAvg;
+        const pctChange = (change / Math.abs(priorAvg)) * 100;
+        const isFlat    = Math.abs(pctChange) < 0.5;
+        const isImproving = m.goodDirection === 'up' ? change > 0 : change < 0;
+
+        const word    = isFlat ? 'held flat' : (isImproving ? 'improved' : 'worsened');
+        const pctPart = isFlat ? '' : ` ${Math.abs(pctChange) > 100 ? Math.abs(pctChange).toFixed(0) : Math.abs(pctChange).toFixed(1)}%`;
+        const priorLbl  = `${this.parseYearLabel(prior[0])}\u2013${String(this.keyEnd(prior[prior.length - 1])).slice(-2)}`;
+        const recentLbl = `${this.parseYearLabel(recent[0])}\u2013${String(this.keyEnd(recent[recent.length - 1])).slice(-2)}`;
+
+        return `${word}${pctPart} from the ${priorLbl} to ${recentLbl} average`;
+    },
+
+    /**
+     * Build a paste-ready one-paragraph summary for a metric.
+     * Values are computed live so the text stays current as data updates.
+     * @param {string} slug - Metric ID
+     * @returns {string|null} Plain-text paragraph
+     */
+    computeBrief(slug) {
+        const m = DASHBOARD_DATA[slug];
+        const tpl = BRIEF_TEMPLATES[slug];
+        if (!m || !tpl) return null;
+
+        const rankings = this.getStateRankings(slug);
+        const effective = this.getEffectiveData(slug);
+        if (!rankings || !effective || !effective.hawaii) return null;
+
+        const latestHi  = this.getLatestValue(effective.hawaii);
+        const latestAvg = this.getLatestValue(effective.otherStateAvg);
+        if (!latestHi.value) return null;
+
+        const isDecimal = ChartUtils.isDecimalPctMetric(m);
+        const fmtValue  = ChartUtils.formatValue(latestHi.value, m.unit, isDecimal);
+        const period    = rankings.year;
+        const rank      = rankings.hawaiiRank;
+
+        // Fill intro template
+        let intro = tpl.intro
+            .replace('{{value}}', fmtValue)
+            .replace('{{period}}', period);
+
+        // Above / below / at the Other State Average
+        const hiVal  = isDecimal ? latestHi.value * 100  : latestHi.value;
+        const avgVal = isDecimal ? latestAvg.value * 100 : latestAvg.value;
+        const vsAvg  = hiVal > avgVal ? 'above' : hiVal < avgVal ? 'below' : 'at';
+
+        const trend = this.computeTrendPhrase(slug);
+
+        let brief = `Bottom line: ${intro}, ranking #${rank} nationally.`;
+        if (trend) brief += ` It has ${trend},`;
+        brief += ` and sits ${vsAvg} the Other State Average.`;
+        if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;
+
+        return brief;
     },
 
     /**
