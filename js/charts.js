@@ -57,12 +57,13 @@ const ChartUtils = {
 
     /**
      * Create a mini sparkline chart for a card
+     * @param {boolean} [allowZero] - If true, zero values are kept; otherwise mapped to null (missing data)
      */
-    createSparkline(canvas, data, goodDirection) {
+    createSparkline(canvas, data, goodDirection, allowZero) {
         const ctx = canvas.getContext('2d');
-        // Replace 0 with null (0 = missing data, not a real value)
-        const values = Object.values(data.hawaii).map(v => v === 0 ? null : v);
-        const avgValues = Object.values(data.otherStateAvg).map(v => v === 0 ? null : v);
+        const mapVal = allowZero ? (v => v ?? null) : (v => v === 0 ? null : v);
+        const values = Object.values(data.hawaii).map(mapVal);
+        const avgValues = Object.values(data.otherStateAvg).map(mapVal);
         const labels = Object.keys(data.hawaii);
 
         if (values.filter(v => v !== null).length === 0) return null;
@@ -212,12 +213,15 @@ const ChartUtils = {
      * @param {Object} data - metric data with hawaii and otherStateAvg
      * @param {Array} govBoxes - governor term annotations [{name, party, startIdx, endIdx}]
      */
-    createDetailChart(canvas, data, govBoxes) {
+    /**
+     * @param {boolean} [allowZero] - If true, zero values are kept; otherwise mapped to null
+     */
+    createDetailChart(canvas, data, govBoxes, allowZero) {
         const ctx = canvas.getContext('2d');
         const labels = Object.keys(data.hawaii);
-        // Replace 0 with null (0 = missing data, not a real value)
-        const hawaiiValues = Object.values(data.hawaii).map(v => v === 0 ? null : v);
-        const avgValues = Object.values(data.otherStateAvg).map(v => v === 0 ? null : v);
+        const mapVal = allowZero ? (v => v ?? null) : (v => v === 0 ? null : v);
+        const hawaiiValues = Object.values(data.hawaii).map(mapVal);
+        const avgValues = Object.values(data.otherStateAvg).map(mapVal);
 
         // Destroy existing chart if any
         const existingChart = Chart.getChart(canvas);

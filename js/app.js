@@ -139,6 +139,10 @@ const BRIEF_TEMPLATES = {
     },
 };
 
+// Metrics where zero is a genuine data value (not missing data).
+// For all other metrics, zero in the time series means data was not reported.
+const ZERO_IS_VALID = new Set(['net_employer_formation', 'rainy_day_fund_pct', 'net_domestic_migration_rate']);
+
 const App = {
     sparklineCharts: [],
     detailChart: null,
@@ -284,21 +288,7 @@ const App = {
         return result;
     },
 
-    /** Get the latest non-null/non-zero value from a data object */
-    getLatestValue(obj) {
-        const entries = Object.entries(obj).filter(([k, v]) => v !== null && v !== undefined && v !== 0);
-        if (entries.length === 0) return { year: null, value: null };
-        const last = entries[entries.length - 1];
-        return { year: last[0], value: last[1] };
-    },
-
-    /** Get the second-to-last non-null/non-zero value */
-    getPriorValue(obj) {
-        const entries = Object.entries(obj).filter(([k, v]) => v !== null && v !== undefined && v !== 0);
-        if (entries.length < 2) return { year: null, value: null };
-        const prev = entries[entries.length - 2];
-        return { year: prev[0], value: prev[1] };
-    },
+    // getLatestValue and getPriorValue are delegated to Compute (see below)
 
     /**
      * For metrics with rankings, find the rankings year and return a
@@ -363,8 +353,9 @@ const App = {
 
     /** Build "vs Other States" comparison HTML for a card */
     buildVsAvgHtml(metricData, slug) {
-        const latest = this.getLatestValue(metricData.hawaii);
-        const latestAvg = this.getLatestValue(metricData.otherStateAvg);
+        const az = ZERO_IS_VALID.has(slug);
+        const latest = this.getLatestValue(metricData.hawaii, az);
+        const latestAvg = this.getLatestValue(metricData.otherStateAvg, az);
         if (latest.value === null || latestAvg.value === null) return '';
 
         const diff = latest.value - latestAvg.value;
@@ -465,8 +456,9 @@ const App = {
                 card.id = slug;
                 card.dataset.metric = slug;
 
-                const latest = this.getLatestValue(effective.hawaii);
-                const latestAvg = this.getLatestValue(effective.otherStateAvg);
+                const az = ZERO_IS_VALID.has(slug);
+                const latest = this.getLatestValue(effective.hawaii, az);
+                const latestAvg = this.getLatestValue(effective.otherStateAvg, az);
                 const isDecimal = ChartUtils.isDecimalPctMetric(effective);
                 const unitSuffix = effective.unitLabel
                     ? `<span class="card-unit">${effective.unitLabel}</span>`
@@ -513,7 +505,7 @@ const App = {
                 grid.appendChild(card);
 
                 const canvas = card.querySelector('.card-sparkline canvas');
-                const chart = ChartUtils.createSparkline(canvas, effective, effective.goodDirection);
+                const chart = ChartUtils.createSparkline(canvas, effective, effective.goodDirection, ZERO_IS_VALID.has(slug));
                 this.sparklineCharts.push(chart);
             });
         });
@@ -685,17 +677,11 @@ const App = {
         });
     },
 
-    /** Parse a year label to the start year: "2022" → 2022, "2022-2024" → 2022 */
-    parseYearLabel(label) {
-        const match = label.toString().match(/(\d{4})/);
-        return match ? parseInt(match[1]) : null;
-    },
-
-    /** Extract the end year from a year key: "2022" → 2022, "2022-2024" → 2024 */
-    keyEnd(k) {
-        const p = String(k).split('-');
-        return Number(p[p.length - 1]);
-    },
+    // Delegate to Compute (pure, testable in Node.js via compute.js)
+    parseYearLabel(label) { return Compute.parseYearLabel(label); },
+    keyEnd(k) { return Compute.keyEnd(k); },
+    getLatestValue(obj, az) { return Compute.getLatestValue(obj, az); },
+    getPriorValue(obj, az) { return Compute.getPriorValue(obj, az); },
 
     /** Get governor term boxes for the chart x-axis labels */
     getGovernorBoxes(labels) {
@@ -879,10 +865,10 @@ const App = {
             <span class="csv-sep">&middot;</span>
             <a href="#" class="print-link" id="print-link">Print</a></div>
         `;
-        document.getElementById('csv-download').addEventListener('click', (e) => {
+        document.getElementById('csv-download').onclick = (e) => {
             e.preventDefault();
             this.downloadData(slug);
-        });
+        };
         // Share helpers
         const getShareUrl = () => {
             const activeTab = document.querySelector('.modal-tab.active');
@@ -919,12 +905,12 @@ const App = {
                 if (label) label.textContent = 'Share';
             }, 2000);
         };
-        document.getElementById('modal-share-btn').addEventListener('click', (e) => {
+        document.getElementById('modal-share-btn').onclick = (e) => {
             e.preventDefault();
             copyShare(document.getElementById('modal-share-btn'));
-        });
+        };
 
-        document.getElementById('print-link').addEventListener('click', (e) => {
+        document.getElementById('print-link').onclick = (e) => {
             e.preventDefault();
             const origTitle = document.title;
             const activeTab = document.querySelector('.modal-tab.active');
@@ -991,7 +977,7 @@ const App = {
         const labels = Object.keys(effective.hawaii);
         const govBoxes = this.getGovernorBoxes(labels);
 
-        this.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes);
+        this.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes, ZERO_IS_VALID.has(slug));
         canvas.setAttribute('role', 'img');
         canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs other state average`);
 
@@ -1174,6 +1160,18 @@ const App = {
     downloadData(slug) {
         const m = DASHBOARD_DATA[slug];
         if (!m) return;
+
+        // Lazy-load SheetJS on first download (~200KB saved on initial page load)
+        if (typeof XLSX === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+            script.integrity = 'sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw';
+            script.crossOrigin = 'anonymous';
+            script.onload = () => this.downloadData(slug);
+            script.onerror = () => alert('Could not load the export library. Please try again.');
+            document.head.appendChild(script);
+            return;
+        }
 
         const wb = XLSX.utils.book_new();
         const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
@@ -1539,7 +1537,7 @@ const App = {
         document.getElementById('modal-rankings').style.display = 'block';
 
         document.getElementById('rankings-subtitle').textContent = '';
-        const latestDetailYear = this.getLatestValue(metricData.hawaii).year;
+        const latestDetailYear = this.getLatestValue(metricData.hawaii, ZERO_IS_VALID.has(slug)).year;
         const yearNote = (year !== latestDetailYear)
             ? ` \u00B7 ${year} (latest year with full state coverage)`
             : ` \u00B7 ${year}`;
@@ -2191,9 +2189,10 @@ const App = {
         const effective = this.getEffectiveData(slug);
         if (!rankings || !effective || !effective.hawaii) return null;
 
-        const latestHi  = this.getLatestValue(effective.hawaii);
-        const latestAvg = this.getLatestValue(effective.otherStateAvg);
-        if (!latestHi.value) return null;
+        const az = ZERO_IS_VALID.has(slug);
+        const latestHi  = this.getLatestValue(effective.hawaii, az);
+        const latestAvg = this.getLatestValue(effective.otherStateAvg, az);
+        if (latestHi.value === null || latestHi.value === undefined) return null;
 
         const isDecimal = ChartUtils.isDecimalPctMetric(m);
         const fmtValue  = ChartUtils.formatValue(latestHi.value, m.unit, isDecimal);
