@@ -292,6 +292,26 @@ const App = {
     getLatestValue(obj, az) { return Compute.getLatestValue(obj, az); },
     getPriorValue(obj, az) { return Compute.getPriorValue(obj, az); },
 
+    /** Get governor term boxes for the chart x-axis labels */
+    getGovernorBoxes(labels) {
+        if (!labels || labels.length === 0) return [];
+        const boxes = [];
+        const years = labels.map(l => this.parseYearLabel(l));
+        this.GOVERNORS.forEach(gov => {
+            let firstIdx = -1, lastIdx = -1;
+            years.forEach((year, idx) => {
+                if (year !== null && year >= gov.start && year < gov.end) {
+                    if (firstIdx === -1) firstIdx = idx;
+                    lastIdx = idx;
+                }
+            });
+            if (firstIdx !== -1) {
+                boxes.push({ name: gov.name, party: gov.party, startIdx: firstIdx, endIdx: lastIdx });
+            }
+        });
+        return boxes;
+    },
+
     /**
      * For metrics with rankings, find the rankings year and return a
      * trimmed copy of the data so the line chart ends at that year.

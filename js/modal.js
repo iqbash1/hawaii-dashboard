@@ -100,38 +100,7 @@ const Modal = {
     getLatestValue(obj, az) { return Compute.getLatestValue(obj, az); },
     getPriorValue(obj, az) { return Compute.getPriorValue(obj, az); },
 
-    /** Get governor term boxes for the chart x-axis labels */
-    getGovernorBoxes(labels) {
-        if (!labels || labels.length === 0) return [];
-
-        const boxes = [];
-        const years = labels.map(l => App.parseYearLabel(l));
-
-        App.GOVERNORS.forEach(gov => {
-            // Find the first and last label index that falls within this governor's term
-            let firstIdx = -1;
-            let lastIdx = -1;
-
-            years.forEach((year, idx) => {
-                if (year !== null && year >= gov.start && year < gov.end) {
-                    if (firstIdx === -1) firstIdx = idx;
-                    lastIdx = idx;
-                }
-            });
-
-            if (firstIdx !== -1) {
-                boxes.push({
-                    name: gov.name,
-                    party: gov.party,
-                    startIdx: firstIdx,
-                    endIdx: lastIdx,
-                });
-            }
-        });
-
-        return boxes;
-    },
-
+    // getGovernorBoxes: restored to app.js Helpers section
     // stateToSlug, slugToState: extracted to js/routing.js (Router.stateToSlug, Router.slugToState)
 
     // ----------------------------------------------------------------
