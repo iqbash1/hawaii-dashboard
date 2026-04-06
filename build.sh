@@ -21,4 +21,13 @@ cp -r r dist/
 cp -r rh dist/
 cp -r c dist/
 
+# Replace all ?v=... cache-bust strings with the git short SHA.
+# Source files keep their manual versions; only dist/ gets the SHA.
+# This eliminates manual version bumping across 3 HTML files.
+SHA=$(git rev-parse --short HEAD)
+# CI runs Linux sed (no -i extension needed); local macOS needs -i ''
+# Using perl for cross-platform compatibility
+perl -pi -e "s/\\?v=[^\"]*\"/\\?v=${SHA}\"/g" dist/index.html dist/about/index.html dist/five-year-change/index.html
+echo "Cache-bust: ?v=${SHA}"
+
 echo "Build complete: $(find dist -type f | wc -l | tr -d ' ') files in dist/"
