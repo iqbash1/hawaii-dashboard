@@ -78,6 +78,6 @@ const Router = {
 
         const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;
         const initialCompare = compareSlug ? Router.slugToState(compareSlug) : undefined;
-        App.openModal(slug, areaName, initialView, initialCompare);
+        Modal.openModal(slug, areaName, initialView, initialCompare);
     },
 };
