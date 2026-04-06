@@ -176,7 +176,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "The FBI's 2021 transition from UCR to NIBRS expanded offense definitions counted as violent crime. States that adopted NIBRS earlier show apparent rate increases that reflect methodology, not actual change. Pre- and post-2021 comparisons should account for this shift."
+        "Maine's low rates reflect geographic isolation and community-based policing; New Mexico's deterioration tracks drug trafficking expansion and rural service erosion. Hawaii shares Maine's isolation advantage but also faces New Mexico's methamphetamine exposure on neighbor islands, where service gaps are widest."
       ],
       "caution": {
         "state": "New Mexico",
@@ -356,8 +356,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Visitor-targeted theft, primarily from rental vehicles and hotel rooms, represents a disproportionate share of Hawaii's property crime incidents. High visitor-to-resident ratios on peak days concentrate the target pool in a small geographic area.",
-        "Hawaii's drug court system operates in all four counties. Participants show recidivism rates of roughly 25 percent versus 50 to 60 percent for the general criminal population."
+        "New York targeted resources where crime concentrates most; Oregon's decriminalization without treatment capacity backfired. In Hawaii, visitor-targeted theft from rental vehicles and hotel rooms concentrates in high-visitor corridors. Hawaii's drug court system already operates in all four counties with recidivism rates of roughly 25 percent versus 50 to 60 percent for the general population."
       ],
       "caution": {
         "state": "Oregon",
@@ -436,8 +435,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's J-1 visa waiver program places international medical graduates in designated shortage areas in exchange for service commitments, a federal tool the state actively uses to fill neighbor island gaps. The number of J-1 waiver slots Hawaii requests annually determines how many physicians reach rural communities.",
-        "Physicians who train at JABSOM or complete residencies on Oahu rarely relocate to neighbor islands after establishing practices and families in Honolulu. Neighbor island pipeline programs tied to JABSOM admissions targets have been proposed but not sustained."
+        "Vermont retained rural physicians through coordinated primary care teams; Oklahoma lost them as rural hospitals closed. Hawaii actively uses the J-1 visa waiver program to place international medical graduates in shortage areas, but the number of slots requested annually determines reach. Physicians who train at JABSOM or complete residencies on Oahu rarely relocate to neighbor islands, a pipeline gap that has been proposed but not sustained."
       ],
       "caution": {
         "state": "Oklahoma",
@@ -515,7 +513,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "The ACA's Medicaid expansion reached residents earning up to 138 percent of the federal poverty level. The 2024 uptick reflects the end of pandemic-era continuous enrollment, not a structural policy change."
+        "Massachusetts strengthened coverage by layering state-level subsidies over its employer mandate; Tennessee shows how budget pressure can unravel a broad public program. Hawaii's 2024 uptick from 2.8 to 3.5 percent reflects the end of pandemic-era continuous Medicaid enrollment, not a structural change, but it highlights dependence on federal enrollment rules the state does not control."
       ],
       "caution": {
         "state": "Tennessee",
@@ -617,7 +615,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Neighbor island counties have limited psychiatric provider capacity. Telehealth expansion since 2020 has partially closed this gap, but rural and outer-island residents still face longer wait times for in-person behavioral health services than urban Oahu residents."
+        "New Jersey deployed county-level mobile crisis teams statewide; Montana's rural isolation and provider gaps keep rates high. Hawaii's neighbor island counties face similar access constraints: psychiatric provider capacity is limited, and while telehealth expansion since 2020 has partially closed the gap, rural and outer-island residents still face longer wait times for in-person behavioral health services."
       ],
       "caution": {
         "state": "Montana",
@@ -691,8 +689,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's statewide district structure means that policy changes propagate uniformly, which can accelerate improvement if the right levers are pulled but also means there is no local lab for experimentation.",
-        "The gap between Hawaii's graduation rate and its NAEP test scores suggests that dropout risk is concentrated among students facing economic and logistical barriers rather than academic underpreparedness."
+        "Virginia's CTE restructuring worked by giving economically at-risk students a direct school-to-employment path. Hawaii's statewide district allows uniform policy rollout, but the gap between rising test scores and stagnant graduation rates suggests the students most at risk face economic and logistical barriers that academic reforms alone do not reach."
       ],
       "caution": {
         "state": "Louisiana",
@@ -780,8 +777,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's attainment rate is partly a product of in-migration rather than homegrown graduate retention. Military, federal, and professional in-migrants hold degrees at high rates, raising the statewide number even as some Hawaii-raised graduates leave for mainland opportunities.",
-        "University of Hawaii system enrollment declined through the early 2020s. Sustained attainment growth depends on whether resident students can complete degrees in-state rather than leaving or forgoing college."
+        "Colorado built deliberate university-to-employer pipelines alongside lifestyle-driven in-migration. Hawaii's attainment is also partly a product of military and federal in-migration, but UH system enrollment has declined through the early 2020s. Sustained gains depend on whether resident students complete degrees in-state rather than leaving or forgoing college."
       ],
       "caution": {
         "state": "West Virginia",
@@ -853,8 +849,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's single statewide school district allowed HIDOE to roll out the Illustrative Mathematics curriculum to every school simultaneously in 2020 to 2022, without negotiating with separate local districts.",
-        "Teacher shortages are most acute in STEM subjects on neighbor islands, where the cost-of-living premium is not offset by any compensation differential."
+        "Massachusetts built sustained gains through standards-based reform and teacher quality; Florida's early gains from retention policies did not carry forward. Hawaii's single statewide district allowed HIDOE to roll out Illustrative Mathematics to every school simultaneously, but teacher shortages remain most acute in STEM subjects on neighbor islands where cost-of-living premiums are not offset by compensation."
       ],
       "caution": {
         "state": "Florida",
@@ -926,8 +921,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's reading convergence with the national average since 2013 has come partly from the rest of the country declining rather than Hawaii accelerating. A structural literacy program similar to Mississippi's, applied to Hawaii's single statewide district, could potentially drive genuine gains rather than relative convergence.",
-        "Hawaii's multilingual population, with many students whose first language is not English, creates both challenges for standard reading assessments and a need for evidence-based instructional approaches that account for language transfer."
+        "Mississippi's literacy reform drove genuine gains from the bottom; Kentucky shows above-average performance can erode when attention shifts. Hawaii's convergence since 2013 has come partly from other states declining. Hawaii's large multilingual population creates both challenges for standard assessments and a need for instructional approaches that account for language transfer."
       ],
       "caution": {
         "state": "Kentucky",
@@ -1075,7 +1069,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Recovery from the 2020 spike to 3 percent by 2024 was driven almost entirely by the return of tourism rather than the growth of new sectors. The same volatility risk that existed in 2019 exists today."
+        "Nebraska's diversified economy absorbed COVID with a fraction of the disruption; Nevada's tourism concentration produced the same volatility as Hawaii's. Hawaii's recovery from 11.6 percent in 2020 to 3 percent by 2024 was driven almost entirely by the return of tourism rather than the growth of new sectors. The same structural volatility risk that existed before the pandemic exists today."
       ],
       "caution": {
         "state": "Nevada",
@@ -1223,8 +1217,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's informal economy is larger relative to measured employment than in most states, partly because high living costs make income-supplementing activity outside formal employment widespread. BLS participation measures count only people actively working or seeking formal employment.",
-        "Veterans who separate before age 65 with disability ratings that provide income without requiring employment count as working-age non-participating in LFP statistics. Hawaii has one of the highest per-capita veteran populations of any state."
+        "Minnesota's childcare assistance keeps parents in the workforce; West Virginia shows how sector collapse permanently removes workers. Hawaii's informal economy is larger than most states because high living costs drive income-supplementing activity outside formal employment. Hawaii's high per-capita veteran population also includes many with disability ratings that provide income without requiring employment, lowering measured participation."
       ],
       "caution": {
         "state": "West Virginia",
@@ -1309,8 +1302,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's defense sector represents roughly 9 percent of state GDP and is the most stable high-wage sector in the state. Defense-adjacent industries in cybersecurity, satellite operations, and unmanned systems have grown civilian employment clusters around military installations in Virginia, San Diego, and Colorado Springs.",
-        "Hawaii's Movers and Shakas remote worker program (2021) attracted roughly 4,000 remote workers who contributed an estimated $57 million to the local economy in the first cohort. The program was designed as a pilot and was not continued at scale."
+        "Colorado diversified through cluster development; Alaska's single-sector dependence eroded income when prices fell. Hawaii's defense sector, roughly 9 percent of state GDP, is the most stable high-wage sector and has spawned civilian clusters in cybersecurity and satellite operations in other states. The Movers and Shakas remote worker program (2021) attracted roughly 4,000 workers contributing an estimated $57 million, but was not continued at scale."
       ],
       "caution": {
         "state": "Alaska",
@@ -1398,8 +1390,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Maui County's Bill 9 (signed 2025), inspired by the 2023 Lahaina fires, phases out approximately 6,200 Minatoya-listed vacation rentals in apartment-zoned areas by 2029–2031, returning those units to long-term residential availability.",
-        "Hawaii's LIHTC allocation is consistently underutilized relative to other states because state environmental review and permitting delays make projects financially unviable before they are built."
+        "Texas keeps burden low through permissive development; California's rent stabilization did not reduce burden without supply. Hawaii has begun addressing supply directly: Maui County's Bill 9 (signed 2025) phases out approximately 6,200 vacation rentals in apartment-zoned areas by 2029-2031. At the same time, Hawaii's LIHTC allocation is consistently underutilized because environmental review and permitting delays make projects financially unviable."
       ],
       "caution": {
         "state": "California",
@@ -1487,8 +1478,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's construction cost premium is estimated at 20 to 40 percent above comparable mainland projects, driven by Jones Act shipping surcharges on materials and skilled labor scarcity on neighbor islands.",
-        "Short-term rental platforms have converted an estimated 20,000 to 25,000 residential units to full-time vacation rentals in Hawaii, directly reducing housing supply available to residents."
+        "Minnesota's zoning reform opened supply; California's reforms stalled against permitting and labor barriers. Hawaii faces both: a 20-to-40 percent construction cost premium driven by Jones Act shipping, and an estimated 20,000 to 25,000 residential units converted to full-time vacation rentals, directly reducing supply available to residents."
       ],
       "caution": {
         "state": "California",
@@ -1563,8 +1553,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "The Kauhale Initiative achieves $20,000 per unit on surplus state and federal land, compared to $200,000-plus for conventional affordable housing. Scaling it to 5,000 units would require more military and state surplus land transfers, the primary lever Hawaiʻi controls that most states do not.",
-        "The Return to Home program costs $500,000 per year, relocates mainland-connected individuals at a 2% return rate, and died in the 2025 legislature. Making it permanent addresses a documented subset of inflow at very low cost."
+        "Virginia unified provider data to drive placements; Oregon spent $1.7 billion on services without expanding supply. Hawaii's Kauhale Initiative achieves $20,000 per unit on surplus state and federal land, compared to $200,000-plus for conventional affordable housing; scaling to 5,000 units would require more military and state surplus land transfers. The Return to Home program costs $500,000 per year, relocates mainland-connected individuals at a 2 percent return rate, and died in the 2025 legislature."
       ],
       "caution": {
         "state": "Oregon",
@@ -1644,8 +1633,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Federal IIJA formula funds (2021) allocate approximately $510 million to Hawaii in highway apportionment over five years. State-of-good-repair requirements attached to IIJA funds require a larger share of apportionment go to maintenance before new construction.",
-        "Neighbor island road maintenance costs more per mile than Oahu because every piece of equipment and material must be shipped separately."
+        "Virginia's SMART SCALE prioritized cost-effective maintenance; Rhode Island's capital package funded visible projects over systematic upkeep. Federal IIJA formula funds allocate approximately $510 million to Hawaii over five years, with state-of-good-repair requirements directing more to maintenance. Neighbor island road maintenance costs more per mile than Oahu because every piece of equipment and material must be shipped separately."
       ],
       "caution": {
         "state": "Rhode Island",
@@ -1712,8 +1700,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's overall subscription rate masks a county-level gap. Oahu's subscription rate is near or above the national top tier, while rural Maui, Hawaii County, and Molokai have rates closer to the national average or below.",
-        "The remaining unsubscribed population in Hawaii is primarily a cost barrier, not an infrastructure gap. The federal Affordable Connectivity Program, which expired in 2024, covered roughly 50,000 Hawaii households. Its expiration likely contributed to any stagnation in subscription rates going forward."
+        "Utah's UTOPIA Fiber solved infrastructure; Mississippi shows infrastructure alone is not enough when affordability is the constraint. Hawaii's remaining gap is primarily cost: the federal Affordable Connectivity Program covered roughly 50,000 Hawaii households before expiring in 2024, and rural Maui, Hawaii County, and Molokai have subscription rates near or below the national average."
       ],
       "caution": {
         "state": "Mississippi",
@@ -1875,8 +1862,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Kauai Island Utility Cooperative (KIUC) was 92 percent petroleum-dependent in 2011. By signing long-term solar-plus-storage contracts at fixed prices in 2015 and 2019, both below diesel cost at the time, KIUC reached roughly 70 percent renewable by 2022. During the 2022 oil price spike, KIUC posted Hawaii's lowest electricity rate for the first time in its history.",
-        "Hawaii enacted Performance-Based Regulation (PBR) for HECO in 2020, tying utility revenues to performance metrics rather than capital expenditure. In 2025, the PUC opened a traditional rate case that renewable advocates argue reverts to the old cost-of-service model."
+        "Alaska's Renewable Energy Fund gave isolated communities a path off diesel; California's transition costs passed through without closing the price gap. Within Hawaii, Kauai Island Utility Cooperative shows the model working: KIUC went from 92 percent petroleum-dependent in 2011 to roughly 70 percent renewable by 2022, posting Hawaii's lowest rate during the 2022 oil spike. HECO adopted Performance-Based Regulation in 2020, but in 2025 the PUC opened a traditional rate case that renewable advocates argue reverts to the old model."
       ],
       "caution": {
         "state": "California",
@@ -1972,8 +1958,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's island grid structure creates both a constraint and an opportunity. Each island must balance supply and demand independently without interconnection to neighboring grids, which limits how much intermittent renewable generation can be added without battery storage. However, the same isolation means Hawaii's cost savings from replacing oil-fired generation are larger per kilowatt-hour than for any other state.",
-        "Hawaii's rooftop solar penetration, roughly one in three homes, is the highest in the nation. However, rooftop generation counts differently in utility planning than utility-scale generation, and the grid management challenge of high residential solar penetration has at times slowed interconnection approvals for new projects."
+        "Iowa built a stable renewable base through utility-scale procurement; Arizona's policy reversal shows how distributed solar gains are vulnerable. Hawaii's island grids must each balance supply independently, but each kilowatt-hour of oil replaced saves more than in any other state. Within the state, Kauai's cooperative went from 92 percent petroleum-dependent in 2011 to roughly 70 percent renewable by 2022 through fixed-price solar-plus-storage contracts, posting Hawaii's lowest electricity rate during the 2022 oil spike."
       ],
       "caution": {
         "state": "Arizona",
@@ -2058,8 +2043,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii imports over 80 percent of its food, making grocery prices highly sensitive to shipping costs, fuel prices, and supply chain disruptions. This structural import dependence means that national inflation events hit Hawaii households harder in dollar terms than most other states.",
-        "The 2022-2024 uptick in food insecurity preceded the expiration of the federal enhanced SNAP benefits that had been in place since 2020. The return to pre-pandemic SNAP allotments in 2023 coincided with elevated grocery prices, a combination that pushed food insecurity higher across most states."
+        "Minnesota's strength comes from robust safety-net enrollment; Arkansas shows what happens when access tightens. Hawaii imports over 80 percent of its food, making grocery prices especially sensitive to shipping costs and inflation. The 2022-2024 uptick coincided with the return to pre-pandemic SNAP allotments alongside elevated grocery prices."
       ],
       "caution": {
         "state": "Arkansas",
@@ -2160,8 +2144,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's fund balance grew from 0.7 percent in 2020 to 14.1 percent in 2024, a gain almost entirely driven by the return of tourism revenue rather than by a structural change to deposit rules. Without a statutory automatic deposit mechanism, the reserve remains vulnerable to discretionary decisions in future budget cycles.",
-        "Hawaii's island isolation and exposure to natural disasters including hurricanes, tsunamis, and volcanic events creates a stronger-than-average argument for maintaining a large reserve. Disaster response costs fall disproportionately on island states with limited mutual aid options."
+        "North Carolina's automatic deposit mechanism removed discretion; New Jersey's thin reserves compounded fiscal stress. Hawaii's fund grew from 0.7 percent in 2020 to 14.1 percent in 2024, but the gain was driven by tourism revenue recovery rather than a structural change to deposit rules. Hawaii's island isolation and exposure to hurricanes, tsunamis, and volcanic events creates a stronger-than-average case for maintaining a large reserve."
       ],
       "caution": {
         "state": "New Jersey",
@@ -2258,8 +2241,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Roughly 27 percent of Hawaii residents speak a language other than English at home, a higher share than all but five states. Colorado, California, and New Mexico have invested in multilingual voter guides, translated ballots, and community-based outreach in native languages.",
-        "In states where elections are genuinely competitive, both parties invest in voter mobilization. Hawaii's consistent one-party margins in statewide races reduce the financial incentive for either party to mobilize voters aggressively."
+        "Colorado paired all-mail voting with automatic registration and competitive elections; Oregon's all-mail gains faded without those reinforcing factors. In Hawaii, roughly 27 percent of residents speak a language other than English at home, a barrier some high-turnout states address through multilingual voter guides. Consistent one-party margins in statewide races also reduce the financial incentive for either party to invest in aggressive voter mobilization."
       ],
       "caution": {
         "state": "Oregon",
@@ -2356,8 +2338,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii has significant state-controlled land under the Department of Hawaiian Home Lands, the Office of Hawaiian Affairs, and DLNR that could accommodate workforce housing without requiring rezoning of private parcels.",
-        "Neighbor island out-migration reflects not only housing cost but the absence of professional-grade employment. The employment base on Maui, Hawaii Island, and Kauai is heavily concentrated in hospitality and government."
+        "Utah retained population through supply-side housing reforms; California's reforms did not overcome structural costs. Hawaii has significant state-controlled land under DHHL, OHA, and DLNR that could accommodate workforce housing without rezoning private parcels. On neighbor islands, out-migration reflects not only housing cost but the absence of professional-grade employment beyond hospitality and government."
       ],
       "caution": {
         "state": "California",
@@ -2499,8 +2480,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Over 20 percent of Hawaii workers require a state occupational license to practice their occupation. Arizona and Montana have enacted sunset reviews of occupational licensing requirements, removing barriers to self-employment in service occupations where the license was found to protect incumbents rather than consumers.",
-        "The GET's cascading structure applies at each stage of a supply chain, including business-to-business transactions, making Hawaii uniquely expensive to operate a multi-vendor business relative to states with simple sales taxes."
+        "Ohio invested in technology infrastructure; Connecticut shows that spending alone does not overcome high operating costs. In Hawaii, over 20 percent of workers require a state occupational license, and the GET's cascading structure applies at each stage of a supply chain, making multi-vendor businesses uniquely expensive relative to states with simple sales taxes."
       ],
       "caution": {
         "state": "Connecticut",
@@ -2642,8 +2622,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii's Act 221 (2001, extended through 2010) provided high-technology investment tax credits. State audits found the program paid roughly $4 in credits for each $1 of qualifying investment retained in Hawaii.",
-        "The Maui business community suffered an estimated $5.5 billion in economic losses from the August 2023 fires. The state's Maui Economic Recovery and Resilience Plan (2024) includes formation support specifically for Lahaina-area entrepreneurs."
+        "Florida reduced structural barriers; Louisiana's sector-specific incentives did not produce lasting formation. Hawaii's own experience echoes this: Act 221 (2001-2010) provided high-technology tax credits, but state audits found roughly $4 in credits for each $1 of qualifying investment retained. The 2023 Maui fires added urgency, with $5.5 billion in economic losses and a recovery plan that includes formation support for Lahaina-area entrepreneurs."
       ],
       "caution": {
         "state": "Louisiana",
@@ -2728,8 +2707,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Hawaii hosts HURL (Hawaii Undersea Research Laboratory), HIMB (Hawaii Institute of Marine Biology), and NOAA Pacific facilities. The ocean technology sector generates high value-added per employee relative to tourism and hospitality.",
-        "The 2023 Maui wildfires destroyed roughly 3,000 structures and disrupted economic activity in West Maui. GDP losses in that area likely contributed to Hawaii's sharp productivity drop from #34 in 2022 to #48 in 2023."
+        "Massachusetts concentrated investment in high-output sectors; Nevada shows headline employer wins do not shift productivity when the dominant sector stays low-output. Hawaii has pockets of high-value activity including HURL, HIMB, and NOAA Pacific facilities in ocean technology, but the 2023 Maui wildfires destroyed roughly 3,000 structures and likely contributed to the sharp productivity drop from #34 in 2022 to #48 in 2023."
       ],
       "caution": {
         "state": "Nevada",

@@ -1820,7 +1820,7 @@ const App = {
 
             if (narr.explore && narr.explore.length) {
                 html += `<div class="rh-narr-section">
-                    <h3 class="rh-narr-heading">Related observations</h3>`;
+                    <h3 class="rh-narr-heading">What these comparisons suggest</h3>`;
                 narr.explore.forEach(point => {
                     html += `<p class="rh-narr-text rh-narr-explore">${point}</p>`;
                 });
