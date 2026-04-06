@@ -232,8 +232,12 @@ Each metric follows this structure:
 
 **Narrative pattern** (whyItMatters / howToRead / potentialDrivers):
 - `whyItMatters`: one sentence explaining why the metric matters to residents
-- `howToRead`: how to interpret the chart visually (chart reading guide)
+- `howToRead`: how to interpret the chart visually (chart reading guide, not value restatement)
 - `potentialDrivers`: research-backed causal explanation with sourced hyperlinks (includes cross-metric context)
+
+**Shared statistics (update all when refreshing data):**
+- Housing shortage (64,490 units): referenced in `renter_cost_burden_pct`, `home_price_to_income`, `net_employer_formation` (~64,000)
+- Attendance/absenteeism rates: referenced in `naep_math_8`, `naep_reading_8`, `acgr`
 
 **`rankHistoryNarrative` structure:**
 
