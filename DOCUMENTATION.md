@@ -34,9 +34,13 @@ hawaii-dashboard/
 │   ├── data.js             # Embedded metric data (Hawaiʻi vs. other state averages)
 │   ├── state-data.js       # Per-state data for all metrics (rankings + .xlsx export)
 │   ├── county-data.js      # Per-county data for 4 Hawaiʻi counties
-│   ├── app.js              # Main app: card rendering, modal logic, bundle navigation, governor data
-│   ├── bundles.js          # Bundle config: 7 question-first entry point chips with metric lists
+│   ├── app.js              # Coordinator: init, card rendering, bundles, metric search, helpers, analytics (869 lines)
+│   ├── modal.js            # Modal: open/close, tabs, charts, narrative, Bottom Line brief (1078 lines)
+│   ├── export.js           # XLSX download with lazy-loaded SheetJS (314 lines)
+│   ├── routing.js          # URL parsing, permalink routing, state slug conversion (83 lines)
+│   ├── compute.js          # Pure utilities: parseYearLabel, keyEnd, getLatestValue, getPriorValue (63 lines)
 │   ├── charts.js           # Chart.js sparklines, detail charts, rankings, governor overlay
+│   ├── bundles.js          # Bundle config: 7 question-first entry point chips with metric lists
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers, county HTML)
 ├── assets/
 │   ├── og-image.png        # Generic OG image (fallback for homepage + about)
@@ -495,27 +499,64 @@ Main application controller.
 | `GOVERNORS` | Array of 9 governors: `{ name, party, start, end }` from 1959 (statehood) to present |
 | `_activeBundle` | The currently active bundle object `{ id, title, description, metrics[] }`, or `null` |
 | `init()` | Renders cards, sets up modal, renders bundle chips, reads `?bundle=` from URL, handles routing |
-| `renderCards()` | Creates all 26 card DOM elements with sparklines and comparisons |
+| `renderCards()` | Creates all 26 card DOM elements with lazy sparklines (IntersectionObserver) and comparisons |
 | `renderBundleChips()` | Populates `#bundle-chips` from `BUNDLES`; wires click handlers and the "Clear filter" button |
-| `activateBundle(bundleId)` | Highlights matching cards, dims others, shows bundle bar, sets `?bundle=` URL param, scrolls to first match |
-| `clearBundle()` | Reverses `activateBundle`; removes URL param, hides bundle bar, clears card dimming |
-| `renderBundleNav(slug)` | Shows Prev/Next nav bar inside modal when a bundle is active; wires buttons to navigate within the bundle |
-| `_viewFromPrefix(prefix)` | Converts a bundle `view` prefix (`'t'`, `'r'`, `'rh'`, `'c'`) to the `initialView` string used by `openModal` |
-| `openModal(slug, areaName, initialView, initialCompare)` | Opens detail/rankings/etc. view for a metric; `initialCompare` pre-selects a comparison state in the Rank history tab |
-| `closeModal()` | Closes the modal and resets URL to `/` (or `/?bundle={id}` if a bundle is active) |
-| `handleRoute()` | Parses `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/`, `/rh/{slug}/{code}/`, `/c/{slug}/`, or `#{slug}` and opens the modal |
-| `switchTab(tab, slug)` | Switches between the 4 tabs; updates URL |
-| `showRankHistory(slug)` | Renders rank history chart, restores comparison state from URL, sets up state comparison UI |
-| `computeRankHistory(slug)` | Computes Hawaiʻi's rank per year from STATE_DATA; handles year-keyed and FIPS-keyed formats |
-| `stateToSlug(name)` | Converts a state name to its 2-letter lowercase URL code (e.g. "California" → "ca") |
-| `slugToState(slug)` | Reverse lookup: finds the full state name from a 2-letter URL code (e.g. "ca" → "California") |
+| `activateBundle(bundleId)` | Highlights matching cards, dims others, shows bundle bar, sets `?bundle=` URL param |
+| `clearBundle()` | Reverses `activateBundle`; removes URL param, hides bundle bar |
+| `computeChartData(slug)` | Computes Hawaiʻi + other-state average from STATE_DATA. Cached in `_chartDataCache` |
+| `getEffectiveData(slug)` | Merges chart data, trims to rankings year, adds metadata |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
-| `buildVsYearHtml(metricData)` | Builds the "prior period vs recent" card badge; handles plain and range year keys |
-| `parseYearLabel(label)` | Extracts the start year from any key format: `"2022"` → 2022, `"2022-2024"` → 2022 |
-| `keyEnd(k)` | Extracts the end year from any key format: `"2022"` → 2022, `"2022-2024"` → 2024 |
-| `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file; includes `potentialDrivers` as stripped plain text if present |
-| `_buildConsolidatedNarrative(m)` | Builds the full-metric HTML for consolidated-layout metrics. Renders 7 sections in order: Why it matters, National standing (rankHistoryNarrative.summary), County breakdown (countyNarrative, if present), Potential drivers, Lessons from other states (benchmarks + caution + explore), Policy levers, Data note. Triggered when `m.useConsolidated === true`. |
-| `_trackEvent(eventName, params)` | Fires a named analytics event to all connected platforms (Clarity `clarity('set'/'event')`, GA4 `dataLayer.push`). Called on every `openModal` with `{ slug, name, area }` |
+| `computeRankHistory(slug)` | Computes rank per year from STATE_DATA; handles year-keyed and FIPS-keyed formats |
+| `getGovernorBoxes(labels)` | Computes governor term annotation boxes for chart x-axis |
+| `initMetricSearch()` | Populates the jump-to-metric dropdown and wires click/keyboard handlers |
+| `_trackEvent(eventName, params)` | Fires analytics event to Clarity and GA4 |
+
+### `Modal` (modal.js)
+
+All modal rendering: open/close, tab switching, chart creation, rankings, rank history, county, data table, consolidated narrative, and Bottom Line brief computation.
+
+| Method/Property | Description |
+|----------------|-------------|
+| `openModal(slug, areaName, initialView, initialCompare)` | Opens detail modal; `initialCompare` pre-selects a comparison state |
+| `closeModal()` | Closes modal, destroys charts, resets URL |
+| `setupModal()` | Wires overlay click, close button, and Escape key |
+| `switchTab(tab, slug)` | Switches between 4 tabs; destroys off-screen charts; updates URL |
+| `showRankings(slug)` | Renders 50-state horizontal bar chart |
+| `showRankHistory(slug)` | Renders rank-over-time chart with state comparison dropdown |
+| `showCounty(slug)` | Renders county comparison chart |
+| `computeBrief(slug)` | Builds the dynamic "Bottom line" paragraph from BRIEF_TEMPLATES |
+| `computeTrendPhrase(slug)` | Compares two 3-year windows for "improved/worsened X%" |
+| `_buildConsolidatedNarrative(m)` | Renders 7 narrative sections: Why, National standing, County, Drivers, Lessons, Policy levers, Data note |
+| `renderBundleNav(slug)` | Shows Prev/Next nav inside modal when a bundle is active |
+
+### `Export` (export.js)
+
+XLSX download with lazy-loaded SheetJS.
+
+| Method | Description |
+|--------|-------------|
+| `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file. Lazy-loads SheetJS (~200KB) on first call |
+
+### `Router` (routing.js)
+
+URL parsing and permalink routing.
+
+| Method | Description |
+|--------|-------------|
+| `handleRoute()` | Parses `/t/`, `/r/`, `/rh/`, `/c/`, or `#{slug}` and opens the correct modal |
+| `stateToSlug(name)` | Converts state name to 2-letter URL code (e.g. "California" to "ca") |
+| `slugToState(slug)` | Reverse: 2-letter code to full state name |
+
+### `Compute` (compute.js)
+
+Pure utility functions. Dual-export for Node.js unit testing.
+
+| Method | Description |
+|--------|-------------|
+| `parseYearLabel(label)` | Extracts start year: "2022" to 2022, "2022-2024" to 2022 |
+| `keyEnd(k)` | Extracts end year: "2022" to 2022, "2022-2024" to 2024 |
+| `getLatestValue(obj, allowZero)` | Last non-null value from year-keyed object |
+| `getPriorValue(obj, allowZero)` | Second-to-last non-null value |
 
 ### `Utils` (utils.js)
 
@@ -561,17 +602,18 @@ Chart rendering utilities.
 
 Every push to `main` auto-deploys within ~30 seconds.
 
-### Cache Busting
+### Cache Busting (Automated)
 
-All CSS and JS asset references in `index.html`, `five-year-change/index.html`, and `about/index.html` include a `?v=YYYYMMDDxx` query string where `xx` is a two-letter suffix that increments per deploy on a given date (e.g. `styles.css?v=20260403ad`). This forces browsers to re-fetch the file after any significant change rather than serving a stale cached copy.
+All CSS and JS references in HTML include `?v=` query strings. In production, `build.sh` automatically replaces these with the git short SHA (e.g. `styles.css?v=82ca851`). No manual version bumping is needed.
 
-**Rules:**
-- Bump the suffix on **every deploy that touches a JS or CSS file**:without it, CDN-cached users will not see the changes
-- `index.html` tracks `styles.css`, `app.js`, `bundles.js` independently (each file gets its own suffix)
-- `five-year-change/index.html` and `about/index.html` track `styles.css`, `fyc.css`/`about.css` independently
-- The suffix sequence is: `a`, `b`, ... `z`, `aa`, `ab`, ... (single-letter first, then double)
+Source files keep manual `?v=YYYYMMDDxx` strings for local dev readability, but these are overwritten in `dist/` at build time. The `_headers` file sets `Cache-Control: public, max-age=31536000, immutable` for JS/CSS assets, so the SHA-based query params are the sole cache invalidation mechanism.
 
-When making changes to `styles.css`, `fyc.css`, `about.css`, `app.js`, `bundles.js`, `data.js`, `charts.js`, `utils.js`, `state-data.js`, or `county-data.js`, bump the relevant `?v=` suffix in all three HTML files.
+### Linting
+
+ESLint and Prettier run in CI before smoke tests. Configuration:
+- `.eslintrc.json`: browser globals for all modules, no-undef, no-unused-vars, eqeqeq
+- `.prettierrc`: 4-space indent, single quotes, 120 print width
+- `npm run lint` / `npm run format:check` (CI), `npm run format` (local auto-fix)
 
 ### Footer Timestamp
 
