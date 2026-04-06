@@ -2115,11 +2115,11 @@ const App = {
             h += `<div class="cn-section"><h3 class="cn-heading">Comparable states</h3>`;
             (narr.benchmarks || []).forEach(b => {
                 const src = b.source ? `<a href="${b.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${b.source.label}</a>` : '';
-                h += `<div class="cn-item"><div class="cn-state">${b.state}</div><p class="cn-text">${b.text}</p>${src}</div>`;
+                h += `<div class="cn-item"><div class="cn-state cn-state--learn">${b.state}</div><p class="cn-text">${b.text}</p>${src}</div>`;
             });
             if (narr.caution) {
                 const src = narr.caution.source ? `<a href="${narr.caution.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${narr.caution.source.label}</a>` : '';
-                h += `<div class="cn-item"><div class="cn-state">${narr.caution.state}</div><p class="cn-text">${narr.caution.text}</p>${src}</div>`;
+                h += `<div class="cn-item"><div class="cn-state cn-state--caution">${narr.caution.state}</div><p class="cn-text">${narr.caution.text}</p>${src}</div>`;
             }
             if (narr.explore && narr.explore.length) {
                 h += `<div class="cn-item cn-item--explore">`;

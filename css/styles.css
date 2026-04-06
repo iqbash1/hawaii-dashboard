@@ -1226,7 +1226,8 @@ body {
     font-weight: 700;
     margin-bottom: 0.2rem;
 }
-/* State names use neutral text color; the content conveys the outcome */
+.cn-state--learn { color: var(--positive); }
+.cn-state--caution { color: var(--negative); }
 .cn-source {
     display: inline-block;
     font-size: var(--text-xs);
