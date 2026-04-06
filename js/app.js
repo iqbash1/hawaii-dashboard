@@ -424,6 +424,146 @@ const App = {
         `;
     },
 
+    /** Extract per-state latest-year values from STATE_DATA */
+    getStateRankings(slug) {
+        const sd = STATE_DATA[slug];
+        if (!sd || !sd.data) return null;
+        const metricData = DASHBOARD_DATA[slug];
+        const unit = metricData.unit;
+
+        const firstKey = Object.keys(sd.data)[0];
+        const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+
+        let stateValues = [];
+        let year = '';
+
+        if (isPCPStyle) {
+            const yearCounts = {};
+            Object.values(sd.data).forEach(entry => {
+                Object.keys(entry).forEach(k => {
+                    if (k !== 'name') yearCounts[k] = (yearCounts[k] || 0) + 1;
+                });
+            });
+            year = Object.keys(yearCounts).sort()
+                .reverse().find(y => yearCounts[y] >= 25) || Object.keys(yearCounts).sort().pop();
+            Object.values(sd.data).forEach(entry => {
+                if (entry[year] != null) {
+                    stateValues.push({ state: entry.name, value: entry[year] });
+                }
+            });
+        } else {
+            const years = Object.keys(sd.data).sort();
+            year = years.reverse().find(y => Object.values(sd.data[y]).filter(v => v != null).length >= 25)
+                || years[0];
+            const yearData = sd.data[year];
+            if (!yearData) return null;
+            const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
+            Object.entries(yearData).forEach(([state, value]) => {
+                if (value != null) {
+                    const displayVal = isDecimal ? value * 100 : value;
+                    stateValues.push({ state, value: displayVal });
+                }
+            });
+        }
+
+        if (metricData.goodDirection === 'up') {
+            stateValues.sort((a, b) => b.value - a.value);
+        } else {
+            stateValues.sort((a, b) => a.value - b.value);
+        }
+
+        const hawaiiRank = stateValues.findIndex(s =>
+            s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
+        ) + 1;
+
+        return { stateValues, year, hawaiiRank, total: stateValues.length };
+    },
+
+    /**
+     * Compute year-by-year national rankings from STATE_DATA.
+     * @param {string} slug - Metric ID
+     * @returns {{ years, stateRanks, stateValues, latestYearRanked, hiKey, hiRank, total } | null}
+     */
+    computeRankHistory(slug) {
+        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        if (!sd || !sd.data) return null;
+        const m = DASHBOARD_DATA[slug];
+        const isDec = ChartUtils.isDecimalPctMetric(m);
+
+        const firstKey = Object.keys(sd.data)[0];
+        const isPCP = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+
+        const yearData = {};
+
+        if (isPCP) {
+            const allYears = new Set();
+            Object.values(sd.data).forEach(entry => {
+                Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
+            });
+            for (const yr of allYears) {
+                const vals = [];
+                Object.values(sd.data).forEach(entry => {
+                    if (entry[yr] != null) {
+                        vals.push({ state: entry.name, value: entry[yr] });
+                    }
+                });
+                if (vals.length >= 25) yearData[yr] = vals;
+            }
+        } else {
+            for (const yr of Object.keys(sd.data)) {
+                const entries = Object.entries(sd.data[yr]).filter(([, v]) => v != null);
+                if (entries.length >= 25) {
+                    yearData[yr] = entries.map(([state, value]) => ({
+                        state,
+                        value: isDec ? value * 100 : value
+                    }));
+                }
+            }
+        }
+
+        const years = Object.keys(yearData).sort();
+        if (years.length === 0) return null;
+
+        const stateRanks = {};
+        const stateValues = {};
+        const latestYearRanked = [];
+
+        for (const yr of years) {
+            const vals = yearData[yr];
+            if (m.goodDirection === 'up') vals.sort((a, b) => b.value - a.value);
+            else vals.sort((a, b) => a.value - b.value);
+
+            vals.forEach((entry, idx) => {
+                const rank = idx + 1;
+                if (!stateRanks[entry.state]) stateRanks[entry.state] = {};
+                stateRanks[entry.state][yr] = rank;
+                if (!stateValues[entry.state]) stateValues[entry.state] = {};
+                stateValues[entry.state][yr] = entry.value;
+            });
+        }
+
+        const latestYear = years[years.length - 1];
+        const latestVals = yearData[latestYear];
+        if (m.goodDirection === 'up') latestVals.sort((a, b) => b.value - a.value);
+        else latestVals.sort((a, b) => a.value - b.value);
+        latestVals.forEach((entry, idx) => {
+            latestYearRanked.push({ state: entry.state, rank: idx + 1 });
+        });
+
+        const hiKey = Object.keys(stateRanks).find(s => s === 'Hawaii' || s === 'Hawai\u02BBi') || 'Hawaii';
+        const hiLatest = latestYearRanked.find(s => s.state === hiKey);
+
+        return {
+            years,
+            stateRanks,
+            stateValues,
+            latestYearRanked,
+            hiKey,
+            hiRank: hiLatest ? hiLatest.rank : null,
+            total: latestYearRanked.length
+        };
+    },
+
     // ----------------------------------------------------------------
     // Card Rendering
     // ----------------------------------------------------------------
@@ -1475,67 +1615,7 @@ const App = {
         }
     },
 
-    /** Extract per-state latest-year values from STATE_DATA */
-    getStateRankings(slug) {
-        const sd = STATE_DATA[slug];
-        if (!sd || !sd.data) return null;
-        const metricData = DASHBOARD_DATA[slug];
-        const unit = metricData.unit;
-
-        // PCP uses FIPS-keyed structure: { "01": { name: "Alabama", "2021": 64.8 } }
-        const firstKey = Object.keys(sd.data)[0];
-        const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
-
-        let stateValues = [];
-        let year = '';
-
-        if (isPCPStyle) {
-            // FIPS-keyed: find latest year with enough data for rankings
-            const yearCounts = {};
-            Object.values(sd.data).forEach(entry => {
-                Object.keys(entry).forEach(k => {
-                    if (k !== 'name') yearCounts[k] = (yearCounts[k] || 0) + 1;
-                });
-            });
-            // Pick latest year with at least 25 states
-            year = Object.keys(yearCounts).sort()
-                .reverse().find(y => yearCounts[y] >= 25) || Object.keys(yearCounts).sort().pop();
-            Object.values(sd.data).forEach(entry => {
-                if (entry[year] != null) {
-                    stateValues.push({ state: entry.name, value: entry[year] });
-                }
-            });
-        } else {
-            // Year-keyed: { "2023": { "Alabama": 0.25, ... } }
-            // Pick latest year with at least 25 non-null state values for meaningful rankings
-            const years = Object.keys(sd.data).sort();
-            year = years.reverse().find(y => Object.values(sd.data[y]).filter(v => v != null).length >= 25)
-                || years[0];
-            const yearData = sd.data[year];
-            if (!yearData) return null;
-            const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
-            Object.entries(yearData).forEach(([state, value]) => {
-                if (value != null) {
-                    // Convert decimal-stored percentages for display
-                    const displayVal = isDecimal ? value * 100 : value;
-                    stateValues.push({ state, value: displayVal });
-                }
-            });
-        }
-
-        // Sort best-to-worst based on goodDirection
-        if (metricData.goodDirection === 'up') {
-            stateValues.sort((a, b) => b.value - a.value);
-        } else {
-            stateValues.sort((a, b) => a.value - b.value);
-        }
-
-        const hawaiiRank = stateValues.findIndex(s =>
-            s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
-        ) + 1;
-
-        return { stateValues, year, hawaiiRank, total: stateValues.length };
-    },
+    // getStateRankings: relocated to Helpers section (above Card Rendering)
 
     /**
      * Render the Rankings tab: horizontal bar chart for all 50 states.
@@ -1618,94 +1698,7 @@ const App = {
         }
     },
 
-    /**
-     * Compute year-by-year national rankings from STATE_DATA.
-     * @param {string} slug - Metric ID
-     * @returns {{ years, stateRanks, stateValues, latestYearRanked, hiKey, hiRank, total } | null}
-     */
-    computeRankHistory(slug) {
-        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
-        if (!sd || !sd.data) return null;
-        const m = DASHBOARD_DATA[slug];
-        const isDec = ChartUtils.isDecimalPctMetric(m);
-
-        const firstKey = Object.keys(sd.data)[0];
-        const isPCP = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
-
-        // Collect all available years and state values per year
-        const yearData = {}; // { year: [{ state, value }] }
-
-        if (isPCP) {
-            // FIPS-keyed: each entry has { name, "2020": val, ... }
-            const allYears = new Set();
-            Object.values(sd.data).forEach(entry => {
-                Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
-            });
-            for (const yr of allYears) {
-                const vals = [];
-                Object.values(sd.data).forEach(entry => {
-                    if (entry[yr] != null) {
-                        vals.push({ state: entry.name, value: entry[yr] });
-                    }
-                });
-                if (vals.length >= 25) yearData[yr] = vals;
-            }
-        } else {
-            // Year-keyed: { "2023": { "Alabama": val, ... } }
-            for (const yr of Object.keys(sd.data)) {
-                const entries = Object.entries(sd.data[yr]).filter(([, v]) => v != null);
-                if (entries.length >= 25) {
-                    yearData[yr] = entries.map(([state, value]) => ({
-                        state,
-                        value: isDec ? value * 100 : value
-                    }));
-                }
-            }
-        }
-
-        const years = Object.keys(yearData).sort();
-        if (years.length === 0) return null;
-
-        // For each year, sort and assign ranks
-        const stateRanks = {};  // { stateName: { year: rank } }
-        const stateValues = {}; // { stateName: { year: displayValue } }
-        const latestYearRanked = []; // [{ state, rank }] for the latest year
-
-        for (const yr of years) {
-            const vals = yearData[yr];
-            if (m.goodDirection === 'up') vals.sort((a, b) => b.value - a.value);
-            else vals.sort((a, b) => a.value - b.value);
-
-            vals.forEach((entry, idx) => {
-                const rank = idx + 1;
-                if (!stateRanks[entry.state]) stateRanks[entry.state] = {};
-                stateRanks[entry.state][yr] = rank;
-                if (!stateValues[entry.state]) stateValues[entry.state] = {};
-                stateValues[entry.state][yr] = entry.value; // already in display units
-            });
-        }
-
-        const latestYear = years[years.length - 1];
-        const latestVals = yearData[latestYear];
-        if (m.goodDirection === 'up') latestVals.sort((a, b) => b.value - a.value);
-        else latestVals.sort((a, b) => a.value - b.value);
-        latestVals.forEach((entry, idx) => {
-            latestYearRanked.push({ state: entry.state, rank: idx + 1 });
-        });
-
-        const hiKey = Object.keys(stateRanks).find(s => s === 'Hawaii' || s === 'Hawai\u02BBi') || 'Hawaii';
-        const hiLatest = latestYearRanked.find(s => s.state === hiKey);
-
-        return {
-            years,
-            stateRanks,
-            stateValues,
-            latestYearRanked,
-            hiKey,
-            hiRank: hiLatest ? hiLatest.rank : null,
-            total: latestYearRanked.length
-        };
-    },
+    // computeRankHistory: relocated to Helpers section (above Card Rendering)
 
     /**
      * Render the Rank History tab: rank-over-time chart with state compare dropdown.
