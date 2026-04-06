@@ -269,7 +269,7 @@ rankHistoryNarrative: {
 }
 ```
 
-Rendered in the Rank history tab as four sections: "Hawaiʻi's track record" (summary), "States to learn from" (benchmarks), "Directions worth exploring" (explore), and "What to avoid" (caution). Each `source` renders as a `→ Label` link below the entry text.
+Rendered in the Rank history tab as four sections: "Hawai\u02BBi's track record" (summary), "States that improved" (benchmarks), "Related observations" (explore), and "Cautionary outcome" (caution). In the consolidated narrative (Trend tab), the parent heading is "Comparable states". Each `source` renders as a `\u2192 Label` link below the entry text.
 
 ### Per-State Data (`state-data.js`)
 
