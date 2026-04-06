@@ -6,7 +6,7 @@
 // most useful default tab (t = trend, r = rank, rh = rank-history, c = county).
 // ============================================================
 
-const BUNDLES = [
+const BUNDLES = [ // eslint-disable-line no-unused-vars
     {
         id: 'affordability',
         title: 'Affordability',

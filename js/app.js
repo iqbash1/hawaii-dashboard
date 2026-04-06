@@ -451,7 +451,6 @@ const App = {
         const sd = STATE_DATA[slug];
         if (!sd || !sd.data) return null;
         const metricData = DASHBOARD_DATA[slug];
-        const unit = metricData.unit;
 
         const firstKey = Object.keys(sd.data)[0];
         const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
@@ -620,7 +619,6 @@ const App = {
 
                 const az = ZERO_IS_VALID.has(slug);
                 const latest = this.getLatestValue(effective.hawaii, az);
-                const latestAvg = this.getLatestValue(effective.otherStateAvg, az);
                 const isDecimal = ChartUtils.isDecimalPctMetric(effective);
                 const unitSuffix = effective.unitLabel
                     ? `<span class="card-unit">${effective.unitLabel}</span>`

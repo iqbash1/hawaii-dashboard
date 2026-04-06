@@ -703,7 +703,6 @@ const ChartUtils = {
 
         // Rankings values are pre-converted to display scale, so never multiply % by 100
         const fmt = (v, u) => this.formatValue(v, u, false);
-        const lerp = this.lerp;
         const n = stateValues.length;
 
         // Bar colors: Hawaii highlighted, others gray
@@ -717,13 +716,6 @@ const ChartUtils = {
         const borderWidths = stateValues.map(s =>
             this.isHawaii(s.state) ? 2 : 0
         );
-
-        // Background gradient: green (best) → white → red (worst)
-        const [neutralStart, neutralEnd] = this.NEUTRAL_RANGE;
-        const [gr, gg, gb] = this.GREEN_BEST;
-        const [_rr, rg, rb] = this.RED_WORST;
-        const neutralStartPct = (neutralStart - 1) / (n - 1);
-        const neutralEndPct = (neutralEnd - 1) / (n - 1);
 
         // Precompute formatted value labels and Hawaii index
         const formattedLabels = values.map(v => fmt(v, unit));
