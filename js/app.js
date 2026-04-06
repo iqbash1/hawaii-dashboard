@@ -933,7 +933,7 @@ const App = {
             document.title = `${metricData.metric} - ${tabLabel} - Hawaii Dashboard`;
             window.print();
             document.title = origTitle;
-        });
+        };
 
         const tabBar = document.getElementById('modal-tabs');
         const tabDetail = document.getElementById('tab-detail');
