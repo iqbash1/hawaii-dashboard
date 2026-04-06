@@ -38,9 +38,9 @@
     --hawaii-blue-light: #EEF8FA;
     --hawaii-blue-hover: rgba(13, 124, 143, 0.3);
     --text-vintage: #626D76;
-    --text-xs: 0.7rem;
-    --text-sm: 0.8rem;
-    --text-md: 0.9rem;
+    --text-xs: 0.82rem;
+    --text-sm: 0.95rem;
+    --text-md: 1.0rem;
     --avg-gray-light: #F3F4F6;
     --positive: #059669;
     --negative: #C0392B;
@@ -174,7 +174,7 @@ body {
 }
 .capability-strip span,
 .capability-strip a {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.04em;
     color: var(--text-muted);
@@ -253,7 +253,7 @@ body {
 }
 .metric-search-group-header {
     padding: 0.6rem 1rem 0.3rem;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.07em;
@@ -571,7 +571,7 @@ body {
 }
 
 .comp-label {
-    font-size: 0.6rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--text-muted);
@@ -587,7 +587,7 @@ body {
 }
 
 .comp-detail {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
     margin-top: 0.1rem;
 }
@@ -745,7 +745,7 @@ body {
 }
 
 .modal-area {
-    font-size: 0.62rem;
+    font-size: 0.72rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.07em;
@@ -790,7 +790,7 @@ body {
 }
 
 .tab-sub {
-    font-size: 0.62rem;
+    font-size: 0.72rem;
     font-weight: 400;
     color: var(--text-muted);
     letter-spacing: 0.01em;
@@ -855,7 +855,7 @@ body {
 }
 
 .modal-section h3 {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
@@ -1101,7 +1101,7 @@ body {
     margin-bottom: 0;
 }
 .rh-narr-heading {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
@@ -1161,7 +1161,7 @@ body {
     border-bottom: none;
 }
 .cn-heading {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
@@ -1414,16 +1414,16 @@ body {
     }
 
     .comp-label {
-        font-size: 0.6rem;
+        font-size: 0.68rem;
         letter-spacing: 0.02em;
     }
 
     .comp-verdict {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
     }
 
     .comp-detail {
-        font-size: 0.6rem;
+        font-size: 0.68rem;
     }
 
     .card-comp {
@@ -1573,15 +1573,15 @@ body {
     }
 
     .comp-verdict {
-        font-size: 0.65rem;
+        font-size: 0.72rem;
     }
 
     .comp-detail {
-        font-size: 0.6rem;
+        font-size: 0.68rem;
     }
 
     .comp-label {
-        font-size: 0.6rem;
+        font-size: 0.68rem;
     }
 }
 
