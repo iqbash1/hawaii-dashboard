@@ -187,14 +187,108 @@ test.describe('URL routing', () => {
     });
 
     // /rh/{slug}/{code}/ redirect pages redirect to /#slug/rank-history/{code}
-    // slugToState('ca') must resolve to 'California' and the comparison UI must activate
+    // slugToState('ca') must resolve to 'California' and the comparison dropdown must show the state
     test('/rh/{slug}/{code}/ opens rank history with comparison state active', async ({ page }) => {
         await page.goto('/rh/violent_crime_rate/ca/');
         await expect(page.locator('#modal-overlay')).toBeVisible();
         await expect(page.locator('#modal-rank-history')).toBeVisible();
-        await expect(page.locator('#rank-history-compare')).toBeVisible();
-        const name = await page.locator('#rank-history-compare-name').textContent();
-        expect(name).toBe('California');
+        // The compare dropdown should have California selected
+        const select = page.locator('#rh-compare-select');
+        await expect(select).toBeVisible();
+        const selectedValue = await select.inputValue();
+        expect(selectedValue).toBe('California');
+        // The clear button should be visible when a comparison is active
+        await expect(page.locator('#rh-compare-clear')).toBeVisible();
+    });
+});
+
+// ---------------------------------------------------------------------------
+// Bottom Line brief (dynamic summary above all tabs)
+// ---------------------------------------------------------------------------
+
+test.describe('Bottom Line brief', () => {
+    test('shows brief text with current value and rank', async ({ page }) => {
+        await page.goto('/');
+        await page.locator('[data-metric="violent_crime_rate"]').click();
+        await expect(page.locator('#modal-overlay')).toBeVisible();
+
+        const brief = page.locator('#modal-brief');
+        await expect(brief).toBeVisible();
+        const text = await brief.textContent();
+        expect(text).toContain('Bottom line:');
+        expect(text).toContain('ranking #');
+        expect(text).toContain('Keep in mind:');
+    });
+
+    test('brief persists when switching tabs', async ({ page }) => {
+        await page.goto('/');
+        await page.locator('[data-metric="violent_crime_rate"]').click();
+        await expect(page.locator('#modal-brief')).toBeVisible();
+
+        // Switch to Rank tab - brief should still be visible
+        await page.locator('#tab-rankings').click();
+        await expect(page.locator('#modal-brief')).toBeVisible();
+    });
+});
+
+// ---------------------------------------------------------------------------
+// Jump to metric dropdown
+// ---------------------------------------------------------------------------
+
+test.describe('Jump to metric dropdown', () => {
+    test('dropdown opens on click and contains metrics grouped by area', async ({ page }) => {
+        await page.goto('/');
+        await page.waitForSelector('.card[data-metric]');
+
+        await page.locator('#metric-search-trigger').click();
+        const dropdown = page.locator('#metric-search-dropdown');
+        await expect(dropdown).toBeVisible();
+
+        // Should have area group headers
+        const headers = dropdown.locator('.metric-search-group-header');
+        expect(await headers.count()).toBeGreaterThanOrEqual(5);
+
+        // Should have metric items
+        const items = dropdown.locator('.metric-search-item');
+        expect(await items.count()).toBe(26);
+    });
+
+    test('selecting a metric opens its modal', async ({ page }) => {
+        await page.goto('/');
+        await page.waitForSelector('.card[data-metric]');
+
+        await page.locator('#metric-search-trigger').click();
+        await page.locator('.metric-search-item[data-slug="unemployment_rate"]').click();
+        await expect(page.locator('#modal-overlay')).toBeVisible();
+        const title = await page.locator('#modal-title').textContent();
+        expect(title).toBe('Unemployment Rate');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// Module loading (all JS modules load without errors)
+// ---------------------------------------------------------------------------
+
+test.describe('Module loading', () => {
+    test('all modules are defined after page load', async ({ page }) => {
+        await page.goto('/');
+        await page.waitForSelector('.card[data-metric]');
+
+        const modules = await page.evaluate(() => ({
+            App: typeof App,
+            Modal: typeof Modal,
+            Export: typeof Export,
+            Router: typeof Router,
+            Compute: typeof Compute,
+            ChartUtils: typeof ChartUtils,
+        }));
+
+        expect(modules.App).toBe('object');
+        expect(modules.Modal).toBe('object');
+        expect(modules.Export).toBe('object');
+        expect(modules.Router).toBe('object');
+        expect(modules.Compute).toBe('object');
+        expect(modules.ChartUtils).toBe('object');
     });
 });
 
