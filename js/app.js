@@ -503,12 +503,27 @@ const App = {
                 });
 
                 grid.appendChild(card);
-
-                const canvas = card.querySelector('.card-sparkline canvas');
-                const chart = ChartUtils.createSparkline(canvas, effective, effective.goodDirection, ZERO_IS_VALID.has(slug));
-                this.sparklineCharts.push(chart);
             });
         });
+
+        // Lazy-create sparklines as cards scroll into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const card = entry.target;
+                const s = card.dataset.metric;
+                const eff = this.getEffectiveData(s);
+                if (!eff) return;
+                const canvas = card.querySelector('.card-sparkline canvas');
+                if (!canvas || canvas.dataset.rendered) return;
+                canvas.dataset.rendered = '1';
+                const chart = ChartUtils.createSparkline(canvas, eff, eff.goodDirection, ZERO_IS_VALID.has(s));
+                this.sparklineCharts.push(chart);
+                observer.unobserve(card);
+            });
+        }, { rootMargin: '200px' });
+
+        grid.querySelectorAll('.card').forEach(card => observer.observe(card));
 
     },
 
