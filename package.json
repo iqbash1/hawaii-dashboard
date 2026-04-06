@@ -13,8 +13,6 @@
     "build": "bash build.sh",
     "lint": "eslint js/app.js js/modal.js js/export.js js/routing.js js/compute.js js/charts.js js/bundles.js",
     "lint:fix": "eslint --fix js/app.js js/modal.js js/export.js js/routing.js js/compute.js js/charts.js js/bundles.js",
-    "format:check": "prettier --check 'js/*.js' 'css/*.css' '*.html'",
-    "format": "prettier --write 'js/*.js' 'css/*.css' '*.html'",
     "validate": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict",
     "recompute": "node scripts/recompute-data.js",
@@ -22,7 +20,6 @@
     "serve": "python3 -m http.server 8080"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "prettier": "^3.3.0"
+    "eslint": "^8.57.0"
   }
 }
