@@ -163,7 +163,17 @@ const Utils = {
                 s.push(`This area is under pressure nationally, with ${worsening.length} of ${n} ${this.pl(n, 'metric')} worsening and none improving, most notably ${worst.metric} (${worst.changeText}).`);
             } else if (improving.length > 0 && worsening.length > 0) {
                 const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                s.push(`This remains a relative weakness nationally, with a mixed trend: ${worsening.length} ${this.pl(worsening.length, 'metric')} worsened while ${improving.length} improved; ${worst.metric} worsened the most (${worst.changeText}).`);
+                // Prefer rank drop when the percentage change is small but rank shift is meaningful
+                const worstRank = rankMoves.filter(m => m.move < 0).sort((a, b) => a.move - b.move)[0];
+                let worstNote;
+                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 0.02) {
+                    worstNote = `${worstRank.metric} dropped ${-worstRank.move} spots to #${worstRank.endRank}`;
+                } else if (Math.abs(worst.relChange) < 0.02) {
+                    worstNote = `changes were modest overall`;
+                } else {
+                    worstNote = `${worst.metric} worsened the most (${worst.changeText})`;
+                }
+                s.push(`This remains a relative weakness nationally, with a mixed trend: ${worsening.length} ${this.pl(worsening.length, 'metric')} worsened while ${improving.length} improved; ${worstNote}.`);
             } else {
                 s.push(`This area is a relative weakness nationally and has shown little change over the last 5 years.`);
             }
@@ -174,11 +184,29 @@ const Utils = {
                 s.push(`A positive trend: ${improving.length} of ${n} ${this.pl(n, 'metric')} improved and none worsened, led by ${best.metric} (${best.changeText}).`);
             } else if (improving.length === 0 && worsening.length > 0) {
                 const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                s.push(`A challenging trend: ${worsening.length} of ${n} ${this.pl(n, 'metric')} worsened and none improved, most notably ${worst.metric} (${worst.changeText}).`);
+                const worstRank = rankMoves.filter(m => m.move < 0).sort((a, b) => a.move - b.move)[0];
+                let worstNote;
+                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 0.02) {
+                    worstNote = `${worstRank.metric} dropped ${-worstRank.move} spots to #${worstRank.endRank}`;
+                } else if (Math.abs(worst.relChange) < 0.02) {
+                    worstNote = `though individual changes were modest`;
+                } else {
+                    worstNote = `most notably ${worst.metric} (${worst.changeText})`;
+                }
+                s.push(`A challenging trend: ${worsening.length} of ${n} ${this.pl(n, 'metric')} worsened and none improved, ${worstNote}.`);
             } else if (improving.length > 0 && worsening.length > 0) {
                 const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
                 const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
-                s.push(`A mixed picture: ${improving.length} ${this.pl(improving.length, 'metric')} improved while ${worsening.length} worsened. The strongest improvement was ${best.metric} (${best.changeText}), while ${worst.metric} worsened the most (${worst.changeText}).`);
+                const worstRank = rankMoves.filter(m => m.move < 0).sort((a, b) => a.move - b.move)[0];
+                let worstNote;
+                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 0.02) {
+                    worstNote = `${worstRank.metric} dropped ${-worstRank.move} spots to #${worstRank.endRank}`;
+                } else if (Math.abs(worst.relChange) < 0.02) {
+                    worstNote = `declines were modest`;
+                } else {
+                    worstNote = `${worst.metric} worsened the most (${worst.changeText})`;
+                }
+                s.push(`A mixed picture: ${improving.length} ${this.pl(improving.length, 'metric')} improved while ${worsening.length} worsened. The strongest improvement was ${best.metric} (${best.changeText}), while ${worstNote}.`);
             } else {
                 s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last 5 years.`);
             }
