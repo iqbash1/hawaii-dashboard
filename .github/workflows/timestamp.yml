@@ -20,7 +20,7 @@ jobs:
       - name: Write Hawaii timestamp into footer
         run: |
           TIMESTAMP=$(TZ="Pacific/Honolulu" date +"%-d %B %Y at %-I:%M %p HST")
-          sed -i "s|Data last updated:.*|Data last updated: ${TIMESTAMP}|" index.html
+          sed -i "s|Data last updated:.*</p>|Data last updated: ${TIMESTAMP}</p>|" index.html
 
       - name: Commit if changed
         run: |
