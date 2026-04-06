@@ -2291,7 +2291,7 @@ const App = {
 
     /**
      * Fire a named analytics event to all connected platforms (GA4, Clarity).
-     * Add new platforms here — callers never need to change.
+     * Add new platforms here; callers never need to change.
      * @param {string} eventName - Event name (e.g. 'modal_open')
      * @param {Object} params - Arbitrary event parameters
      * @private

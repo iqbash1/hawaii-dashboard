@@ -388,7 +388,7 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Trend 
 - **Standard layout** (default, `useConsolidated` not set): Narrative is split across tabs. Potential drivers and policy levers appear at the bottom of the Trend tab. The Rank history tab shows the written narrative from `rankHistoryNarrative`. Not used by any current metric (all 26 use consolidated).
 - **Consolidated layout** (`useConsolidated: true`): The modal body switches to a single `#modal-consolidated` scrollable div directly below the chart area. All narrative content appears in one uninterrupted scroll using 7 ordered sections (see `_buildConsolidatedNarrative` below). The Rank history tab still shows its chart, but the written narrative is suppressed there (it appears in the consolidated section instead). All 26 current metrics use this layout.
 
-**Tab microcopy:** Every tab button shows a one-line subtitle via a `.tab-sub` `<span>` inside the button — "Performance over time" (Trend), "Standing vs. other states" (Rank), "Gaining or losing ground?" (Rank history). The subtitle inherits the active tab color at 70% opacity.
+**Tab microcopy:** Every tab button shows a one-line subtitle via a `.tab-sub` `<span>` inside the button:"Performance over time" (Trend), "Standing vs. other states" (Rank), "Gaining or losing ground?" (Rank history). The subtitle inherits the active tab color at 70% opacity.
 
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. Other State Avg (gray dashed). Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
@@ -566,7 +566,7 @@ Every push to `main` auto-deploys within ~30 seconds.
 All CSS and JS asset references in `index.html`, `five-year-change/index.html`, and `about/index.html` include a `?v=YYYYMMDDxx` query string where `xx` is a two-letter suffix that increments per deploy on a given date (e.g. `styles.css?v=20260403ad`). This forces browsers to re-fetch the file after any significant change rather than serving a stale cached copy.
 
 **Rules:**
-- Bump the suffix on **every deploy that touches a JS or CSS file** — without it, CDN-cached users will not see the changes
+- Bump the suffix on **every deploy that touches a JS or CSS file**:without it, CDN-cached users will not see the changes
 - `index.html` tracks `styles.css`, `app.js`, `bundles.js` independently (each file gets its own suffix)
 - `five-year-change/index.html` and `about/index.html` track `styles.css`, `fyc.css`/`about.css` independently
 - The suffix sequence is: `a`, `b`, ... `z`, `aa`, `ab`, ... (single-letter first, then double)
@@ -619,9 +619,9 @@ Three platforms are active on all pages (`index.html`, `about/index.html`, `five
 
 | Platform | Purpose | Setup |
 |----------|---------|-------|
-| Cloudflare Web Analytics | Pageviews, Core Web Vitals, traffic sources, country/browser breakdown | Active via Cloudflare dashboard — no beacon tag needed in HTML |
+| Cloudflare Web Analytics | Pageviews, Core Web Vitals, traffic sources, country/browser breakdown | Active via Cloudflare dashboard:no beacon tag needed in HTML |
 | Microsoft Clarity | Session recordings, heatmaps, rage-click detection | Project ID `w5pye8kkrb`; script tag in `<head>` of all 3 pages |
-| Google Search Console | Search queries, click-through rates, index coverage | Verified via Cloudflare DNS — no HTML meta tag needed |
+| Google Search Console | Search queries, click-through rates, index coverage | Verified via Cloudflare DNS:no HTML meta tag needed |
 
 ### Custom Events
 
@@ -631,7 +631,7 @@ Three platforms are active on all pages (`index.html`, `about/index.html`, `five
 this._trackEvent('modal_open', { slug, name: metricData.metric, area: metricData.area });
 ```
 
-To add more events (e.g. tab switches, link clicks), call `this._trackEvent()` with any name and params object — no changes needed at the platform level.
+To add more events (e.g. tab switches, link clicks), call `this._trackEvent()` with any name and params object:no changes needed at the platform level.
 
 **What this enables in Clarity:** filter session recordings to only sessions where a user opened a specific metric (`metric_slug = property_crime_rate`, etc.), making it easy to see how users engage with any given modal.
 
