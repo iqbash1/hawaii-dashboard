@@ -166,9 +166,9 @@ const Utils = {
                 // Prefer rank drop when the percentage change is small but rank shift is meaningful
                 const worstRank = rankMoves.filter(m => m.move < 0).sort((a, b) => a.move - b.move)[0];
                 let worstNote;
-                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 0.02) {
+                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 2) {
                     worstNote = `${worstRank.metric} dropped ${-worstRank.move} spots to #${worstRank.endRank}`;
-                } else if (Math.abs(worst.relChange) < 0.02) {
+                } else if (Math.abs(worst.relChange) < 2) {
                     worstNote = `changes were modest overall`;
                 } else {
                     worstNote = `${worst.metric} worsened the most (${worst.changeText})`;
@@ -186,9 +186,9 @@ const Utils = {
                 const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
                 const worstRank = rankMoves.filter(m => m.move < 0).sort((a, b) => a.move - b.move)[0];
                 let worstNote;
-                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 0.02) {
+                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 2) {
                     worstNote = `${worstRank.metric} dropped ${-worstRank.move} spots to #${worstRank.endRank}`;
-                } else if (Math.abs(worst.relChange) < 0.02) {
+                } else if (Math.abs(worst.relChange) < 2) {
                     worstNote = `though individual changes were modest`;
                 } else {
                     worstNote = `most notably ${worst.metric} (${worst.changeText})`;
@@ -199,9 +199,9 @@ const Utils = {
                 const worst = worsening.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
                 const worstRank = rankMoves.filter(m => m.move < 0).sort((a, b) => a.move - b.move)[0];
                 let worstNote;
-                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 0.02) {
+                if (worstRank && worstRank.move <= -3 && Math.abs(worst.relChange) < 2) {
                     worstNote = `${worstRank.metric} dropped ${-worstRank.move} spots to #${worstRank.endRank}`;
-                } else if (Math.abs(worst.relChange) < 0.02) {
+                } else if (Math.abs(worst.relChange) < 2) {
                     worstNote = `declines were modest`;
                 } else {
                     worstNote = `${worst.metric} worsened the most (${worst.changeText})`;
