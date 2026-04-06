@@ -721,7 +721,7 @@ const ChartUtils = {
         // Background gradient: green (best) → white → red (worst)
         const [neutralStart, neutralEnd] = this.NEUTRAL_RANGE;
         const [gr, gg, gb] = this.GREEN_BEST;
-        const [rr, rg, rb] = this.RED_WORST;
+        const [_rr, rg, rb] = this.RED_WORST;
         const neutralStartPct = (neutralStart - 1) / (n - 1);
         const neutralEndPct = (neutralEnd - 1) / (n - 1);
 
