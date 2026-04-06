@@ -1434,8 +1434,6 @@ const App = {
             ['Why It Matters', m.whyItMatters.replace(/<[^>]*>/g, '')],
             ['How To Read It', m.howToRead],
         );
-        if (m.insight) methRows.push(['Context', m.insight]);
-        if (m.crossInsight) methRows.push(['Cross-metric Context', m.crossInsight]);
         if (m.potentialDrivers) methRows.push(['Potential Drivers', m.potentialDrivers.replace(/<[^>]*>/g, '')]);
         if (m.policyLevers) methRows.push(['Main Policy Levers', m.policyLevers]);
         if (m.dataNote) methRows.push([], ['Data Note', m.dataNote]);
@@ -2070,7 +2068,7 @@ const App = {
 
     /**
      * Build consolidated narrative HTML for metrics with useConsolidated: true.
-     * Assembles Why → What data shows → National standing → County → Drivers → Policy levers → Data notes.
+     * Assembles Why → National standing → County → Drivers → Lessons → Policy levers → Data notes.
      * @param {Object} m - Metric data object from DASHBOARD_DATA
      * @returns {string} HTML string
      * @private
@@ -2084,14 +2082,7 @@ const App = {
             <p class="cn-text">${m.whyItMatters}</p>
         </div>`;
 
-        // 2. What the data shows (insight + crossInsight)
-        const dataText = [m.insight, m.crossInsight].filter(Boolean).join(' ');
-        if (dataText) h += `<div class="cn-section">
-            <h3 class="cn-heading">What the data shows</h3>
-            <p class="cn-text">${dataText}</p>
-        </div>`;
-
-        // 3. National standing (rank history summary)
+        // 2. National standing (rank history summary)
         if (m.rankHistoryNarrative && m.rankHistoryNarrative.summary) h += `<div class="cn-section">
             <h3 class="cn-heading">National standing</h3>
             <p class="cn-text">${m.rankHistoryNarrative.summary}</p>
