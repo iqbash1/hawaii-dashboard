@@ -2113,8 +2113,8 @@ const App = {
                 h += `<div class="cn-item"><div class="cn-state cn-state--caution">${narr.caution.state}</div><p class="cn-text">${narr.caution.text}</p>${src}</div>`;
             }
             if (narr.explore && narr.explore.length) {
-                h += `<div class="cn-item cn-item--explore">`;
-                narr.explore.forEach(pt => { h += `<p class="cn-text">\u2192 ${pt}</p>`; });
+                h += `<div class="cn-item">`;
+                narr.explore.forEach(pt => { h += `<p class="cn-text">${pt}</p>`; });
                 h += `</div>`;
             }
             h += `</div>`;
