@@ -459,7 +459,7 @@ const DASHBOARD_DATA = {
     "source": "Census ACS / KFF",
     "sourceUrl": "https://www.kff.org/topic/uninsured/",
     "whyItMatters": "Insurance coverage affects whether people can get routine care, medicine, and treatment before problems worsen.",
-    "howToRead": "Both lines have been falling since the Affordable Care Act expansion in 2012. Hawaiʻi has consistently been at or near the lowest uninsured rate in the nation.",
+    "howToRead": "Both lines have been falling since 2012. The key feature is the persistent gap: Hawai\u02BBi's line runs well below the other-state average for the entire period.",
     "insight": "",
     "crossInsight": "",
     "potentialDrivers": "The <a href=\"https://labor.hawaii.gov/dcd/files/2023/05/PHC-highlights-rev-2025.03.pdf\">Prepaid Health Care Act</a> (1974) made Hawaiʻi the first state to require employer health insurance, decades before the ACA. The mandate covers workers at 20+ hours per week, with employee contributions capped at 1.5 percent of wages. Public coverage backstops it: <a href=\"https://medquest.hawaii.gov/content/dam/formsanddocuments/med-quest/1115-demonstration-post-award-public-forum/Hawaii%201115%20W%20Annual%20CMS%20Monitoring%20Rpt_FFY2024%20FINAL%2001.pdf\">Med-QUEST renewed roughly 475,000 Medicaid members</a> in late 2024, and <a href=\"https://www.cms.gov/files/document/health-insurance-exchanges-2025-open-enrollment-report.pdf\">CMS reported</a> 24,606 marketplace plan selections for 2025, up 11 percent. Gaps remain: the mandate excludes lower-hour workers, and a <a href=\"https://health.hawaii.gov/opppd/files/2024/10/SHIP-Access-to-Health-Services-2024.pdf\">2024 Hawaii DOH access report</a> found immigrants, migrant workers, Native Hawaiians, and rural residents still face coverage barriers.",
@@ -1204,7 +1204,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Childcare and work supports; skills training and career pathways; return-to-work and barrier reduction.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii ranked #5 in labor force participation in 1976 and has fallen to #39 in 2024. The decline tracks the collapse of plantation agriculture, which employed workers across skill levels, and its replacement by tourism and hospitality, characterized by part-time schedules and lower wages. Two structural factors now drive continued disengagement: childcare costs that make second-income work economically marginal for many households, and a military-retiree population that appears in working-age statistics as non-participating.",
+      "summary": "Hawaii ranked #5 in 1976 and has fallen to #39 in 2024. The decline tracks the shift from plantation agriculture to tourism and hospitality, with part-time schedules and lower wages replacing full-time cross-skill employment.",
       "mode": "learn",
       "benchmarks": [
         {
@@ -1724,7 +1724,7 @@ const DASHBOARD_DATA = {
     "source": "EIA",
     "sourceUrl": "https://www.eia.gov/electricity/data/state/",
     "whyItMatters": "Electricity prices hit households every month and raise the broader cost of living.",
-    "howToRead": "In 1970 Hawaiʻi's rate of 2.8¢/kWh was close to the national average. Two oil shocks (1973 and 1979) drove it to 13¢ by 1982, four times the national average, because Hawaiʻi's isolated grids ran almost entirely on imported oil while mainland grids could shift to natural gas and coal. That gap never fully closed. The line has been persistently above the national average ever since, now reaching 40.6¢ against a 17.4¢ average.",
+    "howToRead": "Two sharp divergences define the chart: the 1973 and 1979 oil shocks drove Hawai\u02BBi's line far above the national average because island grids had no alternative to imported oil. The gap never closed. Watch whether the renewable transition bends the line back toward the average or whether transition costs keep it elevated.",
     "insight": "",
     "crossInsight": "",
     "potentialDrivers": "Hawaiʻi pays roughly 2.3x the national average, yet also has the most ambitious renewable target (100% by 2045). Residents are paying for both the old fossil system and the new clean one simultaneously. <a href=\"https://www.eia.gov/todayinenergy/detail.php?id=65244\" target=\"_blank\" rel=\"noopener\">EIA reported in May 2025</a> that most grid-delivered electricity in Hawaiʻi still came from petroleum-fired generators, and the <a href=\"https://puc.hawaii.gov/wp-content/uploads/2025/01/Hawaii-PUC-Energy-Inclinations-White-Paper-FINAL.12.31.24_signed.pdf\" target=\"_blank\" rel=\"noopener\">PUC's January 2025 energy white paper</a> found that evening power remains the most expensive because fossil fuels still dominate supply at peak hours, while a large Oahu battery meant to store lower-cost renewables is still mostly charged by fossil plants. The <a href=\"https://energy.hawaii.gov/wp-content/uploads/2026/01/2025-HSEO-Annual-Report.pdf\" target=\"_blank\" rel=\"noopener\">HSEO's 2025 annual report</a> found that total renewable share, counting both utility-scale and rooftop solar, has grown to 36% of state energy supply (up from 31% in 2023) and should lower costs over time, but noted that replacing aging fuel infrastructure and connecting new renewable projects can take up to nine years and that full grid modernization could cost $2 billion.",
@@ -1982,7 +1982,7 @@ const DASHBOARD_DATA = {
     "source": "USDA ERS",
     "sourceUrl": "https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us",
     "whyItMatters": "Food insecurity shows whether families can reliably afford enough to eat.",
-    "howToRead": "Hawaiʻi's line peaked at 14% during 2010-12 and fell to 9.1%, well below the other-state average. The recent tick up to 10.8% suggests rising grocery prices are eroding gains.",
+    "howToRead": "This uses 3-year rolling averages, so the line lags current conditions. Focus on whether the recent uptick is a sustained reversal or a temporary response to grocery price inflation.",
     "insight": "",
     "crossInsight": "",
     "potentialDrivers": "Hawaiʻi imports over 80% of its food and has the highest cost of living, yet food insecurity ranks #9. Strong safety-net programs and community food networks hold the line. The recent worsening is most likely an affordability squeeze: housing and groceries consume a disproportionate share of household budgets. <a href=\"https://files.hawaii.gov/dbedt/annuals/2025/2025-read-self-sufficiency.pdf\">DBEDT reported in 2025</a> that a single adult in Honolulu needed $42,698 a year just to meet basic needs, with housing the largest expense and food a major secondary one. <a href=\"https://www.fns.usda.gov/sites/default/files/resource-files/Statewide-Thrifty-Food-Plan-CostEstimate-for-Hawaii.pdf\">USDA found in December 2024</a> that Hawaiʻi's standard at-home food basket cost 55.95 percent more than on the mainland, a gap driven by near-total dependence on <a href=\"https://dab.hawaii.gov/add/files/2026/02/Hawaiis-Agricultural-and-Food-Imports-and-Exports_Feb.2026_final2.pdf\">imported proteins and staple foods</a>. <a href=\"https://hawaiifoodbank.org/wp-content/uploads/2026/02/HawaiiFoodbank_FoodInsecurityReport_2024-25.pdf\">Hawaii Foodbank's 2024-25 report</a> concluded that structural solutions are needed because living costs remain persistently out of line with many households' incomes.",
@@ -2325,7 +2325,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Housing cost and supply; job quality and wages; schools, safety, and disaster resilience.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii was near the national midpoint on domestic migration through 2003, shifted into growing outflow by 2007, and has ranked at or near last every year since 2016. A COVID window in 2020-2021 brought partial recovery as remote workers chose Hawaii for its natural environment, but the trend reversed sharply by 2022. In 2024, Hawaii lost roughly 65 residents per 10,000 to other states. The driver is economic math: Hawaii ranks last in home price-to-income ratio, near last in cost-of-living-adjusted income, and its job market is concentrated in tourism and hospitality.",
+      "summary": "Hawaii was near the national midpoint through 2003, shifted into growing outflow by 2007, and has ranked at or near last every year since 2016. A brief COVID-era recovery reversed sharply by 2022.",
       "mode": "learn",
       "benchmarks": [
         {
@@ -2467,7 +2467,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Licensing and permit speed; access to capital; startup assistance and procurement access.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii ranked in the top 10 to 20 for new establishment entry in the early 1980s and has structurally underperformed the national average for nearly 30 years. Since 2000, Hawaii has oscillated between #27 and #46, with a COVID disruption (crashed to #46 in 2021) followed by a post-reopening bounce (#19 in 2022) and normalization to #37 in 2023. The documented barriers include commercial space costs among the highest in the country, the General Excise Tax applied at every stage of the supply chain, and a professional licensing system among the most expansive in the US.",
+      "summary": "Hawaii ranked in the top 10 to 20 in the early 1980s and has structurally underperformed for nearly 30 years, oscillating between #27 and #46. The 2022 post-reopening bounce (#19) normalized back to #37 in 2023.",
       "mode": "learn",
       "benchmarks": [
         {
@@ -2609,7 +2609,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Business climate and permitting; infrastructure and site readiness; capital access and sector development.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii's net employer formation rate is the most cyclical metric on this dashboard, ranking in the top 5 during the late-1980s tourism boom, crashing to #49-50 through the entire 1993-1999 period, recovering through the 2000s, and recording its worst COVID reading of #50 in 2021. The 2022 bounce to #9 reflects post-reopening business formation as tourism returned. The 2023 drop to #43 reflects normalization. Hawaii's formation rate tracks visitor arrival data more closely than any other economic indicator.",
+      "summary": "The most cyclical metric on this dashboard: Hawaii has swung from top 5 to #50 across tourism cycles. The formation rate tracks visitor arrivals more closely than any other economic indicator.",
       "mode": "learn",
       "benchmarks": [
         {
@@ -2694,7 +2694,7 @@ const DASHBOARD_DATA = {
     "policyLevers": "Infrastructure and technology adoption; workforce skills; business environment and innovation support.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
-      "summary": "Hawaii's labor productivity rank swung from #19 in 2007 to #7 in 2018, then crashed to #48 in 2023 before settling at #46 in 2024. The volatility directly reflects tourism's role in Hawaii's GDP: when visitor spending surges, GDP rises sharply without proportional growth in hours worked; when tourism rebuilds through labor-intensive hospitality employment, hours grow faster than output. Hawaii has fewer workers in high-output-per-hour sectors, specifically technology, financial services, life sciences, and advanced manufacturing.",
+      "summary": "Hawaii's rank swung from #7 in 2018 to #48 in 2023 before settling at #46. The volatility reflects tourism's outsized role in GDP: visitor spending moves output faster than hours worked can adjust.",
       "mode": "learn",
       "benchmarks": [
         {
