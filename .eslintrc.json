@@ -1,0 +1,32 @@
+{
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "globals": {
+    "App": "readonly",
+    "Modal": "readonly",
+    "Export": "readonly",
+    "Router": "readonly",
+    "Compute": "readonly",
+    "ChartUtils": "readonly",
+    "DASHBOARD_DATA": "readonly",
+    "STATE_DATA": "readonly",
+    "COUNTY_DATA": "readonly",
+    "BUNDLES": "readonly",
+    "BRIEF_TEMPLATES": "readonly",
+    "ZERO_IS_VALID": "readonly",
+    "AREA_ICONS": "readonly",
+    "STATE_ABBREVS": "readonly",
+    "Chart": "readonly",
+    "XLSX": "readonly"
+  },
+  "rules": {
+    "no-undef": "error",
+    "no-unused-vars": ["warn", { "args": "none", "varsIgnorePattern": "^_" }],
+    "no-redeclare": "error",
+    "eqeqeq": ["error", "smart"],
+    "no-debugger": "error",
+    "no-alert": "warn"
+  }
+}
