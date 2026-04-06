@@ -802,6 +802,18 @@ const App = {
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
             ? `Hawai\u02BBi vs. other state average \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${vintageStart}\u2013${vintageEnd}`
             : `Hawai\u02BBi vs. other state average \u00B7 ${vintageStart}\u2013${vintageEnd}`;
+        // Render the dynamic "Bottom line" brief
+        const briefEl = document.getElementById('modal-brief');
+        const briefText = this.computeBrief(slug);
+        if (briefText) {
+            briefEl.innerHTML = briefText
+                .replace('Bottom line:', '<strong>Bottom line:</strong>')
+                .replace('Keep in mind:', '<strong>Keep in mind:</strong>');
+            briefEl.style.display = '';
+        } else {
+            briefEl.style.display = 'none';
+        }
+
         document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
         document.getElementById('modal-how').textContent = metricData.howToRead;
 
@@ -910,23 +922,6 @@ const App = {
         document.getElementById('modal-share-btn').addEventListener('click', (e) => {
             e.preventDefault();
             copyShare(document.getElementById('modal-share-btn'));
-        });
-
-        // Copy brief button
-        const briefBtn = document.getElementById('modal-brief-btn');
-        briefBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const text = this.computeBrief(slug);
-            if (!text) return;
-            navigator.clipboard.writeText(text).then(() => {
-                const label = briefBtn.querySelector('.brief-label');
-                briefBtn.classList.add('copied');
-                if (label) label.textContent = 'Copied!';
-                setTimeout(() => {
-                    briefBtn.classList.remove('copied');
-                    if (label) label.textContent = 'Copy brief';
-                }, 2000);
-            });
         });
 
         document.getElementById('print-link').addEventListener('click', (e) => {
