@@ -1216,8 +1216,6 @@ body {
 .cn-text a:hover { text-decoration: underline; }
 .cn-item {
     margin-bottom: 0.85rem;
-    padding-left: 0.75rem;
-    border-left: 2px solid var(--border);
 }
 .cn-item:last-child { margin-bottom: 0; }
 .cn-state {
