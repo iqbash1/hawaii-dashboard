@@ -2109,10 +2109,10 @@ const App = {
             <p class="cn-text">${m.potentialDrivers}</p>
         </div>`;
 
-        // 6. Comparable states (benchmarks + caution + explore)
+        // 6. Lessons from other states (benchmarks + caution + explore)
         const narr = m.rankHistoryNarrative;
         if (narr && (narr.benchmarks?.length || narr.caution || narr.explore?.length)) {
-            h += `<div class="cn-section"><h3 class="cn-heading">Comparable states</h3>`;
+            h += `<div class="cn-section"><h3 class="cn-heading">Lessons from other states</h3>`;
             (narr.benchmarks || []).forEach(b => {
                 const src = b.source ? `<a href="${b.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${b.source.label}</a>` : '';
                 h += `<div class="cn-item"><div class="cn-state cn-state--learn">${b.state}</div><p class="cn-text">${b.text}</p>${src}</div>`;
