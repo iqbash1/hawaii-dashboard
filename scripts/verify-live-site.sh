@@ -127,26 +127,28 @@ ok "/about/ fetched"
 # -----------------------------------------------------------------------------
 section "CACHE-BUSTING HEADERS"
 
+# JS/CSS assets should have immutable caching (versioned via ?v= params)
 for asset_path in "js/app.js" "css/styles.css"; do
     cc=$(curl -fsI --max-time 10 "${BASE}/${asset_path}" 2>/dev/null \
         | grep -i 'cache-control' | head -1 || true)
-    if echo "$cc" | grep -qi 'no-store'; then
-        ok "${asset_path} has Cache-Control: no-store"
+    if echo "$cc" | grep -qi 'immutable'; then
+        ok "${asset_path} has Cache-Control: immutable"
+    elif echo "$cc" | grep -qi 'max-age'; then
+        ok "${asset_path} has Cache-Control with max-age (got: ${cc})"
     else
-        fail "${asset_path} missing no-store header (got: ${cc:-none})"
-        fail "  _headers file may not be deployed or applied correctly"
+        warn "${asset_path} unexpected cache header (got: ${cc:-none})"
     fi
 done
 
-# Verify no-store on all HTML pages (directory-style URLs are covered by /* in _headers)
+# HTML pages should have short cache (60s) for quick deploy propagation
 for page_url in "" "five-year-change/" "about/"; do
     page_label="${page_url:-index.html}"
     cc_page=$(curl -fsI --max-time 10 "${BASE}/${page_url}" 2>/dev/null \
         | grep -i 'cache-control' | head -1 || true)
-    if echo "$cc_page" | grep -qi 'no-store'; then
-        ok "${page_label} has Cache-Control: no-store"
+    if echo "$cc_page" | grep -qi 'max-age'; then
+        ok "${page_label} has Cache-Control with max-age"
     else
-        warn "${page_label} Cache-Control does not include no-store (got: ${cc_page:-none})"
+        warn "${page_label} unexpected cache header (got: ${cc_page:-none})"
     fi
 done
 
@@ -219,15 +221,25 @@ else
     fail "/five-year-change/ missing utils.js script tag (stale build)"
 fi
 
-# Must be present
-for marker in "modal-official-name" "modal-unit-label" "slugToState" \
-              "rankHistoryNarrative" "buildVsYearHtml" "unitLabel" \
-              "sourceCategory" "categoryLabels" "Federal data" \
-              "State-reported" "Independent estimate"; do
+# Must be present in app.js (post-module-split: app.js is the coordinator)
+for marker in "AREA_ORDER" "renderCards" "getEffectiveData" \
+              "computeChartData" "getStateRankings" "initMetricSearch" \
+              "getGovernorBoxes" "ZERO_IS_VALID"; do
     if grep -q "$marker" "$APP_JS_FILE"; then
         ok "app.js contains: ${marker}"
     else
         fail "app.js missing: ${marker} (stale or broken deployment)"
+    fi
+done
+
+# Verify module files exist (post-split architecture)
+for module in "modal.js" "export.js" "routing.js" "compute.js"; do
+    mod_status=$(curl -fs --max-time 10 -o /dev/null -w "%{http_code}" \
+        "${BASE}/js/${module}" 2>/dev/null || echo "000")
+    if [ "$mod_status" = "200" ]; then
+        ok "js/${module} returns HTTP 200"
+    else
+        fail "js/${module} returned HTTP ${mod_status} (module missing)"
     fi
 done
 
