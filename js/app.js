@@ -122,7 +122,7 @@ const BRIEF_TEMPLATES = {
         caveat: "this is a generation share, not Hawai\u02BBi's full energy mix or total consumption."
     },
     net_domestic_migration_rate: {
-        intro: "Hawai\u02BBi's net migration rate is {{value}} ({{period}})",
+        intro: "More people left Hawai\u02BBi than arrived: {{value}} per 10,000 residents in {{period}}",
         caveat: "this shows net movement, not why people are leaving or arriving."
     },
     road_poor_pct: {
