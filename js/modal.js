@@ -1061,7 +1061,10 @@ const Modal = {
         // Above / below / at the Other State Average
         const hiVal  = isDecimal ? latestHi.value * 100  : latestHi.value;
         const avgVal = isDecimal ? latestAvg.value * 100 : latestAvg.value;
-        const vsAvg  = hiVal > avgVal ? 'above' : hiVal < avgVal ? 'below' : 'at';
+        // Intensity: "well above/below" when gap > 20% of the average
+        const gapPct = avgVal !== 0 ? Math.abs(hiVal - avgVal) / Math.abs(avgVal) : 0;
+        const intensity = gapPct > 0.2 ? 'well ' : '';
+        const vsAvg = hiVal > avgVal ? `${intensity}above` : hiVal < avgVal ? `${intensity}below` : 'at';
 
         const trend = Modal.computeTrendPhrase(slug);
 
