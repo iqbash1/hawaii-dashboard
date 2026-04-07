@@ -7,7 +7,7 @@
 // Build: 2026-04-04
 // ============================================================
 
-const STATE_ABBREVS = {
+const STATE_ABBREVS = { // eslint-disable-line no-unused-vars
     'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
     'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
     'Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
@@ -32,7 +32,7 @@ const AREA_ICONS = {
 // Per-metric templates for the "Copy brief" feature.
 // Each entry has an `intro` (sentence opener with {{value}} / {{period}})
 // and a `caveat` ("Keep in mind" closer).
-const BRIEF_TEMPLATES = {
+const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     violent_crime_rate: {
         intro: "Hawai\u02BBi's violent crime rate is {{value}} ({{period}})",
         caveat: "pre-1985 coverage is incomplete, so long-run comparisons should lean on the later series."

@@ -24,7 +24,7 @@ const Export = {
             script.integrity = 'sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw';
             script.crossOrigin = 'anonymous';
             script.onload = () => Export.downloadData(slug);
-            script.onerror = () => alert('Could not load the export library. Please try again.');
+            script.onerror = () => alert('Could not load the export library. Please try again.'); // eslint-disable-line no-alert
             document.head.appendChild(script);
             return;
         }
