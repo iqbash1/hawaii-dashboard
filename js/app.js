@@ -134,7 +134,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
         caveat: "this covers the stabilization fund only, not total reserves."
     },
     voter_participation_rate: {
-        intro: "Hawai\u02BBi's voter participation rate was {{value}} in {{period}}",
+        intro: "Only {{value}} of eligible Hawai\u02BBi voters cast a ballot in {{period}}",
         caveat: "this is based on eligible voters, not all adults."
     },
 };
