@@ -836,7 +836,7 @@ body {
 
 .modal-brief {
     padding: 1rem 2rem;
-    font-size: 0.88rem;
+    font-size: 1.05rem;
     line-height: 1.6;
     color: var(--text);
     border-bottom: 1px solid var(--border);
@@ -864,7 +864,7 @@ body {
 }
 
 .modal-section p {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     line-height: 1.65;
     color: var(--text);
 }
@@ -1121,7 +1121,7 @@ body {
     margin-bottom: 0.2rem;
 }
 .rh-narr-text {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0;
@@ -1169,7 +1169,7 @@ body {
     margin-bottom: 0.5rem;
 }
 .cn-text {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0 0 0.5rem;
@@ -1497,7 +1497,7 @@ body {
     }
 
     .modal-section p {
-        font-size: 0.85rem;
+        font-size: 1.0rem;
         line-height: 1.58;
     }
 
