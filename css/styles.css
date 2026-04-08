@@ -383,41 +383,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Active bundle banner above the grid */
-.bundle-bar {
-    display: none;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.55rem 1.5rem;
-    background: var(--hawaii-blue-light);
-    border-bottom: 1px solid rgba(13,124,143,0.2);
-    font-size: 0.88rem;
-    color: var(--hawaii-blue);
-    font-weight: 500;
-}
 
-.bundle-bar.visible { display: flex; }
-
-.bundle-bar-desc {
-    flex: 1;
-    font-weight: 400;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-}
-
-.bundle-bar-clear {
-    background: none;
-    border: none;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 0.1rem 0.3rem;
-    border-radius: var(--radius-sm);
-    transition: color 0.15s;
-    white-space: nowrap;
-}
-
-.bundle-bar-clear:hover { color: var(--negative); }
 
 /* Hide non-matching cards and area headings when a bundle is active */
 .bundle-active .card {
