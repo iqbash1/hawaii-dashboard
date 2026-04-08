@@ -84,13 +84,6 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         ],
     },
     {
-        id: 'civic',
-        title: 'How many of us actually vote?',
-        metrics: [
-            { id: 'voter_participation_rate', view: 'rh' },
-        ],
-    },
-    {
         id: 'jobs',
         title: 'How strong is the job market?',
         metrics: [
@@ -110,11 +103,12 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         ],
     },
     {
-        id: 'leaving',
-        title: 'Are more people leaving or moving to the islands?',
+        id: 'participating',
+        title: 'Are residents actively participating in the state\u2019s future?',
         metrics: [
-            { id: 'net_domestic_migration_rate', view: 't'  },
-            { id: 'real_per_capita_income',      view: 'rh' },
+            { id: 'labor_force_participation',   view: 't'  },
+            { id: 'voter_participation_rate',     view: 'rh' },
+            { id: 'net_domestic_migration_rate',  view: 't'  },
         ],
     },
 ];
