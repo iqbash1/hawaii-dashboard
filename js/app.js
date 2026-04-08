@@ -697,9 +697,13 @@ const App = {
     renderQuestionDropdown() {
         const trigger  = document.getElementById('question-search-trigger');
         const dropdown = document.getElementById('question-search-dropdown');
+        const label    = trigger?.querySelector('.question-search-label');
+        const countEl  = trigger?.querySelector('.question-search-count');
+        const clearEl  = document.getElementById('question-search-clear');
         if (!trigger || !dropdown || typeof BUNDLES === 'undefined') return;
 
         let isOpen = false;
+        const defaultLabel = 'I have a question\u2026';
 
         // Populate from BUNDLES
         BUNDLES.forEach(b => {
@@ -731,7 +735,31 @@ const App = {
             isOpen = false;
         };
 
-        trigger.addEventListener('click', () => { isOpen ? close() : open(); });
+        // Show selected question in the trigger itself
+        this._updateQuestionTrigger = (bundle) => {
+            if (bundle) {
+                label.textContent = bundle.title;
+                countEl.textContent = bundle.metrics.length + (bundle.metrics.length === 1 ? ' metric' : ' metrics');
+                countEl.style.display = '';
+                clearEl.style.display = '';
+                trigger.classList.add('active');
+            } else {
+                label.textContent = defaultLabel;
+                countEl.style.display = 'none';
+                clearEl.style.display = 'none';
+                trigger.classList.remove('active');
+            }
+        };
+
+        trigger.addEventListener('click', (e) => {
+            // If clicking the clear button, clear instead of opening dropdown
+            if (e.target === clearEl || clearEl.contains(e.target)) {
+                e.stopPropagation();
+                this.clearBundle();
+                return;
+            }
+            isOpen ? close() : open();
+        });
 
         document.addEventListener('click', (e) => {
             if (isOpen && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
@@ -742,9 +770,6 @@ const App = {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isOpen) close();
         });
-
-        const clearBtn = document.getElementById('bundle-bar-clear');
-        if (clearBtn) clearBtn.addEventListener('click', () => this.clearBundle());
     },
 
     /**
@@ -756,12 +781,8 @@ const App = {
         if (!bundle) return;
         this._activeBundle = bundle;
 
-        const bar = document.getElementById('bundle-bar');
-        if (bar) {
-            bar.querySelector('.bundle-bar-name').textContent = bundle.title;
-            bar.querySelector('.bundle-bar-desc').textContent = bundle.metrics.length + (bundle.metrics.length === 1 ? ' metric' : ' metrics');
-            bar.classList.add('visible');
-        }
+        // Update the question trigger to show selected state
+        if (this._updateQuestionTrigger) this._updateQuestionTrigger(bundle);
 
         // Dim non-bundle cards, highlight bundle cards
         const grid = document.getElementById('dashboard-grid');
@@ -787,8 +808,8 @@ const App = {
     clearBundle() {
         this._activeBundle = null;
 
-        const bar = document.getElementById('bundle-bar');
-        if (bar) bar.classList.remove('visible');
+        // Reset the question trigger to default state
+        if (this._updateQuestionTrigger) this._updateQuestionTrigger(null);
 
         const grid = document.getElementById('dashboard-grid');
         grid.classList.remove('bundle-active');

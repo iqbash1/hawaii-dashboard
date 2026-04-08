@@ -76,15 +76,17 @@
 
     <!-- Explore by question -->
     <section class="bundle-section" id="bundle-section">
-        <!-- Question dropdown -->
+        <!-- Question dropdown (primary) -->
         <div class="question-search-wrap" id="question-search-wrap">
             <button id="question-search-trigger" class="question-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="I have a question">
                 <svg class="question-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 <span class="question-search-label">I have a question&hellip;</span>
+                <span class="question-search-count" style="display:none;"></span>
+                <span class="question-search-clear" id="question-search-clear" style="display:none;" aria-label="Clear filter">&#x2715;</span>
             </button>
             <ul class="question-search-dropdown" id="question-search-dropdown" role="listbox" aria-label="Select a question" style="display:none;"></ul>
         </div>
-        <!-- Jump to metric dropdown -->
+        <!-- Jump to metric dropdown (secondary) -->
         <div class="metric-search-wrap" id="metric-search-wrap">
             <button id="metric-search-trigger" class="metric-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Jump to metric">
                 <svg class="metric-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -93,13 +95,6 @@
             <ul class="metric-search-dropdown" id="metric-search-dropdown" role="listbox" aria-label="Select a metric" style="display:none;"></ul>
         </div>
     </section>
-
-    <!-- Active bundle bar -->
-    <div class="bundle-bar" id="bundle-bar" role="status">
-        <strong class="bundle-bar-name"></strong>
-        <span class="bundle-bar-desc"></span>
-        <button class="bundle-bar-clear" id="bundle-bar-clear" aria-label="Clear bundle filter">&times; Clear filter</button>
-    </div>
 
     <!-- Grid of cards -->
     <main class="dashboard-grid" id="dashboard-grid">

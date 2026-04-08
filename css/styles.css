@@ -262,6 +262,29 @@ body {
     background: var(--hawaii-blue-light);
     color: var(--hawaii-blue);
 }
+.question-search-trigger.active {
+    border-color: var(--hawaii-blue);
+    background: var(--hawaii-blue-light);
+    color: var(--hawaii-blue);
+}
+.question-search-trigger.active .question-search-icon {
+    display: none;
+}
+.question-search-count {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.question-search-clear {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 0.2rem;
+    margin-left: auto;
+}
+.question-search-clear:hover {
+    color: var(--negative);
+}
 
 /* --- Jump to metric dropdown --- */
 .metric-search-wrap {
@@ -356,7 +379,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
 }
 
