@@ -679,31 +679,34 @@ body {
 
 .modal-share-btn {
     height: 36px;
-    padding: 0 0.75rem;
-    gap: 0.35rem;
-    border: 1px solid var(--border);
-    background: var(--card-bg);
+    padding: 0 0.85rem;
+    gap: 0.4rem;
+    border: 1px solid var(--hawaii-blue);
+    background: var(--hawaii-blue);
     border-radius: var(--radius-sm);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-secondary);
+    color: #fff;
     font-size: 0.88rem;
     font-weight: 500;
     font-family: inherit;
     transition: all var(--transition);
 }
 
+.modal-share-btn svg { stroke: #fff; }
+
 .modal-share-btn:hover {
-    background: var(--avg-gray-light);
-    color: var(--hawaii-blue);
-    border-color: var(--hawaii-blue);
+    background: var(--hawaii-blue-dark, #1a6b8a);
+    border-color: var(--hawaii-blue-dark, #1a6b8a);
+    color: #fff;
 }
 
 .modal-share-btn.copied {
-    color: var(--positive);
+    background: var(--positive);
     border-color: var(--positive);
+    color: #fff;
 }
 
 .modal-close {
