@@ -85,7 +85,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'civic',
-        title: 'Why is voter turnout so low?',
+        title: 'How many of us actually vote?',
         metrics: [
             { id: 'voter_participation_rate', view: 'rh' },
         ],
