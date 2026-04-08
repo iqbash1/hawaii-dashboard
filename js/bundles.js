@@ -67,7 +67,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'energy',
-        title: 'Why are electric bills so high?',
+        title: 'Is the shift to renewables lowering electric bills?',
         metrics: [
             { id: 'residential_price_cpkwh', view: 't'  },
             { id: 'renewables_share_gen',    view: 't'  },
