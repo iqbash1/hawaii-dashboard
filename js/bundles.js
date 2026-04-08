@@ -2,8 +2,8 @@
 // Hawaiʻi Dashboard - Question Bundles
 //
 // Each bundle is a resident-voice question that maps to a curated
-// subset of metrics. Order follows Maslow priority: daily costs,
-// safety, health, children, economy, infrastructure, civic.
+// subset of metrics. Order: daily costs, safety, health, children,
+// infrastructure, civic, then the verdict (are people leaving).
 //
 // view key: t = trend, r = rank, rh = rank-history, c = county
 // ============================================================
@@ -66,18 +66,6 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         ],
     },
     {
-        id: 'leaving',
-        title: 'Are people leaving?',
-        metrics: [
-            { id: 'net_domestic_migration_rate', view: 't'  },
-            { id: 'real_per_capita_income',      view: 'rh' },
-            { id: 'labor_productivity',          view: 't'  },
-            { id: 'labor_force_participation',   view: 't'  },
-            { id: 'estabs_entry_rate',           view: 't'  },
-            { id: 'net_employer_formation',      view: 'r'  },
-        ],
-    },
-    {
         id: 'energy',
         title: 'Why is my electric bill so high?',
         metrics: [
@@ -100,6 +88,18 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         title: 'Does my vote even matter here?',
         metrics: [
             { id: 'voter_participation_rate', view: 'rh' },
+        ],
+    },
+    {
+        id: 'leaving',
+        title: 'Are people leaving?',
+        metrics: [
+            { id: 'net_domestic_migration_rate', view: 't'  },
+            { id: 'real_per_capita_income',      view: 'rh' },
+            { id: 'labor_productivity',          view: 't'  },
+            { id: 'labor_force_participation',   view: 't'  },
+            { id: 'estabs_entry_rate',           view: 't'  },
+            { id: 'net_employer_formation',      view: 'r'  },
         ],
     },
 ];
