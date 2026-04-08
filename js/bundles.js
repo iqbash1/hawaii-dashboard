@@ -92,7 +92,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'leaving',
-        title: 'Are more people leaving or coming?',
+        title: 'Are more people leaving or moving to the islands?',
         metrics: [
             { id: 'net_domestic_migration_rate', view: 't'  },
             { id: 'real_per_capita_income',      view: 'rh' },
