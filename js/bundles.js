@@ -11,7 +11,7 @@
 const BUNDLES = [ // eslint-disable-line no-unused-vars
     {
         id: 'affordability',
-        title: 'Can we still afford to live here?',
+        title: 'How affordable is life here?',
         metrics: [
             { id: 'renter_cost_burden_pct',  view: 'rh' },
             { id: 'home_price_to_income',    view: 'rh' },
@@ -22,7 +22,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'homelessness',
-        title: 'Is homelessness getting worse?',
+        title: 'What\'s happening with homelessness?',
         metrics: [
             { id: 'unsheltered_homeless_rate', view: 't'  },
             { id: 'renter_cost_burden_pct',    view: 'rh' },
@@ -32,7 +32,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'safety',
-        title: 'Is it actually getting safer?',
+        title: 'How safe is it really?',
         metrics: [
             { id: 'violent_crime_rate',  view: 't'  },
             { id: 'property_crime_rate', view: 'rh' },
@@ -40,7 +40,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'mental-health',
-        title: 'Is the mental health crisis real?',
+        title: 'How serious is the mental health gap?',
         metrics: [
             { id: 'suicide_rate',    view: 't'  },
             { id: 'pcp_per_100k',    view: 'r'  },
@@ -49,7 +49,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'health-care',
-        title: 'Can I see a doctor when I need one?',
+        title: 'How easy is it to see a doctor?',
         metrics: [
             { id: 'pcp_per_100k',   view: 'r'  },
             { id: 'uninsured_rate', view: 'rh' },
@@ -57,7 +57,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'education',
-        title: 'Are our kids learning enough?',
+        title: 'How are our kids doing in school?',
         metrics: [
             { id: 'naep_math_8',       view: 'rh' },
             { id: 'naep_reading_8',    view: 'rh' },
@@ -67,7 +67,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'energy',
-        title: 'Why is my electric bill so high?',
+        title: 'Why are electric bills so high?',
         metrics: [
             { id: 'residential_price_cpkwh', view: 't'  },
             { id: 'renewables_share_gen',    view: 't'  },
@@ -75,7 +75,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'resilience',
-        title: 'Are we ready for the next disaster?',
+        title: 'How prepared are we for the next disaster?',
         metrics: [
             { id: 'rainy_day_fund_pct',        view: 't'  },
             { id: 'road_poor_pct',             view: 'rh' },
@@ -85,7 +85,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'civic',
-        title: 'Does my vote even matter here?',
+        title: 'Why is voter turnout so low?',
         metrics: [
             { id: 'voter_participation_rate', view: 'rh' },
         ],
