@@ -1266,7 +1266,7 @@ body {
 }
 
 .go-deeper-inner {
-    max-width: 960px;
+    max-width: 1320px;
     margin: 0 auto;
     background: var(--card-bg);
     border: 1px solid var(--border);
