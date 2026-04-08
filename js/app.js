@@ -759,7 +759,7 @@ const App = {
         const bar = document.getElementById('bundle-bar');
         if (bar) {
             bar.querySelector('.bundle-bar-name').textContent = bundle.title;
-            bar.querySelector('.bundle-bar-desc').textContent = bundle.metrics.length + ' metrics';
+            bar.querySelector('.bundle-bar-desc').textContent = bundle.metrics.length + (bundle.metrics.length === 1 ? ' metric' : ' metrics');
             bar.classList.add('visible');
         }
 
