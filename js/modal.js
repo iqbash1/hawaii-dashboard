@@ -158,8 +158,8 @@ const Modal = {
         document.getElementById('modal-vintage').textContent = vintageText;
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
-            ? `Hawai\u02BBi vs. other state average \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${vintageStart}\u2013${vintageEnd}`
-            : `Hawai\u02BBi vs. other state average \u00B7 ${vintageStart}\u2013${vintageEnd}`;
+            ? `Hawai\u02BBi vs. other state average \u00B7 <strong>3-yr rolling avg</strong>`
+            : `Hawai\u02BBi vs. other state average`;
         // Render the dynamic "Bottom line" brief
         const briefEl = document.getElementById('modal-brief');
         const briefText = Modal.computeBrief(slug);
