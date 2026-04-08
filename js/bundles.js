@@ -91,15 +91,29 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         ],
     },
     {
+        id: 'jobs',
+        title: 'How strong is the job market?',
+        metrics: [
+            { id: 'unemployment_rate',         view: 'rh' },
+            { id: 'labor_force_participation', view: 't'  },
+            { id: 'real_per_capita_income',    view: 'rh' },
+            { id: 'labor_productivity',        view: 't'  },
+        ],
+    },
+    {
+        id: 'business',
+        title: 'How easy is it to start a business here?',
+        metrics: [
+            { id: 'estabs_entry_rate',      view: 't'  },
+            { id: 'net_employer_formation', view: 'r'  },
+        ],
+    },
+    {
         id: 'leaving',
         title: 'Are more people leaving or moving to the islands?',
         metrics: [
             { id: 'net_domestic_migration_rate', view: 't'  },
             { id: 'real_per_capita_income',      view: 'rh' },
-            { id: 'labor_productivity',          view: 't'  },
-            { id: 'labor_force_participation',   view: 't'  },
-            { id: 'estabs_entry_rate',           view: 't'  },
-            { id: 'net_employer_formation',      view: 'r'  },
         ],
     },
 ];
