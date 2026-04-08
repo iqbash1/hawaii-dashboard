@@ -419,18 +419,17 @@ body {
 
 .bundle-bar-clear:hover { color: var(--negative); }
 
-/* Card dimming when a bundle is active */
+/* Hide non-matching cards and area headings when a bundle is active */
 .bundle-active .card {
-    opacity: 0.12;
-    filter: grayscale(100%);
-    transition: opacity 0.2s, filter 0.2s;
+    display: none;
 }
 
 .bundle-active .card.bundle-match {
-    opacity: 1;
-    filter: none;
-    box-shadow: 0 0 0 2.5px var(--hawaii-blue), 0 4px 16px rgba(13,124,143,0.15);
-    background: #fff;
+    display: block;
+}
+
+.bundle-active .area-section-heading {
+    display: none;
 }
 
 /* Modal bundle nav bar */
