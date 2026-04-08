@@ -76,8 +76,13 @@
 
     <!-- Explore by question -->
     <section class="bundle-section" id="bundle-section">
-        <div class="bundle-chips" id="bundle-chips">
-            <!-- populated by JS -->
+        <!-- Question dropdown -->
+        <div class="question-search-wrap" id="question-search-wrap">
+            <button id="question-search-trigger" class="question-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="I have a question">
+                <svg class="question-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                <span class="question-search-label">I have a question&hellip;</span>
+            </button>
+            <ul class="question-search-dropdown" id="question-search-dropdown" role="listbox" aria-label="Select a question" style="display:none;"></ul>
         </div>
         <!-- Jump to metric dropdown -->
         <div class="metric-search-wrap" id="metric-search-wrap">

@@ -192,7 +192,7 @@ const App = {
 
         Modal.setupModal();
 
-        this.renderBundleChips();
+        this.renderQuestionDropdown();
 
         // Restore bundle from URL param on load (e.g. /?bundle=affordability)
         const initBundle = new URLSearchParams(window.location.search).get('bundle');
@@ -694,24 +694,53 @@ const App = {
      * Render the bundle filter chips (Affordability, Keeping Residents, etc.)
      * and wire click handlers to activate/deactivate bundles.
      */
-    renderBundleChips() {
-        const container = document.getElementById('bundle-chips');
-        if (!container || typeof BUNDLES === 'undefined') return;
+    renderQuestionDropdown() {
+        const trigger  = document.getElementById('question-search-trigger');
+        const dropdown = document.getElementById('question-search-dropdown');
+        if (!trigger || !dropdown || typeof BUNDLES === 'undefined') return;
 
-        container.innerHTML = BUNDLES.map(b => `
-            <button class="bundle-chip" data-bundle="${b.id}" title="${b.description}">
-                ${b.title}
-            </button>
-        `).join('');
+        let isOpen = false;
 
-        container.querySelectorAll('.bundle-chip').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (this._activeBundle && this._activeBundle.id === btn.dataset.bundle) {
+        // Populate from BUNDLES
+        BUNDLES.forEach(b => {
+            const li = document.createElement('li');
+            li.className = 'question-search-item';
+            li.setAttribute('role', 'option');
+            li.setAttribute('data-bundle', b.id);
+            li.textContent = b.title;
+            li.addEventListener('click', () => {
+                close();
+                if (this._activeBundle && this._activeBundle.id === b.id) {
                     this.clearBundle();
                 } else {
-                    this.activateBundle(btn.dataset.bundle);
+                    this.activateBundle(b.id);
                 }
             });
+            dropdown.appendChild(li);
+        });
+
+        const open = () => {
+            dropdown.style.display = 'block';
+            trigger.setAttribute('aria-expanded', 'true');
+            isOpen = true;
+        };
+
+        const close = () => {
+            dropdown.style.display = 'none';
+            trigger.setAttribute('aria-expanded', 'false');
+            isOpen = false;
+        };
+
+        trigger.addEventListener('click', () => { isOpen ? close() : open(); });
+
+        document.addEventListener('click', (e) => {
+            if (isOpen && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                close();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isOpen) close();
         });
 
         const clearBtn = document.getElementById('bundle-bar-clear');
@@ -727,14 +756,10 @@ const App = {
         if (!bundle) return;
         this._activeBundle = bundle;
 
-        document.querySelectorAll('.bundle-chip').forEach(c => {
-            c.classList.toggle('active', c.dataset.bundle === bundleId);
-        });
-
         const bar = document.getElementById('bundle-bar');
         if (bar) {
             bar.querySelector('.bundle-bar-name').textContent = bundle.title;
-            bar.querySelector('.bundle-bar-desc').textContent = bundle.description + ' \u00b7 ' + bundle.metrics.length + ' metrics';
+            bar.querySelector('.bundle-bar-desc').textContent = bundle.metrics.length + ' metrics';
             bar.classList.add('visible');
         }
 
@@ -761,8 +786,6 @@ const App = {
      */
     clearBundle() {
         this._activeBundle = null;
-
-        document.querySelectorAll('.bundle-chip').forEach(c => c.classList.remove('active'));
 
         const bar = document.getElementById('bundle-bar');
         if (bar) bar.classList.remove('visible');

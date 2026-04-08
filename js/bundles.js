@@ -1,88 +1,105 @@
 // ============================================================
-// Hawaiʻi Dashboard - Bundle Config
+// Hawaiʻi Dashboard - Question Bundles
 //
-// Each bundle is a named, question-first entry point that
-// maps to a curated subset of existing metrics and their
-// most useful default tab (t = trend, r = rank, rh = rank-history, c = county).
+// Each bundle is a resident-voice question that maps to a curated
+// subset of metrics. Order follows Maslow priority: daily costs,
+// safety, health, children, economy, infrastructure, civic.
+//
+// view key: t = trend, r = rank, rh = rank-history, c = county
 // ============================================================
 
 const BUNDLES = [ // eslint-disable-line no-unused-vars
     {
         id: 'affordability',
-        title: 'Affordability',
-        description: 'How far paychecks stretch for residents',
+        title: 'Can we still afford to live here?',
         metrics: [
+            { id: 'renter_cost_burden_pct',  view: 'rh' },
+            { id: 'home_price_to_income',    view: 'rh' },
+            { id: 'residential_price_cpkwh', view: 't'  },
+            { id: 'food_insecurity_rate',    view: 't'  },
+            { id: 'real_per_capita_income',  view: 'rh' },
+        ],
+    },
+    {
+        id: 'homelessness',
+        title: 'Is homelessness getting worse?',
+        metrics: [
+            { id: 'unsheltered_homeless_rate', view: 't'  },
             { id: 'renter_cost_burden_pct',    view: 'rh' },
-            { id: 'home_price_to_income',       view: 'rh' },
-            { id: 'real_per_capita_income',     view: 'rh' },
-            { id: 'residential_price_cpkwh',    view: 't'  },
-            { id: 'food_insecurity_rate',        view: 't'  },
-            { id: 'net_domestic_migration_rate', view: 't'  },
+            { id: 'home_price_to_income',      view: 'rh' },
+            { id: 'food_insecurity_rate',      view: 't'  },
         ],
     },
     {
-        id: 'keeping-residents',
-        title: 'Keeping Residents',
-        description: "Why people stay or leave Hawaiʻi",
-        metrics: [
-            { id: 'net_domestic_migration_rate', view: 't'  },
-            { id: 'renter_cost_burden_pct',      view: 'rh' },
-            { id: 'home_price_to_income',        view: 'rh' },
-            { id: 'real_per_capita_income',      view: 'rh' },
-            { id: 'unemployment_rate',           view: 'rh' },
-            { id: 'labor_force_participation',   view: 't'  },
-        ],
-    },
-    {
-        id: 'jobs-and-pay',
-        title: 'Jobs & Pay',
-        description: 'Employment, wages, and worker output',
-        metrics: [
-            { id: 'unemployment_rate',         view: 'rh' },
-            { id: 'labor_force_participation',  view: 't'  },
-            { id: 'real_per_capita_income',     view: 'rh' },
-            { id: 'labor_productivity',         view: 't'  },
-        ],
-    },
-    {
-        id: 'economic-opportunity',
-        title: 'Economic Opportunity',
-        description: 'Business formation, growth, and income',
-        metrics: [
-            { id: 'estabs_entry_rate',          view: 't'  },
-            { id: 'net_employer_formation',     view: 'r'  },
-            { id: 'labor_productivity',         view: 't'  },
-            { id: 'real_per_capita_income',     view: 'rh' },
-            { id: 'unemployment_rate',          view: 'rh' },
-            { id: 'labor_force_participation',  view: 't'  },
-        ],
-    },
-    {
-        id: 'student-outcomes',
-        title: 'Student Outcomes',
-        description: 'How Hawaiʻi students are doing in school',
-        metrics: [
-            { id: 'naep_math_8',    view: 'rh' },
-            { id: 'naep_reading_8', view: 'rh' },
-            { id: 'acgr',           view: 't'  },
-        ],
-    },
-    {
-        id: 'public-safety',
-        title: 'Public Safety',
-        description: 'Crime trends and community security',
+        id: 'safety',
+        title: 'Is it actually getting safer?',
         metrics: [
             { id: 'violent_crime_rate',  view: 't'  },
             { id: 'property_crime_rate', view: 'rh' },
         ],
     },
     {
-        id: 'health-coverage',
-        title: 'Health Coverage & Care',
-        description: 'Insurance access and primary care supply',
+        id: 'mental-health',
+        title: 'Is the mental health crisis real?',
         metrics: [
-            { id: 'uninsured_rate', view: 'rh' },
+            { id: 'suicide_rate',    view: 't'  },
+            { id: 'pcp_per_100k',    view: 'r'  },
+            { id: 'uninsured_rate',  view: 'rh' },
+        ],
+    },
+    {
+        id: 'health-care',
+        title: 'Can I see a doctor when I need one?',
+        metrics: [
             { id: 'pcp_per_100k',   view: 'r'  },
+            { id: 'uninsured_rate', view: 'rh' },
+        ],
+    },
+    {
+        id: 'education',
+        title: 'Are our kids learning enough?',
+        metrics: [
+            { id: 'naep_math_8',       view: 'rh' },
+            { id: 'naep_reading_8',    view: 'rh' },
+            { id: 'acgr',              view: 't'  },
+            { id: 'ba_or_higher_pct',  view: 'rh' },
+        ],
+    },
+    {
+        id: 'leaving',
+        title: 'Are people leaving?',
+        metrics: [
+            { id: 'net_domestic_migration_rate', view: 't'  },
+            { id: 'real_per_capita_income',      view: 'rh' },
+            { id: 'labor_productivity',          view: 't'  },
+            { id: 'labor_force_participation',   view: 't'  },
+            { id: 'estabs_entry_rate',           view: 't'  },
+            { id: 'net_employer_formation',      view: 'r'  },
+        ],
+    },
+    {
+        id: 'energy',
+        title: 'Why is my electric bill so high?',
+        metrics: [
+            { id: 'residential_price_cpkwh', view: 't'  },
+            { id: 'renewables_share_gen',    view: 't'  },
+        ],
+    },
+    {
+        id: 'resilience',
+        title: 'Are we ready for the next disaster?',
+        metrics: [
+            { id: 'rainy_day_fund_pct',        view: 't'  },
+            { id: 'road_poor_pct',             view: 'rh' },
+            { id: 'broadband_subscription_pct', view: 'rh' },
+            { id: 'renewables_share_gen',       view: 't'  },
+        ],
+    },
+    {
+        id: 'civic',
+        title: 'Does my vote even matter here?',
+        metrics: [
+            { id: 'voter_participation_rate', view: 'rh' },
         ],
     },
 ];
