@@ -102,10 +102,11 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
     },
     {
         id: 'business',
-        title: 'How easy is it to start a business here?',
+        title: 'How easy is it to start and grow a business here?',
         metrics: [
             { id: 'estabs_entry_rate',      view: 't'  },
             { id: 'net_employer_formation', view: 'r'  },
+            { id: 'labor_productivity',     view: 't'  },
         ],
     },
     {
