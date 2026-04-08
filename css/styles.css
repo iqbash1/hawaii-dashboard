@@ -75,7 +75,7 @@
     font-weight: 500;
     color: var(--text-muted);
     text-decoration: none;
-    padding: 0.35rem 1rem;
+    padding: 0.55rem 1rem;
     border-radius: var(--radius-sm);
     transition: color var(--transition), background var(--transition);
 }
@@ -431,7 +431,8 @@ body {
     border-radius: var(--radius-sm);
     color: var(--hawaii-blue);
     font-size: 0.82rem;
-    padding: 0.2rem 0.6rem;
+    padding: 0.4rem 0.75rem;
+    min-height: 36px;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
     white-space: nowrap;
@@ -1020,6 +1021,11 @@ body {
     color: var(--text-muted);
 }
 
+.modal-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 /* --- Rankings View --- */
 .modal-rankings {
     padding: 1rem 2rem 2rem;
@@ -1513,8 +1519,8 @@ body {
 
     .modal-close {
         top: 0.75rem;
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         font-size: 1.1rem;
     }
 
@@ -1569,9 +1575,13 @@ body {
         display: none;
     }
 
+    .tab-sub {
+        display: none;
+    }
+
     .modal-tab {
         font-size: 0.8rem;
-        padding: 0.55rem 0.85rem;
+        padding: 0.55rem 0.7rem;
         white-space: nowrap;
         flex-shrink: 0;
     }
@@ -1616,15 +1626,15 @@ body {
     }
 
     .comp-verdict {
-        font-size: 0.72rem;
+        font-size: 0.78rem;
     }
 
     .comp-detail {
-        font-size: 0.68rem;
+        font-size: 0.72rem;
     }
 
     .comp-label {
-        font-size: 0.68rem;
+        font-size: 0.72rem;
     }
 }
 

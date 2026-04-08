@@ -79,6 +79,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 @media (max-width: 640px) {
     .methods-section { padding: 1rem; }
     .methods-header h1 { font-size: 1.25rem; }
-    .registry-table { min-width: 600px; }
-    .audience-table { min-width: 640px; }
+    .registry-table { min-width: 560px; }
+    .audience-table { min-width: auto; }
+    .audience-role { white-space: normal; }
 }
