@@ -204,10 +204,11 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.85rem;
-    font-size: var(--text-md);
+    padding: 0.6rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 500;
     font-family: inherit;
-    color: var(--text-muted);
+    color: var(--text);
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -296,8 +297,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 0.85rem;
-    font-size: var(--text-md);
+    padding: 0.45rem 0.8rem;
+    font-size: var(--text-sm);
     font-family: inherit;
     color: var(--text-muted);
     background: var(--card-bg);
