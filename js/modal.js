@@ -50,6 +50,7 @@ const Modal = {
             newPrev.addEventListener('click', () => {
                 let area = '';
                 for (const ag of App.AREA_ORDER) { if (ag.metrics.includes(prevMetric.id)) { area = ag.area; break; } }
+                App._trackEvent('bundle_navigated', { slug: prevMetric.id, direction: 'prev', bundle_id: bundle.id });
                 Modal.openModal(prevMetric.id, area, Modal._viewFromPrefix(prevMetric.view));
             });
         } else {
@@ -61,6 +62,7 @@ const Modal = {
             newNext.addEventListener('click', () => {
                 let area = '';
                 for (const ag of App.AREA_ORDER) { if (ag.metrics.includes(nextMetric.id)) { area = ag.area; break; } }
+                App._trackEvent('bundle_navigated', { slug: nextMetric.id, direction: 'next', bundle_id: bundle.id });
                 Modal.openModal(nextMetric.id, area, Modal._viewFromPrefix(nextMetric.view));
             });
         } else {
@@ -121,6 +123,8 @@ const Modal = {
         if (!metricData) return;
 
         // Analytics: report which metric was opened
+        Modal._openTime = Date.now();
+        Modal._openSlug = slug;
         App._trackEvent('modal_open', { slug, name: metricData.metric, area: metricData.area || areaName });
 
         // Store any initial rank-history comparison state for showRankHistory to consume
@@ -240,6 +244,7 @@ const Modal = {
         document.getElementById('csv-download').onclick = (e) => {
             e.preventDefault();
             Export.downloadData(slug);
+            App._trackEvent('data_exported', { slug, format: 'xlsx' });
         };
         // Share helpers
         const getShareUrl = () => {
@@ -280,10 +285,13 @@ const Modal = {
         document.getElementById('modal-share-btn').onclick = (e) => {
             e.preventDefault();
             copyShare(document.getElementById('modal-share-btn'));
+            const activeTab = document.querySelector('.modal-tab.active');
+            App._trackEvent('metric_shared', { slug, tab: activeTab?.id?.replace('tab-', '') || 'detail' });
         };
 
         document.getElementById('print-link').onclick = (e) => {
             e.preventDefault();
+            App._trackEvent('metric_printed', { slug });
             const origTitle = document.title;
             const activeTab = document.querySelector('.modal-tab.active');
             const tabLabel = activeTab ? activeTab.textContent.trim().split(/\s/)[0] : 'Detail';
@@ -408,6 +416,7 @@ const Modal = {
                 chartContainer.style.display = 'none';
                 modalTableContainer.style.display = '';
                 freshToggle.textContent = 'View as chart';
+                App._trackEvent('table_viewed', { slug });
             }
         });
 
@@ -440,6 +449,8 @@ const Modal = {
      * @param {string} slug - Metric ID
      */
     switchTab(tab, slug) {
+        App._trackEvent('tab_viewed', { slug, tab });
+
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
         const tabRankHistory = document.getElementById('tab-rank-history');
@@ -683,6 +694,7 @@ const Modal = {
                     if (Modal.rankHistoryChart && Modal.rankHistoryChart._setComparison) {
                         Modal.rankHistoryChart._setComparison(selected);
                     }
+                    App._trackEvent('state_compared', { slug, compare_state: selected });
                 } else {
                     if (Modal.rankHistoryChart && Modal.rankHistoryChart._clearComparison) {
                         Modal.rankHistoryChart._clearComparison();
@@ -873,6 +885,14 @@ const Modal = {
      * clean up event listeners, and reset the URL.
      */
     closeModal() {
+        // Analytics: track time spent in modal
+        if (Modal._openTime && Modal._openSlug) {
+            const dur = Math.round((Date.now() - Modal._openTime) / 1000);
+            const activeTab = document.querySelector('.modal-tab.active');
+            App._trackEvent('modal_closed', { slug: Modal._openSlug, duration_sec: dur, last_tab: activeTab?.id?.replace('tab-', '') || '' });
+            Modal._openTime = null;
+        }
+
         const overlay = document.getElementById('modal-overlay');
         overlay.classList.remove('active');
         document.body.classList.remove('modal-open');

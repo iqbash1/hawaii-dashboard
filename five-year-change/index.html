@@ -27,6 +27,14 @@
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window,document,"clarity","script","w5pye8kkrb");
     </script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5MSPMJVFE5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5MSPMJVFE5');
+    </script>
     <!-- ──────────────────────────────────────────────────────────────── -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23384B5B' stroke='%23fff' stroke-width='2'/%3E%3Cpolygon points='32,6 36,28 32,32 28,28' fill='%23e74c3c'/%3E%3Cpolygon points='32,58 28,36 32,32 36,36' fill='%23fff'/%3E%3Cpolygon points='6,32 28,28 32,32 28,36' fill='%23fff'/%3E%3Cpolygon points='58,32 36,36 32,32 36,28' fill='%23fff'/%3E%3Ccircle cx='32' cy='32' r='3' fill='%23fff'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -677,6 +685,16 @@
             // Assemble: spotlight → chips → scorecard → areas → ranking table → method
             document.getElementById('fyc-content').innerHTML = spotlightHtml + chipsHtml + scorecardHtml + areasHtml + rankTableHtml + methodHtml;
             renderRankRows();
+
+            // GA4: track metric clicks from FYC page
+            document.getElementById('fyc-content').addEventListener('click', (e) => {
+                const a = e.target.closest('a[href*="#"]');
+                if (!a) return;
+                const slug = a.href.split('#')[1] || '';
+                if (slug && window.dataLayer) {
+                    window.dataLayer.push({ event: 'fyc_metric_clicked', slug, metric_name: a.querySelector('.fyc-rank-name, .fyc-metric-name')?.textContent?.trim() || slug });
+                }
+            });
         }
 
         render();

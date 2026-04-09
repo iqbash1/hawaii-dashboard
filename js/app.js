@@ -718,6 +718,7 @@ const App = {
                     this.clearBundle();
                 } else {
                     this.activateBundle(b.id);
+                    this._trackEvent('question_selected', { bundle_id: b.id, bundle_title: b.title });
                 }
             });
             dropdown.appendChild(li);
@@ -853,6 +854,7 @@ const App = {
                 li.addEventListener('click', () => {
                     close();
                     Modal.openModal(slug, areaGroup.area);
+                    this._trackEvent('metric_searched', { slug, metric_name: m.metric });
                     const card = document.getElementById(slug);
                     if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 });
@@ -915,4 +917,35 @@ const App = {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     App.init();
+
+    // ── Scroll depth tracking ──────────────────────────────────────
+    const scrollSections = [
+        { el: document.querySelector('.dashboard-grid'), name: 'cards' },
+        { el: document.getElementById('go-deeper'), name: 'go_deeper' },
+        { el: document.querySelector('.footer'), name: 'footer' },
+    ];
+    const scrollObs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+            if (e.isIntersecting) {
+                App._trackEvent('section_reached', { section: e.target.dataset.trackSection });
+                scrollObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    scrollSections.forEach((s) => {
+        if (s.el) { s.el.dataset.trackSection = s.name; scrollObs.observe(s.el); }
+    });
+
+    // ── Go Deeper outbound link tracking ───────────────────────────
+    document.getElementById('go-deeper')?.addEventListener('click', (e) => {
+        const a = e.target.closest('a[href]');
+        if (!a) return;
+        const col = a.closest('.go-deeper-col');
+        const heading = col?.querySelector('.go-deeper-heading')?.textContent || '';
+        App._trackEvent('outbound_click', {
+            link_label: a.textContent.trim(),
+            link_url: a.href,
+            section: heading,
+        });
+    });
 });
