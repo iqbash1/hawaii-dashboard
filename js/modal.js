@@ -161,9 +161,10 @@ const Modal = {
         const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}`;
         document.getElementById('modal-vintage').textContent = vintageText;
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
+        const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
-            ? `Hawai\u02BBi vs. other state average \u00B7 <strong>3-yr rolling avg</strong>`
-            : `Hawai\u02BBi vs. other state average`;
+            ? `Hawai\u02BBi vs. other state average \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
+            : `Hawai\u02BBi vs. other state average \u00B7 ${dirHint}`;
         // Render the dynamic "Bottom line" brief
         const briefEl = document.getElementById('modal-brief');
         const briefText = Modal.computeBrief(slug);
@@ -787,8 +788,9 @@ const Modal = {
         document.getElementById('modal-county').style.display = 'block';
 
         const isSmoothed = countyData.smoothCounty === true;
+        const countyDirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('county-subtitle').textContent =
-            `County breakdown${isSmoothed ? ' \u00B7 3-year rolling avg' : ''}`;
+            `County breakdown${isSmoothed ? ' \u00B7 3-year rolling avg' : ''} \u00B7 ${countyDirHint}`;
 
         // County reliability note
         const noteEl = document.getElementById('county-note');
