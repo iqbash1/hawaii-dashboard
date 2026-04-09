@@ -1526,7 +1526,7 @@ body {
 
     .modal-chart-container {
         padding: 1rem;
-        height: 280px;
+        height: min(280px, 42vh);
     }
 
     .modal-county {
@@ -1538,7 +1538,7 @@ body {
     }
 
     .county-chart-container {
-        height: 280px;
+        height: min(280px, 42vh);
     }
 
     .modal-body {
@@ -1590,11 +1590,18 @@ body {
         padding: 1rem 1rem 1.5rem;
     }
 
-    /* Go Deeper: cap each link row to one line */
+    /* Go Deeper: stack link + description vertically */
     .go-deeper-list li {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .go-deeper-list span {
+        margin-left: 0;
+    }
+
+    .go-deeper-list span::before {
+        content: none;
     }
 
     /* Modal footer: tighten separator dots so row fits on one line */
@@ -1604,6 +1611,25 @@ body {
 
     .modal-source {
         font-size: 0.72rem;
+    }
+}
+
+/* --- Medium Phone --- */
+@media (max-width: 480px) {
+    .modal-title {
+        font-size: 1.0rem;
+    }
+
+    .modal-chart-container {
+        height: min(250px, 40vh);
+    }
+
+    .county-chart-container {
+        height: min(250px, 40vh);
+    }
+
+    .go-deeper-inner {
+        padding: 1.25rem;
     }
 }
 
