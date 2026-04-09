@@ -553,8 +553,8 @@ const Modal = {
         const yearNote = (year !== latestDetailYear)
             ? ` \u00B7 ${year} (latest year with full state coverage)`
             : ` \u00B7 ${year}`;
-        document.getElementById('rankings-rank').textContent =
-            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote}`;
+        document.getElementById('rankings-rank').innerHTML =
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best performing state</span>`;
 
         // Compute distribution stats (shared between dot strip and rankings chart)
         const sortedVals = stateValues.map(s => s.value).sort((a, b) => a - b);
