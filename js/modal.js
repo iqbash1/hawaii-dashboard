@@ -152,7 +152,7 @@ const Modal = {
 
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
-        document.getElementById('modal-unit-label').textContent = metricData.unitLabel || '';
+        document.getElementById('modal-unit-label').textContent = metricData.unit || '';
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         // Vintage line: data years and update cadence
         const hiYears = Object.keys(effective.hawaii).sort();
