@@ -114,7 +114,8 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .county-flat { color: var(--neutral); }
 
 /* Method note */
-.fyc-method { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); line-height: 1.5; }
+.fyc-method { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); line-height: 1.5; }
+.footer { padding: 1rem 1.5rem 1.5rem; }
 
 /* National standing table */
 .fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-top: 2.5rem; margin-bottom: 1.5rem; overflow: hidden; }
