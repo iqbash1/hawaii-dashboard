@@ -27,7 +27,7 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
             { id: 'unsheltered_homeless_rate', view: 't'  },
             { id: 'renter_cost_burden_pct',    view: 'rh' },
             { id: 'home_price_to_income',      view: 'rh' },
-            { id: 'food_insecurity_rate',      view: 't'  },
+            { id: 'residential_price_cpkwh',   view: 't'  },
         ],
     },
     {
