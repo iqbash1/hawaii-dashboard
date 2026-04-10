@@ -21,8 +21,8 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         ],
     },
     {
-        id: 'homelessness',
-        title: 'What\'s happening with homelessness?',
+        id: 'housing',
+        title: 'What\'s the housing situation?',
         metrics: [
             { id: 'unsheltered_homeless_rate', view: 't'  },
             { id: 'renter_cost_burden_pct',    view: 'rh' },
