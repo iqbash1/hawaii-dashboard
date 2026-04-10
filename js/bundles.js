@@ -30,18 +30,10 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         ],
     },
     {
-        id: 'mental-health',
-        title: 'How serious is the mental health gap?',
+        id: 'health',
+        title: 'How healthy are we?',
         metrics: [
-            { id: 'suicide_rate',    view: 't'  },
-            { id: 'pcp_per_100k',    view: 'r'  },
-            { id: 'uninsured_rate',  view: 'rh' },
-        ],
-    },
-    {
-        id: 'health-care',
-        title: 'How easy is it to see a doctor?',
-        metrics: [
+            { id: 'suicide_rate',   view: 't'  },
             { id: 'pcp_per_100k',   view: 'r'  },
             { id: 'uninsured_rate', view: 'rh' },
         ],
