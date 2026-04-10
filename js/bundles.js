@@ -13,21 +13,12 @@ const BUNDLES = [ // eslint-disable-line no-unused-vars
         id: 'affordability',
         title: 'How affordable is life here?',
         metrics: [
-            { id: 'renter_cost_burden_pct',  view: 'rh' },
-            { id: 'home_price_to_income',    view: 'rh' },
-            { id: 'residential_price_cpkwh', view: 't'  },
-            { id: 'food_insecurity_rate',    view: 't'  },
-            { id: 'real_per_capita_income',  view: 'rh' },
-        ],
-    },
-    {
-        id: 'housing',
-        title: 'What\'s the housing situation?',
-        metrics: [
-            { id: 'unsheltered_homeless_rate', view: 't'  },
             { id: 'renter_cost_burden_pct',    view: 'rh' },
             { id: 'home_price_to_income',      view: 'rh' },
             { id: 'residential_price_cpkwh',   view: 't'  },
+            { id: 'food_insecurity_rate',      view: 't'  },
+            { id: 'real_per_capita_income',    view: 'rh' },
+            { id: 'unsheltered_homeless_rate', view: 't'  },
         ],
     },
     {
