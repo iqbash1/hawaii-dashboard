@@ -48,7 +48,7 @@ const Utils = {
     },
 
     /* ── statusLabel(status, standing) ──
-     * Returns the display string for a metric's status chip.
+     * Returns the display string for a metric's status badge on the 5-Year Change page.
      * Combines the trend direction with national ranking context.
      * Note: threshold of ±3 rank spots is intentionally separate from RANK_SHIFT.
      */

@@ -691,8 +691,8 @@ const App = {
     // Bundle Navigation
     // ----------------------------------------------------------------
     /**
-     * Render the bundle filter chips (Affordability, Keeping Residents, etc.)
-     * and wire click handlers to activate/deactivate bundles.
+     * Render the "I have a question..." dropdown from BUNDLES and wire
+     * click handlers to activate/deactivate question bundles.
      */
     renderQuestionDropdown() {
         const trigger  = document.getElementById('question-search-trigger');
