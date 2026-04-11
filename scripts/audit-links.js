@@ -19,6 +19,9 @@ const path = require('path');
 const https = require('https');
 const http = require('http');
 
+// Accept self-signed certs (many government sites use them)
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const BASE = path.join(__dirname, '..');
 const DATA_PATH = path.join(BASE, 'js', 'data.js');
 
