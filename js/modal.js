@@ -1000,9 +1000,9 @@ const Modal = {
             h += `</div>`;
         }
 
-        // 7. Policy levers
+        // 7. Where to focus
         if (m.policyLevers) h += `<div class="cn-section">
-            <h3 class="cn-heading">Policy levers</h3>
+            <h3 class="cn-heading">Where to focus</h3>
             <p class="cn-text">${m.policyLevers}</p>
         </div>`;
 
