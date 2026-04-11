@@ -71,10 +71,35 @@ const ACS_YEARS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023];
 // Minimum year to include in output (keeps file size reasonable)
 const MIN_YEAR = 2001;
 
-async function fetchJSON(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
+// Rate limiting: 300ms between requests to avoid throttling
+let lastFetchTime = 0;
+const RATE_LIMIT_MS = 300;
+
+async function fetchJSON(url, retries = 3) {
+    // Enforce minimum delay between requests
+    const now = Date.now();
+    const elapsed = now - lastFetchTime;
+    if (elapsed < RATE_LIMIT_MS) await sleep(RATE_LIMIT_MS - elapsed);
+    lastFetchTime = Date.now();
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            const res = await fetch(url);
+            if (res.status === 429 || res.status === 503) {
+                const backoff = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+                console.warn(`  Rate limited (${res.status}), retrying in ${backoff/1000}s...`);
+                await sleep(backoff);
+                continue;
+            }
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        } catch (err) {
+            if (attempt === retries) throw err;
+            const backoff = Math.pow(2, attempt) * 1000;
+            console.warn(`  Fetch error (${err.message}), retrying in ${backoff/1000}s...`);
+            await sleep(backoff);
+        }
+    }
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
