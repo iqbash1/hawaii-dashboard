@@ -812,8 +812,8 @@ const ChartUtils = {
                         }
                     });
 
-                    ctx.fillText('Top Ranked (25%)', (topZoneLeft + topZoneRight) / 2, topEdge + 8);
-                    ctx.fillText('Bottom Ranked (25%)', (botZoneLeft + botZoneRight) / 2, topEdge + 8);
+                    ctx.fillText('Top Ranked (25%)', (topZoneLeft + topZoneRight) / 2, topEdge + 20);
+                    ctx.fillText('Bottom Ranked (25%)', (botZoneLeft + botZoneRight) / 2, topEdge + 20);
                 }
 
                 // Dot strip dots
