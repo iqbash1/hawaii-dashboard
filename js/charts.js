@@ -807,7 +807,7 @@ const ChartUtils = {
                             ctx.lineTo(x, chartArea.bottom);
                             ctx.stroke();
                             ctx.setLineDash([]);
-                            if (line.label) ctx.fillText(line.label, x, topEdge + 8);
+                            if (line.label) ctx.fillText(line.label, x, topEdge + 20);
                             ctx.fillText(distStats.fmt(line.val), x, chartArea.bottom + 14);
                         }
                     });
