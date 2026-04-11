@@ -887,6 +887,28 @@ body {
     margin-bottom: 0.4rem;
 }
 
+.modal-how-toggle summary {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    cursor: pointer;
+    list-style: none;
+}
+
+.modal-how-toggle summary::before {
+    content: "+ ";
+}
+
+.modal-how-toggle[open] summary::before {
+    content: "\2212  ";
+}
+
+.modal-how-toggle summary::-webkit-details-marker {
+    display: none;
+}
+
 .modal-section p {
     font-size: 1.05rem;
     line-height: 1.65;
