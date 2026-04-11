@@ -668,6 +668,29 @@ if (STATE_DATA) {
 // 8. SUMMARY
 // ============================================================
 
+// ── 9. Stale source detection (nextUpdate vs latest data year) ──────
+console.log('\n--- 9. Source freshness (nextUpdate) ---');
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now = new Date();
+for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
+    if (!m.nextUpdate || m.nextUpdate === 'Monthly' || m.nextUpdate === 'Biennial') continue;
+    const monthIdx = MONTH_NAMES.indexOf(m.nextUpdate);
+    if (monthIdx === -1) continue;
+
+    const hiKeys = Object.keys(m.hawaii || {});
+    const latestYear = Math.max(...hiKeys.map(k => { const y = k.match(/(\d{4})$/); return y ? Number(y[1]) : 0; }));
+    if (!latestYear) continue;
+
+    // Expected: by nextUpdate month, we should have data for (current year - 1) or newer
+    // If we're past the expected month and data is 2+ years old, it's overdue
+    const expectedDataYear = now.getFullYear() - 1;
+    const pastUpdateMonth = now.getMonth() >= monthIdx;
+
+    if (pastUpdateMonth && latestYear < expectedDataYear) {
+        warn(`[${slug}] Source overdue: expected ${m.nextUpdate} ${now.getFullYear()} release, but latest data is ${latestYear}`);
+    }
+}
+
 console.log('\n=== VALIDATION SUMMARY ===\n');
 console.log(`  Mode:     ${STRICT ? 'STRICT (CI)' : 'Normal'}`);
 console.log(`  Errors:   ${errors}`);
