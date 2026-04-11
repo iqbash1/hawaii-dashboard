@@ -899,10 +899,12 @@ body {
 
 .modal-how-toggle summary::before {
     content: "+ ";
+    color: var(--hawaii-blue);
 }
 
 .modal-how-toggle[open] summary::before {
     content: "\2212  ";
+    color: var(--hawaii-blue);
 }
 
 .modal-how-toggle summary::-webkit-details-marker {
