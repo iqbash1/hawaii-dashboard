@@ -160,7 +160,7 @@ const DASHBOARD_DATA = {
       "2023": 351.2,
       "2024": 339.5
     },
-    "policyLevers": "Violence prevention and behavioral health; prosecution, sentencing, and reentry policy; victim services and youth intervention.",
+    "policyLevers": "Research on <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8460118/\">social connectedness and crime</a> finds that neighborhoods with strong collective efficacy experience lower violent crime rates; Hawai\u02BBi's multigenerational household structure and community networks are consistent with this pattern. The <a href=\"https://counciloncj.org/whats-driving-the-drop-in-homicide-how-low-might-it-go/\">Council on Criminal Justice</a> identified community violence intervention programs and local government investment in youth-facing workers as key factors behind recent national crime declines, though federal CVI funding has since been cut roughly in half. The primary erosion risks are substance-use service gaps on neighbor islands, where the <a href=\"https://health.hawaii.gov/substance-abuse/files/2023/05/Draft-State-Plan-2022-May-2023-Edition.pdf\">state substance use plan</a> found no long-term dual-diagnosis residential treatment options outside O\u02BBahu, and housing instability, which <a href=\"https://www.brookings.edu/articles/want-to-reduce-violence-invest-in-place/\">Brookings research</a> links to increased violence in disinvested communities.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
       "summary": "Hawaii has ranked #5 to #21 since 1985, mostly in the #8 to #14 range, running 35 to 40 percent below the national average. Geographic isolation limits weapons trafficking, and multigenerational community networks where people look out for each other.",
@@ -1375,7 +1375,7 @@ const DASHBOARD_DATA = {
       "2023": 0.4933,
       "2024": 0.4535
     },
-    "policyLevers": "Housing production and permitting reform; rental assistance and tenant stability; infrastructure that unlocks new housing.",
+    "policyLevers": "States that reduced rent burden typically expanded supply through zoning reform: a <a href=\"https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5347083\">Gu and Munro (2025) study</a> found Minneapolis rents grew 17 to 34 percent less than expected after the city eliminated single-family-only zoning, and research in the <a href=\"https://www.journals.uchicago.edu/doi/10.1086/733977\">Journal of Political Economy Macroeconomics</a> shows each new apartment building lowers nearby rents 5 to 7 percent through vacancy-chain filtering. <a href=\"https://uhero.hawaii.edu/the-hawaii-housing-factbook-2025/\">UHERO's 2025 Housing Factbook</a> identifies Hawai\u02BBi's permit processing times (up to 393 days in Honolulu) and regulatory barriers as primary constraints on new construction, while demand-side measures alone have not closed the gap in comparable high-cost states. The <a href=\"https://www.cbpp.org/research/housing/research-shows-rental-assistance-reduces-hardship-and-provides-platform-to-expand\">Center on Budget and Policy Priorities</a> finds that rental vouchers cut participant housing costs by roughly half, though fewer than one in four eligible households nationally receives assistance.",
     "updateCadence": "Annual",
     "rankHistoryNarrative": {
       "summary": "Hawaii has ranked #46 to #49 every year from 2005 through 2024. The driver is supply: far fewer rental units built than household formation requires, compounded by short-term rental conversions.",

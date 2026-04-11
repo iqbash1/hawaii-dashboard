@@ -194,7 +194,7 @@ const Modal = {
         const policyLeversSection = document.getElementById('modal-policy-levers-section');
         const policyLeversText = document.getElementById('modal-policy-levers');
         if (metricData.policyLevers) {
-            policyLeversText.textContent = metricData.policyLevers;
+            policyLeversText.innerHTML = metricData.policyLevers;
             policyLeversSection.style.display = '';
         } else {
             policyLeversSection.style.display = 'none';
