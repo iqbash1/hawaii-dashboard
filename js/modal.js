@@ -956,6 +956,12 @@ const Modal = {
             <p class="cn-text">${m.whyItMatters}</p>
         </div>`;
 
+        // 1b. How to read the chart (collapsed toggle)
+        if (m.howToRead) h += `<details class="cn-section modal-how-toggle">
+            <summary>How to read the chart</summary>
+            <p class="cn-text">${m.howToRead}</p>
+        </details>`;
+
         // 2. National standing (rank history summary)
         if (m.rankHistoryNarrative && m.rankHistoryNarrative.summary) h += `<div class="cn-section">
             <h3 class="cn-heading">National standing</h3>
