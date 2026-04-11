@@ -1226,6 +1226,11 @@ body {
 .cn-text:last-child { margin-bottom: 0; }
 .cn-text a { color: var(--hawaii-blue); text-decoration: none; }
 .cn-text a:hover { text-decoration: underline; }
+.cn-focus-list { list-style: none; padding: 0; margin: 0; }
+.cn-focus-list li { font-size: 1.05rem; line-height: 1.65; color: var(--text-secondary); margin-bottom: 0.5rem; }
+.cn-focus-list li:last-child { margin-bottom: 0; }
+.cn-focus-list a { color: var(--hawaii-blue); text-decoration: none; }
+.cn-focus-list a:hover { text-decoration: underline; }
 .cn-item {
     margin-bottom: 0.85rem;
 }
