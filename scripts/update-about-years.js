@@ -30,11 +30,11 @@ const DASHBOARD_DATA = loadJSConst(DATA_PATH, 'DASHBOARD_DATA');
 const NAME_TO_SLUG = {
     'Violent Crime Rate':                                   'violent_crime_rate',
     'Property Crime Rate':                                  'property_crime_rate',
-    'Primary Care Physicians (civilian doctors and residents)': 'pcp_per_100k',
+    'Primary Care Physicians': 'pcp_per_100k',
     'Uninsured Rate':                                       'uninsured_rate',
     'Suicide Rate':                                         'suicide_rate',
     'High School Graduation Rate':                          'acgr',
-    "Adults with Bachelor's Degree+":                       'ba_or_higher_pct',
+    "Adults with Bachelor&#x2019;s Degree+":                'ba_or_higher_pct',
     'NAEP 8th Grade Math':                                  'naep_math_8',
     'NAEP 8th Grade Reading':                               'naep_reading_8',
     'Unemployment Rate':                                    'unemployment_rate',
@@ -139,10 +139,52 @@ if (notFound.length > 0) {
     notFound.forEach(s => console.log('  ' + s));
 }
 
+// ── Next-update column ─────────────────────────────────────────────
+// Compute display date from nextUpdate config field in data.js
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now = new Date();
+const curMonth = now.getMonth(); // 0-indexed
+const curYear = now.getFullYear();
+
+let nextUpdateChanges = 0;
+for (const [displayName, slug] of Object.entries(NAME_TO_SLUG)) {
+    const metric = DASHBOARD_DATA[slug];
+    if (!metric || !metric.nextUpdate) continue;
+
+    let displayDate;
+    const nu = metric.nextUpdate;
+    if (nu === 'Monthly') {
+        displayDate = 'Monthly';
+    } else if (nu === 'Biennial') {
+        // NAEP: next even year; voter: next election year
+        const latestYear = Math.max(...Object.keys(metric.hawaii || {}).map(Number).filter(n => !isNaN(n)));
+        displayDate = String(latestYear + 2);
+    } else {
+        // Month name like "Sep" — compute "Sep 2026" or "Sep 2027"
+        const monthIdx = MONTHS.indexOf(nu);
+        if (monthIdx === -1) continue;
+        const targetYear = curMonth > monthIdx ? curYear + 1 : curYear;
+        displayDate = `${nu} ${targetYear}`;
+    }
+
+    // Find and replace the Next update cell
+    // Pattern: after Cadence cell, the next cadence-cell is Next update
+    const escapedName = displayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const nuPattern = new RegExp(
+        `(class="metric-name">${escapedName}<\\/td>(?:<td[^>]*>[^<]*<\\/td>\\s*){4}<td class="cadence-cell">)[^<]*(<\\/td>)`,
+        'g'
+    );
+    const oldHtml = html;
+    html = html.replace(nuPattern, `$1${displayDate}$2`);
+    if (html !== oldHtml) nextUpdateChanges++;
+}
+
+console.log(`\nNext-update column: ${nextUpdateChanges} cell(s) computed from data.js config`);
+
 fs.writeFileSync(ABOUT_PATH, html);
 
 if (changes > 0) {
-    console.log(`\nUpdated ${changes} year range(s) in about/index.html`);
+    console.log(`Updated ${changes} year range(s) in about/index.html`);
     console.log(`Already up to date: ${upToDate.length}`);
 } else {
     console.log(`All ${upToDate.length} year ranges already up to date in about/index.html`);
