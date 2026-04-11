@@ -17,7 +17,9 @@
     "validate:strict": "node scripts/validate-data.js --strict",
     "recompute": "node scripts/recompute-data.js",
     "og": "python3 scripts/generate-og-pages.py",
-    "serve": "python3 -m http.server 8080"
+    "serve": "python3 -m http.server 8080",
+    "audit-links": "node scripts/audit-links.js",
+    "update-years": "node scripts/update-narrative-years.js"
   },
   "devDependencies": {
     "eslint": "^8.57.0"
