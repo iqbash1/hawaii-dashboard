@@ -190,7 +190,7 @@ const Modal = {
             driversSection.style.display = 'none';
         }
 
-        // Policy levers
+        // Key levers
         const policyLeversSection = document.getElementById('modal-policy-levers-section');
         const policyLeversText = document.getElementById('modal-policy-levers');
         if (metricData.policyLevers) {
@@ -942,7 +942,7 @@ const Modal = {
 
     /**
      * Build consolidated narrative HTML for metrics with useConsolidated: true.
-     * Assembles Why → National standing → County → Drivers → Lessons → Policy levers → Data notes.
+     * Assembles How to read → Why → National standing → County → Drivers → Lessons → Key levers → Data notes.
      * @param {Object} m - Metric data object from DASHBOARD_DATA
      * @returns {string} HTML string
      * @private
