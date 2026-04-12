@@ -1809,8 +1809,19 @@ body {
     .modal-tabs,
     .csv-download,
     .csv-sep,
-    .go-deeper {
+    .go-deeper,
+    .bundle-nav,
+    .table-toggle-wrap {
         display: none !important;
+    }
+
+    /* Expand collapsed how-to-read toggles for print */
+    details.modal-how-toggle,
+    details.cn-section {
+        display: block !important;
+    }
+    details.modal-how-toggle > * {
+        display: block !important;
     }
 
     .footer {

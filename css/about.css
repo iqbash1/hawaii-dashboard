@@ -70,12 +70,15 @@ details.methods-section:not([open]) .methods-toggle h2 { margin-bottom: 0; }
     .registry-wrap { overflow: visible; }
     /* Expand source URLs inline for print */
     .registry-table a::after,
-    .methods-section a[href^="http"]::after {
+    .methods-section a[href^="http"]::after,
+    .faq-content a[href^="http"]::after {
         content: " (" attr(href) ")";
         font-size: 0.6rem;
         color: #555;
         word-break: break-all;
     }
+    .faq-form { display: none !important; }
+    .faq-content hr { display: none !important; }
     h2 { page-break-after: avoid; }
 }
 
