@@ -691,6 +691,45 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
     }
 }
 
+// ── 10. Narrative-data consistency checks ──────────────────────────
+console.log('\n--- 10. Narrative-data consistency ---');
+for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
+    const hi = m.hawaii || {};
+    const avg = m.otherStateAvg || {};
+    const hiVals = Object.entries(hi).map(([k,v]) => [Number(k.match(/(\d{4})$/)?.[1]), v]).filter(([y,v]) => y && v != null);
+    const avgVals = Object.entries(avg).map(([k,v]) => [Number(k.match(/(\d{4})$/)?.[1]), v]).filter(([y,v]) => y && v != null);
+    if (!hiVals.length || !avgVals.length) continue;
+
+    const howToRead = m.howToRead || '';
+    const countyNarr = m.countyNarrative || '';
+
+    // Check: if howToRead says "above...throughout" or "below...throughout", verify
+    if (/above.*throughout|throughout.*above/i.test(howToRead)) {
+        const yearsAbove = hiVals.filter(([y, v]) => {
+            const a = avgVals.find(([ay]) => ay === y);
+            return a && v > a[1];
+        });
+        const pct = yearsAbove.length / hiVals.length;
+        if (pct < 0.85) warn(`[${slug}] howToRead says 'above throughout' but HI is above avg in only ${Math.round(pct*100)}% of years`);
+    }
+    if (/below.*throughout|throughout.*below/i.test(howToRead)) {
+        const yearsBelow = hiVals.filter(([y, v]) => {
+            const a = avgVals.find(([ay]) => ay === y);
+            return a && v < a[1];
+        });
+        const pct = yearsBelow.length / hiVals.length;
+        if (pct < 0.85) warn(`[${slug}] howToRead says 'below throughout' but HI is below avg in only ${Math.round(pct*100)}% of years`);
+    }
+
+    // Check: county narrative should reference rates (per 10K, per 100K, %) not just absolute counts
+    if (countyNarr && /\b(accounts for|largest count|smallest count|total count|absolute count)\b/i.test(countyNarr)) {
+        // Only warn if the metric unit is a rate
+        if (/per 1|%|rate/i.test(m.unit || '')) {
+            warn(`[${slug}] countyNarrative may reference absolute counts while chart shows rates (${m.unit})`);
+        }
+    }
+}
+
 console.log('\n=== VALIDATION SUMMARY ===\n');
 console.log(`  Mode:     ${STRICT ? 'STRICT (CI)' : 'Normal'}`);
 console.log(`  Errors:   ${errors}`);
