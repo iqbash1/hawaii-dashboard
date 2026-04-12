@@ -153,9 +153,7 @@ for (const [displayName, slug] of Object.entries(NAME_TO_SLUG)) {
 
     let displayDate;
     const nu = metric.nextUpdate;
-    if (nu === 'Monthly') {
-        displayDate = 'Monthly';
-    } else if (nu === 'Biennial') {
+    if (nu === 'Biennial') {
         // NAEP: next even year; voter: next election year
         const latestYear = Math.max(...Object.keys(metric.hawaii || {}).map(Number).filter(n => !isNaN(n)));
         displayDate = String(latestYear + 2);
