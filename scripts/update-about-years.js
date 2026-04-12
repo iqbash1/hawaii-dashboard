@@ -168,10 +168,10 @@ for (const [displayName, slug] of Object.entries(NAME_TO_SLUG)) {
     }
 
     // Find and replace the Next update cell
-    // Pattern: after Cadence cell, the next cadence-cell is Next update
+    // Columns after metric-name: Area, Unit, Years (3 cells), then cadence-cell is Next update
     const escapedName = displayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const nuPattern = new RegExp(
-        `(class="metric-name">${escapedName}<\\/td>(?:<td[^>]*>[^<]*<\\/td>\\s*){4}<td class="cadence-cell">)[^<]*(<\\/td>)`,
+        `(class="metric-name">${escapedName}<\\/td>(?:<td[^>]*>[^<]*<\\/td>\\s*){3}<td class="cadence-cell">)[^<]*(<\\/td>)`,
         'g'
     );
     const oldHtml = html;
