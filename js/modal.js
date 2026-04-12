@@ -359,7 +359,12 @@ const Modal = {
         const labels = Object.keys(effective.hawaii);
         const govBoxes = App.getGovernorBoxes(labels);
 
-        Modal.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes, ZERO_IS_VALID.has(slug));
+        try {
+            Modal.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes, ZERO_IS_VALID.has(slug));
+        } catch (e) {
+            canvas.parentElement.classList.add('chart-error');
+            canvas.style.display = 'none';
+        }
         canvas.setAttribute('role', 'img');
         canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs other state average`);
 

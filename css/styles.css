@@ -956,6 +956,15 @@ body {
     line-height: 1.4;
 }
 
+.chart-error::after {
+    content: "Chart data unavailable";
+    display: block;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    padding: 2rem;
+}
+
 .csv-sep {
     margin: 0 0.5rem;
     opacity: 0.4;
@@ -1138,7 +1147,8 @@ body {
     background: none;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 0.28rem 0.55rem;
+    padding: 0.4rem 0.65rem;
+    min-height: 36px;
     cursor: pointer;
     white-space: nowrap;
     transition: color var(--transition), border-color var(--transition);
@@ -1441,6 +1451,11 @@ body {
 /* --- Responsive --- */
 
 @media (max-width: 700px) {
+    .top-nav-link {
+        font-size: 0.82rem;
+        padding: 0.45rem 0.65rem;
+    }
+
     /* Bundle bar + jump dropdown stack vertically on mobile */
     .bundle-section {
         flex-wrap: wrap;
