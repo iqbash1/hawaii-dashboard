@@ -236,11 +236,12 @@ const Modal = {
         // Footer source line
         const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
         document.getElementById('modal-source').innerHTML = `
-            <div class="source-line">Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a>
-            <span class="csv-sep">&middot;</span>
-            <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
-            <span class="csv-sep">&middot;</span>
-            <a href="#" class="print-link" id="print-link">Print</a></div>
+            <div class="source-line">
+                <span>Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a></span>
+                <span class="source-actions"><a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
+                <span class="csv-sep">&middot;</span>
+                <a href="#" class="print-link" id="print-link">Print</a></span>
+            </div>
         `;
         document.getElementById('csv-download').onclick = (e) => {
             e.preventDefault();

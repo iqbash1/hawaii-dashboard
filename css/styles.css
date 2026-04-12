@@ -943,6 +943,12 @@ body {
     text-decoration: underline;
 }
 
+.source-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .data-note {
     font-size: 0.85rem;
     color: var(--text-muted);
