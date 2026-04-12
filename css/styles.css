@@ -38,9 +38,9 @@
     --hawaii-blue-light: #EEF8FA;
     --hawaii-blue-hover: rgba(13, 124, 143, 0.3);
     --text-vintage: #626D76;
-    --text-xs: 0.82rem;
-    --text-sm: 0.95rem;
-    --text-md: 1.0rem;
+    --text-xs: 0.85rem;
+    --text-sm: 1.0rem;
+    --text-md: 1.05rem;
     --avg-gray-light: #F3F4F6;
     --positive: #059669;
     --negative: #C0392B;
@@ -205,7 +205,7 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding: 0.6rem 1rem;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: 500;
     font-family: inherit;
     color: var(--text);
@@ -860,7 +860,7 @@ body {
 
 .modal-brief {
     padding: 1rem 2rem;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     line-height: 1.6;
     color: var(--text);
     border-bottom: 1px solid var(--border);
@@ -912,7 +912,7 @@ body {
 }
 
 .modal-section p {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     line-height: 1.65;
     color: var(--text);
 }
@@ -1174,7 +1174,7 @@ body {
     margin-bottom: 0.2rem;
 }
 .rh-narr-text {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0;
@@ -1218,7 +1218,7 @@ body {
     margin-bottom: 0.5rem;
 }
 .cn-text {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     line-height: 1.65;
     color: var(--text-secondary);
     margin: 0 0 0.5rem;
@@ -1227,7 +1227,7 @@ body {
 .cn-text a { color: var(--hawaii-blue); text-decoration: none; }
 .cn-text a:hover { text-decoration: underline; }
 .cn-focus-list { list-style: none; padding: 0; margin: 0; }
-.cn-focus-list li { font-size: 1.05rem; line-height: 1.65; color: var(--text-secondary); margin-bottom: 0.5rem; }
+.cn-focus-list li { font-size: 1.1rem; line-height: 1.65; color: var(--text-secondary); margin-bottom: 0.5rem; }
 .cn-focus-list li:last-child { margin-bottom: 0; }
 .cn-cite { color: var(--hawaii-blue); text-decoration: none; font-size: 0.75rem; margin-left: 0.15rem; }
 .cn-cite:hover { text-decoration: underline; }
@@ -1394,7 +1394,7 @@ body {
     text-align: center;
     padding: 1rem 1.5rem 1.5rem;
     color: var(--text-muted);
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     max-width: 700px;
     margin: 0 auto;
     line-height: 1.6;
@@ -1411,13 +1411,13 @@ body {
 
 .footer-updated {
     margin-top: 0.75rem;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     opacity: 0.7;
 }
 
 .footer-attribution {
     margin-top: 0.75rem;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     letter-spacing: 0.01em;
 }

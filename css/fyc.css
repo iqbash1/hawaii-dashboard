@@ -14,7 +14,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-spotlight { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
 .fyc-spot-col { display: flex; flex-direction: column; gap: 0.4rem; }
 .fyc-spot-card { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.1rem; }
-.fyc-spot-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding-left: 0.1rem; }
+.fyc-spot-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding-left: 0.1rem; }
 .fyc-spot-gains   .fyc-spot-label { color: var(--positive); }
 .fyc-spot-declines .fyc-spot-label { color: var(--negative); }
 .fyc-spot-offtrack .fyc-spot-label { color: var(--negative); }
@@ -32,12 +32,12 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 
 /* Summary chips */
 .fyc-chips-group { margin-bottom: 1.5rem; }
-.fyc-chips-row-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; margin-top: 0.75rem; }
+.fyc-chips-row-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; margin-top: 0.75rem; }
 .fyc-chips-row-label:first-child { margin-top: 0; }
 .fyc-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
 .fyc-chip { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); padding: 0.9rem 1rem; text-align: center; }
 .fyc-chip-count { font-size: 1.8rem; font-weight: 700; line-height: 1; }
-.fyc-chip-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
+.fyc-chip-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
 .fyc-chip.improving .fyc-chip-count,
 .fyc-chip.improving .fyc-chip-label,
 .fyc-chip.rank-up .fyc-chip-count,
@@ -62,7 +62,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-scorecard-header,
 .fyc-scorecard-row { display: grid; grid-template-columns: 1fr 115px 155px 145px; gap: 1rem; align-items: center; }
 .fyc-scorecard-header { padding: 0.28rem 1rem 0.28rem 1.75rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
-.fyc-scorecard-hdr { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
+.fyc-scorecard-hdr { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
 .fyc-scorecard-hdr-trend { text-align: right; }
 .fyc-scorecard-row { padding: 0.5rem 1rem 0.5rem 0.75rem; border-bottom: 1px solid #f5f6f8; border-left: 5px solid transparent; text-decoration: none; color: inherit; transition: background 0.12s; }
 .fyc-scorecard-row:last-child { border-bottom: none; }
@@ -120,10 +120,10 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-top: 2.5rem; margin-bottom: 1.5rem; overflow: hidden; }
 .fyc-rank-breakdown-title { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
 .fyc-rank-header { display: flex; align-items: center; gap: 0.65rem; padding: 0.28rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
-.fyc-rank-hdr-rank { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 100px; flex-shrink: 0; text-align: left; }
-.fyc-rank-hdr-name { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; text-align: left; }
-.fyc-rank-hdr-cat  { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; flex-shrink: 0; }
-.fyc-rank-hdr-move { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 145px; text-align: left; flex-shrink: 0; }
+.fyc-rank-hdr-rank { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 100px; flex-shrink: 0; text-align: left; }
+.fyc-rank-hdr-name { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; text-align: left; }
+.fyc-rank-hdr-cat  { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; flex-shrink: 0; }
+.fyc-rank-hdr-move { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 145px; text-align: left; flex-shrink: 0; }
 .fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; color: var(--text-secondary); border-radius: 3px; transition: background 0.1s, color 0.1s; }
 .fyc-rank-hdr-sortable:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 .fyc-rank-hdr-sortable.active { color: var(--text); }
