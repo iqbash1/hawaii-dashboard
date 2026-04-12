@@ -153,14 +153,18 @@ for (const [displayName, slug] of Object.entries(NAME_TO_SLUG)) {
 
     let displayDate;
     const nu = metric.nextUpdate;
-    if (nu === 'Biennial') {
-        // NAEP: next even year; voter: next election year
+    const monthIdx = MONTHS.indexOf(nu);
+    if (monthIdx === -1) continue;
+
+    const isBiennial = (metric.updateCadence || '').includes('Biennial');
+    if (isBiennial) {
+        // NAEP, voter: find next release year based on latest data year
         const latestYear = Math.max(...Object.keys(metric.hawaii || {}).map(Number).filter(n => !isNaN(n)));
-        displayDate = String(latestYear + 2);
+        const nextDataYear = latestYear + 2;
+        // Results release the year after the test year
+        displayDate = `${nu} ${nextDataYear + 1}`;
     } else {
-        // Month name like "Sep" — compute "Sep 2026" or "Sep 2027"
-        const monthIdx = MONTHS.indexOf(nu);
-        if (monthIdx === -1) continue;
+        // Annual: show "Month Year", advancing if we're past that month
         const targetYear = curMonth > monthIdx ? curYear + 1 : curYear;
         displayDate = `${nu} ${targetYear}`;
     }
