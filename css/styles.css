@@ -1773,9 +1773,9 @@ body {
 
     .dashboard-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-        padding: 0.75rem 0;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.6rem;
+        padding: 0.5rem 0;
     }
 
     .card {
@@ -1869,9 +1869,9 @@ body {
     }
 
     .modal-chart-container {
-        min-height: 320px;
+        min-height: 380px;
         height: auto;
-        padding: 1rem 0 2rem;
+        padding: 1rem 0 1.5rem;
         overflow: visible;
         page-break-after: always;
     }
