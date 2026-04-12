@@ -2,45 +2,45 @@
 body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .methods-header { background: var(--bg); padding: 1.5rem 1.5rem 1rem; text-align: center; }
 .methods-header h1 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
-.methods-header .back-link { color: var(--hawaii-blue); text-decoration: none; font-size: 0.82rem; font-weight: 500; }
+.methods-header .back-link { color: var(--hawaii-blue); text-decoration: none; font-size: var(--text-sm); font-weight: 500; }
 .methods-header .back-link:hover { text-decoration: underline; }
 .methods-content { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 3rem; }
 .methods-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
-.methods-section h2 { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
+.methods-section h2 { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
 
-.methods-section p, .methods-section li { font-size: 1.0rem; color: var(--text-secondary); line-height: 1.6; }
+.methods-section p, .methods-section li { font-size: var(--text-lg); color: var(--text-secondary); line-height: 1.6; }
 .methods-section ol li::marker { font-weight: 700; }
 .methods-section p + p { margin-top: 0.4rem; }
 
 .registry-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 0.5rem; }
-.registry-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.78rem; }
-.registry-table thead th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+.registry-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); }
+.registry-table thead th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
 .registry-table tbody td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); }
 .registry-table tbody tr:hover td { background: #f9f9f9; }
 .registry-table .metric-name { font-weight: 500; color: var(--text); }
 .registry-table .area-cell { white-space: nowrap; }
-.registry-table .direction-cell { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
-.registry-table .cadence-cell { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
-.registry-table .county-cell { font-size: 0.72rem; white-space: nowrap; text-align: center; }
+.registry-table .direction-cell { font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
+.registry-table .cadence-cell { font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
+.registry-table .county-cell { font-size: var(--text-xs); white-space: nowrap; text-align: center; }
 .registry-table .county-cell:not(:empty) { color: var(--text-muted); }
 .registry-table td[rowspan] { vertical-align: middle; font-weight: 500; border-right: 2px solid var(--border); }
 .registry-table a { color: var(--hawaii-blue); text-decoration: none; }
 .registry-table a:hover { text-decoration: underline; }
 
-.gov-table { border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; width: 100%; }
-.gov-table th { text-align: left; padding: 0.35rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; }
+.gov-table { border-collapse: collapse; font-size: var(--text-sm); margin-top: 0.5rem; width: 100%; }
+.gov-table th { text-align: left; padding: 0.35rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; }
 .gov-table td { padding: 0.3rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); vertical-align: top; }
 .gov-table .party-d { color: #2563EB !important; font-weight: 600; }
 .gov-table .party-r { color: #C0392B !important; font-weight: 600; }
-.gov-table .gov-notes { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+.gov-table .gov-notes { font-size: var(--text-sm); color: var(--text-muted); line-height: 1.5; }
 .gov-notes strong { color: var(--text); font-weight: 600; }
 .gov-notes .rk-good { color: var(--positive); font-weight: 700; }
 .gov-notes .rk-mid  { color: var(--neutral);  font-weight: 700; }
 .gov-notes .rk-bad  { color: var(--negative); font-weight: 700; }
 
 /* Who is this for table */
-.audience-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; }
-.audience-table th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.audience-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); margin-top: 0.5rem; }
+.audience-table th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.03em; }
 .audience-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); vertical-align: top; line-height: 1.55; }
 .audience-table tbody tr:last-child td { border-bottom: none; }
 .audience-table tbody tr:hover td { background: #f9f9f9; }
@@ -49,9 +49,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .audience-table a:hover { text-decoration: underline; }
 
 .update-list { list-style: disc; padding-left: 1.25rem; }
-.update-list li { padding: 0.25rem 0; font-size: 0.85rem; color: var(--text-secondary); }
+.update-list li { padding: 0.25rem 0; font-size: var(--text-base); color: var(--text-secondary); }
 .update-date { font-weight: 600; color: var(--text); }
-.methods-footer-note { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
+.methods-footer-note { font-size: var(--text-sm); color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
 
 @media print {
     .top-nav, .footer { display: none !important; }
@@ -87,13 +87,13 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 }
 
 /* FAQ page */
-.faq-content h2 { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; color: var(--text); margin: 1.5rem 0 0.35rem; }
+.faq-content h2 { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 700; color: var(--text); margin: 1.5rem 0 0.35rem; }
 .faq-content h2:first-child { margin-top: 0; }
-.faq-content p { font-size: 1.0rem; color: var(--text-secondary); line-height: 1.6; }
+.faq-content p { font-size: var(--text-lg); color: var(--text-secondary); line-height: 1.6; }
 .faq-content a { color: var(--hawaii-blue); text-decoration: none; }
 .faq-content a:hover { text-decoration: underline; }
 .faq-form { margin-top: 0.75rem; }
-.faq-form input, .faq-form textarea { display: block; width: 100%; font-family: var(--font); font-size: 0.95rem; padding: 0.5rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 0.5rem; box-sizing: border-box; }
+.faq-form input, .faq-form textarea { display: block; width: 100%; font-family: var(--font); font-size: var(--text-md); padding: 0.5rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 0.5rem; box-sizing: border-box; }
 .faq-form textarea { resize: vertical; }
-.faq-form button { font-family: var(--font); font-size: 0.95rem; font-weight: 500; padding: 0.5rem 1.25rem; background: var(--hawaii-blue); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; }
+.faq-form button { font-family: var(--font); font-size: var(--text-md); font-weight: 500; padding: 0.5rem 1.25rem; background: var(--hawaii-blue); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; }
 .faq-form button:hover { opacity: 0.9; }
