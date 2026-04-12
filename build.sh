@@ -15,6 +15,7 @@ cp -r css dist/
 cp -r js dist/
 cp -r assets dist/
 cp -r about dist/
+cp -r faq dist/
 cp -r five-year-change dist/
 cp -r methods dist/
 cp -r t dist/
