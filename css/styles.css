@@ -1862,9 +1862,11 @@ body {
     }
 
     .modal-chart-container {
-        height: 320px;
+        min-height: 320px;
+        height: auto;
         padding: 1rem 0 2rem;
         overflow: visible;
+        page-break-after: always;
     }
 
     .modal-body {
@@ -1897,7 +1899,9 @@ body {
 
     .rankings-chart-wrap {
         max-height: none;
+        height: auto;
         overflow: visible;
+        page-break-after: always;
     }
 
     h2, h3 {
