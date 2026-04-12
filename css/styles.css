@@ -1745,6 +1745,7 @@ body {
 }
 
 /* --- Print --- */
+@page { size: landscape; }
 @media print {
     body {
         background: white;
