@@ -93,3 +93,8 @@ details.methods-section:not([open]) .methods-toggle h2 { margin-bottom: 0; }
 .faq-content p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
 .faq-content a { color: var(--hawaii-blue); text-decoration: none; }
 .faq-content a:hover { text-decoration: underline; }
+.faq-form { margin-top: 0.75rem; }
+.faq-form input, .faq-form textarea { display: block; width: 100%; font-family: var(--font); font-size: 0.85rem; padding: 0.5rem 0.65rem; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 0.5rem; box-sizing: border-box; }
+.faq-form textarea { resize: vertical; }
+.faq-form button { font-family: var(--font); font-size: 0.85rem; font-weight: 500; padding: 0.5rem 1.25rem; background: var(--hawaii-blue); color: #fff; border: none; border-radius: var(--radius-sm); cursor: pointer; }
+.faq-form button:hover { opacity: 0.9; }
