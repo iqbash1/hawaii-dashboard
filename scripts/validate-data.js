@@ -12,6 +12,9 @@
 //   6. Governor band coverage
 //   7. rankHistoryNarrative structure
 //   8. Narrative staleness (year references vs latest data year)
+//   9. Source freshness (nextUpdate vs latest data year)
+//  10. Narrative-data consistency (above/below claims)
+//  11. latestMonthly freshness (asOf date staleness)
 //   (county cross-consistency is woven into section 2)
 //
 // Usage: node scripts/validate-data.js          (normal: warnings ok)
@@ -727,6 +730,25 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
         if (/per 1|%|rate/i.test(m.unit || '')) {
             warn(`[${slug}] countyNarrative may reference absolute counts while chart shows rates (${m.unit})`);
         }
+    }
+}
+
+// ── 11. latestMonthly staleness check ─────────────────────────────
+console.log('\n--- 11. latestMonthly freshness ---');
+const MONTHLY_STALE_DAYS = 45;
+for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
+    if (!m.latestMonthly) continue;
+    const lm = m.latestMonthly;
+    if (!lm.asOf) {
+        warn(`[${slug}] latestMonthly missing asOf date`);
+        continue;
+    }
+    const asOf = new Date(lm.asOf);
+    const ageDays = Math.floor((now - asOf) / (1000 * 60 * 60 * 24));
+    if (ageDays > MONTHLY_STALE_DAYS) {
+        warn(`[${slug}] latestMonthly is ${ageDays} days old (asOf: ${lm.asOf}) — run npm run update-monthly`);
+    } else {
+        console.log(`  OK [${slug}] latestMonthly: ${lm.value} (${lm.period}), ${ageDays}d old`);
     }
 }
 
