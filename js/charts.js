@@ -308,13 +308,12 @@ const ChartUtils = {
                         position: 'top',
                         align: 'center',
                         labels: {
-                            usePointStyle: true,
-                            pointStyle: 'circle',
+                            usePointStyle: false,
                             padding: 16,
                             font: { size: 12, weight: '500' },
                             color: '#555555',
-                            boxWidth: 8,
-                            boxHeight: 8,
+                            boxWidth: 24,
+                            boxHeight: 2,
                         }
                     },
                     tooltip: {
