@@ -52,6 +52,7 @@ const MIN_MONTHLY_DATA_POINTS = 10;
 // ---- API Keys ----
 const KEYS = {
     BEA: 'C51F8C25-E865-4DCC-B502-13BAFEB7D8AD',
+    FRED: 'aa88134401976fc554083c7bb3b50ed4',
 };
 
 // Census ACS 1-year: 2013-2023 (2020 was NOT released due to COVID)

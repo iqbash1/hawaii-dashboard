@@ -27,6 +27,7 @@ const path = require('path');
 const KEYS = {
     EIA: 'FFsf7F17guAaB6ClmCeckdIippnW8ElrDrLEb236',
     BEA: 'C51F8C25-E865-4DCC-B502-13BAFEB7D8AD',
+    FRED: 'aa88134401976fc554083c7bb3b50ed4',
 };
 
 // ---- FIPS → State Name ----
