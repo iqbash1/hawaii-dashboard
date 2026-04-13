@@ -20,7 +20,8 @@
     "serve": "python3 -m http.server 8080",
     "audit-links": "node scripts/audit-links.js",
     "update-years": "node scripts/update-narrative-years.js",
-    "update-monthly": "node scripts/update-monthly.js"
+    "update-monthly": "node scripts/update-monthly.js",
+    "audit-metric": "node scripts/audit-metric.js"
   },
   "devDependencies": {
     "eslint": "^8.57.0"
