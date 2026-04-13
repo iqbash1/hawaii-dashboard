@@ -624,6 +624,9 @@ const App = {
                     ? `<span class="card-unit">${effective.unitLabel}</span>`
                     : '';
 
+                const monthlyHtml = effective.latestMonthly
+                    ? `<div class="card-latest-monthly">Latest: ${ChartUtils.formatValue(effective.latestMonthly.value, effective.unit, false)} (${effective.latestMonthly.period})</div>`
+                    : '';
                 card.innerHTML = `
                     <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">
@@ -631,6 +634,7 @@ const App = {
                         ${unitSuffix}
                         <span class="card-year">(${latest.year})</span>
                     </div>
+                    ${monthlyHtml}
                     <div class="card-sparkline">
                         <canvas></canvas>
                     </div>

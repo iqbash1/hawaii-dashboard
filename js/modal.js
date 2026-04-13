@@ -160,6 +160,18 @@ const Modal = {
         const vintageEnd = App.keyEnd(hiYears[hiYears.length - 1]);
         const vintageText = `Data: ${vintageStart}-${vintageEnd}  ·  ${metricData.updateCadence || 'Annual'}`;
         document.getElementById('modal-vintage').textContent = vintageText;
+
+        // Latest monthly callout (only for metrics with monthly source data)
+        const monthlyEl = document.getElementById('modal-latest-monthly');
+        if (metricData.latestMonthly) {
+            const m = metricData.latestMonthly;
+            const fmtVal = ChartUtils.formatValue(m.value, metricData.unit, false);
+            monthlyEl.textContent = `Latest available: ${fmtVal} (${m.period})`;
+            monthlyEl.style.display = '';
+        } else {
+            monthlyEl.style.display = 'none';
+        }
+
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
