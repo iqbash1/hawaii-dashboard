@@ -12,7 +12,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .methods-section ol li::marker { font-weight: 700; }
 .methods-section p + p { margin-top: 0.4rem; }
 
-.registry-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 0.5rem; }
+.registry-wrap { margin-top: 0.5rem; }
 .registry-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); }
 .registry-table thead th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
 .registry-table tbody td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #f0f0f0; color: var(--text-secondary); }
@@ -81,6 +81,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 @media (max-width: 640px) {
     .methods-section { padding: 1rem; }
     .methods-header h1 { font-size: 1.25rem; }
+    .registry-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .registry-table { min-width: 560px; }
     .audience-table { min-width: auto; }
     .audience-role { white-space: normal; }
