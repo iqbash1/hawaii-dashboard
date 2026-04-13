@@ -449,23 +449,24 @@ function auditMetric(slug) {
         const dataObj = sd.data;
         // Detect format: year-keyed or FIPS-keyed
         const firstKey = Object.keys(dataObj)[0];
-        const isYearKeyed = /^\d{4}$/.test(firstKey);
+        const isYearKeyed = /^\d{4}(-\d{4})?$/.test(firstKey);
 
         if (isYearKeyed) {
-            const years = Object.keys(dataObj).map(Number).sort((a, b) => b - a);
-            const latestYear = years[0];
-            const latestStates = dataObj[latestYear];
+            // Sort keys chronologically (works for both "2024" and "2022-2024")
+            const yearKeys = Object.keys(dataObj).sort().reverse();
+            const latestYearKey = yearKeys[0];
+            const latestStates = dataObj[latestYearKey];
             if (!latestStates) {
-                issues.push(`No data for latest year ${latestYear}`);
+                issues.push(`No data for latest period ${latestYearKey}`);
             } else {
                 const stateCount = Object.keys(latestStates).length;
-                if (stateCount < 25) issues.push(`Only ${stateCount} states in ${latestYear} (rankings unreliable)`);
-                else if (stateCount < 45) issues.push(`${stateCount} states in ${latestYear} (some gaps)`);
+                if (stateCount < 25) issues.push(`Only ${stateCount} states in ${latestYearKey} (rankings unreliable)`);
+                else if (stateCount < 45) issues.push(`${stateCount} states in ${latestYearKey} (some gaps)`);
 
                 // Hawaii present
                 const hiKey = Object.keys(latestStates).find(k => k === 'Hawaii' || k === 'Hawai\u02BBi');
                 if (!hiKey) {
-                    issues.push(`Hawaii not found in state-data for ${latestYear}`);
+                    issues.push(`Hawaii not found in state-data for ${latestYearKey}`);
                 } else {
                     // Cross-check value
                     const sdVal = latestStates[hiKey];
