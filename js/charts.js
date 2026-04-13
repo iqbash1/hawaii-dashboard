@@ -312,8 +312,13 @@ const ChartUtils = {
                             padding: 16,
                             font: { size: 12, weight: '500' },
                             color: '#555555',
-                            boxWidth: 24,
-                            boxHeight: 2,
+                            boxWidth: 28,
+                            boxHeight: 3,
+                            generateLabels(chart) {
+                                const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                                labels.forEach(l => { l.lineWidth = 3; });
+                                return labels;
+                            },
                         }
                     },
                     tooltip: {
