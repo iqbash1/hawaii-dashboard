@@ -1223,7 +1223,7 @@ const DASHBOARD_DATA = {
   "real_per_capita_income": {
     "area": "Economy & Workforce",
     "areaIcon": "💼",
-    "metric": "Per Capita Income (inflation-adjusted)",
+    "metric": "Per Capita Income (real)",
     "officialName": "Total personal income per resident in constant 2017 dollars, adjusted for both regional price differences and national inflation so states and years can be compared on equal footing.",
     "sourceCategory": "federal",
     "unit": "$",
@@ -1234,7 +1234,7 @@ const DASHBOARD_DATA = {
     "whyItMatters": "Inflation-adjusted income shows whether residents' purchasing power is actually improving over time.",
     "howToRead": "All values are in constant 2017 dollars, so a flat line means no real income growth. Hawaiʻi runs below the other-state average throughout. Real purchasing power barely grew from 2008 to 2018, then spiked during COVID-era federal transfers before pulling back.",
     "potentialDrivers": "After adjusting for both cost of living and inflation, Hawaiʻi's real per capita income is among the lowest in the nation. Hawaiʻi's weak real income reflects a lopsided economy: dominated by retail trade and accommodation sectors, which have the <a href=\"https://dbedt.hawaii.gov/economic/files/2025/06/Hawaii-General-Economic-Competitiveness-Report-2025-draft.pdf\">lowest average hourly earnings</a> among major private industries, while higher-earning industries have seen little job growth. <a href=\"https://uhero.hawaii.edu/wp-content/uploads/2026/01/BeyondThePriceOfParadise.pdf\">UHERO found</a> that Hawaiʻi lacks the wage and productivity premium seen in other high-cost states; even after adjusting for local prices, incomes remain well below the U.S. average. Nearly all of Hawaiʻi's <a href=\"https://files.hawaii.gov/dbedt/economic/data_reports/emerging-industries/Hawaii_Targeted_Emerging_Industries_2025_Update_Report.pdf\">targeted and emerging industries underperformed national peers</a> from 2014 to 2024, limiting pathways to higher-wage employment.",
-    "countyNarrative": "Honolulu County posts the highest inflation-adjusted income of the four counties, supported by its more diversified economy including federal government, military, finance, and healthcare. Maui County incomes reflect a tourism-driven economy with some higher-end hospitality management wages, though purchasing power is compressed by some of the state's highest housing costs. Kauai County follows a similar pattern to Maui at a smaller scale. Hawaiʻi County has the lowest per capita income in the state, anchored by agriculture, small-scale tourism, and a higher share of retirees on fixed incomes relative to the other counties.",
+    "countyNarrative": "Honolulu County posts the highest real income of the four counties, supported by its more diversified economy including federal government, military, finance, and healthcare. Maui County incomes reflect a tourism-driven economy with some higher-end hospitality management wages, though purchasing power is compressed by some of the state's highest housing costs. Kauai County follows a similar pattern to Maui at a smaller scale. Hawaiʻi County has the lowest per capita income in the state, anchored by agriculture, small-scale tourism, and a higher share of retirees on fixed incomes relative to the other counties.",
     "useConsolidated": true,
     "dataNote": "All values are in constant 2017 dollars, adjusted for both regional price differences (BEA RPPs) and national inflation (PCE price index). County values are computed from county nominal income using state-level RPPs and the national PCE deflator.",
     "hawaii": {
@@ -1279,7 +1279,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "Annual",
     "nextUpdate": "Mar",
     "rankHistoryNarrative": {
-      "summary": "Hawaii ranked #34 in inflation-adjusted income in 2008 and has fallen to #46 in 2024. The steepest drop came during COVID (#49 in 2020) when tourism collapsed. The main reason is sector concentration: roughly 20 percent tourism-dependent, the highest share of any state.",
+      "summary": "Hawaii ranked #34 in real income in 2008 and has fallen to #46 in 2024. The steepest drop came during COVID (#49 in 2020) when tourism collapsed. The main reason is sector concentration: roughly 20 percent tourism-dependent, the highest share of any state.",
       "mode": "learn",
       "benchmarks": [
         {

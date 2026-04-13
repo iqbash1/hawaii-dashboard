@@ -86,7 +86,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
         caveat: "productivity is not the same as worker pay or living standards."
     },
     real_per_capita_income: {
-        intro: "Hawai\u02BBi's inflation-adjusted per capita income is {{value}} in constant 2017 dollars ({{period}})",
+        intro: "Hawai\u02BBi's real per capita income is {{value}} in constant 2017 dollars ({{period}})",
         caveat: "this is an average, not the income of a typical household."
     },
     estabs_entry_rate: {
