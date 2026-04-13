@@ -369,62 +369,34 @@ async function fetchUnemployment() {
 // ===========================================================
 
 async function fetchRealPerCapitaIncome() {
-    console.log('Fetching: Real per capita income (BEA SAINC1 + SARPP)...');
+    console.log('Fetching: Real per capita income (BEA SARPI, constant 2017 dollars)...');
 
     try {
         const baseUrl = `https://apps.bea.gov/api/data?UserID=${KEYS.BEA}&method=GetData&datasetname=Regional&GeoFips=STATE&Year=ALL&ResultFormat=JSON`;
 
-        const [jsonIncome, jsonRPP] = await Promise.all([
-            fetchJSON(baseUrl + '&TableName=SAINC1&LineCode=3'),
-            fetchJSON(baseUrl + '&TableName=SARPP&LineCode=1'),
-        ]);
+        // SARPI LineCode 2 = Real per capita personal income (chained 2017 dollars)
+        const json = await fetchJSON(baseUrl + '&TableName=SARPI&LineCode=2');
 
-        if (!jsonIncome.BEAAPI?.Results?.Data) throw new Error('No BEA income data');
-        if (!jsonRPP.BEAAPI?.Results?.Data) throw new Error('No BEA RPP data');
+        if (!json.BEAAPI?.Results?.Data) throw new Error('No BEA SARPI data');
 
-        // Build lookups: year → fips2 → value
-        const incomeByYearFips = {};
-        for (const row of jsonIncome.BEAAPI.Results.Data) {
-            if (row.DataValue === '(NA)') continue;
-            const year = row.TimePeriod;
-            const fips2 = row.GeoFips.substring(0, 2);
-            if (!incomeByYearFips[year]) incomeByYearFips[year] = {};
-            incomeByYearFips[year][fips2] = parseFloat(row.DataValue.replace(/,/g, ''));
-        }
-
-        const rppByYearFips = {};
-        for (const row of jsonRPP.BEAAPI.Results.Data) {
-            if (row.DataValue === '(NA)') continue;
-            const year = row.TimePeriod;
-            const fips2 = row.GeoFips.substring(0, 2);
-            if (!rppByYearFips[year]) rppByYearFips[year] = {};
-            rppByYearFips[year][fips2] = parseFloat(row.DataValue.replace(/,/g, ''));
-        }
-
-        // Compute RPP-adjusted income for each year × state
         const data = {};
-        const commonYears = Object.keys(incomeByYearFips).filter(y => rppByYearFips[y]).sort();
-
-        for (const year of commonYears) {
-            const yearStates = {};
-            for (const fips2 of ALL_FIPS) {
-                const stateName = FIPS_TO_STATE[fips2];
-                const income = incomeByYearFips[year]?.[fips2];
-                const rpp = rppByYearFips[year]?.[fips2];
-                if (stateName && !isNaN(income) && !isNaN(rpp) && rpp > 0) {
-                    yearStates[stateName] = Math.round(income / (rpp / 100));
-                }
-            }
-            if (Object.keys(yearStates).length > 0) {
-                data[year] = yearStates;
-            }
+        for (const row of json.BEAAPI.Results.Data) {
+            if (row.DataValue === '(NA)') continue;
+            const year = row.TimePeriod;
+            const fips2 = row.GeoFips.substring(0, 2);
+            const stateName = FIPS_TO_STATE[fips2];
+            if (!stateName) continue;
+            const val = parseFloat(row.DataValue.replace(/,/g, ''));
+            if (isNaN(val)) continue;
+            if (!data[year]) data[year] = {};
+            data[year][stateName] = Math.round(val);
         }
 
         console.log(`  OK ${Object.keys(data).length} years`);
         return Object.keys(data).length > 0 ? {
-            source: 'BEA Regional Economic Accounts, Tables SAINC1 + SARPP',
-            calculation: 'Nominal per capita personal income / (Regional Price Parity / 100). Reflects cost-of-living differences.',
-            rawVariables: 'SAINC1 LineCode=3 / (SARPP LineCode=1 / 100)',
+            source: 'BEA Real Personal Income by State (SARPI)',
+            calculation: 'Real per capita personal income in chained 2017 dollars. Adjusted for both regional price differences (RPPs) and national inflation (PCE price index).',
+            rawVariables: 'SARPI LineCode=2',
             data,
         } : null;
     } catch (err) {

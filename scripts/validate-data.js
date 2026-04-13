@@ -65,7 +65,7 @@ const METRIC_RULES = {
     // Unemployment: COVID caused 6-7x spikes for small counties in a single year (Maui: +637%)
     unemployment_rate:          { min: 0.01,  max: 0.25,   maxYoYPct: 8.00, format: 'decimal_pct' },
     labor_force_participation:  { min: 50,    max: 80,     maxYoYPct: 0.10, format: 'whole_pct' },
-    real_per_capita_income:     { min: 20000, max: 120000, maxYoYPct: 0.15, format: 'dollar' },
+    real_per_capita_income:     { min: 30000, max: 80000, maxYoYPct: 0.15, format: 'dollar' },
     // renter_cost_burden: county ACS samples for small counties (Kauai) can swing 50% in a year
     renter_cost_burden_pct:     { min: 0.25,  max: 0.75,   maxYoYPct: 0.55, format: 'decimal_pct' },
     home_price_to_income:       { min: 2.0,   max: 15.0,   maxYoYPct: 0.25, format: 'ratio' },

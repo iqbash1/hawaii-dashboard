@@ -39,7 +39,7 @@ const NAME_TO_SLUG = {
     'NAEP 8th Grade Reading':                               'naep_reading_8',
     'Unemployment Rate':                                    'unemployment_rate',
     'Labor Force Participation':                            'labor_force_participation',
-    'Per Capita Income (cost-of-living adj.)':              'real_per_capita_income',
+    'Per Capita Income (inflation-adjusted)':               'real_per_capita_income',
     'Renters Paying 30%+ for Housing':                      'renter_cost_burden_pct',
     'Home Price-to-Income Ratio':                           'home_price_to_income',
     'Unsheltered Homeless':                                 'unsheltered_homeless_rate',

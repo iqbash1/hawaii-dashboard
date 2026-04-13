@@ -281,20 +281,19 @@ async function fetchUnemploymentRate() {
 // ===========================================================
 
 async function fetchPerCapitaIncome() {
-    console.log('Fetching: Per capita income (BEA CAINC1 + state RPP)...');
+    console.log('Fetching: Per capita income (BEA CAINC1 + state RPP + PCE deflator, constant 2017 dollars)...');
     const byCounty = {};
     COUNTY_ORDER.forEach(c => { byCounty[c] = {}; });
 
     try {
-        // Fetch county-level per capita personal income
-        // Use 5-digit FIPS (BEA combines Maui + Kalawao as 15901)
+        // Fetch county-level nominal per capita personal income
         const countyFips = Object.keys(COUNTY_FIPS_5).filter(f => f !== '15009').join(',');
         const incomeUrl = `https://apps.bea.gov/api/data?UserID=${KEYS.BEA}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&GeoFips=${countyFips}&Year=ALL&ResultFormat=JSON`;
         const jsonIncome = await fetchJSON(incomeUrl);
 
         if (!jsonIncome.BEAAPI?.Results?.Data) throw new Error('No BEA county income data');
 
-        // Fetch state-level RPP for Hawaii (to adjust for cost of living)
+        // Fetch state-level RPP for Hawaii (regional price adjustment)
         const rppUrl = `https://apps.bea.gov/api/data?UserID=${KEYS.BEA}&method=GetData&datasetname=Regional&TableName=SARPP&LineCode=1&GeoFips=15000&Year=ALL&ResultFormat=JSON`;
         const jsonRPP = await fetchJSON(rppUrl);
 
@@ -306,6 +305,16 @@ async function fetchPerCapitaIncome() {
             }
         }
 
+        // National PCE price index (base 2017=100), from BEA NIPA Table 2.3.4 / FRED DPCERG3A086NBEA
+        // Updated annually when BEA publishes revised SARPI data
+        const pceByYear = {
+            '2008': 89.120, '2009': 89.442, '2010': 90.864, '2011': 93.030,
+            '2012': 94.696, '2013': 95.879, '2014': 97.317, '2015': 97.542,
+            '2016': 98.273, '2017': 100.000, '2018': 101.938, '2019': 103.375,
+            '2020': 104.583, '2021': 108.774, '2022': 115.762, '2023': 120.237,
+            '2024': 123.666,
+        };
+
         for (const row of jsonIncome.BEAAPI.Results.Data) {
             if (row.DataValue === '(NA)') continue;
             const year = row.TimePeriod;
@@ -316,12 +325,16 @@ async function fetchPerCapitaIncome() {
             const nominal = parseFloat(row.DataValue.replace(/,/g, ''));
             if (isNaN(nominal)) continue;
 
-            // Adjust by state RPP (all counties in same state share RPP)
+            // Adjust by state RPP + national PCE deflator → constant 2017 dollars
             const rpp = rppByYear[year];
-            if (rpp && rpp > 0) {
+            const pce = pceByYear[year];
+            if (rpp && rpp > 0 && pce && pce > 0) {
+                // IRPD = (RPP / 100) * (PCE / 100)
+                byCounty[countyName][year] = Math.round(nominal / ((rpp / 100) * (pce / 100)));
+            } else if (rpp && rpp > 0) {
+                // Fallback: RPP-only if PCE unavailable
                 byCounty[countyName][year] = Math.round(nominal / (rpp / 100));
             } else {
-                // No RPP for this year, store nominal
                 byCounty[countyName][year] = Math.round(nominal);
             }
         }
