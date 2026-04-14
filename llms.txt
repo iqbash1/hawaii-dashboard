@@ -1,0 +1,116 @@
+# Hawaiʻi Dashboard
+> A statewide scorecard of outcomes and the conditions that shape them.
+
+Website: https://hawaiidashboard.org
+Developed by: Guild Consulting (https://guild.consulting)
+Audience: Hawaiʻi residents, policymakers, researchers, journalists
+Data: All metrics use nonpartisan federal sources reported the same way for all 50 states.
+
+## What this site does
+
+The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawaiʻi to the other 49 states over time. Each metric shows a trend chart (Hawaiʻi vs. other-state average), a 50-state ranking, rank history over time, and county breakdowns where data exists. The dashboard is updated annually; some metrics also show a latest monthly figure from federal sources.
+
+## 5 Policy Areas and 26 Metrics
+
+### Safety & Health
+1. Violent Crime Rate — per 100K residents (FBI Crime Data Explorer)
+2. Property Crime Rate — per 100K residents (FBI Crime Data Explorer)
+3. Primary Care Physicians — per 100K civilians (HRSA AHRF)
+4. Uninsured Rate — % without health insurance (Census ACS)
+5. Suicide Rate — per 100K residents (CDC WONDER)
+
+### Housing & Cost of Living
+6. Renters Paying 30%+ for Housing — % of renters cost-burdened (Census ACS)
+7. Home Price-to-Income Ratio — median home value / median household income (Census ACS)
+8. Unsheltered Homeless Rate — per 10K residents (HUD PIT Count)
+9. Residential Electricity Price — cents per kWh (EIA)
+10. Food Insecurity Rate — % of households, 3-year average (USDA ERS)
+
+### Economy & Workforce
+11. Unemployment Rate — % of labor force (BLS LAUS)
+12. Labor Force Participation Rate — % of working-age population (BLS LAUS)
+13. Labor Productivity Index — output per hour, 2017=100 (BLS)
+14. Per Capita Income (real) — inflation-adjusted, constant 2017 dollars (BEA SARPI)
+15. Establishment Entry Rate — new businesses as % of total (Census BDS)
+16. Net Employer Formation — new minus closed businesses as % of total (Census BDS)
+
+### Education
+17. NAEP Math Score (8th grade) — scale score (NCES NAEP)
+18. NAEP Reading Score (8th grade) — scale score (NCES NAEP)
+19. High School Graduation Rate (ACGR) — % of cohort graduating on time (NCES)
+20. Adults with Bachelor's Degree+ — % age 25+ (Census ACS)
+
+### Infrastructure, Resilience & Trust
+21. Roads in Poor Condition — % of road miles (FHWA / TRIP)
+22. Households with Broadband — % of households (Census ACS)
+23. Electricity from Renewables — % of total generation (EIA)
+24. Rainy Day Fund Balance — % of general fund expenditures (Pew / NASBO)
+25. Voter Participation Rate — % of eligible voters (VEP) in general election (US Elections Project)
+26. Net Domestic Migration Rate — per 10K residents (Census PEP)
+
+## Methodology
+
+- **Other-state average**: Simple mean of the 49 other states (excludes DC and territories). This is not a population-weighted national average.
+- **Rankings**: All 50 states ranked. #1 = best performance (direction depends on metric).
+- **Income adjustment**: Per Capita Income uses BEA SARPI (State Annual Real Personal Income) in constant 2017 dollars, adjusting for both inflation and regional price differences.
+- **Comparator states**: Each metric includes "Lessons from other states" with states chosen for sharing a specific structural condition with Hawaiʻi, not overall similarity.
+- **County data**: 13 of 26 metrics have county-level breakdowns for Honolulu, Hawaiʻi (Big Island), Maui, and Kauai.
+
+## Selection criteria for metrics
+
+Every metric must meet all eight criteria:
+1. Nonpartisan federal or academic source
+2. Available for all 50 states
+3. Consistent definition over time
+4. At least 10 years of history
+5. Clear "better or worse" direction
+6. Measures outcomes residents experience
+7. Not duplicative of another metric
+8. Updated at least annually
+
+## Data sources
+
+All data comes from nonpartisan federal agencies:
+- FBI Crime Data Explorer
+- HRSA Area Health Resource File
+- Census Bureau (ACS, BDS, PEP)
+- CDC WONDER
+- Bureau of Labor Statistics (LAUS)
+- Bureau of Economic Analysis (SARPI)
+- NCES (NAEP, CCD)
+- Energy Information Administration
+- USDA Economic Research Service
+- HUD Point-in-Time Count
+- FHWA Highway Statistics
+- Pew Charitable Trusts / NASBO
+- US Elections Project
+
+## Pages
+
+- **Dashboard** (https://hawaiidashboard.org/) — Main page with all 26 metric cards, trend charts, and modal detail views.
+- **5-Year Change** (https://hawaiidashboard.org/five-year-change/) — How each metric changed over the last 5 years, with rank changes and county trends.
+- **About** (https://hawaiidashboard.org/about/) — Methodology, selection criteria, metric registry, data sources, governor terms.
+- **FAQ** (https://hawaiidashboard.org/faq/) — 11 frequently asked questions about the dashboard's approach, methodology, and use.
+
+## URL structure
+
+The dashboard is a single-page application. Metric detail views are accessed via:
+- Trend view: /#metric_slug (e.g., /#unemployment_rate)
+- Rankings view: /#metric_slug/rankings
+- Rank history: /#metric_slug/rank-history
+- County view: /#metric_slug/county
+
+Shareable links use path-based routes:
+- /t/metric_slug/ — redirects to trend view
+- /r/metric_slug/ — redirects to rankings view
+- /rh/metric_slug/state/ — redirects to rank history with state comparison
+- /c/metric_slug/ — redirects to county view
+
+## Key facts
+
+- Nonpartisan: no political agenda; data presented without editorial interpretation
+- Free and open: no paywall, no login, no ads
+- Static site hosted on Cloudflare Pages
+- Updated annually (some metrics show latest monthly figures between annual updates)
+- Designed for readability by residents aged 60+
+- All claims in "Potential drivers" and "Key levers" are sourced to peer-reviewed studies or federal reports

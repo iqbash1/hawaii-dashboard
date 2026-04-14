@@ -34,13 +34,13 @@ hawaii-dashboard/
 │   ├── data.js             # Embedded metric data (Hawaiʻi vs. other state averages)
 │   ├── state-data.js       # Per-state data for all metrics (rankings + .xlsx export)
 │   ├── county-data.js      # Per-county data for 4 Hawaiʻi counties
-│   ├── app.js              # Coordinator: init, card rendering, bundles, metric search, helpers, analytics (869 lines)
-│   ├── modal.js            # Modal: open/close, tabs, charts, narrative, Bottom Line brief (1078 lines)
+│   ├── app.js              # Coordinator: init, card rendering, bundles, metric search, helpers, analytics
+│   ├── modal.js            # Modal: open/close, tabs, charts, narrative, Bottom Line brief
 │   ├── export.js           # XLSX download with lazy-loaded SheetJS (314 lines)
 │   ├── routing.js          # URL parsing, permalink routing, state slug conversion (83 lines)
 │   ├── compute.js          # Pure utilities: parseYearLabel, keyEnd, getLatestValue, getPriorValue (63 lines)
 │   ├── charts.js           # Chart.js sparklines, detail charts, rankings, governor overlay
-│   ├── bundles.js          # Bundle config: 7 question-first entry point chips with metric lists
+│   ├── bundles.js          # Bundle config: 9 question-first entry point chips with metric lists
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers, county HTML)
 ├── assets/
 │   ├── og-image.png        # Generic OG image (fallback for homepage + about)
@@ -69,6 +69,10 @@ hawaii-dashboard/
 │   ├── build-county-data.js    # Fetches county-level data from federal APIs
 │   ├── recompute-data.js       # Recomputes derived fields in data.js
 │   ├── update-about-years.js   # Updates year ranges in about/index.html
+│   ├── update-narrative-years.js # Finds stale year references in narratives
+│   ├── update-monthly.js       # Fetches latest BLS/EIA monthly data for 4 metrics
+│   ├── audit-metric.js         # Comprehensive per-metric audit (10 checks)
+│   ├── audit-links.js          # HTTP link checker for all URLs in data.js
 │   └── validate-data.js        # Validates data integrity before CI commit
 ├── tests/
 │   ├── package.json            # Playwright + http-server dependencies
@@ -80,6 +84,11 @@ hawaii-dashboard/
 │       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs
 │       ├── tests.yml           # Smoke tests on every push/PR to main
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
+├── faq/
+│   └── index.html          # FAQ page: 11 Q&A pairs, feedback form
+├── robots.txt              # Crawl directives for search engines and AI bots
+├── sitemap.xml             # 17-URL sitemap (4 main + 13 county pages)
+├── llms.txt                # Plain-text site summary for AI chat engines
 └── DOCUMENTATION.md
 ```
 
@@ -122,7 +131,7 @@ hawaii-dashboard/
 | 11 | Economy & Workforce | Unemployment Rate | % | Down | BLS LAUS |
 | 12 | Economy & Workforce | Labor Force Participation Rate | % | Up | BLS LAUS |
 | 13 | Economy & Workforce | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
-| 14 | Economy & Workforce | Per Capita Income (cost-of-living adj.) | $ | Up | BEA |
+| 14 | Economy & Workforce | Per Capita Income (real) | $ | Up | BEA SARPI |
 | 15 | Economy & Workforce | New Business Entry Rate | % | Up | Census BDS |
 | 16 | Economy & Workforce | Net Employer Business Formation | % | Up | Census BFS |
 | 17 | Education | NAEP 8th Grade Math | score | Up | NAEP |
@@ -133,7 +142,7 @@ hawaii-dashboard/
 | 22 | Infra, Resilience & Trust | Broadband Subscriptions | % | Up | Census ACS |
 | 23 | Infra, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
 | 24 | Infra, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | EAC |
+| 25 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | US Elections Project |
 | 26 | Infra, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
@@ -218,6 +227,11 @@ Each metric follows this structure:
   countyNarrative: "HTML or plain-text county-level breakdown (optional)", // shown as 'County breakdown' section in consolidated layout; rendered via template literal (supports <a> links); omit when the metric has no county-level chart data in county-data.js
   useConsolidated: true,                                                  // Boolean flag. When true, the modal body switches to the single-scroll consolidated layout (see below). Set on all 26 metrics.
   policyLevers: "State-level levers for this outcome (optional)",         // shown as a section in modal
+  latestMonthly: {                                              // optional; only 4 metrics with monthly federal data
+    value: 2.2,                                                   // latest monthly figure (display units, not decimal)
+    period: "Jan 2026",                                           // human-readable month label
+    asOf: "2026-04-13"                                            // ISO date for staleness checking
+  },
   hawaii: { "2012": 253.85, "2013": 232.48, ... },
   otherStateAvg: { "2012": 387.77, "2013": 372.01, ... },
   rankHistoryNarrative: { ... }   // see below
@@ -250,7 +264,7 @@ All 26 metrics have a `rankHistoryNarrative` object that drives the written anal
 ```js
 rankHistoryNarrative: {
   summary: "2-3 sentences: Hawaii's trajectory and the structural reasons behind it",
-  mode: "protect" | "learn",   // "protect" = Hawaii is ahead; "learn" = room to improve
+  mode: "protect" | "learn" | "improve",   // "protect" = Hawaii is ahead; "learn" = room to improve; "improve" = actively improving
   benchmarks: [
     {
       state: "State name",
@@ -291,7 +305,7 @@ Generated by `scripts/build-state-data.js`.
 
 Contains data for Hawaiʻi's 4 counties (Honolulu, Hawaiʻi County, Maui, Kauai) for metrics where county-level federal data is available. Used for the **County-level** tab in the modal.
 
-Generated by `scripts/build-county-data.js` (10 API-sourced metrics) plus manually compiled data (3 metrics). Currently covers 13 metrics:
+Generated by `scripts/build-county-data.js` (10 API-sourced metrics) plus manually compiled data (3 metrics). Currently covers 14 metrics:
 
 | Metric | Source | Years |
 |--------|--------|-------|
@@ -308,6 +322,7 @@ Generated by `scripts/build-county-data.js` (10 API-sourced metrics) plus manual
 | Unsheltered Homeless | HUD PIT Count | 2015-2024 |
 | Violent Crime Rate | Hawaii AG UCR | 2010-2023 |
 | Property Crime Rate | Hawaii AG UCR | 2010-2023 |
+| Net Domestic Migration Rate | Census PEP | 2011-2024 |
 
 **Important:** Hawaiʻi County (Big Island) uses the okina character (ʻ) in its name to distinguish it from Hawaii the state. BEA reports Maui + Kalawao combined under GeoFips 15901.
 
@@ -331,19 +346,21 @@ Structure:
 
 ### Bundle Entry Points
 
-Seven question-first chips appear between the header and the metric grid. Each chip highlights a curated subset of metrics with a default tab (trend, rank, rank history, or county).
+Nine question-first chips appear between the header and the metric grid. Each chip highlights a curated subset of metrics with a default tab (trend, rank, rank history, or county).
 
 **Current bundles (in display order):**
 
 | ID | Title | Metrics |
 |----|-------|---------|
-| `affordability` | Affordability | Renter cost burden, Home price-to-income, Per capita income, Electricity price, Food insecurity, Net migration |
-| `keeping-residents` | Keeping Residents | Net migration, Renter cost burden, Home price-to-income, Per capita income, Unemployment, Labor force participation |
-| `jobs-and-pay` | Jobs & Pay | Unemployment, Labor force participation, Per capita income, Labor productivity |
-| `economic-opportunity` | Economic Opportunity | Business entry rate, Net employer formation, Labor productivity, Per capita income, Unemployment, Labor force participation |
-| `student-outcomes` | Student Outcomes | NAEP math, NAEP reading, Graduation rate |
-| `public-safety` | Public Safety | Violent crime, Property crime |
-| `health-coverage` | Health Coverage & Care | Uninsured rate, Primary care physicians |
+| `affordability` | How affordable is life here? | Renter cost burden, Home price-to-income, Electricity price, Food insecurity, Per capita income, Unsheltered homeless |
+| `safety` | How safe is it really? | Violent crime, Property crime |
+| `health` | How healthy are we? | Suicide rate, Primary care physicians, Uninsured rate |
+| `education` | How are our kids doing in school? | NAEP math, NAEP reading, Graduation rate, Bachelor's degree+ |
+| `energy` | Why do we pay so much for electricity? | Electricity price, Renewables share |
+| `resilience` | How prepared are we for the next disaster? | Rainy day fund, Roads in poor condition, Broadband, Renewables share |
+| `jobs` | How strong is the job market? | Unemployment, Labor force participation, Per capita income, Labor productivity |
+| `business` | How easy is it to start and grow a business? | Business entry rate, Net employer formation, Labor productivity |
+| `participating` | Are residents actively participating? | Labor force participation, Voter participation, Net domestic migration |
 
 **Behavior:**
 - Clicking a chip highlights matching cards (other cards dim to 12% opacity + grayscale)
@@ -596,8 +613,8 @@ Chart rendering utilities.
 
 1. Code is pushed to GitHub: `github.com/iqbash1/hawaii-dashboard`
 2. Cloudflare Pages is connected to the repo
-3. **Build command:** (none, static site)
-4. **Build output directory:** `/` (root)
+3. **Build command:** `npm run build` (runs `build.sh`)
+4. **Build output directory:** `dist/`
 5. **Custom domain:** `hawaiidashboard.org`
 
 Every push to `main` auto-deploys within ~30 seconds.
@@ -617,9 +634,9 @@ ESLint and Prettier run in CI before smoke tests. Configuration:
 
 ### Footer Timestamp
 
-The footer shows "Data last updated: [date + time] HST". This is updated automatically on every push to `main` by `.github/workflows/timestamp.yml`. The workflow writes the current Hawaii time into `index.html` and commits with `[skip ci]` to prevent a loop.
+The footer shows "Last reviewed: [date]". This is updated automatically on every push to `main` by `.github/workflows/timestamp.yml`. The workflow writes the current Hawaii date into `index.html` and commits with `[skip ci]` to prevent a loop. The label says "reviewed" (not "updated") to avoid implying all data is from that date.
 
-The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadData()`) can read the timestamp and include it in the Methodology sheet's "Data updated" field.
+The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadData()`) can read the timestamp and include it in the Methodology sheet's "Last reviewed" field.
 
 ---
 
@@ -657,7 +674,7 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 
 ## Analytics
 
-Three platforms are active on all pages (`index.html`, `about/index.html`, `five-year-change/index.html`):
+Three platforms are active on all pages (`index.html`, `about/index.html`, `five-year-change/index.html`, `faq/index.html`):
 
 | Platform | Purpose | Setup |
 |----------|---------|-------|
@@ -734,6 +751,38 @@ npm test
 ### CI
 
 Tests run automatically on every push to `main` and on all pull requests via `.github/workflows/tests.yml`.
+
+---
+
+## SEO & AI Discoverability
+
+### Search engine optimization
+
+All 4 main pages have:
+- `<title>`, `<meta name="description">`, `<link rel="canonical">`
+- Open Graph tags (og:type, og:url, og:title, og:description, og:image, og:site_name)
+- Twitter Card tags (summary_large_image)
+- JSON-LD structured data (BreadcrumbList on all pages; Organization + WebSite on homepage; FAQPage on /faq/)
+- Apple touch icon
+
+Additional SEO infrastructure:
+- `robots.txt` - allows all crawlers, explicitly permits AI bots
+- `sitemap.xml` - 17 URLs (4 main pages + 13 county OG pages) with priority hints
+- `_headers` - security headers (CSP, X-Frame-Options) and cache-control (1yr immutable for assets)
+
+### AI chat engine optimization
+
+- `llms.txt` - plain-text site summary (~150 lines) describing the dashboard, all 26 metrics, methodology, data sources, and URL structure. Follows the llms.txt convention for AI system context.
+- `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended, and other AI crawlers.
+- All 4 pages have semantic HTML with descriptive headings.
+- FAQ page has FAQPage JSON-LD schema, enabling Google rich results.
+
+### Validation tools
+
+- Audit metric data: `npm run audit-metric -- <slug>` or `npm run audit-metric -- --all`
+- Audit links: `npm run audit-links`
+- Validate data: `npm run validate`
+- Build for deployment: `npm run build` (copies to dist/ with cache-busted SHA)
 
 ---
 

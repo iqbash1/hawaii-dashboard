@@ -11,6 +11,9 @@ mkdir dist
 cp index.html dist/
 cp _headers dist/
 cp _redirects dist/
+cp robots.txt dist/
+cp sitemap.xml dist/
+cp llms.txt dist/
 cp -r css dist/
 cp -r js dist/
 cp -r assets dist/

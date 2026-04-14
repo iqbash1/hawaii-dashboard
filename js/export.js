@@ -295,7 +295,7 @@ const Export = {
             ['REPRODUCIBILITY'],
             ['To reproduce', reproText],
             ['Dashboard', 'hawaiidashboard.org'],
-            ['Data updated', document.getElementById('last-updated')?.textContent || ''],
+            ['Last reviewed', document.getElementById('last-updated')?.textContent || ''],
         );
         const wsMeth = XLSX.utils.aoa_to_sheet(methRows.filter(r => r.length > 0));
         XLSX.utils.book_append_sheet(wb, wsMeth, 'Methodology');
