@@ -13,11 +13,16 @@
 //   8. Link audit (HTTP checks — only with --links flag)
 //   9. Monthly data freshness
 //  10. Rank history narrative structure
+//  11. otherStateAvg cross-check (recompute from state-data.js)
+//  12. Five-year-change delta verification
+//  13. Card latest-value consistency
+//  14. Source data verification (with --verify-source flag)
 //
 // Usage:
 //   node scripts/audit-metric.js <metric_slug>
 //   node scripts/audit-metric.js --all
-//   node scripts/audit-metric.js <metric_slug> --links   (includes HTTP link checks)
+//   node scripts/audit-metric.js <metric_slug> --links          (includes HTTP link checks)
+//   node scripts/audit-metric.js <metric_slug> --verify-source  (checks source files in project root)
 // ============================================================
 
 const fs = require('fs');
@@ -29,6 +34,7 @@ const BASE = path.join(__dirname, '..');
 const args = process.argv.slice(2);
 const DO_LINKS = args.includes('--links');
 const DO_ALL = args.includes('--all');
+const DO_VERIFY_SOURCE = args.includes('--verify-source');
 const slugArg = args.find(a => !a.startsWith('--'));
 
 if (!slugArg && !DO_ALL) {
@@ -96,6 +102,13 @@ const EXPECTED_BLOCK = [
 ];
 
 const EXPECTED_COUNTIES = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
+
+// Names to exclude from 50-state calculations (DC, territories, aggregates)
+const NOT_A_STATE = new Set([
+    'District of Columbia', 'Dist. of Col.', 'D.C.', 'DC',
+    'Puerto Rico', 'Guam', 'Virgin Islands', 'American Samoa',
+    'Northern Mariana Islands', 'U.S. Total', 'Total', 'United States',
+]);
 
 // ---- Helpers ----
 // Parse year keys: "2024" → 2024, "2022-2024" → 2024 (end year)
@@ -362,9 +375,9 @@ function auditMetric(slug) {
             const sizes = gaps.map(g => g.size);
             const mode = sizes.sort((a, b) => sizes.filter(v => v === a).length - sizes.filter(v => v === b).length).pop();
             const outliers = gaps.filter(g => g.size !== mode);
-            for (const g of outliers) issues.push(`Hawaii year gap: ${g.from} to ${g.to} (expected ${mode}-year cadence)`);
+            for (const g of outliers) issues.push(`Hawaii year gap: ${g.from} to ${g.to} (expected ${mode}-year cadence) — verify whether source published data for missing year(s)`);
         } else {
-            for (const g of gaps) issues.push(`Hawaii year gap: ${g.from} to ${g.to}`);
+            for (const g of gaps) issues.push(`Hawaii year gap: ${g.from} to ${g.to} — verify whether source published data for missing year(s)`);
         }
 
         // YoY spikes
@@ -433,11 +446,11 @@ function auditMetric(slug) {
             }
         }
 
-        if (!hasCountyNarrative) issues.push('Has COUNTY_DATA but no countyNarrative in data.js');
+        if (!hasCountyNarrative) issues.push('Has COUNTY_DATA but no countyNarrative in data.js — is the narrative missing or intentionally omitted?');
         if (issues.length === 0) ok('3. County data', `${counties.length} counties, data consistent`);
         else warning('3. County data', `${issues.length} issue(s)`, `3. County data:\n   ${issues.join('\n   ')}`);
     } else if (hasCountyNarrative) {
-        warning('3. County data', 'Has countyNarrative but no COUNTY_DATA entry', '3. countyNarrative exists but no matching COUNTY_DATA — either add county data or remove narrative');
+        warning('3. County data', 'Has countyNarrative but no COUNTY_DATA entry', '3. countyNarrative exists but no matching COUNTY_DATA — does the source publish county-level data that could be added?');
     } else {
         ok('3. County data', 'No county data (none expected)');
     }
@@ -459,7 +472,11 @@ function auditMetric(slug) {
             if (!latestStates) {
                 issues.push(`No data for latest period ${latestYearKey}`);
             } else {
-                const stateCount = Object.keys(latestStates).length;
+                const allKeys = Object.keys(latestStates);
+                const stateOnly = allKeys.filter(k => !NOT_A_STATE.has(k));
+                const stateCount = stateOnly.length;
+                const nonStates = allKeys.filter(k => NOT_A_STATE.has(k));
+                if (nonStates.length > 0) issues.push(`state-data includes non-state entries: ${nonStates.join(', ')} — verify rankings exclude these`);
                 if (stateCount < 25) issues.push(`Only ${stateCount} states in ${latestYearKey} (rankings unreliable)`);
                 else if (stateCount < 45) issues.push(`${stateCount} states in ${latestYearKey} (some gaps)`);
 
@@ -722,6 +739,206 @@ function auditMetric(slug) {
         }
     } else {
         warning('10. Rank history', 'No rankHistoryNarrative', '10. Missing rankHistoryNarrative — add comparator states and summary');
+    }
+
+    // ---- Section 11: otherStateAvg cross-check ----
+    // Recompute otherStateAvg from state-data.js and compare to data.js
+    if (sd && sd.data && metric.otherStateAvg) {
+        const issues = [];
+        const dataObj = sd.data;
+        const firstKey = Object.keys(dataObj)[0];
+        const isYearKeyed = /^\d{4}(-\d{4})?$/.test(firstKey);
+
+        if (isYearKeyed) {
+            // Check latest year's average
+            const yearKeys = Object.keys(dataObj).sort().reverse();
+            const latestYearKey = yearKeys[0];
+            const latestStates = dataObj[latestYearKey];
+            if (latestStates) {
+                const hiKey = Object.keys(latestStates).find(k => k === 'Hawaii' || k === 'Hawai\u02BBi');
+                // Compute other-state average (50 states minus Hawaii, excluding DC/territories)
+                const otherVals = [];
+                for (const [state, val] of Object.entries(latestStates)) {
+                    if (state === hiKey) continue;
+                    if (NOT_A_STATE.has(state)) continue;
+                    if (val !== null && val !== undefined) otherVals.push(val);
+                }
+                if (otherVals.length > 0) {
+                    const computed = otherVals.reduce((s, v) => s + v, 0) / otherVals.length;
+                    // Find matching otherStateAvg entry
+                    const dashAvg = getLatestValue(metric.otherStateAvg, true);
+                    if (dashAvg) {
+                        const diff = Math.abs(computed - dashAvg.value);
+                        const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
+                        if (pctDiff > 0.02) {
+                            issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff) — which is correct?`);
+                        }
+                    }
+                }
+            }
+        }
+        // FIPS-keyed: similar logic but iterate differently
+        else {
+            const entries = Object.entries(dataObj);
+            const hiEntry = entries.find(([, e]) => e.name === 'Hawaii' || e.name === 'Hawai\u02BBi');
+            const hiFips = hiEntry ? hiEntry[0] : null;
+            // Get latest year from first non-Hawaii entry
+            const sampleEntry = entries.find(([k]) => k !== hiFips)?.[1];
+            if (sampleEntry) {
+                const yearKeys = Object.keys(sampleEntry).filter(k => /^\d{4}/.test(k)).sort().reverse();
+                const latestYear = yearKeys[0];
+                if (latestYear) {
+                    const otherVals = [];
+                    for (const [fips, stateObj] of entries) {
+                        if (fips === hiFips) continue;
+                        if (NOT_A_STATE.has(stateObj.name)) continue;
+                        const v = stateObj[latestYear];
+                        if (v !== null && v !== undefined) otherVals.push(v);
+                    }
+                    if (otherVals.length > 0) {
+                        const computed = otherVals.reduce((s, v) => s + v, 0) / otherVals.length;
+                        const dashAvg = getLatestValue(metric.otherStateAvg, true);
+                        if (dashAvg) {
+                            const diff = Math.abs(computed - dashAvg.value);
+                            const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
+                            if (pctDiff > 0.02) {
+                                issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff) — which is correct?`);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (issues.length === 0) ok('11. Avg cross-check', 'otherStateAvg matches recomputed average from state-data.js');
+        else warning('11. Avg cross-check', `${issues.length} issue(s)`, `11. Avg cross-check:\n   ${issues.join('\n   ')}`);
+    } else {
+        ok('11. Avg cross-check', 'N/A (no state-data or no otherStateAvg)');
+    }
+
+    // ---- Section 12: Five-year-change delta verification ----
+    {
+        const issues = [];
+        const hiLatest = getLatestValue(metric.hawaii, allowZero);
+        if (hiLatest && metric.hawaii) {
+            const latestYear = hiLatest.year;
+            const targetPrior = latestYear - 5;
+            // Mirror the FYC page's getVal() logic: look for targetYear, then +/-1, then +/-2
+            let priorEntry = null;
+            const entries = getSortedYears(metric.hawaii);
+            for (const offset of [0, -1, 1, -2, 2]) {
+                const match = entries.find(e => e.year === targetPrior + offset);
+                if (match) {
+                    const v = metric.hawaii[match.key];
+                    if (v !== null && v !== undefined && (allowZero || v !== 0)) {
+                        priorEntry = { year: match.year, key: match.key, value: v };
+                        break;
+                    }
+                }
+            }
+            if (priorEntry) {
+                const delta = hiLatest.value - priorEntry.value;
+                const isGood = metric.goodDirection === 'up' ? delta > 0 : delta < 0;
+                const direction = isGood ? 'improved' : (delta === 0 ? 'unchanged' : 'worsened');
+                ok('12. 5-year delta', `${priorEntry.year} to ${latestYear}: delta=${delta > 0 ? '+' : ''}${delta.toFixed(4)} (${direction})`);
+            } else {
+                issues.push(`Cannot compute 5-year delta: no data near ${targetPrior}`);
+                warning('12. 5-year delta', 'Cannot compute', `12. ${issues[0]}`);
+            }
+        } else {
+            ok('12. 5-year delta', 'N/A (no Hawaii data)');
+        }
+    }
+
+    // ---- Section 13: Card latest-value consistency ----
+    {
+        const issues = [];
+        const hiLatest = getLatestValue(metric.hawaii, allowZero);
+        const usLatest = getLatestValue(metric.otherStateAvg, allowZero);
+        if (hiLatest) {
+            // Check that the latest Hawaii value is what the card would show
+            // The card uses getLatestValue which skips nulls and (if not in ZERO_IS_VALID) zeros
+            const rawLatest = getSortedYears(metric.hawaii).reverse()[0];
+            if (rawLatest) {
+                const rawVal = metric.hawaii[rawLatest.key];
+                if (rawVal === 0 && !allowZero) {
+                    issues.push(`Latest year ${rawLatest.year} has value 0 but metric is not in ZERO_IS_VALID — card will show ${hiLatest.year} (${hiLatest.value}) instead`);
+                } else if (rawVal === null || rawVal === undefined) {
+                    issues.push(`Latest year ${rawLatest.year} has null/undefined value — card will show ${hiLatest.year} (${hiLatest.value}) instead`);
+                }
+            }
+            // Check that prior year exists for vs-prior-year comparison
+            const entries = getSortedYears(metric.hawaii).reverse();
+            let priorFound = false;
+            for (let i = 1; i < entries.length; i++) {
+                const v = metric.hawaii[entries[i].key];
+                if (v !== null && v !== undefined && (allowZero || v !== 0)) {
+                    priorFound = true;
+                    break;
+                }
+            }
+            if (!priorFound) issues.push('No prior-year value available for vs-prior comparison on card');
+        }
+        // Check Hawaii vs US comparison makes sense
+        if (hiLatest && usLatest) {
+            if (Math.abs(hiLatest.year - usLatest.year) > 2) {
+                issues.push(`Card compares Hawaii ${hiLatest.year} vs US avg ${usLatest.year} — ${Math.abs(hiLatest.year - usLatest.year)} year gap may mislead`);
+            }
+        }
+        if (issues.length === 0) ok('13. Card values', 'Latest values consistent for card display');
+        else warning('13. Card values', `${issues.length} issue(s)`, `13. Card values:\n   ${issues.join('\n   ')}`);
+    }
+
+    // ---- Section 14: Source data verification ----
+    if (DO_VERIFY_SOURCE) {
+        const issues = [];
+        // Look for source files in project root matching the metric
+        const sourcePatterns = {
+            road_poor_pct: { glob: 'fhwa_hm64_*.xls*', type: 'fhwa_hm64' },
+            // Add more metric-to-source mappings as source files become available
+        };
+        const pattern = sourcePatterns[slug];
+        if (pattern) {
+            // Look for source files in repo root, one level up, and CWD
+            const searchDirs = [BASE, path.join(BASE, '..'), process.cwd()];
+            const files = [];
+            const regex = new RegExp('^' + pattern.glob.replace(/\*/g, '.*') + '$');
+            for (const dir of searchDirs) {
+                try {
+                    for (const e of fs.readdirSync(dir)) {
+                        const full = path.join(dir, e);
+                        if (regex.test(e) && !files.some(f => path.basename(f) === e)) files.push(full);
+                    }
+                } catch { /* ignore */ }
+            }
+
+            if (files.length === 0) {
+                issues.push(`No source files found matching ${pattern.glob} — cannot verify data values against source`);
+            } else {
+                // For each year in data.js, check if a corresponding source file exists
+                const hiEntries = getSortedYears(metric.hawaii);
+                const sourceYears = files.map(f => {
+                    const m = f.match(/(\d{4})/);
+                    return m ? parseInt(m[1]) : null;
+                }).filter(Boolean);
+
+                const missingSourceYears = hiEntries
+                    .map(e => e.year)
+                    .filter(y => !sourceYears.includes(y));
+
+                if (missingSourceYears.length > 0) {
+                    issues.push(`Source files missing for years: ${missingSourceYears.join(', ')} — download from ${metric.sourceUrl} to enable full verification`);
+                }
+
+                const coveredYears = hiEntries.map(e => e.year).filter(y => sourceYears.includes(y));
+                issues.push(`Source files found for ${coveredYears.length}/${hiEntries.length} years. Run manual verification script to compare values against source spreadsheets.`);
+            }
+        } else {
+            issues.push(`No source file pattern configured for ${slug} — add mapping to sourcePatterns in audit-metric.js`);
+        }
+        if (issues.length === 0) ok('14. Source verify', 'All values match source files');
+        else warning('14. Source verify', `${issues.length} note(s)`, `14. Source verify:\n   ${issues.join('\n   ')}`);
+    } else {
+        results.push('[SKIP] 14. Source verify -- use --verify-source flag to check');
     }
 
     return { results, pass, warn, error, items, linkPromise };
