@@ -1301,7 +1301,7 @@ body {
 .county-subtitle {
     font-size: var(--text-md);
     font-weight: 600;
-    color: var(--hawaii-blue);
+    color: var(--text);
     margin-bottom: 0.75rem;
 }
 
