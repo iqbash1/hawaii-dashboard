@@ -561,8 +561,10 @@ const ChartUtils = {
                             generateLabels: function(chart) {
                                 const defaultLabels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
                                 return defaultLabels.map(label => {
+                                    label.pointStyle = 'line';
+                                    label.lineWidth = 2;
+                                    label.strokeStyle = label.fillStyle;
                                     if (label.text === 'State') {
-                                        label.pointStyle = 'line';
                                         label.lineDash = [6, 3];
                                         label.lineWidth = 2.5;
                                         label.strokeStyle = '#111111';
