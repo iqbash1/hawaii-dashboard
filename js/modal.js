@@ -701,6 +701,8 @@ const Modal = {
             onCompareFn,
             pendingCompare
         );
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', `${metricData.metric} rank history: Hawaiʻi ranking among 50 states over time`);
 
         // If a comparison was pre-set from URL, sync dropdown + URL
         if (pendingCompare) onCompareFn(pendingCompare);

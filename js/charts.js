@@ -354,6 +354,7 @@ const ChartUtils = {
                             font: { size: 11 },
                             color: '#888888',
                             maxRotation: 45,
+                            maxTicksLimit: 15,
                         },
                         border: {
                             display: false,
@@ -476,6 +477,14 @@ const ChartUtils = {
         const dataAvg = totalCount > 0 ? totalSum / totalCount : 0;
         const governorPlugin = this._buildGovernorPlugin(govBoxes, dataAvg);
 
+        // Distinct dash patterns per county for color-blind accessibility
+        const COUNTY_DASHES = {
+            'Honolulu': [],           // solid
+            'Hawai\u02BBi': [6, 3],   // short dash
+            'Maui':     [2, 3],       // dot
+            'Kauai':    [8, 3, 2, 3], // dash-dot
+        };
+
         const datasets = countyData.counties.map(county => {
             const color = countyColors[county];
             const values = labels.map(y => {
@@ -486,6 +495,7 @@ const ChartUtils = {
                 label: county,
                 data: values,
                 borderColor: color,
+                borderDash: COUNTY_DASHES[county] || [],
                 borderWidth: 1.5,
                 fill: false,
                 tension: 0.3,
@@ -566,6 +576,15 @@ const ChartUtils = {
                                         label.lineWidth = 2.5;
                                         label.strokeStyle = '#111111';
                                         label.fontColor = '#111111';
+                                    } else {
+                                        // Show dash pattern in legend to match county lines
+                                        const ds = chart.data.datasets[label.datasetIndex];
+                                        if (ds && ds.borderDash && ds.borderDash.length) {
+                                            label.pointStyle = 'line';
+                                            label.lineDash = ds.borderDash;
+                                            label.lineWidth = 2;
+                                            label.strokeStyle = ds.borderColor;
+                                        }
                                     }
                                     return label;
                                 });
@@ -600,6 +619,7 @@ const ChartUtils = {
                             color: '#888888',
                             maxRotation: 45,
                             minRotation: 0,
+                            maxTicksLimit: 15,
                         }
                     },
                     y: {
@@ -1314,7 +1334,8 @@ const ChartUtils = {
                             font: { size: 11 },
                             color: '#888888',
                             maxRotation: 45,
-                            autoSkip: false,
+                            autoSkip: true,
+                            maxTicksLimit: 15,
                         },
                     }
                 },
