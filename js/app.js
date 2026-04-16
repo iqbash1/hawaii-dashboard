@@ -200,7 +200,7 @@ const THRESHOLD_CONFIG = { // eslint-disable-line no-unused-vars
     unsheltered_homeless_rate: {
         defaultKey: 'base',
         variantKey: 'all',
-        urlSegment: 'all',
+        urlSegment: 'total',
         ariaLabel: 'Homeless count scope',
         buttons: [
             { key: 'base', label: 'Unsheltered', title: 'Unsheltered homeless only (sleeping outdoors, in vehicles, or places not meant for habitation)' },
