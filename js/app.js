@@ -137,14 +137,17 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     acgr: {
         intro: "Hawai\u02BBi's high school graduation rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this tracks on-time diplomas, not college or career readiness."
     },
     ba_or_higher_pct: {
         intro: "{{value}} of Hawai\u02BBi adults have a bachelor's degree or higher ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this measures credential share, not skill or workforce fit."
     },
     broadband_subscription_pct: {
         intro: "{{value}} of Hawai\u02BBi households have broadband access ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this measures access, not speed or connection quality."
     },
     renewables_share_gen: {
@@ -153,6 +156,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     net_domestic_migration_rate: {
         intro: "More people left Hawai\u02BBi than arrived: {{value}} per 10,000 residents in {{period}}",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this shows net movement, not why people are leaving or arriving."
     },
     road_poor_pct: {
@@ -172,6 +176,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     voter_participation_rate: {
         intro: "Only {{value}} of eligible Hawai\u02BBi voters cast a ballot in {{period}}",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this is based on eligible voters, not all adults."
     },
 };
@@ -376,9 +381,12 @@ const App = {
             return null;
         }
 
-        if (fraction <= 0 || !isFinite(fraction)) return null;
+        if (!isFinite(fraction) || fraction === 0) return null;
 
-        // Try ratio form only when the fraction is meaningful (>=5%).
+        // For signed values (e.g., net migration), use absolute value for counting.
+        const absFraction = Math.abs(fraction);
+
+        // Try ratio form only for positive values >=5% (signed rates use absolute).
         // For very small rates, ratio like "1 in 100" can be misleading
         // because absolute tolerance allows too-wide matches.
         if (fraction >= 0.05) {
@@ -401,8 +409,8 @@ const App = {
             }
         }
 
-        // Absolute form: count = fraction × denominator, rounded nicely
-        const count = fraction * denom;
+        // Absolute form: count = |fraction| × denominator, rounded nicely
+        const count = absFraction * denom;
         const formattedCount = App._formatScaleCount(count);
 
         // When countLabel is explicit (numerator unit differs from denominator unit),
