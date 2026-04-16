@@ -1317,7 +1317,14 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Census ACS",
     "sourceUrl": "https://data.census.gov/",
-    "whyItMatters": "When rent takes too much income, families have less for food, transportation, health care, and savings.",
+    "whyItMatters": "When rent takes too much income, families have less for food, transportation, health care, and savings. Hawaiʻi has about 185,000 renter households, so even a small shift in this rate moves thousands of families.",
+    "scale": {
+      "denominator": 185300,
+      "denominatorRounded": 185000,
+      "unit": "renter households",
+      "year": 2023,
+      "source": "Census ACS 2023 Table DP04"
+    },
     "howToRead": "Both lines should fall. At the 30%+ threshold (the default view), Hawaiʻi has ranked last or near-last for two decades and the gap with the national average has widened. The 50%+ view isolates the most severely burdened renters; the pattern is similar but values are roughly half.",
     "potentialDrivers": "Renters bear the sharpest edge of Hawaiʻi’s affordability crisis. Homeowners who bought before the price surge have locked-in costs; renters face each increase in real time. The state's <a href=\"https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/\" target=\"_blank\" rel=\"noopener\">2024 Housing Planning Study</a> found Hawaiʻi needs 64,490 more units by 2027 but only 13,471 were in the pipeline, while 35,884 existing units sit vacant as seasonal or vacation homes unavailable to local renters. Renter households earned $24.37/hr on average in 2023 against a two-bedroom housing wage of $41.83 per a <a href=\"https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf\" target=\"_blank\" rel=\"noopener\">DBEDT affordability analysis</a>, a supply shortfall and income gap that together keep Hawaiʻi ranked among the bottom five states at both the 30%+ and 50%+ thresholds.",
     "countyNarrative": "At the 30%+ threshold, cost burden is elevated in all four counties, with none below the national average of 49% as of 2023. Kauai saw the sharpest increase over the decade, rising from 43% in 2013 to 58% in 2023, and Maui from 47% to 55%, both likely tied to the conversion of long-term rentals to vacation units on the neighbor islands. Honolulu (57%) stayed roughly flat, while Hawaiʻi County was the only county to improve, falling from 60% in 2013 to 56% in 2023. At the 50%+ severe level, Honolulu and Hawaiʻi County carry the highest severe burden (29-30% in 2023), while Kauai's severe share (19%) is notably lower than its overall 30%+ burden would suggest.",
@@ -1536,7 +1543,14 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "HUD PIT Count",
     "sourceUrl": "https://www.huduser.gov/portal/datasets/ahar.html",
-    "whyItMatters": "Unsheltered homelessness means people sleeping on streets, in parks, and in cars, the most visible sign that housing has become unaffordable.",
+    "whyItMatters": "Unsheltered homelessness means people sleeping on streets, in parks, and in cars, the most visible sign that housing has become unaffordable. Against Hawaiʻi's 1.4 million residents, every 1 per 10K on this rate represents roughly 140 more people outside on a given night.",
+    "scale": {
+      "denominator": 1441387,
+      "denominatorRounded": 1440000,
+      "unit": "residents",
+      "year": 2023,
+      "source": "Census NST-EST2024 (2023 estimate)"
+    },
     "howToRead": "Hawaiʻi runs far above the other-state average at both the unsheltered and total (sheltered + unsheltered) thresholds. The total view is roughly 2-3 times the unsheltered figure because it includes people in emergency shelters and transitional housing. Even small declines represent hundreds of lives improved.",
     "potentialDrivers": "The safety net is intact; the problem is housing. Hawaiʻi ranks near the bottom in unsheltered homelessness despite strong performance in violent crime and health coverage. <a href=\"https://www.huduser.gov/portal/sites/default/files/pdf/2024-AHAR-Part-1.pdf\" target=\"_blank\" rel=\"noopener\">HUD's 2024 homeless assessment</a> attributed the rise to lack of affordable housing and inability to pay rent. A <a href=\"https://www.usich.gov/sites/default/files/document/Federal%20Resources%20for%20Addressing%20the%20Behavioral%20Health%20Needs%20of%20People%20Experiencing%20or%20at%20Risk%20of%20Homelessness.pdf\" target=\"_blank\" rel=\"noopener\">federal USICH/HHS guide</a> found housing scarcity and income loss are the primary causes, with behavioral health problems more a barrier to exiting than an initial cause. Hawaiʻi's <a href=\"https://homelessness.hawaii.gov/wp-content/uploads/2026/01/SOHHS-HICH-Act-309-Report-to-2026-Legislature-signed.pdf\" target=\"_blank\" rel=\"noopener\">2026 legislative report</a> added that insufficient shelter capacity leads to longer stays, and many people fall into homelessness from a single economic crisis.",
     "countyNarrative": "At the unsheltered level, Kauai has the highest rate by a wide margin (63 per 10K in 2024, more than double any other county), having tripled since 2015. Honolulu carries the largest absolute count due to population size, but its per-capita unsheltered rate (28.3) is lower than Kauai's. Hawaiʻi County's unsheltered rate has been volatile, peaking at 57 per 10K in 2016 before falling to 25 in 2024. Maui's unsheltered rate declined to 17 per 10K in 2024, the lowest of the four counties, despite the August 2023 wildfires because most wildfire-displaced residents were counted as sheltered. The total-homeless view shows a different pattern: Kauai's total rate (71 per 10K) remains the highest, but the gap with other counties narrows because shelter capacity is more evenly distributed.",
@@ -1643,7 +1657,14 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FHWA Highway Statistics, Table HM-64",
     "sourceUrl": "https://www.fhwa.dot.gov/policyinformation/statistics.cfm",
-    "whyItMatters": "Road quality affects commute time, vehicle wear, safety, and getting around every day.",
+    "whyItMatters": "Road quality affects commute time, vehicle wear, safety, and getting around every day. Hawaiʻi has about 4,500 miles of rated public roads, so each percentage point on this rate covers roughly 45 miles of pavement.",
+    "scale": {
+      "denominator": 4522,
+      "denominatorRounded": 4500,
+      "unit": "miles of public roads",
+      "year": 2023,
+      "source": "FHWA Highway Statistics 2023 Table HM-20"
+    },
     "howToRead": "Hawaiʻi stays far above the other-state average at both thresholds. The default view shows roads rated poor only; the substandard view adds acceptable/mediocre roads, roughly tripling the share. The gap has narrowed since 2013 but remains large.",
     "potentialDrivers": "Road quality ranks among the worst in the nation while broadband sits above average, a sign that digital infrastructure grew faster than physical infrastructure could be maintained. <a href=\"https://hidot.hawaii.gov/highways/files/2024/05/HDOT_TAMP_Final_May_2024.pdf\">HDOT's 2024 asset management plan</a> found that 15 percent of the system carries 47 percent of daily traffic, island geography leaves few alternate routes, and reconstruction is cost-prohibitive because materials and labor are limited. Fuel efficiency gains have eroded gas-tax revenues, and in 2025 the state launched a <a href=\"https://hidot.hawaii.gov/wp-content/uploads/2025/10/FINAL-ESWRP-2025-10-15.pdf\">road usage charge program</a> to offset that shortfall. <a href=\"https://climate.hawaii.gov/hi-facts/sea-level-rise/\">The state climate portal</a> notes flooding and erosion are already damaging roads, adding climate-driven deterioration on top of routine wear. Measurement caveat: <a href=\"https://www.fhwa.dot.gov/policyinformation/statistics/2023/hm47.cfm\">FHWA notes</a> this metric is roughness-based (IRI) and does not capture all pavement distress or local roads outside the federal system.",
     "countyNarrative": "Oahu carries the heaviest traffic load and faces the sharpest wear on its core corridors: HDOT data show that a small share of road miles on the island absorb the majority of daily vehicle trips, creating concentrated pavement stress that outpaces maintenance budgets. The neighbor islands face different but equally difficult conditions: Hawaiʻi County has extensive rural road networks exposed to volcanic soil, heavy rainfall, and lava-zone geology that accelerates deterioration. Maui County roads on the north shore and Hana Highway corridor face persistent erosion and flooding damage from coastal storms. Kauai's narrow, mountainous roads on the north shore have experienced repeated closures and rebuilds due to landslides and wave damage, making per-mile repair costs among the highest in the state.",
@@ -2086,7 +2107,14 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "USDA ERS",
     "sourceUrl": "https://www.ers.usda.gov/topics/food-nutrition-assistance/food-security-in-the-us",
-    "whyItMatters": "Food insecurity shows whether families can reliably afford enough to eat.",
+    "whyItMatters": "Food insecurity shows whether families can reliably afford enough to eat. Hawaiʻi has about 493,000 households, so a one-point shift in this rate means roughly 5,000 more or fewer families unsure they can put meals on the table.",
+    "scale": {
+      "denominator": 493151,
+      "denominatorRounded": 493000,
+      "unit": "households",
+      "year": 2023,
+      "source": "Census ACS 2023 Table DP04"
+    },
     "howToRead": "This uses 3-year rolling averages, so the line lags current conditions. The default view shows all food-insecure households; the severe view isolates very low food security, where households actually reduced food intake. Focus on whether the recent uptick is a sustained reversal or a temporary response to grocery price inflation.",
     "potentialDrivers": "Hawaiʻi imports over 80% of its food and has the highest cost of living, yet food insecurity remains well below what cost of living alone would predict. Strong safety-net programs and community food networks hold the line. The recent worsening is most likely an affordability squeeze: housing and groceries consume a disproportionate share of household budgets. <a href=\"https://files.hawaii.gov/dbedt/annuals/2025/2025-read-self-sufficiency.pdf\">DBEDT reported in 2025</a> that a single adult in Honolulu needed $42,698 a year just to meet basic needs, with housing the largest expense and food a major secondary one. <a href=\"https://www.fns.usda.gov/sites/default/files/resource-files/Statewide-Thrifty-Food-Plan-CostEstimate-for-Hawaii.pdf\">USDA found in December 2024</a> that Hawaiʻi's standard at-home food basket cost 55.95 percent more than on the mainland, a gap driven by near-total dependence on <a href=\"https://dab.hawaii.gov/add/files/2026/02/Hawaiis-Agricultural-and-Food-Imports-and-Exports_Feb.2026_final2.pdf\">imported proteins and staple foods</a>. <a href=\"https://hawaiifoodbank.org/wp-content/uploads/2026/02/HawaiiFoodbank_FoodInsecurityReport_2024-25.pdf\">Hawaii Foodbank's 2024-25 report</a> concluded that structural solutions are needed because living costs remain persistently out of line with many households' incomes.",
     "countyNarrative": "Maui County has seen the sharpest recent increase in food hardship, driven by the economic displacement and job losses following the August 2023 wildfires. Hawaiʻi County consistently shows higher food insecurity than Honolulu, reflecting lower median incomes, a higher share of agricultural and lower-wage work, and greater distance from food distribution networks. Honolulu County, with more retail competition and higher average wages, tends to post the state's lowest food insecurity rate. Kauai County's small, high-cost market and limited food retail options leave lower-income households particularly exposed to imported food price swings.",

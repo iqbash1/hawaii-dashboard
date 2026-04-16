@@ -1218,6 +1218,12 @@ const Modal = {
             .replace('{{value}}', fmtValue)
             .replace('{{period}}', period);
 
+        // Append resident-scale translation if metric has scale config
+        const scaleText = App.computeScaleTranslation(slug, latestHi.value);
+        if (scaleText && tpl.scaleTemplate) {
+            intro += tpl.scaleTemplate.replace('{{scale}}', scaleText);
+        }
+
         // Above / below / at the Other State Average
         const hiVal  = isDecimal ? latestHi.value * 100  : latestHi.value;
         const avgVal = isDecimal ? latestAvg.value * 100 : latestAvg.value;

@@ -55,6 +55,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     renter_cost_burden_pct: {
         intro: "{{value}} of Hawai\u02BBi renters were housing-cost burdened in {{period}}",
+        scaleTemplate: ", or {{scale}}",
         caveat: "the 30% threshold is a convention, not a hard affordability cliff.",
         thresholdVariants: {
             "50": {
@@ -73,6 +74,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     unsheltered_homeless_rate: {
         intro: "Hawai\u02BBi's unsheltered homeless rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this is based on a one-night count and likely understates the true number.",
         thresholdVariants: {
             "all": {
@@ -83,6 +85,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     food_insecurity_rate: {
         intro: "Hawai\u02BBi's food insecurity rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this is a 3-year rolling average, so it lags current conditions.",
         thresholdVariants: {
             "verylow": {
@@ -145,6 +148,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     road_poor_pct: {
         intro: "{{value}} of Hawai\u02BBi roads were rated in poor condition in {{period}}",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this is not a complete inventory of every road, especially local roads.",
         thresholdVariants: {
             "notgood": {
@@ -321,6 +325,117 @@ const App = {
         const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
         if (!th || !cd.thresholdVariants || !cd.thresholdVariants[th]) return cd;
         return { ...cd, ...cd.thresholdVariants[th] };
+    },
+
+    // ----------------------------------------------------------------
+    // Resident-Scale Translation
+    // ----------------------------------------------------------------
+    /**
+     * Translate a metric value into a human-scale phrase like "1 in 4 renter
+     * households" or "about 94,000 renter households." Prefers ratio form when
+     * the value rounds cleanly to 1/N where N is in a small denominator list.
+     * Returns null if the metric has no scale config or value is missing.
+     *
+     * @param {string} slug - Metric ID (uses active variant's value automatically)
+     * @param {number} value - Raw value from the series (decimal 0.506 OR 28.2 per-10K)
+     * @returns {string|null} Formatted translation or null
+     */
+    computeScaleTranslation(slug, value) {
+        if (value === null || value === undefined) return null;
+        const base = DASHBOARD_DATA[slug];
+        if (!base || !base.scale) return null;
+        const scale = base.scale;
+        const denom = scale.denominator;
+        if (!denom || denom <= 0) return null;
+
+        // Convert rate to a fraction (share of denominator), based on metric unit
+        const unit = base.unit || '';
+        const isDec = ChartUtils.isDecimalPctMetric(base);
+        let fraction;
+        if (isDec) {
+            fraction = value;
+        } else if (unit === '%') {
+            fraction = value / 100;
+        } else if (unit === 'per 100K') {
+            fraction = value / 100000;
+        } else if (unit === 'per 10K') {
+            fraction = value / 10000;
+        } else if (unit === 'per 1,000') {
+            fraction = value / 1000;
+        } else {
+            // Not a rate — skip (e.g. $ amounts, scale scores, ratios)
+            return null;
+        }
+
+        if (fraction <= 0 || !isFinite(fraction)) return null;
+
+        // Try ratio form only when the fraction is meaningful (>=5%).
+        // For very small rates, ratio like "1 in 100" can be misleading
+        // because absolute tolerance allows too-wide matches.
+        if (fraction >= 0.05) {
+            const ratioCandidates = [2, 3, 4, 5, 6, 10, 20, 25, 50];
+            let bestN = null;
+            let bestDiff = Infinity;
+            for (const N of ratioCandidates) {
+                const candidate = 1 / N;
+                const relDiff = Math.abs(fraction - candidate) / candidate;
+                if (relDiff < bestDiff) {
+                    bestDiff = relDiff;
+                    bestN = N;
+                }
+            }
+            // Use ratio only if the actual value is within 10% of the clean fraction (relative).
+            if (bestN !== null && bestDiff <= 0.10) {
+                return `about 1 in ${bestN} ${scale.unit}`;
+            }
+        }
+
+        // Absolute form: count = fraction × denominator, rounded nicely
+        const count = fraction * denom;
+        const formattedCount = App._formatScaleCount(count);
+        // Use the pre-rounded denominator value directly (with plain formatting
+        // if numeric, or as-is if a string like "1.4 million").
+        const denomRounded = scale.denominatorRounded != null
+            ? App._formatDenominator(scale.denominatorRounded)
+            : null;
+        if (denomRounded) {
+            return `about ${formattedCount} of Hawai\u02BBi's ${denomRounded} ${scale.unit}`;
+        }
+        return `about ${formattedCount} ${scale.unit}`;
+    },
+
+    /** Format a pre-rounded denominator: preserve the rounded value, add commas or "million" suffix. */
+    _formatDenominator(n) {
+        if (typeof n === 'string') return n;
+        if (n >= 1000000) {
+            const millions = n / 1000000;
+            const fixed = millions >= 10 ? millions.toFixed(0) : millions.toFixed(1);
+            return fixed + ' million';
+        }
+        return n.toLocaleString('en-US');
+    },
+
+    /** Format a count with appropriate rounding and commas/abbreviations. */
+    _formatScaleCount(n, isDenominator) {
+        if (n >= 1000000) {
+            const millions = n / 1000000;
+            const fixed = millions >= 10 ? millions.toFixed(0) : millions.toFixed(1);
+            return fixed + ' million';
+        }
+        // Round to 2 significant figures for readability
+        let rounded;
+        if (n >= 100000) {
+            rounded = Math.round(n / 10000) * 10000;
+        } else if (n >= 10000) {
+            rounded = Math.round(n / 1000) * 1000;
+        } else if (n >= 1000) {
+            rounded = Math.round(n / 100) * 100;
+        } else if (n >= 100) {
+            rounded = Math.round(n / 10) * 10;
+        } else {
+            rounded = Math.round(n);
+        }
+        return rounded.toLocaleString('en-US');
     },
 
     /**
