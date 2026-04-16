@@ -67,6 +67,9 @@ const Router = {
             slug = parts[0];
             view = parts[1] || '';
             if (view === 'rank-history' && parts[2]) compareSlug = parts[2];
+            // Threshold from ?_th= query param (used by variant OG redirect pages)
+            const thQuery = new URLSearchParams(window.location.search).get('_th');
+            if (thQuery) variantSegment = thQuery;
         }
 
         if (slug && !DASHBOARD_DATA[slug]) {

@@ -9,10 +9,23 @@ For each metric, creates:
   - /r/{slug}/index.html                      (rankings redirect page)
   - /rh/{slug}/{state-slug}/index.html        (rank-history comparison redirect pages)
 
+For metrics with a thresholdVariants block in DASHBOARD_DATA (e.g.
+renter_cost_burden_pct severe, food_insecurity_rate verylow,
+road_poor_pct notgood, unsheltered_homeless_rate total), the script
+ALSO emits a parallel set of variant pages and images at
+/t/{slug}/{urlSegment}/, /r/{slug}/{urlSegment}/, etc., with OG meta
+tags that reflect the variant's data. The variant redirect pages use
+the same hash-based redirect as base pages (hash routing does not
+know about thresholds), so humans land on the base view; bots still
+get the variant-specific OG card when they crawl the variant URL.
+
 Run from the repo root:
-  python3 scripts/generate-og-pages.py
+  python3 scripts/generate-og-pages.py               # all metrics
+  python3 scripts/generate-og-pages.py --slug SLUG   # single metric (useful for testing)
 """
 
+import argparse
+import copy
 import json
 import math
 import os
@@ -127,11 +140,34 @@ def extract_data():
         }
     }
 
+    // Extract THRESHOLD_CONFIG by evaluating just that constant. We replace
+    // `const THRESHOLD_CONFIG` with `global.THRESHOLD_CONFIG` and slice from
+    // that point through the matching closing brace+semicolon so we don't
+    // have to eval the whole app.js (which depends on the DOM).
+    let thresholdConfig = {};
+    const thStart = appJS.indexOf('const THRESHOLD_CONFIG');
+    if (thStart !== -1) {
+        // Find the semicolon that terminates the declaration, counting braces.
+        let depth = 0, end = -1, sawOpen = false;
+        for (let i = thStart; i < appJS.length; i++) {
+            const c = appJS[i];
+            if (c === '{') { depth++; sawOpen = true; }
+            else if (c === '}') { depth--; }
+            else if (c === ';' && sawOpen && depth === 0) { end = i + 1; break; }
+        }
+        if (end !== -1) {
+            const decl = appJS.slice(thStart, end).replace(/^const\s+/, 'global.');
+            try { eval(decl); thresholdConfig = global.THRESHOLD_CONFIG || {}; }
+            catch (e) { /* leave empty */ }
+        }
+    }
+
     console.log(JSON.stringify({
         dashboard: DASHBOARD_DATA,
         state: STATE_DATA,
         county: COUNTY_DATA,
-        areaMap: areaMap
+        areaMap: areaMap,
+        thresholdConfig: thresholdConfig
     }));
     """
     result = subprocess.run(
@@ -244,6 +280,57 @@ def get_latest(series):
         if v is not None and v != 0:
             return year, v
     return None, None
+
+
+# ── Threshold-Variant Builders ────────────────────────────────────
+def build_variant_metric(metric, variant_key):
+    """Return a shallow copy of `metric` with thresholdVariants[variant_key]
+    merged in (matching the JS pattern `{ ...tpl, ...tpl.thresholdVariants[th] }`).
+
+    Returns None if the variant does not exist.
+    """
+    variants = metric.get('thresholdVariants') if metric else None
+    if not variants or variant_key not in variants:
+        return None
+    merged = dict(metric)
+    merged.update(variants[variant_key])
+    return merged
+
+
+def build_variant_county(county_entry, variant_key):
+    """Return a county-data dict for the variant, preserving `counties` list
+    and `countyNote` from the base entry but replacing `data` with the variant's.
+
+    Returns None if the variant has no data for this county entry.
+    """
+    if not county_entry:
+        return None
+    variants = county_entry.get('thresholdVariants')
+    if not variants or variant_key not in variants:
+        return None
+    var = variants[variant_key]
+    if not var.get('data'):
+        return None
+    merged = dict(county_entry)
+    merged['data'] = var['data']
+    return merged
+
+
+def build_variant_state(state_entry, variant_key):
+    """Return a state-data dict for the variant, with `data` replaced by the
+    variant's data block. Returns None if unavailable.
+    """
+    if not state_entry:
+        return None
+    variants = state_entry.get('thresholdVariants')
+    if not variants or variant_key not in variants:
+        return None
+    var = variants[variant_key]
+    if not var.get('data'):
+        return None
+    merged = dict(state_entry)
+    merged['data'] = var['data']
+    return merged
 
 
 # ── Detail OG Image ──────────────────────────────────────────────
@@ -593,9 +680,19 @@ def generate_county_og_image(slug, metric, area, county_data, output_path):
 
 # ── Redirect HTML Generation ─────────────────────────────────────
 def generate_redirect_html(slug, metric, area, rankings, output_path,
-                           view='detail', county_data=None, rank_history=None):
+                           view='detail', county_data=None, rank_history=None,
+                           variant_segment=None, image_suffix=None):
     """Generate a redirect page with metric-specific OG tags.
     view: 'detail', 'rankings', 'county', or 'rank-history'
+
+    variant_segment: optional url path segment (e.g. 'severe') for threshold
+        variants. When set, the page_url includes it (e.g. /t/slug/severe/)
+        and the title/description reflect the variant's data (passed in via
+        `metric`/`rankings`/`rank_history`/`county_data` which the caller is
+        expected to build from `build_variant_*` helpers).
+    image_suffix: optional string inserted into the OG image filename before
+        the view suffix, e.g. '_severe' -> {slug}_severe_rankings.png.
+        Defaults to empty (base image).
     """
     metric_name = metric.get('metric', slug)
     unit = metric.get('unit', '')
@@ -605,10 +702,14 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
     latest_year, latest_val = get_latest(hawaii)
     formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
 
+    # Path suffix for variant pages (with trailing slash), or '' for base.
+    path_suffix = f"{variant_segment}/" if variant_segment else ''
+    img_suffix = image_suffix or ''
+
     if view == 'rank-history':
         title = f"{metric_name} - Rank History | Hawai\u02BBi Dashboard"
-        image_url = f"{SITE_URL}/assets/og/{slug}_rank_history.png"
-        page_url = f"{SITE_URL}/rh/{slug}/"
+        image_url = f"{SITE_URL}/assets/og/{slug}{img_suffix}_rank_history.png"
+        page_url = f"{SITE_URL}/rh/{slug}/{path_suffix}"
         redirect_hash = f"#{slug}/rank-history"
         if rank_history and rank_history.get('hi_rank_latest'):
             hi_rank = rank_history['hi_rank_latest']
@@ -620,8 +721,8 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
             description = f"Rank history for {metric_name} - Hawai\u02BBi Dashboard."
     elif view == 'rankings':
         title = f"{metric_name} Rankings | Hawai\u02BBi Dashboard"
-        image_url = f"{SITE_URL}/assets/og/{slug}_rankings.png"
-        page_url = f"{SITE_URL}/r/{slug}/"
+        image_url = f"{SITE_URL}/assets/og/{slug}{img_suffix}_rankings.png"
+        page_url = f"{SITE_URL}/r/{slug}/{path_suffix}"
         redirect_hash = f"#{slug}/rankings"
         parts = []
         if rankings and rankings['hawaiiRank'] > 0:
@@ -634,14 +735,14 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
         if len(counties) > 3:
             county_list += f", and {counties[-1]}"
         title = f"{metric_name} by County | Hawai\u02BBi Dashboard"
-        image_url = f"{SITE_URL}/assets/og/{slug}_county.png"
-        page_url = f"{SITE_URL}/c/{slug}/"
+        image_url = f"{SITE_URL}/assets/og/{slug}{img_suffix}_county.png"
+        page_url = f"{SITE_URL}/c/{slug}/{path_suffix}"
         redirect_hash = f"#{slug}/county"
         description = f"Compare {metric_name.lower()} across {county_list} counties."
     else:
         title = f"{metric_name} | Hawai\u02BBi Dashboard"
-        image_url = f"{SITE_URL}/assets/og/{slug}.png"
-        page_url = f"{SITE_URL}/t/{slug}/"
+        image_url = f"{SITE_URL}/assets/og/{slug}{img_suffix}.png"
+        page_url = f"{SITE_URL}/t/{slug}/{path_suffix}"
         redirect_hash = f"#{slug}"
         parts = [f"{area}: Hawai\u02BBi is at {formatted}"]
         if latest_year:
@@ -649,6 +750,11 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
         if rankings and rankings['hawaiiRank'] > 0:
             parts.append(f"Ranked #{rankings['hawaiiRank']} of {rankings['total']} states")
         description = '. '.join(parts) + '.'
+
+    # For variant pages, include threshold in query string so the SPA activates it on load.
+    redirect_query = f"?_th={variant_segment}" if variant_segment else ''
+    redirect_target = f"/{redirect_query}{redirect_hash}"
+    refresh_target = f"{SITE_URL}/{redirect_query}{redirect_hash}"
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -669,11 +775,11 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
   <meta name="twitter:image" content="{image_url}">
   <meta name="description" content="{description}">
   <link rel="canonical" href="{page_url}">
-  <script>window.location.replace('/{redirect_hash}');</script>
-  <meta http-equiv="refresh" content="0;url={SITE_URL}/{redirect_hash}">
+  <script>window.location.replace('{redirect_target}');</script>
+  <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
 <body>
-  <p>Redirecting to <a href="{SITE_URL}/{redirect_hash}">Hawai\u02BBi Dashboard &mdash; {metric_name}</a>&hellip;</p>
+  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name}</a>&hellip;</p>
 </body>
 </html>"""
 
@@ -1005,11 +1111,16 @@ def generate_rh_compare_og_image(slug, metric, area, rank_history, compare_state
 
 # ── Rank History Comparison Redirect Pages ───────────────────────
 def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, output_path,
-                                  image_url=None):
-    """Generate /rh/{slug}/{state-slug}/index.html for a Hawaiʻi-vs-state comparison."""
+                                  image_url=None, variant_segment=None):
+    """Generate /rh/{slug}/{state-slug}/index.html for a Hawaiʻi-vs-state comparison.
+
+    variant_segment: optional url path segment (e.g. 'severe') for threshold
+        variants. When set, the page_url becomes /rh/{slug}/{state-slug}/{variant}/.
+    """
     metric_name = metric.get('metric', slug)
     state_slug = state_to_slug(compare_state)
-    page_url = f"{SITE_URL}/rh/{slug}/{state_slug}/"
+    path_suffix = f"{variant_segment}/" if variant_segment else ''
+    page_url = f"{SITE_URL}/rh/{slug}/{state_slug}/{path_suffix}"
     redirect_hash = f"#{slug}/rank-history/{state_slug}"
     if image_url is None:
         image_url = f"{SITE_URL}/assets/og/{slug}_rank_history.png"
@@ -1026,6 +1137,10 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
         )
     else:
         description = f"Rank history for {metric_name}: Hawai\u02BBi compared with {compare_state}."
+
+    redirect_query = f"?_th={variant_segment}" if variant_segment else ''
+    redirect_target = f"/{redirect_query}{redirect_hash}"
+    refresh_target = f"{SITE_URL}/{redirect_query}{redirect_hash}"
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1046,11 +1161,11 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
   <meta name="twitter:image" content="{image_url}">
   <meta name="description" content="{description}">
   <link rel="canonical" href="{page_url}">
-  <script>window.location.replace('/{redirect_hash}');</script>
-  <meta http-equiv="refresh" content="0;url={SITE_URL}/{redirect_hash}">
+  <script>window.location.replace('{redirect_target}');</script>
+  <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
 <body>
-  <p>Redirecting to <a href="{SITE_URL}/{redirect_hash}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>
+  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>
 </body>
 </html>"""
 
@@ -1059,76 +1174,219 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
         f.write(html)
 
 
+# ── Generation for a single slug (base + any variants) ────────────
+def generate_for_slug(slug, metric, area, state_data, county_data_all,
+                      dashboard, threshold_config):
+    """Emit all OG images + redirect pages for one metric. If the metric has
+    a thresholdVariants block AND a THRESHOLD_CONFIG entry, also emit a
+    parallel set of pages/images under the variant's urlSegment.
+
+    Returns a one-line status string for logging.
+    """
+    rankings = get_rankings(slug, dashboard, state_data)
+
+    # ── Base (default) pages + images ──
+    generate_og_image(slug, metric, area, rankings,
+                      os.path.join(ASSETS_OG, f'{slug}.png'))
+    generate_redirect_html(slug, metric, area, rankings,
+                           os.path.join(REDIRECT_DIR_T, slug, 'index.html'),
+                           view='detail')
+
+    if rankings and rankings['hawaiiRank'] > 0:
+        generate_rankings_og_image(slug, metric, area, rankings,
+                                   os.path.join(ASSETS_OG, f'{slug}_rankings.png'))
+        generate_redirect_html(slug, metric, area, rankings,
+                               os.path.join(REDIRECT_DIR_R, slug, 'index.html'),
+                               view='rankings')
+
+    cd = county_data_all.get(slug)
+    if cd:
+        generate_county_og_image(slug, metric, area, cd,
+                                 os.path.join(ASSETS_OG, f'{slug}_county.png'))
+        generate_redirect_html(slug, metric, area, rankings,
+                               os.path.join(REDIRECT_DIR_C, slug, 'index.html'),
+                               view='county', county_data=cd)
+
+    rh = compute_rank_history(slug, dashboard, state_data)
+    if rh:
+        generate_rank_history_og_image(slug, metric, area, rh,
+                                       os.path.join(ASSETS_OG, f'{slug}_rank_history.png'))
+        generate_redirect_html(slug, metric, area, rankings,
+                               os.path.join(REDIRECT_DIR_RH, slug, 'index.html'),
+                               view='rank-history', rank_history=rh)
+        for state in COMPARISON_STATES:
+            state_slug = state_to_slug(state)
+            img_filename = f'{slug}_rh_{state_slug}.png'
+            img_path = os.path.join(ASSETS_OG, img_filename)
+            img_url = f"{SITE_URL}/assets/og/{img_filename}"
+            generate_rh_compare_og_image(slug, metric, area, rh, state, img_path)
+            generate_rh_compare_redirect(
+                slug, metric, state, rh,
+                os.path.join(REDIRECT_DIR_RH, slug, state_slug, 'index.html'),
+                image_url=img_url
+            )
+
+    # ── Variant pages + images (if any) ──
+    variant_note = ''
+    th_config = (threshold_config or {}).get(slug)
+    if th_config and metric.get('thresholdVariants'):
+        variant_key = th_config.get('variantKey')
+        url_segment = th_config.get('urlSegment')
+        if variant_key and url_segment:
+            variant_note = _generate_variant_for_slug(
+                slug, metric, area, variant_key, url_segment,
+                state_data, county_data_all, dashboard
+            )
+
+    rank_str = (f"#{rankings['hawaiiRank']}/{rankings['total']}"
+                if rankings and rankings['hawaiiRank'] > 0 else "no rank")
+    county_str = " +county" if cd else ""
+    rh_str = (f" +rh({len(rh['years'])}yr, {len(COMPARISON_STATES)} compare pages)"
+              if rh else "")
+    return f"  {slug}: {rank_str}{county_str}{rh_str}{variant_note}"
+
+
+def _generate_variant_for_slug(slug, base_metric, area, variant_key, url_segment,
+                               state_data, county_data_all, dashboard):
+    """Emit variant-flavored pages at /t/{slug}/{urlSegment}/ etc.
+
+    Redirect pages reuse the same hash-based redirect as the base pages so
+    humans land on the base view (hash routing does not know about
+    thresholds). The OG meta tags and images ARE variant-specific, so the
+    link preview a social crawler shows reflects the variant's values.
+
+    Returns a short note to append to the per-metric log line.
+    """
+    img_suffix = f'_{url_segment}'
+
+    # Build variant-flavored copies of metric/state/county data.
+    variant_metric = build_variant_metric(base_metric, variant_key)
+    if not variant_metric:
+        return ''
+
+    variant_state_entry = build_variant_state(state_data.get(slug), variant_key)
+    # Stitch a state_data-like dict so get_rankings/compute_rank_history
+    # can use the variant data transparently.
+    variant_state_data = dict(state_data) if variant_state_entry else state_data
+    if variant_state_entry:
+        variant_state_data[slug] = variant_state_entry
+
+    # Stitch a dashboard-like dict pointing slug -> variant_metric
+    variant_dashboard = dict(dashboard)
+    variant_dashboard[slug] = variant_metric
+
+    variant_rankings = (get_rankings(slug, variant_dashboard, variant_state_data)
+                        if variant_state_entry else None)
+
+    # Trend
+    generate_og_image(slug, variant_metric, area, variant_rankings,
+                      os.path.join(ASSETS_OG, f'{slug}{img_suffix}.png'))
+    generate_redirect_html(
+        slug, variant_metric, area, variant_rankings,
+        os.path.join(REDIRECT_DIR_T, slug, url_segment, 'index.html'),
+        view='detail',
+        variant_segment=url_segment, image_suffix=img_suffix,
+    )
+
+    # Rankings (only if we have variant state data and HI is in it)
+    if variant_rankings and variant_rankings['hawaiiRank'] > 0:
+        generate_rankings_og_image(
+            slug, variant_metric, area, variant_rankings,
+            os.path.join(ASSETS_OG, f'{slug}{img_suffix}_rankings.png')
+        )
+        generate_redirect_html(
+            slug, variant_metric, area, variant_rankings,
+            os.path.join(REDIRECT_DIR_R, slug, url_segment, 'index.html'),
+            view='rankings',
+            variant_segment=url_segment, image_suffix=img_suffix,
+        )
+
+    # County (only if variant has county data)
+    variant_cd = build_variant_county(county_data_all.get(slug), variant_key)
+    if variant_cd:
+        generate_county_og_image(
+            slug, variant_metric, area, variant_cd,
+            os.path.join(ASSETS_OG, f'{slug}{img_suffix}_county.png')
+        )
+        generate_redirect_html(
+            slug, variant_metric, area, variant_rankings,
+            os.path.join(REDIRECT_DIR_C, slug, url_segment, 'index.html'),
+            view='county', county_data=variant_cd,
+            variant_segment=url_segment, image_suffix=img_suffix,
+        )
+
+    # Rank history (only if variant state data produces a valid rank history)
+    variant_rh = (compute_rank_history(slug, variant_dashboard, variant_state_data)
+                  if variant_state_entry else None)
+    if variant_rh:
+        generate_rank_history_og_image(
+            slug, variant_metric, area, variant_rh,
+            os.path.join(ASSETS_OG, f'{slug}{img_suffix}_rank_history.png')
+        )
+        generate_redirect_html(
+            slug, variant_metric, area, variant_rankings,
+            os.path.join(REDIRECT_DIR_RH, slug, url_segment, 'index.html'),
+            view='rank-history', rank_history=variant_rh,
+            variant_segment=url_segment, image_suffix=img_suffix,
+        )
+        for state in COMPARISON_STATES:
+            state_slug = state_to_slug(state)
+            img_filename = f'{slug}{img_suffix}_rh_{state_slug}.png'
+            img_path = os.path.join(ASSETS_OG, img_filename)
+            img_url = f"{SITE_URL}/assets/og/{img_filename}"
+            generate_rh_compare_og_image(
+                slug, variant_metric, area, variant_rh, state, img_path
+            )
+            generate_rh_compare_redirect(
+                slug, variant_metric, state, variant_rh,
+                os.path.join(REDIRECT_DIR_RH, slug, state_slug, url_segment, 'index.html'),
+                image_url=img_url,
+                variant_segment=url_segment,
+            )
+
+    pieces = ['trend']
+    if variant_rankings and variant_rankings['hawaiiRank'] > 0:
+        pieces.append('rankings')
+    if variant_cd:
+        pieces.append('county')
+    if variant_rh:
+        pieces.append(f"rh(+{len(COMPARISON_STATES)} compare)")
+    return f"  | variant '{url_segment}': " + ', '.join(pieces)
+
+
 # ── Main ──────────────────────────────────────────────────────────
 def main():
+    parser = argparse.ArgumentParser(description="Generate OG images and redirect pages.")
+    parser.add_argument('--slug', default=None,
+                        help="Only generate for this single metric slug (useful for testing).")
+    args = parser.parse_args()
+
     print("Extracting data from JS files...")
     raw = extract_data()
     dashboard = raw['dashboard']
     state_data = raw['state']
-    county_data = raw.get('county', {})
+    county_data_all = raw.get('county', {})
     area_map = raw['areaMap']
+    threshold_config = raw.get('thresholdConfig', {})
 
-    slugs = list(area_map.keys())
-    print(f"Found {len(slugs)} metrics\n")
+    if args.slug:
+        slugs = [args.slug]
+        print(f"Single-slug mode: {args.slug}\n")
+    else:
+        slugs = list(area_map.keys())
+        print(f"Found {len(slugs)} metrics\n")
 
     for slug in slugs:
         metric = dashboard.get(slug)
         if not metric:
             print(f"  SKIP {slug} (not in DASHBOARD_DATA)")
             continue
-
         area = area_map.get(slug, metric.get('area', ''))
-        rankings = get_rankings(slug, dashboard, state_data)
-
-        # Trend OG image + redirect page -> /t/{slug}/
-        generate_og_image(slug, metric, area, rankings,
-                          os.path.join(ASSETS_OG, f'{slug}.png'))
-        generate_redirect_html(slug, metric, area, rankings,
-                               os.path.join(REDIRECT_DIR_T, slug, 'index.html'),
-                               view='detail')
-
-        # Rankings OG image + redirect page -> /r/{slug}/
-        if rankings and rankings['hawaiiRank'] > 0:
-            generate_rankings_og_image(slug, metric, area, rankings,
-                                       os.path.join(ASSETS_OG, f'{slug}_rankings.png'))
-            generate_redirect_html(slug, metric, area, rankings,
-                                   os.path.join(REDIRECT_DIR_R, slug, 'index.html'),
-                                   view='rankings')
-
-        # County OG image + redirect page -> /c/{slug}/
-        cd = county_data.get(slug)
-        if cd:
-            generate_county_og_image(slug, metric, area, cd,
-                                     os.path.join(ASSETS_OG, f'{slug}_county.png'))
-            generate_redirect_html(slug, metric, area, rankings,
-                                   os.path.join(REDIRECT_DIR_C, slug, 'index.html'),
-                                   view='county', county_data=cd)
-
-        # Rank history OG image + redirect page -> /rh/{slug}/
-        rh = compute_rank_history(slug, dashboard, state_data)
-        if rh:
-            generate_rank_history_og_image(slug, metric, area, rh,
-                                           os.path.join(ASSETS_OG, f'{slug}_rank_history.png'))
-            generate_redirect_html(slug, metric, area, rankings,
-                                   os.path.join(REDIRECT_DIR_RH, slug, 'index.html'),
-                                   view='rank-history', rank_history=rh)
-            # Comparison images + pages -> /rh/{slug}/{state-slug}/
-            for state in COMPARISON_STATES:
-                state_slug = state_to_slug(state)
-                img_filename = f'{slug}_rh_{state_slug}.png'
-                img_path = os.path.join(ASSETS_OG, img_filename)
-                img_url  = f"{SITE_URL}/assets/og/{img_filename}"
-                generate_rh_compare_og_image(slug, metric, area, rh, state, img_path)
-                generate_rh_compare_redirect(
-                    slug, metric, state, rh,
-                    os.path.join(REDIRECT_DIR_RH, slug, state_slug, 'index.html'),
-                    image_url=img_url
-                )
-
-        rank_str = f"#{rankings['hawaiiRank']}/{rankings['total']}" if rankings and rankings['hawaiiRank'] > 0 else "no rank"
-        county_str = " +county" if cd else ""
-        rh_str = f" +rh({len(rh['years'])}yr, {len(COMPARISON_STATES)} compare pages)" if rh else ""
-        print(f"  {slug}: {rank_str}{county_str}{rh_str}")
+        line = generate_for_slug(
+            slug, metric, area, state_data, county_data_all,
+            dashboard, threshold_config
+        )
+        print(line)
 
     print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/  RankHistory: {REDIRECT_DIR_RH}/")
 
