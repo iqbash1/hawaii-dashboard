@@ -101,10 +101,12 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     unemployment_rate: {
         intro: "Hawai\u02BBi's unemployment rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this excludes discouraged workers and is not a count of everyone without a job."
     },
     labor_force_participation: {
         intro: "Hawai\u02BBi's labor force participation rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this shows who is working or looking for work, not job quality or wages."
     },
     labor_productivity: {
@@ -117,10 +119,12 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     estabs_entry_rate: {
         intro: "Hawai\u02BBi's new business entry rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this covers employer businesses only, not all new firms."
     },
     net_employer_formation: {
         intro: "Hawai\u02BBi's net employer business formation rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "net change can hide a lot of churn underneath."
     },
     naep_math_8: {
