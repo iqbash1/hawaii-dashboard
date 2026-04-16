@@ -394,14 +394,14 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "HRSA Area Health Resource File",
     "sourceUrl": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
-    "whyItMatters": "Having enough primary care doctors affects whether people can see one before problems become emergencies. Against Hawaiʻi's 1.4 million residents, every 1 per 100K on this rate represents roughly 14 additional primary care doctors statewide.",
+    "whyItMatters": "Having enough primary care doctors affects whether people can see one before problems become emergencies. The count excludes military physicians in the TRICARE system, so a change of 1 per 100K represents roughly 14 additional civilian-serving primary care doctors.",
     "scale": {
-      "denominator": 1441387,
-      "denominatorRounded": 1440000,
-      "unit": "residents",
-      "countLabel": "primary care doctors serving Hawai\u02BBi",
+      "denominator": 1370000,
+      "denominatorRounded": null,
+      "unit": "civilians",
+      "countLabel": "civilian-serving primary care doctors in Hawai\u02BBi",
       "year": 2023,
-      "source": "Census NST-EST2024 (2023 estimate)"
+      "source": "Census ACS 2023 civilian population (non-military denominator)"
     },
     "howToRead": "Hawaiʻi's line runs flat and above the other-state average for the past decade. Military doctors are excluded.",
     "potentialDrivers": "The statewide count masks a sharp Oahu-vs-neighbor-island divide, with rural communities on Hawaiʻi Island and Molokaʻi facing provider deserts the average hides. <a href=\"https://www.hawaii.edu/govrel/docs/reports/2025/hrs304a-1704_2025_hawaii-medical-education-council_annual-report_508.pdf\">The Hawaiʻi Medical Education Council reported in 2025</a> that many JABSOM residency programs retain more than 75 percent of graduates in-state, providing a steady local supply. Yet the <a href=\"https://ahec.hawaii.edu/_docs/annual-physician-workforce-report-2024.pdf\">2024 Physician Workforce Report</a> found the state still needed 152 primary care FTEs, and that 24 percent of practicing physicians were 65 or older, signaling an accelerating retirement wave. <a href=\"https://uhero.hawaii.edu/wp-content/uploads/2024/04/HawaiisEconomicGeographyHealthcare.pdf\">UHERO noted</a> that Hawaiʻi's isolation and high living costs concentrate care in central locations and make neighbor-island recruitment harder, and a <a href=\"https://health.hawaii.gov/shpda/files/2025/06/Primary-Care-AHEAD-Overview-20250506-rev.pdf\">2025 SHPDA overview</a> confirmed that high debt, lower pay relative to costs, and housing barriers continue to pull some physicians toward the mainland.",
@@ -480,13 +480,13 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Census ACS / KFF",
     "sourceUrl": "https://www.kff.org/topic/uninsured/",
-    "whyItMatters": "Without insurance, routine doctor visits, medicine, and treatment become too expensive for many families. Hawaiʻi has about 1.4 million residents, so each percentage point on this rate represents roughly 14,000 uninsured people.",
+    "whyItMatters": "Without insurance, routine doctor visits, medicine, and treatment become too expensive for many families. Hawaiʻi has about 1.37 million civilians (excluding active-duty military, who have TRICARE), so each percentage point on this rate represents roughly 14,000 uninsured people.",
     "scale": {
-      "denominator": 1441387,
-      "denominatorRounded": 1440000,
-      "unit": "residents",
+      "denominator": 1370000,
+      "denominatorRounded": 1370000,
+      "unit": "civilians",
       "year": 2023,
-      "source": "Census NST-EST2024 (2023 estimate)"
+      "source": "Census ACS 2023 S2701 (civilian noninstitutionalized population, excludes active-duty military)"
     },
     "howToRead": "Both lines have fallen since 2012. Hawaiʻi runs below the other-state average throughout, and the gap persists.",
     "potentialDrivers": "The <a href=\"https://labor.hawaii.gov/dcd/files/2023/05/PHC-highlights-rev-2025.03.pdf\">Prepaid Health Care Act</a> (1974) made Hawaiʻi the first state to require employer health insurance, decades before the ACA. The mandate covers workers at 20+ hours per week, with employee contributions capped at 1.5 percent of wages. Public coverage backstops it: <a href=\"https://medquest.hawaii.gov/content/dam/formsanddocuments/med-quest/1115-demonstration-post-award-public-forum/Hawaii%201115%20W%20Annual%20CMS%20Monitoring%20Rpt_FFY2024%20FINAL%2001.pdf\">Med-QUEST renewed roughly 475,000 Medicaid members</a> in late 2024, and <a href=\"https://www.cms.gov/files/document/health-insurance-exchanges-2025-open-enrollment-report.pdf\">CMS reported</a> 24,606 marketplace plan selections for 2025, up 11 percent. Gaps remain: the mandate excludes lower-hour workers, and a <a href=\"https://health.hawaii.gov/opppd/files/2024/10/SHIP-Access-to-Health-Services-2024.pdf\">2024 Hawaii DOH access report</a> found immigrants, migrant workers, Native Hawaiians, and rural residents still face coverage barriers.",
@@ -1146,13 +1146,13 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Bureau of Labor Statistics",
     "sourceUrl": "https://www.bls.gov/lau/",
-    "whyItMatters": "When fewer adults are working or looking for work, the economy has fewer earners supporting households and the tax base. Hawaiʻi has about 1.15 million working-age adults (16 and older), so each percentage point on this rate represents roughly 11,500 people in or out of the workforce.",
+    "whyItMatters": "When fewer adults are working or looking for work, the economy has fewer earners supporting households and the tax base. Hawaiʻi has about 1.15 million civilian working-age adults (16 and older, excluding active-duty military), so each percentage point on this rate represents roughly 11,500 people in or out of the workforce.",
     "scale": {
       "denominator": 1150000,
       "denominatorRounded": 1150000,
-      "unit": "working-age adults",
+      "unit": "civilian working-age adults",
       "year": 2023,
-      "source": "Census ACS 2023 (civilian noninstitutionalized population 16+)"
+      "source": "BLS LAUS 2023 (civilian noninstitutionalized population 16+, excludes active-duty military)"
     },
     "howToRead": "Hawaiʻi was above the other-state average until the mid-1990s, then crossed below. Both lines have been falling, but Hawaiʻi's decline has been steeper. COVID caused a sharp drop in 2020.",
     "potentialDrivers": "Thousands of working-age residents have quietly left the workforce, not because jobs are scarce, but because what those jobs pay does not cover the cost of staying. Hawaiʻi's below-average participation most likely reflects two compounding factors. The first is demographic: <a href=\"https://census.hawaii.gov/main/2024-state-and-county-population-characteristics-released/\" target=\"_blank\" rel=\"noopener\">Hawaiʻi's State Data Center reported in 2025</a> that the share of residents age 65 and older continued to grow faster than the national rate, and <a href=\"https://www.bls.gov/opub/btn/volume-14/golden-years-older-americans-at-work-and-play.htm\" target=\"_blank\" rel=\"noopener\">BLS reported in 2025</a> that national participation among workers ages 25 to 54 was 83.6 percent in 2024 but falls sharply at older ages, so a state with an older age mix will mechanically register a lower statewide rate. The second driver is affordability pressure on working-age residents: <a href=\"https://uhero.hawaii.edu/are-people-leaving-hawai%CA%BBi-because-of-high-prices-or-low-incomes/\" target=\"_blank\" rel=\"noopener\">UHERO found in March 2026</a> that high prices, slow income growth, limited housing supply, and local constraints push residents toward mainland markets where opportunity is more accessible, and workers who leave the state are recorded as having exited the labor force in state-level data. One counterpoint: <a href=\"https://uhero.hawaii.edu/uhero-forecast-for-the-state-of-hawai%CA%BBi-hawaii-moves-beyond-recession-but-slowly/\" target=\"_blank\" rel=\"noopener\">UHERO noted in February 2026</a> that unemployment was near 2.2 percent, suggesting the low participation rate reflects labor supply constraints rather than a shortage of available jobs. Taken together, the evidence points to a demographics and affordability problem rather than a demand problem, though tying the two drivers to the exact size of the gap with the national average remains partly inferential.",
