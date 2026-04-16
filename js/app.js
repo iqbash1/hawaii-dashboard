@@ -35,22 +35,27 @@ const AREA_ICONS = {
 const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     violent_crime_rate: {
         intro: "Hawai\u02BBi's violent crime rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "pre-1985 coverage is incomplete, so long-run comparisons should lean on the later series."
     },
     property_crime_rate: {
         intro: "Hawai\u02BBi's property crime rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "pre-1985 coverage is incomplete, so long-run comparisons should lean on the later series."
     },
     pcp_per_100k: {
         intro: "Hawai\u02BBi has {{value}} primary care physicians per 100,000 residents ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this measures provider supply, not actual patient access or wait times."
     },
     uninsured_rate: {
         intro: "Hawai\u02BBi's uninsured rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "this is a survey estimate, so small differences may not be meaningful."
     },
     suicide_rate: {
         intro: "Hawai\u02BBi's suicide rate is {{value}} ({{period}})",
+        scaleTemplate: ", or {{scale}}",
         caveat: "Hawai\u02BBi's small population makes this rate volatile, so single-year swings can mislead."
     },
     renter_cost_burden_pct: {
@@ -386,6 +391,8 @@ const App = {
             }
             // Use ratio only if the actual value is within 10% of the clean fraction (relative).
             if (bestN !== null && bestDiff <= 0.10) {
+                // Ratio form uses the denominator's unit (what's being sampled),
+                // not the numerator's countLabel, because "1 in 10 residents" = 10%.
                 return `about 1 in ${bestN} ${scale.unit}`;
             }
         }
@@ -393,8 +400,13 @@ const App = {
         // Absolute form: count = fraction × denominator, rounded nicely
         const count = fraction * denom;
         const formattedCount = App._formatScaleCount(count);
-        // Use the pre-rounded denominator value directly (with plain formatting
-        // if numeric, or as-is if a string like "1.4 million").
+
+        // When countLabel is explicit (numerator unit differs from denominator unit),
+        // use a standalone phrase: "about 1,300 primary care doctors"
+        if (scale.countLabel) {
+            return `about ${formattedCount} ${scale.countLabel}`;
+        }
+        // Default: numerator and denominator share the same unit; show context.
         const denomRounded = scale.denominatorRounded != null
             ? App._formatDenominator(scale.denominatorRounded)
             : null;
