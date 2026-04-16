@@ -949,6 +949,35 @@ body {
     margin: 0;
 }
 
+/* Threshold toggle (inline text style) */
+.threshold-toggle {
+    display: inline;
+}
+.threshold-btn {
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--hawaii-blue);
+    cursor: pointer;
+    transition: color 0.15s;
+    line-height: inherit;
+}
+.threshold-btn.active {
+    color: var(--text);
+    font-weight: 600;
+    cursor: default;
+}
+.threshold-btn:not(.active):hover {
+    text-decoration: underline;
+}
+.threshold-btn:focus-visible {
+    outline: 2px solid var(--hawaii-blue);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 .modal-source a {
     color: var(--hawaii-blue);
     text-decoration: none;

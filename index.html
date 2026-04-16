@@ -79,7 +79,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260405r">
+    <link rel="stylesheet" href="css/styles.css?v=20260415a">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
     <!-- SheetJS loaded on demand in downloadData() to save ~200KB on initial page load -->
 </head>
@@ -194,7 +194,7 @@
                 <div>
                     <p class="modal-area" id="modal-area"></p>
                     <h2 class="modal-title" id="modal-title"></h2>
-                    <p class="modal-unit-label" id="modal-unit-label"></p>
+                    <p class="modal-unit-label" id="modal-unit-label"><span id="modal-unit-text"></span><span class="threshold-toggle" id="threshold-toggle-wrap" style="display:none;" role="radiogroup" aria-label="Cost burden threshold"> · <button class="threshold-btn active" data-threshold="30" title="Renters paying 30%+ of income on housing (federal affordability threshold)">30%+ burdened</button> · <button class="threshold-btn" data-threshold="50" title="Renters paying 50%+ of income on housing (severely burdened)">50%+ severe</button></span></p>
                     <p class="modal-vintage" id="modal-vintage"></p>
                     <p class="modal-latest-monthly" id="modal-latest-monthly" style="display:none;"></p>
                 </div>
@@ -339,15 +339,15 @@
     </script>
 
     <!-- Scripts -->
-    <script src="js/data.js?v=20260405r"></script>
-    <script src="js/state-data.js?v=20260403ab"></script>
-    <script src="js/county-data.js?v=20260403ab"></script>
+    <script src="js/data.js?v=20260415a"></script>
+    <script src="js/state-data.js?v=20260415a"></script>
+    <script src="js/county-data.js?v=20260415a"></script>
     <script src="js/compute.js?v=20260405r"></script>
     <script src="js/charts.js?v=20260405r"></script>
     <script src="js/bundles.js?v=20260403ad"></script>
-    <script src="js/routing.js?v=20260405w"></script>
+    <script src="js/routing.js?v=20260415a"></script>
     <script src="js/export.js?v=20260405v"></script>
-    <script src="js/modal.js?v=20260405z"></script>
-    <script src="js/app.js?v=20260405z"></script>
+    <script src="js/modal.js?v=20260415a"></script>
+    <script src="js/app.js?v=20260415a"></script>
 </body>
 </html>

@@ -28,28 +28,35 @@ const Router = {
     handleRoute() {
         let slug = '';
         let view = '';
+        let isSevere = false;
 
-        const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/?$/);
-        const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/?$/);
-        const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/?$/);
-        const rankHistoryCompareMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([^/]+)\/?$/);
-        const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/?$/);
+        // Path patterns: optional /severe/ suffix for 50%+ threshold view
+        const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/(severe\/)?\/?$/);
+        const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/(severe\/)?\/?$/);
+        const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/(severe\/)?\/?$/);
+        const rankHistoryCompareMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([^/]+)\/(severe\/)?\/?$/);
+        const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/(severe\/)?\/?$/);
         let compareSlug = '';
         if (detailMatch) {
             slug = detailMatch[1];
+            isSevere = !!detailMatch[2];
         } else if (rankMatch) {
             slug = rankMatch[1];
             view = 'rankings';
+            isSevere = !!rankMatch[2];
         } else if (countyMatch) {
             slug = countyMatch[1];
             view = 'county';
+            isSevere = !!countyMatch[2];
         } else if (rankHistoryCompareMatch) {
             slug = rankHistoryCompareMatch[1];
             view = 'rank-history';
             compareSlug = rankHistoryCompareMatch[2];
+            isSevere = !!rankHistoryCompareMatch[3];
         } else if (rankHistoryMatch) {
             slug = rankHistoryMatch[1];
             view = 'rank-history';
+            isSevere = !!rankHistoryMatch[2];
         }
 
         // Fall back to legacy hash route
@@ -74,6 +81,11 @@ const Router = {
                 areaName = areaGroup.area;
                 break;
             }
+        }
+
+        // Threshold: /severe/ path segment activates 50%+ view
+        if (isSevere && DASHBOARD_DATA[slug]?.thresholdVariants?.['50']) {
+            Modal._activeThreshold[slug] = '50';
         }
 
         const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;

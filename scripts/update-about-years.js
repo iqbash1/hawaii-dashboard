@@ -40,7 +40,7 @@ const NAME_TO_SLUG = {
     'Unemployment Rate':                                    'unemployment_rate',
     'Labor Force Participation':                            'labor_force_participation',
     'Per Capita Income (real)':               'real_per_capita_income',
-    'Renters Paying 30%+ for Housing':                      'renter_cost_burden_pct',
+    'Renter Housing Cost Burden':                            'renter_cost_burden_pct',
     'Home Price-to-Income Ratio':                           'home_price_to_income',
     'Unsheltered Homeless':                                 'unsheltered_homeless_rate',
     'Roads in Poor Condition':                              'road_poor_pct',

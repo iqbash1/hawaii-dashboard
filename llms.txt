@@ -20,7 +20,7 @@ The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai�
 5. Suicide Rate — per 100K residents (CDC WONDER)
 
 ### Housing & Cost of Living
-6. Renters Paying 30%+ for Housing — % of renters cost-burdened (Census ACS)
+6. Renter Housing Cost Burden — % of renters cost-burdened, with 30%+ and 50%+ threshold views (Census ACS)
 7. Home Price-to-Income Ratio — median home value / median household income (Census ACS)
 8. Unsheltered Homeless Rate — per 10K residents (HUD PIT Count)
 9. Residential Electricity Price — cents per kWh (EIA)

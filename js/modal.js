@@ -18,6 +18,13 @@ const Modal = {
     countyChart: null,
     _pendingRhCompare: null,
     _rankingsScrollHandler: null,
+    /** Active threshold per slug. Empty = base (30%+). "50" = severe. */
+    _activeThreshold: {},
+    /** Build path suffix for the active threshold, or '' if default. */
+    _thPath(slug) {
+        const th = Modal._activeThreshold[slug];
+        return th ? 'severe/' : '';
+    },
 
     renderBundleNav(slug) {
         const nav = document.getElementById('bundle-nav');
@@ -119,7 +126,7 @@ const Modal = {
      */
     openModal(slug, areaName, initialView, initialCompare) {
         const overlay = document.getElementById('modal-overlay');
-        const metricData = DASHBOARD_DATA[slug];
+        const metricData = App.getActiveMetricData(slug);
         if (!metricData) return;
 
         // Analytics: report which metric was opened
@@ -152,7 +159,7 @@ const Modal = {
 
         document.getElementById('modal-icon').innerHTML = AREA_ICONS[areaName || metricData.area] || '';
         document.getElementById('modal-title').textContent = metricData.metric;
-        document.getElementById('modal-unit-label').textContent = metricData.unitLabel || '';
+        document.getElementById('modal-unit-text').textContent = metricData.unitLabel || '';
         document.getElementById('modal-area').textContent = areaName || metricData.area;
         // Vintage line: data years and update cadence
         const hiYears = Object.keys(effective.hawaii).sort();
@@ -245,6 +252,34 @@ const Modal = {
             }
         }
 
+        // Threshold toggle (show for metrics with thresholdVariants)
+        const toggleWrap = document.getElementById('threshold-toggle-wrap');
+        const baseMetric = DASHBOARD_DATA[slug];
+        if (toggleWrap) {
+            if (baseMetric && baseMetric.thresholdVariants) {
+                toggleWrap.style.display = '';
+                const btns = toggleWrap.querySelectorAll('.threshold-btn');
+                const activeTh = Modal._activeThreshold[slug] || '30';
+                btns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.threshold === activeTh);
+                    btn.onclick = () => {
+                        const th = btn.dataset.threshold;
+                        if (th === '30') {
+                            delete Modal._activeThreshold[slug];
+                        } else {
+                            Modal._activeThreshold[slug] = th;
+                        }
+                        // Clear chart cache so data is recomputed
+                        App._chartDataCache = {};
+                        btns.forEach(b => b.classList.toggle('active', b.dataset.threshold === th));
+                        Modal._refreshCurrentView(slug, areaName);
+                    };
+                });
+            } else {
+                toggleWrap.style.display = 'none';
+            }
+        }
+
         // Footer source line
         const hasStateData = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
         document.getElementById('modal-source').innerHTML = `
@@ -265,7 +300,8 @@ const Modal = {
             const activeTab = document.querySelector('.modal-tab.active');
             const tabId = activeTab ? activeTab.id : 'tab-detail';
             const prefix = tabId === 'tab-rankings' ? 'r' : tabId === 'tab-county' ? 'c' : 't';
-            return 'https://hawaiidashboard.org/' + prefix + '/' + slug + '/';
+            let url = 'https://hawaiidashboard.org/' + prefix + '/' + slug + '/' + Modal._thPath(slug);
+            return url;
         };
         const copyToClipboard = (text) => {
             const execFallback = () => {
@@ -444,8 +480,8 @@ const Modal = {
         document.body.style.overflow = 'hidden';
         document.getElementById('modal').scrollTop = 0;
 
-        // Update URL for permalink (preserve bundle param if active)
-        const bundleParam = App._activeBundle ? '?bundle=' + App._activeBundle.id : '';
+        // Update URL for permalink (preserve bundle param if active, and threshold if set)
+        const bundleParam = App._activeBundle ? '?bundle=' + App._activeBundle.id : Modal._thPath(slug);
         history.replaceState(null, '', '/t/' + slug + '/' + bundleParam);
 
         // Render bundle nav (if a bundle is active)
@@ -528,23 +564,23 @@ const Modal = {
             tabRankings.classList.add('active');
             tabRankings.setAttribute('aria-selected', 'true');
             Modal.showRankings(slug);
-            history.replaceState(null, '', '/r/' + slug + '/');
+            history.replaceState(null, '', '/r/' + slug + '/' + Modal._thPath(slug));
 
         } else if (tab === 'rank-history') {
             tabRankHistory.classList.add('active');
             tabRankHistory.setAttribute('aria-selected', 'true');
             Modal.showRankHistory(slug);
-            history.replaceState(null, '', '/rh/' + slug + '/');
+            history.replaceState(null, '', '/rh/' + slug + '/' + Modal._thPath(slug));
         } else if (tab === 'county') {
             tabCounty.classList.add('active');
             tabCounty.setAttribute('aria-selected', 'true');
             Modal.showCounty(slug);
-            history.replaceState(null, '', '/c/' + slug + '/');
+            history.replaceState(null, '', '/c/' + slug + '/' + Modal._thPath(slug));
         } else {
             tabDetail.classList.add('active');
             tabDetail.setAttribute('aria-selected', 'true');
             document.getElementById('modal-detail-view').style.display = '';
-            history.replaceState(null, '', '/t/' + slug + '/');
+            history.replaceState(null, '', '/t/' + slug + '/' + Modal._thPath(slug));
         }
         // Always reset modal scroll to top on tab switch
         document.querySelector('.modal').scrollTop = 0;
@@ -561,7 +597,7 @@ const Modal = {
         const rankings = App.getStateRankings(slug);
         if (!rankings) return;
 
-        const metricData = DASHBOARD_DATA[slug];
+        const metricData = App.getActiveMetricData(slug);
         const { stateValues, year, hawaiiRank, total } = rankings;
 
         document.getElementById('modal-detail-view').style.display = 'none';
@@ -643,7 +679,7 @@ const Modal = {
     showRankHistory(slug) {
         const rankHistory = App.computeRankHistory(slug);
         if (!rankHistory) return;
-        const metricData = DASHBOARD_DATA[slug];
+        const metricData = App.getActiveMetricData(slug);
 
         document.getElementById('modal-rank-history').style.display = 'block';
 
@@ -680,9 +716,9 @@ const Modal = {
             if (compareSelect) compareSelect.value = stateName || '';
             if (compareClear) compareClear.style.display = stateName ? '' : 'none';
             if (stateName) {
-                history.replaceState(null, '', '/rh/' + slug + '/' + Router.stateToSlug(stateName) + '/');
+                history.replaceState(null, '', '/rh/' + slug + '/' + Router.stateToSlug(stateName) + '/' + Modal._thPath(slug));
             } else {
-                history.replaceState(null, '', '/rh/' + slug + '/');
+                history.replaceState(null, '', '/rh/' + slug + '/' + Modal._thPath(slug));
             }
         };
 
@@ -799,9 +835,9 @@ const Modal = {
      * @param {string} slug - Metric ID
      */
     showCounty(slug) {
-        const countyData = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
+        const countyData = App.getActiveCountyData(slug);
         if (!countyData) return;
-        const metricData = DASHBOARD_DATA[slug];
+        const metricData = App.getActiveMetricData(slug);
 
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'none';
@@ -853,6 +889,78 @@ const Modal = {
         canvas.setAttribute('aria-label', `${metricData.metric} by Hawaiʻi county: Honolulu, Hawaiʻi, Maui, Kauai`);
     },
 
+    /**
+     * Re-render the current modal view after a threshold toggle.
+     * Updates: title subtitle, official name, brief, consolidated narrative,
+     * and whichever tab (trend/rankings/rank-history/county) is visible.
+     */
+    _refreshCurrentView(slug, areaName) {
+        const metricData = App.getActiveMetricData(slug);
+        if (!metricData) return;
+        const effective = App.getEffectiveData(slug);
+
+        // Update official name
+        const officialEl = document.getElementById('modal-official-name');
+        if (officialEl && metricData.officialName) {
+            officialEl.textContent = metricData.officialName;
+        }
+
+        // Update brief
+        const briefEl = document.getElementById('modal-brief');
+        const briefText = Modal.computeBrief(slug);
+        if (briefText) {
+            briefEl.innerHTML = briefText
+                .replace('Bottom line:', '<strong>Bottom line:</strong>')
+                .replace('Keep in mind:', '<strong>Keep in mind:</strong>');
+            briefEl.style.display = '';
+        } else {
+            briefEl.style.display = 'none';
+        }
+
+        // Update consolidated narrative
+        const consolidatedEl = document.getElementById('modal-consolidated');
+        if (metricData.useConsolidated && consolidatedEl) {
+            consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
+        }
+
+        // Re-render whichever tab is currently visible
+        const detailView = document.getElementById('modal-detail-view');
+        const rankingsView = document.getElementById('modal-rankings');
+        const rankHistoryView = document.getElementById('modal-rank-history');
+        const countyView = document.getElementById('modal-county');
+
+        if (detailView && detailView.style.display !== 'none') {
+            // Trend tab: destroy and recreate chart
+            if (Modal.detailChart) { Modal.detailChart.destroy(); Modal.detailChart = null; }
+            if (effective && effective.hawaii) {
+                const hiYears = Object.keys(effective.hawaii).sort();
+                const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+                const isRange = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
+                document.getElementById('trend-subtitle').innerHTML = isRange
+                    ? `Hawai\u02BBi vs. other state average \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
+                    : `Hawai\u02BBi vs. other state average \u00B7 ${dirHint}`;
+                const canvas = document.getElementById('modal-chart');
+                const govBoxes = App.getGovernorBoxes(hiYears);
+                Modal.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes);
+            }
+        } else if (rankingsView && rankingsView.style.display !== 'none') {
+            Modal.showRankings(slug);
+        } else if (rankHistoryView && rankHistoryView.style.display !== 'none') {
+            if (Modal.rankHistoryChart) { Modal.rankHistoryChart.destroy(); Modal.rankHistoryChart = null; }
+            Modal.showRankHistory(slug);
+        } else if (countyView && countyView.style.display !== 'none') {
+            if (Modal.countyChart) { Modal.countyChart.destroy(); Modal.countyChart = null; }
+            Modal.showCounty(slug);
+        }
+
+        // Update URL with threshold path
+        const activeTab = document.querySelector('.modal-tab.active');
+        const tabId = activeTab ? activeTab.id : 'tab-detail';
+        const prefix = tabId === 'tab-rankings' ? 'r' : tabId === 'tab-county' ? 'c'
+            : tabId === 'tab-rank-history' ? 'rh' : 't';
+        history.replaceState(null, '', '/' + prefix + '/' + slug + '/' + Modal._thPath(slug));
+    },
+
     hideCounty() {
         document.getElementById('modal-county').style.display = 'none';
         if (Modal.countyChart) {
@@ -872,7 +980,7 @@ const Modal = {
         let html = '';
 
         // Section 1: Other States for latest year (exclude Hawaii - shown separately below)
-        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        const sd = App.getActiveStateData(slug);
         if (sd && sd.data) {
             const rankings = App.getStateRankings(slug);
             if (rankings && rankings.stateValues.length > 0) {
@@ -907,6 +1015,10 @@ const Modal = {
      * clean up event listeners, and reset the URL.
      */
     closeModal() {
+        // Reset threshold toggle state
+        Modal._activeThreshold = {};
+        App._chartDataCache = {};
+
         // Analytics: track time spent in modal
         if (Modal._openTime && Modal._openSlug) {
             const dur = Math.round((Date.now() - Modal._openTime) / 1000);
@@ -1045,7 +1157,7 @@ const Modal = {
     computeTrendPhrase(slug) {
         const effective = App.getEffectiveData(slug);
         if (!effective || !effective.hawaii) return null;
-        const m = DASHBOARD_DATA[slug];
+        const m = App.getActiveMetricData(slug);
 
         const sortedKeys = Object.keys(effective.hawaii)
             .sort((a, b) => App.keyEnd(a) - App.keyEnd(b));
@@ -1083,9 +1195,14 @@ const Modal = {
      * @returns {string|null} Plain-text paragraph
      */
     computeBrief(slug) {
-        const m = DASHBOARD_DATA[slug];
-        const tpl = BRIEF_TEMPLATES[slug];
+        const m = App.getActiveMetricData(slug);
+        let tpl = BRIEF_TEMPLATES[slug];
         if (!m || !tpl) return null;
+        // Use threshold-specific template if active
+        const th = Modal._activeThreshold[slug];
+        if (th && tpl.thresholdVariants && tpl.thresholdVariants[th]) {
+            tpl = { ...tpl, ...tpl.thresholdVariants[th] };
+        }
 
         const rankings = App.getStateRankings(slug);
         const effective = App.getEffectiveData(slug);

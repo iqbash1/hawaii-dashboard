@@ -1309,7 +1309,7 @@ const DASHBOARD_DATA = {
   "renter_cost_burden_pct": {
     "area": "Housing & Cost of Living",
     "areaIcon": "🏠",
-    "metric": "Renters Paying 30%+ for Housing",
+    "metric": "Renter Housing Cost Burden",
     "officialName": "Share of renter households paying 30% or more of income on gross rent, the federal affordability threshold.",
     "sourceCategory": "federal",
     "unit": "%",
@@ -1389,6 +1389,56 @@ const DASHBOARD_DATA = {
         "source": {
           "label": "AB 1482: Tenant Protection Act of 2019 - California Legislature",
           "url": "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=201920200AB1482"
+        }
+      }
+    },
+    "thresholdVariants": {
+      "50": {
+        "officialName": "Share of renter households paying 50% or more of income on gross rent, indicating severe cost burden.",
+        "howToRead": "Both lines should fall. The 50%+ threshold captures renters in the most acute distress. Hawaiʻi consistently exceeds the national average, with a wider gap at the severe level.",
+        "countyNarrative": "Severe cost burden (50%+) affects all four counties but varies widely. Honolulu (29% in 2023) carries the highest sustained levels, while Maui (29%) showed wide year-to-year swings. Hawaiʻi County (30% in 2023) spiked during the pandemic. Kauai (19%) runs lower, likely because its smaller rental market excludes some of the most cost-burdened households captured by the ACS.",
+        "rankHistoryNarrative": {
+          "summary": "At the 50%+ severe threshold, Hawaiʻi has ranked between #38 and #48 from 2005 to 2023. The ranking is slightly more volatile than the 30%+ measure because the smaller denominator amplifies year-to-year survey noise, but the structural position remains among the worst five states."
+        },
+        "hawaii": {
+          "2005": 0.231,
+          "2006": 0.2612,
+          "2007": 0.2561,
+          "2008": 0.2932,
+          "2009": 0.2739,
+          "2010": 0.2814,
+          "2011": 0.287,
+          "2012": 0.2847,
+          "2013": 0.2677,
+          "2014": 0.2991,
+          "2015": 0.3054,
+          "2016": 0.2827,
+          "2017": 0.2776,
+          "2018": 0.2732,
+          "2019": 0.2706,
+          "2021": 0.3073,
+          "2022": 0.272,
+          "2023": 0.2854
+        },
+        "otherStateAvg": {
+          "2005": 0.2347,
+          "2006": 0.2361,
+          "2007": 0.229,
+          "2008": 0.235,
+          "2009": 0.2491,
+          "2010": 0.2587,
+          "2011": 0.2628,
+          "2012": 0.253,
+          "2013": 0.2493,
+          "2014": 0.2464,
+          "2015": 0.2386,
+          "2016": 0.233,
+          "2017": 0.2302,
+          "2018": 0.233,
+          "2019": 0.2233,
+          "2021": 0.2444,
+          "2022": 0.249,
+          "2023": 0.2463
         }
       }
     }

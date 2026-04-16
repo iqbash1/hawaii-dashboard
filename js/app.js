@@ -55,7 +55,13 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     renter_cost_burden_pct: {
         intro: "{{value}} of Hawai\u02BBi renters were housing-cost burdened in {{period}}",
-        caveat: "the 30% threshold is a convention, not a hard affordability cliff."
+        caveat: "the 30% threshold is a convention, not a hard affordability cliff.",
+        thresholdVariants: {
+            "50": {
+                intro: "{{value}} of Hawai\u02BBi renters were severely housing-cost burdened in {{period}}",
+                caveat: "this captures the most acute distress; the true share may be higher because the ACS undercounts some low-income renters."
+            }
+        }
     },
     home_price_to_income: {
         intro: "Hawai\u02BBi's home price-to-income ratio is {{value}} ({{period}})",
@@ -214,6 +220,45 @@ const App = {
     /** Cache for computed chart data from STATE_DATA */
     _chartDataCache: {},
 
+    // ----------------------------------------------------------------
+    // Threshold Resolvers
+    // ----------------------------------------------------------------
+    /**
+     * Return DASHBOARD_DATA[slug] merged with the active threshold overlay.
+     * When no threshold is active (default), returns the base 30%+ data.
+     */
+    getActiveMetricData(slug) {
+        const base = DASHBOARD_DATA[slug];
+        if (!base) return null;
+        const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
+        if (!th || !base.thresholdVariants || !base.thresholdVariants[th]) return base;
+        return { ...base, ...base.thresholdVariants[th] };
+    },
+
+    /**
+     * Return STATE_DATA[slug] merged with the active threshold overlay.
+     * When no threshold is active, returns the base state data unchanged.
+     */
+    getActiveStateData(slug) {
+        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        if (!sd) return null;
+        const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
+        if (!th || !sd.thresholdVariants || !sd.thresholdVariants[th]) return sd;
+        return { ...sd, ...sd.thresholdVariants[th] };
+    },
+
+    /**
+     * Return COUNTY_DATA[slug] merged with the active threshold overlay.
+     * When no threshold is active, returns the base county data unchanged.
+     */
+    getActiveCountyData(slug) {
+        const cd = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
+        if (!cd) return null;
+        const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
+        if (!th || !cd.thresholdVariants || !cd.thresholdVariants[th]) return cd;
+        return { ...cd, ...cd.thresholdVariants[th] };
+    },
+
     /**
      * Compute hawaii + otherStateAvg time series from STATE_DATA.
      * This is the SINGLE SOURCE OF TRUTH for both chart versions:
@@ -221,9 +266,12 @@ const App = {
      * per-state data that drives rankings.
      */
     computeChartData(slug) {
-        if (this._chartDataCache[slug]) return this._chartDataCache[slug];
+        // Threshold-aware cache key
+        const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
+        const cacheKey = th ? `${slug}__th${th}` : slug;
+        if (this._chartDataCache[cacheKey]) return this._chartDataCache[cacheKey];
 
-        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        const sd = this.getActiveStateData(slug);
         if (!sd || !sd.data) return null;
 
         const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
@@ -282,7 +330,7 @@ const App = {
         }
 
         const result = { hawaii, otherStateAvg };
-        this._chartDataCache[slug] = result;
+        this._chartDataCache[cacheKey] = result;
         return result;
     },
 
@@ -323,7 +371,7 @@ const App = {
      * For metrics without STATE_DATA, falls back to DASHBOARD_DATA.
      */
     getEffectiveData(slug) {
-        const metricData = DASHBOARD_DATA[slug];
+        const metricData = this.getActiveMetricData(slug);
         if (!metricData) return null;
 
         // Compute hawaii/otherStateAvg from STATE_DATA when available
@@ -349,7 +397,7 @@ const App = {
         };
 
         // If we have rankings, trim chart data to end at rankings year
-        const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        const hasRankings = this.getActiveStateData(slug);
         if (!hasRankings) return merged;
 
         const rankings = this.getStateRankings(slug);
@@ -448,9 +496,9 @@ const App = {
 
     /** Extract per-state latest-year values from STATE_DATA */
     getStateRankings(slug) {
-        const sd = STATE_DATA[slug];
+        const sd = this.getActiveStateData(slug);
         if (!sd || !sd.data) return null;
-        const metricData = DASHBOARD_DATA[slug];
+        const metricData = this.getActiveMetricData(slug);
 
         const firstKey = Object.keys(sd.data)[0];
         const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
@@ -506,9 +554,9 @@ const App = {
      * @returns {{ years, stateRanks, stateValues, latestYearRanked, hiKey, hiRank, total } | null}
      */
     computeRankHistory(slug) {
-        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
+        const sd = this.getActiveStateData(slug);
         if (!sd || !sd.data) return null;
-        const m = DASHBOARD_DATA[slug];
+        const m = this.getActiveMetricData(slug);
         const isDec = ChartUtils.isDecimalPctMetric(m);
 
         const firstKey = Object.keys(sd.data)[0];
