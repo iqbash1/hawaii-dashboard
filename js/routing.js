@@ -4,7 +4,7 @@
 // URL parsing and permalink routing. Handles path-based routes
 // (/t/, /r/, /rh/, /c/) and legacy hash routes.
 // Depends on: App (for AREA_ORDER, openModal), STATE_ABBREVS,
-//             DASHBOARD_DATA.
+//             DASHBOARD_DATA, THRESHOLD_CONFIG, Modal.
 // ============================================================
 
 const Router = {
@@ -28,35 +28,35 @@ const Router = {
     handleRoute() {
         let slug = '';
         let view = '';
-        let isSevere = false;
+        let variantSegment = '';
 
-        // Path patterns: optional /severe/ suffix for 50%+ threshold view
-        const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/(severe\/)?\/?$/);
-        const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/(severe\/)?\/?$/);
-        const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/(severe\/)?\/?$/);
-        const rankHistoryCompareMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([^/]+)\/(severe\/)?\/?$/);
-        const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/(severe\/)?\/?$/);
+        // Path patterns: optional variant suffix (e.g. /severe/, /verylow/, /notgood/, /all/)
+        const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/([a-z]+\/)?\/?$/);
+        const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/([a-z]+\/)?\/?$/);
+        const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/([a-z]+\/)?\/?$/);
+        const rankHistoryCompareMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([^/]+)\/([a-z]+\/)?\/?$/);
+        const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([a-z]+\/)?\/?$/);
         let compareSlug = '';
         if (detailMatch) {
             slug = detailMatch[1];
-            isSevere = !!detailMatch[2];
+            variantSegment = (detailMatch[2] || '').replace(/\/$/, '');
         } else if (rankMatch) {
             slug = rankMatch[1];
             view = 'rankings';
-            isSevere = !!rankMatch[2];
+            variantSegment = (rankMatch[2] || '').replace(/\/$/, '');
         } else if (countyMatch) {
             slug = countyMatch[1];
             view = 'county';
-            isSevere = !!countyMatch[2];
+            variantSegment = (countyMatch[2] || '').replace(/\/$/, '');
         } else if (rankHistoryCompareMatch) {
             slug = rankHistoryCompareMatch[1];
             view = 'rank-history';
             compareSlug = rankHistoryCompareMatch[2];
-            isSevere = !!rankHistoryCompareMatch[3];
+            variantSegment = (rankHistoryCompareMatch[3] || '').replace(/\/$/, '');
         } else if (rankHistoryMatch) {
             slug = rankHistoryMatch[1];
             view = 'rank-history';
-            isSevere = !!rankHistoryMatch[2];
+            variantSegment = (rankHistoryMatch[2] || '').replace(/\/$/, '');
         }
 
         // Fall back to legacy hash route
@@ -83,9 +83,12 @@ const Router = {
             }
         }
 
-        // Threshold: /severe/ path segment activates 50%+ view
-        if (isSevere && DASHBOARD_DATA[slug]?.thresholdVariants?.['50']) {
-            Modal._activeThreshold[slug] = '50';
+        // Resolve variant path segment to threshold key via THRESHOLD_CONFIG
+        if (variantSegment && DASHBOARD_DATA[slug]?.thresholdVariants) {
+            const config = typeof THRESHOLD_CONFIG !== 'undefined' && THRESHOLD_CONFIG[slug];
+            if (config && config.urlSegment === variantSegment) {
+                Modal._activeThreshold[slug] = config.variantKey;
+            }
         }
 
         const initialView = ['rankings', 'county', 'rank-history'].includes(view) ? view : undefined;

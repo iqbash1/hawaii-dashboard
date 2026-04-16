@@ -1597,6 +1597,39 @@ const DASHBOARD_DATA = {
           "url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/CommitteeMeetingDocument/288059"
         }
       }
+    },
+    "thresholdVariants": {
+      "all": {
+        "officialName": "One-night count of all homeless people (sheltered and unsheltered combined), per 10,000 residents.",
+        "hawaii": {
+          "2012": 45.3,
+          "2013": 45.4,
+          "2014": 49.1,
+          "2015": 53.9,
+          "2016": 55.7,
+          "2017": 50.6,
+          "2018": 45.8,
+          "2019": 45.1,
+          "2020": 45.6,
+          "2022": 41.2,
+          "2023": 43.2,
+          "2024": 80.7
+        },
+        "otherStateAvg": {
+          "2012": 17.1,
+          "2013": 16.2,
+          "2014": 15.4,
+          "2015": 14.9,
+          "2016": 14.1,
+          "2017": 13.8,
+          "2018": 13.6,
+          "2019": 13.4,
+          "2020": 13.6,
+          "2022": 15,
+          "2023": 16.4,
+          "2024": 18.4
+        }
+      }
     }
   },
   "road_poor_pct": {
@@ -1674,6 +1707,45 @@ const DASHBOARD_DATA = {
         "source": {
           "label": "RI Bridges Improving After 5 Years of RhodeWorks - WPRI",
           "url": "https://www.wpri.com/target-12/ri-bridges-improving-after-5-years-of-rhodeworks-tolls-still-in-legal-limbo/"
+        }
+      }
+    },
+    "thresholdVariants": {
+      "notgood": {
+        "officialName": "Share of public road miles rated acceptable or poor (IRI > 95), combining mediocre and poor pavement quality.",
+        "hawaii": {
+          "2007": 0.8852,
+          "2008": 0.8963,
+          "2009": 0.8133,
+          "2011": 0.6731,
+          "2012": 0.6717,
+          "2013": 0.7601,
+          "2014": 0.7504,
+          "2015": 0.7114,
+          "2016": 0.7093,
+          "2017": 0.7022,
+          "2018": 0.7172,
+          "2019": 0.7008,
+          "2020": 0.6748,
+          "2022": 0.6221,
+          "2023": 0.6024
+        },
+        "otherStateAvg": {
+          "2007": 0.458,
+          "2008": 0.4593,
+          "2009": 0.4515,
+          "2011": 0.4363,
+          "2012": 0.4313,
+          "2013": 0.4196,
+          "2014": 0.4178,
+          "2015": 0.4059,
+          "2016": 0.4102,
+          "2017": 0.4032,
+          "2018": 0.394,
+          "2019": 0.3929,
+          "2020": 0.3854,
+          "2022": 0.3726,
+          "2023": 0.373
         }
       }
     }
@@ -2083,6 +2155,49 @@ const DASHBOARD_DATA = {
         "source": {
           "label": "SNAP Work Requirements in Arkansas - Urban Institute",
           "url": "https://www.urban.org/research/publication/snap-work-requirements-arkansas-adults-without-dependents-or-disabilities"
+        }
+      }
+    },
+    "thresholdVariants": {
+      "verylow": {
+        "officialName": "3-year average share of households with very low food security, where household members reduced food intake because they could not afford enough food.",
+        "hawaii": {
+          "2006-2008": 0.03,
+          "2007-2009": 0.039,
+          "2008-2010": 0.05,
+          "2009-2011": 0.056,
+          "2010-2012": 0.056,
+          "2011-2013": 0.0474,
+          "2012-2014": 0.0404,
+          "2013-2015": 0.0297,
+          "2014-2016": 0.0301,
+          "2015-2017": 0.029,
+          "2016-2018": 0.0315,
+          "2017-2019": 0.034,
+          "2018-2020": 0.031,
+          "2019-2021": 0.0312,
+          "2020-2022": 0.027,
+          "2021-2023": 0.036,
+          "2022-2024": 0.0448
+        },
+        "otherStateAvg": {
+          "2006-2008": 0.0455,
+          "2007-2009": 0.0503,
+          "2008-2010": 0.0539,
+          "2009-2011": 0.0546,
+          "2010-2012": 0.0553,
+          "2011-2013": 0.0559,
+          "2012-2014": 0.0563,
+          "2013-2015": 0.0546,
+          "2014-2016": 0.053,
+          "2015-2017": 0.0491,
+          "2016-2018": 0.0466,
+          "2017-2019": 0.0442,
+          "2018-2020": 0.0422,
+          "2019-2021": 0.0398,
+          "2020-2022": 0.0421,
+          "2021-2023": 0.0463,
+          "2022-2024": 0.052
         }
       }
     }

@@ -23,7 +23,10 @@ const Modal = {
     /** Build path suffix for the active threshold, or '' if default. */
     _thPath(slug) {
         const th = Modal._activeThreshold[slug];
-        return th ? 'severe/' : '';
+        if (!th) return '';
+        const config = typeof THRESHOLD_CONFIG !== 'undefined' && THRESHOLD_CONFIG[slug];
+        if (!config) return '';
+        return config.urlSegment + '/';
     },
 
     renderBundleNav(slug) {
@@ -243,31 +246,39 @@ const Modal = {
             }
         }
 
-        // Threshold toggle (show for metrics with thresholdVariants)
+        // Threshold toggle (show for metrics with thresholdVariants + config)
         const toggleWrap = document.getElementById('threshold-toggle-wrap');
         const baseMetric = DASHBOARD_DATA[slug];
+        const thConfig = typeof THRESHOLD_CONFIG !== 'undefined' && THRESHOLD_CONFIG[slug];
         if (toggleWrap) {
-            if (baseMetric && baseMetric.thresholdVariants) {
+            if (baseMetric && baseMetric.thresholdVariants && thConfig) {
                 toggleWrap.style.display = '';
-                const btns = toggleWrap.querySelectorAll('.threshold-btn');
-                const activeTh = Modal._activeThreshold[slug] || '30';
-                btns.forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.threshold === activeTh);
-                    btn.onclick = () => {
-                        const th = btn.dataset.threshold;
-                        if (th === '30') {
+                toggleWrap.setAttribute('aria-label', thConfig.ariaLabel);
+                // Build buttons dynamically from config
+                const activeTh = Modal._activeThreshold[slug] || thConfig.defaultKey;
+                toggleWrap.innerHTML = thConfig.buttons.map((btn, i) =>
+                    (i > 0 ? ' \u00B7 ' : ' \u00B7 ') +
+                    '<button class="threshold-btn' + (btn.key === activeTh ? ' active' : '') + '" ' +
+                    'data-threshold="' + btn.key + '" title="' + btn.title + '">' + btn.label + '</button>'
+                ).join('');
+                toggleWrap.querySelectorAll('.threshold-btn').forEach(btnEl => {
+                    btnEl.onclick = () => {
+                        const th = btnEl.dataset.threshold;
+                        if (th === thConfig.defaultKey) {
                             delete Modal._activeThreshold[slug];
                         } else {
                             Modal._activeThreshold[slug] = th;
                         }
-                        // Clear chart cache so data is recomputed
                         App._chartDataCache = {};
-                        btns.forEach(b => b.classList.toggle('active', b.dataset.threshold === th));
+                        toggleWrap.querySelectorAll('.threshold-btn').forEach(b =>
+                            b.classList.toggle('active', b.dataset.threshold === th)
+                        );
                         Modal._refreshCurrentView(slug, areaName);
                     };
                 });
             } else {
                 toggleWrap.style.display = 'none';
+                toggleWrap.innerHTML = '';
             }
         }
 

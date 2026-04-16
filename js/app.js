@@ -73,11 +73,23 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     unsheltered_homeless_rate: {
         intro: "Hawai\u02BBi's unsheltered homeless rate is {{value}} ({{period}})",
-        caveat: "this is based on a one-night count and likely understates the true number."
+        caveat: "this is based on a one-night count and likely understates the true number.",
+        thresholdVariants: {
+            "all": {
+                intro: "Hawai\u02BBi's total homeless rate is {{value}} ({{period}})",
+                caveat: "this includes both sheltered and unsheltered; the one-night count methodology means the true number is likely higher."
+            }
+        }
     },
     food_insecurity_rate: {
         intro: "Hawai\u02BBi's food insecurity rate is {{value}} ({{period}})",
-        caveat: "this is a 3-year rolling average, so it lags current conditions."
+        caveat: "this is a 3-year rolling average, so it lags current conditions.",
+        thresholdVariants: {
+            "verylow": {
+                intro: "Hawai\u02BBi's very low food security rate is {{value}} ({{period}})",
+                caveat: "this captures only the most severe cases where households reduced food intake; the broader food insecurity rate is higher."
+            }
+        }
     },
     unemployment_rate: {
         intro: "Hawai\u02BBi's unemployment rate is {{value}} ({{period}})",
@@ -133,7 +145,13 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     },
     road_poor_pct: {
         intro: "{{value}} of Hawai\u02BBi roads were rated in poor condition in {{period}}",
-        caveat: "this is not a complete inventory of every road, especially local roads."
+        caveat: "this is not a complete inventory of every road, especially local roads.",
+        thresholdVariants: {
+            "notgood": {
+                intro: "{{value}} of Hawai\u02BBi roads were rated substandard in {{period}}",
+                caveat: "this combines poor and acceptable/mediocre ratings; the 'poor only' view isolates the worst roads."
+            }
+        }
     },
     rainy_day_fund_pct: {
         intro: "Hawai\u02BBi's rainy day fund was {{value}} of general fund spending in {{period}}",
@@ -142,6 +160,52 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
     voter_participation_rate: {
         intro: "Only {{value}} of eligible Hawai\u02BBi voters cast a ballot in {{period}}",
         caveat: "this is based on eligible voters, not all adults."
+    },
+};
+
+// Threshold toggle config: maps each metric with severity variants to its
+// toggle metadata. Adding a new threshold metric means adding one entry here
+// plus the data — zero code changes elsewhere.
+const THRESHOLD_CONFIG = { // eslint-disable-line no-unused-vars
+    renter_cost_burden_pct: {
+        defaultKey: '30',
+        variantKey: '50',
+        urlSegment: 'severe',
+        ariaLabel: 'Cost burden threshold',
+        buttons: [
+            { key: '30', label: '30%+', title: 'Renters paying 30%+ of income on housing (federal affordability threshold)' },
+            { key: '50', label: '50%+', title: 'Renters paying 50%+ of income on housing (severely burdened)' },
+        ]
+    },
+    food_insecurity_rate: {
+        defaultKey: 'base',
+        variantKey: 'verylow',
+        urlSegment: 'verylow',
+        ariaLabel: 'Food security threshold',
+        buttons: [
+            { key: 'base', label: 'Insecure', title: 'All food-insecure households (low + very low food security combined)' },
+            { key: 'verylow', label: 'Severe', title: 'Very low food security only (households that reduced food intake)' },
+        ]
+    },
+    road_poor_pct: {
+        defaultKey: 'base',
+        variantKey: 'notgood',
+        urlSegment: 'notgood',
+        ariaLabel: 'Road condition threshold',
+        buttons: [
+            { key: 'base', label: 'Poor', title: 'Roads rated Poor by ride quality (IRI > 170)' },
+            { key: 'notgood', label: 'Substandard', title: 'Roads rated Poor + Acceptable combined (IRI > 95)' },
+        ]
+    },
+    unsheltered_homeless_rate: {
+        defaultKey: 'base',
+        variantKey: 'all',
+        urlSegment: 'all',
+        ariaLabel: 'Homeless count scope',
+        buttons: [
+            { key: 'base', label: 'Unsheltered', title: 'Unsheltered homeless only (sleeping outdoors, in vehicles, or places not meant for habitation)' },
+            { key: 'all', label: 'Total', title: 'All homeless (sheltered + unsheltered combined)' },
+        ]
     },
 };
 
