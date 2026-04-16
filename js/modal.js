@@ -103,15 +103,6 @@ const Modal = {
         });
     },
 
-    // Delegate to Compute (pure, testable in Node.js via compute.js)
-    parseYearLabel(label) { return Compute.parseYearLabel(label); },
-    keyEnd(k) { return Compute.keyEnd(k); },
-    getLatestValue(obj, az) { return Compute.getLatestValue(obj, az); },
-    getPriorValue(obj, az) { return Compute.getPriorValue(obj, az); },
-
-    // getGovernorBoxes: restored to app.js Helpers section
-    // stateToSlug, slugToState: extracted to js/routing.js (Router.stateToSlug, Router.slugToState)
-
     // ----------------------------------------------------------------
     // Modal
     // ----------------------------------------------------------------
@@ -586,9 +577,6 @@ const Modal = {
         document.querySelector('.modal').scrollTop = 0;
     },
 
-    // downloadData: extracted to js/export.js (Export.downloadData)
-    // getStateRankings: relocated to Helpers section (above Card Rendering)
-
     /**
      * Render the Rankings tab: horizontal bar chart for all 50 states.
      * @param {string} slug - Metric ID
@@ -669,8 +657,6 @@ const Modal = {
             Modal.rankHistoryChart = null;
         }
     },
-
-    // computeRankHistory: relocated to Helpers section (above Card Rendering)
 
     /**
      * Render the Rank History tab: rank-over-time chart with state compare dropdown.
@@ -1070,8 +1056,6 @@ const Modal = {
         }
     },
 
-    // handleRoute: extracted to js/routing.js (Router.handleRoute)
-
     /**
      * Build consolidated narrative HTML for metrics with useConsolidated: true.
      * Assembles How to read → Why → National standing → County → Drivers → Lessons → Key levers → Data notes.
@@ -1094,7 +1078,7 @@ const Modal = {
             <p class="cn-text">${m.whyItMatters}</p>
         </div>`;
 
-        // 2. National standing (rank history summary)
+        // 3. National standing (rank history summary)
         if (m.rankHistoryNarrative && m.rankHistoryNarrative.summary) h += `<div class="cn-section">
             <h3 class="cn-heading">National standing</h3>
             <p class="cn-text">${m.rankHistoryNarrative.summary}</p>

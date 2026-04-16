@@ -338,8 +338,6 @@ const App = {
     parseYearLabel(label) { return Compute.parseYearLabel(label); },
     keyEnd(k) { return Compute.keyEnd(k); },
     getLatestValue(obj, az) { return Compute.getLatestValue(obj, az); },
-    getPriorValue(obj, az) { return Compute.getPriorValue(obj, az); },
-
     /** Get governor term boxes for the chart x-axis labels */
     getGovernorBoxes(labels) {
         if (!labels || labels.length === 0) return [];

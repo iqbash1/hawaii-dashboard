@@ -991,13 +991,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.data-note {
-    font-size: var(--text-base);
-    color: var(--text-muted);
-    margin-top: 0.5rem;
-    line-height: 1.4;
+    margin-bottom: 0.6rem;
 }
 
 .chart-error::after {
@@ -1015,9 +1009,6 @@ body {
 }
 
 /* --- Share & Cite panel --- */
-.source-line {
-    margin-bottom: 0.6rem;
-}
 
 
 

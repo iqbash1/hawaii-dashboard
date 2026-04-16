@@ -1395,11 +1395,6 @@ const DASHBOARD_DATA = {
     "thresholdVariants": {
       "50": {
         "officialName": "Share of renter households paying 50% or more of income on gross rent, indicating severe cost burden.",
-        "howToRead": "Both lines should fall. The 50%+ threshold captures renters in the most acute distress. Hawaiʻi consistently exceeds the national average, with a wider gap at the severe level.",
-        "countyNarrative": "Severe cost burden (50%+) affects all four counties but varies widely. Honolulu (29% in 2023) carries the highest sustained levels, while Maui (29%) showed wide year-to-year swings. Hawaiʻi County (30% in 2023) spiked during the pandemic. Kauai (19%) runs lower, likely because its smaller rental market excludes some of the most cost-burdened households captured by the ACS.",
-        "rankHistoryNarrative": {
-          "summary": "At the 50%+ severe threshold, Hawaiʻi has ranked between #38 and #48 from 2005 to 2023. The ranking is slightly more volatile than the 30%+ measure because the smaller denominator amplifies year-to-year survey noise, but the structural position remains among the worst five states."
-        },
         "hawaii": {
           "2005": 0.231,
           "2006": 0.2612,

@@ -20,9 +20,6 @@ const ChartUtils = {
     HAWAII_BLUE_BG: 'rgba(13, 124, 143, 0.08)',
     AVG_GRAY: '#999999',
     AVG_GRAY_BG: 'rgba(153, 153, 153, 0.06)',
-    GREEN_BEST: [5, 150, 105],
-    RED_WORST: [192, 57, 43],
-    NEUTRAL_RANGE: [24, 26],
     PARTY_DEM: '#2563EB',
     PARTY_REP: '#C0392B',
     // Standardized dash patterns
@@ -36,9 +33,6 @@ const ChartUtils = {
     HOVER_LINE_WIDTH: 2,
     HOVER_DOT_RADIUS: 0,
     COMP_LABEL_COLOR: '#555',
-
-    /** Linear interpolation, rounded to integer */
-    lerp(a, b, t) { return Math.round(a + (b - a) * t); },
 
     /** Check if a state name is Hawaii (handles ʻokina variant) */
     isHawaii(name) { return name === 'Hawaii' || name === 'Hawai\u02BBi'; },
