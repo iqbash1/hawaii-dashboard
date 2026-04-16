@@ -22,9 +22,9 @@ The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai�
 ### Housing & Cost of Living
 6. Renter Housing Cost Burden — % of renters cost-burdened, with 30%+ and 50%+ threshold views (Census ACS)
 7. Home Price-to-Income Ratio — median home value / median household income (Census ACS)
-8. Unsheltered Homeless Rate — per 10K residents (HUD PIT Count)
+8. Unsheltered Homeless Rate — per 10K residents, with unsheltered-only and total (sheltered + unsheltered) threshold views (HUD PIT Count)
 9. Residential Electricity Price — cents per kWh (EIA)
-10. Food Insecurity Rate — % of households, 3-year average (USDA ERS)
+10. Food Insecurity Rate — % of households, 3-year average, with food-insecure and very-low-food-security threshold views (USDA ERS)
 
 ### Economy & Workforce
 11. Unemployment Rate — % of labor force (BLS LAUS)
@@ -41,7 +41,7 @@ The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai�
 20. Adults with Bachelor's Degree+ — % age 25+ (Census ACS)
 
 ### Infrastructure, Resilience & Trust
-21. Roads in Poor Condition — % of road miles (FHWA / TRIP)
+21. Roads in Poor Condition — % of road miles, with poor-only and substandard (poor + mediocre) threshold views (FHWA)
 22. Households with Broadband — % of households (Census ACS)
 23. Electricity from Renewables — % of total generation (EIA)
 24. Rainy Day Fund Balance — % of general fund expenditures (Pew / NASBO)
