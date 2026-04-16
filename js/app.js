@@ -345,14 +345,49 @@ const App = {
     // Resident-Scale Translation
     // ----------------------------------------------------------------
     /**
-     * Translate a metric value into a human-scale phrase like "1 in 4 renter
-     * households" or "about 94,000 renter households." Prefers ratio form when
-     * the value rounds cleanly to 1/N where N is in a small denominator list.
-     * Returns null if the metric has no scale config or value is missing.
+     * Translate a metric value into a human-scale phrase appended to the Bottom
+     * line brief. Per Digital.gov plain-language guidance, technical rates like
+     * "50.6%" read as "1 in 2 renter households" for most residents.
+     *
+     * Opt-in: only runs when DASHBOARD_DATA[slug].scale is defined. To enable
+     * for a new metric:
+     *
+     *   1. In js/data.js, add `scale: { denominator, denominatorRounded, unit,
+     *      countLabel?, year, source }` to the metric entry.
+     *      - `denominator`: exact value for arithmetic (e.g., 185300)
+     *      - `denominatorRounded`: plain-language form (e.g., 185000 or null)
+     *      - `unit`: what the denominator measures ("renter households")
+     *      - `countLabel` (optional): what the numerator counts when different
+     *        from the denominator unit (e.g., "primary care doctors"). Without
+     *        it, the helper frames as "X of Hawaiʻi's Y [unit]".
+     *      - `year` + `source`: documentation
+     *
+     *   2. In js/app.js BRIEF_TEMPLATES[slug], add `scaleTemplate: ", or {{scale}}"`.
+     *
+     *   3. Update `whyItMatters` to include one sentence that references the
+     *      rounded denominator and gives a "per percentage point" reference.
+     *
+     * Output rules:
+     *   - Prefers ratio form ("about 1 in 4 unit") when rate >= 5% AND within
+     *     10% relative tolerance of 1/N where N ∈ {2,3,4,5,6,10,20,25,50}
+     *   - Falls back to absolute form otherwise
+     *   - Absolute form uses `countLabel` standalone if present, else
+     *     "about {count} of Hawaiʻi's {denominatorRounded} {unit}"
+     *   - Handles signed rates (negative migration) via |value|
+     *
+     * Denominator cheat sheet (see new_metric_checklist.md for more):
+     *   Total residents 1,441,387 | Civilian pop ~1,370,000 | Civilian 16+
+     *   ~1,150,000 | Households 493,151 | Renter HH 185,300 | Adults 25+
+     *   ~1,000,000 | Voting-eligible ~1,100,000 | Public road miles 4,522
+     *   | Employer establishments ~34,000 | HS seniors/cohort ~13,000
+     *
+     * Skipped metrics: scale scores (NAEP), $ amounts (per capita income),
+     * ratios (home price-to-income), indexes (labor productivity), ¢/kWh
+     * (needs bill-dollar format), % of generation/budget.
      *
      * @param {string} slug - Metric ID (uses active variant's value automatically)
      * @param {number} value - Raw value from the series (decimal 0.506 OR 28.2 per-10K)
-     * @returns {string|null} Formatted translation or null
+     * @returns {string|null} Formatted translation or null when not applicable
      */
     computeScaleTranslation(slug, value) {
         if (value === null || value === undefined) return null;
