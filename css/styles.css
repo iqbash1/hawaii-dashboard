@@ -553,6 +553,15 @@ body {
     text-decoration: underline;
 }
 
+/* Touch devices have no hover; show the underline affordance at rest so the
+   click target is discoverable. */
+@media (hover: none) {
+    .comp-rank {
+        opacity: 1;
+        text-decoration: underline;
+    }
+}
+
 .card-metric {
     font-family: var(--font-heading);
     font-size: var(--text-sm);
