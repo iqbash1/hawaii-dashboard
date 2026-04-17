@@ -149,17 +149,17 @@ describe('Compute.comparisonPhrase', () => {
         assert.equal(Compute.comparisonPhrase(60, 60, 'up'), 'the same as');
     });
 
-    it('adds "significantly " prefix when gap exceeds 10% of average', () => {
-        assert.equal(Compute.comparisonPhrase(300, 250, 'down'), 'significantly worse than'); // 20% gap
-        assert.equal(Compute.comparisonPhrase(320, 250, 'down'), 'significantly worse than'); // 28% gap
+    it('adds "significantly " prefix when gap exceeds 20% of average', () => {
+        assert.equal(Compute.comparisonPhrase(310, 250, 'down'), 'significantly worse than'); // 24% gap
+        assert.equal(Compute.comparisonPhrase(400, 250, 'down'), 'significantly worse than'); // 60% gap
     });
 
-    it('does not add "significantly " at exactly the 10% boundary', () => {
-        assert.equal(Compute.comparisonPhrase(275, 250, 'down'), 'worse than'); // exactly 10% gap
+    it('does not add "significantly " at exactly the 20% boundary', () => {
+        assert.equal(Compute.comparisonPhrase(300, 250, 'down'), 'worse than'); // exactly 20% gap
     });
 
     it('accepts a custom threshold', () => {
-        assert.equal(Compute.comparisonPhrase(260, 250, 'down', 0.03), 'significantly worse than');
+        assert.equal(Compute.comparisonPhrase(275, 250, 'down', 0.05), 'significantly worse than'); // 10% gap, 5% threshold
     });
 
     it('never emits spatial language (above/below/higher/lower/sits)', () => {

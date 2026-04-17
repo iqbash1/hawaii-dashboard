@@ -80,12 +80,12 @@ const Compute = {
      * @param {number} hiVal - Hawaii's current value
      * @param {number} avgVal - Other-state average
      * @param {string} goodDirection - "up" (higher is better) or "down" (lower is better)
-     * @param {number} [significantThreshold=0.1] - Gap > this fraction of avg adds "significantly "
+     * @param {number} [significantThreshold=0.2] - Gap > this fraction of avg adds "significantly "
      * @returns {string} "better than", "worse than", "significantly better than", "significantly worse than", or "the same as"
      */
     comparisonPhrase(hiVal, avgVal, goodDirection, significantThreshold) {
         if (hiVal === avgVal) return 'the same as';
-        const threshold = significantThreshold !== undefined ? significantThreshold : 0.1;
+        const threshold = significantThreshold !== undefined ? significantThreshold : 0.2;
         const gapPct = avgVal !== 0 ? Math.abs(hiVal - avgVal) / Math.abs(avgVal) : 0;
         const intensity = gapPct > threshold ? 'significantly ' : '';
         const hawaiiBetter = (hiVal > avgVal) === (goodDirection === 'up');
