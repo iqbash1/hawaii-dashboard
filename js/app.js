@@ -191,8 +191,8 @@ const THRESHOLD_CONFIG = { // eslint-disable-line no-unused-vars
         urlSegment: 'severe',
         ariaLabel: 'Cost burden threshold',
         buttons: [
-            { key: '30', label: '30%+', title: 'Renters paying 30%+ of income on housing (federal affordability threshold)' },
-            { key: '50', label: '50%+', title: 'Renters paying 50%+ of income on housing (severely burdened)' },
+            { key: '30', label: '30%+ (burdened)', title: 'Renters paying 30%+ of income on housing (federal affordability threshold)' },
+            { key: '50', label: '50%+ (severe)', title: 'Renters paying 50%+ of income on housing (severely burdened)' },
         ]
     },
     food_insecurity_rate: {
