@@ -1157,7 +1157,7 @@ const Modal = {
         h += Modal._section('County breakdown',     m.countyNarrative);
         h += Modal._section('Potential drivers',    m.potentialDrivers);
 
-        // Lessons from other states — compound section (benchmarks + caution + explore)
+        // Lessons from other states; compound section (benchmarks + caution + explore)
         if (narr && (narr.benchmarks?.length || narr.caution || narr.explore?.length)) {
             h += `<div class="cn-section"><h3 class="cn-heading">Lessons from other states</h3>`;
             (narr.benchmarks || []).forEach(b => { h += linkedItem(b, 'cn-state--learn'); });

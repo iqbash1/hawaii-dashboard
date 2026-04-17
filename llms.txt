@@ -13,40 +13,40 @@ The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai�
 ## 5 Policy Areas and 26 Metrics
 
 ### Safety & Health
-1. Violent Crime Rate — per 100K residents (FBI Crime Data Explorer)
-2. Property Crime Rate — per 100K residents (FBI Crime Data Explorer)
-3. Primary Care Physicians — per 100K civilians (HRSA AHRF)
-4. Uninsured Rate — % without health insurance (Census ACS)
-5. Suicide Rate — per 100K residents (CDC WONDER)
+1. Violent Crime Rate: per 100K residents (FBI Crime Data Explorer)
+2. Property Crime Rate: per 100K residents (FBI Crime Data Explorer)
+3. Primary Care Physicians: per 100K civilians (HRSA AHRF)
+4. Uninsured Rate: % without health insurance (Census ACS)
+5. Suicide Rate: per 100K residents (CDC WONDER)
 
 ### Housing & Cost of Living
-6. Renter Housing Cost Burden — % of renters cost-burdened, with 30%+ and 50%+ threshold views (Census ACS)
-7. Home Price-to-Income Ratio — median home value / median household income (Census ACS)
-8. Unsheltered Homeless Rate — per 10K residents, with unsheltered-only and total (sheltered + unsheltered) threshold views (HUD PIT Count)
-9. Residential Electricity Price — cents per kWh (EIA)
-10. Food Insecurity Rate — % of households, 3-year average, with food-insecure and very-low-food-security threshold views (USDA ERS)
+6. Renter Housing Cost Burden: % of renters cost-burdened, with 30%+ and 50%+ threshold views (Census ACS)
+7. Home Price-to-Income Ratio: median home value / median household income (Census ACS)
+8. Unsheltered Homeless Rate: per 10K residents, with unsheltered-only and total (sheltered + unsheltered) threshold views (HUD PIT Count)
+9. Residential Electricity Price: cents per kWh (EIA)
+10. Food Insecurity Rate: % of households, 3-year average, with food-insecure and very-low-food-security threshold views (USDA ERS)
 
 ### Economy & Workforce
-11. Unemployment Rate — % of labor force (BLS LAUS)
-12. Labor Force Participation Rate — % of working-age population (BLS LAUS)
-13. Labor Productivity Index — output per hour, 2017=100 (BLS)
-14. Per Capita Income (real) — inflation-adjusted, constant 2017 dollars (BEA SARPI)
-15. Establishment Entry Rate — new businesses as % of total (Census BDS)
-16. Net Employer Formation — new minus closed businesses as % of total (Census BDS)
+11. Unemployment Rate: % of labor force (BLS LAUS)
+12. Labor Force Participation Rate: % of working-age population (BLS LAUS)
+13. Labor Productivity Index: output per hour, 2017=100 (BLS)
+14. Per Capita Income (real): inflation-adjusted, constant 2017 dollars (BEA SARPI)
+15. Establishment Entry Rate: new businesses as % of total (Census BDS)
+16. Net Employer Formation: new minus closed businesses as % of total (Census BDS)
 
 ### Education
-17. NAEP Math Score (8th grade) — scale score (NCES NAEP)
-18. NAEP Reading Score (8th grade) — scale score (NCES NAEP)
-19. High School Graduation Rate (ACGR) — % of cohort graduating on time (NCES)
-20. Adults with Bachelor's Degree+ — % age 25+ (Census ACS)
+17. NAEP Math Score (8th grade): scale score (NCES NAEP)
+18. NAEP Reading Score (8th grade): scale score (NCES NAEP)
+19. High School Graduation Rate (ACGR): % of cohort graduating on time (NCES)
+20. Adults with Bachelor's Degree+: % age 25+ (Census ACS)
 
 ### Infrastructure, Resilience & Trust
-21. Roads in Poor Condition — % of road miles, with poor-only and poor-and-mediocre threshold views (FHWA)
-22. Households with Broadband — % of households (Census ACS)
-23. Electricity from Renewables — % of total generation (EIA)
-24. Rainy Day Fund Balance — % of general fund expenditures (Pew / NASBO)
-25. Voter Participation Rate — % of eligible voters (VEP) in general election (US Elections Project)
-26. Net Domestic Migration Rate — per 10K residents (Census PEP)
+21. Roads in Poor Condition: % of road miles, with poor-only and poor-and-mediocre threshold views (FHWA)
+22. Households with Broadband: % of households (Census ACS)
+23. Electricity from Renewables: % of total generation (EIA)
+24. Rainy Day Fund Balance: % of general fund expenditures (Pew / NASBO)
+25. Voter Participation Rate: % of eligible voters (VEP) in general election (US Elections Project)
+26. Net Domestic Migration Rate: per 10K residents (Census PEP)
 
 ## Methodology
 
@@ -87,10 +87,10 @@ All data comes from nonpartisan federal agencies:
 
 ## Pages
 
-- **Dashboard** (https://hawaiidashboard.org/) — Main page with all 26 metric cards, trend charts, and modal detail views.
-- **5-Year Change** (https://hawaiidashboard.org/five-year-change/) — How each metric changed over the last 5 years, with rank changes and county trends.
-- **About** (https://hawaiidashboard.org/about/) — Methodology, selection criteria, metric registry, data sources, governor terms.
-- **FAQ** (https://hawaiidashboard.org/faq/) — 11 frequently asked questions about the dashboard's approach, methodology, and use.
+- **Dashboard** (https://hawaiidashboard.org/): Main page with all 26 metric cards, trend charts, and modal detail views.
+- **5-Year Change** (https://hawaiidashboard.org/five-year-change/): How each metric changed over the last 5 years, with rank changes and county trends.
+- **About** (https://hawaiidashboard.org/about/): Methodology, selection criteria, metric registry, data sources, governor terms.
+- **FAQ** (https://hawaiidashboard.org/faq/): 11 frequently asked questions about the dashboard's approach, methodology, and use.
 
 ## URL structure
 
@@ -101,10 +101,10 @@ The dashboard is a single-page application. Metric detail views are accessed via
 - County view: /#metric_slug/county
 
 Shareable links use path-based routes:
-- /t/metric_slug/ — redirects to trend view
-- /r/metric_slug/ — redirects to rankings view
-- /rh/metric_slug/state/ — redirects to rank history with state comparison
-- /c/metric_slug/ — redirects to county view
+- /t/metric_slug/: redirects to trend view
+- /r/metric_slug/: redirects to rankings view
+- /rh/metric_slug/state/: redirects to rank history with state comparison
+- /c/metric_slug/: redirects to county view
 
 ## Key facts
 

@@ -746,7 +746,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
     const asOf = new Date(lm.asOf);
     const ageDays = Math.floor((now - asOf) / (1000 * 60 * 60 * 24));
     if (ageDays > MONTHLY_STALE_DAYS) {
-        warn(`[${slug}] latestMonthly is ${ageDays} days old (asOf: ${lm.asOf}) — run npm run update-monthly`);
+        warn(`[${slug}] latestMonthly is ${ageDays} days old (asOf: ${lm.asOf}); run npm run update-monthly`);
     } else {
         console.log(`  OK [${slug}] latestMonthly: ${lm.value} (${lm.period}), ${ageDays}d old`);
     }

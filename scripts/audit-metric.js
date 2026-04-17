@@ -10,7 +10,7 @@
 //   5. Narrative-data consistency
 //   6. Chart data verification
 //   7. Cross-page references (About, 5YC, bundles, AREA_ORDER)
-//   8. Link audit (HTTP checks — only with --links flag)
+//   8. Link audit (HTTP checks; only with --links flag)
 //   9. Monthly data freshness
 //  10. Rank history narrative structure
 //  11. otherStateAvg cross-check (recompute from state-data.js)
@@ -375,9 +375,9 @@ function auditMetric(slug) {
             const sizes = gaps.map(g => g.size);
             const mode = sizes.sort((a, b) => sizes.filter(v => v === a).length - sizes.filter(v => v === b).length).pop();
             const outliers = gaps.filter(g => g.size !== mode);
-            for (const g of outliers) issues.push(`Hawaii year gap: ${g.from} to ${g.to} (expected ${mode}-year cadence) — verify whether source published data for missing year(s)`);
+            for (const g of outliers) issues.push(`Hawaii year gap: ${g.from} to ${g.to} (expected ${mode}-year cadence); verify whether source published data for missing year(s)`);
         } else {
-            for (const g of gaps) issues.push(`Hawaii year gap: ${g.from} to ${g.to} — verify whether source published data for missing year(s)`);
+            for (const g of gaps) issues.push(`Hawaii year gap: ${g.from} to ${g.to}; verify whether source published data for missing year(s)`);
         }
 
         // YoY spikes
@@ -446,11 +446,11 @@ function auditMetric(slug) {
             }
         }
 
-        if (!hasCountyNarrative) issues.push('Has COUNTY_DATA but no countyNarrative in data.js — is the narrative missing or intentionally omitted?');
+        if (!hasCountyNarrative) issues.push('Has COUNTY_DATA but no countyNarrative in data.js; is the narrative missing or intentionally omitted?');
         if (issues.length === 0) ok('3. County data', `${counties.length} counties, data consistent`);
         else warning('3. County data', `${issues.length} issue(s)`, `3. County data:\n   ${issues.join('\n   ')}`);
     } else if (hasCountyNarrative) {
-        warning('3. County data', 'Has countyNarrative but no COUNTY_DATA entry', '3. countyNarrative exists but no matching COUNTY_DATA — does the source publish county-level data that could be added?');
+        warning('3. County data', 'Has countyNarrative but no COUNTY_DATA entry', '3. countyNarrative exists but no matching COUNTY_DATA; does the source publish county-level data that could be added?');
     } else {
         ok('3. County data', 'No county data (none expected)');
     }
@@ -476,7 +476,7 @@ function auditMetric(slug) {
                 const stateOnly = allKeys.filter(k => !NOT_A_STATE.has(k));
                 const stateCount = stateOnly.length;
                 const nonStates = allKeys.filter(k => NOT_A_STATE.has(k));
-                if (nonStates.length > 0) issues.push(`state-data includes non-state entries: ${nonStates.join(', ')} — verify rankings exclude these`);
+                if (nonStates.length > 0) issues.push(`state-data includes non-state entries: ${nonStates.join(', ')}; verify rankings exclude these`);
                 if (stateCount < 25) issues.push(`Only ${stateCount} states in ${latestYearKey} (rankings unreliable)`);
                 else if (stateCount < 45) issues.push(`${stateCount} states in ${latestYearKey} (some gaps)`);
 
@@ -576,7 +576,7 @@ function auditMetric(slug) {
             issues.push('No otherStateAvg data for chart overlay');
         }
         if (!metric.goodDirection) {
-            issues.push('No goodDirection — chart fill colors will be wrong');
+            issues.push('No goodDirection; chart fill colors will be wrong');
         }
         // Check county chart data structure
         if (countyEntry) {
@@ -738,7 +738,7 @@ function auditMetric(slug) {
             warning('10. Rank history', `${issues.length} issue(s)`, `10. Rank history:\n   ${issues.join('\n   ')}`);
         }
     } else {
-        warning('10. Rank history', 'No rankHistoryNarrative', '10. Missing rankHistoryNarrative — add comparator states and summary');
+        warning('10. Rank history', 'No rankHistoryNarrative', '10. Missing rankHistoryNarrative; add comparator states and summary');
     }
 
     // ---- Section 11: otherStateAvg cross-check ----
@@ -771,7 +771,7 @@ function auditMetric(slug) {
                         const diff = Math.abs(computed - dashAvg.value);
                         const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
                         if (pctDiff > 0.02) {
-                            issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff) — which is correct?`);
+                            issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
                         }
                     }
                 }
@@ -802,7 +802,7 @@ function auditMetric(slug) {
                             const diff = Math.abs(computed - dashAvg.value);
                             const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
                             if (pctDiff > 0.02) {
-                                issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff) — which is correct?`);
+                                issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
                             }
                         }
                     }
@@ -861,9 +861,9 @@ function auditMetric(slug) {
             if (rawLatest) {
                 const rawVal = metric.hawaii[rawLatest.key];
                 if (rawVal === 0 && !allowZero) {
-                    issues.push(`Latest year ${rawLatest.year} has value 0 but metric is not in ZERO_IS_VALID — card will show ${hiLatest.year} (${hiLatest.value}) instead`);
+                    issues.push(`Latest year ${rawLatest.year} has value 0 but metric is not in ZERO_IS_VALID; card will show ${hiLatest.year} (${hiLatest.value}) instead`);
                 } else if (rawVal === null || rawVal === undefined) {
-                    issues.push(`Latest year ${rawLatest.year} has null/undefined value — card will show ${hiLatest.year} (${hiLatest.value}) instead`);
+                    issues.push(`Latest year ${rawLatest.year} has null/undefined value; card will show ${hiLatest.year} (${hiLatest.value}) instead`);
                 }
             }
             // Check that prior year exists for vs-prior-year comparison
@@ -881,7 +881,7 @@ function auditMetric(slug) {
         // Check Hawaii vs US comparison makes sense
         if (hiLatest && usLatest) {
             if (Math.abs(hiLatest.year - usLatest.year) > 2) {
-                issues.push(`Card compares Hawaii ${hiLatest.year} vs US avg ${usLatest.year} — ${Math.abs(hiLatest.year - usLatest.year)} year gap may mislead`);
+                issues.push(`Card compares Hawaii ${hiLatest.year} vs US avg ${usLatest.year}; ${Math.abs(hiLatest.year - usLatest.year)} year gap may mislead`);
             }
         }
         if (issues.length === 0) ok('13. Card values', 'Latest values consistent for card display');
@@ -912,7 +912,7 @@ function auditMetric(slug) {
             }
 
             if (files.length === 0) {
-                issues.push(`No source files found matching ${pattern.glob} — cannot verify data values against source`);
+                issues.push(`No source files found matching ${pattern.glob}; cannot verify data values against source`);
             } else {
                 // For each year in data.js, check if a corresponding source file exists
                 const hiEntries = getSortedYears(metric.hawaii);
@@ -926,14 +926,14 @@ function auditMetric(slug) {
                     .filter(y => !sourceYears.includes(y));
 
                 if (missingSourceYears.length > 0) {
-                    issues.push(`Source files missing for years: ${missingSourceYears.join(', ')} — download from ${metric.sourceUrl} to enable full verification`);
+                    issues.push(`Source files missing for years: ${missingSourceYears.join(', ')}; download from ${metric.sourceUrl} to enable full verification`);
                 }
 
                 const coveredYears = hiEntries.map(e => e.year).filter(y => sourceYears.includes(y));
                 issues.push(`Source files found for ${coveredYears.length}/${hiEntries.length} years. Run manual verification script to compare values against source spreadsheets.`);
             }
         } else {
-            issues.push(`No source file pattern configured for ${slug} — add mapping to sourcePatterns in audit-metric.js`);
+            issues.push(`No source file pattern configured for ${slug}; add mapping to sourcePatterns in audit-metric.js`);
         }
         if (issues.length === 0) ok('14. Source verify', 'All values match source files');
         else warning('14. Source verify', `${issues.length} note(s)`, `14. Source verify:\n   ${issues.join('\n   ')}`);

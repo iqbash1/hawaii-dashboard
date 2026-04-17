@@ -125,7 +125,7 @@ Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings,
 - Use okina (ʻ) in "Hawaiʻi" (Unicode U+02BB)
 - "Other-state average" (hyphenated) is the 49-state simple mean excluding Hawaiʻi and DC. Use this term in narratives; avoid "national average" since the comparator is not a population-weighted US figure.
 - `unitLabel` is a verb phrase that completes the sentence "N.N% [of units]…" (e.g. "pay 30%+ of income on rent"), not a noun phrase like "% of renter households".
-- `rankHistoryNarrative.summary` uses numeric rank ranges ("#5 to #21") — never percentile phrases like "top quarter".
+- `rankHistoryNarrative.summary` uses numeric rank ranges ("#5 to #21"): never percentile phrases like "top quarter".
 - `potentialDrivers` field uses HTML strings (supports `<a>` links); rendered via `innerHTML`. All other narrative fields use plain text except `countyNarrative`.
 - `countyNarrative` field supports HTML (rendered via template literal in `_buildConsolidatedNarrative`); appears as the "County breakdown" section in the consolidated layout. Omit when no meaningful county variation exists for that metric.
 - `useConsolidated: true` flag switches the modal from split-tab narrative to a single-scroll consolidated layout. Set on all 26 metrics.
@@ -134,16 +134,16 @@ Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings,
 
 Prefer these over inlining equivalent logic:
 
-- `ChartUtils.isHawaii(name)` + `ChartUtils.HAWAII_NAMES` — Hawaiʻi name detection (handles ʻokina variants)
-- `App._getActiveData(sourceObj, slug)` — threshold-overlay merge (public wrappers: `getActiveMetricData`/`getActiveStateData`/`getActiveCountyData`)
-- `App._isPCPStyle(data)` — detects FIPS-keyed vs year-keyed state data shape
-- `App._findRankingYear(sd)` — latest year with ≥25 states reporting
-- `App.computeScaleTranslation(slug, value)` — resident-scale plain-language phrase
-- `Compute.formatYearRange(startKey, endKey, sep?)` — compact "YYYY-YY" label (default `-`, pass `\u2013` for prose)
-- `Modal._formatBriefText(text)` — wraps "Bottom line:"/"Keep in mind:" in `<strong>`
-- `Modal._section(heading, content, asDetails?, extraClass?)` — consolidated-narrative section renderer
-- `Modal._thPath(slug)` — URL path suffix for active threshold
+- `ChartUtils.isHawaii(name)` + `ChartUtils.HAWAII_NAMES`: Hawaiʻi name detection (handles ʻokina variants)
+- `App._getActiveData(sourceObj, slug)`: threshold-overlay merge (public wrappers: `getActiveMetricData`/`getActiveStateData`/`getActiveCountyData`)
+- `App._isPCPStyle(data)`: detects FIPS-keyed vs year-keyed state data shape
+- `App._findRankingYear(sd)`: latest year with ≥25 states reporting
+- `App.computeScaleTranslation(slug, value)`: resident-scale plain-language phrase
+- `Compute.formatYearRange(startKey, endKey, sep?)`: compact "YYYY-YY" label (default `-`, pass `\u2013` for prose)
+- `Modal._formatBriefText(text)`: wraps "Bottom line:"/"Keep in mind:" in `<strong>`
+- `Modal._section(heading, content, asDetails?, extraClass?)`: consolidated-narrative section renderer
+- `Modal._thPath(slug)`: URL path suffix for active threshold
 
 ## Removed fields
 
-The `areaIcon` field was removed in April 2026 — cards and modal use the centralized `AREA_ICONS` SVG map in `js/app.js` keyed by area name. Do not add it back to new metrics.
+The `areaIcon` field was removed in April 2026: cards and modal use the centralized `AREA_ICONS` SVG map in `js/app.js` keyed by area name. Do not add it back to new metrics.

@@ -39,7 +39,7 @@ section() { echo; echo "=== $* ==="; }
 #    A GET-based content hash is always accurate.
 #
 #    If the hash never changes (deploy already completed before script started,
-#    or CDN quirk), we warn and continue — the content checks in sections 3-8
+#    or CDN quirk), we warn and continue; the content checks in sections 3-8
 #    will catch a stale deployment just as reliably.
 # -----------------------------------------------------------------------------
 section "DEPLOYMENT DETECTION"
@@ -205,13 +205,13 @@ done
 # -----------------------------------------------------------------------------
 section "APP.JS INTEGRITY"
 
-# Sentinel: unique string added in Phase 2 — confirms current build is live
+# Sentinel: unique string added in Phase 2; confirms current build is live
 # Update this string whenever a new deployment adds a new identifiable marker.
 SENTINEL="[HI-DASH]"
 if grep -qF "$SENTINEL" "$APP_JS_FILE"; then
     ok "app.js contains deployment sentinel: ${SENTINEL}"
 else
-    fail "app.js missing sentinel: ${SENTINEL} (stale build — Phase 2 code not live)"
+    fail "app.js missing sentinel: ${SENTINEL} (stale build; Phase 2 code not live)"
 fi
 
 # Also confirm utils.js script tag is present in five-year-change page
@@ -293,7 +293,7 @@ fi
 # -----------------------------------------------------------------------------
 section "SECONDARY PAGES"
 
-# /five-year-change/ rows are JS-rendered — verify the JS template and data are wired up.
+# /five-year-change/ rows are JS-rendered; verify the JS template and data are wired up.
 # Check 1: fyc-row class appears in the inline JS template literal (code is present)
 if echo "$fyc_html" | grep -q "fyc-row"; then
     ok "/five-year-change/ JS template contains fyc-row class"

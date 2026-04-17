@@ -183,7 +183,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
 
 // Threshold toggle config: maps each metric with severity variants to its
 // toggle metadata. Adding a new threshold metric means adding one entry here
-// plus the data — zero code changes elsewhere.
+// plus the data; zero code changes elsewhere.
 const THRESHOLD_CONFIG = { // eslint-disable-line no-unused-vars
     renter_cost_burden_pct: {
         defaultKey: '30',
@@ -435,7 +435,7 @@ const App = {
         } else if (unit === 'per 1,000') {
             fraction = value / 1000;
         } else {
-            // Not a rate — skip (e.g. $ amounts, scale scores, ratios)
+            // Not a rate; skip (e.g. $ amounts, scale scores, ratios)
             return null;
         }
 

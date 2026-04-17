@@ -10,9 +10,9 @@
 // Usage: NODE_TLS_REJECT_UNAUTHORIZED=0 node scripts/fetch-verylow-food-insecurity.js
 //
 // Output: Prints JSON to stdout with three sections:
-//   1. stateData  — per-period, per-state data for state-data.js
-//   2. dataJs     — hawaii + otherStateAvg for data.js
-//   3. summary    — period count, Hawaii values, and ratio checks
+//   1. stateData : per-period, per-state data for state-data.js
+//   2. dataJs    : hawaii + otherStateAvg for data.js
+//   3. summary   : period count, Hawaii values, and ratio checks
 //
 // Values are expressed as decimal fractions (e.g., 5.2% -> 0.052)
 // with 4 decimal places.
