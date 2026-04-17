@@ -382,7 +382,7 @@ const Modal = {
             setTimeout(() => {
                 feedbackEl.classList.remove('copied');
                 feedbackEl.title = 'Copy link';
-                if (label) label.textContent = 'Share';
+                if (label) label.textContent = 'Copy link';
             }, 2000);
         };
         document.getElementById('modal-share-btn').onclick = (e) => {
