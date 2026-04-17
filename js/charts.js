@@ -34,8 +34,11 @@ const ChartUtils = {
     HOVER_DOT_RADIUS: 0,
     COMP_LABEL_COLOR: '#555',
 
-    /** Check if a state name is Hawaii (handles ʻokina variant) */
-    isHawaii(name) { return name === 'Hawaii' || name === 'Hawai\u02BBi'; },
+    /** Canonical name variants for Hawaiʻi used across source data files. */
+    HAWAII_NAMES: ['Hawai\u02BBi', 'Hawaii', 'Hawai\u2019i', "Hawai'i"],
+
+    /** Check if a state name is Hawaiʻi (handles ʻokina variants). */
+    isHawaii(name) { return ChartUtils.HAWAII_NAMES.indexOf(name) !== -1; },
 
     /**
      * Determine if a % metric stores values as decimals (0.028 = 2.8%)

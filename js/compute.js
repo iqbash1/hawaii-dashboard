@@ -57,6 +57,21 @@ const Compute = {
         const prev = entries[entries.length - 2];
         return { year: prev[0], value: prev[1] };
     },
+
+    /**
+     * Compact year-range label like "2022-24" from two year keys (plain or
+     * range-keyed). Uses parseYearLabel for the start and the last two
+     * digits of keyEnd for the end. Separator defaults to a hyphen; pass
+     * "\u2013" (en-dash) for narrative prose.
+     * @param {string} startKey - e.g. "2022" or "2022-2023"
+     * @param {string} endKey   - e.g. "2024" or "2022-2024"
+     * @param {string} [sep='-'] - separator character
+     * @returns {string}
+     */
+    formatYearRange(startKey, endKey, sep) {
+        const s = sep || '-';
+        return `${this.parseYearLabel(startKey)}${s}${String(this.keyEnd(endKey)).slice(-2)}`;
+    },
 };
 
 // Dual export: browser global + Node.js module (enables unit testing)

@@ -306,39 +306,62 @@ const App = {
     // Threshold Resolvers
     // ----------------------------------------------------------------
     /**
-     * Return DASHBOARD_DATA[slug] merged with the active threshold overlay.
-     * When no threshold is active (default), returns the base 30%+ data.
+     * Merge a base entry with its active thresholdVariants overlay, if any.
+     * Shared by the three public resolvers below.
      */
-    getActiveMetricData(slug) {
-        const base = DASHBOARD_DATA[slug];
+    _getActiveData(sourceObj, slug) {
+        if (!sourceObj) return null;
+        const base = sourceObj[slug];
         if (!base) return null;
         const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
         if (!th || !base.thresholdVariants || !base.thresholdVariants[th]) return base;
         return { ...base, ...base.thresholdVariants[th] };
     },
 
-    /**
-     * Return STATE_DATA[slug] merged with the active threshold overlay.
-     * When no threshold is active, returns the base state data unchanged.
-     */
+    /** Return DASHBOARD_DATA[slug] merged with the active threshold overlay. */
+    getActiveMetricData(slug) {
+        return this._getActiveData(typeof DASHBOARD_DATA !== 'undefined' ? DASHBOARD_DATA : null, slug);
+    },
+
+    /** Return STATE_DATA[slug] merged with the active threshold overlay. */
     getActiveStateData(slug) {
-        const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
-        if (!sd) return null;
-        const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
-        if (!th || !sd.thresholdVariants || !sd.thresholdVariants[th]) return sd;
-        return { ...sd, ...sd.thresholdVariants[th] };
+        return this._getActiveData(typeof STATE_DATA !== 'undefined' ? STATE_DATA : null, slug);
+    },
+
+    /** Return COUNTY_DATA[slug] merged with the active threshold overlay. */
+    getActiveCountyData(slug) {
+        return this._getActiveData(typeof COUNTY_DATA !== 'undefined' ? COUNTY_DATA : null, slug);
     },
 
     /**
-     * Return COUNTY_DATA[slug] merged with the active threshold overlay.
-     * When no threshold is active, returns the base county data unchanged.
+     * Detect if a STATE_DATA entry's `data` uses the FIPS-keyed shape
+     * ({ "15": { name: "Hawaii", "2021": 64.8 }, ... }) versus the
+     * year-keyed shape ({ "2023": { "Alabama": 0.25, ... } }).
      */
-    getActiveCountyData(slug) {
-        const cd = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
-        if (!cd) return null;
-        const th = typeof Modal !== 'undefined' && Modal._activeThreshold && Modal._activeThreshold[slug];
-        if (!th || !cd.thresholdVariants || !cd.thresholdVariants[th]) return cd;
-        return { ...cd, ...cd.thresholdVariants[th] };
+    _isPCPStyle(data) {
+        const firstKey = Object.keys(data)[0];
+        return !!(data[firstKey] && typeof data[firstKey].name === 'string');
+    },
+
+    /**
+     * Find the latest year with at least 25 states reporting in a STATE_DATA
+     * entry. Falls back to the earliest year if none qualifies. Used by
+     * getStateRankings() and computeRankHistory().
+     */
+    _findRankingYear(sd) {
+        if (App._isPCPStyle(sd.data)) {
+            const yearCounts = {};
+            Object.values(sd.data).forEach(entry => {
+                Object.keys(entry).forEach(k => {
+                    if (k !== 'name') yearCounts[k] = (yearCounts[k] || 0) + 1;
+                });
+            });
+            const sorted = Object.keys(yearCounts).sort();
+            return sorted.slice().reverse().find(y => yearCounts[y] >= 25) || sorted.pop() || '';
+        }
+        const years = Object.keys(sd.data).sort();
+        return years.slice().reverse().find(y => Object.values(sd.data[y]).filter(v => v != null).length >= 25)
+            || years[0] || '';
     },
 
     // ----------------------------------------------------------------
@@ -512,14 +535,11 @@ const App = {
         const sd = this.getActiveStateData(slug);
         if (!sd || !sd.data) return null;
 
-        const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
-        const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
+        const isHawaii = ChartUtils.isHawaii;
         // DC and Puerto Rico are not states; always excluded from the 49-state average
         const NON_STATES = new Set(['District of Columbia', 'Puerto Rico']);
 
-        // Detect FIPS-keyed vs year-keyed
-        const firstKey = Object.keys(sd.data)[0];
-        const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
+        const isPCPStyle = App._isPCPStyle(sd.data);
 
         const hawaii = {};
         const otherStateAvg = {};
@@ -719,8 +739,8 @@ const App = {
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
         // Compact labels: start year full, end year 2-digit - e.g. "2020-24 vs 2017-21"
-        const priorLabel = `${this.parseYearLabel(prior[0])}-${String(this.keyEnd(prior[prior.length - 1])).slice(-2)}`;
-        const recentLabel = `${this.parseYearLabel(recent[0])}-${String(this.keyEnd(recent[recent.length - 1])).slice(-2)}`;
+        const priorLabel = Compute.formatYearRange(prior[0], prior[prior.length - 1]);
+        const recentLabel = Compute.formatYearRange(recent[0], recent[recent.length - 1]);
 
         return `
             <div class="card-comp ${cls}" title="Change in the 3-year rolling average: ${recentLabel} window compared with the ${priorLabel} window">
@@ -736,30 +756,16 @@ const App = {
         if (!sd || !sd.data) return null;
         const metricData = this.getActiveMetricData(slug);
 
-        const firstKey = Object.keys(sd.data)[0];
-        const isPCPStyle = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
-
+        const year = App._findRankingYear(sd);
         let stateValues = [];
-        let year = '';
 
-        if (isPCPStyle) {
-            const yearCounts = {};
-            Object.values(sd.data).forEach(entry => {
-                Object.keys(entry).forEach(k => {
-                    if (k !== 'name') yearCounts[k] = (yearCounts[k] || 0) + 1;
-                });
-            });
-            year = Object.keys(yearCounts).sort()
-                .reverse().find(y => yearCounts[y] >= 25) || Object.keys(yearCounts).sort().pop();
+        if (App._isPCPStyle(sd.data)) {
             Object.values(sd.data).forEach(entry => {
                 if (entry[year] != null) {
                     stateValues.push({ state: entry.name, value: entry[year] });
                 }
             });
         } else {
-            const years = Object.keys(sd.data).sort();
-            year = years.reverse().find(y => Object.values(sd.data[y]).filter(v => v != null).length >= 25)
-                || years[0];
             const yearData = sd.data[year];
             if (!yearData) return null;
             const isDecimal = ChartUtils.isDecimalPctMetric(metricData);
@@ -777,9 +783,7 @@ const App = {
             stateValues.sort((a, b) => a.value - b.value);
         }
 
-        const hawaiiRank = stateValues.findIndex(s =>
-            s.state === 'Hawaii' || s.state === 'Hawai\u02BBi'
-        ) + 1;
+        const hawaiiRank = stateValues.findIndex(s => ChartUtils.isHawaii(s.state)) + 1;
 
         return { stateValues, year, hawaiiRank, total: stateValues.length };
     },
@@ -795,12 +799,9 @@ const App = {
         const m = this.getActiveMetricData(slug);
         const isDec = ChartUtils.isDecimalPctMetric(m);
 
-        const firstKey = Object.keys(sd.data)[0];
-        const isPCP = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
-
         const yearData = {};
 
-        if (isPCP) {
+        if (App._isPCPStyle(sd.data)) {
             const allYears = new Set();
             Object.values(sd.data).forEach(entry => {
                 Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
@@ -855,7 +856,7 @@ const App = {
             latestYearRanked.push({ state: entry.state, rank: idx + 1 });
         });
 
-        const hiKey = Object.keys(stateRanks).find(s => s === 'Hawaii' || s === 'Hawai\u02BBi') || 'Hawaii';
+        const hiKey = Object.keys(stateRanks).find(s => ChartUtils.isHawaii(s)) || 'Hawaii';
         const hiLatest = latestYearRanked.find(s => s.state === hiKey);
 
         return {

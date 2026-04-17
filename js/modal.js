@@ -29,6 +29,13 @@ const Modal = {
         return config.urlSegment + '/';
     },
 
+    /** Bold "Bottom line:" and "Keep in mind:" markers in a brief string. */
+    _formatBriefText(text) {
+        return text
+            .replace('Bottom line:', '<strong>Bottom line:</strong>')
+            .replace('Keep in mind:', '<strong>Keep in mind:</strong>');
+    },
+
     renderBundleNav(slug) {
         const nav = document.getElementById('bundle-nav');
         if (!nav) return;
@@ -182,9 +189,7 @@ const Modal = {
         const briefEl = document.getElementById('modal-brief');
         const briefText = Modal.computeBrief(slug);
         if (briefText) {
-            briefEl.innerHTML = briefText
-                .replace('Bottom line:', '<strong>Bottom line:</strong>')
-                .replace('Keep in mind:', '<strong>Keep in mind:</strong>');
+            briefEl.innerHTML = Modal._formatBriefText(briefText);
             briefEl.style.display = '';
         } else {
             briefEl.style.display = 'none';
@@ -957,9 +962,7 @@ const Modal = {
         const briefEl = document.getElementById('modal-brief');
         const briefText = Modal.computeBrief(slug);
         if (briefText) {
-            briefEl.innerHTML = briefText
-                .replace('Bottom line:', '<strong>Bottom line:</strong>')
-                .replace('Keep in mind:', '<strong>Keep in mind:</strong>');
+            briefEl.innerHTML = Modal._formatBriefText(briefText);
             briefEl.style.display = '';
         } else {
             briefEl.style.display = 'none';
@@ -1228,8 +1231,8 @@ const Modal = {
 
         const word    = isFlat ? 'held flat' : (isImproving ? 'improved' : 'worsened');
         const pctPart = isFlat ? '' : ` ${Math.abs(pctChange) > 100 ? Math.abs(pctChange).toFixed(0) : Math.abs(pctChange).toFixed(1)}%`;
-        const priorLbl  = `${App.parseYearLabel(prior[0])}\u2013${String(App.keyEnd(prior[prior.length - 1])).slice(-2)}`;
-        const recentLbl = `${App.parseYearLabel(recent[0])}\u2013${String(App.keyEnd(recent[recent.length - 1])).slice(-2)}`;
+        const priorLbl  = Compute.formatYearRange(prior[0], prior[prior.length - 1], '\u2013');
+        const recentLbl = Compute.formatYearRange(recent[0], recent[recent.length - 1], '\u2013');
 
         return `${word}${pctPart} from the ${priorLbl} to ${recentLbl} average`;
     },

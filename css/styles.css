@@ -1483,17 +1483,6 @@ body {
     color: var(--border);
 }
 
-@media (max-width: 700px) {
-    .go-deeper-columns {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .go-deeper {
-        padding: 2rem 1rem 1.5rem;
-    }
-}
-
 /* --- Footer --- */
 .footer {
     text-align: center;
@@ -1540,6 +1529,15 @@ body {
 /* --- Responsive --- */
 
 @media (max-width: 700px) {
+    .go-deeper-columns {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .go-deeper {
+        padding: 2rem 1rem 1.5rem;
+    }
+
     .top-nav-link {
         font-size: var(--text-sm);
         padding: 0.45rem 0.65rem;

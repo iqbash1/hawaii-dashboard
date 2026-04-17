@@ -33,11 +33,7 @@ const Export = {
         const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
 
         // Detect FIPS-keyed structure (e.g. pcp_per_100k)
-        let isFIPS = false;
-        if (sd && sd.data) {
-            const firstKey = Object.keys(sd.data)[0];
-            isFIPS = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
-        }
+        const isFIPS = !!(sd && sd.data && App._isPCPStyle(sd.data));
 
         // --- Tab 1: "Raw Data" (per-state source data, single source of truth) ---
         if (sd && sd.data) {
