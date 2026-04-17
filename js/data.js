@@ -1890,7 +1890,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "Annual",
     "nextUpdate": "Sep",
     "rankHistoryNarrative": {
-      "summary": "Hawaii has ranked in the top quarter since 2016. The lead reflects high household income and urban density on Oahu, with remaining gaps concentrated in rural neighbor island areas where affordability, not infrastructure, is the constraint.",
+      "summary": "Hawaiʻi has ranked #13 to #21 since 2016, generally in the top half. The lead reflects high household income and urban density on Oahu, with remaining gaps concentrated in rural neighbor island areas where affordability, not infrastructure, is the constraint.",
       "mode": "protect",
       "benchmarks": [
         {
@@ -2240,7 +2240,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "3-year average",
     "nextUpdate": "Sep",
     "rankHistoryNarrative": {
-      "summary": "At the food-insecure level, Hawaiʻi has ranked in the top quarter for most of the past decade, reflecting robust federal nutrition program enrollment (SNAP, WIC, school meals) rather than low grocery prices. At the severe (very low food security) level, the ranking is similar but the rate is roughly one-third of the broader measure.",
+      "summary": "At the food-insecure level, Hawaiʻi has ranked between #8 and #13 for most of the past decade, reflecting robust federal nutrition program enrollment (SNAP, WIC, school meals) rather than low grocery prices. At the severe (very low food security) level, the ranking is similar but the rate is roughly one-third of the broader measure.",
       "mode": "protect",
       "benchmarks": [
         {
