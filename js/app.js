@@ -675,7 +675,7 @@ const App = {
             if (hasRankings) {
                 const rankings = this.getStateRankings(slug);
                 if (rankings && rankings.hawaiiRank > 0) {
-                    rankHtml = `<div class="comp-rank" data-slug="${slug}" title="#1 is the best-performing state; #${rankings.total} is the worst. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</div>`;
+                    rankHtml = `<div class="comp-rank" data-slug="${slug}" title="#1 is the best-performing state. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</div>`;
                 }
             }
         }
