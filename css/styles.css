@@ -801,6 +801,14 @@ body {
     margin-top: 0.15rem;
 }
 
+.card-scale {
+    font-size: var(--text-sm);
+    color: var(--text);
+    font-style: italic;
+    margin-top: 0.2rem;
+    line-height: 1.35;
+}
+
 /* --- Modal Tabs --- */
 .modal-tabs {
     display: flex;
