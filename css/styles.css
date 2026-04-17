@@ -975,12 +975,13 @@ body {
     color: #fff;
     border-color: var(--hawaii-blue);
 }
-/* Active: plain text showing current state, no button chrome */
+/* Active: plain bold text showing current state, no button chrome */
 .threshold-btn.active {
     color: var(--text);
     background: none;
     border: none;
     padding: 0;
+    font-weight: 600;
     cursor: default;
 }
 .threshold-btn:focus-visible {
