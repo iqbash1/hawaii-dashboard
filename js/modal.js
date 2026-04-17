@@ -246,7 +246,7 @@ const Modal = {
             }
         }
 
-        // Threshold toggle (show for metrics with thresholdVariants + config)
+        // Threshold toggle (dropdown for metrics with thresholdVariants + config)
         const toggleWrap = document.getElementById('threshold-toggle-wrap');
         const baseMetric = DASHBOARD_DATA[slug];
         const thConfig = typeof THRESHOLD_CONFIG !== 'undefined' && THRESHOLD_CONFIG[slug];
@@ -254,25 +254,76 @@ const Modal = {
             if (baseMetric && baseMetric.thresholdVariants && thConfig) {
                 toggleWrap.style.display = '';
                 toggleWrap.setAttribute('aria-label', thConfig.ariaLabel);
-                // Build buttons dynamically from config
                 const activeTh = Modal._activeThreshold[slug] || thConfig.defaultKey;
-                toggleWrap.innerHTML = thConfig.buttons.map((btn, i) =>
-                    (i > 0 ? ' \u00B7 ' : ' \u00B7 ') +
-                    '<button class="threshold-btn' + (btn.key === activeTh ? ' active' : '') + '" ' +
-                    'data-threshold="' + btn.key + '" title="' + btn.title + '">' + btn.label + '</button>'
-                ).join('');
-                toggleWrap.querySelectorAll('.threshold-btn').forEach(btnEl => {
-                    btnEl.onclick = () => {
-                        const th = btnEl.dataset.threshold;
+                const activeBtn = thConfig.buttons.find(b => b.key === activeTh) || thConfig.buttons[0];
+
+                // Build trigger + menu. Trigger shows active choice; menu lists all options.
+                toggleWrap.innerHTML =
+                    ' \u00B7 ' +
+                    '<button class="threshold-trigger" type="button" ' +
+                        'aria-haspopup="listbox" aria-expanded="false" ' +
+                        'title="' + activeBtn.title + '">' +
+                        '<span class="threshold-trigger-label">' + activeBtn.label + '</span>' +
+                        '<svg class="threshold-trigger-caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">' +
+                            '<path d="M1 3 L5 7 L9 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+                        '</svg>' +
+                    '</button>' +
+                    '<ul class="threshold-menu" role="listbox" hidden>' +
+                        thConfig.buttons.map(btn =>
+                            '<li class="threshold-option' + (btn.key === activeTh ? ' active' : '') + '" ' +
+                                'role="option" aria-selected="' + (btn.key === activeTh) + '" ' +
+                                'data-threshold="' + btn.key + '" title="' + btn.title + '">' +
+                                btn.label +
+                            '</li>'
+                        ).join('') +
+                    '</ul>';
+
+                const trigger = toggleWrap.querySelector('.threshold-trigger');
+                const menu = toggleWrap.querySelector('.threshold-menu');
+
+                const closeMenu = () => {
+                    menu.hidden = true;
+                    trigger.setAttribute('aria-expanded', 'false');
+                    document.removeEventListener('click', onDocClick);
+                };
+                const openMenu = () => {
+                    menu.hidden = false;
+                    trigger.setAttribute('aria-expanded', 'true');
+                    setTimeout(() => document.addEventListener('click', onDocClick), 0);
+                };
+                const onDocClick = (e) => {
+                    if (!toggleWrap.contains(e.target)) closeMenu();
+                };
+
+                trigger.onclick = (e) => {
+                    e.stopPropagation();
+                    menu.hidden ? openMenu() : closeMenu();
+                };
+
+                menu.querySelectorAll('.threshold-option').forEach(opt => {
+                    opt.onclick = (e) => {
+                        e.stopPropagation();
+                        const th = opt.dataset.threshold;
                         if (th === thConfig.defaultKey) {
                             delete Modal._activeThreshold[slug];
                         } else {
                             Modal._activeThreshold[slug] = th;
                         }
                         App._chartDataCache = {};
-                        toggleWrap.querySelectorAll('.threshold-btn').forEach(b =>
-                            b.classList.toggle('active', b.dataset.threshold === th)
-                        );
+
+                        // Update trigger label + title, and active state across options
+                        const selected = thConfig.buttons.find(b => b.key === th);
+                        if (selected) {
+                            trigger.querySelector('.threshold-trigger-label').textContent = selected.label;
+                            trigger.setAttribute('title', selected.title);
+                        }
+                        menu.querySelectorAll('.threshold-option').forEach(o => {
+                            const isActive = o.dataset.threshold === th;
+                            o.classList.toggle('active', isActive);
+                            o.setAttribute('aria-selected', String(isActive));
+                        });
+
+                        closeMenu();
                         Modal._refreshCurrentView(slug, areaName);
                     };
                 });

@@ -949,45 +949,76 @@ body {
     margin: 0;
 }
 
-/* Threshold toggle: inactive = ghost-button (invites click), active = plain text (current state) */
+/* Threshold dropdown: single trigger shows active state; menu reveals alternatives */
 .threshold-toggle {
-    display: inline;
+    display: inline-block;
+    position: relative;
 }
-.threshold-btn {
+.threshold-trigger {
     font-family: inherit;
     font-size: var(--text-sm);
-    font-weight: 400;
-    line-height: 1.3;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-/* Inactive: outlined teal button, matches .table-toggle */
-.threshold-btn:not(.active) {
+    font-weight: 600;
     color: var(--hawaii-blue);
     background: var(--hawaii-blue-light);
     border: 1px solid rgba(13, 124, 143, 0.35);
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.55rem;
     border-radius: var(--radius-sm);
-    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    line-height: 1.3;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.threshold-btn:not(.active):hover {
+.threshold-trigger:hover {
     background: var(--hawaii-blue);
     color: #fff;
     border-color: var(--hawaii-blue);
 }
-/* Active: plain bold text showing current state, no button chrome */
-.threshold-btn.active {
-    color: var(--text);
-    background: none;
-    border: none;
-    padding: 0;
-    font-weight: 600;
-    cursor: default;
+.threshold-trigger-caret {
+    transition: transform 0.15s;
 }
-.threshold-btn:focus-visible {
+.threshold-trigger[aria-expanded="true"] .threshold-trigger-caret {
+    transform: rotate(180deg);
+}
+.threshold-trigger:focus-visible {
     outline: 2px solid var(--hawaii-blue);
     outline-offset: 2px;
-    border-radius: var(--radius-sm);
+}
+.threshold-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    margin: 0;
+    padding: 0.25rem 0;
+    list-style: none;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
+    min-width: 100%;
+    width: max-content;
+    z-index: 200;
+}
+.threshold-option {
+    padding: 0.45rem 1rem;
+    font-size: var(--text-sm);
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+}
+.threshold-option:hover {
+    background: var(--hawaii-blue-light);
+    color: var(--hawaii-blue);
+}
+.threshold-option.active {
+    font-weight: 600;
+    background: var(--bg);
+}
+.threshold-option.active::before {
+    content: "\2713  ";
+    color: var(--hawaii-blue);
+    font-weight: 700;
 }
 
 .modal-source a {
