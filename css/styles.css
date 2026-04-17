@@ -386,8 +386,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1rem;
     flex-wrap: wrap;
+}
+
+.explore-label {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.01em;
 }
 
 
@@ -737,14 +744,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-secondary);
+    color: var(--text);
     transition: background var(--transition);
     z-index: 10;
 }
 
 .modal-close:hover {
     background: var(--avg-gray-light);
-    color: var(--text);
 }
 
 .modal-header {
@@ -1763,6 +1769,12 @@ body {
 
     .go-deeper-inner {
         padding: 1.25rem;
+    }
+
+    /* Stack the two card indicators so text stays legible on narrow screens */
+    .card-comparisons {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
     }
 }
 
