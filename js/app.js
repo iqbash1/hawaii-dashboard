@@ -675,7 +675,7 @@ const App = {
             if (hasRankings) {
                 const rankings = this.getStateRankings(slug);
                 if (rankings && rankings.hawaiiRank > 0) {
-                    rankHtml = `<div class="comp-rank" data-slug="${slug}">Rank #${rankings.hawaiiRank} of ${rankings.total}</div>`;
+                    rankHtml = `<div class="comp-rank" data-slug="${slug}" title="#1 is the best-performing state; #${rankings.total} is the worst. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</div>`;
                 }
             }
         }
@@ -723,8 +723,8 @@ const App = {
         const recentLabel = `${this.parseYearLabel(recent[0])}-${String(this.keyEnd(recent[recent.length - 1])).slice(-2)}`;
 
         return `
-            <div class="card-comp ${cls}">
-                <div class="comp-label">${recentLabel} vs ${priorLabel}</div>
+            <div class="card-comp ${cls}" title="Change in the 3-year rolling average: ${recentLabel} window compared with the ${priorLabel} window">
+                <div class="comp-label">${recentLabel} vs ${priorLabel}<span class="comp-avg-hint"> (3-yr avg)</span></div>
                 <div class="comp-verdict">${pctLabel}</div>
             </div>
         `;

@@ -414,7 +414,7 @@ const Modal = {
             const rankLabel = rankings && rankings.hawaiiRank > 0
                 ? `<span class="tab-rank">#${rankings.hawaiiRank}</span>`
                 : '';
-            tabRankings.innerHTML = `<span>Rank ${rankLabel}</span><span class="tab-sub">National standing</span>`;
+            tabRankings.innerHTML = `<span>Current rank ${rankLabel}</span><span class="tab-sub">How Hawai\u02BBi compares now</span>`;
 
             tabDetail.onclick = () => Modal.switchTab('detail', slug);
             tabRankings.onclick = () => Modal.switchTab('rankings', slug);

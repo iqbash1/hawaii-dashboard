@@ -2240,7 +2240,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "3-year average",
     "nextUpdate": "Sep",
     "rankHistoryNarrative": {
-      "summary": "At the food-insecure level, Hawaiʻi has ranked between #8 and #13 for most of the past decade, reflecting robust federal nutrition program enrollment (SNAP, WIC, school meals) rather than low grocery prices. At the severe (very low food security) level, the ranking is similar but the rate is roughly one-third of the broader measure.",
+      "summary": "At the food-insecure level, Hawaiʻi has ranked between #8 and #13 for most of the past decade, reflecting robust federal nutrition program enrollment (SNAP, WIC, school meals) rather than low grocery prices. At the severe (very low food security) level, recent ranks land between #5 and #18, with the rate roughly one-third of the broader measure.",
       "mode": "protect",
       "benchmarks": [
         {
