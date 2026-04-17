@@ -165,7 +165,7 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
         caveat: "this is not a complete inventory of every road, especially local roads.",
         thresholdVariants: {
             "notgood": {
-                intro: "{{value}} of Hawai\u02BBi roads were rated substandard in {{period}}",
+                intro: "{{value}} of Hawai\u02BBi roads were rated poor or mediocre in {{period}}",
                 caveat: "this combines poor and acceptable/mediocre ratings; the 'poor only' view isolates the worst roads."
             }
         }
@@ -212,7 +212,7 @@ const THRESHOLD_CONFIG = { // eslint-disable-line no-unused-vars
         ariaLabel: 'Road condition threshold',
         buttons: [
             { key: 'base', label: 'Poor', title: 'Roads rated Poor by ride quality (IRI > 170)' },
-            { key: 'notgood', label: 'Substandard', title: 'Roads rated Poor + Acceptable combined (IRI > 95)' },
+            { key: 'notgood', label: 'Poor & mediocre', title: 'Roads rated Poor + Acceptable combined (IRI > 95)' },
         ]
     },
     unsheltered_homeless_rate: {
