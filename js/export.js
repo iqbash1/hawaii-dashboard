@@ -96,7 +96,7 @@ const Export = {
             XLSX.utils.book_append_sheet(wb, wsStates, 'Raw Data');
         }
 
-        // --- Tab 2: "Chart Data" (Hawai'i + Other-states average) ---
+        // --- Tab 2: "Chart Data" (Hawai'i + Other-state average) ---
         const effective = App.getEffectiveData(slug);
         const isDecimalPct = ChartUtils.isDecimalPctMetric(m);
         const sdYears = sd ? Object.keys(sd.data || {}).sort() : [];
@@ -105,7 +105,7 @@ const Export = {
         const effectiveLastYear = effectiveYears[effectiveYears.length - 1];
         const chartIsTrimmed = sd && sdLastYear && effectiveLastYear && effectiveLastYear < sdLastYear;
         const chartNotes = [];
-        if (sd) chartNotes.push(['Note: Hawai\u02BBi and Other-states average are computed from the Raw Data tab']);
+        if (sd) chartNotes.push(['Note: Hawai\u02BBi and Other-state average are computed from the Raw Data tab']);
         if (isDecimalPct) chartNotes.push(['Unit note: Values are decimal fractions (e.g. 0.2162 = 21.62%). Multiply by 100 to convert to percent.']);
         if (chartIsTrimmed) chartNotes.push([`Year range note: Chart ends at ${effectiveLastYear}. Raw Data extends to ${sdLastYear}. Chart is trimmed to the latest year with complete state data for consistent rankings.`]);
         const chartRows = [
@@ -113,7 +113,7 @@ const Export = {
             [`Source: ${m.source}`],
             ...chartNotes,
             [],
-            ['Year', 'Hawai\u02BBi', 'Other-states average'],
+            ['Year', 'Hawai\u02BBi', 'Other-state average'],
         ];
         const chartYears = [...new Set([
             ...Object.keys(effective.hawaii),
@@ -244,7 +244,7 @@ const Export = {
         methRows.push(
             [],
             ['COMPARATOR'],
-            ['Other State Average', 'Simple mean of 49 states, excluding Hawai\u02BBi. DC excluded from rankings.'],
+            ['Other-state average', 'Simple mean of 49 states, excluding Hawai\u02BBi. DC excluded from rankings.'],
             ['Hawai\u02BBi Value', 'Pulled from same source, same variable, same year.'],
         );
         if (slug === 'real_per_capita_income') {
@@ -263,7 +263,7 @@ const Export = {
         if (isDecimalPct) {
             methRows.push(
                 ['Step 1 - Raw storage', `Values in the Raw Data tab are stored as decimal fractions (0 to 1). Example: 0.2162 = 21.62%.`],
-                ['Step 2 - Chart Data tab', 'Hawai\u02BBi and Other-states average are the same decimal fractions as Raw Data. Multiply by 100 to display as percentages.'],
+                ['Step 2 - Chart Data tab', 'Hawai\u02BBi and Other-state average are the same decimal fractions as Raw Data. Multiply by 100 to display as percentages.'],
                 ['Step 3 - Rankings / All Data tabs', 'Values are multiplied by 100 and shown as percentages (e.g. 21.62%).'],
                 ['Step 4 - Other-state average', 'Computed as the simple mean of all non-Hawai\u02BBi state values for that year (decimal form), then displayed as a percentage.'],
             );

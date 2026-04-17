@@ -274,7 +274,7 @@ const ChartUtils = {
                         spanGaps: true,
                     },
                     {
-                        label: 'Other-states average',
+                        label: 'Other-state average',
                         data: avgValues,
                         borderColor: this.AVG_GRAY,
                         backgroundColor: this.AVG_GRAY_BG,
