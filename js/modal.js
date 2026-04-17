@@ -1260,19 +1260,18 @@ const Modal = {
             intro += tpl.scaleTemplate.replace('{{scale}}', scaleText);
         }
 
-        // Above / below / at the Other State Average
+        // Better / worse / same vs the Other State Average, framed in
+        // direction-aware terms so the reader never has to decode whether
+        // "above" or "below" is the good side for this metric.
         const hiVal  = isDecimal ? latestHi.value * 100  : latestHi.value;
         const avgVal = isDecimal ? latestAvg.value * 100 : latestAvg.value;
-        // Intensity: "well above/below" when gap > 20% of the average
-        const gapPct = avgVal !== 0 ? Math.abs(hiVal - avgVal) / Math.abs(avgVal) : 0;
-        const intensity = gapPct > 0.2 ? 'well ' : '';
-        const vsAvg = hiVal > avgVal ? `${intensity}above` : hiVal < avgVal ? `${intensity}below` : 'at';
+        const vsAvg = Compute.comparisonPhrase(hiVal, avgVal, m.goodDirection);
 
         const trend = Modal.computeTrendPhrase(slug);
 
         let brief = `Bottom line: ${intro}, ranking #${rank} nationally.`;
         if (trend) brief += ` It has ${trend},`;
-        brief += ` and sits ${vsAvg} the other-state average.`;
+        brief += ` and is ${vsAvg} the other-state average.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;
 
         return brief;

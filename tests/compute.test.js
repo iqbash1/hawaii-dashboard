@@ -121,3 +121,60 @@ describe('getPriorValue', () => {
         assert.deepEqual(result, { year: null, value: null });
     });
 });
+
+// ----------------------------------------------------------------
+// comparisonPhrase
+// Performance-framed language (better/worse), never spatial.
+// Spatial words (above/below/higher/lower) flip meaning per metric,
+// so banning them here prevents ambiguous briefs for crime vs LFPR etc.
+// ----------------------------------------------------------------
+describe('Compute.comparisonPhrase', () => {
+    it('returns "better than" when Hawaii higher and higher is good', () => {
+        assert.equal(Compute.comparisonPhrase(64, 60, 'up'), 'better than'); // 6.7% gap
+    });
+
+    it('returns "worse than" when Hawaii higher and lower is good (e.g. crime)', () => {
+        assert.equal(Compute.comparisonPhrase(260, 250, 'down'), 'worse than'); // 4% gap
+    });
+
+    it('returns "better than" when Hawaii lower and lower is good', () => {
+        assert.equal(Compute.comparisonPhrase(240, 250, 'down'), 'better than'); // 4% gap
+    });
+
+    it('returns "worse than" when Hawaii lower and higher is good', () => {
+        assert.equal(Compute.comparisonPhrase(56, 60, 'up'), 'worse than'); // 6.7% gap
+    });
+
+    it('returns "the same as" when values are equal', () => {
+        assert.equal(Compute.comparisonPhrase(60, 60, 'up'), 'the same as');
+    });
+
+    it('adds "significantly " prefix when gap exceeds 10% of average', () => {
+        assert.equal(Compute.comparisonPhrase(300, 250, 'down'), 'significantly worse than'); // 20% gap
+        assert.equal(Compute.comparisonPhrase(320, 250, 'down'), 'significantly worse than'); // 28% gap
+    });
+
+    it('does not add "significantly " at exactly the 10% boundary', () => {
+        assert.equal(Compute.comparisonPhrase(275, 250, 'down'), 'worse than'); // exactly 10% gap
+    });
+
+    it('accepts a custom threshold', () => {
+        assert.equal(Compute.comparisonPhrase(260, 250, 'down', 0.03), 'significantly worse than');
+    });
+
+    it('never emits spatial language (above/below/higher/lower/sits)', () => {
+        const cases = [
+            Compute.comparisonPhrase(64, 60, 'up'),
+            Compute.comparisonPhrase(260, 250, 'down'),
+            Compute.comparisonPhrase(240, 250, 'down'),
+            Compute.comparisonPhrase(56, 60, 'up'),
+            Compute.comparisonPhrase(60, 60, 'up'),
+            Compute.comparisonPhrase(400, 250, 'down'),
+        ];
+        const banned = /\b(above|below|higher|lower|sits|over|under)\b/i;
+        for (const phrase of cases) {
+            assert.ok(!banned.test(phrase), `"${phrase}" contains banned spatial word`);
+        }
+    });
+});
+

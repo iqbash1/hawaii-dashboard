@@ -72,6 +72,25 @@ const Compute = {
         const s = sep || '-';
         return `${this.parseYearLabel(startKey)}${s}${String(this.keyEnd(endKey)).slice(-2)}`;
     },
+
+    /**
+     * Build a performance-comparison phrase framed as better/worse, not
+     * spatial (above/below/higher/lower). Direction flips per metric, so
+     * spatial words mean opposite things for e.g. crime vs labor force.
+     * @param {number} hiVal - Hawaii's current value
+     * @param {number} avgVal - Other-state average
+     * @param {string} goodDirection - "up" (higher is better) or "down" (lower is better)
+     * @param {number} [significantThreshold=0.1] - Gap > this fraction of avg adds "significantly "
+     * @returns {string} "better than", "worse than", "significantly better than", "significantly worse than", or "the same as"
+     */
+    comparisonPhrase(hiVal, avgVal, goodDirection, significantThreshold) {
+        if (hiVal === avgVal) return 'the same as';
+        const threshold = significantThreshold !== undefined ? significantThreshold : 0.1;
+        const gapPct = avgVal !== 0 ? Math.abs(hiVal - avgVal) / Math.abs(avgVal) : 0;
+        const intensity = gapPct > threshold ? 'significantly ' : '';
+        const hawaiiBetter = (hiVal > avgVal) === (goodDirection === 'up');
+        return hawaiiBetter ? `${intensity}better than` : `${intensity}worse than`;
+    },
 };
 
 // Dual export: browser global + Node.js module (enables unit testing)
