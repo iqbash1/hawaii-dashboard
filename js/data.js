@@ -9,7 +9,6 @@
 const DASHBOARD_DATA = {
   "violent_crime_rate": {
     "area": "Safety & Health",
-    "areaIcon": "🛡️",
     "metric": "Violent Crime Rate",
     "officialName": "Counts murder, non-negligent manslaughter, rape, robbery, and aggravated assault. Rate per 100,000 residents.",
     "sourceCategory": "federal",
@@ -197,7 +196,6 @@ const DASHBOARD_DATA = {
   },
   "property_crime_rate": {
     "area": "Safety & Health",
-    "areaIcon": "🛡️",
     "metric": "Property Crime Rate",
     "officialName": "Counts burglary, larceny-theft, and motor vehicle theft. Rate per 100,000 residents.",
     "sourceCategory": "federal",
@@ -385,7 +383,6 @@ const DASHBOARD_DATA = {
   },
   "pcp_per_100k": {
     "area": "Safety & Health",
-    "areaIcon": "🛡️",
     "metric": "Primary Care Physicians (civilian)",
     "officialName": "Non-federal primary care doctors (MDs and DOs) per 100,000 civilians, counting all primary care specialties.",
     "sourceCategory": "federal",
@@ -471,7 +468,6 @@ const DASHBOARD_DATA = {
   },
   "uninsured_rate": {
     "area": "Safety & Health",
-    "areaIcon": "🛡️",
     "metric": "Uninsured Rate",
     "officialName": "Share of residents under 65 with no health insurance coverage of any kind.",
     "sourceCategory": "federal",
@@ -555,7 +551,6 @@ const DASHBOARD_DATA = {
   },
   "suicide_rate": {
     "area": "Safety & Health",
-    "areaIcon": "🛡️",
     "metric": "Suicide Rate",
     "officialName": "Death rate for intentional self-harm per 100,000 residents, age-adjusted so states with different age distributions can be compared fairly.",
     "sourceCategory": "federal",
@@ -664,7 +659,6 @@ const DASHBOARD_DATA = {
   },
   "acgr": {
     "area": "Education",
-    "areaIcon": "🎓",
     "metric": "High School Graduation Rate",
     "officialName": "Share of 9th-graders who earn a regular diploma within four years, adjusted for students who transfer in or out.",
     "sourceCategory": "federal",
@@ -746,7 +740,6 @@ const DASHBOARD_DATA = {
   },
   "ba_or_higher_pct": {
     "area": "Education",
-    "areaIcon": "🎓",
     "metric": "Adults with Bachelor’s Degree+",
     "officialName": "Share of adults age 25 and older who hold a bachelor’s degree or higher.",
     "sourceCategory": "federal",
@@ -840,7 +833,6 @@ const DASHBOARD_DATA = {
   },
   "naep_math_8": {
     "area": "Education",
-    "areaIcon": "🎓",
     "metric": "NAEP 8th Grade Math",
     "officialName": "Average math score for 8th-graders on the National Assessment of Educational Progress, the nation's report card, given every two years.",
     "sourceCategory": "federal",
@@ -911,7 +903,6 @@ const DASHBOARD_DATA = {
   },
   "naep_reading_8": {
     "area": "Education",
-    "areaIcon": "🎓",
     "metric": "NAEP 8th Grade Reading",
     "officialName": "Average reading score for 8th-graders on the National Assessment of Educational Progress, the nation's report card, given every two years.",
     "sourceCategory": "federal",
@@ -982,7 +973,6 @@ const DASHBOARD_DATA = {
   },
   "unemployment_rate": {
     "area": "Economy & Workforce",
-    "areaIcon": "💼",
     "metric": "Unemployment Rate",
     "officialName": "Share of the civilian labor force actively looking for work but not currently employed, averaged over the year.",
     "sourceCategory": "federal",
@@ -1137,7 +1127,6 @@ const DASHBOARD_DATA = {
   },
   "labor_force_participation": {
     "area": "Economy & Workforce",
-    "areaIcon": "💼",
     "metric": "Labor Force Participation Rate",
     "officialName": "Share of civilians age 16 and older who are either employed or actively seeking work, averaged over the year.",
     "sourceCategory": "federal",
@@ -1292,7 +1281,6 @@ const DASHBOARD_DATA = {
   },
   "real_per_capita_income": {
     "area": "Economy & Workforce",
-    "areaIcon": "💼",
     "metric": "Per Capita Income (real)",
     "officialName": "Total personal income per resident in constant 2017 dollars, adjusted for both regional price differences and national inflation so states and years can be compared on equal footing.",
     "sourceCategory": "federal",
@@ -1376,7 +1364,6 @@ const DASHBOARD_DATA = {
   },
   "renter_cost_burden_pct": {
     "area": "Housing & Cost of Living",
-    "areaIcon": "🏠",
     "metric": "Renter Housing Cost Burden",
     "officialName": "Share of renter households paying 30% or more of income on gross rent, the federal affordability threshold.",
     "sourceCategory": "federal",
@@ -1516,7 +1503,6 @@ const DASHBOARD_DATA = {
   },
   "home_price_to_income": {
     "area": "Housing & Cost of Living",
-    "areaIcon": "🏠",
     "metric": "Home Price-to-Income Ratio",
     "officialName": "Median home value divided by median household income; a higher ratio means homes cost more relative to what residents earn.",
     "sourceCategory": "federal",
@@ -1603,7 +1589,6 @@ const DASHBOARD_DATA = {
   },
   "unsheltered_homeless_rate": {
     "area": "Housing & Cost of Living",
-    "areaIcon": "🏠",
     "metric": "Unsheltered Homeless",
     "officialName": "One-night count of people sleeping outdoors, in vehicles, or in places not meant for habitation, per 10,000 residents.",
     "sourceCategory": "federal",
@@ -1718,7 +1703,6 @@ const DASHBOARD_DATA = {
   },
   "road_poor_pct": {
     "area": "Infrastructure, Resilience & Trust",
-    "areaIcon": "🛣️",
     "metric": "Roads in Poor Condition",
     "officialName": "Share of public road miles rated poor based on ride quality measured by the International Roughness Index.",
     "sourceCategory": "federal",
@@ -1844,7 +1828,6 @@ const DASHBOARD_DATA = {
   },
   "broadband_subscription_pct": {
     "area": "Infrastructure, Resilience & Trust",
-    "areaIcon": "🛣️",
     "metric": "Households with Broadband",
     "officialName": "Share of households with a fixed broadband internet subscription, including cable, fiber, DSL, or fixed wireless.",
     "sourceCategory": "federal",
@@ -1917,7 +1900,6 @@ const DASHBOARD_DATA = {
   },
   "residential_price_cpkwh": {
     "area": "Housing & Cost of Living",
-    "areaIcon": "🏠",
     "metric": "Residential Electricity Price",
     "officialName": "Average retail electricity price paid by residential customers, in cents per kilowatt-hour.",
     "sourceCategory": "federal",
@@ -2080,7 +2062,6 @@ const DASHBOARD_DATA = {
   },
   "renewables_share_gen": {
     "area": "Infrastructure, Resilience & Trust",
-    "areaIcon": "🛣️",
     "metric": "Electricity from Renewables",
     "officialName": "Share of in-state electricity generation from renewable sources, including wind, solar, hydro, geothermal, and biomass.",
     "sourceCategory": "federal",
@@ -2176,7 +2157,6 @@ const DASHBOARD_DATA = {
   },
   "food_insecurity_rate": {
     "area": "Housing & Cost of Living",
-    "areaIcon": "🏠",
     "metric": "Food Insecurity Rate",
     "officialName": "3-year average share of households uncertain of having enough food due to lack of money or other resources.",
     "sourceCategory": "federal",
@@ -2311,7 +2291,6 @@ const DASHBOARD_DATA = {
   },
   "rainy_day_fund_pct": {
     "area": "Infrastructure, Resilience & Trust",
-    "areaIcon": "🛣️",
     "metric": "Rainy Day Fund",
     "officialName": "State rainy-day savings balance as a percent of annual general fund spending, as self-reported by states to NASBO.",
     "sourceCategory": "state-assoc",
@@ -2411,7 +2390,6 @@ const DASHBOARD_DATA = {
   },
   "voter_participation_rate": {
     "area": "Infrastructure, Resilience & Trust",
-    "areaIcon": "🛣️",
     "metric": "Voter Participation Rate",
     "officialName": "Share of eligible voters (citizens age 18+, excluding those barred from voting) who cast a ballot in the general election.",
     "sourceCategory": "academic",
@@ -2515,7 +2493,6 @@ const DASHBOARD_DATA = {
   },
   "net_domestic_migration_rate": {
     "area": "Infrastructure, Resilience & Trust",
-    "areaIcon": "🛣️",
     "metric": "People Moving In vs. Out",
     "officialName": "Net inflow of U.S. residents moving from other states, per 10,000 residents; positive means more arrivals than departures.",
     "sourceCategory": "federal",
@@ -2619,7 +2596,6 @@ const DASHBOARD_DATA = {
   },
   "estabs_entry_rate": {
     "area": "Economy & Workforce",
-    "areaIcon": "💼",
     "metric": "New Business Entry Rate",
     "officialName": "Share of all business establishments in the state that opened in the past year, measuring the pace of new business formation.",
     "sourceCategory": "federal",
@@ -2768,7 +2744,6 @@ const DASHBOARD_DATA = {
   },
   "net_employer_formation": {
     "area": "Economy & Workforce",
-    "areaIcon": "💼",
     "metric": "Net Employer Business Formation",
     "officialName": "Net new employer businesses as a share of existing stock; new businesses opened minus closures, scaled to state size.",
     "sourceCategory": "federal",
@@ -2917,7 +2892,6 @@ const DASHBOARD_DATA = {
   },
   "labor_productivity": {
     "area": "Economy & Workforce",
-    "areaIcon": "💼",
     "metric": "Labor Productivity",
     "officialName": "Real economic output per hour worked, measuring how efficiently the workforce produces goods and services. Values show output relative to the 2017 level (100 = same as 2017).",
     "sourceCategory": "federal",

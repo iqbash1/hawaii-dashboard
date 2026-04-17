@@ -37,6 +37,7 @@
     --hawaii-blue: #0D7C8F;
     --hawaii-blue-light: #EEF8FA;
     --hawaii-blue-hover: rgba(13, 124, 143, 0.3);
+    --hawaii-blue-dark: #1a6b8a;
     --text-vintage: #626D76;
     --text-2xs: 0.7rem;
     --text-xs: 0.75rem;
@@ -48,7 +49,9 @@
     --text-2xl: 1.35rem;
     --avg-gray-light: #F3F4F6;
     --positive: #059669;
+    --positive-bg: rgba(5, 150, 105, 0.10);
     --negative: #C0392B;
+    --negative-bg: rgba(192, 57, 43, 0.10);
     --neutral: #c08a1a;
     --neutral-bg: #fef9e7;
     --border: #EAEAEA;
@@ -712,8 +715,8 @@ body {
 .modal-share-btn svg { stroke: #fff; }
 
 .modal-share-btn:hover {
-    background: var(--hawaii-blue-dark, #1a6b8a);
-    border-color: var(--hawaii-blue-dark, #1a6b8a);
+    background: var(--hawaii-blue-dark);
+    border-color: var(--hawaii-blue-dark);
     color: #fff;
 }
 
