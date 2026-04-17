@@ -1128,51 +1128,40 @@ const Modal = {
      * @returns {string} HTML string
      * @private
      */
+    /**
+     * Render a heading + paragraph section. When `asDetails` is true, renders
+     * as a collapsible <details> with <summary> instead of <h3>. Returns ''
+     * when content is empty (except for unconditional sections which skip
+     * the truthy check at the callsite).
+     */
+    _section(heading, content, asDetails, extraClass) {
+        if (!content) return '';
+        const cls = `cn-section${extraClass ? ' ' + extraClass : ''}`;
+        if (asDetails) {
+            return `<details class="${cls}"><summary>${heading}</summary><p class="cn-text">${content}</p></details>`;
+        }
+        return `<div class="${cls}"><h3 class="cn-heading">${heading}</h3><p class="cn-text">${content}</p></div>`;
+    },
+
     _buildConsolidatedNarrative(m) {
-        let h = '';
-
-        // 1. How to read the chart (collapsed toggle, near the chart)
-        if (m.howToRead) h += `<details class="cn-section modal-how-toggle">
-            <summary>How to read the chart</summary>
-            <p class="cn-text">${m.howToRead}</p>
-        </details>`;
-
-        // 2. Why it matters
-        h += `<div class="cn-section">
-            <h3 class="cn-heading">Why it matters</h3>
-            <p class="cn-text">${m.whyItMatters}</p>
-        </div>`;
-
-        // 3. National standing (rank history summary)
-        if (m.rankHistoryNarrative && m.rankHistoryNarrative.summary) h += `<div class="cn-section">
-            <h3 class="cn-heading">National standing</h3>
-            <p class="cn-text">${m.rankHistoryNarrative.summary}</p>
-        </div>`;
-
-        // 4. County breakdown
-        if (m.countyNarrative) h += `<div class="cn-section">
-            <h3 class="cn-heading">County breakdown</h3>
-            <p class="cn-text">${m.countyNarrative}</p>
-        </div>`;
-
-        // 5. Potential drivers
-        if (m.potentialDrivers) h += `<div class="cn-section">
-            <h3 class="cn-heading">Potential drivers</h3>
-            <p class="cn-text">${m.potentialDrivers}</p>
-        </div>`;
-
-        // 6. Lessons from other states (benchmarks + caution + explore)
         const narr = m.rankHistoryNarrative;
+        const linkedItem = (x, cls) => {
+            const src = x.source ? `<a href="${x.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${x.source.label}</a>` : '';
+            return `<div class="cn-item"><div class="cn-state ${cls}">${x.state}</div><p class="cn-text">${x.text}</p>${src}</div>`;
+        };
+
+        let h = '';
+        h += Modal._section('How to read the chart', m.howToRead, true, 'modal-how-toggle');
+        h += Modal._section('Why it matters',       m.whyItMatters);
+        h += Modal._section('National standing',    narr && narr.summary);
+        h += Modal._section('County breakdown',     m.countyNarrative);
+        h += Modal._section('Potential drivers',    m.potentialDrivers);
+
+        // Lessons from other states — compound section (benchmarks + caution + explore)
         if (narr && (narr.benchmarks?.length || narr.caution || narr.explore?.length)) {
             h += `<div class="cn-section"><h3 class="cn-heading">Lessons from other states</h3>`;
-            (narr.benchmarks || []).forEach(b => {
-                const src = b.source ? `<a href="${b.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${b.source.label}</a>` : '';
-                h += `<div class="cn-item"><div class="cn-state cn-state--learn">${b.state}</div><p class="cn-text">${b.text}</p>${src}</div>`;
-            });
-            if (narr.caution) {
-                const src = narr.caution.source ? `<a href="${narr.caution.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${narr.caution.source.label}</a>` : '';
-                h += `<div class="cn-item"><div class="cn-state cn-state--caution">${narr.caution.state}</div><p class="cn-text">${narr.caution.text}</p>${src}</div>`;
-            }
+            (narr.benchmarks || []).forEach(b => { h += linkedItem(b, 'cn-state--learn'); });
+            if (narr.caution) h += linkedItem(narr.caution, 'cn-state--caution');
             if (narr.explore && narr.explore.length) {
                 h += `<div class="cn-item">`;
                 narr.explore.forEach(pt => { h += `<p class="cn-text">${pt}</p>`; });
@@ -1181,17 +1170,10 @@ const Modal = {
             h += `</div>`;
         }
 
-        // 7. Key levers
-        if (m.policyLevers) h += `<div class="cn-section">
-            <h3 class="cn-heading">Key levers</h3>
-            <p class="cn-text">${m.policyLevers}</p>
-        </div>`;
-
-        // 8. Data note
-        if (m.dataNote) h += `<div class="cn-section cn-data-note">
-            <p class="cn-text">\u26A0 ${m.dataNote}</p>
-        </div>`;
-
+        h += Modal._section('Key levers', m.policyLevers);
+        if (m.dataNote) {
+            h += `<div class="cn-section cn-data-note"><p class="cn-text">\u26A0 ${m.dataNote}</p></div>`;
+        }
         return h;
     },
 
