@@ -74,7 +74,8 @@ const Router = {
             const parts = hash.split('/');
             slug = parts[0];
             view = parts[1] || '';
-            if (view === 'rank-history' && parts[2]) compareSlug = parts[2];
+            // Compare state can appear after rank-history or detail (trend) views
+            if ((view === 'rank-history' || view === 'detail') && parts[2]) compareSlug = parts[2];
             // Threshold from ?_th= query param (used by variant OG redirect pages)
             const thQuery = new URLSearchParams(window.location.search).get('_th');
             if (thQuery) variantSegment = thQuery;

@@ -282,6 +282,37 @@ def get_latest(series):
     return None, None
 
 
+def get_state_series(state_data_entry, state_name):
+    """Extract a {year: value} series for one state from a STATE_DATA entry.
+    Mirrors Compute.getStateTimeSeries in js/compute.js: handles both the
+    year-keyed and FIPS-keyed shapes, drops null/undefined years."""
+    if not state_data_entry or 'data' not in state_data_entry:
+        return {}
+    data = state_data_entry['data']
+    first_key = next(iter(data.keys()), None)
+    if first_key is None:
+        return {}
+    is_pcp = isinstance(data[first_key], dict) and 'name' in data[first_key]
+    out = {}
+    if is_pcp:
+        entry = next((e for e in data.values() if e and e.get('name') == state_name), None)
+        if not entry:
+            return {}
+        for k, v in entry.items():
+            if k == 'name' or v is None:
+                continue
+            out[k] = v
+    else:
+        for yr, bucket in data.items():
+            if not bucket:
+                continue
+            v = bucket.get(state_name)
+            if v is None:
+                continue
+            out[yr] = v
+    return out
+
+
 # ── Threshold-Variant Builders ────────────────────────────────────
 def build_variant_metric(metric, variant_key):
     """Return a shallow copy of `metric` with thresholdVariants[variant_key]
@@ -1174,6 +1205,188 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
         f.write(html)
 
 
+# ── Trend-Compare OG Image + Redirect ────────────────────────────
+def generate_trend_compare_og_image(slug, metric, area, rankings,
+                                    compare_state, compare_series, output_path):
+    """Generate a 1200x630 OG image for Hawaiʻi vs one state on the trend view.
+    Mirrors generate_og_image but swaps the other-state average for the chosen
+    state so the preview conveys relative performance for that pairing."""
+    W, H = 1200, 630
+    im = Image.new('RGB', (W, H), BG)
+    d = ImageDraw.Draw(im)
+
+    unit = metric.get('unit', '')
+    good_dir = metric.get('goodDirection', 'up')
+    hawaii = metric.get('hawaii', {})
+    dec = is_decimal_pct(metric)
+    comp_code = STATE_ABBREVS.get(compare_state, compare_state[:2].upper())
+
+    latest_year, latest_val = get_latest(hawaii)
+    _, latest_comp = get_latest(compare_series)
+
+    formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
+    formatted_comp = format_value(latest_comp, unit, dec) if latest_comp is not None else 'N/A'
+
+    if latest_val is not None and latest_comp is not None:
+        is_better = (latest_val >= latest_comp) if good_dir == 'up' else (latest_val <= latest_comp)
+        verdict = 'Better' if is_better else 'Worse'
+        verdict_color = POSITIVE if is_better else NEGATIVE
+    else:
+        verdict, verdict_color = '', TEXT_TER
+
+    # Top accent bar
+    d.rectangle([0, 0, W, 5], fill=TEAL)
+    d.text((70, 40), "Hawai\u02BBi Dashboard", fill=TEXT_SEC, font=font(20))
+    d.text((70, 100), area.upper(), fill=TEAL, font=font(15))
+    metric_name = metric.get('metric', slug)
+    d.text((70, 125), metric_name, fill=TEXT_PRI, font=font(34))
+
+    # Central card
+    card_x, card_y, card_w, card_h = 70, 190, 1060, 355
+    d.rounded_rectangle([card_x, card_y, card_x + card_w, card_y + card_h],
+                        radius=12, fill=CARD_BG, outline=DIVIDER, width=1)
+    d.text((card_x + 40, card_y + 16), f"Hawai\u02BBi vs {compare_state}",
+           fill=TEXT_PRI, font=font(30))
+
+    f_val = font(56)
+    d.text((card_x + 40, card_y + 60), formatted, fill=TEXT_PRI, font=f_val)
+    if latest_year:
+        bb = d.textbbox((0, 0), formatted, font=f_val)
+        d.text((card_x + 40 + bb[2] - bb[0] + 12, card_y + 90),
+               latest_year, fill=TEXT_TER, font=font(20))
+
+    # Sparkline: Hawaiʻi solid teal + comparator dashed gray
+    spark_x, spark_y, spark_w, spark_h = card_x + 40, card_y + 165, card_w - 80, 85
+    hi_years = sorted(hawaii.keys())
+    hi_pts_year = [(y, hawaii[y]) for y in hi_years if hawaii.get(y) and hawaii[y] != 0]
+    comp_pts_year = [(y, compare_series[y]) for y in hi_years
+                     if compare_series.get(y) and compare_series[y] != 0]
+
+    if len(hi_pts_year) >= 2:
+        all_v = [v for _, v in hi_pts_year] + [v for _, v in comp_pts_year]
+        v_min, v_max = min(all_v), max(all_v)
+        v_range = v_max - v_min if v_max != v_min else 1
+
+        def to_px(series_pts):
+            pts = []
+            for i, (_, v) in enumerate(series_pts):
+                px = spark_x + (i / max(1, len(series_pts) - 1)) * spark_w
+                py = spark_y + spark_h - ((v - v_min) / v_range) * spark_h
+                pts.append((px, py))
+            return pts
+
+        if len(comp_pts_year) >= 2:
+            cps = to_px(comp_pts_year)
+            for i in range(len(cps) - 1):
+                if i % 2 == 0:
+                    d.line([cps[i], cps[i + 1]], fill=SPARK_GRAY, width=2)
+            last_px, last_py = cps[-1]
+            d.text((spark_x + spark_w + 6, last_py - 7), comp_code,
+                   fill=(100, 100, 100), font=font(13))
+
+        hps = to_px(hi_pts_year)
+        d.line(hps, fill=TEAL, width=3)
+        last_px, last_py = hps[-1]
+        d.text((spark_x + spark_w + 6, last_py - 7), 'HI',
+               fill=TEAL, font=font(13))
+
+        f_yr = font(12)
+        d.text((spark_x, spark_y + spark_h + 4),
+               f"'{hi_pts_year[0][0][2:]}", fill=TEXT_TER, font=f_yr)
+        last_lbl = f"'{hi_pts_year[-1][0][2:]}"
+        bb = d.textbbox((0, 0), last_lbl, font=f_yr)
+        d.text((spark_x + spark_w - (bb[2] - bb[0]), spark_y + spark_h + 4),
+               last_lbl, fill=TEXT_TER, font=f_yr)
+
+    # Divider + verdict
+    div_y = card_y + 285
+    d.line([(card_x + 40, div_y), (card_x + card_w - 40, div_y)],
+           fill=DIVIDER, width=1)
+    d.text((card_x + 40, div_y + 14), f"VS {comp_code}", fill=TEXT_TER, font=font(12))
+    d.text((card_x + 40, div_y + 34), verdict, fill=verdict_color, font=font(22))
+    d.text((card_x + 40, div_y + 64), f"{compare_state}: {formatted_comp}",
+           fill=TEXT_SEC, font=font(16))
+
+    if rankings and rankings['hawaiiRank'] > 0:
+        rank_text = f"Rank #{rankings['hawaiiRank']} of {rankings['total']}"
+        f_rank = font(20)
+        bb = d.textbbox((0, 0), rank_text, font=f_rank)
+        rx = card_x + card_w - 40 - (bb[2] - bb[0])
+        d.text((rx, div_y + 34), rank_text, fill=TEAL, font=f_rank)
+        d.text((rx, div_y + 60), f"({rankings['year']} data)",
+               fill=TEXT_TER, font=font(13))
+
+    d.rectangle([0, H - 46, W, H], fill=FOOTER_BG)
+    d.line([(0, H - 46), (W, H - 46)], fill=DIVIDER, width=1)
+    d.text((70, H - 34), "hawaiidashboard.org", fill=TEXT_SEC, font=font(16))
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    im.save(output_path, 'PNG', optimize=True)
+
+
+def generate_trend_compare_redirect(slug, metric, compare_state, rankings, output_path,
+                                     image_url=None, variant_segment=None):
+    """Generate /t/{slug}/{state-slug}/index.html (optionally with variant suffix).
+    Redirects humans to /#{slug}/detail/{state-slug} so the SPA routing opens
+    the Trend tab with the chosen state pre-selected; crawlers pick up the
+    OG tags inline so link previews show the Hawaiʻi-vs-state chart."""
+    metric_name = metric.get('metric', slug)
+    state_slug = state_to_slug(compare_state)
+    path_suffix = f"{variant_segment}/" if variant_segment else ''
+    page_url = f"{SITE_URL}/t/{slug}/{state_slug}/{path_suffix}"
+    redirect_hash = f"#{slug}/detail/{state_slug}"
+    if image_url is None:
+        image_url = f"{SITE_URL}/assets/og/{slug}_t_{state_slug}.png"
+
+    title = f"Hawai\u02BBi vs {compare_state}: {metric_name} Trend | Hawai\u02BBi Dashboard"
+
+    if rankings and rankings.get('hawaiiRank'):
+        hi_rank = rankings['hawaiiRank']
+        total = rankings['total']
+        yr = rankings.get('year', '')
+        description = (
+            f"Trend for {metric_name}: Hawai\u02BBi (#{hi_rank} of {total}) compared "
+            f"with {compare_state}{f' ({yr})' if yr else ''}."
+        )
+    else:
+        description = f"Trend for {metric_name}: Hawai\u02BBi compared with {compare_state}."
+
+    redirect_query = f"?_th={variant_segment}" if variant_segment else ''
+    redirect_target = f"/{redirect_query}{redirect_hash}"
+    refresh_target = f"{SITE_URL}/{redirect_query}{redirect_hash}"
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{title}</title>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{page_url}">
+  <meta property="og:title" content="{title}">
+  <meta property="og:description" content="{description}">
+  <meta property="og:image" content="{image_url}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Hawai\u02BBi Dashboard">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{title}">
+  <meta name="twitter:description" content="{description}">
+  <meta name="twitter:image" content="{image_url}">
+  <meta name="description" content="{description}">
+  <link rel="canonical" href="{page_url}">
+  <script>window.location.replace('{redirect_target}');</script>
+  <meta http-equiv="refresh" content="0;url={refresh_target}">
+</head>
+<body>
+  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>
+</body>
+</html>"""
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
 # ── Generation for a single slug (base + any variants) ────────────
 def generate_for_slug(slug, metric, area, state_data, county_data_all,
                       dashboard, threshold_config):
@@ -1223,6 +1436,27 @@ def generate_for_slug(slug, metric, area, state_data, county_data_all,
             generate_rh_compare_redirect(
                 slug, metric, state, rh,
                 os.path.join(REDIRECT_DIR_RH, slug, state_slug, 'index.html'),
+                image_url=img_url
+            )
+
+    # Trend-compare pages: one per state, for all 26 metrics (not just those
+    # with rank history). Each URL gets its own OG image so a shared link
+    # previews Hawaiʻi vs that state's trend directly.
+    state_entry = state_data.get(slug)
+    if state_entry:
+        for state in COMPARISON_STATES:
+            series = get_state_series(state_entry, state)
+            if not series:
+                continue
+            state_slug = state_to_slug(state)
+            img_filename = f'{slug}_t_{state_slug}.png'
+            img_path = os.path.join(ASSETS_OG, img_filename)
+            img_url = f"{SITE_URL}/assets/og/{img_filename}"
+            generate_trend_compare_og_image(slug, metric, area, rankings,
+                                            state, series, img_path)
+            generate_trend_compare_redirect(
+                slug, metric, state, rankings,
+                os.path.join(REDIRECT_DIR_T, slug, state_slug, 'index.html'),
                 image_url=img_url
             )
 
