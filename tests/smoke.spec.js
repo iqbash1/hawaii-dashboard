@@ -192,13 +192,11 @@ test.describe('URL routing', () => {
         await page.goto('/rh/violent_crime_rate/ca/');
         await expect(page.locator('#modal-overlay')).toBeVisible();
         await expect(page.locator('#modal-rank-history')).toBeVisible();
-        // The compare dropdown should have California selected
-        const select = page.locator('#rh-compare-select');
+        // The shared compare dropdown should have California selected
+        const select = page.locator('#compare-select');
         await expect(select).toBeVisible();
         const selectedValue = await select.inputValue();
         expect(selectedValue).toBe('California');
-        // The clear button should be visible when a comparison is active
-        await expect(page.locator('#rh-compare-clear')).toBeVisible();
     });
 });
 

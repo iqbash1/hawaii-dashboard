@@ -1196,13 +1196,17 @@ body {
     position: relative;
     width: 100%;
 }
-.rh-compare-bar {
+/* Shared compare-with dropdown bar, between the tab row and the chart. Visible
+ * on the Trend and Rank history tabs only; modal.js toggles display.           */
+.compare-bar {
     display: flex;
     align-items: center;
     gap: 0.65rem;
-    margin: 0.75rem 0 0.5rem;
+    padding: 0.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
 }
-.rh-compare-label {
+.compare-label {
     font-size: var(--text-sm);
     font-weight: 600;
     text-transform: uppercase;
@@ -1210,7 +1214,7 @@ body {
     color: var(--text-muted);
     white-space: nowrap;
 }
-.rh-compare-select {
+.compare-select {
     font-size: var(--text-sm);
     padding: 0.3rem 1.75rem 0.3rem 0.55rem;
     appearance: none;
@@ -1220,24 +1224,6 @@ body {
     background-position: right 0.6rem center;
     background-size: 12px;
 }
-.rh-compare-clear {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--text-secondary);
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.4rem 0.65rem;
-    min-height: 36px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: color var(--transition), border-color var(--transition);
-}
-.rh-compare-clear:hover {
-    color: var(--negative);
-    border-color: var(--negative);
-}
-
 /* --- Rank History Narrative --- */
 .rh-narrative {
     padding: 1.25rem 0 1.5rem;

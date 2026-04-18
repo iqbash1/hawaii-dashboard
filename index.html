@@ -206,6 +206,13 @@
                 <button class="modal-tab" id="tab-rank-history" role="tab" style="display:none;">Rank history<span class="tab-sub">Gaining or losing ground?</span></button>
                 <button class="modal-tab" id="tab-county" role="tab" style="display:none;">County<span class="tab-sub">How counties compare</span></button>
             </div>
+            <!-- Shared comparator: affects Trend + Rank history tabs; hidden on Rank + County -->
+            <div class="compare-bar" id="compare-bar" style="display:none;">
+                <label class="compare-label" for="compare-select">Compare with</label>
+                <select id="compare-select" class="dropdown-trigger compare-select">
+                    <option value="" selected>Other-state average</option>
+                </select>
+            </div>
             <div class="modal-official" id="modal-official-name" style="display:none;"></div>
             <div class="modal-brief" id="modal-brief" style="display:none;"></div>
             <div id="modal-detail-view" role="tabpanel">
@@ -253,13 +260,6 @@
                 <p class="rankings-subtitle" id="rank-history-subtitle"></p>
                 <p class="rankings-rank" id="rank-history-rank"></p>
                 <div class="rank-history-chart-wrap"><canvas id="rank-history-chart"></canvas></div>
-                <div class="rh-compare-bar">
-                    <label class="rh-compare-label" for="rh-compare-select">Compare with</label>
-                    <select id="rh-compare-select" class="dropdown-trigger rh-compare-select">
-                        <option value="">Select a state&hellip;</option>
-                    </select>
-                    <button id="rh-compare-clear" class="rh-compare-clear" style="display:none;">&#x2715; Clear</button>
-                </div>
                 <div class="rh-narrative" id="rank-history-narrative" style="display:none;"></div>
             </div>
             <div class="modal-county" id="modal-county" role="tabpanel" style="display:none;">

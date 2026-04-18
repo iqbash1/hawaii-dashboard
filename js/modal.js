@@ -18,6 +18,15 @@ const Modal = {
     countyChart: null,
     _pendingRhCompare: null,
     _rankingsScrollHandler: null,
+    /**
+     * Shared comparator state across Trend and Rank-history tabs. When null,
+     * Trend falls back to the other-state average and Rank history shows only
+     * Hawaiʻi's rank line. When set to a state name, both tabs overlay that
+     * state's series.
+     */
+    _compareState: null,
+    /** Active tab id (detail | rankings | rank-history | county). */
+    _activeTab: 'detail',
     /** Active threshold per slug. Empty = base (30%+). "50" = severe. */
     _activeThreshold: {},
     /** Build path suffix for the active threshold, or '' if default. */
@@ -34,6 +43,150 @@ const Modal = {
         return text
             .replace('Bottom line:', '<strong>Bottom line:</strong>')
             .replace('Keep in mind:', '<strong>Keep in mind:</strong>');
+    },
+
+    // ----------------------------------------------------------------
+    // Shared compare-with dropdown (Trend + Rank history tabs)
+    // ----------------------------------------------------------------
+
+    /**
+     * Collect all state names available in this metric's STATE_DATA, excluding
+     * Hawaiʻi variants. Returns a sorted array of human-readable state names.
+     */
+    _getAvailableStates(slug) {
+        if (typeof STATE_DATA === 'undefined' || !STATE_DATA[slug]) return [];
+        const sd = App.getActiveStateData(slug);
+        if (!sd || !sd.data) return [];
+        const data = sd.data;
+        const firstKey = Object.keys(data)[0];
+        if (!firstKey) return [];
+        const isFipsKeyed = data[firstKey] && typeof data[firstKey].name === 'string';
+        const states = new Set();
+        if (isFipsKeyed) {
+            Object.values(data).forEach(e => { if (e && e.name) states.add(e.name); });
+        } else {
+            Object.values(data).forEach(bucket => {
+                if (!bucket) return;
+                Object.keys(bucket).forEach(name => states.add(name));
+            });
+        }
+        return [...states].filter(s => !ChartUtils.isHawaii(s)).sort();
+    },
+
+    /** Fill the compare-select dropdown with all states for this metric. */
+    _populateCompareSelect(slug) {
+        const select = document.getElementById('compare-select');
+        if (!select) return;
+        const states = Modal._getAvailableStates(slug);
+        const defaultLabel = Modal._compareDefaultLabel(Modal._activeTab);
+        select.innerHTML = '';
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = defaultLabel;
+        select.appendChild(defaultOpt);
+        states.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s;
+            select.appendChild(opt);
+        });
+        select.value = Modal._compareState || '';
+    },
+
+    /** Label for the "no state selected" option, varies by active tab. */
+    _compareDefaultLabel(tab) {
+        return tab === 'rank-history' ? '\u2014 none \u2014' : 'Other-state average';
+    },
+
+    /** Show/hide the compare bar and update its default-option label for this tab. */
+    _updateCompareBar(tab) {
+        const bar = document.getElementById('compare-bar');
+        if (!bar) return;
+        const shouldShow = (tab === 'detail' || tab === 'rank-history');
+        bar.style.display = shouldShow ? '' : 'none';
+        if (!shouldShow) return;
+        // Refresh the placeholder label and keep the current state selected
+        const select = document.getElementById('compare-select');
+        if (!select) return;
+        const defaultOpt = select.querySelector('option[value=""]');
+        if (defaultOpt) defaultOpt.textContent = Modal._compareDefaultLabel(tab);
+    },
+
+    /** Build the comparator argument for createDetailChart, or undefined for the default. */
+    _buildCompareArg(slug) {
+        const state = Modal._compareState;
+        if (!state) return undefined;
+        const sd = App.getActiveStateData(slug);
+        if (!sd || !sd.data) return undefined;
+        const timeSeries = Compute.getStateTimeSeries(sd.data, state);
+        if (!timeSeries || Object.keys(timeSeries).length === 0) return undefined;
+        return { label: state, timeSeries };
+    },
+
+    /**
+     * Destroy + recreate the Trend chart using the current _compareState. Also
+     * refreshes the trend subtitle so "Hawaiʻi vs. X" reflects the comparator.
+     */
+    _rerenderDetailChart(slug) {
+        const metricData = App.getActiveMetricData(slug);
+        if (!metricData || !metricData.hawaii) return;
+        const canvas = document.getElementById('modal-chart');
+        if (!canvas) return;
+        if (Modal.detailChart) { Modal.detailChart.destroy(); Modal.detailChart = null; }
+        const hiYears = Object.keys(metricData.hawaii).sort();
+        const govBoxes = App.getGovernorBoxes(hiYears);
+        const comparator = Modal._buildCompareArg(slug);
+        Modal._updateTrendSubtitle(metricData, comparator);
+        try {
+            Modal.detailChart = ChartUtils.createDetailChart(
+                canvas, metricData, govBoxes, ZERO_IS_VALID.has(slug), comparator
+            );
+        } catch (e) {
+            canvas.parentElement.classList.add('chart-error');
+            canvas.style.display = 'none';
+        }
+    },
+
+    /** Set the Trend chart subtitle to "Hawaiʻi vs. <comparator> · direction hint". */
+    _updateTrendSubtitle(metricData, comparator) {
+        const subtitleEl = document.getElementById('trend-subtitle');
+        if (!subtitleEl) return;
+        const hiYears = Object.keys(metricData.hawaii).sort();
+        const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+        const isRange = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
+        const compLabel = (comparator && comparator.label) ? comparator.label : 'other-state average';
+        subtitleEl.innerHTML = isRange
+            ? `Hawai\u02BBi vs. ${compLabel} \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
+            : `Hawai\u02BBi vs. ${compLabel} \u00B7 ${dirHint}`;
+    },
+
+    /**
+     * React to the user changing the shared dropdown. Re-renders the chart that
+     * is currently visible; the other chart picks up the new state the next
+     * time its tab is opened.
+     */
+    _onCompareChange(slug, stateName) {
+        Modal._compareState = stateName || null;
+        if (Modal._activeTab === 'detail') {
+            Modal._rerenderDetailChart(slug);
+        } else if (Modal._activeTab === 'rank-history' && Modal.rankHistoryChart) {
+            if (stateName && Modal.rankHistoryChart._setComparison) {
+                Modal.rankHistoryChart._setComparison(stateName);
+            } else if (Modal.rankHistoryChart._clearComparison) {
+                Modal.rankHistoryChart._clearComparison();
+            }
+        }
+        if (stateName) {
+            App._trackEvent('state_compared', { slug, compare_state: stateName, tab: Modal._activeTab });
+        }
+    },
+
+    /** Wire the compare-select element to change events. Called once per modal open. */
+    _wireCompareSelect(slug) {
+        const select = document.getElementById('compare-select');
+        if (!select) return;
+        Modal._populateCompareSelect(slug);
+        select.onchange = () => Modal._onCompareChange(slug, select.value);
     },
 
     renderBundleNav(slug) {
@@ -137,6 +290,10 @@ const Modal = {
 
         // Store any initial rank-history comparison state for showRankHistory to consume
         Modal._pendingRhCompare = initialCompare || null;
+        // Reset shared comparator state. If a compare state is pre-set by URL routing,
+        // initialCompare already encodes it; both tabs will pick it up.
+        Modal._compareState = initialCompare || null;
+        Modal._activeTab = 'detail';
 
         // Use effective data (trimmed to rankings year) for chart/stats
         const effective = App.getEffectiveData(slug);
@@ -456,6 +613,11 @@ const Modal = {
         if (tabRankHistoryEl) { tabRankHistoryEl.classList.remove('active'); tabRankHistoryEl.setAttribute('aria-selected', 'false'); }
         if (tabCounty) { tabCounty.classList.remove('active'); tabCounty.setAttribute('aria-selected', 'false'); }
 
+        // Shared compare-with dropdown: populate with this metric's states,
+        // wire change handler, and show the bar (Trend is the default tab).
+        Modal._wireCompareSelect(slug);
+        Modal._updateCompareBar('detail');
+
         // Chart uses effective data (trimmed to rankings year)
         const canvas = document.getElementById('modal-chart');
         const skeleton = document.getElementById('modal-chart-skeleton');
@@ -464,15 +626,17 @@ const Modal = {
 
         const labels = Object.keys(effective.hawaii);
         const govBoxes = App.getGovernorBoxes(labels);
+        const comparator = Modal._buildCompareArg(slug);
+        Modal._updateTrendSubtitle(effective, comparator);
 
         try {
-            Modal.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes, ZERO_IS_VALID.has(slug));
+            Modal.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes, ZERO_IS_VALID.has(slug), comparator);
         } catch (e) {
             canvas.parentElement.classList.add('chart-error');
             canvas.style.display = 'none';
         }
         canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs other-state average`);
+        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs ${comparator ? comparator.label : 'other-state average'}`);
 
         // Chart note: always shows smoothing disclosure; also shows trim-year note when applicable
         const chartNoteEl = document.getElementById('modal-chart-note');
@@ -563,6 +727,8 @@ const Modal = {
      */
     switchTab(tab, slug) {
         App._trackEvent('tab_viewed', { slug, tab });
+        Modal._activeTab = tab;
+        Modal._updateCompareBar(tab);
 
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
@@ -638,6 +804,10 @@ const Modal = {
             tabDetail.classList.add('active');
             tabDetail.setAttribute('aria-selected', 'true');
             document.getElementById('modal-detail-view').style.display = '';
+            // Rebuild Trend chart so it honours any _compareState change that
+            // happened on another tab (e.g. user picked California on Rank
+            // history, then switched back to Trend).
+            Modal._rerenderDetailChart(slug);
             history.replaceState(null, '', '/t/' + slug + '/' + Modal._thPath(slug));
         }
         // Always reset modal scroll to top on tab switch
@@ -741,33 +911,23 @@ const Modal = {
             `Rank history \u00B7 ${yearRange}`;
         document.getElementById('rank-history-rank').textContent = '';
 
-        // Consume any pending initial comparison state (set by openModal from URL routing)
-        const pendingCompare = Modal._pendingRhCompare || null;
+        // Initial comparison state: the shared Modal._compareState (seeded by
+        // URL routing in openModal, or kept across tab switches by
+        // _onCompareChange). We also clear the legacy _pendingRhCompare
+        // holdover for any callers that still set it.
+        const pendingCompare = Modal._compareState || Modal._pendingRhCompare || null;
         Modal._pendingRhCompare = null;
+        Modal._compareState = pendingCompare;
 
-        // Populate compare dropdown with all states except Hawai'i, sorted alphabetically
-        const compareSelect = document.getElementById('rh-compare-select');
-        const compareClear = document.getElementById('rh-compare-clear');
-        if (compareSelect) {
-            compareSelect.innerHTML = '<option value="">Select a state\u2026</option>';
-            rankHistory.latestYearRanked
-                .map(e => e.state)
-                .filter(s => s !== rankHistory.hiKey)
-                .sort()
-                .forEach(s => {
-                    const opt = document.createElement('option');
-                    opt.value = s;
-                    opt.textContent = s;
-                    compareSelect.appendChild(opt);
-                });
-            compareSelect.value = '';
-        }
-        if (compareClear) compareClear.style.display = 'none';
+        // Keep the shared dropdown in sync with whatever state is active now.
+        const compareSelect = document.getElementById('compare-select');
+        if (compareSelect) compareSelect.value = pendingCompare || '';
 
-        // onCompare callback: syncs dropdown + URL (also called by chart on label click)
+        // Callback used by the chart when the user clicks a state on the canvas.
+        // Syncs the shared dropdown + URL + Modal._compareState.
         const onCompareFn = (stateName) => {
             if (compareSelect) compareSelect.value = stateName || '';
-            if (compareClear) compareClear.style.display = stateName ? '' : 'none';
+            Modal._compareState = stateName || null;
             if (stateName) {
                 history.replaceState(null, '', '/rh/' + slug + '/' + Router.stateToSlug(stateName) + '/' + Modal._thPath(slug));
             } else {
@@ -795,34 +955,6 @@ const Modal = {
 
         // If a comparison was pre-set from URL, sync dropdown + URL
         if (pendingCompare) onCompareFn(pendingCompare);
-
-        // Wire dropdown change
-        if (compareSelect) {
-            compareSelect.onchange = () => {
-                const selected = compareSelect.value;
-                if (selected) {
-                    if (Modal.rankHistoryChart && Modal.rankHistoryChart._setComparison) {
-                        Modal.rankHistoryChart._setComparison(selected);
-                    }
-                    App._trackEvent('state_compared', { slug, compare_state: selected });
-                } else {
-                    if (Modal.rankHistoryChart && Modal.rankHistoryChart._clearComparison) {
-                        Modal.rankHistoryChart._clearComparison();
-                    }
-                }
-                onCompareFn(selected || null);
-            };
-        }
-
-        // Wire clear button
-        if (compareClear) {
-            compareClear.onclick = () => {
-                if (Modal.rankHistoryChart && Modal.rankHistoryChart._clearComparison) {
-                    Modal.rankHistoryChart._clearComparison();
-                }
-                onCompareFn(null);
-            };
-        }
 
         // Render policy narrative if available for this metric
         const narrativeEl = document.getElementById('rank-history-narrative');
@@ -981,19 +1113,8 @@ const Modal = {
         const countyView = document.getElementById('modal-county');
 
         if (detailView && detailView.style.display !== 'none') {
-            // Trend tab: destroy and recreate chart
-            if (Modal.detailChart) { Modal.detailChart.destroy(); Modal.detailChart = null; }
-            if (effective && effective.hawaii) {
-                const hiYears = Object.keys(effective.hawaii).sort();
-                const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
-                const isRange = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
-                document.getElementById('trend-subtitle').innerHTML = isRange
-                    ? `Hawai\u02BBi vs. other-state average \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
-                    : `Hawai\u02BBi vs. other-state average \u00B7 ${dirHint}`;
-                const canvas = document.getElementById('modal-chart');
-                const govBoxes = App.getGovernorBoxes(hiYears);
-                Modal.detailChart = ChartUtils.createDetailChart(canvas, effective, govBoxes);
-            }
+            // Trend tab: destroy and recreate chart honouring any active comparator
+            Modal._rerenderDetailChart(slug);
         } else if (rankingsView && rankingsView.style.display !== 'none') {
             Modal.showRankings(slug);
         } else if (rankHistoryView && rankHistoryView.style.display !== 'none') {
