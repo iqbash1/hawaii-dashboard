@@ -1578,7 +1578,32 @@ def _generate_variant_for_slug(slug, base_metric, area, variant_key, url_segment
                 variant_segment=url_segment,
             )
 
+    # Trend-compare for this variant: /t/{slug}/{state}/{urlSegment}/
+    variant_trend_compare = 0
+    if variant_state_entry:
+        for state in COMPARISON_STATES:
+            series = get_state_series(variant_state_entry, state)
+            if not series:
+                continue
+            state_slug = state_to_slug(state)
+            img_filename = f'{slug}{img_suffix}_t_{state_slug}.png'
+            img_path = os.path.join(ASSETS_OG, img_filename)
+            img_url = f"{SITE_URL}/assets/og/{img_filename}"
+            generate_trend_compare_og_image(
+                slug, variant_metric, area, variant_rankings,
+                state, series, img_path
+            )
+            generate_trend_compare_redirect(
+                slug, variant_metric, state, variant_rankings,
+                os.path.join(REDIRECT_DIR_T, slug, state_slug, url_segment, 'index.html'),
+                image_url=img_url,
+                variant_segment=url_segment,
+            )
+            variant_trend_compare += 1
+
     pieces = ['trend']
+    if variant_trend_compare:
+        pieces[0] = f'trend(+{variant_trend_compare} compare)'
     if variant_rankings and variant_rankings['hawaiiRank'] > 0:
         pieces.append('rankings')
     if variant_cd:
