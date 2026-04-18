@@ -213,12 +213,29 @@ const ChartUtils = {
     /**
      * @param {boolean} [allowZero] - If true, zero values are kept; otherwise mapped to null
      */
-    createDetailChart(canvas, data, govBoxes, allowZero) {
+    /**
+     * Render the main trend chart (Hawaiʻi vs. a comparator) in the modal.
+     * @param {HTMLCanvasElement} canvas
+     * @param {Object} data - metric data (hawaii, otherStateAvg, goodDirection, unit)
+     * @param {Array} govBoxes - governor-term overlay boxes
+     * @param {boolean} allowZero - treat zero as a real value (default: zeros are gaps)
+     * @param {Object} [comparator] - optional non-default comparator
+     * @param {string} comparator.label - legend label (e.g. "California")
+     * @param {Object} comparator.timeSeries - {year: value} object aligned to Hawaii's year span
+     */
+    createDetailChart(canvas, data, govBoxes, allowZero, comparator) {
         const ctx = canvas.getContext('2d');
         const labels = Object.keys(data.hawaii);
         const mapVal = allowZero ? (v => v ?? null) : (v => v === 0 ? null : v);
-        const hawaiiValues = Object.values(data.hawaii).map(mapVal);
-        const avgValues = Object.values(data.otherStateAvg).map(mapVal);
+        const hawaiiValues = labels.map(y => mapVal(data.hawaii[y]));
+        // Comparator defaults to the other-state average; when a state is
+        // picked, the caller passes { label, timeSeries } and it swaps in.
+        const compLabel = (comparator && comparator.label) ? comparator.label : 'Other-state average';
+        const compSource = (comparator && comparator.timeSeries) ? comparator.timeSeries : data.otherStateAvg;
+        const compValues = labels.map(y => {
+            const v = compSource[y];
+            return (v === null || v === undefined) ? null : mapVal(v);
+        });
 
         // Destroy existing chart if any
         const existingChart = Chart.getChart(canvas);
@@ -234,9 +251,9 @@ const ChartUtils = {
         // Gap-scaled fill: 0% gap -> 0.25, 5% -> 0.28, 25% -> 0.41, 50%+ -> 0.55
         const goodDir = data.goodDirection;
         const latestHI = hawaiiValues.filter(v => v !== null).pop() || 0;
-        const latestAvgVal = avgValues.filter(v => v !== null).pop() || 0;
-        const mid = (Math.abs(latestHI) + Math.abs(latestAvgVal)) / 2 || 1;
-        const gap = Math.abs(latestHI - latestAvgVal) / mid;
+        const latestCompVal = compValues.filter(v => v !== null).pop() || 0;
+        const mid = (Math.abs(latestHI) + Math.abs(latestCompVal)) / 2 || 1;
+        const gap = Math.abs(latestHI - latestCompVal) / mid;
         const alpha = Math.min(0.55, 0.25 + gap * 0.65);
         const detailGood = `rgba(5, 150, 105, ${alpha.toFixed(2)})`;
         const detailBad = `rgba(192, 57, 43, ${alpha.toFixed(2)})`;
@@ -254,7 +271,7 @@ const ChartUtils = {
                         data: hawaiiValues,
                         borderColor: this.HAWAII_BLUE,
                         borderWidth: 3,
-                        fill: avgValues.length > 0 ? {
+                        fill: compValues.length > 0 ? {
                             target: 1,
                             above: goodDir === 'up' ? detailGood : detailBad,
                             below: goodDir === 'up' ? detailBad : detailGood,
@@ -277,8 +294,8 @@ const ChartUtils = {
                         spanGaps: true,
                     },
                     {
-                        label: 'Other-state average',
-                        data: avgValues,
+                        label: compLabel,
+                        data: compValues,
                         borderColor: this.AVG_GRAY,
                         backgroundColor: this.AVG_GRAY_BG,
                         borderWidth: 1.5,
