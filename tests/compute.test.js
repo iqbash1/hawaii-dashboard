@@ -178,3 +178,99 @@ describe('Compute.comparisonPhrase', () => {
     });
 });
 
+// ----------------------------------------------------------------
+// getStateTimeSeries
+// Normaliser for both STATE_DATA shapes into the shape data.hawaii
+// uses. Phase 1 of the Trend-tab state-comparator feature.
+// ----------------------------------------------------------------
+describe('Compute.getStateTimeSeries', () => {
+    it('extracts a year-keyed series for a state', () => {
+        const data = {
+            '2020': { 'Alabama': 0.12, 'California': 0.05 },
+            '2021': { 'Alabama': 0.13, 'California': 0.06 },
+            '2022': { 'Alabama': 0.14, 'California': 0.07 },
+        };
+        assert.deepEqual(
+            Compute.getStateTimeSeries(data, 'California'),
+            { '2020': 0.05, '2021': 0.06, '2022': 0.07 }
+        );
+    });
+
+    it('extracts a FIPS-keyed series for a state', () => {
+        const data = {
+            '06': { name: 'California', '2020': 55.1, '2021': 56.4, '2022': 57.8 },
+            '15': { name: 'Hawaiʻi',    '2020': 64.8, '2021': 65.2, '2022': 66.0 },
+        };
+        assert.deepEqual(
+            Compute.getStateTimeSeries(data, 'California'),
+            { '2020': 55.1, '2021': 56.4, '2022': 57.8 }
+        );
+    });
+
+    it('omits years where the state has null or undefined values', () => {
+        const data = {
+            '2020': { 'California': 0.05 },
+            '2021': { 'California': null },
+            '2022': { 'California': undefined },
+            '2023': { 'California': 0.08 },
+        };
+        assert.deepEqual(
+            Compute.getStateTimeSeries(data, 'California'),
+            { '2020': 0.05, '2023': 0.08 }
+        );
+    });
+
+    it('omits gap years (FIPS shape) without introducing null keys', () => {
+        const data = {
+            '06': { name: 'California', '2020': 55.1, '2022': 57.8 },
+        };
+        assert.deepEqual(
+            Compute.getStateTimeSeries(data, 'California'),
+            { '2020': 55.1, '2022': 57.8 }
+        );
+    });
+
+    it('returns {} when the state has no data in a year-keyed shape', () => {
+        const data = { '2020': { 'Alabama': 0.12 } };
+        assert.deepEqual(Compute.getStateTimeSeries(data, 'Wyoming'), {});
+    });
+
+    it('returns {} when the state is missing from a FIPS-keyed shape', () => {
+        const data = { '15': { name: 'Hawaiʻi', '2020': 64.8 } };
+        assert.deepEqual(Compute.getStateTimeSeries(data, 'California'), {});
+    });
+
+    it('returns {} for null, undefined, or empty stateData', () => {
+        assert.deepEqual(Compute.getStateTimeSeries(null, 'California'), {});
+        assert.deepEqual(Compute.getStateTimeSeries(undefined, 'California'), {});
+        assert.deepEqual(Compute.getStateTimeSeries({}, 'California'), {});
+    });
+
+    it('returns {} when stateName is falsy', () => {
+        const data = { '2020': { 'California': 0.05 } };
+        assert.deepEqual(Compute.getStateTimeSeries(data, ''), {});
+        assert.deepEqual(Compute.getStateTimeSeries(data, null), {});
+        assert.deepEqual(Compute.getStateTimeSeries(data, undefined), {});
+    });
+
+    it('handles Hawaiʻi with okina correctly in FIPS shape', () => {
+        const data = {
+            '15': { name: 'Hawaiʻi', '2020': 64.8, '2021': 65.2 },
+        };
+        assert.deepEqual(
+            Compute.getStateTimeSeries(data, 'Hawaiʻi'),
+            { '2020': 64.8, '2021': 65.2 }
+        );
+    });
+
+    it('output shape matches data.hawaii conventions (plain object, string year keys)', () => {
+        const data = { '2020': { 'California': 0.05 }, '2021': { 'California': 0.06 } };
+        const out = Compute.getStateTimeSeries(data, 'California');
+        assert.strictEqual(typeof out, 'object');
+        assert.strictEqual(Array.isArray(out), false);
+        for (const key of Object.keys(out)) {
+            assert.strictEqual(typeof key, 'string');
+        }
+    });
+});
+

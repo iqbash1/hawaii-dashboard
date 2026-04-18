@@ -91,6 +91,53 @@ const Compute = {
         const hawaiiBetter = (hiVal > avgVal) === (goodDirection === 'up');
         return hawaiiBetter ? `${intensity}better than` : `${intensity}worse than`;
     },
+
+    /**
+     * Extract a per-year time series for one state from a metric's STATE_DATA
+     * entry, normalising both supported shapes into the same {year: value}
+     * object that `data.hawaii` already uses. Null/missing values are skipped;
+     * the caller sees gap years as absent keys rather than null placeholders.
+     *
+     * Supported shapes:
+     *   - Year-keyed: { "2023": { "Alabama": 0.25, ... }, "2022": {...} }
+     *   - FIPS-keyed: { "15": { name: "Hawaiʻi", "2021": 64.8, ... }, ... }
+     *
+     * Threshold overlay: callers should pass the already-merged data object
+     * (e.g. the `.data` member of `App._getActiveData(STATE_DATA, slug)`),
+     * not the raw STATE_DATA entry.
+     *
+     * @param {Object} stateData - normalised state-data object (the `.data` member)
+     * @param {string} stateName - exact state name as it appears in the data
+     * @returns {Object} `{year: value}` with null/missing years omitted
+     */
+    getStateTimeSeries(stateData, stateName) {
+        if (!stateData || !stateName) return {};
+        const firstKey = Object.keys(stateData)[0];
+        if (!firstKey) return {};
+        const isFipsKeyed = stateData[firstKey] && typeof stateData[firstKey].name === 'string';
+
+        if (isFipsKeyed) {
+            const entry = Object.values(stateData).find(e => e && e.name === stateName);
+            if (!entry) return {};
+            const out = {};
+            for (const [k, v] of Object.entries(entry)) {
+                if (k === 'name') continue;
+                if (v === null || v === undefined) continue;
+                out[k] = v;
+            }
+            return out;
+        }
+
+        const out = {};
+        for (const year of Object.keys(stateData)) {
+            const yearBucket = stateData[year];
+            if (!yearBucket) continue;
+            const v = yearBucket[stateName];
+            if (v === null || v === undefined) continue;
+            out[year] = v;
+        }
+        return out;
+    },
 };
 
 // Dual export: browser global + Node.js module (enables unit testing)
