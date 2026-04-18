@@ -100,11 +100,16 @@ The dashboard is a single-page application. Metric detail views are accessed via
 - Rank history: /#metric_slug/rank-history
 - County view: /#metric_slug/county
 
-Shareable links use path-based routes:
-- /t/metric_slug/: redirects to trend view
-- /r/metric_slug/: redirects to rankings view
-- /rh/metric_slug/state/: redirects to rank history with state comparison
-- /c/metric_slug/: redirects to county view
+Shareable links use path-based routes, each with its own Open Graph image:
+- /t/metric_slug/: Trend view (Hawaiʻi vs other-state average)
+- /t/metric_slug/state_code/: Trend view with a state comparator (e.g. /t/violent_crime_rate/ca/ for Hawaiʻi vs California)
+- /t/metric_slug/state_code/variant/: Same plus a threshold view (e.g. /t/renter_cost_burden_pct/ca/severe/)
+- /r/metric_slug/: Rankings view
+- /rh/metric_slug/: Rank history
+- /rh/metric_slug/state_code/: Rank history with a state comparator
+- /c/metric_slug/: County view
+
+The Trend and Rank history tabs share a single "Compare with" dropdown. Picking any of the 49 other states overlays that state's series on whichever chart is active and keeps the selection when switching between the two tabs.
 
 ## Key facts
 

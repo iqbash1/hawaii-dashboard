@@ -16,7 +16,6 @@ const Modal = {
     rankingsChart: null,
     rankHistoryChart: null,
     countyChart: null,
-    _pendingRhCompare: null,
     _rankingsScrollHandler: null,
     /**
      * Shared comparator state across Trend and Rank-history tabs. When null,
@@ -296,7 +295,7 @@ const Modal = {
      * @param {string} slug - Metric ID (e.g. 'violent_crime_rate')
      * @param {string} areaName - Policy area name (e.g. 'Safety & Health')
      * @param {string} [initialView] - Tab to open first: 'rankings' | 'rank-history' | 'county'
-     * @param {string} [initialCompare] - State name to pre-select in rank-history compare dropdown
+     * @param {string} [initialCompare] - State name to seed the shared compare-with dropdown (Trend + Rank history tabs)
      */
     openModal(slug, areaName, initialView, initialCompare) {
         const overlay = document.getElementById('modal-overlay');
@@ -308,10 +307,8 @@ const Modal = {
         Modal._openSlug = slug;
         App._trackEvent('modal_open', { slug, name: metricData.metric, area: metricData.area || areaName });
 
-        // Store any initial rank-history comparison state for showRankHistory to consume
-        Modal._pendingRhCompare = initialCompare || null;
-        // Reset shared comparator state. If a compare state is pre-set by URL routing,
-        // initialCompare already encodes it; both tabs will pick it up.
+        // Reset shared comparator state. If a compare state is pre-set by URL
+        // routing, initialCompare already encodes it; both tabs will pick it up.
         Modal._compareState = initialCompare || null;
         Modal._activeTab = 'detail';
 
@@ -933,11 +930,8 @@ const Modal = {
 
         // Initial comparison state: the shared Modal._compareState (seeded by
         // URL routing in openModal, or kept across tab switches by
-        // _onCompareChange). We also clear the legacy _pendingRhCompare
-        // holdover for any callers that still set it.
-        const pendingCompare = Modal._compareState || Modal._pendingRhCompare || null;
-        Modal._pendingRhCompare = null;
-        Modal._compareState = pendingCompare;
+        // _onCompareChange).
+        const pendingCompare = Modal._compareState || null;
 
         // Keep the shared dropdown in sync with whatever state is active now.
         const compareSelect = document.getElementById('compare-select');
