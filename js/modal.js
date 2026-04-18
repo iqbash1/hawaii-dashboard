@@ -419,7 +419,7 @@ const Modal = {
             const rankLabel = rankings && rankings.hawaiiRank > 0
                 ? `<span class="tab-rank">#${rankings.hawaiiRank}</span>`
                 : '';
-            tabRankings.innerHTML = `<span>Current rank ${rankLabel}</span><span class="tab-sub">How Hawai\u02BBi compares now</span>`;
+            tabRankings.innerHTML = `<span>Rank ${rankLabel}</span><span class="tab-sub">How Hawai\u02BBi compares now</span>`;
 
             tabDetail.onclick = () => Modal.switchTab('detail', slug);
             tabRankings.onclick = () => Modal.switchTab('rankings', slug);
@@ -738,7 +738,7 @@ const Modal = {
 
         const yearRange = App.parseYearLabel(String(rankHistory.years[0])) + '-' + App.keyEnd(rankHistory.years[rankHistory.years.length - 1]);
         document.getElementById('rank-history-subtitle').textContent =
-            `Rank over time \u00B7 ${yearRange}`;
+            `Rank history \u00B7 ${yearRange}`;
         document.getElementById('rank-history-rank').textContent = '';
 
         // Consume any pending initial comparison state (set by openModal from URL routing)
