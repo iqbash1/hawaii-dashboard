@@ -235,6 +235,7 @@ body {
 }
 .question-search-icon {
     flex-shrink: 0;
+    color: var(--hawaii-blue);
     transition: transform var(--transition);
 }
 .question-search-trigger[aria-expanded="true"] .question-search-icon {
@@ -327,6 +328,7 @@ body {
 }
 .metric-search-icon {
     flex-shrink: 0;
+    color: var(--hawaii-blue);
     transition: transform var(--transition);
 }
 .metric-search-trigger[aria-expanded="true"] .metric-search-icon {
@@ -984,9 +986,9 @@ body {
     font-family: inherit;
     font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--hawaii-blue);
-    background: var(--hawaii-blue-light);
-    border: 1px solid rgba(13, 124, 143, 0.35);
+    color: var(--text);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     padding: 0.2rem 0.55rem;
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -997,11 +999,14 @@ body {
     transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .threshold-trigger:hover {
-    background: var(--hawaii-blue);
-    color: #fff;
     border-color: var(--hawaii-blue);
 }
+.threshold-trigger[aria-expanded="true"] {
+    border-color: var(--hawaii-blue);
+    box-shadow: 0 0 0 2px rgba(13,124,143,0.15);
+}
 .threshold-trigger-caret {
+    color: var(--hawaii-blue);
     transition: transform 0.15s;
 }
 .threshold-trigger[aria-expanded="true"] .threshold-trigger-caret {
