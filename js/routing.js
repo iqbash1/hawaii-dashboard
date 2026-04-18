@@ -31,13 +31,21 @@ const Router = {
         let variantSegment = '';
 
         // Path patterns: optional variant suffix (e.g. /severe/, /verylow/, /notgood/, /all/)
+        // /t/ and /rh/ also accept an optional state segment for the shared comparator.
+        const detailCompareMatch = window.location.pathname.match(/^\/t\/([^/]+)\/([^/]+)\/([a-z]+\/)?\/?$/);
         const detailMatch = window.location.pathname.match(/^\/t\/([^/]+)\/([a-z]+\/)?\/?$/);
         const rankMatch = window.location.pathname.match(/^\/r\/([^/]+)\/([a-z]+\/)?\/?$/);
         const countyMatch = window.location.pathname.match(/^\/c\/([^/]+)\/([a-z]+\/)?\/?$/);
         const rankHistoryCompareMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([^/]+)\/([a-z]+\/)?\/?$/);
         const rankHistoryMatch = window.location.pathname.match(/^\/rh\/([^/]+)\/([a-z]+\/)?\/?$/);
         let compareSlug = '';
-        if (detailMatch) {
+        // /t/<slug>/<state>/<threshold>?/ only matches when segment-2 resolves to a known
+        // state; otherwise fall through to the simple /t/<slug>/<threshold>?/ pattern.
+        if (detailCompareMatch && Router.slugToState(detailCompareMatch[2])) {
+            slug = detailCompareMatch[1];
+            compareSlug = detailCompareMatch[2];
+            variantSegment = (detailCompareMatch[3] || '').replace(/\/$/, '');
+        } else if (detailMatch) {
             slug = detailMatch[1];
             variantSegment = (detailMatch[2] || '').replace(/\/$/, '');
         } else if (rankMatch) {

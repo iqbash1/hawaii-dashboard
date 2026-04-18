@@ -38,6 +38,24 @@ const Modal = {
         return config.urlSegment + '/';
     },
 
+    /**
+     * Build the canonical URL path for a tab + current shared state. Used by
+     * switchTab and _onCompareChange so state picks persist in the URL and
+     * the share button reflects the exact view the user is looking at.
+     * Order: /<prefix>/<slug>/<state>?/<threshold>?/  (state only on tabs
+     * that support the shared comparator).
+     */
+    _buildTabUrl(tab, slug) {
+        const prefixes = { detail: '/t', rankings: '/r', 'rank-history': '/rh', county: '/c' };
+        const prefix = prefixes[tab] || '/t';
+        const stateTabs = new Set(['detail', 'rank-history']);
+        const state = Modal._compareState;
+        const stateSegment = (state && stateTabs.has(tab) && typeof Router !== 'undefined')
+            ? Router.stateToSlug(state) + '/'
+            : '';
+        return `${prefix}/${slug}/${stateSegment}${Modal._thPath(slug)}`;
+    },
+
     /** Bold "Bottom line:" and "Keep in mind:" markers in a brief string. */
     _formatBriefText(text) {
         return text
@@ -161,9 +179,10 @@ const Modal = {
     },
 
     /**
-     * React to the user changing the shared dropdown. Re-renders the chart that
-     * is currently visible; the other chart picks up the new state the next
-     * time its tab is opened.
+     * React to the user changing the shared dropdown. Re-renders the chart
+     * that is currently visible; the other chart picks up the new state the
+     * next time its tab is opened. Pushes the selection into the URL so the
+     * share button and back/forward both work.
      */
     _onCompareChange(slug, stateName) {
         Modal._compareState = stateName || null;
@@ -176,6 +195,7 @@ const Modal = {
                 Modal.rankHistoryChart._clearComparison();
             }
         }
+        history.replaceState(null, '', Modal._buildTabUrl(Modal._activeTab, slug));
         if (stateName) {
             App._trackEvent('state_compared', { slug, compare_state: stateName, tab: Modal._activeTab });
         }
@@ -513,10 +533,8 @@ const Modal = {
         // Share helpers
         const getShareUrl = () => {
             const activeTab = document.querySelector('.modal-tab.active');
-            const tabId = activeTab ? activeTab.id : 'tab-detail';
-            const prefix = tabId === 'tab-rankings' ? 'r' : tabId === 'tab-county' ? 'c' : 't';
-            let url = 'https://hawaiidashboard.org/' + prefix + '/' + slug + '/' + Modal._thPath(slug);
-            return url;
+            const tab = activeTab ? activeTab.id.replace('tab-', '') : 'detail';
+            return 'https://hawaiidashboard.org' + Modal._buildTabUrl(tab, slug);
         };
         const copyToClipboard = (text) => {
             const execFallback = () => {
@@ -702,9 +720,14 @@ const Modal = {
         document.body.style.overflow = 'hidden';
         document.getElementById('modal').scrollTop = 0;
 
-        // Update URL for permalink (preserve bundle param if active, and threshold if set)
-        const bundleParam = App._activeBundle ? '?bundle=' + App._activeBundle.id : Modal._thPath(slug);
-        history.replaceState(null, '', '/t/' + slug + '/' + bundleParam);
+        // Update URL for permalink. Preserve bundle param if active (mutually
+        // exclusive with threshold/state path segments in the current design);
+        // otherwise delegate to the shared _buildTabUrl so state + threshold
+        // segments stay in sync with the shared comparator.
+        const url = App._activeBundle
+            ? '/t/' + slug + '/?bundle=' + App._activeBundle.id
+            : Modal._buildTabUrl('detail', slug);
+        history.replaceState(null, '', url);
 
         // Render bundle nav (if a bundle is active)
         Modal.renderBundleNav(slug);
@@ -788,18 +811,14 @@ const Modal = {
             tabRankings.classList.add('active');
             tabRankings.setAttribute('aria-selected', 'true');
             Modal.showRankings(slug);
-            history.replaceState(null, '', '/r/' + slug + '/' + Modal._thPath(slug));
-
         } else if (tab === 'rank-history') {
             tabRankHistory.classList.add('active');
             tabRankHistory.setAttribute('aria-selected', 'true');
             Modal.showRankHistory(slug);
-            history.replaceState(null, '', '/rh/' + slug + '/' + Modal._thPath(slug));
         } else if (tab === 'county') {
             tabCounty.classList.add('active');
             tabCounty.setAttribute('aria-selected', 'true');
             Modal.showCounty(slug);
-            history.replaceState(null, '', '/c/' + slug + '/' + Modal._thPath(slug));
         } else {
             tabDetail.classList.add('active');
             tabDetail.setAttribute('aria-selected', 'true');
@@ -808,8 +827,9 @@ const Modal = {
             // happened on another tab (e.g. user picked California on Rank
             // history, then switched back to Trend).
             Modal._rerenderDetailChart(slug);
-            history.replaceState(null, '', '/t/' + slug + '/' + Modal._thPath(slug));
         }
+        // URL reflects the active tab + current shared state + threshold
+        history.replaceState(null, '', Modal._buildTabUrl(tab, slug));
         // Always reset modal scroll to top on tab switch
         document.querySelector('.modal').scrollTop = 0;
     },
@@ -928,11 +948,7 @@ const Modal = {
         const onCompareFn = (stateName) => {
             if (compareSelect) compareSelect.value = stateName || '';
             Modal._compareState = stateName || null;
-            if (stateName) {
-                history.replaceState(null, '', '/rh/' + slug + '/' + Router.stateToSlug(stateName) + '/' + Modal._thPath(slug));
-            } else {
-                history.replaceState(null, '', '/rh/' + slug + '/' + Modal._thPath(slug));
-            }
+            history.replaceState(null, '', Modal._buildTabUrl('rank-history', slug));
         };
 
         // Create the chart
