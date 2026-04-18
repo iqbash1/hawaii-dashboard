@@ -265,7 +265,7 @@ const Modal = {
                 // Build trigger + menu. Trigger shows active choice; menu lists all options.
                 toggleWrap.innerHTML =
                     ' \u00B7 ' +
-                    '<button class="threshold-trigger" type="button" ' +
+                    '<button class="dropdown-trigger threshold-trigger" type="button" ' +
                         'aria-haspopup="listbox" aria-expanded="false" ' +
                         'title="' + activeBtn.title + '">' +
                         '<span class="threshold-trigger-label">' + activeBtn.label + '</span>' +

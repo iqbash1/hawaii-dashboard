@@ -117,7 +117,7 @@
         <span class="explore-label" aria-hidden="true">Explore by</span>
         <!-- Question dropdown (primary) -->
         <div class="question-search-wrap" id="question-search-wrap">
-            <button id="question-search-trigger" class="question-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="I have a question">
+            <button id="question-search-trigger" class="dropdown-trigger question-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="I have a question">
                 <span class="question-search-label">I have a question&hellip;</span>
                 <span class="question-search-count" style="display:none;"></span>
                 <span class="question-search-clear" id="question-search-clear" style="display:none;" aria-label="Clear filter">&#x2715;</span>
@@ -127,7 +127,7 @@
         </div>
         <!-- Jump to metric dropdown (secondary) -->
         <div class="metric-search-wrap" id="metric-search-wrap">
-            <button id="metric-search-trigger" class="metric-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Jump to metric" title="Search metrics (press /)">
+            <button id="metric-search-trigger" class="dropdown-trigger metric-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Jump to metric" title="Search metrics (press /)">
                 <span class="metric-search-label">Jump to metric&hellip;</span>
                 <svg class="metric-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
@@ -255,7 +255,7 @@
                 <div class="rank-history-chart-wrap"><canvas id="rank-history-chart"></canvas></div>
                 <div class="rh-compare-bar">
                     <label class="rh-compare-label" for="rh-compare-select">Compare with</label>
-                    <select id="rh-compare-select" class="rh-compare-select">
+                    <select id="rh-compare-select" class="dropdown-trigger rh-compare-select">
                         <option value="">Select a state&hellip;</option>
                     </select>
                     <button id="rh-compare-clear" class="rh-compare-clear" style="display:none;">&#x2715; Clear</button>
