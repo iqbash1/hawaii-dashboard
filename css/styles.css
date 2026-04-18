@@ -320,13 +320,6 @@ body {
     gap: 0.5rem;
     padding: 0.45rem 0.8rem;
     font-size: var(--text-sm);
-    color: var(--text-muted);
-}
-.metric-search-trigger:hover {
-    color: var(--text);
-}
-.metric-search-trigger[aria-expanded="true"] {
-    color: var(--text);
 }
 .metric-search-icon {
     flex-shrink: 0;
@@ -986,7 +979,6 @@ body {
 }
 .threshold-trigger {
     font-size: var(--text-sm);
-    font-weight: 600;
     padding: 0.2rem 0.55rem;
     display: inline-flex;
     align-items: center;
