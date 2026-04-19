@@ -2009,3 +2009,262 @@ body {
         page-break-after: avoid;
     }
 }
+
+/* --- Question of the Day --- */
+.qotd-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hawaii-blue, #0D7C8F);
+    font-weight: 600;
+    margin: 0;
+}
+.qotd-claim {
+    font-size: 1.5rem;
+    line-height: 1.35;
+    font-weight: 600;
+    color: var(--text, #222);
+    margin: 0;
+    max-width: 520px;
+}
+.qotd-btn {
+    min-width: 140px;
+    padding: 0.85rem 1.75rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--hawaii-blue, #0D7C8F);
+    background: transparent;
+    border: 2px solid var(--hawaii-blue, #0D7C8F);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    min-height: 48px;
+}
+.qotd-btn:hover,
+.qotd-btn:focus-visible {
+    background: var(--hawaii-blue, #0D7C8F);
+    color: #fff;
+    outline: none;
+}
+/* Share button — visually identical to .modal-share-btn so the share affordance reads the same everywhere on the dashboard. */
+.qotd-share-btn {
+    height: 36px;
+    padding: 0 0.85rem;
+    gap: 0.4rem;
+    border: 1px solid var(--hawaii-blue, #0D7C8F);
+    background: var(--hawaii-blue, #0D7C8F);
+    border-radius: var(--radius-sm, 4px);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+}
+.qotd-share-btn svg { stroke: #fff; }
+.qotd-share-btn:hover,
+.qotd-share-btn:focus-visible {
+    background: var(--hawaii-blue-dark, #075b6a);
+    border-color: var(--hawaii-blue-dark, #075b6a);
+    color: #fff;
+    outline: none;
+}
+.qotd-verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+}
+.qotd-verdict--correct {
+    color: var(--positive, #059669);
+    background: var(--positive-bg, #e8f6ef);
+}
+.qotd-verdict--incorrect {
+    color: var(--negative, #C0392B);
+    background: var(--negative-bg, #fbecea);
+}
+.qotd-verdict-glyph {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+.qotd-answer-text {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--text, #222);
+    margin: 0;
+    max-width: 520px;
+}
+.qotd-chart {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+.qotd-chart-image {
+    width: 100%;
+    max-width: 540px;
+    height: auto;
+    border-radius: 6px;
+    border: 1px solid var(--divider, rgba(0, 0, 0, 0.08));
+}
+.qotd-chart-caption {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #666);
+}
+.qotd-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+.qotd-link {
+    font-size: 0.95rem;
+    color: var(--hawaii-blue, #0D7C8F);
+    text-decoration: none;
+    font-weight: 500;
+}
+.qotd-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .qotd-claim {
+        font-size: 1.2rem;
+    }
+    .qotd-btn {
+        width: 100%;
+        min-width: 0;
+    }
+    .qotd-teaser-claim {
+        font-size: 1.1rem;
+    }
+}
+
+/* QOTD homepage teaser — pull-quote aesthetic between the dropdowns and the card grid. */
+.qotd-teaser {
+    position: relative;
+    max-width: 760px;
+    margin: 1.25rem auto 1.5rem;
+    padding: 1.5rem 1.5rem;
+    border-top: 1px solid var(--divider, rgba(0, 0, 0, 0.1));
+    border-bottom: 1px solid var(--divider, rgba(0, 0, 0, 0.1));
+    text-align: center;
+}
+/* Close button — matches .modal-close so the dismiss affordance reads the same across the site. */
+.qotd-teaser-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background var(--transition);
+    z-index: 1;
+}
+.qotd-teaser-close:hover,
+.qotd-teaser-close:focus-visible {
+    background: var(--avg-gray-light);
+    outline: none;
+}
+.qotd-teaser-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+}
+/* Proof (answered) state matches the old modal layout, rendered inline. */
+.qotd-teaser-inner--proof {
+    gap: 1rem;
+}
+.qotd-teaser-inner--proof .qotd-claim {
+    font-size: 1.35rem;
+    line-height: 1.35;
+    font-weight: 600;
+    color: var(--text, #222);
+    margin: 0;
+    max-width: 600px;
+}
+.qotd-teaser-footer {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary, #666);
+    font-style: italic;
+}
+.qotd-toast {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+.qotd-toast--show {
+    opacity: 1;
+}
+.qotd-teaser-eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hawaii-blue, #0D7C8F);
+    font-weight: 600;
+}
+.qotd-teaser-claim {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--text, #222);
+    max-width: 600px;
+}
+.qotd-teaser-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+.qotd-btn--inline {
+    min-width: 120px;
+    padding: 0.65rem 1.5rem;
+    font-size: 1rem;
+    min-height: 44px;
+}
+@media (max-width: 600px) {
+    .qotd-teaser {
+        padding: 1.25rem 1rem;
+        margin: 1rem auto 1.25rem;
+    }
+    .qotd-btn--inline {
+        width: 100%;
+        min-width: 0;
+    }
+    .qotd-teaser-buttons {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+}

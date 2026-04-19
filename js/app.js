@@ -288,6 +288,8 @@ const App = {
 
         this.initMetricSearch();
 
+        if (typeof QOTD !== 'undefined') QOTD.init();
+
         // Handle permalink routing (path-based /t/slug/ or legacy hash #slug)
         Router.handleRoute();
         window.addEventListener('hashchange', () => Router.handleRoute());
@@ -541,7 +543,7 @@ const App = {
         if (!sd || !sd.data) return null;
 
         const isHawaii = ChartUtils.isHawaii;
-        // DC and Puerto Rico are not states; always excluded from the 49-state average
+        // DC and Puerto Rico are not states; always excluded from the 49-state comparator
         const NON_STATES = new Set(['District of Columbia', 'Puerto Rico']);
 
         const isPCPStyle = App._isPCPStyle(sd.data);
