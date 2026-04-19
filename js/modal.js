@@ -357,8 +357,8 @@ const Modal = {
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
-            ? `Hawai\u02BBi vs. median \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
-            : `Hawai\u02BBi vs. median \u00B7 ${dirHint}`;
+            ? `Hawai\u02BBi vs. 50-state median \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
+            : `Hawai\u02BBi vs. 50-state median \u00B7 ${dirHint}`;
         // Render the dynamic "Bottom line" brief
         const briefEl = document.getElementById('modal-brief');
         const briefText = Modal.computeBrief(slug);
@@ -651,7 +651,7 @@ const Modal = {
             canvas.style.display = 'none';
         }
         canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs ${comparator ? comparator.label : 'median'}`);
+        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs ${comparator ? comparator.label : '50-state median'}`);
 
         // Chart note: always shows smoothing disclosure; also shows trim-year note when applicable
         const chartNoteEl = document.getElementById('modal-chart-note');
