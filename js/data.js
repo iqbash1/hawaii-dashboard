@@ -1,8 +1,9 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
 // 26 metrics across 5 areas.
-// Hawaii values and Other State Avg (simple mean of 49 states,
-// excluding HI and DC) sourced from federal agencies.
+// Hawaii values and Other State Avg (median of 49 states, excluding
+// HI and DC; field name otherStateAvg kept for compatibility)
+// sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
 // Migration 2011-2019 backfilled from Census PEP 2019 vintage.
 
