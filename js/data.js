@@ -736,8 +736,7 @@ const DASHBOARD_DATA = {
           "url": "https://doe.louisiana.gov/data-and-reports/high-school-performance"
         }
       }
-    },
-    "insight": "The graduation rate climbed from 80% in 2011 to 86% in 2022. Hawaiʻi's single statewide district means state policy directly drives this number."
+    }
   },
   "ba_or_higher_pct": {
     "area": "Education",

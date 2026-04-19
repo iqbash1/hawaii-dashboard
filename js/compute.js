@@ -98,7 +98,7 @@ const Compute = {
      * @param {number} hiVal - Hawaii's current value
      * @param {number} compVal - Other-state comparator (median; field name `otherStateAvg` is legacy)
      * @param {string} goodDirection - "up" (higher is better) or "down" (lower is better)
-     * @param {number} [significantThreshold=0.2] - Gap > this fraction of avg adds "significantly "
+     * @param {number} [significantThreshold=0.2] - Gap > this fraction of the comparator adds "significantly "
      * @returns {string} "better than", "worse than", "significantly better than", "significantly worse than", or "the same as"
      */
     comparisonPhrase(hiVal, compVal, goodDirection, significantThreshold) {
