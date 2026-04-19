@@ -33,7 +33,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q009",
     "slug": "buying-a-home-in-hawaii-costs-more-compared-to-income-than-rest-of-country",
-    "claim": "Buying a home in Hawaiʻi takes more years of income than in the rest of the country.",
+    "claim": "Buying a home in Hawaiʻi takes more years of resident income than in the rest of the country.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 8.7x versus the median of 4.2x.",
     "chartUrl": "/r/home_price_to_income/",
