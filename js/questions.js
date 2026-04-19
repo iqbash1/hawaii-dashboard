@@ -105,7 +105,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q077",
     "slug": "hawaii-has-more-unsheltered-homelessness-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has a higher rate of unsheltered homelessness (per 10K residents) than the rest of the country.",
+    "claim": "Hawaiʻi has a higher rate of unsheltered homelessness than the rest of the country.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 28.2 per 10K versus the median of 3.5 per 10K.",
     "chartUrl": "/r/unsheltered_homeless_rate/",
@@ -141,7 +141,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q005",
     "slug": "most-hawaii-renters-spend-over-30-percent-on-rent",
-    "claim": "A larger share of Hawaiʻi renter households are cost-burdened (pay 30%+ of income on rent) than in the rest of the country.",
+    "claim": "A larger share of Hawaiʻi renter households are cost-burdened than in the rest of the country.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 50.6% versus the median of 45.9%.",
     "chartUrl": "/r/renter_cost_burden_pct/",
