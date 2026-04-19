@@ -1597,7 +1597,7 @@ const DASHBOARD_DATA = {
   },
   "unsheltered_homeless_rate": {
     "area": "Housing & Cost of Living",
-    "metric": "Unsheltered Homeless",
+    "metric": "Homelessness",
     "officialName": "One-night count of people sleeping outdoors, in vehicles, or in places not meant for habitation, per 10,000 residents.",
     "sourceCategory": "federal",
     "unit": "per 10K",

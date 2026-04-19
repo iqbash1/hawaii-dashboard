@@ -42,7 +42,7 @@ const NAME_TO_SLUG = {
     'Per Capita Income (real)':               'real_per_capita_income',
     'Renter Housing Cost Burden':                            'renter_cost_burden_pct',
     'Home Price-to-Income Ratio':                           'home_price_to_income',
-    'Unsheltered Homeless':                                 'unsheltered_homeless_rate',
+    'Homelessness':                                         'unsheltered_homeless_rate',
     'Roads in Poor Condition':                              'road_poor_pct',
     'Households with Broadband':                            'broadband_subscription_pct',
     'Residential Electricity Price':                        'residential_price_cpkwh',

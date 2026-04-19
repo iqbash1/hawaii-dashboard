@@ -22,7 +22,7 @@ The Hawai ªi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai 
 ### Housing & Cost of Living
 6. Renter Housing Cost Burden: % of renters cost-burdened, with 30%+ and 50%+ threshold views (Census ACS)
 7. Home Price-to-Income Ratio: median home value / median household income (Census ACS)
-8. Unsheltered Homeless Rate: per 10K residents, with unsheltered-only and total (sheltered + unsheltered) threshold views (HUD PIT Count)
+8. Homelessness: per 10K residents, with unsheltered-only and total (sheltered + unsheltered) threshold views (HUD PIT Count)
 9. Residential Electricity Price: cents per kWh (EIA)
 10. Food Insecurity Rate: % of households, 3-year average, with food-insecure and very-low-food-security threshold views (USDA ERS)
 

@@ -542,7 +542,7 @@ const QOTD_QUESTIONS = [
     "answer": "In 2024, Hawaiʻi was 28.2 per 10K versus the other-state median of 3.4 per 10K.",
     "chartUrl": "/r/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
-    "metricLabel": "Unsheltered Homeless",
+    "metricLabel": "Homelessness",
     "topic": "Housing & Cost of Living",
     "variant": "V1"
   },
@@ -554,7 +554,7 @@ const QOTD_QUESTIONS = [
     "answer": "Hawaiʻi has the #3 highest value among 50 states in 2024 (28.2 per 10K).",
     "chartUrl": "/r/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
-    "metricLabel": "Unsheltered Homeless",
+    "metricLabel": "Homelessness",
     "topic": "Housing & Cost of Living",
     "variant": "V4"
   },
@@ -565,7 +565,7 @@ const QOTD_QUESTIONS = [
     "correct": false,
     "answer": "From 2019 to 2024, Hawaiʻi moved from 25.7 per 10K to 28.2 per 10K (+9.5%).",
     "chartUrl": "/five-year-change/",
-    "metricLabel": "Unsheltered Homeless",
+    "metricLabel": "Homelessness",
     "topic": "Housing & Cost of Living",
     "variant": "V6",
     "metric": "unsheltered_homeless_rate"
@@ -578,7 +578,7 @@ const QOTD_QUESTIONS = [
     "answer": "In 2024, the county with the highest value was Kauai at 63.0 per 10K.",
     "chartUrl": "/c/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
-    "metricLabel": "Unsheltered Homeless",
+    "metricLabel": "Homelessness",
     "topic": "Housing & Cost of Living",
     "variant": "V8"
   },
