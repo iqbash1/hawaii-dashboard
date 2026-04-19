@@ -36,11 +36,11 @@ hawaii-dashboard/
 │   ├── county-data.js      # Per-county data for 4 Hawaiʻi counties
 │   ├── app.js              # Coordinator: init, card rendering, bundles, metric search, helpers, analytics
 │   ├── modal.js            # Modal: open/close, tabs, charts, narrative, Bottom Line brief
-│   ├── export.js           # XLSX download with lazy-loaded SheetJS (314 lines)
-│   ├── routing.js          # URL parsing, permalink routing, state slug conversion (83 lines)
-│   ├── compute.js          # Pure utilities: parseYearLabel, keyEnd, getLatestValue, getPriorValue (63 lines)
+│   ├── export.js           # XLSX download with lazy-loaded SheetJS
+│   ├── routing.js          # URL parsing, permalink routing, state slug conversion
+│   ├── compute.js          # Pure utilities: parseYearLabel, keyEnd, getLatestValue, getPriorValue, median, comparisonPhrase, getStateTimeSeries
 │   ├── charts.js           # Chart.js sparklines, detail charts, rankings, governor overlay
-│   ├── bundles.js          # Bundle config: 9 question-first entry point chips with metric lists
+│   ├── bundles.js          # Bundle config: 9 resident-voice questions with metric lists
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers, county HTML)
 ├── assets/
 │   ├── og-image.png        # Generic OG image (fallback for homepage + about)
@@ -54,7 +54,6 @@ hawaii-dashboard/
 │   ├── {slug}/{variant}/index.html    # Threshold view (severe, verylow, notgood, total)
 │   └── {slug}/{code}/index.html       # Per-state compare redirect pages (49 per metric)
 │                                      #   (plus /{code}/{variant}/index.html for threshold metrics)
-│   └── {slug}/index.html
 ├── r/                      # Rankings redirect pages for OG sharing
 │   └── {slug}/index.html
 ├── c/                      # County redirect pages for OG sharing
@@ -78,11 +77,14 @@ hawaii-dashboard/
 │   ├── audit-metric.js         # Comprehensive per-metric audit (10 checks)
 │   ├── audit-links.js          # HTTP link checker for all URLs in data.js
 │   └── validate-data.js        # Validates data integrity before CI commit
+├── methods/                # Static methodology page
+│   └── index.html
 ├── tests/
 │   ├── package.json            # Playwright + http-server dependencies
 │   ├── playwright.config.js    # Test runner config (port 8765, Chromium)
 │   ├── smoke.spec.js           # Critical-path E2E smoke tests (Playwright)
-│   └── utils.test.js           # Unit tests for js/utils.js (Node.js built-in test runner)
+│   ├── utils.test.js           # Unit tests for js/utils.js (Node.js built-in test runner)
+│   └── compute.test.js         # Unit tests for js/compute.js (Node.js built-in test runner)
 ├── .github/
 │   └── workflows/
 │       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs
@@ -140,14 +142,14 @@ hawaii-dashboard/
 | 16 | Economy & Workforce | Net Employer Business Formation | % | Up | Census BFS |
 | 17 | Education | NAEP 8th Grade Math | score | Up | NAEP |
 | 18 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
-| 19 | Education | High School Graduation Rate (ACGR) | % | Up | NCES |
-| 20 | Education | Adults 25+ with Bachelor's+ | % | Up | Census ACS |
-| 21 | Infra, Resilience & Trust | Roads in Poor Condition | % | Down | FHWA |
-| 22 | Infra, Resilience & Trust | Broadband Subscriptions | % | Up | Census ACS |
-| 23 | Infra, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
-| 24 | Infra, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Infra, Resilience & Trust | Voter Participation Rate | % | Up | US Elections Project |
-| 26 | Infra, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
+| 19 | Education | High School Graduation Rate | % | Up | NCES |
+| 20 | Education | Adults with Bachelor's Degree+ | % | Up | Census ACS |
+| 21 | Infrastructure, Resilience & Trust | Roads in Poor Condition | % | Down | FHWA |
+| 22 | Infrastructure, Resilience & Trust | Households with Broadband | % | Up | Census ACS |
+| 23 | Infrastructure, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
+| 24 | Infrastructure, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 25 | Infrastructure, Resilience & Trust | Voter Participation Rate | % | Up | US Elections Project |
+| 26 | Infrastructure, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -221,7 +223,6 @@ Each metric follows this structure:
 ```js
 {
   area: "Category name",
-  areaIcon: "emoji",
   metric: "Full metric name",
   officialName: "Full official federal metric name - shown as a definition bar below the chart in the modal (required; all 26 metrics have this)",
   unit: "%" | "$" | "per 100K" | "per 10K" | "per 1,000" | "¢/kWh" | "×" | "Index (2017=100)" | "score",
@@ -235,15 +236,15 @@ Each metric follows this structure:
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
   potentialDrivers: "HTML string: research-backed drivers with hyperlinks to sources (optional)",  // shown in modal above policyLevers; rendered via innerHTML (supports <a> links)
   countyNarrative: "HTML or plain-text county-level breakdown (optional)", // shown as 'County breakdown' section in consolidated layout; rendered via template literal (supports <a> links); omit when the metric has no county-level chart data in county-data.js
-  useConsolidated: true,                                                  // Boolean flag. When true, the modal body switches to the single-scroll consolidated layout (see below). Set on all 26 metrics.
+  useConsolidated: true,                                                  // Boolean flag. All 26 metrics use the single-scroll consolidated layout.
   policyLevers: "State-level levers for this outcome (optional)",         // shown as a section in modal
   latestMonthly: {                                              // optional; only 4 metrics with monthly federal data
     value: 2.2,                                                   // latest monthly figure (display units, not decimal)
     period: "Jan 2026",                                           // human-readable month label
     asOf: "2026-04-13"                                            // ISO date for staleness checking
   },
-  hawaii: { "2012": 253.85, "2013": 232.48, ... },
-  otherStateAvg: { "2012": 387.77, "2013": 372.01, ... },
+  hawaii: { "2012": 253.85, "2013": 232.48, ... },        // embedded baseline; at runtime App.computeChartData derives this fresh from STATE_DATA
+  otherStateAvg: { "2012": 387.77, "2013": 372.01, ... }, // embedded baseline (field is a median of 49 other states; legacy name); same runtime derivation
   rankHistoryNarrative: { ... }   // see below
 }
 ```
@@ -356,7 +357,7 @@ Structure:
 
 ### Bundle Entry Points
 
-Nine question-first chips appear between the header and the metric grid. Each chip highlights a curated subset of metrics with a default tab (trend, rank, rank history, or county).
+Two dropdowns sit between the header and the metric grid: "I have a question..." (bundle selector) and "Jump to metric..." (direct metric selector). The question dropdown lists nine resident-voice questions; each maps to a curated subset of metrics with a default tab (trend, rank, rank history, or county).
 
 **Current bundles (in display order):**
 
@@ -373,19 +374,17 @@ Nine question-first chips appear between the header and the metric grid. Each ch
 | `participating` | Are residents actively participating? | Labor force participation, Voter participation, Net domestic migration |
 
 **Behavior:**
-- Clicking a chip highlights matching cards (other cards dim to 12% opacity + grayscale)
-- A status bar below the chips shows the bundle name, description, and metric count
-- Clicking the same chip a second time (or the "Clear filter" button) deactivates
-- The active bundle ID is preserved in the URL as `?bundle={id}` (survives refresh)
-- Opening a metric modal from a bundle adds a Prev/Next nav bar at the top of the modal
-- Defined in `js/bundles.js` as a `const BUNDLES` array; adding or reordering chips requires only editing that file
+- Selecting a question in the dropdown hides non-matching cards and area headings (`display:none`), so only the relevant subset remains on the page.
+- The dropdown trigger shows the selected question plus metric count and a clear button.
+- The active bundle ID is preserved in the URL as `?bundle={id}` (survives refresh).
+- Opening a metric modal from a bundle adds a Prev/Next nav bar at the top of the modal.
+- Defined in `js/bundles.js` as a `const BUNDLES` array; adding or reordering entries requires only editing that file.
 
 **`bundles.js` entry format:**
 ```js
 {
   id: 'bundle-id',           // kebab-case, used in URL ?bundle= param
-  title: 'Display Title',    // shown in chip and bundle bar
-  description: 'One line',   // shown in bundle bar below the title
+  title: 'Display Title',    // shown as the dropdown option
   metrics: [
     { id: 'metric_slug', view: 'rh' },  // view: 't' | 'r' | 'rh' | 'c'
   ],
@@ -414,10 +413,9 @@ The skeleton HTML in `index.html` mirrors the real grid exactly (5 area headings
 
 Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Rank | Trend | Rank history | County**
 
-**Two modal body layouts:**
+**Modal body layout:**
 
-- **Standard layout** (default, `useConsolidated` not set): Narrative is split across tabs. Potential drivers and policy levers appear at the bottom of the Trend tab. The Rank history tab shows the written narrative from `rankHistoryNarrative`. Not used by any current metric (all 26 use consolidated).
-- **Consolidated layout** (`useConsolidated: true`): The modal body switches to a single `#modal-consolidated` scrollable div directly below the chart area. All narrative content appears in one uninterrupted scroll using 7 ordered sections (see `_buildConsolidatedNarrative` below). The Rank history tab still shows its chart, but the written narrative is suppressed there (it appears in the consolidated section instead). All 26 current metrics use this layout.
+All narrative content lives in a single `#modal-consolidated` scrollable div directly below the chart area, rendered as one uninterrupted scroll of 7 ordered sections (see `_buildConsolidatedNarrative` below). The Rank history tab still shows its chart, and the written narrative appears in the consolidated section (not duplicated on the tab). All 26 current metrics use this layout (controlled by `useConsolidated: true` on each metric in `data.js`).
 
 **Tab microcopy:** Every tab button shows a one-line subtitle via a `.tab-sub` `<span>` inside the button: "How Hawaiʻi compares now" (Rank), "Performance over time" (Trend), "Gaining or losing ground?" (Rank history), "How counties compare" (County). The subtitle inherits the active tab color at 70% opacity.
 
@@ -426,10 +424,8 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Rank |
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the other-state median; the shared dropdown swaps in any of the 49 states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
-3. **Why it matters / How to read it** - context sections (standard layout only; in consolidated layout these appear in the consolidated section)
-4. **Potential drivers** (if `potentialDrivers` present, standard layout only) - research-backed HTML section with hyperlinks; rendered via `innerHTML`
-5. **Main policy levers** (if `policyLevers` present, standard layout only) - plain text policy levers section
-6. **Source link + Download .xlsx + Share & Cite panel** - four one-click buttons: Copy stat (value + year + source), Copy chart (PNG to clipboard or download fallback), Copy link (permalink for the active tab, includes any picked state + threshold), Copy citation (formal APA-style citation with source URL and data note)
+3. **Consolidated narrative block** - why it matters, how to read, potential drivers, policy levers, county narrative, caveats (see `_buildConsolidatedNarrative`)
+4. **Source link + Download .xlsx + Share button** - three controls in the modal header: source URL, XLSX download, and a single share button that copies the active-tab permalink (includes any picked state + threshold)
 
 **Rank tab:**
 1. **Value distribution dot strip** - all 50 states shown as dots above the bar chart
@@ -444,7 +440,7 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Rank |
 2. **Quartile shading** - green for top 25% (ranks 1-12.5), red for bottom 25% (ranks 37.5-50)
 3. **Reference lines** at Top 25%, Median (25.5), Bottom 25%
 4. **State comparison** - click any state abbreviation on the right edge to overlay that state's rank history. A pulsing hint box below the chart explains the interaction. "Comparing with [State]" UI shown when active.
-5. **Written narrative** (below chart, standard layout only) - Hawaii's track record, states that improved, related observations, cautionary outcome. Sourced from `rankHistoryNarrative` in `data.js`. Suppressed for consolidated-layout metrics (the same content moves to the consolidated section).
+5. **Written narrative** - Hawaii's track record, states that improved, related observations, cautionary outcome. Sourced from `rankHistoryNarrative` in `data.js`; rendered in the consolidated narrative block, not duplicated on this tab.
 6. Deep-linkable via `/rh/{slug}/`
 
 **County tab** (shown only for metrics with county data):
@@ -526,13 +522,13 @@ Main application controller.
 |----------------|-------------|
 | `AREA_ORDER` | Array defining the 5 areas and which metrics belong to each |
 | `GOVERNORS` | Array of 9 governors: `{ name, party, start, end }` from 1959 (statehood) to present |
-| `_activeBundle` | The currently active bundle object `{ id, title, description, metrics[] }`, or `null` |
-| `init()` | Renders cards, sets up modal, renders bundle chips, reads `?bundle=` from URL, handles routing |
+| `_activeBundle` | The currently active bundle object `{ id, title, metrics[] }`, or `null` |
+| `init()` | Renders cards, sets up modal, populates the question dropdown, reads `?bundle=` from URL, handles routing |
 | `renderCards()` | Creates all 26 card DOM elements with lazy sparklines (IntersectionObserver) and comparisons |
-| `renderBundleChips()` | Populates `#bundle-chips` from `BUNDLES`; wires click handlers and the "Clear filter" button |
-| `activateBundle(bundleId)` | Highlights matching cards, dims others, shows bundle bar, sets `?bundle=` URL param |
-| `clearBundle()` | Reverses `activateBundle`; removes URL param, hides bundle bar |
-| `computeChartData(slug)` | Computes Hawaiʻi + other-state median from STATE_DATA (field name `otherStateAvg` is legacy). Cached in `_chartDataCache` |
+| `renderQuestionDropdown()` | Populates `#question-dropdown` from `BUNDLES`; wires selection and clear handlers |
+| `activateBundle(bundleId)` | Hides non-matching cards and area headings, sets `?bundle=` URL param |
+| `clearBundle()` | Reverses `activateBundle`; removes URL param, restores all cards |
+| `computeChartData(slug)` | Computes Hawaiʻi + other-state median from STATE_DATA. Cached in `_chartDataCache` |
 | `getEffectiveData(slug)` | Merges chart data, trims to rankings year, adds metadata |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
 | `computeRankHistory(slug)` | Computes rank per year from STATE_DATA; handles year-keyed and FIPS-keyed formats |
@@ -639,10 +635,7 @@ Source files keep manual `?v=YYYYMMDDxx` strings for local dev readability, but 
 
 ### Linting
 
-ESLint and Prettier run in CI before smoke tests. Configuration:
-- `.eslintrc.json`: browser globals for all modules, no-undef, no-unused-vars, eqeqeq
-- `.prettierrc`: 4-space indent, single quotes, 120 print width
-- `npm run lint` / `npm run format:check` (CI), `npm run format` (local auto-fix)
+ESLint runs in CI before smoke tests. Configuration: `.eslintrc.json` (browser globals for all modules, no-undef, no-unused-vars, eqeqeq). Scripts: `npm run lint` (check) / `npm run lint:fix` (auto-fix).
 
 ### Footer Timestamp
 
@@ -690,9 +683,9 @@ Three platforms are active on all pages (`index.html`, `about/index.html`, `five
 
 | Platform | Purpose | Setup |
 |----------|---------|-------|
-| Cloudflare Web Analytics | Pageviews, Core Web Vitals, traffic sources, country/browser breakdown | Active via Cloudflare dashboard:no beacon tag needed in HTML |
+| Cloudflare Web Analytics | Pageviews, Core Web Vitals, traffic sources, country/browser breakdown | Active via Cloudflare dashboard; no beacon tag needed in HTML |
 | Microsoft Clarity | Session recordings, heatmaps, rage-click detection | Project ID `w5pye8kkrb`; script tag in `<head>` of all 3 pages |
-| Google Search Console | Search queries, click-through rates, index coverage | Verified via Cloudflare DNS:no HTML meta tag needed |
+| Google Search Console | Search queries, click-through rates, index coverage | Verified via Cloudflare DNS; no HTML meta tag needed |
 
 ### Custom Events
 
@@ -718,11 +711,11 @@ Tests every function in `js/utils.js` using Node.js's built-in test runner (no d
 
 ```bash
 cd tests
-node --test utils.test.js
+node --test utils.test.js compute.test.js
 # or: npm run test:unit
 ```
 
-Covers 49 assertions across all 8 `Utils` functions, including boundary cases for rank thresholds, narrative generation with empty/missing data, and county rendering.
+Covers pure helpers in `js/utils.js` (rank thresholds, narrative generation, county rendering) and `js/compute.js` (year parsing, median, comparison phrasing, state time-series extraction).
 
 ### E2E smoke tests (`tests/smoke.spec.js`)
 
@@ -800,37 +793,19 @@ Additional SEO infrastructure:
 
 ## Architectural Decisions
 
-### Comparator statistic: median of other states (April 2026)
+### Comparator statistic: median of other states
 
-**Status:** Implemented. Compute + data regeneration landed in PR 2; user-facing labels in PR 3. Narrative rewrites in data.js (for metrics where Hawaiʻi's position changes under the new statistic) tracked in PR 4.
+The default trend-chart comparator is the **median** of the 49 other states (exclude Hawaiʻi, DC, Puerto Rico; require at least 25 non-null values to compute).
 
-**Decision.** The default trend-chart comparator shifts from the **mean** of 49 other states to the **median** of 49 other states. The comparison set (exclude Hawaiʻi, DC, Puerto Rico) and the 25-state minimum are unchanged.
+**Why median, not mean.** State-level distributions for most dashboard metrics are right-skewed with long tails. A handful of outlier states pull the mean away from the typical state, which misrepresents what "other states" look like. Median is robust to those tails and aligns with the rank-distribution chart that already anchors on rank 25.5. For single-unit comparison of Hawaiʻi to its peers, median is the honest statistic.
 
-**Why.** State-level distributions for most dashboard metrics are right-skewed with long tails. A handful of outlier states pull the mean away from the typical state, which misrepresents what "other states" actually look like. Median is robust to those tails and lines up with how the rank-distribution chart already anchors on rank 25.5. It is also the honest statistic for a single-unit comparison of Hawaiʻi to its peers.
+Concrete example: renewables_share_gen in 2003 — Hawaiʻi 5.6%, mean of 49 states 12.9%, median 5.0%. The mean is pulled up by hydro- and wind-heavy states; the median reflects the typical state. Roughly 10 of 26 metrics have at least one year where Hawaiʻi's sign vs the comparator flips between the two statistics.
 
-**Illustrative case.** In renewables_share_gen (2003): Hawaiʻi 5.6%, mean of 49 states 12.9%, median 5.0%. The mean is dragged up by hydro-heavy states (Washington, Oregon) and wind-heavy states (Iowa). The mean says Hawaiʻi was far behind; the median says Hawaiʻi matched the typical state. The median is the honest read. Across all metrics, 10 of 26 have at least one year where Hawaiʻi's "better/worse than comparator" sign flips between mean and median.
+**Where median is used.** Trend-chart dashed line, sparkline, Bottom Line brief, modal data table, XLSX Chart Data tab values + methodology cells, OG image subtitle.
 
-**Scope: what changes.**
-- Trend chart default dashed line
-- Sparkline comparator
-- Bottom Line brief comparator phrase
-- Data table in the modal
-- XLSX export "Chart Data" tab values and methodology cells
-- OG image subtitle text and baked values
-- User-facing term: "other-state average" becomes "other-state median"
+**Where mean still applies.** 3-year rolling averages of Hawaiʻi's own values over time (temporal smoothing; median of 3 points discards information). County breakdown labels (4 to 5 counties; too few to benefit from median). Metrics that are definitionally means (e.g. real_per_capita_income).
 
-**Scope: what does not change.**
-- 3-year rolling averages of Hawaiʻi's own values over time. Those smooth a noisy time series; median of 3 points discards information.
-- The county breakdown average label (4 to 5 counties is too few for median to add signal).
-- Metrics that are definitionally means (for example, real_per_capita_income is mean income per person). Their caveats already explain this.
-- The user-selectable specific-state comparator. Only the default changes.
-
-**Naming.** The internal field stays as `otherStateAvg` for compatibility. Every consumer reads the same key; rewording would touch roughly 60 references across JS, Python, tests, and docs without any end-user benefit. The field carries a header comment documenting that the value is a median despite the legacy name.
-
-**Safety approach.**
-- A diagnostic script (PR 0, not shipped) profiles how many metric-years flip sign under the new statistic, sizing the narrative-rewrite effort in advance.
-- The compute swap, data regeneration, and audit-script ground-truth update ship in one atomic PR to avoid a window where computed and cached values disagree.
-- The validator's "above/below throughout" check serves as the enforcement gate for rewriting any narrative claim that would become factually wrong.
+**Naming.** The internal field stays as `otherStateAvg` for compatibility; every consumer reads the same key. The value is a median despite the legacy name, and consumer code is unchanged. User-facing labels say "other-state median."
 
 ---
 
