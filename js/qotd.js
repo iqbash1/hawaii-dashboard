@@ -47,13 +47,6 @@ const QOTD = {
     },
 
     /**
-     * Look up a question by its slug (legacy). Returns null if not found.
-     */
-    getBySlug(slug) {
-        return QOTD_QUESTIONS.find(q => q.slug === slug) || null;
-    },
-
-    /**
      * Look up a question by its id (q001, q002, …). Returns null if not found.
      */
     getById(id) {
@@ -115,8 +108,9 @@ const QOTD = {
     CLOSE_ICON_SVG: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
 
     /**
-     * Map a dashboard chart URL to its pre-generated OG card PNG used as
-     * the proof-chart visual. Keeps the teaser/modal light.
+     * Map a dashboard chart URL to its pre-generated OG card PNG. Used as
+     * the fallback proof visual when the live chart can't render (e.g.
+     * /five-year-change/ which is a page-level chart, not a single canvas).
      */
     chartOgImage(chartUrl) {
         const m = chartUrl.match(/^\/(r|rh|c|t)\/([^/]+)/);
@@ -306,25 +300,6 @@ const QOTD = {
             btn.classList.remove('copied');
             if (label && original !== null) label.textContent = original;
         }, 2000);
-    },
-
-    /**
-     * Lightweight toast shown briefly in the teaser.
-     * @private
-     */
-    _toast(msg) {
-        const host = document.getElementById('qotd-teaser');
-        if (!host) return;
-        let el = host.querySelector('.qotd-toast');
-        if (!el) {
-            el = document.createElement('div');
-            el.className = 'qotd-toast';
-            el.setAttribute('role', 'status');
-            host.appendChild(el);
-        }
-        el.textContent = msg;
-        el.classList.add('qotd-toast--show');
-        setTimeout(() => el.classList.remove('qotd-toast--show'), 2000);
     },
 
     /** Minimal HTML escape for user-visible strings. */
