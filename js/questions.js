@@ -57,7 +57,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q050",
     "slug": "hawaii-has-higher-electricity-prices-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has higher electricity prices than the rest of the country.",
+    "claim": "Hawaiʻi has higher residential electricity prices than in the rest of the country.",
     "correct": true,
     "answer": "In 2025, Hawaiʻi was 40.6¢ versus the median of 15.3¢.",
     "chartUrl": "/r/residential_price_cpkwh/",
@@ -69,7 +69,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q054",
     "slug": "hawaii-gets-more-electricity-from-renewables-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi gets more electricity from renewables than the rest of the country.",
+    "claim": "Hawaiʻi gets a higher share of its electricity from renewables than the rest of the country.",
     "correct": true,
     "answer": "In 2025, Hawaiʻi was 22.1% versus the median of 17.9%.",
     "chartUrl": "/r/renewables_share_gen/",
@@ -81,7 +81,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q058",
     "slug": "hawaii-has-more-roads-in-poor-condition-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has more roads in poor condition than the rest of the country.",
+    "claim": "A higher share of Hawaiʻi's roads are in poor condition than in the rest of the country.",
     "correct": true,
     "answer": "In 2023, Hawaiʻi was 21.6% versus the median of 7.1%.",
     "chartUrl": "/r/road_poor_pct/",
@@ -93,7 +93,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q069",
     "slug": "hawaii-has-lower-voter-participation-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has lower voter participation than the rest of the country.",
+    "claim": "Hawaiʻi has lower voter turnout than the rest of the country.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 50.3% versus the median of 64.7%.",
     "chartUrl": "/r/voter_participation_rate/",
@@ -105,7 +105,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q077",
     "slug": "hawaii-has-more-unsheltered-homelessness-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has more unsheltered homelessness than the rest of the country.",
+    "claim": "Hawaiʻi has a higher rate of unsheltered homelessness (per 10K residents) than the rest of the country.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 28.2 per 10K versus the median of 3.5 per 10K.",
     "chartUrl": "/r/unsheltered_homeless_rate/",
@@ -117,7 +117,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q081",
     "slug": "hawaii-has-lower-food-insecurity-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has lower food insecurity than the rest of the country.",
+    "claim": "A smaller share of Hawaiʻi households are food-insecure than in the rest of the country.",
     "correct": true,
     "answer": "In 2022-2024, Hawaiʻi was 10.8% versus the median of 12.5%.",
     "chartUrl": "/r/food_insecurity_rate/",
@@ -141,7 +141,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q005",
     "slug": "most-hawaii-renters-spend-over-30-percent-on-rent",
-    "claim": "Hawaiʻi renters spend more of their income on rent than in the rest of the country.",
+    "claim": "A larger share of Hawaiʻi renter households are cost-burdened (pay 30%+ of income on rent) than in the rest of the country.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 50.6% versus the median of 45.9%.",
     "chartUrl": "/r/renter_cost_burden_pct/",
@@ -153,7 +153,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q010",
     "slug": "hawaii-is-the-least-affordable-state-to-buy-a-home",
-    "claim": "Hawaiʻi is the least affordable state to buy a home",
+    "claim": "Hawaiʻi is the least affordable state to buy a home.",
     "correct": true,
     "answer": "Hawaiʻi has the #1 highest value among 50 states in 2024 (8.7x).",
     "chartUrl": "/r/home_price_to_income/",
@@ -166,7 +166,7 @@ const QOTD_QUESTIONS = [
     "id": "q018",
     "slug": "hawaii-is-among-the-states-with-the-lowest-unemployment",
     "claim": "Hawaiʻi is among the states with the lowest unemployment.",
-    "correct": false,
+    "correct": true,
     "answer": "Hawaiʻi has the #7 lowest value among 50 states in 2024 (2.9%).",
     "chartUrl": "/r/unemployment_rate/",
     "metric": "unemployment_rate",
@@ -201,7 +201,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q051",
     "slug": "hawaii-is-among-the-states-with-the-highest-electricity-prices",
-    "claim": "Hawaiʻi is among the states with the highest electricity prices.",
+    "claim": "Hawaiʻi is among the states with the highest residential electricity prices.",
     "correct": true,
     "answer": "Hawaiʻi has the #1 highest value among 50 states in 2025 (40.6¢).",
     "chartUrl": "/r/residential_price_cpkwh/",
@@ -297,7 +297,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q006",
     "slug": "hawaii-is-one-of-the-hardest-states-to-afford-rent",
-    "claim": "Hawaiʻi is one of the hardest states to afford rent",
+    "claim": "Hawaiʻi is one of the hardest states to afford rent.",
     "correct": true,
     "answer": "Hawaiʻi has the #5 highest value among 50 states in 2024 (50.6%).",
     "chartUrl": "/r/renter_cost_burden_pct/",
@@ -309,7 +309,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q011",
     "slug": "it-has-gotten-harder-to-afford-a-home-in-hawaii-in-the-last-five-years",
-    "claim": "It has gotten harder to afford a home in Hawaiʻi in the last five years",
+    "claim": "It has gotten harder to afford a home in Hawaiʻi in the last five years.",
     "correct": false,
     "answer": "From 2019 to 2024, Hawaiʻi moved from 8.1x to 8.7x (+7.4%).",
     "chartUrl": "/five-year-change/",
@@ -346,7 +346,7 @@ const QOTD_QUESTIONS = [
     "id": "q037",
     "slug": "hawaii-is-among-the-states-with-the-lowest-violent-crime",
     "claim": "Hawaiʻi is among the states with the lowest violent crime.",
-    "correct": false,
+    "correct": true,
     "answer": "Hawaiʻi has the #8 lowest value among 50 states in 2024 (217.7 per 100K).",
     "chartUrl": "/r/violent_crime_rate/",
     "metric": "violent_crime_rate",
@@ -369,7 +369,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q047",
     "slug": "hawaii-has-more-primary-care-doctors-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has more primary care doctors than the rest of the country.",
+    "claim": "Hawaiʻi has more primary care doctors per 100K residents than in the rest of the country.",
     "correct": true,
     "answer": "In 2023, Hawaiʻi was 88.1 per 100K versus the median of 78.7 per 100K.",
     "chartUrl": "/r/pcp_per_100k/",
@@ -393,7 +393,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q056",
     "slug": "renewable-electricity-has-gone-up-in-hawaii-in-the-last-five-years",
-    "claim": "Renewable electricity has gone up in Hawaiʻi in the last five years.",
+    "claim": "The share of Hawaiʻi's electricity from renewables has gone up in the last five years.",
     "correct": true,
     "answer": "From 2020 to 2025, Hawaiʻi moved from 15.9% to 22.1% (+38.9%).",
     "chartUrl": "/five-year-change/",
@@ -417,7 +417,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q062",
     "slug": "more-people-move-to-hawaii-than-leave",
-    "claim": "More people move to Hawaiʻi than leave",
+    "claim": "More people move to Hawaiʻi than leave.",
     "correct": false,
     "answer": "In 2024, Hawaiʻi was -64.6 per 10K versus the median of 6.2 per 10K.",
     "chartUrl": "/r/net_domestic_migration_rate/",
@@ -429,9 +429,9 @@ const QOTD_QUESTIONS = [
   {
     "id": "q071",
     "slug": "voter-participation-has-gone-up-in-hawaii-in-the-last-five-years",
-    "claim": "Voter participation has gone up in Hawaiʻi in the last five years.",
+    "claim": "Voter turnout in Hawaiʻi has dropped since the last presidential election.",
     "correct": true,
-    "answer": "From 2018 to 2024, Hawaiʻi moved from 39.5% to 50.3% (+27.2%).",
+    "answer": "From 2020 to 2024, Hawaiʻi moved from 55.7% to 50.3% (-9.7%).",
     "chartUrl": "/five-year-change/",
     "metricLabel": "Voter Participation Rate",
     "topic": "Infrastructure, Resilience & Trust",
@@ -465,7 +465,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q099",
     "slug": "more-hawaii-adults-have-college-degrees-than-five-years-ago",
-    "claim": "More Hawaiʻi adults have college degrees than five years ago",
+    "claim": "More Hawaiʻi adults have college degrees than five years ago.",
     "correct": true,
     "answer": "From 2019 to 2024, Hawaiʻi moved from 33.6% to 37.8% (+12.4%).",
     "chartUrl": "/five-year-change/",
@@ -489,7 +489,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q007",
     "slug": "hawaii-renters-spend-less-on-rent-than-five-years-ago",
-    "claim": "Hawaiʻi renters spend less of their income on rent than five years ago",
+    "claim": "Fewer Hawaiʻi renter households are cost-burdened than five years ago.",
     "correct": true,
     "answer": "From 2019 to 2024, Hawaiʻi moved from 53.4% to 50.6% (-5.3%).",
     "chartUrl": "/five-year-change/",
@@ -501,7 +501,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q012",
     "slug": "of-all-counties-maui-is-the-hardest-place-to-afford-a-home",
-    "claim": "Of all counties, Maui is the hardest place to afford a home",
+    "claim": "Of all counties, Maui is the hardest place to afford a home.",
     "correct": true,
     "answer": "In 2023, the county with the highest value was Maui at 11.2x.",
     "chartUrl": "/c/home_price_to_income/",
@@ -561,7 +561,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q048",
     "slug": "hawaii-is-in-the-top-10-states-for-primary-care-doctors",
-    "claim": "Hawaiʻi is in the top 10 states for primary care doctors",
+    "claim": "Hawaiʻi is in the top 10 states for primary care doctors.",
     "correct": true,
     "answer": "Hawaiʻi ranks #8 of 50 in 2023.",
     "chartUrl": "/r/pcp_per_100k/",
@@ -573,7 +573,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q053",
     "slug": "hawaii-has-higher-electricity-prices-than-california",
-    "claim": "Hawaiʻi has higher electricity prices than California.",
+    "claim": "Hawaiʻi has higher residential electricity prices than California.",
     "correct": true,
     "answer": "In 2025, Hawaiʻi was 40.6¢ versus California at 32.5¢.",
     "chartUrl": "/rh/residential_price_cpkwh/ca/",
@@ -585,7 +585,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q057",
     "slug": "hawaii-gets-more-renewable-electricity-than-florida",
-    "claim": "Hawaiʻi gets more renewable electricity than Florida.",
+    "claim": "Hawaiʻi gets a higher share of its electricity from renewables than Florida.",
     "correct": true,
     "answer": "In 2025, Hawaiʻi was 22.1% versus Florida at 10.6%.",
     "chartUrl": "/rh/renewables_share_gen/fl/",
@@ -597,7 +597,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q061",
     "slug": "hawaii-has-more-poor-roads-than-california",
-    "claim": "Hawaiʻi has more poor roads than California.",
+    "claim": "A higher share of Hawaiʻi's roads are in poor condition than California's.",
     "correct": false,
     "answer": "In 2023, Hawaiʻi was 21.6% versus California at 25.5%.",
     "chartUrl": "/rh/road_poor_pct/ca/",
@@ -609,9 +609,9 @@ const QOTD_QUESTIONS = [
   {
     "id": "q065",
     "slug": "of-all-counties-honolulu-is-losing-the-fewest-residents",
-    "claim": "Of all counties, Honolulu is losing the fewest residents",
+    "claim": "Of all counties, Honolulu is losing the fewest residents.",
     "correct": false,
-    "answer": "In 2024, the county with the lowest value was Maui at -156.3 per 10K.",
+    "answer": "In 2024, Hawaiʻi County was the only county gaining residents at +29.9 per 10K; Honolulu lost 69.1 per 10K.",
     "chartUrl": "/c/net_domestic_migration_rate/",
     "metric": "net_domestic_migration_rate",
     "metricLabel": "People Moving In vs. Out",
@@ -693,7 +693,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q100",
     "slug": "of-all-counties-honolulu-has-the-most-college-graduates",
-    "claim": "Of all counties, Honolulu has the most college graduates",
+    "claim": "Of all counties, Honolulu has the largest share of college-graduate adults.",
     "correct": true,
     "answer": "In 2023, the county with the highest value was Honolulu at 39.6%.",
     "chartUrl": "/c/ba_or_higher_pct/",
