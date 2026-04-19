@@ -31,7 +31,7 @@ hawaii-dashboard/
 │   ├── fyc.css             # Five-year-change page styles
 │   └── about.css           # About page styles
 ├── js/
-│   ├── data.js             # Embedded metric data (Hawaiʻi vs. other-state median; field name otherStateAvg is legacy)
+│   ├── data.js             # Embedded metric data (Hawaiʻi + 50-state medianSeries per metric)
 │   ├── state-data.js       # Per-state data for all metrics (rankings + .xlsx export)
 │   ├── county-data.js      # Per-county data for 4 Hawaiʻi counties
 │   ├── app.js              # Coordinator: init, card rendering, bundles, metric search, helpers, analytics
@@ -50,7 +50,7 @@ hawaii-dashboard/
 │       ├── {slug}_rank_history.png # Rank history OG card (1200×630)
 │       └── {slug}_county.png       # County view OG card (1200×630, where available)
 ├── t/                      # Trend redirect pages for OG sharing
-│   ├── {slug}/index.html              # Default trend view (Hawaiʻi vs other-state median)
+│   ├── {slug}/index.html              # Default trend view (Hawaiʻi vs 50-state median)
 │   ├── {slug}/{variant}/index.html    # Threshold view (severe, verylow, notgood, total)
 │   └── {slug}/{code}/index.html       # Per-state compare redirect pages (49 per metric)
 │                                      #   (plus /{code}/{variant}/index.html for threshold metrics)
@@ -244,7 +244,7 @@ Each metric follows this structure:
     asOf: "2026-04-13"                                            // ISO date for staleness checking
   },
   hawaii: { "2012": 253.85, "2013": 232.48, ... },        // embedded baseline; at runtime App.computeChartData derives this fresh from STATE_DATA
-  otherStateAvg: { "2012": 387.77, "2013": 372.01, ... }, // embedded baseline (field is a median of 49 other states; legacy name); same runtime derivation
+  medianSeries: { "2012": 387.77, "2013": 372.01, ... }, // embedded baseline (50-state mathematical median including Hawaiʻi, excluding DC/PR); same runtime derivation
   rankHistoryNarrative: { ... }   // see below
 }
 ```
@@ -419,10 +419,10 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 
 **Tab microcopy:** Every tab button shows a one-line subtitle via a `.tab-sub` `<span>` inside the button: "How Hawaiʻi compares now" (Rank), "Performance over time" (Trend), "Gaining or losing ground?" (Rank history), "How counties compare" (County). The subtitle inherits the active tab color at 70% opacity.
 
-**Shared "Compare with" dropdown bar:** Sits below the tab row, above the chart content. Visible only on Trend and Rank history (hidden on Rank and County since those have no comparator). State selection is shared: picking California on Trend keeps it on Rank history and vice versa. The default-option label is tab-aware: "Other-state median" on Trend (matches the dashed line shown there), "— none —" on Rank history (where no comparator means just Hawaiʻi's rank line). DOM element: `#compare-bar` / `#compare-select`, composing the `.dropdown-trigger` base class.
+**Shared "Compare with" dropdown bar:** Sits below the tab row, above the chart content. Visible only on Trend and Rank history (hidden on Rank and County since those have no comparator). State selection is shared: picking California on Trend keeps it on Rank history and vice versa. The default-option label is tab-aware: "Median" on Trend (matches the dashed line shown there), "— none —" on Rank history (where no comparator means just Hawaiʻi's rank line). DOM element: `#compare-bar` / `#compare-select`, composing the `.dropdown-trigger` base class.
 
 **Trend tab:**
-1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the other-state median; the shared dropdown swaps in any of the 49 states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
+1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the 50-state median; the shared dropdown swaps in any of the 49 other states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
 3. **Consolidated narrative block** - why it matters, how to read, potential drivers, policy levers, county narrative, caveats (see `_buildConsolidatedNarrative`)
 4. **Source link + Download .xlsx + Share button** - three controls in the modal header: source URL, XLSX download, and a single share button that copies the active-tab permalink (includes any picked state + threshold)
@@ -484,7 +484,7 @@ A custom Chart.js plugin renders governor names and dashed term boundaries on al
 |----------|-----|-------|
 | `--hawaii-blue` | `#0D7C8F` | Hawaiʻi data line, accents, area labels |
 | `--hawaii-blue-light` | `#EEF8FA` | Hint/callout box backgrounds |
-| `--avg-gray` | `#666666` | Other state median line |
+| `--avg-gray` | `#666666` | Median line |
 | `--positive` | `#059669` | "Better" / "Improving" |
 | `--positive-bg` | `#ECFDF5` | Background for positive chips |
 | `--negative` | `#C0392B` | "Worse" / "Worsening" |
@@ -528,7 +528,7 @@ Main application controller.
 | `renderQuestionDropdown()` | Populates `#question-dropdown` from `BUNDLES`; wires selection and clear handlers |
 | `activateBundle(bundleId)` | Hides non-matching cards and area headings, sets `?bundle=` URL param |
 | `clearBundle()` | Reverses `activateBundle`; removes URL param, restores all cards |
-| `computeChartData(slug)` | Computes Hawaiʻi + other-state median from STATE_DATA. Cached in `_chartDataCache` |
+| `computeChartData(slug)` | Computes Hawaiʻi + 50-state medianSeries from STATE_DATA. Cached in `_chartDataCache` |
 | `getEffectiveData(slug)` | Merges chart data, trims to rankings year, adds metadata |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
 | `computeRankHistory(slug)` | Computes rank per year from STATE_DATA; handles year-keyed and FIPS-keyed formats |
@@ -659,7 +659,7 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 
 ### Manual (adding a year of data)
 
-1. Edit `js/data.js` - add the new year's value to `hawaii` and `otherStateAvg` for each metric
+1. Edit `js/data.js` - add the new year's value to `hawaii` and `medianSeries` for each metric
 2. Edit `js/state-data.js` - add the new year's per-state values
 3. Run `python3 scripts/generate-og-pages.py` to regenerate OG images and redirect pages
 4. Commit and push
@@ -805,7 +805,7 @@ Concrete example: renewables_share_gen in 2003 — Hawaiʻi 5.6%, mean of 49 sta
 
 **Where mean still applies.** 3-year rolling averages of Hawaiʻi's own values over time (temporal smoothing; median of 3 points discards information). County breakdown labels (4 to 5 counties; too few to benefit from median). Metrics that are definitionally means (e.g. real_per_capita_income).
 
-**Naming.** The internal field stays as `otherStateAvg` for compatibility; every consumer reads the same key. The value is a median despite the legacy name, and consumer code is unchanged. User-facing labels say "other-state median."
+**Naming.** The internal field is `medianSeries` (renamed from legacy `otherStateAvg` in April 2026). The value is the 50-state mathematical median (includes Hawaiʻi, excludes DC and Puerto Rico) via `Compute.median`. User-facing labels say "Median."
 
 ---
 

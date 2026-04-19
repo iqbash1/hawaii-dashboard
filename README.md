@@ -18,7 +18,7 @@ js/
   app.js                Application logic (routing, modal, cards, data export)
   charts.js             Chart.js rendering (sparklines, detail, rankings, county)
   utils.js              Shared pure functions (narrative, ranking helpers, county HTML)
-  data.js               Metric definitions + Hawaiʻi/other-state-median time series (field name otherStateAvg kept for compatibility)
+  data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)
   county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauai
 five-year-change/       5-year summary page (uses utils.js)
@@ -43,7 +43,7 @@ Data comes from federal APIs (Census ACS, BLS, FBI, BEA, EIA, CDC, FHWA, HUD, NC
 ```
 scripts/build-state-data.js     Fetch per-state data from 9 federal APIs
 scripts/build-county-data.js    Fetch per-county data from Census/BLS/BEA/FBI
-scripts/recompute-data.js       Derive hawaiʻi/other-state-median from state-data
+scripts/recompute-data.js       Derive hawaiʻi + 50-state medianSeries from state-data
 scripts/validate-data.js        Check ranges, YoY changes, cross-tab consistency
 ```
 
@@ -123,7 +123,7 @@ Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings,
 
 - No em dashes in code or content
 - Use okina (ʻ) in "Hawaiʻi" (Unicode U+02BB)
-- "Other-state median" (hyphenated) is the 49-state median excluding Hawaiʻi and DC. Use this term in narratives; avoid "national average" since the comparator is not a population-weighted US figure. Internal field name is `otherStateAvg` (legacy; value is a median).
+- "Median" is the 50-state mathematical median (includes Hawaiʻi, excludes DC and Puerto Rico). Use this term in narratives; avoid "national average" since the comparator is not a population-weighted US figure. Internal field name is `medianSeries`.
 - `unitLabel` is a verb phrase that completes the sentence "N.N% [of units]…" (e.g. "pay 30%+ of income on rent"), not a noun phrase like "% of renter households".
 - `rankHistoryNarrative.summary` uses numeric rank ranges ("#5 to #21"): never percentile phrases like "top quarter".
 - `potentialDrivers` field uses HTML strings (supports `<a>` links); rendered via `innerHTML`. All other narrative fields use plain text except `countyNarrative`.

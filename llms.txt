@@ -8,7 +8,7 @@ Data: All metrics use nonpartisan federal sources reported the same way for all 
 
 ## What this site does
 
-The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawaiʻi to the other 49 states over time. Each metric shows a trend chart (Hawaiʻi vs. other-state median), a 50-state ranking, rank history over time, and county breakdowns where data exists. The dashboard is updated annually; some metrics also show a latest monthly figure from federal sources.
+The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawaiʻi to the other 49 states over time. Each metric shows a trend chart (Hawaiʻi vs. the 50-state median), a 50-state ranking, rank history over time, and county breakdowns where data exists. The dashboard is updated annually; some metrics also show a latest monthly figure from federal sources.
 
 ## 5 Policy Areas and 26 Metrics
 
@@ -50,7 +50,7 @@ The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai�
 
 ## Methodology
 
-- **Other-state median**: Median of the 49 other states (excludes DC and territories). Median is used because state distributions are often right-skewed; mean would be pulled by outlier states. Internal field name is `otherStateAvg` (legacy; value is a median).
+- **Median**: 50-state mathematical median (includes Hawaiʻi, excludes DC and territories). Median is used because state distributions are often right-skewed; mean would be pulled by outlier states. Internal field name is `medianSeries`.
 - **Rankings**: All 50 states ranked. #1 = best performance (direction depends on metric).
 - **Income adjustment**: Per Capita Income uses BEA SARPI (State Annual Real Personal Income) in constant 2017 dollars, adjusting for both inflation and regional price differences.
 - **Comparator states**: Each metric includes "Lessons from other states" with states chosen for sharing a specific structural condition with Hawaiʻi, not overall similarity.
@@ -101,7 +101,7 @@ The dashboard is a single-page application. Metric detail views are accessed via
 - County view: /#metric_slug/county
 
 Shareable links use path-based routes, each with its own Open Graph image:
-- /t/metric_slug/: Trend view (Hawaiʻi vs other-state median)
+- /t/metric_slug/: Trend view (Hawaiʻi vs 50-state median)
 - /t/metric_slug/state_code/: Trend view with a state comparator (e.g. /t/violent_crime_rate/ca/ for Hawaiʻi vs California)
 - /t/metric_slug/state_code/variant/: Same plus a threshold view (e.g. /t/renter_cost_burden_pct/ca/severe/)
 - /r/metric_slug/: Rankings view
