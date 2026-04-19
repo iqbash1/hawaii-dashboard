@@ -525,6 +525,11 @@ const App = {
      * This is the SINGLE SOURCE OF TRUTH for both chart versions:
      * card sparklines and modal detail charts derive from the same
      * per-state data that drives rankings.
+     *
+     * The `otherStateAvg` field holds the MEDIAN of the 49 other states
+     * (exclude Hawaiʻi, DC, Puerto Rico). The legacy field name is kept
+     * for compatibility; user-facing labels say "other-state median".
+     * See DOCUMENTATION.md "Architectural Decisions".
      */
     computeChartData(slug) {
         // Threshold-aware cache key
@@ -564,8 +569,10 @@ const App = {
             for (const [year, vals] of Object.entries(yearValues)) {
                 if (vals.hi !== null) hawaii[year] = vals.hi;
                 if (vals.others.length > 0) {
-                    const avg = vals.others.reduce((a,b) => a+b, 0) / vals.others.length;
-                    otherStateAvg[year] = Math.abs(avg) > 100 ? Math.round(avg) : parseFloat(avg.toFixed(4));
+                    const med = Compute.median(vals.others);
+                    if (med !== null) {
+                        otherStateAvg[year] = Math.abs(med) > 100 ? Math.round(med) : parseFloat(med.toFixed(4));
+                    }
                 }
             }
         } else {
@@ -581,8 +588,10 @@ const App = {
                     }
                 }
                 if (otherVals.length > 0) {
-                    const avg = otherVals.reduce((a,b) => a+b, 0) / otherVals.length;
-                    otherStateAvg[year] = Math.abs(avg) > 100 ? Math.round(avg) : parseFloat(avg.toFixed(4));
+                    const med = Compute.median(otherVals);
+                    if (med !== null) {
+                        otherStateAvg[year] = Math.abs(med) > 100 ? Math.round(med) : parseFloat(med.toFixed(4));
+                    }
                 }
             }
         }
@@ -702,7 +711,7 @@ const App = {
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
-                <div class="comp-label">Other state avg</div>
+                <div class="comp-label">Other state median</div>
                 <div class="comp-detail">${avgFormatted}</div>
                 ${rankHtml}
             </div>

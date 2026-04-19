@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 /**
- * Recompute data.js hawaii/otherStateAvg from state-data.js (single source of truth)
+ * Recompute data.js hawaii/otherStateAvg from state-data.js (single source of truth).
+ *
+ * `otherStateAvg` holds the MEDIAN of 49 other states (exclude HI, DC, PR).
+ * Legacy field name kept for compatibility. See DOCUMENTATION.md
+ * "Architectural Decisions" for rationale.
  *
  * SELECTIVE: Only recomputes metrics where state-data.js has verified, correct data.
  * Metrics with known data quality issues are kept as-is in data.js.
@@ -38,6 +42,17 @@ eval(origContent.replace('const DASHBOARD_DATA', 'global.DASHBOARD_DATA'));
 // Hawaii name variants
 const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
 const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
+
+// Median of a numeric array (nulls/NaN filtered). Null for empty input.
+function median(vals) {
+    const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
+    if (!clean.length) return null;
+    const sorted = [...clean].sort((a, b) => a - b);
+    const mid = sorted.length / 2;
+    return sorted.length % 2
+        ? sorted[Math.floor(mid)]
+        : (sorted[mid - 1] + sorted[mid]) / 2;
+}
 
 // Metrics safe to recompute from state-data (all 26 verified)
 const RECOMPUTE_METRICS = [
@@ -173,7 +188,7 @@ function computeFromStateData(slug) {
                 .map(e => e[year])
                 .filter(v => v != null && !isNaN(v));
             if (vals.length >= 25) {
-                otherStateAvg[year] = round(vals.reduce((a, b) => a + b, 0) / vals.length, dd);
+                otherStateAvg[year] = round(median(vals), dd);
             }
         }
     } else {
@@ -192,12 +207,48 @@ function computeFromStateData(slug) {
                 .filter(v => v != null && !isNaN(v));
 
             if (otherVals.length >= 25) {
-                otherStateAvg[year] = round(otherVals.reduce((a, b) => a + b, 0) / otherVals.length, dd);
+                otherStateAvg[year] = round(median(otherVals), dd);
             }
         }
     }
 
     return { hawaii, otherStateAvg };
+}
+
+/**
+ * Compute otherStateAvg (median) for a thresholdVariant data block.
+ * The variant has the same shape as the main STATE_DATA[slug].data.
+ * Returns { otherStateAvg } (no hawaii -- main hawaii is shared).
+ */
+function computeVariantOtherStateAvg(variantData, metricDef) {
+    if (!variantData) return null;
+    const firstKey = Object.keys(variantData)[0];
+    const isPCPStyle = variantData[firstKey] && typeof variantData[firstKey] === 'object' && variantData[firstKey].name;
+    const otherStateAvg = {};
+
+    if (isPCPStyle) {
+        const otherEntries = Object.values(variantData).filter(e => !isHawaii(e.name));
+        // Collect union of years
+        const yearSet = new Set();
+        for (const e of Object.values(variantData)) {
+            for (const k of Object.keys(e)) if (k !== 'name') yearSet.add(k);
+        }
+        for (const year of [...yearSet].sort()) {
+            const vals = otherEntries.map(e => e[year]).filter(v => v != null && !isNaN(v));
+            if (vals.length >= 25) otherStateAvg[year] = round(median(vals), metricDef);
+        }
+    } else {
+        for (const year of Object.keys(variantData).sort()) {
+            const yearData = variantData[year];
+            const otherVals = Object.entries(yearData)
+                .filter(([state]) => !isHawaii(state))
+                .map(([, val]) => val)
+                .filter(v => v != null && !isNaN(v));
+            if (otherVals.length >= 25) otherStateAvg[year] = round(median(otherVals), metricDef);
+        }
+    }
+
+    return { otherStateAvg };
 }
 
 /**
@@ -283,7 +334,7 @@ function mergeAndUpdate(slug, computed) {
     // Report
     const years = Object.keys(dd.hawaii);
     const lastYr = years[years.length - 1];
-    console.log(`  ${slug}: ${years.length} yrs (${years[0]}–${lastYr}), HI=${dd.hawaii[lastYr]}, avg=${dd.otherStateAvg[lastYr]}`);
+    console.log(`  ${slug}: ${years.length} yrs (${years[0]}-${lastYr}), HI=${dd.hawaii[lastYr]}, median=${dd.otherStateAvg[lastYr]}`);
 }
 
 // ==========================================================
@@ -305,8 +356,8 @@ function updateACGRText() {
     const hiVal = dd.hawaii[lastYr];
     const avgVal = dd.otherStateAvg[lastYr];
 
-    dd.whyItMatters = `Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate reached ${hiVal}% in ${lastYr}, roughly matching the other-state average of ${avgVal}%.`;
-    dd.howToRead = "Hawaiʻi trailed the other-state average for most of the 2010s and has been closing the gap. A rising line means more students are finishing on time.";
+    dd.whyItMatters = `Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate reached ${hiVal}% in ${lastYr}, roughly matching the other-state median of ${avgVal}%.`;
+    dd.howToRead = "Hawaiʻi trailed the other-state median for most of the 2010s and has been closing the gap. A rising line means more students are finishing on time.";
     dd.insight = `The graduation rate climbed from 80% in 2011 to ${hiVal}% in ${lastYr}. Hawaiʻi's single statewide district means state policy directly drives this number.`;
 }
 
@@ -381,6 +432,38 @@ for (const slug of RECOMPUTE_METRICS) {
         mergeAndUpdate(slug, computed);
     } else {
         console.log(`  ${slug}: no computable data`);
+    }
+}
+
+// Recompute thresholdVariants otherStateAvg from STATE_DATA[slug].thresholdVariants
+console.log('\nRecomputing thresholdVariants:');
+for (const slug of Object.keys(DASHBOARD_DATA)) {
+    const dd = DASHBOARD_DATA[slug];
+    const sd = STATE_DATA[slug];
+    if (!dd || !dd.thresholdVariants || !sd || !sd.thresholdVariants) continue;
+
+    for (const [variantKey, variantEntry] of Object.entries(sd.thresholdVariants)) {
+        if (!dd.thresholdVariants[variantKey]) continue;
+        if (!variantEntry || !variantEntry.data) continue;
+        const computed = computeVariantOtherStateAvg(variantEntry.data, dd);
+        if (!computed || Object.keys(computed.otherStateAvg).length === 0) continue;
+
+        const oldAvg = { ...dd.thresholdVariants[variantKey].otherStateAvg };
+        const computedYears = new Set(Object.keys(computed.otherStateAvg));
+        const newAvg = {};
+        for (const [year, val] of Object.entries(oldAvg)) {
+            if (!computedYears.has(year)) newAvg[year] = val;
+        }
+        for (const [year, val] of Object.entries(computed.otherStateAvg)) {
+            newAvg[year] = val;
+        }
+        const sorted = {};
+        Object.keys(newAvg).sort().forEach(k => sorted[k] = newAvg[k]);
+        dd.thresholdVariants[variantKey].otherStateAvg = sorted;
+
+        const years = Object.keys(sorted);
+        const lastYr = years[years.length - 1];
+        console.log(`  ${slug}/${variantKey}: ${years.length} yrs, median=${sorted[lastYr]}`);
     }
 }
 

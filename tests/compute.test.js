@@ -274,3 +274,66 @@ describe('Compute.getStateTimeSeries', () => {
     });
 });
 
+// ----------------------------------------------------------------
+// median
+// The `otherStateAvg` field is computed as the median of the 49 other
+// states. Field name is legacy; statistic is median.
+// ----------------------------------------------------------------
+
+describe('median', () => {
+    it('returns middle value for odd-sized array', () => {
+        assert.equal(Compute.median([1, 2, 3, 4, 5]), 3);
+    });
+
+    it('returns mean of two middle values for even-sized array', () => {
+        assert.equal(Compute.median([1, 2, 3, 4]), 2.5);
+    });
+
+    it('handles unsorted input', () => {
+        assert.equal(Compute.median([5, 1, 3, 2, 4]), 3);
+    });
+
+    it('does not mutate the input array', () => {
+        const input = [5, 1, 3, 2, 4];
+        const copy = [...input];
+        Compute.median(input);
+        assert.deepEqual(input, copy);
+    });
+
+    it('filters out nulls, undefined, and NaN', () => {
+        assert.equal(Compute.median([1, null, 2, undefined, 3, NaN, 4, 5]), 3);
+    });
+
+    it('returns null for empty input', () => {
+        assert.equal(Compute.median([]), null);
+    });
+
+    it('returns null for all-null input', () => {
+        assert.equal(Compute.median([null, undefined, NaN]), null);
+    });
+
+    it('returns null for null/undefined input', () => {
+        assert.equal(Compute.median(null), null);
+        assert.equal(Compute.median(undefined), null);
+    });
+
+    it('handles negative values', () => {
+        assert.equal(Compute.median([-5, -3, -1, 0, 2]), -1);
+    });
+
+    it('handles 49-value realistic case (simulating 49 other states)', () => {
+        const vals = Array.from({ length: 49 }, (_, i) => i + 1); // [1..49]
+        // Odd length (49): middle is index 24 = value 25
+        assert.equal(Compute.median(vals), 25);
+    });
+
+    it('right-skewed distribution: median is lower than mean', () => {
+        // Simulates a state-level distribution with outliers pulling mean up
+        const skewed = [1, 1, 2, 2, 3, 3, 3, 4, 10, 50];
+        const mean = skewed.reduce((a, b) => a + b, 0) / skewed.length;
+        const med = Compute.median(skewed);
+        assert.ok(med < mean, `median ${med} should be < mean ${mean}`);
+        assert.equal(med, 3); // average of two middle 3s
+    });
+});
+

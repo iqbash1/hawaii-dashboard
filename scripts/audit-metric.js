@@ -742,7 +742,16 @@ function auditMetric(slug) {
     }
 
     // ---- Section 11: otherStateAvg cross-check ----
-    // Recompute otherStateAvg from state-data.js and compare to data.js
+    // Recompute otherStateAvg (median of 49 other states) from state-data.js
+    // and compare to data.js. Field name `otherStateAvg` is legacy; value is median.
+    const medianOf = (vals) => {
+        const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
+        if (!clean.length) return null;
+        const sorted = [...clean].sort((a, b) => a - b);
+        const mid = sorted.length / 2;
+        return sorted.length % 2 ? sorted[Math.floor(mid)] : (sorted[mid - 1] + sorted[mid]) / 2;
+    };
+
     if (sd && sd.data && metric.otherStateAvg) {
         const issues = [];
         const dataObj = sd.data;
@@ -750,13 +759,12 @@ function auditMetric(slug) {
         const isYearKeyed = /^\d{4}(-\d{4})?$/.test(firstKey);
 
         if (isYearKeyed) {
-            // Check latest year's average
             const yearKeys = Object.keys(dataObj).sort().reverse();
             const latestYearKey = yearKeys[0];
             const latestStates = dataObj[latestYearKey];
             if (latestStates) {
                 const hiKey = Object.keys(latestStates).find(k => k === 'Hawaii' || k === 'Hawai\u02BBi');
-                // Compute other-state average (50 states minus Hawaii, excluding DC/territories)
+                // Collect 49 other-state values (exclude HI, DC, territories)
                 const otherVals = [];
                 for (const [state, val] of Object.entries(latestStates)) {
                     if (state === hiKey) continue;
@@ -764,25 +772,23 @@ function auditMetric(slug) {
                     if (val !== null && val !== undefined) otherVals.push(val);
                 }
                 if (otherVals.length > 0) {
-                    const computed = otherVals.reduce((s, v) => s + v, 0) / otherVals.length;
-                    // Find matching otherStateAvg entry
+                    const computed = medianOf(otherVals);
                     const dashAvg = getLatestValue(metric.otherStateAvg, true);
                     if (dashAvg) {
                         const diff = Math.abs(computed - dashAvg.value);
                         const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
                         if (pctDiff > 0.02) {
-                            issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
+                            issues.push(`otherStateAvg mismatch: recomputed median=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
                         }
                     }
                 }
             }
         }
-        // FIPS-keyed: similar logic but iterate differently
+        // FIPS-keyed
         else {
             const entries = Object.entries(dataObj);
             const hiEntry = entries.find(([, e]) => e.name === 'Hawaii' || e.name === 'Hawai\u02BBi');
             const hiFips = hiEntry ? hiEntry[0] : null;
-            // Get latest year from first non-Hawaii entry
             const sampleEntry = entries.find(([k]) => k !== hiFips)?.[1];
             if (sampleEntry) {
                 const yearKeys = Object.keys(sampleEntry).filter(k => /^\d{4}/.test(k)).sort().reverse();
@@ -796,23 +802,23 @@ function auditMetric(slug) {
                         if (v !== null && v !== undefined) otherVals.push(v);
                     }
                     if (otherVals.length > 0) {
-                        const computed = otherVals.reduce((s, v) => s + v, 0) / otherVals.length;
+                        const computed = medianOf(otherVals);
                         const dashAvg = getLatestValue(metric.otherStateAvg, true);
                         if (dashAvg) {
                             const diff = Math.abs(computed - dashAvg.value);
                             const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
                             if (pctDiff > 0.02) {
-                                issues.push(`otherStateAvg mismatch: recomputed=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
+                                issues.push(`otherStateAvg mismatch: recomputed median=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
                             }
                         }
                     }
                 }
             }
         }
-        if (issues.length === 0) ok('11. Avg cross-check', 'otherStateAvg matches recomputed average from state-data.js');
-        else warning('11. Avg cross-check', `${issues.length} issue(s)`, `11. Avg cross-check:\n   ${issues.join('\n   ')}`);
+        if (issues.length === 0) ok('11. Median cross-check', 'otherStateAvg matches recomputed median from state-data.js');
+        else warning('11. Median cross-check', `${issues.length} issue(s)`, `11. Median cross-check:\n   ${issues.join('\n   ')}`);
     } else {
-        ok('11. Avg cross-check', 'N/A (no state-data or no otherStateAvg)');
+        ok('11. Median cross-check', 'N/A (no state-data or no otherStateAvg)');
     }
 
     // ---- Section 12: Five-year-change delta verification ----

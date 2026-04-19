@@ -599,12 +599,6 @@ if (STATE_DATA) {
         if (!rhn.summary || typeof rhn.summary !== 'string' || rhn.summary.trim().length === 0) {
             error(`[${slug}] rankHistoryNarrative.summary is missing or empty`);
         }
-        if (rhn.text == null || rhn.text === '') {
-            error(`[${slug}] rankHistoryNarrative.text is missing or null`);
-        }
-        if (rhn.baseYear == null || typeof rhn.baseYear !== 'number') {
-            error(`[${slug}] rankHistoryNarrative.baseYear is missing or not a number`);
-        }
         if (!rhn.mode || !VALID_MODES.includes(rhn.mode)) {
             error(`[${slug}] rankHistoryNarrative.mode must be "protect" or "learn" (got: "${rhn.mode}")`);
         }

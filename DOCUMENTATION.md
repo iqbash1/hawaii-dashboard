@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state outcomes across **26 metrics** and **5 areas**. Each metric compares Hawaiʻi to the average of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state outcomes across **26 metrics** and **5 areas**. Each metric compares Hawaiʻi to the median of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)
@@ -31,7 +31,7 @@ hawaii-dashboard/
 │   ├── fyc.css             # Five-year-change page styles
 │   └── about.css           # About page styles
 ├── js/
-│   ├── data.js             # Embedded metric data (Hawaiʻi vs. other state averages)
+│   ├── data.js             # Embedded metric data (Hawaiʻi vs. other-state median; field name otherStateAvg is legacy)
 │   ├── state-data.js       # Per-state data for all metrics (rankings + .xlsx export)
 │   ├── county-data.js      # Per-county data for 4 Hawaiʻi counties
 │   ├── app.js              # Coordinator: init, card rendering, bundles, metric search, helpers, analytics
@@ -50,7 +50,7 @@ hawaii-dashboard/
 │       ├── {slug}_rank_history.png # Rank history OG card (1200×630)
 │       └── {slug}_county.png       # County view OG card (1200×630, where available)
 ├── t/                      # Trend redirect pages for OG sharing
-│   ├── {slug}/index.html              # Default trend view (Hawaiʻi vs other-state avg)
+│   ├── {slug}/index.html              # Default trend view (Hawaiʻi vs other-state median)
 │   ├── {slug}/{variant}/index.html    # Threshold view (severe, verylow, notgood, total)
 │   └── {slug}/{code}/index.html       # Per-state compare redirect pages (49 per metric)
 │                                      #   (plus /{code}/{variant}/index.html for threshold metrics)
@@ -401,9 +401,9 @@ Each of the 26 metrics gets its own card displaying:
 1. **Area icon + label** (e.g., "EDUCATION")
 2. **Metric name** (e.g., "NAEP 8th Grade Math")
 3. **Latest Hawaiʻi value** (large, bold number)
-4. **Sparkline chart** - Hawaiʻi (solid teal line) vs. Other State Avg (gray dashed line)
+4. **Sparkline chart** - Hawaiʻi (solid teal line) vs. Other State Median (gray dashed line)
 5. **Two comparison sections:**
-   - **vs Other States** - "Better" (green) or "Worse" (red) with the average, plus rank badge
+   - **vs Other States** - "Better" (green) or "Worse" (red) with the median, plus rank badge
    - **vs Prior Year** - percentage change with "Improving" or "Worsening" label
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum). Each card has `id="{slug}"` so direct links (`/#slug`) scroll to the card and open its modal.
@@ -421,10 +421,10 @@ Wider overlay (max-width 1100px, max-height 92vh) with up to four tabs: **Rank |
 
 **Tab microcopy:** Every tab button shows a one-line subtitle via a `.tab-sub` `<span>` inside the button: "How Hawaiʻi compares now" (Rank), "Performance over time" (Trend), "Gaining or losing ground?" (Rank history), "How counties compare" (County). The subtitle inherits the active tab color at 70% opacity.
 
-**Shared "Compare with" dropdown bar:** Sits below the tab row, above the chart content. Visible only on Trend and Rank history (hidden on Rank and County since those have no comparator). State selection is shared: picking California on Trend keeps it on Rank history and vice versa. The default-option label is tab-aware: "Other-state average" on Trend (matches the dashed line shown there), "— none —" on Rank history (where no comparator means just Hawaiʻi's rank line). DOM element: `#compare-bar` / `#compare-select`, composing the `.dropdown-trigger` base class.
+**Shared "Compare with" dropdown bar:** Sits below the tab row, above the chart content. Visible only on Trend and Rank history (hidden on Rank and County since those have no comparator). State selection is shared: picking California on Trend keeps it on Rank history and vice versa. The default-option label is tab-aware: "Other-state median" on Trend (matches the dashed line shown there), "— none —" on Rank history (where no comparator means just Hawaiʻi's rank line). DOM element: `#compare-bar` / `#compare-select`, composing the `.dropdown-trigger` base class.
 
 **Trend tab:**
-1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the other-state average; the shared dropdown swaps in any of the 49 states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
+1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the other-state median; the shared dropdown swaps in any of the 49 states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
 3. **Why it matters / How to read it** - context sections (standard layout only; in consolidated layout these appear in the consolidated section)
 4. **Potential drivers** (if `potentialDrivers` present, standard layout only) - research-backed HTML section with hyperlinks; rendered via `innerHTML`
@@ -488,7 +488,7 @@ A custom Chart.js plugin renders governor names and dashed term boundaries on al
 |----------|-----|-------|
 | `--hawaii-blue` | `#0D7C8F` | Hawaiʻi data line, accents, area labels |
 | `--hawaii-blue-light` | `#EEF8FA` | Hint/callout box backgrounds |
-| `--avg-gray` | `#666666` | Other state average line |
+| `--avg-gray` | `#666666` | Other state median line |
 | `--positive` | `#059669` | "Better" / "Improving" |
 | `--positive-bg` | `#ECFDF5` | Background for positive chips |
 | `--negative` | `#C0392B` | "Worse" / "Worsening" |
@@ -532,7 +532,7 @@ Main application controller.
 | `renderBundleChips()` | Populates `#bundle-chips` from `BUNDLES`; wires click handlers and the "Clear filter" button |
 | `activateBundle(bundleId)` | Highlights matching cards, dims others, shows bundle bar, sets `?bundle=` URL param |
 | `clearBundle()` | Reverses `activateBundle`; removes URL param, hides bundle bar |
-| `computeChartData(slug)` | Computes Hawaiʻi + other-state average from STATE_DATA. Cached in `_chartDataCache` |
+| `computeChartData(slug)` | Computes Hawaiʻi + other-state median from STATE_DATA (field name `otherStateAvg` is legacy). Cached in `_chartDataCache` |
 | `getEffectiveData(slug)` | Merges chart data, trims to rankings year, adds metadata |
 | `getStateRankings(slug)` | Extracts per-state values from STATE_DATA, sorts, finds Hawaiʻi's rank |
 | `computeRankHistory(slug)` | Computes rank per year from STATE_DATA; handles year-keyed and FIPS-keyed formats |
@@ -795,6 +795,42 @@ Additional SEO infrastructure:
 - Audit links: `npm run audit-links`
 - Validate data: `npm run validate`
 - Build for deployment: `npm run build` (copies to dist/ with cache-busted SHA)
+
+---
+
+## Architectural Decisions
+
+### Comparator statistic: median of other states (April 2026)
+
+**Status:** Implemented. Compute + data regeneration landed in PR 2; user-facing labels in PR 3. Narrative rewrites in data.js (for metrics where Hawaiʻi's position changes under the new statistic) tracked in PR 4.
+
+**Decision.** The default trend-chart comparator shifts from the **mean** of 49 other states to the **median** of 49 other states. The comparison set (exclude Hawaiʻi, DC, Puerto Rico) and the 25-state minimum are unchanged.
+
+**Why.** State-level distributions for most dashboard metrics are right-skewed with long tails. A handful of outlier states pull the mean away from the typical state, which misrepresents what "other states" actually look like. Median is robust to those tails and lines up with how the rank-distribution chart already anchors on rank 25.5. It is also the honest statistic for a single-unit comparison of Hawaiʻi to its peers.
+
+**Illustrative case.** In renewables_share_gen (2003): Hawaiʻi 5.6%, mean of 49 states 12.9%, median 5.0%. The mean is dragged up by hydro-heavy states (Washington, Oregon) and wind-heavy states (Iowa). The mean says Hawaiʻi was far behind; the median says Hawaiʻi matched the typical state. The median is the honest read. Across all metrics, 10 of 26 have at least one year where Hawaiʻi's "better/worse than comparator" sign flips between mean and median.
+
+**Scope: what changes.**
+- Trend chart default dashed line
+- Sparkline comparator
+- Bottom Line brief comparator phrase
+- Data table in the modal
+- XLSX export "Chart Data" tab values and methodology cells
+- OG image subtitle text and baked values
+- User-facing term: "other-state average" becomes "other-state median"
+
+**Scope: what does not change.**
+- 3-year rolling averages of Hawaiʻi's own values over time. Those smooth a noisy time series; median of 3 points discards information.
+- The county breakdown average label (4 to 5 counties is too few for median to add signal).
+- Metrics that are definitionally means (for example, real_per_capita_income is mean income per person). Their caveats already explain this.
+- The user-selectable specific-state comparator. Only the default changes.
+
+**Naming.** The internal field stays as `otherStateAvg` for compatibility. Every consumer reads the same key; rewording would touch roughly 60 references across JS, Python, tests, and docs without any end-user benefit. The field carries a header comment documenting that the value is a median despite the legacy name.
+
+**Safety approach.**
+- A diagnostic script (PR 0, not shipped) profiles how many metric-years flip sign under the new statistic, sizing the narrative-rewrite effort in advance.
+- The compute swap, data regeneration, and audit-script ground-truth update ship in one atomic PR to avoid a window where computed and cached values disagree.
+- The validator's "above/below throughout" check serves as the enforcement gate for rewriting any narrative claim that would become factually wrong.
 
 ---
 

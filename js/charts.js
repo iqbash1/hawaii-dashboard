@@ -85,7 +85,7 @@ const ChartUtils = {
                     else trend = moved === 'down' ? 'improving' : 'worsening';
                 }
             }
-            const ariaText = `Trend chart: Hawaii is ${aboveBelow} the other-state average and ${trend}`;
+            const ariaText = `Trend chart: Hawaii is ${aboveBelow} the other-state median and ${trend}`;
             canvas.setAttribute('role', 'img');
             canvas.setAttribute('aria-label', ariaText);
         }
@@ -228,9 +228,9 @@ const ChartUtils = {
         const labels = Object.keys(data.hawaii);
         const mapVal = allowZero ? (v => v ?? null) : (v => v === 0 ? null : v);
         const hawaiiValues = labels.map(y => mapVal(data.hawaii[y]));
-        // Comparator defaults to the other-state average; when a state is
+        // Comparator defaults to the other-state median; when a state is
         // picked, the caller passes { label, timeSeries } and it swaps in.
-        const compLabel = (comparator && comparator.label) ? comparator.label : 'Other-state average';
+        const compLabel = (comparator && comparator.label) ? comparator.label : 'Other-state median';
         const compSource = (comparator && comparator.timeSeries) ? comparator.timeSeries : data.otherStateAvg;
         const compValues = labels.map(y => {
             const v = compSource[y];

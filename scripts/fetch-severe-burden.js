@@ -148,7 +148,15 @@ async function fetchCounties() {
     return byCounty;
 }
 
-// ---- Compute hawaii + otherStateAvg from state data ----
+// ---- Compute hawaii + otherStateAvg (median) from state data ----
+function median(vals) {
+    const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
+    if (!clean.length) return null;
+    const sorted = [...clean].sort((a, b) => a - b);
+    const mid = sorted.length / 2;
+    return sorted.length % 2 ? sorted[Math.floor(mid)] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
 function computeDashboardData(stateData) {
     const hawaii = {};
     const otherStateAvg = {};
@@ -162,15 +170,15 @@ function computeDashboardData(stateData) {
         const hiVal = states['Hawaii'] || states['Hawai\u02BBi'];
         if (hiVal != null) hawaii[year] = hiVal;
 
-        // Other-state average (49 states, exclude DC/territories)
+        // Other-state median (49 states, exclude DC/territories)
         const otherVals = Object.entries(states)
             .filter(([s]) => s !== 'Hawaii' && s !== 'Hawai\u02BBi' && !NOT_A_STATE.has(s))
             .map(([, v]) => v)
             .filter(v => v != null && !isNaN(v));
 
         if (otherVals.length >= 25) {
-            const avg = otherVals.reduce((a, b) => a + b, 0) / otherVals.length;
-            otherStateAvg[year] = parseFloat(avg.toFixed(4));
+            const med = median(otherVals);
+            otherStateAvg[year] = parseFloat(med.toFixed(4));
         }
     }
     return { hawaii, otherStateAvg };
