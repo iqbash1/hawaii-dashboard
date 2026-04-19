@@ -91,8 +91,8 @@ TEXT_PRI   = (51, 51, 51)       # #333333  --text  primary
 TEXT_SEC   = (102, 102, 102)    # #666666  secondary
 TEXT_TER   = (153, 153, 153)    # #999999  tertiary / labels
 DIVIDER    = (220, 220, 220)    # #DCDCDC  borders
-SPARK_GRAY = (175, 175, 175)    # #AFAFAF  other-state sparkline
-BAR_GRAY   = (195, 205, 215)   # #C3CDD7  other-state bars
+SPARK_GRAY = (175, 175, 175)    # #AFAFAF  median-comparator sparkline
+BAR_GRAY   = (195, 205, 215)   # #C3CDD7  median-comparator bars
 FOOTER_BG  = (235, 237, 240)   # #EBEDF0  footer strip
 
 # ── Fonts ─────────────────────────────────────────────────────────
@@ -1211,7 +1211,7 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
 def generate_trend_compare_og_image(slug, metric, area, rankings,
                                     compare_state, compare_series, output_path):
     """Generate a 1200x630 OG image for Hawaiʻi vs one state on the trend view.
-    Mirrors generate_og_image but swaps the other-state median for the chosen
+    Mirrors generate_og_image but swaps the 50-state median for the chosen
     state so the preview conveys relative performance for that pairing."""
     W, H = 1200, 630
     im = Image.new('RGB', (W, H), BG)

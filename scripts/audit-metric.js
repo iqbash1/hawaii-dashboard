@@ -756,10 +756,9 @@ function auditMetric(slug) {
             const latestStates = dataObj[latestYearKey];
             if (latestStates) {
                 const hiKey = Object.keys(latestStates).find(k => k === 'Hawaii' || k === 'Hawai\u02BBi');
-                // Collect 49 other-state values (exclude HI, DC, territories)
+                // Collect 50-state values (exclude DC/territories; include HI)
                 const otherVals = [];
                 for (const [state, val] of Object.entries(latestStates)) {
-                    if (state === hiKey) continue;
                     if (NOT_A_STATE.has(state)) continue;
                     if (val !== null && val !== undefined) otherVals.push(val);
                 }
