@@ -2072,6 +2072,11 @@ body {
     color: #fff;
     outline: none;
 }
+.qotd-share-btn.copied {
+    background: var(--positive);
+    border-color: var(--positive);
+    color: #fff;
+}
 .qotd-verdict {
     display: inline-flex;
     align-items: center;

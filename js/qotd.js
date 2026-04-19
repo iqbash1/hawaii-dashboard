@@ -264,28 +264,48 @@ const QOTD = {
     },
 
     /**
-     * Share flow: native share sheet on mobile, clipboard fallback elsewhere.
-     * Share object is the question URL, never the answer or chart URL.
+     * Share flow: copy the question URL to clipboard and flash "Copied!" on
+     * the button. Matches the dashboard's modal-share-btn pattern so the
+     * share affordance behaves the same everywhere.
      */
-    _handleShare(id) {
+    _handleShare(id, btnEl) {
         const url = this.shareUrl(id);
-        const payload = {
-            title: 'Do you know Hawaiʻi?',
-            text: this.SHARE_TEXT,
-            url,
-        };
         if (typeof App !== 'undefined' && App._trackEvent) {
             App._trackEvent('qotd_share_clicked', { id });
         }
-        if (navigator.share) {
-            navigator.share(payload).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(url).then(() => {
-                this._toast('Link copied');
-            }).catch(() => {
-                this._toast('Could not copy link');
-            });
-        }
+        const execFallback = () => {
+            const ta = document.createElement('textarea');
+            ta.value = url;
+            ta.style.cssText = 'position:fixed;opacity:0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) { /* ignored */ }
+            document.body.removeChild(ta);
+        };
+        const doCopy = () => {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(url).catch(execFallback);
+            }
+            execFallback();
+            return Promise.resolve();
+        };
+        doCopy().finally(() => this._flashCopied(btnEl));
+    },
+
+    /**
+     * Temporarily swap the share button's label to "Copied!" for 2s.
+     * @private
+     */
+    _flashCopied(btn) {
+        if (!btn) return;
+        const label = btn.querySelector('span');
+        const original = label ? label.textContent : null;
+        btn.classList.add('copied');
+        if (label) label.textContent = 'Copied!';
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            if (label && original !== null) label.textContent = original;
+        }, 2000);
     },
 
     /**
@@ -381,7 +401,7 @@ const QOTD = {
                 this.submitAnswer(q.id, picked);
             });
         });
-        host.querySelector('[data-action="share"]')?.addEventListener('click', () => this._handleShare(q.id));
+        host.querySelector('[data-action="share"]')?.addEventListener('click', (e) => this._handleShare(q.id, e.currentTarget));
         host.querySelector('[data-action="close"]')?.addEventListener('click', () => this._closeTeaser());
 
         if (typeof App !== 'undefined' && App._trackEvent) {
