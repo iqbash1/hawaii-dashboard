@@ -162,14 +162,92 @@ const QOTD = {
     },
 
     /**
+     * Render the live Chart.js canvas that matches the question's chartUrl.
+     * Falls back to the pre-rendered OG image if the chart can't be built
+     * (e.g. missing data, /five-year-change/ page-level chart, etc).
+     * @private
+     */
+    _renderLiveChart(fig, q) {
+        if (!fig) return;
+        const canvas = fig.querySelector('.qotd-chart-canvas');
+        if (!canvas) return;
+        try {
+            const m = q.chartUrl.match(/^\/(t|r|c|rh)\//);
+            if (!m) return this._fallbackOgImage(fig, q);
+            const view = m[1];
+            const slug = q.metric;
+            if (typeof App === 'undefined' || typeof ChartUtils === 'undefined') {
+                return this._fallbackOgImage(fig, q);
+            }
+            if (view === 't') {
+                const metricData = App.getActiveMetricData(slug);
+                if (!metricData || !metricData.hawaii) return this._fallbackOgImage(fig, q);
+                const hiYears = Object.keys(metricData.hawaii).sort();
+                const govBoxes = App.getGovernorBoxes(hiYears);
+                const allowZero = typeof ZERO_IS_VALID !== 'undefined' && ZERO_IS_VALID.has(slug);
+                ChartUtils.createDetailChart(canvas, metricData, govBoxes, allowZero);
+                return;
+            }
+            if (view === 'r') {
+                const rankings = App.getStateRankings(slug);
+                const metricData = App.getActiveMetricData(slug);
+                if (!rankings || !metricData) return this._fallbackOgImage(fig, q);
+                const stateValues = rankings.stateValues;
+                const sortedVals = stateValues.map(s => s.value).sort((a, b) => a - b);
+                const distStats = {
+                    q1: sortedVals[Math.floor(sortedVals.length * 0.25)],
+                    median: sortedVals[Math.floor(sortedVals.length * 0.5)],
+                    q3: sortedVals[Math.floor(sortedVals.length * 0.75)],
+                    fmt: (v) => ChartUtils.formatValue(v, metricData.unit, false),
+                };
+                ChartUtils.createRankingsChart(canvas, stateValues, metricData.goodDirection, metricData.unit, distStats);
+                return;
+            }
+            if (view === 'c') {
+                const countyData = App.getActiveCountyData(slug);
+                const metricData = App.getActiveMetricData(slug);
+                if (!countyData || !metricData) return this._fallbackOgImage(fig, q);
+                const hiYears = Object.keys(metricData.hawaii || {}).sort();
+                const govBoxes = App.getGovernorBoxes(hiYears);
+                const colors = { 'Honolulu': '#2563EB', 'Hawaiʻi': '#C0392B', 'Maui': '#059669', 'Kauai': '#c08a1a' };
+                ChartUtils.createCountyChart(canvas, countyData, metricData, govBoxes, colors, metricData);
+                return;
+            }
+            if (view === 'rh' && App.computeRankHistory) {
+                const metricData = App.getActiveMetricData(slug);
+                if (!metricData) return this._fallbackOgImage(fig, q);
+                const rankHistory = App.computeRankHistory(slug);
+                if (!rankHistory) return this._fallbackOgImage(fig, q);
+                const hiYears = Object.keys(metricData.hawaii || {}).sort();
+                const govBoxes = App.getGovernorBoxes(hiYears);
+                ChartUtils.createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, () => {}, null);
+                return;
+            }
+            return this._fallbackOgImage(fig, q);
+        } catch (e) {
+            return this._fallbackOgImage(fig, q);
+        }
+    },
+
+    /**
+     * Drop a static OG card into the figure if the live chart can't render.
+     * @private
+     */
+    _fallbackOgImage(fig, q) {
+        if (!fig) return;
+        const ogImg = this.chartOgImage(q.chartUrl);
+        fig.innerHTML = `<img src="${ogImg}" alt="Chart showing ${this._escape(q.metricLabel)} data" class="qotd-chart-image" />`;
+    },
+
+    /**
      * Wire an IntersectionObserver that fires qotd_chart_viewed once when
      * the embedded proof image first becomes visible.
      * @private
      */
     _observeChartView(id) {
         if (typeof IntersectionObserver === 'undefined') return;
-        const img = document.querySelector('.qotd-chart-image');
-        if (!img) return;
+        const el = document.querySelector('.qotd-chart-canvas, .qotd-chart-image');
+        if (!el) return;
         let fired = false;
         const io = new IntersectionObserver((entries) => {
             for (const e of entries) {
@@ -182,7 +260,7 @@ const QOTD = {
                 }
             }
         }, { threshold: 0.5 });
-        io.observe(img);
+        io.observe(el);
     },
 
     /**
@@ -259,7 +337,6 @@ const QOTD = {
             const ans = this.getAnswer(q.id);
             const verdict = q.correct ? 'True' : 'False';
             const gotItRight = ans.correct;
-            const ogImg = this.chartOgImage(q.chartUrl);
             host.innerHTML = `
                 <div class="qotd-teaser-inner qotd-teaser-inner--proof">
                     ${closeBtn}
@@ -270,9 +347,8 @@ const QOTD = {
                         <span class="qotd-verdict-text">Answer: <strong>${verdict}</strong>${gotItRight ? ' (You got it!)' : ''}</span>
                     </div>
                     <p class="qotd-answer-text">${this._escape(q.answer)}</p>
-                    <figure class="qotd-chart">
-                        <img src="${ogImg}" alt="Chart showing ${this._escape(q.metricLabel)} data" class="qotd-chart-image" />
-                        <figcaption class="qotd-chart-caption">Source: Hawaiʻi Dashboard</figcaption>
+                    <figure class="qotd-chart" data-qotd-chart>
+                        <div class="qotd-chart-canvas-wrap"><canvas class="qotd-chart-canvas" aria-label="Chart showing ${this._escape(q.metricLabel)} data"></canvas></div>
                     </figure>
                     <div class="qotd-actions">
                         <button class="qotd-share-btn" type="button" data-action="share" aria-label="Share this question">
@@ -283,6 +359,7 @@ const QOTD = {
                     <p class="qotd-teaser-footer">Come back tomorrow for a new question.</p>
                 </div>
             `;
+            this._renderLiveChart(host.querySelector('[data-qotd-chart]'), q);
             this._observeChartView(q.id);
         } else {
             host.innerHTML = `
