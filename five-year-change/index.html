@@ -117,7 +117,7 @@
 
         function isDecimalPct(m) {
             if (m.unit !== '%') return false;
-            const vals = [...Object.values(m.hawaii), ...Object.values(m.otherStateAvg)].filter(v => v !== null && v !== 0);
+            const vals = [...Object.values(m.hawaii), ...Object.values(m.medianSeries)].filter(v => v !== null && v !== 0);
             return vals.length > 0 && vals.every(v => Math.abs(v) <= 1);
         }
 

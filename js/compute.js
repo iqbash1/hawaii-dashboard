@@ -75,20 +75,41 @@ const Compute = {
 
     /**
      * Median of a numeric array. Nulls and NaNs are filtered out. Returns
-     * null for an empty input. Used to compute the `otherStateAvg` field
-     * (median of 49 other states) and anywhere a robust central statistic
-     * is wanted instead of mean.
+     * null for an empty input. Even-count arrays return the average of the
+     * two middle values (true mathematical median).
      * @param {number[]} vals
      * @returns {number|null}
      */
     median(vals) {
-        const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
+        return Compute.quantile(vals, 0.5);
+    },
+
+    /**
+     * Linear-interpolated quantile (NumPy/R default, type-7). For a sorted
+     * array of length n, position = (n-1) * q; the result is the value at
+     * that fractional position, interpolated between the two nearest
+     * integer positions. Nulls and NaNs are filtered out; null for empty.
+     *
+     * Examples (n=50): median q=0.5 → (v[24]+v[25])/2 (avg of two middle);
+     * q1 q=0.25 → v[12] + 0.25*(v[13]-v[12]); q3 q=0.75 → v[36] + 0.75*(v[37]-v[36]).
+     *
+     * This is the unified definition used by both the rankings chart's
+     * distStats bands and the stored `medianSeries` time series.
+     * @param {number[]} vals
+     * @param {number} q - Quantile in [0, 1]
+     * @returns {number|null}
+     */
+    quantile(vals, q) {
+        const clean = (vals || []).filter((v) => v !== null && v !== undefined && !isNaN(v));
         if (!clean.length) return null;
+        if (q <= 0) return Math.min(...clean);
+        if (q >= 1) return Math.max(...clean);
         const sorted = [...clean].sort((a, b) => a - b);
-        const mid = sorted.length / 2;
-        return sorted.length % 2
-            ? sorted[Math.floor(mid)]
-            : (sorted[mid - 1] + sorted[mid]) / 2;
+        const pos = (sorted.length - 1) * q;
+        const lo = Math.floor(pos);
+        const hi = Math.ceil(pos);
+        if (lo === hi) return sorted[lo];
+        return sorted[lo] + (pos - lo) * (sorted[hi] - sorted[lo]);
     },
 
     /**
@@ -96,7 +117,7 @@ const Compute = {
      * spatial (above/below/higher/lower). Direction flips per metric, so
      * spatial words mean opposite things for e.g. crime vs labor force.
      * @param {number} hiVal - Hawaii's current value
-     * @param {number} compVal - Other-state comparator (median; field name `otherStateAvg` is legacy)
+     * @param {number} compVal - Comparator value (typically the 50-state median)
      * @param {string} goodDirection - "up" (higher is better) or "down" (lower is better)
      * @param {number} [significantThreshold=0.2] - Gap > this fraction of the comparator adds "significantly "
      * @returns {string} "better than", "worse than", "significantly better than", "significantly worse than", or "the same as"

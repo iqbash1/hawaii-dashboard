@@ -126,7 +126,7 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
 
     // Required fields (use explicit null/undefined check to avoid false positives on numeric 0)
     const REQUIRED_FIELDS = ['area', 'metric', 'unit', 'goodDirection', 'source',
-                             'hawaii', 'otherStateAvg', 'officialName', 'unitLabel', 'sourceCategory',
+                             'hawaii', 'medianSeries', 'officialName', 'unitLabel', 'sourceCategory',
                              'whyItMatters', 'howToRead'];
     for (const field of REQUIRED_FIELDS) {
         if (metric[field] == null || metric[field] === '') {
@@ -160,7 +160,7 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
     }
 
     // 1b. Range checks
-    for (const series of ['hawaii', 'otherStateAvg']) {
+    for (const series of ['hawaii', 'medianSeries']) {
         const data = metric[series];
         if (!data) continue;
 
@@ -174,7 +174,7 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
     }
 
     // 1c. Year-over-year spike detection
-    for (const series of ['hawaii', 'otherStateAvg']) {
+    for (const series of ['hawaii', 'medianSeries']) {
         const data = metric[series];
         if (!data) continue;
 
@@ -193,21 +193,21 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
 
     // 1d. Completeness - check for gaps in year sequence
     const hiYears = Object.keys(metric.hawaii).map(Number).sort((a, b) => a - b);
-    const avgYears = Object.keys(metric.otherStateAvg).map(Number).sort((a, b) => a - b);
+    const avgYears = Object.keys(metric.medianSeries).map(Number).sort((a, b) => a - b);
 
     if (hiYears.length === 0) {
         error(`hawaii series is empty`);
     }
     if (avgYears.length === 0) {
-        error(`otherStateAvg series is empty`);
+        error(`medianSeries series is empty`);
     }
 
-    // Check that hawaii and otherStateAvg cover the same year range
+    // Check that hawaii and medianSeries cover the same year range
     if (hiYears.length > 0 && avgYears.length > 0) {
         const hiLatest = hiYears[hiYears.length - 1];
         const avgLatest = avgYears[avgYears.length - 1];
         if (Math.abs(hiLatest - avgLatest) > 1) {
-            warn(`Latest years differ: hawaii=${hiLatest}, otherStateAvg=${avgLatest}`);
+            warn(`Latest years differ: hawaii=${hiLatest}, medianSeries=${avgLatest}`);
         }
     }
 
@@ -224,7 +224,7 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
         }
     }
 
-    info(`${hiYears.length} hawaii values, ${avgYears.length} otherStateAvg values`);
+    info(`${hiYears.length} hawaii values, ${avgYears.length} medianSeries values`);
 }
 
 // ============================================================
@@ -403,7 +403,7 @@ if (STATE_DATA) {
         const years = topKeys;
 
         // 3a. Check each year has enough states (should be ~50)
-        // ERROR: < 25 states -- rankings would be meaningless (below the threshold used to compute otherStateAvg)
+        // ERROR: < 25 states -- rankings would be meaningless (below the threshold used to compute medianSeries)
         // WARN:  25-44 states -- significant partial coverage; rankings valid but incomplete
         // (45-49 states is acceptable for metrics where a few states routinely don't report, e.g. ACGR)
         for (const year of years) {
@@ -692,7 +692,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 console.log('\n--- 10. Narrative-data consistency ---');
 for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
     const hi = m.hawaii || {};
-    const avg = m.otherStateAvg || {};
+    const avg = m.medianSeries || {};
     const hiVals = Object.entries(hi).map(([k,v]) => [Number(k.match(/(\d{4})$/)?.[1]), v]).filter(([y,v]) => y && v != null);
     const avgVals = Object.entries(avg).map(([k,v]) => [Number(k.match(/(\d{4})$/)?.[1]), v]).filter(([y,v]) => y && v != null);
     if (!hiVals.length || !avgVals.length) continue;

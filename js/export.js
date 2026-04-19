@@ -7,7 +7,7 @@
 //             XLSX (lazy-loaded from CDN on first use).
 // ============================================================
 
-const RAW_DATA_NOTE = 'Note: this tab includes the Hawaiʻi column. To recompute Other-state median, exclude Hawaiʻi (and any DC/territory columns) from your =MEDIAN() range. The Methodology tab has the full recipe.';
+const RAW_DATA_NOTE = 'Note: this tab includes the Hawaiʻi column. To recompute Median, exclude Hawaiʻi (and any DC/territory columns) from your =MEDIAN() range. The Methodology tab has the full recipe.';
 
 const Export = {
     /**
@@ -96,7 +96,7 @@ const Export = {
             XLSX.utils.book_append_sheet(wb, wsStates, 'Raw Data');
         }
 
-        // --- Tab 2: "Chart Data" (Hawai'i + Other-state median) ---
+        // --- Tab 2: "Chart Data" (Hawai'i + Median) ---
         const effective = App.getEffectiveData(slug);
         const isDecimalPct = ChartUtils.isDecimalPctMetric(m);
         const sdYears = sd ? Object.keys(sd.data || {}).sort() : [];
@@ -105,7 +105,7 @@ const Export = {
         const effectiveLastYear = effectiveYears[effectiveYears.length - 1];
         const chartIsTrimmed = sd && sdLastYear && effectiveLastYear && effectiveLastYear < sdLastYear;
         const chartNotes = [];
-        if (sd) chartNotes.push(['Note: Hawai\u02BBi and Other-state median are computed from the Raw Data tab']);
+        if (sd) chartNotes.push(['Note: Hawai\u02BBi and Median are computed from the Raw Data tab']);
         if (isDecimalPct) chartNotes.push(['Unit note: Values are decimal fractions (e.g. 0.2162 = 21.62%). Multiply by 100 to convert to percent.']);
         if (chartIsTrimmed) chartNotes.push([`Year range note: Chart ends at ${effectiveLastYear}. Raw Data extends to ${sdLastYear}. Chart is trimmed to the latest year with complete state data for consistent rankings.`]);
         const chartRows = [
@@ -113,17 +113,17 @@ const Export = {
             [`Source: ${m.source}`],
             ...chartNotes,
             [],
-            ['Year', 'Hawai\u02BBi', 'Other-state median'],
+            ['Year', 'Hawai\u02BBi', 'Median'],
         ];
         const chartYears = [...new Set([
             ...Object.keys(effective.hawaii),
-            ...Object.keys(effective.otherStateAvg),
+            ...Object.keys(effective.medianSeries),
         ])].sort();
         chartYears.forEach(y => {
             chartRows.push([
                 y,
                 effective.hawaii[y] != null ? effective.hawaii[y] : '',
-                effective.otherStateAvg[y] != null ? effective.otherStateAvg[y] : '',
+                effective.medianSeries[y] != null ? effective.medianSeries[y] : '',
             ]);
         });
         const wsChart = XLSX.utils.aoa_to_sheet(chartRows.filter(r => r.length > 0));
@@ -244,7 +244,7 @@ const Export = {
         methRows.push(
             [],
             ['COMPARATOR'],
-            ['Other-state median', 'Median of 49 states, excluding Hawai\u02BBi. DC excluded from rankings. Median (not mean) because state distributions are often right-skewed and a few outlier states would pull the mean away from the typical state.'],
+            ['Median', 'Median of 49 states, excluding Hawai\u02BBi. DC excluded from rankings. Median (not mean) because state distributions are often right-skewed and a few outlier states would pull the mean away from the typical state.'],
             ['Hawai\u02BBi Value', 'Pulled from same source, same variable, same year.'],
         );
         if (slug === 'real_per_capita_income') {
@@ -263,19 +263,19 @@ const Export = {
         if (isDecimalPct) {
             methRows.push(
                 ['Step 1 - Raw storage', `Values in the Raw Data tab are stored as decimal fractions (0 to 1). Example: 0.2162 = 21.62%.`],
-                ['Step 2 - Chart Data tab', 'Hawai\u02BBi and Other-state median are the same decimal fractions as Raw Data. Multiply by 100 to display as percentages.'],
+                ['Step 2 - Chart Data tab', 'Hawai\u02BBi and Median are the same decimal fractions as Raw Data. Multiply by 100 to display as percentages.'],
                 ['Step 3 - Rankings / All Data tabs', 'Values are multiplied by 100 and shown as percentages (e.g. 21.62%).'],
-                ['Step 4 - Other-state median', 'Computed as the MEDIAN of all non-Hawai\u02BBi state values for that year (decimal form), then displayed as a percentage. In Excel: =MEDIAN(range).'],
+                ['Step 4 - Median', 'Computed as the MEDIAN of all non-Hawai\u02BBi state values for that year (decimal form), then displayed as a percentage. In Excel: =MEDIAN(range).'],
             );
         } else {
             methRows.push(
                 ['Step 1 - Raw storage', `Values are stored in display units (${m.unit}). No unit scaling is applied.`],
-                ['Step 2 - Other-state median', 'Computed as the MEDIAN of all non-Hawai\u02BBi state values for that year. In Excel: =MEDIAN(range).'],
+                ['Step 2 - Median', 'Computed as the MEDIAN of all non-Hawai\u02BBi state values for that year. In Excel: =MEDIAN(range).'],
             );
         }
         if (chartIsTrimmed) {
             methRows.push(
-                ['Step - Year trimming', `Chart Data ends at ${effectiveLastYear} (the latest year with complete state data). Raw Data extends to ${sdLastYear}. This keeps Hawai\u02BBi, the other-state median, and rankings consistent with the same endpoint.`],
+                ['Step - Year trimming', `Chart Data ends at ${effectiveLastYear} (the latest year with complete state data). Raw Data extends to ${sdLastYear}. This keeps Hawai\u02BBi, the median, and rankings consistent with the same endpoint.`],
             );
         }
         methRows.push(
@@ -288,8 +288,8 @@ const Export = {
         if (m.policyLevers) methRows.push(['Main Policy Levers', m.policyLevers]);
         if (m.dataNote) methRows.push([], ['Data Note', m.dataNote]);
         const reproText = isDecimalPct
-            ? `Pull raw variables from the source URL for all 50 states. Apply the calculation formula. Results are decimal fractions (0\u20131). Divide by 100 if needed to match Raw Data tab. Compute Other-state median as the MEDIAN of the 49 other states (Excel: =MEDIAN(range)); exclude Hawai\u02BBi and DC. Multiply by 100 to display as percentages.`
-            : `Pull raw variables from the source URL for all 50 states. Apply the calculation formula. Compute Other-state median as the MEDIAN of the 49 other states (Excel: =MEDIAN(range)); exclude Hawai\u02BBi and DC.`;
+            ? `Pull raw variables from the source URL for all 50 states. Apply the calculation formula. Results are decimal fractions (0\u20131). Divide by 100 if needed to match Raw Data tab. Compute Median as the MEDIAN of the 49 other states (Excel: =MEDIAN(range)); exclude Hawai\u02BBi and DC. Multiply by 100 to display as percentages.`
+            : `Pull raw variables from the source URL for all 50 states. Apply the calculation formula. Compute Median as the MEDIAN of the 49 other states (Excel: =MEDIAN(range)); exclude Hawai\u02BBi and DC.`;
         methRows.push(
             [],
             ['REPRODUCIBILITY'],

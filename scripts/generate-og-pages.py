@@ -187,7 +187,7 @@ def is_decimal_pct(metric):
     if metric.get('unit') != '%':
         return False
     vals = [v for v in list(metric.get('hawaii', {}).values()) +
-            list(metric.get('otherStateAvg', {}).values())
+            list(metric.get('medianSeries', {}).values())
             if v is not None and v != 0]
     return len(vals) > 0 and all(abs(v) <= 1 for v in vals)
 
@@ -376,7 +376,7 @@ def generate_og_image(slug, metric, area, rankings, output_path):
     unit = metric.get('unit', '')
     good_dir = metric.get('goodDirection', 'up')
     hawaii = metric.get('hawaii', {})
-    other_avg = metric.get('otherStateAvg', {})
+    other_avg = metric.get('medianSeries', {})
     dec = is_decimal_pct(metric)
 
     latest_year, latest_val = get_latest(hawaii)

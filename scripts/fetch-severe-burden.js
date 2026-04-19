@@ -148,12 +148,12 @@ async function fetchCounties() {
     return byCounty;
 }
 
-// ---- Compute hawaii + otherStateAvg (median) from state data ----
+// ---- Compute hawaii + medianSeries (50-state median) from state data ----
 const { median } = require('../js/compute.js');
 
 function computeDashboardData(stateData) {
     const hawaii = {};
-    const otherStateAvg = {};
+    const medianSeries = {};
     const NOT_A_STATE = new Set([
         'District of Columbia', 'Puerto Rico', 'Guam',
         'U.S. Virgin Islands', 'American Samoa', 'Northern Mariana Islands',
@@ -164,24 +164,24 @@ function computeDashboardData(stateData) {
         const hiVal = states['Hawaii'] || states['Hawai\u02BBi'];
         if (hiVal != null) hawaii[year] = hiVal;
 
-        // Other-state median (49 states, exclude DC/territories)
-        const otherVals = Object.entries(states)
-            .filter(([s]) => s !== 'Hawaii' && s !== 'Hawai\u02BBi' && !NOT_A_STATE.has(s))
+        // 50-state median (include Hawaiʻi, exclude DC/territories)
+        const allVals = Object.entries(states)
+            .filter(([s]) => !NOT_A_STATE.has(s))
             .map(([, v]) => v)
             .filter(v => v != null && !isNaN(v));
 
-        if (otherVals.length >= 25) {
-            const med = median(otherVals);
-            otherStateAvg[year] = parseFloat(med.toFixed(4));
+        if (allVals.length >= 25) {
+            const med = median(allVals);
+            medianSeries[year] = parseFloat(med.toFixed(4));
         }
     }
-    return { hawaii, otherStateAvg };
+    return { hawaii, medianSeries };
 }
 
 async function main() {
     const stateData = await fetchStates();
     const countyData = await fetchCounties();
-    const { hawaii, otherStateAvg } = computeDashboardData(stateData);
+    const { hawaii, medianSeries } = computeDashboardData(stateData);
 
     const output = {
         stateDataVariant: {
@@ -195,7 +195,7 @@ async function main() {
         },
         dashboardDataVariant: {
             hawaii,
-            otherStateAvg,
+            medianSeries,
         },
     };
 

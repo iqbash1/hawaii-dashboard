@@ -523,15 +523,15 @@ const App = {
     },
 
     /**
-     * Compute hawaii + otherStateAvg time series from STATE_DATA.
+     * Compute hawaii + medianSeries time series from STATE_DATA.
      * This is the SINGLE SOURCE OF TRUTH for both chart versions:
      * card sparklines and modal detail charts derive from the same
      * per-state data that drives rankings.
      *
-     * The `otherStateAvg` field holds the MEDIAN of the 49 other states
-     * (exclude Hawaiʻi, DC, Puerto Rico). The legacy field name is kept
-     * for compatibility; user-facing labels say "other-state median".
-     * See DOCUMENTATION.md "Architectural Decisions".
+     * `medianSeries` is the 50-state mathematical median (Compute.median:
+     * average of two middle values for even counts). DC and Puerto Rico
+     * are excluded as non-states; Hawaiʻi is INCLUDED so the median line
+     * matches the median of the bars drawn on the rankings chart.
      */
     computeChartData(slug) {
         // Threshold-aware cache key
@@ -543,62 +543,53 @@ const App = {
         if (!sd || !sd.data) return null;
 
         const isHawaii = ChartUtils.isHawaii;
-        // DC and Puerto Rico are not states; always excluded from the 49-state comparator
+        // DC and Puerto Rico are not states; always excluded from the 50-state pool.
         const NON_STATES = new Set(['District of Columbia', 'Puerto Rico']);
 
         const isPCPStyle = App._isPCPStyle(sd.data);
 
         const hawaii = {};
-        const otherStateAvg = {};
+        const medianSeries = {};
+        const roundForStorage = (v) => parseFloat(v.toFixed(4));
 
         if (isPCPStyle) {
             // FIPS-keyed: { "15": { name: "Hawaii", "2021": 64.8 } }
             // Collect all years
-            const yearValues = {}; // { year: { hi: val, others: [vals] } }
+            const yearValues = {}; // { year: { hi: val, all: [vals] } }
             Object.values(sd.data).forEach(entry => {
                 const name = entry.name;
                 if (NON_STATES.has(name)) return;
                 Object.entries(entry).forEach(([k, v]) => {
                     if (k === 'name' || v == null) return;
-                    if (!yearValues[k]) yearValues[k] = { hi: null, others: [] };
-                    if (isHawaii(name)) {
-                        yearValues[k].hi = v;
-                    } else {
-                        yearValues[k].others.push(v);
-                    }
+                    if (!yearValues[k]) yearValues[k] = { hi: null, all: [] };
+                    if (isHawaii(name)) yearValues[k].hi = v;
+                    yearValues[k].all.push(v);
                 });
             });
             for (const [year, vals] of Object.entries(yearValues)) {
                 if (vals.hi !== null) hawaii[year] = vals.hi;
-                if (vals.others.length > 0) {
-                    const med = Compute.median(vals.others);
-                    if (med !== null) {
-                        otherStateAvg[year] = Math.abs(med) > 100 ? Math.round(med) : parseFloat(med.toFixed(4));
-                    }
+                if (vals.all.length > 0) {
+                    const med = Compute.median(vals.all);
+                    if (med !== null) medianSeries[year] = roundForStorage(med);
                 }
             }
         } else {
             // Year-keyed: { "2023": { "Alabama": 0.25, ... } }
             for (const [year, yearData] of Object.entries(sd.data)) {
-                const otherVals = [];
+                const allVals = [];
                 for (const [state, val] of Object.entries(yearData)) {
                     if (val == null || NON_STATES.has(state)) continue;
-                    if (isHawaii(state)) {
-                        hawaii[year] = val;
-                    } else {
-                        otherVals.push(val);
-                    }
+                    if (isHawaii(state)) hawaii[year] = val;
+                    allVals.push(val);
                 }
-                if (otherVals.length > 0) {
-                    const med = Compute.median(otherVals);
-                    if (med !== null) {
-                        otherStateAvg[year] = Math.abs(med) > 100 ? Math.round(med) : parseFloat(med.toFixed(4));
-                    }
+                if (allVals.length > 0) {
+                    const med = Compute.median(allVals);
+                    if (med !== null) medianSeries[year] = roundForStorage(med);
                 }
             }
         }
 
-        const result = { hawaii, otherStateAvg };
+        const result = { hawaii, medianSeries };
         this._chartDataCache[cacheKey] = result;
         return result;
     },
@@ -634,33 +625,33 @@ const App = {
      * the same endpoint.
      *
      * SINGLE SOURCE OF TRUTH: When STATE_DATA has per-state data for
-     * a metric, hawaii/otherStateAvg are computed from it at runtime.
+     * a metric, hawaii/medianSeries are computed from it at runtime.
      * For metrics without STATE_DATA, falls back to DASHBOARD_DATA.
      */
     getEffectiveData(slug) {
         const metricData = this.getActiveMetricData(slug);
         if (!metricData) return null;
 
-        // Compute hawaii/otherStateAvg from STATE_DATA when available
+        // Compute hawaii/medianSeries from STATE_DATA when available
         const computed = this.computeChartData(slug);
 
         // Merge: state-data values take precedence (verified per-state data),
         // but preserve data.js historical years that predate state-data coverage.
         // This ensures chart + rankings use the same source for overlapping years,
         // while keeping longer time series for the line chart.
-        let mergedHawaii, mergedAvg;
+        let mergedHawaii, mergedMedian;
         if (computed) {
             mergedHawaii = { ...metricData.hawaii, ...computed.hawaii };
-            mergedAvg = { ...metricData.otherStateAvg, ...computed.otherStateAvg };
+            mergedMedian = { ...metricData.medianSeries, ...computed.medianSeries };
         } else {
             mergedHawaii = metricData.hawaii;
-            mergedAvg = metricData.otherStateAvg;
+            mergedMedian = metricData.medianSeries;
         }
 
         const merged = {
             ...metricData,
             hawaii: mergedHawaii,
-            otherStateAvg: mergedAvg,
+            medianSeries: mergedMedian,
         };
 
         // If we have rankings, trim chart data to end at rankings year
@@ -684,15 +675,15 @@ const App = {
         return {
             ...merged,
             hawaii: trimToYear(merged.hawaii),
-            otherStateAvg: trimToYear(merged.otherStateAvg),
+            medianSeries: trimToYear(merged.medianSeries),
         };
     },
 
-    /** Build "vs Other States" comparison HTML for a card */
+    /** Build "vs Median" comparison HTML for a card */
     buildVsAvgHtml(metricData, slug) {
         const az = ZERO_IS_VALID.has(slug);
         const latest = this.getLatestValue(metricData.hawaii, az);
-        const latestAvg = this.getLatestValue(metricData.otherStateAvg, az);
+        const latestAvg = this.getLatestValue(metricData.medianSeries, az);
         if (latest.value === null || latestAvg.value === null) return '';
 
         const diff = latest.value - latestAvg.value;
@@ -713,7 +704,7 @@ const App = {
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
-                <div class="comp-label">Other state median</div>
+                <div class="comp-label">Median</div>
                 <div class="comp-detail">${avgFormatted}</div>
                 ${rankHtml}
             </div>

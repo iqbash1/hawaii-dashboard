@@ -11,7 +11,7 @@
 //
 // Output: Prints JSON to stdout with three sections:
 //   1. stateData : per-period, per-state data for state-data.js
-//   2. dataJs    : hawaii + otherStateAvg for data.js
+//   2. dataJs    : hawaii + medianSeries for data.js
 //   3. summary   : period count, Hawaii values, and ratio checks
 //
 // Values are expressed as decimal fractions (e.g., 5.2% -> 0.052)
@@ -136,18 +136,16 @@ async function main() {
         }
     }
 
-    // Build data.js format (otherStateAvg is median of 49 other states)
+    // Build data.js format (medianSeries is 50-state mathematical median)
     const { median } = require('../js/compute.js');
     const hawaii = {};
-    const otherStateAvg = {};
+    const medianSeries = {};
     for (const period of periods) {
         const hiVal = data[period]['Hawai\u02BBi'];
         hawaii[period] = hiVal;
 
-        const otherVals = Object.entries(data[period])
-            .filter(([k]) => k !== 'Hawai\u02BBi')
-            .map(([, v]) => v);
-        otherStateAvg[period] = Math.round(median(otherVals) * 10000) / 10000;
+        const allVals = Object.values(data[period]);
+        medianSeries[period] = Math.round(median(allVals) * 10000) / 10000;
     }
 
     // Summary with ratio checks
@@ -155,7 +153,7 @@ async function main() {
     for (const period of periods) {
         summary[period] = {
             hawaii: hawaii[period],
-            otherStateAvg: otherStateAvg[period],
+            medianSeries: medianSeries[period],
             stateCount: Object.keys(data[period]).length
         };
     }
@@ -170,7 +168,7 @@ async function main() {
         dataJs: {
             officialName: '3-year average share of households with very low food security, where household members reduced food intake because they could not afford enough food.',
             hawaii,
-            otherStateAvg
+            medianSeries
         },
         summary
     };

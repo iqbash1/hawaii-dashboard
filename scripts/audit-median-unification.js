@@ -38,6 +38,7 @@ const DASHBOARD_DATA = loadGlobal('js/data.js', 'DASHBOARD_DATA');
 const QOTD_QUESTIONS = require(path.join(ROOT, 'js/questions.js'));
 
 const HAWAII_KEYS = new Set(['Hawaii', 'Hawaiʻi', 'HI', '15']);
+const NON_STATES = new Set(['District of Columbia', 'Puerto Rico', '11', '72']);
 const YEAR_KEY_RE = /^(19|20)\d{2}(-\d{4})?$/;
 
 function isYearKey(k) {
@@ -62,23 +63,22 @@ function normalizeToByYear(dataObj) {
     return out;
 }
 
-function pickFloorHalf(sortedAsc) {
+// True mathematical median / quantile with linear interpolation (NumPy/R type-7).
+// Matches Compute.quantile in js/compute.js — the unified definition under Phase 2.
+function quantile(sortedAsc, q) {
     if (!sortedAsc.length) return null;
-    return sortedAsc[Math.floor(sortedAsc.length * 0.5)];
-}
-
-function pickFloorQ1(sortedAsc) {
-    if (!sortedAsc.length) return null;
-    return sortedAsc[Math.floor(sortedAsc.length * 0.25)];
-}
-
-function pickFloorQ3(sortedAsc) {
-    if (!sortedAsc.length) return null;
-    return sortedAsc[Math.floor(sortedAsc.length * 0.75)];
+    if (q <= 0) return sortedAsc[0];
+    if (q >= 1) return sortedAsc[sortedAsc.length - 1];
+    const pos = (sortedAsc.length - 1) * q;
+    const lo = Math.floor(pos);
+    const hi = Math.ceil(pos);
+    if (lo === hi) return sortedAsc[lo];
+    return sortedAsc[lo] + (pos - lo) * (sortedAsc[hi] - sortedAsc[lo]);
 }
 
 function nonNullNumbers(obj) {
     return Object.entries(obj)
+        .filter(([k]) => !NON_STATES.has(k))
         .map(([k, v]) => [k, Number(v)])
         .filter(([, v]) => Number.isFinite(v));
 }
@@ -90,12 +90,12 @@ function computeStats(valuesByState) {
     return {
         all_count: all.length,
         other_count: other.length,
-        old_median: pickFloorHalf(other),
-        new_median: pickFloorHalf(all),
-        old_q1: pickFloorQ1(other),
-        new_q1: pickFloorQ1(all),
-        old_q3: pickFloorQ3(other),
-        new_q3: pickFloorQ3(all),
+        old_median: quantile(other, 0.5),
+        new_median: quantile(all, 0.5),
+        old_q1: quantile(other, 0.25),
+        new_q1: quantile(all, 0.25),
+        old_q3: quantile(other, 0.75),
+        new_q3: quantile(all, 0.75),
     };
 }
 
@@ -103,6 +103,15 @@ function roundTo(v, digits) {
     if (v == null) return null;
     const f = Math.pow(10, digits);
     return Math.round(v * f) / f;
+}
+
+// Storage-rounding convention shared with app.js::computeChartData and
+// scripts/phase2-migrate-data.js. Unified to 4-decimal precision for all
+// magnitudes (Phase 2). Apply BEFORE display scaling so the audit compares
+// stored vs. recomputed values at the same precision.
+function roundForStorage(v) {
+    if (v == null) return null;
+    return parseFloat(v.toFixed(4));
 }
 
 function digitsFor(unit) {
@@ -138,12 +147,19 @@ for (const metric of Object.keys(STATE_DATA).sort()) {
     const digits = digitsFor(unit);
     const scale = inferScale(entry);
     medians[metric] = { unit, scale, digits, years: {} };
-    const otherStateAvg = DASHBOARD_DATA[metric]?.otherStateAvg || {};
+    // Post-Phase-2: data.js uses `medianSeries` (50-state true median).
+    // Fall back to legacy `otherStateAvg` for robustness if we ever need to
+    // re-run this against a pre-migration checkout.
+    const storedSeries = DASHBOARD_DATA[metric]?.medianSeries
+        || DASHBOARD_DATA[metric]?.otherStateAvg
+        || {};
 
     for (const year of Object.keys(data).sort()) {
         const stats = computeStats(data[year]);
-        const precomputed = otherStateAvg[year];
-        const toDisplay = (v) => (v == null ? null : roundTo(v * scale, digits));
+        const precomputed = storedSeries[year];
+        // Apply storage rounding BEFORE display scaling so stored and
+        // recomputed values are compared at the same precision.
+        const toDisplay = (v) => (v == null ? null : roundTo(roundForStorage(v) * scale, digits));
         const rec = {
             ...stats,
             old_median_display: toDisplay(stats.old_median),
@@ -152,32 +168,25 @@ for (const metric of Object.keys(STATE_DATA).sort()) {
             new_q1_display: toDisplay(stats.new_q1),
             old_q3_display: toDisplay(stats.old_q3),
             new_q3_display: toDisplay(stats.new_q3),
+            new_median_storage: roundForStorage(stats.new_median),
             delta_display: stats.old_median != null && stats.new_median != null
-                ? roundTo((stats.new_median - stats.old_median) * scale, digits + 1)
+                ? roundTo((roundForStorage(stats.new_median) - roundForStorage(stats.old_median)) * scale, digits + 1)
                 : null,
-            precomputed_otherStateAvg: precomputed != null ? Number(precomputed) : null,
+            precomputed_stored: precomputed != null ? Number(precomputed) : null,
             precomputed_display: precomputed != null ? roundTo(Number(precomputed) * scale, digits) : null,
         };
 
-        // Invariant I1: precomputed otherStateAvg should equal our oldMedian (49-state) when
-        // re-derived from state-data.js. Mismatches are expected and fall into two buckets:
-        //   - rounding_drift: diff ≤ 1 display unit (harmless; cleared by Phase 2 recompute)
-        //   - substantive_drift: diff > 1 display unit (legacy pipeline divergence, e.g.
-        //     early-1960s UCR coverage or early-2010s ACGR adoption — needs human review)
-        // I1 failures are informational; they do NOT block the audit from passing.
-        if (precomputed != null && stats.old_median != null) {
-            const precomputedDisplay = rec.precomputed_display;
-            const computedDisplay = rec.old_median_display;
-            const diff = precomputedDisplay - computedDisplay;
-            if (Math.abs(diff) > Math.pow(10, -digits) / 2 + 1e-9) {
-                const bucket = Math.abs(diff) > Math.pow(10, -digits) ? 'substantive_drift' : 'rounding_drift';
+        // Invariant I1 (post-Phase 2): stored medianSeries should equal the
+        // 50-state true median rounded with the storage convention. Exact
+        // equality check (no tolerance) — they should match byte-identically.
+        if (precomputed != null && stats.new_median != null) {
+            if (Number(precomputed) !== rec.new_median_storage) {
                 failed_invariant_i1.push({
-                    metric, year, bucket,
-                    precomputed_raw: Number(precomputed),
-                    computed_49state_raw: stats.old_median,
-                    precomputed_display: precomputedDisplay,
-                    computed_49state_display: computedDisplay,
-                    diff_display: roundTo(diff, digits + 1),
+                    metric, year,
+                    precomputed: Number(precomputed),
+                    computed_50state_storage: rec.new_median_storage,
+                    computed_50state_raw: stats.new_median,
+                    diff: roundTo(Number(precomputed) - rec.new_median_storage, 4),
                 });
             }
         }
@@ -336,8 +345,7 @@ const out = {
         qotd_threshold_flagged: qotd_thresholds.filter((r) => r.flagged).length,
         prose_mentions_total: prose_mentions.length,
         prose_mentions_with_number: prose_mentions.filter((p) => p.has_number).length,
-        i1_rounding_drift: failed_invariant_i1.filter((f) => f.bucket === 'rounding_drift').length,
-        i1_substantive_drift: failed_invariant_i1.filter((f) => f.bucket === 'substantive_drift').length,
+        i1_fail_count: failed_invariant_i1.length,
         i2_fail_count: failed_invariant_i2.length,
     },
 };
@@ -346,9 +354,13 @@ fs.writeFileSync(OUT_PATH, JSON.stringify(out, null, 2));
 console.log('Wrote', path.relative(ROOT, OUT_PATH));
 console.log(JSON.stringify(out.summary, null, 2));
 
-if (failed_invariant_i2.length) {
-    console.error('\nFAILED I2: QOTD answer strings do not match data.js otherStateAvg.');
-    console.error('Count:', failed_invariant_i2.length, '— see invariant_i2_failures in the JSON.');
+if (failed_invariant_i1.length) {
+    console.error('\nFAILED I1: stored medianSeries does not match 50-state true median from state-data.js.');
+    console.error('Count:', failed_invariant_i1.length, '— see invariant_i1_failures in the JSON.');
     process.exit(1);
 }
-// I1 drift is informational (Phase 2 recompute supersedes precomputed values).
+// I2 failures are expected between Phase 2 and Phase 3 (QOTD answer strings still
+// quote old 49-state numbers until Phase 3 updates them). Report but do not fail.
+if (failed_invariant_i2.length) {
+    console.log(`\nNote: ${failed_invariant_i2.length} QOTD answers still quote old 49-state medians — to be fixed in Phase 3.`);
+}

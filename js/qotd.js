@@ -187,11 +187,11 @@ const QOTD = {
                 const metricData = App.getActiveMetricData(slug);
                 if (!rankings || !metricData) return this._fallbackOgImage(fig, q);
                 const stateValues = rankings.stateValues;
-                const sortedVals = stateValues.map(s => s.value).sort((a, b) => a - b);
+                const vals = stateValues.map((s) => s.value);
                 const distStats = {
-                    q1: sortedVals[Math.floor(sortedVals.length * 0.25)],
-                    median: sortedVals[Math.floor(sortedVals.length * 0.5)],
-                    q3: sortedVals[Math.floor(sortedVals.length * 0.75)],
+                    q1: Compute.quantile(vals, 0.25),
+                    median: Compute.quantile(vals, 0.5),
+                    q3: Compute.quantile(vals, 0.75),
                     fmt: (v) => ChartUtils.formatValue(v, metricData.unit, false),
                 };
                 ChartUtils.createRankingsChart(canvas, stateValues, metricData.goodDirection, metricData.unit, distStats);

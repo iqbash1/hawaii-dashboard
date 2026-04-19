@@ -47,7 +47,7 @@ const ChartUtils = {
      */
     isDecimalPctMetric(metricData) {
         if (metricData.unit !== '%') return false;
-        const allVals = [...Object.values(metricData.hawaii), ...Object.values(metricData.otherStateAvg)]
+        const allVals = [...Object.values(metricData.hawaii), ...Object.values(metricData.medianSeries)]
             .filter(v => v !== null && v !== 0);
         return allVals.length > 0 && allVals.every(v => Math.abs(v) <= 1);
     },
@@ -60,7 +60,7 @@ const ChartUtils = {
         const ctx = canvas.getContext('2d');
         const mapVal = allowZero ? (v => v ?? null) : (v => v === 0 ? null : v);
         const values = Object.values(data.hawaii).map(mapVal);
-        const avgValues = Object.values(data.otherStateAvg).map(mapVal);
+        const avgValues = Object.values(data.medianSeries).map(mapVal);
         const labels = Object.keys(data.hawaii);
 
         if (values.filter(v => v !== null).length === 0) return null;
@@ -85,7 +85,7 @@ const ChartUtils = {
                     else trend = moved === 'down' ? 'improving' : 'worsening';
                 }
             }
-            const ariaText = `Trend chart: Hawaii is ${aboveBelow} the other-state median and ${trend}`;
+            const ariaText = `Trend chart: Hawaii is ${aboveBelow} the median and ${trend}`;
             canvas.setAttribute('role', 'img');
             canvas.setAttribute('aria-label', ariaText);
         }
@@ -207,7 +207,7 @@ const ChartUtils = {
     /**
      * Create a full detail chart for the modal
      * @param {HTMLCanvasElement} canvas
-     * @param {Object} data - metric data with hawaii and otherStateAvg
+     * @param {Object} data - metric data with hawaii and medianSeries
      * @param {Array} govBoxes - governor term annotations [{name, party, startIdx, endIdx}]
      */
     /**
@@ -216,7 +216,7 @@ const ChartUtils = {
     /**
      * Render the main trend chart (Hawaiʻi vs. a comparator) in the modal.
      * @param {HTMLCanvasElement} canvas
-     * @param {Object} data - metric data (hawaii, otherStateAvg, goodDirection, unit)
+     * @param {Object} data - metric data (hawaii, medianSeries, goodDirection, unit)
      * @param {Array} govBoxes - governor-term overlay boxes
      * @param {boolean} allowZero - treat zero as a real value (default: zeros are gaps)
      * @param {Object} [comparator] - optional non-default comparator
@@ -228,10 +228,10 @@ const ChartUtils = {
         const labels = Object.keys(data.hawaii);
         const mapVal = allowZero ? (v => v ?? null) : (v => v === 0 ? null : v);
         const hawaiiValues = labels.map(y => mapVal(data.hawaii[y]));
-        // Comparator defaults to the other-state median; when a state is
+        // Comparator defaults to the 50-state median; when a state is
         // picked, the caller passes { label, timeSeries } and it swaps in.
-        const compLabel = (comparator && comparator.label) ? comparator.label : 'Other-state median';
-        const compSource = (comparator && comparator.timeSeries) ? comparator.timeSeries : data.otherStateAvg;
+        const compLabel = (comparator && comparator.label) ? comparator.label : 'Median';
+        const compSource = (comparator && comparator.timeSeries) ? comparator.timeSeries : data.medianSeries;
         const compValues = labels.map(y => {
             const v = compSource[y];
             return (v === null || v === undefined) ? null : mapVal(v);

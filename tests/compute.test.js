@@ -276,8 +276,8 @@ describe('Compute.getStateTimeSeries', () => {
 
 // ----------------------------------------------------------------
 // median
-// The `otherStateAvg` field is computed as the median of the 49 other
-// states. Field name is legacy; statistic is median.
+// The `medianSeries` field is computed as the 50-state mathematical
+// median (includes Hawaiʻi, excludes DC/PR).
 // ----------------------------------------------------------------
 
 describe('median', () => {
@@ -334,6 +334,87 @@ describe('median', () => {
         const med = Compute.median(skewed);
         assert.ok(med < mean, `median ${med} should be < mean ${mean}`);
         assert.equal(med, 3); // average of two middle 3s
+    });
+
+    it('50-state realistic case: even count → average of two middle values', () => {
+        const vals = Array.from({ length: 50 }, (_, i) => i + 1); // [1..50]
+        // Even length (50): avg of positions 24, 25 (0-indexed) = (25 + 26) / 2
+        assert.equal(Compute.median(vals), 25.5);
+    });
+});
+
+// ----------------------------------------------------------------
+// quantile (linear interpolation, NumPy/R type-7 convention)
+// Used by rankings-chart distStats (q1, median, q3) and by the
+// medianSeries time series stored in data.js.
+// ----------------------------------------------------------------
+
+describe('quantile', () => {
+    it('q=0.5 on odd-sized array returns exact middle', () => {
+        assert.equal(Compute.quantile([1, 2, 3, 4, 5], 0.5), 3);
+    });
+
+    it('q=0.5 on even-sized array returns average of two middle values', () => {
+        assert.equal(Compute.quantile([1, 2, 3, 4], 0.5), 2.5);
+    });
+
+    it('q=0.25 on [1..50]: (n-1)*0.25=12.25 → v[12] + 0.25*(v[13]-v[12]) = 13 + 0.25 = 13.25', () => {
+        const vals = Array.from({ length: 50 }, (_, i) => i + 1);
+        assert.equal(Compute.quantile(vals, 0.25), 13.25);
+    });
+
+    it('q=0.75 on [1..50]: (n-1)*0.75=36.75 → v[36] + 0.75*(v[37]-v[36]) = 37 + 0.75 = 37.75', () => {
+        const vals = Array.from({ length: 50 }, (_, i) => i + 1);
+        assert.equal(Compute.quantile(vals, 0.75), 37.75);
+    });
+
+    it('q=0 returns min', () => {
+        assert.equal(Compute.quantile([5, 1, 3, 2, 4], 0), 1);
+    });
+
+    it('q=1 returns max', () => {
+        assert.equal(Compute.quantile([5, 1, 3, 2, 4], 1), 5);
+    });
+
+    it('handles unsorted input', () => {
+        assert.equal(Compute.quantile([5, 1, 3, 2, 4], 0.5), 3);
+    });
+
+    it('does not mutate input', () => {
+        const input = [5, 1, 3, 2, 4];
+        const copy = [...input];
+        Compute.quantile(input, 0.25);
+        assert.deepEqual(input, copy);
+    });
+
+    it('filters nulls, undefined, NaN', () => {
+        assert.equal(Compute.quantile([1, null, 2, undefined, 3, NaN, 4, 5], 0.5), 3);
+    });
+
+    it('returns null for empty input', () => {
+        assert.equal(Compute.quantile([], 0.5), null);
+        assert.equal(Compute.quantile([null, undefined, NaN], 0.5), null);
+        assert.equal(Compute.quantile(null, 0.5), null);
+    });
+
+    it('single-element array: returns that element for any q', () => {
+        assert.equal(Compute.quantile([42], 0.25), 42);
+        assert.equal(Compute.quantile([42], 0.5), 42);
+        assert.equal(Compute.quantile([42], 0.75), 42);
+    });
+
+    it('two-element array q=0.5 → average', () => {
+        assert.equal(Compute.quantile([10, 20], 0.5), 15);
+    });
+
+    it('all-same-value array returns that value', () => {
+        assert.equal(Compute.quantile([7, 7, 7, 7, 7], 0.5), 7);
+        assert.equal(Compute.quantile([7, 7, 7, 7, 7], 0.25), 7);
+    });
+
+    it('consistent with median() wrapper', () => {
+        const vals = Array.from({ length: 50 }, (_, i) => i + 1);
+        assert.equal(Compute.quantile(vals, 0.5), Compute.median(vals));
     });
 });
 

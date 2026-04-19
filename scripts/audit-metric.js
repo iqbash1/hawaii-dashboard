@@ -13,7 +13,7 @@
 //   8. Link audit (HTTP checks; only with --links flag)
 //   9. Monthly data freshness
 //  10. Rank history narrative structure
-//  11. otherStateAvg cross-check (recompute from state-data.js)
+//  11. medianSeries cross-check (recompute from state-data.js)
 //  12. Five-year-change delta verification
 //  13. Card latest-value consistency
 //  14. Source data verification (with --verify-source flag)
@@ -322,7 +322,7 @@ function auditMetric(slug) {
     function err(section, msg, detail) { results.push(`[ERR]  ${section} -- ${msg}`); error++; if (detail) items.push(detail); }
 
     // ---- Section 1: Data integrity ----
-    const requiredFields = ['area', 'metric', 'officialName', 'unit', 'unitLabel', 'goodDirection', 'source', 'sourceUrl', 'sourceCategory', 'whyItMatters', 'howToRead', 'hawaii', 'otherStateAvg'];
+    const requiredFields = ['area', 'metric', 'officialName', 'unit', 'unitLabel', 'goodDirection', 'source', 'sourceUrl', 'sourceCategory', 'whyItMatters', 'howToRead', 'hawaii', 'medianSeries'];
     const missing = requiredFields.filter(f => !metric[f] && metric[f] !== 0);
     if (missing.length > 0) {
         err('1. Data integrity', `Missing fields: ${missing.join(', ')}`, `1. Missing required fields: ${missing.join(', ')}`);
@@ -346,9 +346,9 @@ function auditMetric(slug) {
     }
 
     // ---- Section 2: Time series validation ----
-    if (rules && metric.hawaii && metric.otherStateAvg) {
+    if (rules && metric.hawaii && metric.medianSeries) {
         const hiEntries = getSortedYears(metric.hawaii);
-        const usEntries = getSortedYears(metric.otherStateAvg);
+        const usEntries = getSortedYears(metric.medianSeries);
         const hiYears = hiEntries.map(e => e.year);
         const usYears = usEntries.map(e => e.year);
         const issues = [];
@@ -360,7 +360,7 @@ function auditMetric(slug) {
             if (v < rules.min || v > rules.max) issues.push(`Hawaii ${e.key}: ${v} out of bounds [${rules.min}, ${rules.max}]`);
         }
         for (const e of usEntries) {
-            const v = metric.otherStateAvg[e.key];
+            const v = metric.medianSeries[e.key];
             if (v === null || v === undefined) continue;
             if (v < rules.min || v > rules.max) issues.push(`US avg ${e.key}: ${v} out of bounds [${rules.min}, ${rules.max}]`);
         }
@@ -414,7 +414,7 @@ function auditMetric(slug) {
     } else if (!rules) {
         warning('2. Time series', `No METRIC_RULES defined for ${slug}`, `2. Add ${slug} to METRIC_RULES in validate-data.js`);
     } else {
-        err('2. Time series', 'Missing hawaii or otherStateAvg data', '2. Metric is missing time series data');
+        err('2. Time series', 'Missing hawaii or medianSeries data', '2. Metric is missing time series data');
     }
 
     // ---- Section 3: County data ----
@@ -518,7 +518,7 @@ function auditMetric(slug) {
     {
         const issues = [];
         const hiLatest = getLatestValue(metric.hawaii, allowZero);
-        const usLatest = getLatestValue(metric.otherStateAvg, allowZero);
+        const usLatest = getLatestValue(metric.medianSeries, allowZero);
         const latestYear = hiLatest ? hiLatest.year : null;
 
         // Stale year references
@@ -573,8 +573,8 @@ function auditMetric(slug) {
         if (!metric.hawaii || Object.keys(metric.hawaii).length === 0) {
             issues.push('No Hawaii time series data for chart');
         }
-        if (!metric.otherStateAvg || Object.keys(metric.otherStateAvg).length === 0) {
-            issues.push('No otherStateAvg data for chart overlay');
+        if (!metric.medianSeries || Object.keys(metric.medianSeries).length === 0) {
+            issues.push('No medianSeries data for chart overlay');
         }
         if (!metric.goodDirection) {
             issues.push('No goodDirection; chart fill colors will be wrong');
@@ -742,9 +742,9 @@ function auditMetric(slug) {
         warning('10. Rank history', 'No rankHistoryNarrative', '10. Missing rankHistoryNarrative; add comparator states and summary');
     }
 
-    // ---- Section 11: otherStateAvg cross-check ----
-    // Recompute otherStateAvg from state-data.js and compare to data.js.
-    if (sd && sd.data && metric.otherStateAvg) {
+    // ---- Section 11: medianSeries cross-check ----
+    // Recompute medianSeries from state-data.js and compare to data.js.
+    if (sd && sd.data && metric.medianSeries) {
         const issues = [];
         const dataObj = sd.data;
         const firstKey = Object.keys(dataObj)[0];
@@ -765,12 +765,12 @@ function auditMetric(slug) {
                 }
                 if (otherVals.length > 0) {
                     const computed = median(otherVals);
-                    const dashAvg = getLatestValue(metric.otherStateAvg, true);
+                    const dashAvg = getLatestValue(metric.medianSeries, true);
                     if (dashAvg) {
                         const diff = Math.abs(computed - dashAvg.value);
                         const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
                         if (pctDiff > 0.02) {
-                            issues.push(`otherStateAvg mismatch: recomputed median=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
+                            issues.push(`medianSeries mismatch: recomputed median=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
                         }
                     }
                 }
@@ -795,22 +795,22 @@ function auditMetric(slug) {
                     }
                     if (otherVals.length > 0) {
                         const computed = median(otherVals);
-                        const dashAvg = getLatestValue(metric.otherStateAvg, true);
+                        const dashAvg = getLatestValue(metric.medianSeries, true);
                         if (dashAvg) {
                             const diff = Math.abs(computed - dashAvg.value);
                             const pctDiff = dashAvg.value !== 0 ? diff / Math.abs(dashAvg.value) : diff;
                             if (pctDiff > 0.02) {
-                                issues.push(`otherStateAvg mismatch: recomputed median=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
+                                issues.push(`medianSeries mismatch: recomputed median=${computed.toFixed(4)} (${otherVals.length} states), data.js=${dashAvg.value} (${(pctDiff * 100).toFixed(1)}% diff); which is correct?`);
                             }
                         }
                     }
                 }
             }
         }
-        if (issues.length === 0) ok('11. Median cross-check', 'otherStateAvg matches recomputed median from state-data.js');
+        if (issues.length === 0) ok('11. Median cross-check', 'medianSeries matches recomputed median from state-data.js');
         else warning('11. Median cross-check', `${issues.length} issue(s)`, `11. Median cross-check:\n   ${issues.join('\n   ')}`);
     } else {
-        ok('11. Median cross-check', 'N/A (no state-data or no otherStateAvg)');
+        ok('11. Median cross-check', 'N/A (no state-data or no medianSeries)');
     }
 
     // ---- Section 12: Five-year-change delta verification ----
@@ -851,7 +851,7 @@ function auditMetric(slug) {
     {
         const issues = [];
         const hiLatest = getLatestValue(metric.hawaii, allowZero);
-        const usLatest = getLatestValue(metric.otherStateAvg, allowZero);
+        const usLatest = getLatestValue(metric.medianSeries, allowZero);
         if (hiLatest) {
             // Check that the latest Hawaii value is what the card would show
             // The card uses getLatestValue which skips nulls and (if not in ZERO_IS_VALID) zeros

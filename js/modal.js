@@ -19,7 +19,7 @@ const Modal = {
     _rankingsScrollHandler: null,
     /**
      * Shared comparator state across Trend and Rank-history tabs. When null,
-     * Trend falls back to the other-state median and Rank history shows only
+     * Trend falls back to the median and Rank history shows only
      * Hawaiʻi's rank line. When set to a state name, both tabs overlay that
      * state's series.
      */
@@ -112,7 +112,7 @@ const Modal = {
 
     /** Label for the "no state selected" option, varies by active tab. */
     _compareDefaultLabel(tab) {
-        return tab === 'rank-history' ? '\u2014 none \u2014' : 'Other-state median';
+        return tab === 'rank-history' ? '\u2014 none \u2014' : 'Median';
     },
 
     /** Show/hide the compare bar and update its default-option label for this tab. */
@@ -171,7 +171,7 @@ const Modal = {
         const hiYears = Object.keys(metricData.hawaii).sort();
         const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         const isRange = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
-        const compLabel = (comparator && comparator.label) ? comparator.label : 'other-state median';
+        const compLabel = (comparator && comparator.label) ? comparator.label : 'median';
         subtitleEl.innerHTML = isRange
             ? `Hawai\u02BBi vs. ${compLabel} \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
             : `Hawai\u02BBi vs. ${compLabel} \u00B7 ${dirHint}`;
@@ -357,8 +357,8 @@ const Modal = {
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
-            ? `Hawai\u02BBi vs. other-state median \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
-            : `Hawai\u02BBi vs. other-state median \u00B7 ${dirHint}`;
+            ? `Hawai\u02BBi vs. median \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
+            : `Hawai\u02BBi vs. median \u00B7 ${dirHint}`;
         // Render the dynamic "Bottom line" brief
         const briefEl = document.getElementById('modal-brief');
         const briefText = Modal.computeBrief(slug);
@@ -651,7 +651,7 @@ const Modal = {
             canvas.style.display = 'none';
         }
         canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs ${comparator ? comparator.label : 'other-state median'}`);
+        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs ${comparator ? comparator.label : 'median'}`);
 
         // Chart note: always shows smoothing disclosure; also shows trim-year note when applicable
         const chartNoteEl = document.getElementById('modal-chart-note');
@@ -853,12 +853,14 @@ const Modal = {
         document.getElementById('rankings-rank').innerHTML =
             `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best performing state</span>`;
 
-        // Compute distribution stats (shared between dot strip and rankings chart)
-        const sortedVals = stateValues.map(s => s.value).sort((a, b) => a - b);
+        // Compute distribution stats (shared between dot strip and rankings chart).
+        // Uses the unified Compute.quantile definition (linear interpolation,
+        // NumPy/R type-7) so Q1/Median/Q3 match the medianSeries stored in data.js.
+        const vals = stateValues.map((s) => s.value);
         const distStats = {
-            q1: sortedVals[Math.floor(sortedVals.length * 0.25)],
-            median: sortedVals[Math.floor(sortedVals.length * 0.5)],
-            q3: sortedVals[Math.floor(sortedVals.length * 0.75)],
+            q1: Compute.quantile(vals, 0.25),
+            median: Compute.quantile(vals, 0.5),
+            q3: Compute.quantile(vals, 0.75),
             fmt: (v) => ChartUtils.formatValue(v, metricData.unit, false),
         };
 
@@ -1181,10 +1183,10 @@ const Modal = {
         // Section 2: Hawaii Time Series
         const years = Object.keys(effective.hawaii);
         html += '<thead><tr class="section-header"><td colspan="3">Hawaii Time Series</td></tr>'
-            + '<tr><th>Year</th><th>Hawai\u02BBi</th><th>Other-state median</th></tr></thead><tbody>';
+            + '<tr><th>Year</th><th>Hawai\u02BBi</th><th>Median</th></tr></thead><tbody>';
         for (const year of years) {
             const hi = effective.hawaii[year];
-            const avg = effective.otherStateAvg[year];
+            const avg = effective.medianSeries[year];
             html += '<tr><td>' + year + '</td><td>' + fmt(hi) + '</td><td>' + (avg != null ? fmt(avg) : '-') + '</td></tr>';
         }
         html += '</tbody>';
@@ -1372,7 +1374,7 @@ const Modal = {
 
         const az = ZERO_IS_VALID.has(slug);
         const latestHi  = App.getLatestValue(effective.hawaii, az);
-        const latestAvg = App.getLatestValue(effective.otherStateAvg, az);
+        const latestAvg = App.getLatestValue(effective.medianSeries, az);
         if (latestHi.value === null || latestHi.value === undefined) return null;
 
         const isDecimal = ChartUtils.isDecimalPctMetric(m);
@@ -1391,7 +1393,7 @@ const Modal = {
             intro += tpl.scaleTemplate.replace('{{scale}}', scaleText);
         }
 
-        // Better / worse / same vs the other-state median, framed in
+        // Better / worse / same vs the median, framed in
         // direction-aware terms so the reader never has to decode whether
         // "above" or "below" is the good side for this metric.
         const hiVal  = isDecimal ? latestHi.value * 100  : latestHi.value;
@@ -1402,7 +1404,7 @@ const Modal = {
 
         let brief = `Bottom line: ${intro}, ranking #${rank} nationally.`;
         if (trend) brief += ` It has ${trend},`;
-        brief += ` and is ${vsAvg} the other-state median.`;
+        brief += ` and is ${vsAvg} the median.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;
 
         return brief;
