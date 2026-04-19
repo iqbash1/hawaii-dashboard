@@ -33,7 +33,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q002",
     "slug": "hawaii-is-among-the-top-ranked-states-for-health-coverage",
-    "claim": "Hawaiʻi is among the top-ranked states for health coverage.",
+    "claim": "Hawaiʻi is among the top-ranked states for health insurance coverage.",
     "correct": true,
     "answer": "Hawaiʻi ranks #2 of 50 in 2024.",
     "chartUrl": "/r/uninsured_rate/",
