@@ -112,6 +112,11 @@
         </div>
     </header>
 
+    <!-- Question of the Day teaser (rendered by js/qotd.js) — placed above
+         the Explore-by dropdowns so the daily hook is the first thing the
+         reader sees after the header. -->
+    <section class="qotd-teaser" id="qotd-teaser" aria-label="Question of the day" style="display:none;"></section>
+
     <!-- Explore by question -->
     <section class="bundle-section" id="bundle-section">
         <span class="explore-label" aria-hidden="true">Explore by</span>
@@ -134,9 +139,6 @@
             <ul class="metric-search-dropdown" id="metric-search-dropdown" role="listbox" aria-label="Select a metric" style="display:none;"></ul>
         </div>
     </section>
-
-    <!-- Question of the Day teaser (rendered by js/qotd.js) -->
-    <section class="qotd-teaser" id="qotd-teaser" aria-label="Question of the day" style="display:none;"></section>
 
     <!-- Grid of cards -->
     <main class="dashboard-grid" id="dashboard-grid">
