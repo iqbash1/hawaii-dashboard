@@ -45,7 +45,8 @@ const Export = {
                 const allYears = new Set();
                 const stateMap = {};
                 Object.values(sd.data).forEach(entry => {
-                    stateMap[entry.name] = entry;
+                    const displayName = ChartUtils.displayStateName(entry.name);
+                    stateMap[displayName] = entry;
                     Object.keys(entry).forEach(k => { if (k !== 'name') allYears.add(k); });
                 });
                 const years = [...allYears].sort();
@@ -69,9 +70,13 @@ const Export = {
                 });
             } else {
                 const allYears = Object.keys(sd.data).sort();
-                const allStates = [...new Set(
+                // Map each raw state key to its display form; some sources ship
+                // Hawaiʻi without the ʻokina — canonicalize for the header and
+                // keep the raw key for data lookup.
+                const rawStates = [...new Set(
                     Object.values(sd.data).flatMap(d => Object.keys(d))
                 )].sort();
+                const allStates = rawStates.map(ChartUtils.displayStateName);
 
                 stateRows = [
                     [`${m.metric} (${m.unit}) - Raw Per-State Data`],
@@ -85,7 +90,7 @@ const Export = {
 
                 allYears.forEach(y => {
                     const row = [y];
-                    allStates.forEach(s => {
+                    rawStates.forEach(s => {
                         row.push(sd.data[y]?.[s] ?? '');
                     });
                     stateRows.push(row);
