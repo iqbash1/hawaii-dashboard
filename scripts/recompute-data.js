@@ -25,6 +25,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const Compute = require('../js/compute.js');
 
 const BASE = path.join(__dirname, '..');
 const STATE_DATA_PATH = path.join(BASE, 'js', 'state-data.js');
@@ -43,16 +44,7 @@ eval(origContent.replace('const DASHBOARD_DATA', 'global.DASHBOARD_DATA'));
 const HAWAII_NAMES = ['Hawaiʻi', 'Hawaii', "Hawai'i"];
 const isHawaii = (name) => HAWAII_NAMES.some(h => name === h);
 
-// Median of a numeric array (nulls/NaN filtered). Null for empty input.
-function median(vals) {
-    const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
-    if (!clean.length) return null;
-    const sorted = [...clean].sort((a, b) => a - b);
-    const mid = sorted.length / 2;
-    return sorted.length % 2
-        ? sorted[Math.floor(mid)]
-        : (sorted[mid - 1] + sorted[mid]) / 2;
-}
+const median = Compute.median;
 
 // Metrics safe to recompute from state-data (all 26 verified)
 const RECOMPUTE_METRICS = [
@@ -358,7 +350,6 @@ function updateACGRText() {
 
     dd.whyItMatters = `Hawaiʻi runs the only statewide school district in the nation, making the State directly accountable. The graduation rate reached ${hiVal}% in ${lastYr}, roughly matching the other-state median of ${avgVal}%.`;
     dd.howToRead = "Hawaiʻi trailed the other-state median for most of the 2010s and has been closing the gap. A rising line means more students are finishing on time.";
-    dd.insight = `The graduation rate climbed from 80% in 2011 to ${hiVal}% in ${lastYr}. Hawaiʻi's single statewide district means state policy directly drives this number.`;
 }
 
 // ==========================================================

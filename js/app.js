@@ -541,7 +541,7 @@ const App = {
         if (!sd || !sd.data) return null;
 
         const isHawaii = ChartUtils.isHawaii;
-        // DC and Puerto Rico are not states; always excluded from the 49-state average
+        // DC and Puerto Rico are not states; always excluded from the 49-state comparator
         const NON_STATES = new Set(['District of Columbia', 'Puerto Rico']);
 
         const isPCPStyle = App._isPCPStyle(sd.data);

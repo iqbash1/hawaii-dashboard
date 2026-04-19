@@ -29,6 +29,7 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const https = require('https');
+const { median } = require('../js/compute.js');
 
 const BASE = path.join(__dirname, '..');
 const args = process.argv.slice(2);
@@ -742,16 +743,7 @@ function auditMetric(slug) {
     }
 
     // ---- Section 11: otherStateAvg cross-check ----
-    // Recompute otherStateAvg (median of 49 other states) from state-data.js
-    // and compare to data.js. Field name `otherStateAvg` is legacy; value is median.
-    const medianOf = (vals) => {
-        const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
-        if (!clean.length) return null;
-        const sorted = [...clean].sort((a, b) => a - b);
-        const mid = sorted.length / 2;
-        return sorted.length % 2 ? sorted[Math.floor(mid)] : (sorted[mid - 1] + sorted[mid]) / 2;
-    };
-
+    // Recompute otherStateAvg from state-data.js and compare to data.js.
     if (sd && sd.data && metric.otherStateAvg) {
         const issues = [];
         const dataObj = sd.data;
@@ -772,7 +764,7 @@ function auditMetric(slug) {
                     if (val !== null && val !== undefined) otherVals.push(val);
                 }
                 if (otherVals.length > 0) {
-                    const computed = medianOf(otherVals);
+                    const computed = median(otherVals);
                     const dashAvg = getLatestValue(metric.otherStateAvg, true);
                     if (dashAvg) {
                         const diff = Math.abs(computed - dashAvg.value);
@@ -802,7 +794,7 @@ function auditMetric(slug) {
                         if (v !== null && v !== undefined) otherVals.push(v);
                     }
                     if (otherVals.length > 0) {
-                        const computed = medianOf(otherVals);
+                        const computed = median(otherVals);
                         const dashAvg = getLatestValue(metric.otherStateAvg, true);
                         if (dashAvg) {
                             const diff = Math.abs(computed - dashAvg.value);
