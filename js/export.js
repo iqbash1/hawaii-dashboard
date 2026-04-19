@@ -53,6 +53,7 @@ const Export = {
                     [`${m.metric} (${m.unit}) - Raw Per-State Data`],
                     [`Source: ${sd.source}`],
                     sd.calculation ? [`Calculation: ${sd.calculation}`] : [],
+                    [`Note: this tab includes the Hawaiʻi column. To recompute Other-state median, exclude Hawaiʻi (and any DC/territory columns) from your =MEDIAN() range. The Methodology tab has the full recipe.`],
                     [],
                     ['Year', ...stateNames],
                 ];
@@ -75,6 +76,7 @@ const Export = {
                     [`Source: ${sd.source}`],
                     sd.calculation ? [`Calculation: ${sd.calculation}`] : [],
                     sd.rawVariables ? [`Raw variables: ${sd.rawVariables}`] : [],
+                    [`Note: this tab includes the Hawaiʻi column. To recompute Other-state median, exclude Hawaiʻi (and any DC/territory columns) from your =MEDIAN() range. The Methodology tab has the full recipe.`],
                     [],
                     ['Year', ...allStates],
                 ];
