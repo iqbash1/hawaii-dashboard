@@ -37,8 +37,14 @@ const ChartUtils = {
     /** Canonical name variants for Hawaiʻi used across source data files. */
     HAWAII_NAMES: ['Hawai\u02BBi', 'Hawaii', 'Hawai\u2019i', "Hawai'i"],
 
+    /** The single display form used everywhere user-facing: "Hawaiʻi" with the ʻokina. */
+    HAWAII_DISPLAY: 'Hawai\u02BBi',
+
     /** Check if a state name is Hawaiʻi (handles ʻokina variants). */
     isHawaii(name) { return ChartUtils.HAWAII_NAMES.indexOf(name) !== -1; },
+
+    /** Canonicalize a state name for UI display: any Hawaiʻi variant → "Hawaiʻi". */
+    displayStateName(name) { return ChartUtils.isHawaii(name) ? ChartUtils.HAWAII_DISPLAY : name; },
 
     /**
      * Determine if a % metric stores values as decimals (0.028 = 2.8%)

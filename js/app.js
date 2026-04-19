@@ -764,7 +764,7 @@ const App = {
         if (App._isPCPStyle(sd.data)) {
             Object.values(sd.data).forEach(entry => {
                 if (entry[year] != null) {
-                    stateValues.push({ state: entry.name, value: entry[year] });
+                    stateValues.push({ state: ChartUtils.displayStateName(entry.name), value: entry[year] });
                 }
             });
         } else {
@@ -774,7 +774,7 @@ const App = {
             Object.entries(yearData).forEach(([state, value]) => {
                 if (value != null) {
                     const displayVal = isDecimal ? value * 100 : value;
-                    stateValues.push({ state, value: displayVal });
+                    stateValues.push({ state: ChartUtils.displayStateName(state), value: displayVal });
                 }
             });
         }
@@ -812,7 +812,7 @@ const App = {
                 const vals = [];
                 Object.values(sd.data).forEach(entry => {
                     if (entry[yr] != null) {
-                        vals.push({ state: entry.name, value: entry[yr] });
+                        vals.push({ state: ChartUtils.displayStateName(entry.name), value: entry[yr] });
                     }
                 });
                 if (vals.length >= 25) yearData[yr] = vals;
@@ -822,7 +822,7 @@ const App = {
                 const entries = Object.entries(sd.data[yr]).filter(([, v]) => v != null);
                 if (entries.length >= 25) {
                     yearData[yr] = entries.map(([state, value]) => ({
-                        state,
+                        state: ChartUtils.displayStateName(state),
                         value: isDec ? value * 100 : value
                     }));
                 }
