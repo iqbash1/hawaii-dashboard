@@ -24,8 +24,24 @@ const Router = {
         return null;
     },
 
-    /** Handle permalink routing: /t/{slug}/, /r/{slug}/, /c/{slug}/, /rh/{slug}/, or legacy #{slug} */
+    /** Handle permalink routing: /t/{slug}/, /r/{slug}/, /c/{slug}/, /rh/{slug}/, /q/{slug}/, or legacy #{slug} */
     handleRoute() {
+        // Question of the Day route: /q/{slug}/
+        const qMatch = window.location.pathname.match(/^\/q\/([^/]+)\/?$/);
+        if (qMatch && typeof QOTD !== 'undefined') {
+            const qSlug = qMatch[1];
+            if (QOTD.getBySlug(qSlug)) {
+                QOTD._openSource = 'direct';
+                QOTD.openQuestion(qSlug);
+                if (typeof App !== 'undefined' && App._trackEvent) {
+                    App._trackEvent('qotd_shared_url_landed', { slug: qSlug, referrer: document.referrer || '(none)' });
+                }
+                return;
+            }
+            history.replaceState(null, '', '/');
+            return;
+        }
+
         let slug = '';
         let view = '';
         let variantSegment = '';
@@ -72,6 +88,19 @@ const Router = {
             const hash = window.location.hash.slice(1);
             if (!hash) return;
             const parts = hash.split('/');
+            // QOTD hash route: #q/{slug} (used by the static /q/ redirect pages)
+            if (parts[0] === 'q' && parts[1] && typeof QOTD !== 'undefined') {
+                if (QOTD.getBySlug(parts[1])) {
+                    QOTD._openSource = 'direct';
+                    QOTD.openQuestion(parts[1]);
+                    if (typeof App !== 'undefined' && App._trackEvent) {
+                        App._trackEvent('qotd_shared_url_landed', { slug: parts[1], referrer: document.referrer || '(none)' });
+                    }
+                    return;
+                }
+                history.replaceState(null, '', '/');
+                return;
+            }
             slug = parts[0];
             view = parts[1] || '';
             // Compare state can appear after rank-history or detail (trend) views

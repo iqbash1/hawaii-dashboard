@@ -2009,3 +2009,343 @@ body {
         page-break-after: avoid;
     }
 }
+
+/* --- Question of the Day --- */
+.qotd-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+.qotd-modal {
+    position: relative;
+    background: #fff;
+    max-width: 640px;
+    width: 100%;
+    padding: 3rem 2.5rem 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+}
+.qotd-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--text-secondary, #666);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+.qotd-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text, #222);
+}
+.qotd-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+}
+.qotd-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hawaii-blue, #0D7C8F);
+    font-weight: 600;
+    margin: 0;
+}
+.qotd-day {
+    font-weight: 400;
+    color: var(--text-secondary, #666);
+}
+.qotd-claim {
+    font-size: 1.5rem;
+    line-height: 1.35;
+    font-weight: 600;
+    color: var(--text, #222);
+    margin: 0;
+    max-width: 520px;
+}
+.qotd-prompt {
+    font-size: 1rem;
+    color: var(--text-secondary, #666);
+    margin: 0;
+}
+.qotd-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.qotd-btn {
+    min-width: 140px;
+    padding: 0.85rem 1.75rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--hawaii-blue, #0D7C8F);
+    background: transparent;
+    border: 2px solid var(--hawaii-blue, #0D7C8F);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    min-height: 48px;
+}
+.qotd-btn:hover,
+.qotd-btn:focus-visible {
+    background: var(--hawaii-blue, #0D7C8F);
+    color: #fff;
+    outline: none;
+}
+/* Share button — visually identical to .modal-share-btn so the share affordance reads the same everywhere on the dashboard. */
+.qotd-share-btn {
+    height: 36px;
+    padding: 0 0.85rem;
+    gap: 0.4rem;
+    border: 1px solid var(--hawaii-blue, #0D7C8F);
+    background: var(--hawaii-blue, #0D7C8F);
+    border-radius: var(--radius-sm, 4px);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+}
+.qotd-share-btn svg { stroke: #fff; }
+.qotd-share-btn:hover,
+.qotd-share-btn:focus-visible {
+    background: var(--hawaii-blue-dark, #075b6a);
+    border-color: var(--hawaii-blue-dark, #075b6a);
+    color: #fff;
+    outline: none;
+}
+.qotd-share-btn--small {
+    height: 32px;
+    padding: 0 0.7rem;
+    font-size: 0.85rem;
+}
+.qotd-verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+}
+.qotd-verdict--correct {
+    color: var(--positive, #059669);
+    background: var(--positive-bg, #e8f6ef);
+}
+.qotd-verdict--incorrect {
+    color: var(--negative, #C0392B);
+    background: var(--negative-bg, #fbecea);
+}
+.qotd-verdict-glyph {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+.qotd-answer-text {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--text, #222);
+    margin: 0;
+    max-width: 520px;
+}
+.qotd-chart {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+.qotd-chart-image {
+    width: 100%;
+    max-width: 540px;
+    height: auto;
+    border-radius: 6px;
+    border: 1px solid var(--divider, rgba(0, 0, 0, 0.08));
+}
+.qotd-chart-caption {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #666);
+}
+.qotd-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+.qotd-link {
+    font-size: 0.95rem;
+    color: var(--hawaii-blue, #0D7C8F);
+    text-decoration: none;
+    font-weight: 500;
+}
+.qotd-link:hover {
+    text-decoration: underline;
+}
+.qotd-toast {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+.qotd-toast--show {
+    opacity: 1;
+}
+
+@media (max-width: 600px) {
+    .qotd-modal {
+        padding: 2.5rem 1.25rem 1.75rem;
+    }
+    .qotd-claim {
+        font-size: 1.2rem;
+    }
+    .qotd-btn {
+        width: 100%;
+        min-width: 0;
+    }
+    .qotd-teaser-claim {
+        font-size: 1.1rem;
+    }
+}
+
+/* QOTD homepage teaser — pull-quote aesthetic between the dropdowns and the card grid. */
+.qotd-teaser {
+    max-width: 760px;
+    margin: 1.25rem auto 1.5rem;
+    padding: 1.5rem 1.5rem;
+    border-top: 1px solid var(--divider, rgba(0, 0, 0, 0.1));
+    border-bottom: 1px solid var(--divider, rgba(0, 0, 0, 0.1));
+    text-align: center;
+}
+.qotd-teaser-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+}
+.qotd-teaser-eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hawaii-blue, #0D7C8F);
+    font-weight: 600;
+}
+.qotd-teaser-claim {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--text, #222);
+    max-width: 600px;
+}
+.qotd-teaser-prompt {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary, #666);
+}
+.qotd-teaser-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+.qotd-btn--inline {
+    min-width: 120px;
+    padding: 0.65rem 1.5rem;
+    font-size: 1rem;
+    min-height: 44px;
+}
+/* Answered (collapsed) state */
+.qotd-teaser-inner--answered {
+    gap: 0.5rem;
+}
+.qotd-teaser-status {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text, #222);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.qotd-teaser-check {
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+.qotd-teaser-check--correct { color: var(--positive, #059669); }
+.qotd-teaser-check--incorrect { color: var(--negative, #C0392B); }
+.qotd-teaser-supporting {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--text, #222);
+    max-width: 560px;
+}
+.qotd-teaser-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.qotd-teaser-link {
+    background: transparent;
+    border: none;
+    color: var(--hawaii-blue, #0D7C8F);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm, 4px);
+    transition: background 0.15s;
+    font-family: inherit;
+}
+.qotd-teaser-link:hover,
+.qotd-teaser-link:focus-visible {
+    background: var(--hawaii-blue-light, #EEF8FA);
+    outline: none;
+}
+@media (max-width: 600px) {
+    .qotd-teaser {
+        padding: 1.25rem 1rem;
+        margin: 1rem auto 1.25rem;
+    }
+    .qotd-btn--inline {
+        width: 100%;
+        min-width: 0;
+    }
+    .qotd-teaser-buttons {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+}

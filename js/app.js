@@ -288,6 +288,8 @@ const App = {
 
         this.initMetricSearch();
 
+        if (typeof QOTD !== 'undefined') QOTD.init();
+
         // Handle permalink routing (path-based /t/slug/ or legacy hash #slug)
         Router.handleRoute();
         window.addEventListener('hashchange', () => Router.handleRoute());

@@ -79,7 +79,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260416a">
+    <link rel="stylesheet" href="css/styles.css?v=20260418b">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
     <!-- SheetJS loaded on demand in downloadData() to save ~200KB on initial page load -->
 </head>
@@ -134,6 +134,9 @@
             <ul class="metric-search-dropdown" id="metric-search-dropdown" role="listbox" aria-label="Select a metric" style="display:none;"></ul>
         </div>
     </section>
+
+    <!-- Question of the Day teaser (rendered by js/qotd.js) -->
+    <section class="qotd-teaser" id="qotd-teaser" aria-label="Question of the day" style="display:none;"></section>
 
     <!-- Grid of cards -->
     <main class="dashboard-grid" id="dashboard-grid">
@@ -273,6 +276,14 @@
         </div>
     </div>
 
+    <!-- Question of the Day modal -->
+    <div class="qotd-overlay" id="qotd-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="qotd-claim">
+        <div class="qotd-modal">
+            <button class="qotd-close" aria-label="Close">&times;</button>
+            <div class="qotd-body" id="qotd-body"></div>
+        </div>
+    </div>
+
     <!-- Go Deeper -->
     <section class="go-deeper" id="go-deeper">
         <div class="go-deeper-inner">
@@ -349,6 +360,8 @@
     <script src="js/routing.js?v=20260416a"></script>
     <script src="js/export.js?v=20260405v"></script>
     <script src="js/modal.js?v=20260416a"></script>
-    <script src="js/app.js?v=20260416a"></script>
+    <script src="js/questions.js?v=20260418c"></script>
+    <script src="js/qotd.js?v=20260418c"></script>
+    <script src="js/app.js?v=20260418b"></script>
 </body>
 </html>

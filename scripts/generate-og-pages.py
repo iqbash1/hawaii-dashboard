@@ -38,10 +38,12 @@ from PIL import Image, ImageDraw, ImageFont
 # ── Paths ──────────────────────────────────────────────────────────
 BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 ASSETS_OG = os.path.join(BASE_DIR, 'assets', 'og')
+ASSETS_OG_QOTD = os.path.join(BASE_DIR, 'assets', 'og', 'q')  # QOTD card PNGs
 REDIRECT_DIR_T  = os.path.join(BASE_DIR, 't')    # /t/{slug}/  trend pages
 REDIRECT_DIR_R  = os.path.join(BASE_DIR, 'r')    # /r/{slug}/  rankings pages
 REDIRECT_DIR_C  = os.path.join(BASE_DIR, 'c')    # /c/{slug}/  county pages
 REDIRECT_DIR_RH = os.path.join(BASE_DIR, 'rh')   # /rh/{slug}/ rank-history pages
+REDIRECT_DIR_Q  = os.path.join(BASE_DIR, 'q')    # /q/{slug}/  question-of-the-day pages
 SITE_URL = 'https://hawaiidashboard.org'
 
 # ── 49 comparison states (all US states except Hawaiʻi) ──────────
@@ -1614,6 +1616,142 @@ def _generate_variant_for_slug(slug, base_metric, area, variant_key, url_segment
 
 
 # ── Main ──────────────────────────────────────────────────────────
+# ── QOTD (Question of the Day) ────────────────────────────────────
+def load_qotd_questions():
+    """Read js/questions.js and return the QOTD_QUESTIONS array."""
+    node_script = r"""
+    const fs = require('fs');
+    const content = fs.readFileSync('js/questions.js', 'utf8');
+    eval(content.replace(/^const\s+/m, 'global.'));
+    console.log(JSON.stringify(QOTD_QUESTIONS));
+    """
+    result = subprocess.run(['node', '-e', node_script], capture_output=True, text=True, cwd=BASE_DIR)
+    if result.returncode != 0:
+        print("Node.js error loading questions.js:", result.stderr, file=sys.stderr)
+        return []
+    return json.loads(result.stdout)
+
+
+def wrap_text(text, font_obj, max_width, draw):
+    """Greedy word-wrap. Returns list of lines that each fit within max_width."""
+    words = text.split()
+    lines, cur = [], []
+    for w in words:
+        trial = (' '.join(cur + [w])).strip()
+        bbox = draw.textbbox((0, 0), trial, font=font_obj)
+        if bbox[2] - bbox[0] > max_width and cur:
+            lines.append(' '.join(cur))
+            cur = [w]
+        else:
+            cur.append(w)
+    if cur:
+        lines.append(' '.join(cur))
+    return lines
+
+
+def generate_qotd_og_image(question, output_path):
+    """Generate a 1200x630 OG card for a daily question.
+
+    The card shows the claim with "True or false?" prompt but NEVER the
+    answer -- share previews should invite the guess, not give it away.
+    """
+    W, H = 1200, 630
+    im = Image.new('RGB', (W, H), BG)
+    d = ImageDraw.Draw(im)
+
+    # Top strip: eyebrow
+    d.text((80, 80), "DO YOU KNOW HAWAIʻI?", fill=TEAL, font=font(24))
+
+    # Claim: wrapped, centered vertically in the middle band
+    f_claim = font(56)
+    claim_lines = wrap_text(question['claim'], f_claim, W - 160, d)
+    # Stack lines so the block is vertically centered around y=315
+    line_h = 70
+    block_h = len(claim_lines) * line_h
+    y = 315 - block_h // 2
+    for line in claim_lines:
+        bbox = d.textbbox((0, 0), line, font=f_claim)
+        line_w = bbox[2] - bbox[0]
+        d.text(((W - line_w) // 2, y), line, fill=TEXT_PRI, font=f_claim)
+        y += line_h
+
+    # Footer strip
+    d.rectangle([(0, H - 70), (W, H)], fill=FOOTER_BG)
+    d.text((80, H - 48), "hawaiidashboard.org", fill=TEAL, font=font(22))
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    im.save(output_path, 'PNG', optimize=True)
+
+
+def generate_qotd_redirect_html(question, output_path):
+    """Emit a static redirect page for /q/{slug}/ with OG meta tags.
+
+    Redirects to the SPA via hash route /#q/{slug}. The SPA's routing
+    handles the hash and opens the QOTD modal. Social unfurls read
+    the static meta tags without running JS.
+    """
+    slug = question['slug']
+    claim = question['claim']
+    title = "Do you know Hawaiʻi?"
+    description = claim
+    image_url = f"{SITE_URL}/assets/og/q/{slug}.png"
+    page_url = f"{SITE_URL}/q/{slug}/"
+    redirect_target = f"/#q/{slug}"
+    refresh_target = f"{SITE_URL}/#q/{slug}"
+
+    # Escape minimal HTML-attribute-breaking characters.
+    def esc_attr(s):
+        return s.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{esc_attr(title)}</title>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{page_url}">
+  <meta property="og:title" content="{esc_attr(title)}">
+  <meta property="og:description" content="{esc_attr(description)}">
+  <meta property="og:image" content="{image_url}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Hawai\u02BBi Dashboard">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{esc_attr(title)}">
+  <meta name="twitter:description" content="{esc_attr(description)}">
+  <meta name="twitter:image" content="{image_url}">
+  <meta name="description" content="{esc_attr(description)}">
+  <link rel="canonical" href="{page_url}">
+  <script>window.location.replace('{redirect_target}');</script>
+  <meta http-equiv="refresh" content="0;url={refresh_target}">
+</head>
+<body>
+  <p>Redirecting to <a href="{refresh_target}">{esc_attr(title)}</a>&hellip;</p>
+</body>
+</html>"""
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
+def generate_qotd_assets():
+    """Emit one OG PNG and one redirect page per QOTD question."""
+    questions = load_qotd_questions()
+    if not questions:
+        print("No QOTD questions found; skipping QOTD asset generation.")
+        return 0
+    print(f"\nQOTD: generating {len(questions)} cards + redirects")
+    for q in questions:
+        slug = q['slug']
+        img_path = os.path.join(ASSETS_OG_QOTD, f"{slug}.png")
+        html_path = os.path.join(REDIRECT_DIR_Q, slug, 'index.html')
+        generate_qotd_og_image(q, img_path)
+        generate_qotd_redirect_html(q, html_path)
+        print(f"  {q['id']}: /q/{slug}/")
+    return len(questions)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate OG images and redirect pages.")
     parser.add_argument('--slug', default=None,
@@ -1647,7 +1785,11 @@ def main():
         )
         print(line)
 
-    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/  RankHistory: {REDIRECT_DIR_RH}/")
+    # QOTD is slug-disjoint from metric slugs and runs regardless of --slug filter
+    if not args.slug:
+        generate_qotd_assets()
+
+    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/  RankHistory: {REDIRECT_DIR_RH}/  QOTD: {REDIRECT_DIR_Q}/")
 
 
 if __name__ == '__main__':
