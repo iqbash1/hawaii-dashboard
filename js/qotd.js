@@ -6,8 +6,8 @@
 // Handles:
 //   - Daily rotation (which question shows today)
 //   - Per-browser answered/dismissed state (localStorage)
-//   - Teaser and question-page rendering (see 1b/1c)
-//   - Share URL generation
+//   - Teaser rendering (unanswered claim + buttons, answered full proof view)
+//   - Share URL generation (neutral /q/{id}/ format)
 //   - Analytics events
 // ============================================================
 
@@ -27,18 +27,16 @@ const QOTD = {
      * @returns {number}
      */
     dayIndex() {
-        // Convert now to HST by subtracting 10 hours, then floor to midnight.
         const HST_OFFSET_MS = 10 * 60 * 60 * 1000;
         const nowHst = new Date(Date.now() - HST_OFFSET_MS);
         const todayHst = new Date(Date.UTC(nowHst.getUTCFullYear(), nowHst.getUTCMonth(), nowHst.getUTCDate()));
-        const zeroHst = new Date(QOTD_DAY_ZERO + 'T00:00:00Z'); // treat stored date as UTC midnight
+        const zeroHst = new Date(QOTD_DAY_ZERO + 'T00:00:00Z');
         const diffMs = todayHst.getTime() - zeroHst.getTime();
         return Math.floor(diffMs / 86400000);
     },
 
     /**
      * Today's question based on dayIndex() modulo bank size.
-     * Returns null if the bank is empty or dayIndex is negative (before launch).
      * @returns {object|null}
      */
     today() {
@@ -49,47 +47,37 @@ const QOTD = {
     },
 
     /**
-     * Look up a question by its slug. Returns null if not found.
-     * @param {string} slug
-     * @returns {object|null}
+     * Look up a question by its slug (legacy). Returns null if not found.
      */
     getBySlug(slug) {
         return QOTD_QUESTIONS.find(q => q.slug === slug) || null;
     },
 
     /**
-     * Has the user answered this question already (on this browser)?
-     * @param {string} slug
-     * @returns {boolean}
+     * Look up a question by its id (q001, q002, …). Returns null if not found.
      */
-    hasAnswered(slug) {
-        return !!this.getAnswer(slug);
+    getById(id) {
+        return QOTD_QUESTIONS.find(q => q.id === id) || null;
     },
 
-    /**
-     * Retrieve the user's stored answer for a question, or null.
-     * @param {string} slug
-     * @returns {{picked: boolean, correct: boolean, ts: number}|null}
-     */
-    getAnswer(slug) {
+    /** Answer-state is keyed by question id. */
+    hasAnswered(id) {
+        return !!this.getAnswer(id);
+    },
+
+    getAnswer(id) {
         try {
-            const raw = localStorage.getItem(`${QOTD_STORAGE_PREFIX}.answer.${slug}`);
+            const raw = localStorage.getItem(`${QOTD_STORAGE_PREFIX}.answer.${id}`);
             return raw ? JSON.parse(raw) : null;
         } catch (e) {
             return null;
         }
     },
 
-    /**
-     * Persist the user's answer.
-     * @param {string} slug
-     * @param {boolean} picked - what the user picked
-     * @param {boolean} correct - whether picked === question.correct
-     */
-    recordAnswer(slug, picked, correct) {
+    recordAnswer(id, picked, correct) {
         try {
             localStorage.setItem(
-                `${QOTD_STORAGE_PREFIX}.answer.${slug}`,
+                `${QOTD_STORAGE_PREFIX}.answer.${id}`,
                 JSON.stringify({ picked, correct, ts: Date.now() })
             );
         } catch (e) {
@@ -97,30 +85,38 @@ const QOTD = {
         }
     },
 
-    /**
-     * Share URL for a question (canonical, shareable form).
-     * @param {string} slug
-     * @returns {string}
-     */
-    shareUrl(slug) {
-        return `${window.location.origin}/q/${slug}/`;
+    /** Has the user dismissed today's teaser? Keyed by day index so tomorrow re-shows. */
+    isDismissedToday() {
+        try {
+            return localStorage.getItem(`${QOTD_STORAGE_PREFIX}.dismissed.${this.dayIndex()}`) === '1';
+        } catch (e) {
+            return false;
+        }
+    },
+
+    dismissToday() {
+        try {
+            localStorage.setItem(`${QOTD_STORAGE_PREFIX}.dismissed.${this.dayIndex()}`, '1');
+        } catch (e) { /* disabled */ }
     },
 
     /**
-     * Share text shown in preview / fallback copy-to-clipboard message.
+     * Share URL for a question. Uses the neutral id form so the URL does not
+     * hint at the claim's direction or answer.
      */
+    shareUrl(id) {
+        return `${window.location.origin}/q/${id}/`;
+    },
+
     SHARE_TEXT: 'Think you know Hawaiʻi? Try this one.',
 
-    /**
-     * SVG markup for the share button. Mirrors the existing dashboard
-     * share button (3 connected circles) so the share affordance looks
-     * the same wherever it appears.
-     */
     SHARE_ICON_SVG: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>',
 
+    CLOSE_ICON_SVG: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+
     /**
-     * Map a dashboard chart URL to its pre-generated OG card PNG (used as
-     * the proof-chart visual in the answer reveal). Keeps the modal light.
+     * Map a dashboard chart URL to its pre-generated OG card PNG used as
+     * the proof-chart visual. Keeps the teaser/modal light.
      */
     chartOgImage(chartUrl) {
         const m = chartUrl.match(/^\/(r|rh|c|t)\/([^/]+)/);
@@ -132,125 +128,45 @@ const QOTD = {
     },
 
     /**
-     * Open the QOTD modal for a given question slug.
-     * No-op if the slug does not resolve to a known question.
+     * Submit the user's answer. Records, fires analytics, re-renders the
+     * teaser to the inline proof view (no modal auto-open).
      */
-    openQuestion(slug) {
-        const q = this.getBySlug(slug);
-        if (!q) return;
-        const overlay = document.getElementById('qotd-overlay');
-        if (!overlay) return;
-        // Remember what had focus so we can restore it on close (a11y).
-        this._triggerEl = document.activeElement;
-        overlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        this._activeQuestion = q;
-        if (this.hasAnswered(slug)) {
-            const ans = this.getAnswer(slug);
-            this._renderAnswered(q, ans);
-        } else {
-            this._renderUnanswered(q);
-        }
-        if (typeof App !== 'undefined' && App._trackEvent) {
-            App._trackEvent('qotd_opened', { slug, source: this._openSource || 'direct' });
-        }
-        this._openSource = null;
-        const firstBtn = overlay.querySelector('.qotd-btn, .qotd-close');
-        if (firstBtn) firstBtn.focus();
-    },
-
-    /**
-     * Close the modal and restore page state + prior focus.
-     */
-    closeModal() {
-        const overlay = document.getElementById('qotd-overlay');
-        if (!overlay) return;
-        overlay.style.display = 'none';
-        document.body.style.overflow = '';
-        this._activeQuestion = null;
-        // Return focus to whatever triggered the open (button on teaser, etc.)
-        if (this._triggerEl && typeof this._triggerEl.focus === 'function') {
-            try { this._triggerEl.focus(); } catch (e) { /* element may have been removed */ }
-        }
-        this._triggerEl = null;
-    },
-
-    /**
-     * Confine keyboard focus inside the modal while it is open.
-     * @private
-     */
-    _trapFocus(e) {
-        const overlay = document.getElementById('qotd-overlay');
-        if (!overlay || overlay.style.display !== 'flex') return;
-        if (e.key !== 'Tab') return;
-        const focusable = overlay.querySelectorAll(
-            'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        );
-        if (!focusable.length) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-        }
-    },
-
-    /**
-     * Render the unanswered state: claim + True/False buttons.
-     * @private
-     */
-    _renderUnanswered(q) {
-        const body = document.getElementById('qotd-body');
-        if (!body) return;
-        body.innerHTML = `
-            <p class="qotd-eyebrow">Do you know Hawaiʻi?</p>
-            <h2 class="qotd-claim" id="qotd-claim">${this._escape(q.claim)}</h2>
-            <div class="qotd-buttons" role="group" aria-labelledby="qotd-claim">
-                <button class="qotd-btn" data-answer="true" aria-label="Answer True">True</button>
-                <button class="qotd-btn" data-answer="false" aria-label="Answer False">False</button>
-            </div>
-            <button class="qotd-share-btn" type="button" aria-label="Share this question">
-                ${this.SHARE_ICON_SVG}<span>Share</span>
-            </button>
-        `;
-        body.querySelectorAll('[data-answer]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const picked = btn.dataset.answer === 'true';
-                this.submitAnswer(q.slug, picked);
-            });
-        });
-        body.querySelector('.qotd-share-btn').addEventListener('click', () => this._handleShare(q.slug));
-    },
-
-    /**
-     * Record the answer, show the reveal, fire analytics.
-     */
-    submitAnswer(slug, picked) {
-        const q = this.getBySlug(slug);
+    submitAnswer(id, picked) {
+        const q = this.getById(id);
         if (!q) return;
         const correct = picked === q.correct;
-        this.recordAnswer(slug, picked, correct);
-        this._renderAnswered(q, { picked, correct, ts: Date.now() });
+        this.recordAnswer(id, picked, correct);
         if (typeof App !== 'undefined' && App._trackEvent) {
             App._trackEvent('qotd_answered', {
-                slug,
+                id,
                 picked,
                 correct: q.correct,
                 result: correct ? 'correct' : 'incorrect',
+            });
+        }
+        this.renderTeaser();
+    },
+
+    /**
+     * Track-only handler for /q/{id}/ redirects that land on home. Called
+     * from routing.js when the URL includes ?from_q={id}.
+     */
+    trackSharedUrlLanding(id) {
+        if (!this.getById(id)) return;
+        if (typeof App !== 'undefined' && App._trackEvent) {
+            App._trackEvent('qotd_shared_url_landed', {
+                id,
+                referrer: (typeof document !== 'undefined' && document.referrer) || '(none)',
             });
         }
     },
 
     /**
      * Wire an IntersectionObserver that fires qotd_chart_viewed once when
-     * the embedded proof image first becomes visible. No-op if the browser
-     * doesn't support IO or the image isn't in the DOM yet.
+     * the embedded proof image first becomes visible.
      * @private
      */
-    _observeChartView(slug) {
+    _observeChartView(id) {
         if (typeof IntersectionObserver === 'undefined') return;
         const img = document.querySelector('.qotd-chart-image');
         if (!img) return;
@@ -260,7 +176,7 @@ const QOTD = {
                 if (e.isIntersecting && !fired) {
                     fired = true;
                     if (typeof App !== 'undefined' && App._trackEvent) {
-                        App._trackEvent('qotd_chart_viewed', { slug });
+                        App._trackEvent('qotd_chart_viewed', { id });
                     }
                     io.disconnect();
                 }
@@ -270,54 +186,21 @@ const QOTD = {
     },
 
     /**
-     * Render the answered state: claim, verdict, answer text, chart image, share + view-chart CTAs.
-     * @private
-     */
-    _renderAnswered(q, ans) {
-        const body = document.getElementById('qotd-body');
-        if (!body) return;
-        const verdict = q.correct ? 'True' : 'False';
-        const gotItRight = ans.correct;
-        const ogImg = this.chartOgImage(q.chartUrl);
-        body.innerHTML = `
-            <p class="qotd-eyebrow">Do you know Hawaiʻi?</p>
-            <h2 class="qotd-claim">${this._escape(q.claim)}</h2>
-            <div class="qotd-verdict qotd-verdict--${gotItRight ? 'correct' : 'incorrect'}" aria-live="polite">
-                <span class="qotd-verdict-glyph" aria-hidden="true">${gotItRight ? '✓' : '✗'}</span>
-                <span class="qotd-verdict-text">Answer: <strong>${verdict}</strong>${gotItRight ? ' (You got it!)' : ''}</span>
-            </div>
-            <p class="qotd-answer-text">${this._escape(q.answer)}</p>
-            <figure class="qotd-chart">
-                <img src="${ogImg}" alt="Chart showing ${this._escape(q.metricLabel)} data" class="qotd-chart-image" />
-                <figcaption class="qotd-chart-caption">Source: Hawaiʻi Dashboard</figcaption>
-            </figure>
-            <div class="qotd-actions">
-                <button class="qotd-share-btn" type="button" aria-label="Share this question">
-                    ${this.SHARE_ICON_SVG}<span>Share</span>
-                </button>
-                <a class="qotd-link" href="${q.chartUrl}" aria-label="View full chart">View full chart →</a>
-            </div>
-        `;
-        body.querySelector('.qotd-share-btn').addEventListener('click', () => this._handleShare(q.slug));
-        this._observeChartView(q.slug);
-    },
-
-    /**
      * Share flow: native share sheet on mobile, clipboard fallback elsewhere.
      * Share object is the question URL, never the answer or chart URL.
      */
-    _handleShare(slug) {
-        const url = this.shareUrl(slug);
+    _handleShare(id) {
+        const url = this.shareUrl(id);
         const payload = {
             title: 'Do you know Hawaiʻi?',
             text: this.SHARE_TEXT,
             url,
         };
         if (typeof App !== 'undefined' && App._trackEvent) {
-            App._trackEvent('qotd_share_clicked', { slug });
+            App._trackEvent('qotd_share_clicked', { id });
         }
         if (navigator.share) {
-            navigator.share(payload).catch(() => {}); // user may cancel; ignore
+            navigator.share(payload).catch(() => {});
         } else {
             navigator.clipboard.writeText(url).then(() => {
                 this._toast('Link copied');
@@ -328,19 +211,18 @@ const QOTD = {
     },
 
     /**
-     * Lightweight toast shown briefly in the modal. Uses existing aria-live on the modal
-     * itself so screen readers announce it.
+     * Lightweight toast shown briefly in the teaser.
      * @private
      */
     _toast(msg) {
-        const body = document.getElementById('qotd-body');
-        if (!body) return;
-        let el = body.querySelector('.qotd-toast');
+        const host = document.getElementById('qotd-teaser');
+        if (!host) return;
+        let el = host.querySelector('.qotd-toast');
         if (!el) {
             el = document.createElement('div');
             el.className = 'qotd-toast';
             el.setAttribute('role', 'status');
-            body.appendChild(el);
+            host.appendChild(el);
         }
         el.textContent = msg;
         el.classList.add('qotd-toast--show');
@@ -355,39 +237,57 @@ const QOTD = {
     },
 
     /**
-     * Render the homepage teaser. Three states:
-     *   - no question (before launch) -> hidden
-     *   - not answered today          -> claim + True/False + share
-     *   - answered today              -> compact status + view proof + share
+     * Render the homepage teaser. States:
+     *   - no question (before launch) or dismissed-today → hidden
+     *   - not answered → claim + True/False + share + close
+     *   - answered → full proof (verdict + claim + answer + chart + share + view chart) + close + footer
      */
     renderTeaser() {
         const host = document.getElementById('qotd-teaser');
         if (!host) return;
         const q = this.today();
-        if (!q) { host.style.display = 'none'; return; }
+        if (!q || this.isDismissedToday()) { host.style.display = 'none'; return; }
         host.style.display = 'block';
-        if (this.hasAnswered(q.slug)) {
-            const ans = this.getAnswer(q.slug);
-            const result = ans.correct ? 'You got it!' : 'Not quite.';
+
+        const closeBtn = `
+            <button class="qotd-teaser-close" type="button" aria-label="Close today's question" data-action="close">
+                ${this.CLOSE_ICON_SVG}
+            </button>
+        `;
+
+        if (this.hasAnswered(q.id)) {
+            const ans = this.getAnswer(q.id);
+            const verdict = q.correct ? 'True' : 'False';
+            const gotItRight = ans.correct;
+            const ogImg = this.chartOgImage(q.chartUrl);
             host.innerHTML = `
-                <div class="qotd-teaser-inner qotd-teaser-inner--answered">
+                <div class="qotd-teaser-inner qotd-teaser-inner--proof">
+                    ${closeBtn}
                     <p class="qotd-teaser-eyebrow">Do you know Hawaiʻi?</p>
-                    <p class="qotd-teaser-status">
-                        <span class="qotd-teaser-check qotd-teaser-check--${ans.correct ? 'correct' : 'incorrect'}" aria-hidden="true">${ans.correct ? '✓' : '✗'}</span>
-                        <span class="qotd-teaser-result">${result}</span>
-                    </p>
-                    <p class="qotd-teaser-supporting">${this._escape(q.answer)}</p>
-                    <div class="qotd-teaser-actions">
-                        <button class="qotd-teaser-link" type="button" data-action="view">View proof</button>
-                        <button class="qotd-share-btn qotd-share-btn--small" type="button" data-action="share" aria-label="Share this question">
+                    <h2 class="qotd-claim">${this._escape(q.claim)}</h2>
+                    <div class="qotd-verdict qotd-verdict--${gotItRight ? 'correct' : 'incorrect'}" aria-live="polite">
+                        <span class="qotd-verdict-glyph" aria-hidden="true">${gotItRight ? '✓' : '✗'}</span>
+                        <span class="qotd-verdict-text">Answer: <strong>${verdict}</strong>${gotItRight ? ' (You got it!)' : ''}</span>
+                    </div>
+                    <p class="qotd-answer-text">${this._escape(q.answer)}</p>
+                    <figure class="qotd-chart">
+                        <img src="${ogImg}" alt="Chart showing ${this._escape(q.metricLabel)} data" class="qotd-chart-image" />
+                        <figcaption class="qotd-chart-caption">Source: Hawaiʻi Dashboard</figcaption>
+                    </figure>
+                    <div class="qotd-actions">
+                        <button class="qotd-share-btn" type="button" data-action="share" aria-label="Share this question">
                             ${this.SHARE_ICON_SVG}<span>Share</span>
                         </button>
+                        <a class="qotd-link" href="${q.chartUrl}" aria-label="View full chart">View full chart →</a>
                     </div>
+                    <p class="qotd-teaser-footer">Come back tomorrow for a new question.</p>
                 </div>
             `;
+            this._observeChartView(q.id);
         } else {
             host.innerHTML = `
                 <div class="qotd-teaser-inner">
+                    ${closeBtn}
                     <p class="qotd-teaser-eyebrow">Do you know Hawaiʻi?</p>
                     <p class="qotd-teaser-claim">${this._escape(q.claim)}</p>
                     <div class="qotd-teaser-buttons" role="group" aria-label="Answer the daily claim">
@@ -397,30 +297,35 @@ const QOTD = {
                 </div>
             `;
         }
-        // Wire actions
+
         host.querySelectorAll('[data-answer]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const picked = btn.dataset.answer === 'true';
-                this._openSource = 'teaser';
-                this.submitAnswer(q.slug, picked);
-                this.openQuestion(q.slug); // open modal showing answered state
-                this.renderTeaser(); // collapse teaser to answered state
+                this.submitAnswer(q.id, picked);
             });
         });
-        host.querySelector('[data-action="view"]')?.addEventListener('click', () => {
-            this._openSource = 'teaser';
-            this.openQuestion(q.slug);
-        });
-        host.querySelector('[data-action="share"]')?.addEventListener('click', () => this._handleShare(q.slug));
+        host.querySelector('[data-action="share"]')?.addEventListener('click', () => this._handleShare(q.id));
+        host.querySelector('[data-action="close"]')?.addEventListener('click', () => this._closeTeaser());
 
         if (typeof App !== 'undefined' && App._trackEvent) {
-            App._trackEvent('qotd_teaser_viewed', { slug: q.slug, answered: this.hasAnswered(q.slug) });
+            App._trackEvent('qotd_teaser_viewed', { id: q.id, answered: this.hasAnswered(q.id) });
         }
     },
 
     /**
-     * Record that the user returned to the site on a new day. Fires the
-     * qotd_return_next_day event once per new-calendar-day visit.
+     * Hide the teaser for the rest of today.
+     */
+    _closeTeaser() {
+        this.dismissToday();
+        const host = document.getElementById('qotd-teaser');
+        if (host) host.style.display = 'none';
+        if (typeof App !== 'undefined' && App._trackEvent) {
+            App._trackEvent('qotd_dismissed', { dayIndex: this.dayIndex() });
+        }
+    },
+
+    /**
+     * Record that the user returned to the site on a new day.
      * @private
      */
     _checkReturnVisit() {
@@ -439,22 +344,9 @@ const QOTD = {
     },
 
     /**
-     * Entry point. Called once from App.init() (or directly by router for /q/{slug}/).
-     * Wires overlay controls (close, backdrop, Esc, focus trap) and renders the teaser.
+     * Entry point. Called once from App.init().
      */
     init() {
-        const overlay = document.getElementById('qotd-overlay');
-        if (overlay) {
-            overlay.querySelector('.qotd-close')?.addEventListener('click', () => this.closeModal());
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) this.closeModal();
-            });
-            document.addEventListener('keydown', (e) => {
-                if (overlay.style.display !== 'flex') return;
-                if (e.key === 'Escape') this.closeModal();
-                else if (e.key === 'Tab') this._trapFocus(e);
-            });
-        }
         this.renderTeaser();
         this._checkReturnVisit();
     },

@@ -24,20 +24,25 @@ const Router = {
         return null;
     },
 
-    /** Handle permalink routing: /t/{slug}/, /r/{slug}/, /c/{slug}/, /rh/{slug}/, /q/{slug}/, or legacy #{slug} */
+    /** Handle permalink routing: /t/{slug}/, /r/{slug}/, /c/{slug}/, /rh/{slug}/, /q/{id}/, or legacy #{slug} */
     handleRoute() {
-        // Question of the Day route: /q/{slug}/
+        // Shared QOTD landing: /q/{id}/ pages are static meta-refresh redirects
+        // to /?from_q={id}. Treat the query param as a tracking signal only —
+        // the teaser on the home page already shows today's question.
+        const fromQ = new URLSearchParams(window.location.search).get('from_q');
+        if (fromQ && typeof QOTD !== 'undefined') {
+            QOTD.trackSharedUrlLanding(fromQ);
+            // Strip the param so refreshes don't re-fire the event.
+            const clean = window.location.pathname + window.location.hash;
+            history.replaceState(null, '', clean || '/');
+        }
+
+        // Direct /q/{id}/ visits (e.g. if Cloudflare ever misses the redirect):
+        // swap to home and preserve tracking.
         const qMatch = window.location.pathname.match(/^\/q\/([^/]+)\/?$/);
-        if (qMatch && typeof QOTD !== 'undefined') {
-            const qSlug = qMatch[1];
-            if (QOTD.getBySlug(qSlug)) {
-                QOTD._openSource = 'direct';
-                QOTD.openQuestion(qSlug);
-                if (typeof App !== 'undefined' && App._trackEvent) {
-                    App._trackEvent('qotd_shared_url_landed', { slug: qSlug, referrer: document.referrer || '(none)' });
-                }
-                return;
-            }
+        if (qMatch) {
+            const qId = qMatch[1];
+            if (typeof QOTD !== 'undefined') QOTD.trackSharedUrlLanding(qId);
             history.replaceState(null, '', '/');
             return;
         }
@@ -88,16 +93,10 @@ const Router = {
             const hash = window.location.hash.slice(1);
             if (!hash) return;
             const parts = hash.split('/');
-            // QOTD hash route: #q/{slug} (used by the static /q/ redirect pages)
-            if (parts[0] === 'q' && parts[1] && typeof QOTD !== 'undefined') {
-                if (QOTD.getBySlug(parts[1])) {
-                    QOTD._openSource = 'direct';
-                    QOTD.openQuestion(parts[1]);
-                    if (typeof App !== 'undefined' && App._trackEvent) {
-                        App._trackEvent('qotd_shared_url_landed', { slug: parts[1], referrer: document.referrer || '(none)' });
-                    }
-                    return;
-                }
+            // Legacy QOTD hash route: #q/{slug|id} — just strip and let the
+            // teaser render today's question.
+            if (parts[0] === 'q' && parts[1]) {
+                if (typeof QOTD !== 'undefined') QOTD.trackSharedUrlLanding(parts[1]);
                 history.replaceState(null, '', '/');
                 return;
             }

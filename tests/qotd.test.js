@@ -46,7 +46,7 @@ describe('QOTD_QUESTIONS bank', () => {
     });
 
     it('chartUrls match a valid view pattern', () => {
-        const valid = /^\/(r|rh|c|five-year-change)\//;
+        const valid = /^\/(t|r|rh|c|five-year-change)\//;
         for (const q of QOTD_QUESTIONS) {
             assert.match(q.chartUrl, valid, `bad chartUrl on ${q.id}: ${q.chartUrl}`);
         }
@@ -127,14 +127,23 @@ describe('QOTD.today', () => {
     });
 });
 
-describe('QOTD.getBySlug', () => {
+describe('QOTD.getBySlug / getById', () => {
     it('finds existing slug', () => {
         const q = QOTD_QUESTIONS[0];
         assert.deepEqual(QOTD.getBySlug(q.slug), q);
     });
 
+    it('finds existing id', () => {
+        const q = QOTD_QUESTIONS[0];
+        assert.deepEqual(QOTD.getById(q.id), q);
+    });
+
     it('returns null for unknown slug', () => {
         assert.equal(QOTD.getBySlug('no-such-slug'), null);
+    });
+
+    it('returns null for unknown id', () => {
+        assert.equal(QOTD.getById('qXXX'), null);
     });
 });
 
@@ -144,28 +153,57 @@ describe('QOTD answer state', () => {
     });
 
     it('hasAnswered is false before recording', () => {
-        assert.equal(QOTD.hasAnswered('some-slug'), false);
+        assert.equal(QOTD.hasAnswered('q001'), false);
     });
 
     it('recordAnswer persists the answer', () => {
-        QOTD.recordAnswer('some-slug', true, false);
-        assert.equal(QOTD.hasAnswered('some-slug'), true);
-        const a = QOTD.getAnswer('some-slug');
+        QOTD.recordAnswer('q001', true, false);
+        assert.equal(QOTD.hasAnswered('q001'), true);
+        const a = QOTD.getAnswer('q001');
         assert.equal(a.picked, true);
         assert.equal(a.correct, false);
         assert.equal(typeof a.ts, 'number');
     });
 
-    it('getAnswer returns null for unanswered slug', () => {
+    it('getAnswer returns null for unanswered id', () => {
         assert.equal(QOTD.getAnswer('none'), null);
     });
 });
 
 describe('QOTD.shareUrl', () => {
-    it('builds canonical question URL', () => {
+    it('builds neutral id-based URL (no answer hint)', () => {
         assert.equal(
-            QOTD.shareUrl('some-slug'),
-            'https://hawaiidashboard.org/q/some-slug/'
+            QOTD.shareUrl('q001'),
+            'https://hawaiidashboard.org/q/q001/'
         );
+    });
+});
+
+describe('QOTD dismiss', () => {
+    beforeEach(() => {
+        localStorage.clear();
+    });
+
+    it('isDismissedToday is false by default', () => {
+        assert.equal(QOTD.isDismissedToday(), false);
+    });
+
+    it('dismissToday persists and isDismissedToday reflects it', () => {
+        QOTD.dismissToday();
+        assert.equal(QOTD.isDismissedToday(), true);
+    });
+
+    it('dismiss is keyed per day index', () => {
+        // Freeze at launch day, dismiss, then advance to next day — should reset.
+        const origNow = Date.now;
+        Date.now = () => Date.UTC(2026, 3, 18, 22, 0, 0);
+        try {
+            QOTD.dismissToday();
+            assert.equal(QOTD.isDismissedToday(), true);
+            Date.now = () => Date.UTC(2026, 3, 19, 22, 0, 0);
+            assert.equal(QOTD.isDismissedToday(), false);
+        } finally {
+            Date.now = origNow;
+        }
     });
 });

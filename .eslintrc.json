@@ -18,6 +18,9 @@
     "ZERO_IS_VALID": "writable",
     "AREA_ICONS": "writable",
     "STATE_ABBREVS": "writable",
+    "QOTD": "writable",
+    "QOTD_QUESTIONS": "readonly",
+    "THRESHOLD_CONFIG": "readonly",
     "Chart": "readonly",
     "XLSX": "readonly",
     "module": "readonly"
