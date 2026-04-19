@@ -74,21 +74,39 @@ const Compute = {
     },
 
     /**
+     * Median of a numeric array. Nulls and NaNs are filtered out. Returns
+     * null for an empty input. Used to compute the `otherStateAvg` field
+     * (median of 49 other states) and anywhere a robust central statistic
+     * is wanted instead of mean.
+     * @param {number[]} vals
+     * @returns {number|null}
+     */
+    median(vals) {
+        const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
+        if (!clean.length) return null;
+        const sorted = [...clean].sort((a, b) => a - b);
+        const mid = sorted.length / 2;
+        return sorted.length % 2
+            ? sorted[Math.floor(mid)]
+            : (sorted[mid - 1] + sorted[mid]) / 2;
+    },
+
+    /**
      * Build a performance-comparison phrase framed as better/worse, not
      * spatial (above/below/higher/lower). Direction flips per metric, so
      * spatial words mean opposite things for e.g. crime vs labor force.
      * @param {number} hiVal - Hawaii's current value
-     * @param {number} avgVal - Other-state average
+     * @param {number} compVal - Other-state comparator (median; field name `otherStateAvg` is legacy)
      * @param {string} goodDirection - "up" (higher is better) or "down" (lower is better)
      * @param {number} [significantThreshold=0.2] - Gap > this fraction of avg adds "significantly "
      * @returns {string} "better than", "worse than", "significantly better than", "significantly worse than", or "the same as"
      */
-    comparisonPhrase(hiVal, avgVal, goodDirection, significantThreshold) {
-        if (hiVal === avgVal) return 'the same as';
+    comparisonPhrase(hiVal, compVal, goodDirection, significantThreshold) {
+        if (hiVal === compVal) return 'the same as';
         const threshold = significantThreshold !== undefined ? significantThreshold : 0.2;
-        const gapPct = avgVal !== 0 ? Math.abs(hiVal - avgVal) / Math.abs(avgVal) : 0;
+        const gapPct = compVal !== 0 ? Math.abs(hiVal - compVal) / Math.abs(compVal) : 0;
         const intensity = gapPct > threshold ? 'significantly ' : '';
-        const hawaiiBetter = (hiVal > avgVal) === (goodDirection === 'up');
+        const hawaiiBetter = (hiVal > compVal) === (goodDirection === 'up');
         return hawaiiBetter ? `${intensity}better than` : `${intensity}worse than`;
     },
 

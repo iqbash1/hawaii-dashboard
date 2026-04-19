@@ -458,7 +458,7 @@ def generate_og_image(slug, metric, area, rankings, output_path):
     # VS OTHER STATES
     d.text((card_x + 40, div_y + 14), "VS OTHER STATES", fill=TEXT_TER, font=font(12))
     d.text((card_x + 40, div_y + 34), verdict, fill=verdict_color, font=font(22))
-    d.text((card_x + 40, div_y + 64), f"avg {formatted_avg}", fill=TEXT_SEC, font=font(16))
+    d.text((card_x + 40, div_y + 64), f"median {formatted_avg}", fill=TEXT_SEC, font=font(16))
 
     # Rank badge
     if rankings and rankings['hawaiiRank'] > 0:
@@ -1209,7 +1209,7 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
 def generate_trend_compare_og_image(slug, metric, area, rankings,
                                     compare_state, compare_series, output_path):
     """Generate a 1200x630 OG image for Hawaiʻi vs one state on the trend view.
-    Mirrors generate_og_image but swaps the other-state average for the chosen
+    Mirrors generate_og_image but swaps the other-state median for the chosen
     state so the preview conveys relative performance for that pairing."""
     W, H = 1200, 630
     im = Image.new('RGB', (W, H), BG)

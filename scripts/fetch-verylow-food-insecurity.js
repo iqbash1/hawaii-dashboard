@@ -136,7 +136,14 @@ async function main() {
         }
     }
 
-    // Build data.js format
+    // Build data.js format (otherStateAvg is median of 49 other states)
+    const median = (vals) => {
+        const clean = (vals || []).filter(v => v !== null && v !== undefined && !isNaN(v));
+        if (!clean.length) return null;
+        const sorted = [...clean].sort((a, b) => a - b);
+        const mid = sorted.length / 2;
+        return sorted.length % 2 ? sorted[Math.floor(mid)] : (sorted[mid - 1] + sorted[mid]) / 2;
+    };
     const hawaii = {};
     const otherStateAvg = {};
     for (const period of periods) {
@@ -146,7 +153,7 @@ async function main() {
         const otherVals = Object.entries(data[period])
             .filter(([k]) => k !== 'Hawai\u02BBi')
             .map(([, v]) => v);
-        otherStateAvg[period] = Math.round(otherVals.reduce((a, b) => a + b, 0) / otherVals.length * 10000) / 10000;
+        otherStateAvg[period] = Math.round(median(otherVals) * 10000) / 10000;
     }
 
     // Summary with ratio checks
