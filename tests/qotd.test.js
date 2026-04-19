@@ -127,19 +127,10 @@ describe('QOTD.today', () => {
     });
 });
 
-describe('QOTD.getBySlug / getById', () => {
-    it('finds existing slug', () => {
-        const q = QOTD_QUESTIONS[0];
-        assert.deepEqual(QOTD.getBySlug(q.slug), q);
-    });
-
+describe('QOTD.getById', () => {
     it('finds existing id', () => {
         const q = QOTD_QUESTIONS[0];
         assert.deepEqual(QOTD.getById(q.id), q);
-    });
-
-    it('returns null for unknown slug', () => {
-        assert.equal(QOTD.getBySlug('no-such-slug'), null);
     });
 
     it('returns null for unknown id', () => {

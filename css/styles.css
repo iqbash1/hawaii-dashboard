@@ -2011,14 +2011,6 @@ body {
 }
 
 /* --- Question of the Day --- */
-.qotd-eyebrow {
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--hawaii-blue, #0D7C8F);
-    font-weight: 600;
-    margin: 0;
-}
 .qotd-claim {
     font-size: 1.5rem;
     line-height: 1.35;
@@ -2228,23 +2220,6 @@ body {
     font-size: 0.85rem;
     color: var(--text-secondary, #666);
     font-style: italic;
-}
-.qotd-toast {
-    position: absolute;
-    bottom: 0.75rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-}
-.qotd-toast--show {
-    opacity: 1;
 }
 .qotd-teaser-eyebrow {
     margin: 0;
