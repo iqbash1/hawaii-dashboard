@@ -2115,9 +2115,21 @@ body {
     border-radius: 6px;
     border: 1px solid var(--divider, rgba(0, 0, 0, 0.08));
 }
-.qotd-chart-caption {
-    font-size: 0.8rem;
-    color: var(--text-secondary, #666);
+.qotd-chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    height: 340px;
+    margin: 0 auto;
+}
+.qotd-chart-canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+@media (max-width: 600px) {
+    .qotd-chart-canvas-wrap {
+        height: 260px;
+    }
 }
 .qotd-actions {
     display: flex;
