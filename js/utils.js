@@ -175,7 +175,7 @@ const Utils = {
                 }
                 s.push(`This remains a relative weakness nationally, with a mixed trend: ${worsening.length} ${this.pl(worsening.length, 'metric')} worsened while ${improving.length} improved; ${worstNote}.`);
             } else {
-                s.push(`This area is a relative weakness nationally and has shown little change over the last 5 years.`);
+                s.push(`This area is a relative weakness nationally and has shown little change.`);
             }
         } else {
             // Neutral rank split or no rank data: fall back to trend-based language
