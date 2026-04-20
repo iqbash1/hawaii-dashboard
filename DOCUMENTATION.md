@@ -484,7 +484,6 @@ A custom Chart.js plugin renders governor names and dashed term boundaries on al
 |----------|-----|-------|
 | `--hawaii-blue` | `#0D7C8F` | Hawaiʻi data line, accents, area labels |
 | `--hawaii-blue-light` | `#EEF8FA` | Hint/callout box backgrounds |
-| `--avg-gray` | `#666666` | Median line |
 | `--positive` | `#059669` | "Better" / "Improving" |
 | `--positive-bg` | `#ECFDF5` | Background for positive chips |
 | `--negative` | `#C0392B` | "Worse" / "Worsening" |
@@ -493,7 +492,7 @@ A custom Chart.js plugin renders governor names and dashed term boundaries on al
 | `--neutral-bg` | `#fef9e7` | Background for neutral chips |
 | `--text` | `#333333` | Primary body text |
 | `--text-secondary` | `#555555` | Secondary body text |
-| `--text-muted` | `#666666` | Labels, metadata |
+| `--text-muted` | `#555555` | Labels, metadata |
 | `--bg` | `#F5F5F5` | Page background |
 | `--card-bg` | `#FFFFFF` | Card/modal background |
 | `--border` | `#EAEAEA` | All borders, dividers |
