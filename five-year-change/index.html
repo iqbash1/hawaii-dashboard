@@ -54,7 +54,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css?v=20260416a">
-    <link rel="stylesheet" href="../css/fyc.css?v=20260403ae">
+    <link rel="stylesheet" href="../css/fyc.css?v=20260420a">
 </head>
 <body>
     <nav class="top-nav">
@@ -481,35 +481,25 @@
                 else                                          rankMoveTiers.stable.push({ r, move });
             }
 
+            // Unified "5-Year Trends": rank-change is the primary count per chip;
+            // absolute-change count appears in small print within the same chip.
             const chipsHtml = `<div class="fyc-chips-group">
                 <div class="fyc-chips-row-label">5-Year Trends</div>
-                <div class="fyc-chips">
-                    <div class="fyc-chip improving">
-                        <div class="fyc-chip-count">${improved}</div>
-                        <div class="fyc-chip-label">Improved</div>
-                    </div>
-                    <div class="fyc-chip little-change">
-                        <div class="fyc-chip-count">${littleChange}</div>
-                        <div class="fyc-chip-label">Little Change</div>
-                    </div>
-                    <div class="fyc-chip worsening">
-                        <div class="fyc-chip-count">${worsened}</div>
-                        <div class="fyc-chip-label">Worsened</div>
-                    </div>
-                </div>
-                <div class="fyc-chips-row-label">5-Year Ranking Changes</div>
                 <div class="fyc-chips">
                     <div class="fyc-chip rank-up">
                         <div class="fyc-chip-count">${rankMoveTiers.improved.length}</div>
                         <div class="fyc-chip-label">Improved</div>
+                        <div class="fyc-chip-note">Absolute change: ${improved}</div>
                     </div>
                     <div class="fyc-chip rank-same">
                         <div class="fyc-chip-count">${rankMoveTiers.stable.length}</div>
                         <div class="fyc-chip-label">Little Change</div>
+                        <div class="fyc-chip-note">Absolute change: ${littleChange}</div>
                     </div>
                     <div class="fyc-chip rank-down">
                         <div class="fyc-chip-count">${rankMoveTiers.worsened.length}</div>
                         <div class="fyc-chip-label">Worsened</div>
+                        <div class="fyc-chip-note">Absolute change: ${worsened}</div>
                     </div>
                 </div>
             </div>`;

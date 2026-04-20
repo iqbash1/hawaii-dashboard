@@ -50,6 +50,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-chip.worsening .fyc-chip-label,
 .fyc-chip.rank-down .fyc-chip-count,
 .fyc-chip.rank-down .fyc-chip-label { color: var(--negative); }
+.fyc-chip-note { margin-top: 0.5rem; font-size: var(--text-2xs); color: var(--text-muted); font-weight: 400; }
 
 /* Print button */
 .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: var(--text-sm); padding: 0.35rem 0.75rem; min-height: 36px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }
