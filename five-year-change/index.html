@@ -380,7 +380,7 @@
                 if (wor) trendParts.push(`<span class="sc-trend-down">&#8595; ${wor} worsening</span>`);
                 if (!imp && !wor) trendParts.push(`<span class="sc-trend-flat">&#8594; ${lit} unchanged</span>`);
 
-                const sortOrder = areaClass === 'sc-weak' ? 0 : areaClass === 'sc-mixed' ? 1 : 2;
+                const sortOrder = areaClass === 'sc-strong' ? 0 : areaClass === 'sc-mixed' ? 1 : 2;
                 rowItems.push({ sortOrder, html: `<a href="#fyc-area-${id}" class="fyc-scorecard-row ${areaClass}">
                     <span class="fyc-scorecard-area">${areaGroup.area}</span>
                     <span class="sc-stars">${stars}</span>
