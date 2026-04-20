@@ -282,9 +282,24 @@ const App = {
 
         this.renderQuestionDropdown();
 
-        // Restore bundle from URL param on load (e.g. /?bundle=affordability)
-        const initBundle = new URLSearchParams(window.location.search).get('bundle');
-        if (initBundle) this.activateBundle(initBundle);
+        // Restore bundle from URL param on load:
+        //   /?bundle=affordability                            — named bundle from BUNDLES
+        //   /?bundle=synthetic&metrics=slug1,slug2&title=…    — ad-hoc bundle (e.g. from 5YC chips)
+        const params = new URLSearchParams(window.location.search);
+        const initBundle = params.get('bundle');
+        if (initBundle === 'synthetic') {
+            const slugs = (params.get('metrics') || '').split(',').map(s => s.trim()).filter(Boolean);
+            const title = params.get('title') || 'Selected metrics';
+            if (slugs.length) {
+                this.activateBundle({
+                    id: '__synthetic',
+                    title,
+                    metrics: slugs.map(id => ({ id, view: 't' })),
+                });
+            }
+        } else if (initBundle) {
+            this.activateBundle(initBundle);
+        }
 
         this.initMetricSearch();
 
@@ -1068,8 +1083,15 @@ const App = {
      * Activate a named bundle: dim non-matching cards and update the URL.
      * @param {string} bundleId - Bundle identifier (e.g. 'affordability')
      */
-    activateBundle(bundleId) {
-        const bundle = (typeof BUNDLES !== 'undefined') && BUNDLES.find(b => b.id === bundleId);
+    activateBundle(bundleOrId) {
+        // Accept either a bundle id (from BUNDLES) or a pre-built bundle object
+        // (used for synthetic/ad-hoc bundles like the 5-Year Change ranking chips).
+        let bundle;
+        if (typeof bundleOrId === 'string') {
+            bundle = (typeof BUNDLES !== 'undefined') && BUNDLES.find(b => b.id === bundleOrId);
+        } else if (bundleOrId && Array.isArray(bundleOrId.metrics)) {
+            bundle = bundleOrId;
+        }
         if (!bundle) return;
         this._activeBundle = bundle;
 
@@ -1084,10 +1106,17 @@ const App = {
             card.classList.toggle('bundle-match', bundleIds.has(card.dataset.metric));
         });
 
-        // Preserve bundle in URL without disrupting path routing
+        // Preserve bundle in URL without disrupting path routing.
+        // Synthetic bundles keep the metrics+title params the caller set; named bundles use id only.
         const url = new URL(window.location.href);
-        url.searchParams.set('bundle', bundleId);
-        history.replaceState(null, '', url.pathname + url.search);
+        if (bundle.id === '__synthetic') {
+            // leave bundle=synthetic&metrics=…&title=… as-is
+        } else {
+            url.searchParams.set('bundle', bundle.id);
+            url.searchParams.delete('metrics');
+            url.searchParams.delete('title');
+            history.replaceState(null, '', url.pathname + url.search);
+        }
 
         // Scroll to first bundle card
         const firstMatch = document.querySelector('.card.bundle-match');
@@ -1109,6 +1138,8 @@ const App = {
 
         const url = new URL(window.location.href);
         url.searchParams.delete('bundle');
+        url.searchParams.delete('metrics');
+        url.searchParams.delete('title');
         history.replaceState(null, '', url.pathname + (url.search !== '?' ? url.search : ''));
     },
 
