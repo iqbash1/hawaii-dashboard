@@ -642,16 +642,19 @@
             const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
             // 0. Spotlight: Biggest gains, Biggest declines, Most off-track
+            // Rank-first display: rank movement is the primary governance signal;
+            // absolute change is shown as secondary context.
             function spotlightItem(r) {
                 let rankText = '';
                 if (r.standing) {
                     rankText = r.standing.startRank
-                        ? ` \u00b7 Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}`
-                        : ` \u00b7 Rank #${r.standing.endRank}`;
+                        ? `Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}`
+                        : `Rank #${r.standing.endRank}`;
                 }
+                const sep = rankText && r.changeText ? ' \u00b7 ' : '';
                 return `<a href="../#${r.slug}" class="fyc-spot-item">
                     <span class="fyc-spot-metric">${r.metric}</span>
-                    <span class="fyc-spot-detail">${r.changeText}${rankText}</span>
+                    <span class="fyc-spot-detail">${rankText}${sep}${r.changeText}</span>
                 </a>`;
             }
 
@@ -671,7 +674,7 @@
                 .slice(0, 5);
 
             const offTrack = [...allResults]
-                .filter(r => r.standing && r.standing.endRank != null && r.standing.endRank >= 48)
+                .filter(r => r.standing && r.standing.endRank != null && r.standing.endRank >= 45)
                 .sort((a, b) => b.standing.endRank - a.standing.endRank)
                 .slice(0, 5);
 
