@@ -1137,9 +1137,26 @@ const App = {
         document.querySelectorAll('.card.bundle-match').forEach(c => c.classList.remove('bundle-match'));
 
         const url = new URL(window.location.href);
+        const returnToParam = url.searchParams.get('return_to');
         url.searchParams.delete('bundle');
         url.searchParams.delete('metrics');
         url.searchParams.delete('title');
+        url.searchParams.delete('return_to');
+
+        // If the bundle was opened with a return_to hint (e.g. from the 5-Year
+        // Change chips), send the user back there. Only accept same-origin paths
+        // to avoid open-redirect abuse.
+        let returnUrl = null;
+        if (returnToParam) {
+            try {
+                const u = new URL(returnToParam, window.location.origin);
+                if (u.origin === window.location.origin) returnUrl = u.pathname + u.search;
+            } catch (e) { /* ignore malformed return_to */ }
+        }
+        if (returnUrl) {
+            window.location.href = returnUrl;
+            return;
+        }
         history.replaceState(null, '', url.pathname + (url.search !== '?' ? url.search : ''));
     },
 
