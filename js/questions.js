@@ -21,7 +21,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q001",
     "slug": "smaller-share-of-hawaii-residents-lack-health-insurance-than-rest-of-country",
-    "claim": "Fewer Hawaiʻi residents lack health insurance than in the rest of the country.",
+    "claim": "Fewer Hawaiʻi residents lack health insurance than in most states.",
     "correct": true,
     "answer": "In 2024, 3.5% of Hawaiʻi residents lacked health insurance, versus the median of 7.5%.",
     "chartUrl": "/r/uninsured_rate/",
@@ -45,7 +45,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q017",
     "slug": "hawaii-has-lower-unemployment-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has lower unemployment than the rest of the country.",
+    "claim": "Hawaiʻi has lower unemployment than most states.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 2.9% versus the median of 3.6%.",
     "chartUrl": "/r/unemployment_rate/",
@@ -69,7 +69,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q054",
     "slug": "hawaii-gets-more-electricity-from-renewables-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi gets more of its electricity from renewables than the rest of the country.",
+    "claim": "Hawaiʻi gets more of its electricity from renewables than most states.",
     "correct": true,
     "answer": "In 2025, Hawaiʻi was 22.1% versus the median of 17.9%.",
     "chartUrl": "/r/renewables_share_gen/",
@@ -81,7 +81,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q058",
     "slug": "hawaii-has-more-roads-in-poor-condition-than-the-rest-of-the-country",
-    "claim": "More of Hawaiʻi's roads are in poor condition than in the rest of the country.",
+    "claim": "More of Hawaiʻi's roads are in poor condition than in most states.",
     "correct": true,
     "answer": "In 2023, Hawaiʻi was 21.6% versus the median of 7.1%.",
     "chartUrl": "/r/road_poor_pct/",
@@ -105,7 +105,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q077",
     "slug": "hawaii-has-more-unsheltered-homelessness-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has a higher rate of unsheltered homelessness than the rest of the country.",
+    "claim": "Hawaiʻi has a higher rate of unsheltered homelessness than most states.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 28.2 per 10K versus the median of 3.5 per 10K.",
     "chartUrl": "/r/unsheltered_homeless_rate/",
@@ -117,7 +117,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q081",
     "slug": "hawaii-has-lower-food-insecurity-than-the-rest-of-the-country",
-    "claim": "Fewer Hawaiʻi households are food-insecure than in the rest of the country.",
+    "claim": "Fewer Hawaiʻi households are food-insecure than in most states.",
     "correct": true,
     "answer": "In 2022-2024, Hawaiʻi was 10.8% versus the median of 12.5%.",
     "chartUrl": "/r/food_insecurity_rate/",
@@ -141,7 +141,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q005",
     "slug": "most-hawaii-renters-spend-over-30-percent-on-rent",
-    "claim": "More Hawaiʻi renter households are cost-burdened than in the rest of the country.",
+    "claim": "More Hawaiʻi renter households are cost-burdened than in most states.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 50.6% versus the median of 45.9%.",
     "chartUrl": "/r/renter_cost_burden_pct/",
@@ -177,7 +177,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q036",
     "slug": "hawaii-has-a-lower-violent-crime-rate-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has a lower violent crime rate than the rest of the country.",
+    "claim": "Hawaiʻi has a lower violent crime rate than most states.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 217.7 per 100K versus the median of 320.2 per 100K.",
     "chartUrl": "/r/violent_crime_rate/",
@@ -309,7 +309,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q047",
     "slug": "hawaii-has-more-primary-care-doctors-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has more primary care doctors as a % of residents than in the rest of the country.",
+    "claim": "Hawaiʻi has more primary care doctors as a % of residents than in most states.",
     "correct": true,
     "answer": "In 2023, Hawaiʻi was 88.1 per 100K versus the median of 78.7 per 100K.",
     "chartUrl": "/r/pcp_per_100k/",
