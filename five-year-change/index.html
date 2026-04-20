@@ -54,7 +54,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css?v=20260416a">
-    <link rel="stylesheet" href="../css/fyc.css?v=20260420a">
+    <link rel="stylesheet" href="../css/fyc.css?v=20260420b">
 </head>
 <body>
     <nav class="top-nav">
@@ -481,26 +481,49 @@
                 else                                          rankMoveTiers.stable.push({ r, move });
             }
 
-            // Unified "5-Year Trends": rank-change is the primary count per chip;
-            // absolute-change count appears in small print within the same chip.
+            // Ranking Changes: each chip is a clickable tab that reveals the full
+            // list of metrics in that tier, grouped by policy area.
+            function renderTierList(list) {
+                if (!list.length) return '<div class="fyc-chip-list-empty">No metrics in this category.</div>';
+                const byArea = {};
+                for (const { r } of list) {
+                    if (!byArea[r.area]) byArea[r.area] = [];
+                    byArea[r.area].push(r);
+                }
+                const areas = AREA_ORDER.map(g => g.area).filter(a => byArea[a]);
+                return areas.map(area => {
+                    const items = byArea[area].map(spotlightItem).join('');
+                    return `<div class="fyc-chip-list-group">
+                        <div class="fyc-chip-list-area">${area}</div>
+                        ${items}
+                    </div>`;
+                }).join('');
+            }
+            const tierHtml = {
+                improved: renderTierList(rankMoveTiers.improved),
+                stable: renderTierList(rankMoveTiers.stable),
+                worsened: renderTierList(rankMoveTiers.worsened),
+            };
             const chipsHtml = `<div class="fyc-chips-group">
-                <div class="fyc-chips-row-label">5-Year Ranking Changes</div>
-                <div class="fyc-chips">
-                    <div class="fyc-chip rank-up">
+                <div class="fyc-chips-row-label">Ranking Changes</div>
+                <div class="fyc-chips" role="tablist">
+                    <button type="button" class="fyc-chip rank-up" data-tier="improved" aria-controls="fyc-chip-panel" aria-expanded="false">
                         <div class="fyc-chip-count">${rankMoveTiers.improved.length}</div>
                         <div class="fyc-chip-label">Improved</div>
-                        <div class="fyc-chip-note">Absolute change: ${improved}</div>
-                    </div>
-                    <div class="fyc-chip rank-same">
+                    </button>
+                    <button type="button" class="fyc-chip rank-same" data-tier="stable" aria-controls="fyc-chip-panel" aria-expanded="false">
                         <div class="fyc-chip-count">${rankMoveTiers.stable.length}</div>
                         <div class="fyc-chip-label">Little Change</div>
-                        <div class="fyc-chip-note">Absolute change: ${littleChange}</div>
-                    </div>
-                    <div class="fyc-chip rank-down">
+                    </button>
+                    <button type="button" class="fyc-chip rank-down" data-tier="worsened" aria-controls="fyc-chip-panel" aria-expanded="false">
                         <div class="fyc-chip-count">${rankMoveTiers.worsened.length}</div>
                         <div class="fyc-chip-label">Worsened</div>
-                        <div class="fyc-chip-note">Absolute change: ${worsened}</div>
-                    </div>
+                    </button>
+                </div>
+                <div id="fyc-chip-panel" class="fyc-chip-panel" hidden>
+                    <div class="fyc-chip-list" data-tier="improved" hidden>${tierHtml.improved}</div>
+                    <div class="fyc-chip-list" data-tier="stable" hidden>${tierHtml.stable}</div>
+                    <div class="fyc-chip-list" data-tier="worsened" hidden>${tierHtml.worsened}</div>
                 </div>
             </div>`;
 
@@ -692,6 +715,29 @@
             // Assemble: spotlight → chips → scorecard → areas → ranking table → method
             document.getElementById('fyc-content').innerHTML = spotlightHtml + chipsHtml + scorecardHtml + areasHtml + rankTableHtml + methodHtml;
             renderRankRows();
+
+            // Ranking Changes chips: toggle expansion panel (one tier visible at a time)
+            document.querySelectorAll('.fyc-chips-group .fyc-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const tier = chip.dataset.tier;
+                    const panel = document.getElementById('fyc-chip-panel');
+                    if (!panel) return;
+                    const lists = panel.querySelectorAll('.fyc-chip-list');
+                    const allChips = document.querySelectorAll('.fyc-chips-group .fyc-chip');
+                    const isActive = chip.classList.contains('active');
+                    lists.forEach(l => { l.hidden = true; });
+                    allChips.forEach(c => {
+                        c.classList.remove('active');
+                        c.setAttribute('aria-expanded', 'false');
+                    });
+                    if (isActive) { panel.hidden = true; return; }
+                    chip.classList.add('active');
+                    chip.setAttribute('aria-expanded', 'true');
+                    panel.hidden = false;
+                    const targetList = panel.querySelector(`.fyc-chip-list[data-tier="${tier}"]`);
+                    if (targetList) targetList.hidden = false;
+                });
+            });
 
             // GA4: track metric clicks from FYC page
             document.getElementById('fyc-content').addEventListener('click', (e) => {

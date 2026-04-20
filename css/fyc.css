@@ -50,7 +50,19 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-chip.worsening .fyc-chip-label,
 .fyc-chip.rank-down .fyc-chip-count,
 .fyc-chip.rank-down .fyc-chip-label { color: var(--negative); }
-.fyc-chip-note { margin-top: 0.5rem; font-size: var(--text-2xs); color: var(--text-muted); font-weight: 400; }
+
+/* Ranking Changes chips: clickable tabs that expand a metric list below */
+.fyc-chip { cursor: pointer; font: inherit; color: inherit; width: 100%; transition: border-color 0.15s, background 0.15s; }
+.fyc-chip:hover { border-color: var(--hawaii-blue); }
+.fyc-chip:focus-visible { outline: 2px solid var(--hawaii-blue); outline-offset: 2px; }
+.fyc-chip.active { border-color: var(--hawaii-blue); background: var(--hawaii-blue-light); }
+
+.fyc-chip-panel { margin-top: 0.75rem; }
+.fyc-chip-list { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); overflow: hidden; }
+.fyc-chip-list-group { padding: 0.3rem 1rem 0.6rem; }
+.fyc-chip-list-group + .fyc-chip-list-group { border-top: 1px solid var(--border); }
+.fyc-chip-list-area { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 0.55rem 0 0.25rem; }
+.fyc-chip-list-empty { padding: 1rem; color: var(--text-muted); font-style: italic; text-align: center; }
 
 /* Print button */
 .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: var(--text-sm); padding: 0.35rem 0.75rem; min-height: 36px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }
