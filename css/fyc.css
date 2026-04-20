@@ -35,26 +35,15 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-chips-row-label { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; margin-top: 0.75rem; }
 .fyc-chips-row-label:first-child { margin-top: 0; }
 .fyc-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
-.fyc-chip { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); padding: 0.9rem 1rem; text-align: center; }
-.fyc-chip-count { font-size: 1.8rem; font-weight: 700; line-height: 1; }
-.fyc-chip-label { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
-.fyc-chip.improving .fyc-chip-count,
-.fyc-chip.improving .fyc-chip-label,
-.fyc-chip.rank-up .fyc-chip-count,
-.fyc-chip.rank-up .fyc-chip-label { color: var(--positive); }
-.fyc-chip.little-change .fyc-chip-count,
-.fyc-chip.little-change .fyc-chip-label,
-.fyc-chip.rank-same .fyc-chip-count,
-.fyc-chip.rank-same .fyc-chip-label { color: var(--neutral); }
-.fyc-chip.worsening .fyc-chip-count,
-.fyc-chip.worsening .fyc-chip-label,
-.fyc-chip.rank-down .fyc-chip-count,
-.fyc-chip.rank-down .fyc-chip-label { color: var(--negative); }
-
-/* Ranking Changes chips: each is a link to the Dashboard filtered to that tier */
-.fyc-chip { cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+/* Ranking Changes chips: each is an <a> linking to the Dashboard filtered to that tier */
+.fyc-chip { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); padding: 0.9rem 1rem; text-align: center; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
 .fyc-chip:hover { border-color: var(--hawaii-blue); }
 .fyc-chip:focus-visible { outline: 2px solid var(--hawaii-blue); outline-offset: 2px; }
+.fyc-chip-count { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+.fyc-chip-label { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
+.fyc-chip.rank-up   .fyc-chip-count, .fyc-chip.rank-up   .fyc-chip-label { color: var(--positive); }
+.fyc-chip.rank-same .fyc-chip-count, .fyc-chip.rank-same .fyc-chip-label { color: var(--neutral); }
+.fyc-chip.rank-down .fyc-chip-count, .fyc-chip.rank-down .fyc-chip-label { color: var(--negative); }
 
 /* Print button */
 .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: var(--text-sm); padding: 0.35rem 0.75rem; min-height: 36px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }

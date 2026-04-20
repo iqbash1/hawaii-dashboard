@@ -393,6 +393,20 @@ Two dropdowns sit between the header and the metric grid: "I have a question..."
 
 `view` controls which tab opens when the user navigates Prev/Next through a bundle: `t` = Trend, `r` = Rank, `rh` = Rank history, `c` = County.
 
+**Synthetic bundles (ad-hoc filter via URL):**
+
+The Dashboard also accepts an ad-hoc filter that's not backed by the `BUNDLES` array. This is used by the 5-Year Change page chips (Improved / Little Change / Worsened) to send the user to a filtered Dashboard view matching a computed tier. URL shape:
+
+```
+/?bundle=synthetic&metrics=slug1,slug2,slug3&title=Display+Title&return_to=/five-year-change/
+```
+
+- `metrics` — comma-separated slug list (the bundle's metrics)
+- `title` — pill label shown in the "I have a question..." trigger
+- `return_to` — optional same-origin path; if present, clicking ✕ navigates back there instead of clearing in place (security: same-origin check via URL parsing to avoid open-redirect)
+
+`App.activateBundle()` accepts either a bundle id string (looks up in `BUNDLES`) or a pre-built bundle object (used for synthetic). `App.clearBundle()` strips all four params (`bundle`, `metrics`, `title`, `return_to`) and honors `return_to` if set.
+
 ### Card Grid (Landing Page)
 
 Each of the 26 metrics gets its own card displaying:
@@ -453,10 +467,11 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 
 A standalone summary page for policymakers. Rendering logic is in `five-year-change/index.html`; shared pure functions (narrative generation, ranking helpers, county HTML) are imported from `js/utils.js`. Key sections:
 
-1. **Summary chips** - two rows (5-Year Trends / 5-Year Ranking Changes), color-coded counts
-2. **Policy Area Overview scorecard** - one row per area; national rank, standing text, 5-year trend arrows
-3. **Area sections** - collapsed by default; narrative summary with expand toggle
-4. **National Ranking table** - sortable by rank, category, or 5-yr change
+1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45); each row shows "Rank #X → #Y · absolute change" (rank-first)
+2. **Ranking Changes chips** - one row, 3 tiles (Improved / Little Change / Worsened) counting rank movement; each tile links to the Dashboard with a synthetic bundle filter so the user sees the matching metrics. ✕ on the Dashboard pill returns the user to this page.
+3. **Policy Area Overview scorecard** - one row per area, sorted green → yellow → red; national rank, standing text, 5-year trend arrows
+4. **Area sections** - collapsed by default; narrative summary with expand toggle
+5. **National Ranking table** - sortable by rank, category, or 5-yr change
 
 ### Governor Term Overlay
 
