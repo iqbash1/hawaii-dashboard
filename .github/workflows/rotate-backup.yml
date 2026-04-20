@@ -1,0 +1,31 @@
+name: Rotate backup tags
+
+on:
+  schedule:
+    - cron: '0 22 * * 0'
+  workflow_dispatch:
+
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Rotate backup-latest -> backup-previous, snapshot main -> backup-latest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin --tags --force
+          if git rev-parse --verify refs/tags/backup-latest >/dev/null 2>&1; then
+            LATEST_SHA=$(git rev-parse refs/tags/backup-latest^{commit})
+            git tag -f backup-previous "$LATEST_SHA"
+            git push origin backup-previous --force
+          fi
+          git tag -f backup-latest origin/main
+          git push origin backup-latest --force
