@@ -118,7 +118,7 @@ const Export = {
             [`Source: ${m.source}`],
             ...chartNotes,
             [],
-            ['Year', 'Hawai\u02BBi', 'Median'],
+            ['Year', 'Hawai\u02BBi', '50-state median'],
         ];
         const chartYears = [...new Set([
             ...Object.keys(effective.hawaii),
@@ -249,7 +249,7 @@ const Export = {
         methRows.push(
             [],
             ['COMPARATOR'],
-            ['Median', 'Median of 49 states, excluding Hawai\u02BBi. DC excluded from rankings. Median (not mean) because state distributions are often right-skewed and a few outlier states would pull the mean away from the typical state.'],
+            ['50-state median', 'Mathematical median across all 50 states, including Hawai\u02BBi. DC and territories excluded. Median (not mean) because state distributions are often right-skewed and a few outlier states would pull the mean away from the typical state.'],
             ['Hawai\u02BBi Value', 'Pulled from same source, same variable, same year.'],
         );
         if (slug === 'real_per_capita_income') {

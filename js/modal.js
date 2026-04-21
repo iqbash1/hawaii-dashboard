@@ -112,7 +112,7 @@ const Modal = {
 
     /** Label for the "no state selected" option, varies by active tab. */
     _compareDefaultLabel(tab) {
-        return tab === 'rank-history' ? '\u2014 none \u2014' : 'Median';
+        return tab === 'rank-history' ? '\u2014 none \u2014' : '50-state median';
     },
 
     /** Show/hide the compare bar and update its default-option label for this tab. */
@@ -1183,7 +1183,7 @@ const Modal = {
         // Section 2: Hawaii Time Series
         const years = Object.keys(effective.hawaii);
         html += '<thead><tr class="section-header"><td colspan="3">Hawaii Time Series</td></tr>'
-            + '<tr><th>Year</th><th>Hawai\u02BBi</th><th>Median</th></tr></thead><tbody>';
+            + '<tr><th>Year</th><th>Hawai\u02BBi</th><th>50-state median</th></tr></thead><tbody>';
         for (const year of years) {
             const hi = effective.hawaii[year];
             const avg = effective.medianSeries[year];

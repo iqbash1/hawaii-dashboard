@@ -719,7 +719,7 @@ const App = {
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
-                <div class="comp-label">Median</div>
+                <div class="comp-label">50-state median</div>
                 <div class="comp-detail">${avgFormatted}</div>
                 ${rankHtml}
             </div>

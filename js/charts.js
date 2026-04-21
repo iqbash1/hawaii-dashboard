@@ -236,7 +236,7 @@ const ChartUtils = {
         const hawaiiValues = labels.map(y => mapVal(data.hawaii[y]));
         // Comparator defaults to the 50-state median; when a state is
         // picked, the caller passes { label, timeSeries } and it swaps in.
-        const compLabel = (comparator && comparator.label) ? comparator.label : 'Median';
+        const compLabel = (comparator && comparator.label) ? comparator.label : '50-state median';
         const compSource = (comparator && comparator.timeSeries) ? comparator.timeSeries : data.medianSeries;
         const compValues = labels.map(y => {
             const v = compSource[y];
