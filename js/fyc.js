@@ -247,6 +247,25 @@
         return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: null, betterNow, betterThen: null };
     }
 
+    /* ── Direction helpers for inline coloring ──
+     * absDirection(r)  — colors the absolute-change number by pure trend direction,
+     *                    independent of rank. "Little change" (|relChange| < 5) returns ''.
+     * rankDirection(s) — colors the rank-change text by rank movement (improved/worsened).
+     * These intentionally decouple: a metric can improve in value while worsening in rank
+     * when other states improve faster (e.g., voter participation +13.8% but rank #31→#50).
+     */
+    function absDirection(r) {
+        if (Math.abs(r.relChange) < 5) return '';
+        const good = (r.goodDirection === 'up') ? (r.absChange > 0) : (r.absChange < 0);
+        return good ? 'pos' : 'neg';
+    }
+    function rankDirection(s) {
+        if (!s || s.startRank == null || s.endRank == null) return '';
+        if (s.endRank < s.startRank) return 'pos';
+        if (s.endRank > s.startRank) return 'neg';
+        return '';
+    }
+
     /* ── County directions ── */
     function computeCountyDirections(slug) {
         const cd = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
@@ -566,8 +585,22 @@
             let rowsHtml = '';
             for (const r of areaMetrics) {
                 const yearRange = `(${r.baseYear}\u2013${r.latestYear})`;
-                const standingLine = r.standing ? r.standing.standingText : '';
+                const absDir = absDirection(r);
+                const rankDir = rankDirection(r.standing);
+                const absCls = absDir ? `fyc-val-${absDir}` : '';
                 const countyLine = Utils.renderCountyLine(r.county);
+
+                // Render line3 with rank portion colored by rank direction (independent of trend).
+                let line3Html = '';
+                if (r.standing) {
+                    const rankCls = rankDir ? `fyc-val-${rankDir}` : '';
+                    const rankPart = r.standing.startRank != null
+                        ? `Rank now <span class="${rankCls}">#${r.standing.endRank} (was #${r.standing.startRank})</span>`
+                        : `Rank now #${r.standing.endRank} of ${r.standing.endTotal}`;
+                    // Keep the "Gap vs median..." tail verbatim from standing.standingText.
+                    const gapTail = r.standing.standingText.split(' \u00b7 ').slice(1).join(' \u00b7 ');
+                    line3Html = `<div class="fyc-line3">National standing: ${rankPart}${gapTail ? ' \u00b7 ' + gapTail : ''}</div>`;
+                }
 
                 rowsHtml += `
                     <a href="../#${r.slug}" class="fyc-row">
@@ -575,8 +608,8 @@
                             <span class="fyc-metric-name">${r.metric}</span>
                             <span class="fyc-status ${r.status}">${Utils.statusLabel(r.status, r.standing)}</span>
                         </div>
-                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="${r.status === 'improving' ? 'fyc-val-pos' : r.status === 'worsening' ? 'fyc-val-neg' : ''}">${r.changeText}</span> ${yearRange}</div>
-                        ${standingLine ? `<div class="fyc-line3">${standingLine}</div>` : ''}
+                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="${absCls}">${r.changeText}</span> ${yearRange}</div>
+                        ${line3Html}
                         ${countyLine}
                     </a>`;
             }
@@ -601,16 +634,20 @@
         // Rank-first display: rank movement is the primary governance signal;
         // absolute change is shown as secondary context.
         function spotlightItem(r) {
-            let rankText = '';
+            const rankDir = rankDirection(r.standing);
+            const absDir = absDirection(r);
+            let rankHtml = '';
             if (r.standing) {
-                rankText = r.standing.startRank
-                    ? `Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}`
-                    : `Rank #${r.standing.endRank}`;
+                const rankCls = rankDir ? ` fyc-val-${rankDir}` : '';
+                rankHtml = r.standing.startRank != null
+                    ? `<span class="${rankCls.trim()}">Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}</span>`
+                    : `<span>Rank #${r.standing.endRank}</span>`;
             }
-            const sep = rankText && r.changeText ? ' \u00b7 ' : '';
+            const absCls = absDir ? ` fyc-val-${absDir}` : '';
+            const sep = rankHtml && r.changeText ? ' \u00b7 ' : '';
             return `<a href="../#${r.slug}" class="fyc-spot-item">
                 <span class="fyc-spot-metric">${r.metric}</span>
-                <span class="fyc-spot-detail">${rankText}${sep}${r.changeText}</span>
+                <span class="fyc-spot-detail">${rankHtml}${sep}<span class="${absCls.trim()}">${r.changeText}</span></span>
             </a>`;
         }
 
