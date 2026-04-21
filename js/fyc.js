@@ -504,14 +504,6 @@
 
 
 
-        const CAT_SHORT = {
-            'Safety & Health': 'Safety & Health',
-            'Housing & Cost of Living': 'Housing',
-            'Economy & Workforce': 'Economy',
-            'Education': 'Education',
-            'Infrastructure, Resilience & Trust': 'Infrastructure'
-        };
-
         const rankData = allRanked.map(r => ({
             r,
             tot: r.standing.endTotal || 50,
@@ -541,7 +533,7 @@
                 return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                     <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
                     <span class="fyc-rank-name">${r.metric}</span>
-                    <span class="fyc-rank-cat">${CAT_SHORT[r.area] || r.area}</span>
+                    <span class="fyc-rank-cat">${r.area}</span>
                     ${Utils.rankMoveHtml(r)}
                 </a>`;
             }).join('');
