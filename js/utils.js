@@ -93,7 +93,8 @@ const Utils = {
      */
     generateAreaNarrative(metrics, spanYears) {
         const span = spanYears || 5;
-        const spanWord = span === 10 ? 'ten' : 'five';
+        const SPAN_WORDS = { 5: 'five', 10: 'ten', 15: 'fifteen', 20: 'twenty', 25: 'twenty-five' };
+        const spanWord = SPAN_WORDS[span] || String(span);
         const n = metrics.length;
         const improving = metrics.filter(r => r.status === 'improving');
         const worsening = metrics.filter(r => r.status === 'worsening');

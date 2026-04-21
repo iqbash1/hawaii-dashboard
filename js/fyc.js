@@ -20,11 +20,25 @@
 
 (function() {
     /* ── Span configuration ──
-     * SPAN_YEARS controls the look-back window (5 on /five-year-change/,
-     * 10 on /ten-year-change/). Everything downstream — computations,
-     * narratives, chip labels, table headers — reads this constant.
+     * SPAN_YEARS controls the look-back window. One numeric value per route.
+     * Everything downstream — computations, narratives, chip labels, headers —
+     * reads this constant. Metrics whose data doesn't cover SPAN_YEARS are
+     * excluded from the view (see computeChange).
      */
-    const SPAN_YEARS = /\/ten-year-change\//.test(window.location.pathname) ? 10 : 5;
+    const SPAN_WORDS = ['five', 'ten', 'fifteen', 'twenty', 'twenty-five'];
+    const SPAN_WORD_TO_NUM = { five: 5, ten: 10, fifteen: 15, twenty: 20, 'twenty-five': 25 };
+    const SPAN_NUM_TO_PATH = {
+        5: '/five-year-change/',
+        10: '/ten-year-change/',
+        15: '/fifteen-year-change/',
+        20: '/twenty-year-change/',
+        25: '/twenty-five-year-change/',
+    };
+    function inferSpan(pathname) {
+        const m = pathname.match(/\/([a-z-]+)-year-change\//);
+        return m && SPAN_WORD_TO_NUM[m[1]] ? SPAN_WORD_TO_NUM[m[1]] : 5;
+    }
+    const SPAN_YEARS = inferSpan(window.location.pathname);
 
     /* ── Constants ── */
 
@@ -461,7 +475,7 @@
             stable:   `Metrics with little rank change (last ${SPAN_YEARS} years)`,
             worsened: `Metrics that worsened in rank (last ${SPAN_YEARS} years)`,
         };
-        const returnTo = SPAN_YEARS === 10 ? '/ten-year-change/' : '/five-year-change/';
+        const returnTo = SPAN_NUM_TO_PATH[SPAN_YEARS];
         function tierHref(tier) {
             const q = new URLSearchParams({
                 bundle: 'synthetic',
@@ -651,19 +665,24 @@
             </a>`;
         }
 
-        function absRankShift(r) {
+        // Rank shift is the primary filter for gains/declines: a metric's standing vs
+        // other states is the spotlight signal. Absolute value may move the other way
+        // (e.g., Voter Participation over 30yr: rank #18→#50 but value +3.7%) and is
+        // shown alongside in its own color via spotlightItem's inline spans.
+        function rankShift(r) {
             return (r.standing && r.standing.startRank != null && r.standing.endRank != null)
-                ? Math.abs(r.standing.startRank - r.standing.endRank) : 0;
+                ? r.standing.startRank - r.standing.endRank   // positive = rank climbed
+                : null;
         }
 
         const gainers = [...allResults]
-            .filter(r => r.status === 'improving')
-            .sort((a, b) => absRankShift(b) - absRankShift(a))
+            .filter(r => { const s = rankShift(r); return s != null && s > 0; })
+            .sort((a, b) => rankShift(b) - rankShift(a))
             .slice(0, 5);
 
         const decliners = [...allResults]
-            .filter(r => r.status === 'worsening')
-            .sort((a, b) => absRankShift(b) - absRankShift(a))
+            .filter(r => { const s = rankShift(r); return s != null && s < 0; })
+            .sort((a, b) => rankShift(a) - rankShift(b))      // most negative first
             .slice(0, 5);
 
         const offTrack = [...allResults]

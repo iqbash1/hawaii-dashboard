@@ -67,6 +67,12 @@ hawaii-dashboard/
 │   └── index.html          # Change Summary (5-year view): chips, scorecard, sortable ranking table
 ├── ten-year-change/
 │   └── index.html          # Change Summary (10-year view): same UI, 10-year look-back
+├── fifteen-year-change/
+│   └── index.html          # Change Summary (15-year view)
+├── twenty-year-change/
+│   └── index.html          # Change Summary (20-year view)
+├── twenty-five-year-change/
+│   └── index.html          # Change Summary (25-year view)
 ├── scripts/
 │   ├── generate-og-pages.py    # Generates ALL OG images + redirect pages (PIL-based)
 │   ├── generate-og-image.py    # Generates the homepage fallback OG image
@@ -467,9 +473,9 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 3. **Governor term overlay** - same overlay as the Trend chart
 4. **Legend** - county color dots + dashed state line indicator
 
-### Change Summary Page (`/five-year-change/` and `/ten-year-change/`)
+### Change Summary Pages (`/five-`, `/ten-`, `/fifteen-`, `/twenty-`, `/twenty-five-year-change/`)
 
-A standalone summary page for policymakers. Two routes share the same shell and logic: `/five-year-change/` defaults to a 5-year look-back, `/ten-year-change/` to a 10-year look-back. The page heading has a dropdown on the word "5 years"/"10 years" that links between the two routes. Rendering logic is in `js/fyc.js` (shared by both shells); shared pure functions (narrative generation, ranking helpers, county HTML) are in `js/utils.js`. The span (5 or 10) is inferred from `location.pathname` and threaded through computation and display strings. Key sections:
+A standalone summary page for policymakers. Five routes share the same shell and logic, defaulting to a 5-year look-back at `/five-year-change/`. The page heading has a dropdown that links between the five routes. Rendering logic is in `js/fyc.js` (shared by all shells); shared pure functions (narrative generation, ranking helpers, county HTML) are in `js/utils.js`. The span (5/10/15/20/25) is inferred from `location.pathname` via `SPAN_WORD_TO_NUM` and threaded through computation and display strings. Key sections:
 
 1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45); each row shows "Rank #X → #Y · absolute change" (rank-first)
 2. **Ranking Changes chips** - one row, 3 tiles (Improved / Little Change / Worsened) counting rank movement; each tile links to the Dashboard with a synthetic bundle filter so the user sees the matching metrics. ✕ on the Dashboard pill returns the user to this page.
@@ -477,7 +483,17 @@ A standalone summary page for policymakers. Two routes share the same shell and 
 4. **Area sections** - collapsed by default; narrative summary with expand toggle
 5. **National Ranking table** - sortable by rank, category, or change-in-rank
 
-**Short data-span handling:** Metrics whose data doesn't cover the full look-back window are excluded from that view entirely. `computeChange` returns null when `latestYear - baseYear < SPAN_YEARS` (after the ±2-year fallback has been applied). Currently only `broadband_subscription_pct` triggers this on the 10-year view (data starts 2016, so latest-2024 = 8 years) — it's dropped from the spotlight, chips, scorecard area tallies, area list, and rank table. All other metrics appear in both views.
+**Short data-span handling:** Metrics whose data doesn't cover the full look-back window are excluded from that view entirely. `computeChange` returns null when `latestYear - baseYear < SPAN_YEARS` (after the ±2-year fallback has been applied). Current coverage by view:
+
+| View | Metrics included | Excluded (insufficient history) |
+|------|-------------------|--------------------------------|
+| 5-year | 26 | — |
+| 10-year | 25 | broadband |
+| 15-year | 21 | broadband, pcp, uninsured, acgr, homeless |
+| 20-year | 14 | + ba-or-higher, real-pci, renter-burden, home-price, roads, food-insecurity, labor-productivity |
+| 25-year | 10 | + naep math/reading, renewables, net-migration |
+
+**Rank vs absolute-change coloring:** Rank movement and absolute-value change are colored independently — a metric can improve in value while its rank worsens (e.g., voter participation +13.8% over 10yr but rank #31→#50). Helpers `absDirection(r)` and `rankDirection(s)` drive inline span coloring in the spotlight detail, area row line2 (trend), and area row line3 (rank standing). `.fyc-val-pos` = green, `.fyc-val-neg` = red, empty = muted.
 
 ### Governor Term Overlay
 

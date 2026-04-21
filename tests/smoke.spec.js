@@ -291,7 +291,7 @@ test.describe('Module loading', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Change Summary pages (5-year and 10-year views)
+// Change Summary pages (5-, 10-, 15-, 20-, 25-year views)
 // ---------------------------------------------------------------------------
 
 test.describe('Change Summary — 5-year view', () => {
@@ -350,4 +350,24 @@ test.describe('Change Summary — 10-year view', () => {
         const rankRows = await page.locator('.fyc-rank-item').count();
         expect(rankRows).toBe(25);
     });
+});
+
+test.describe('Change Summary — longer-window views (15/20/25)', () => {
+    const EXPECTED = [
+        { path: '/fifteen-year-change/',   label: '15 years', rows: 21 },
+        { path: '/twenty-year-change/',    label: '20 years', rows: 14 },
+        { path: '/twenty-five-year-change/', label: '25 years', rows: 10 },
+    ];
+    for (const { path, label, rows } of EXPECTED) {
+        test(`${path} loads without JS errors and shows ${rows} rows`, async ({ page }) => {
+            const jsErrors = [];
+            page.on('pageerror', (err) => jsErrors.push(err.message));
+            await page.goto(path);
+            await page.waitForSelector('.fyc-row', { state: 'attached', timeout: 10_000 });
+            expect(jsErrors, `JS errors: ${jsErrors.join('; ')}`).toHaveLength(0);
+            await expect(page.locator('.fyc-span-label')).toHaveText(label);
+            const rowCount = await page.locator('.fyc-row').count();
+            expect(rowCount).toBe(rows);
+        });
+    }
 });
