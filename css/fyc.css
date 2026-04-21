@@ -7,9 +7,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-deck { font-size: var(--text-base); color: var(--text-secondary); line-height: 1.55; margin-bottom: 0.5rem; }
 .fyc-standing-note { font-size: var(--text-sm); color: var(--text-muted); line-height: 1.5; margin-bottom: 0; }
 
-/* Short-data-span note (e.g., Broadband: 8 years vs nominal 10) */
-.fyc-short-span { color: var(--text-muted); font-size: 0.9em; font-weight: 400; white-space: nowrap; }
-
 /* Span toggle (dropdown inside H1: "5 years" / "10 years") */
 .fyc-span-toggle { position: relative; display: inline-block; }
 .fyc-span-trigger { font: inherit; color: var(--hawaii-blue); background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: baseline; gap: 0.3rem; border-bottom: 2px dashed currentColor; line-height: inherit; }

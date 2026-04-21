@@ -314,12 +314,12 @@ test.describe('Change Summary — 5-year view', () => {
         expect(rows.length).toBeGreaterThanOrEqual(26);
     });
 
-    test('H1 shows "5 years" and no short-span notes appear', async ({ page }) => {
+    test('H1 shows "5 years" and broadband is included', async ({ page }) => {
         await page.goto('/five-year-change/');
         await page.waitForSelector('.fyc-row', { state: 'attached' });
         await expect(page.locator('.fyc-span-label')).toHaveText('5 years');
-        const shortCount = await page.locator('.fyc-short-span').count();
-        expect(shortCount).toBe(0);
+        const broadbandCount = await page.locator('.fyc-row .fyc-metric-name', { hasText: 'Broadband' }).count();
+        expect(broadbandCount).toBe(1);
     });
 });
 
@@ -334,17 +334,20 @@ test.describe('Change Summary — 10-year view', () => {
         expect(jsErrors, `JS errors: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 
-    test('renders 26 rows and flags broadband as short-span', async ({ page }) => {
+    test('excludes broadband (25 rows, no broadband in rank table)', async ({ page }) => {
         await page.goto('/ten-year-change/');
         await page.waitForSelector('.fyc-row', { state: 'attached' });
 
-        const rows = await page.locator('.fyc-row').all();
-        expect(rows.length).toBeGreaterThanOrEqual(26);
-
         await expect(page.locator('.fyc-span-label')).toHaveText('10 years');
 
-        // Only broadband should carry the short-span note in the 10-year view
-        const broadbandRow = page.locator('.fyc-row', { has: page.locator('.fyc-metric-name', { hasText: 'Broadband' }) });
-        await expect(broadbandRow.locator('.fyc-short-span').first()).toContainText('8 years shown');
+        // Broadband's data (2016-) doesn't cover a full 10-year window, so it's dropped
+        const broadbandRows = await page.locator('.fyc-row .fyc-metric-name', { hasText: 'Broadband' }).count();
+        expect(broadbandRows).toBe(0);
+
+        const rows = await page.locator('.fyc-row').all();
+        expect(rows.length).toBe(25);
+
+        const rankRows = await page.locator('.fyc-rank-item').count();
+        expect(rankRows).toBe(25);
     });
 });

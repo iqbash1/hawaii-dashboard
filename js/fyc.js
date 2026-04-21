@@ -188,17 +188,16 @@
         const base = getVal(m.hawaii, latest.year - SPAN_YEARS);
         if (!base) return null;
 
+        // Exclude metrics whose data doesn't cover a full SPAN_YEARS window.
+        // In the 10-year view this drops Households with Broadband (2016-2024 = 8 years).
+        if (latest.year - base.year < SPAN_YEARS) return null;
+
         const absChange = latest.value - base.value;
         const relChange = base.value !== 0 ? (absChange / Math.abs(base.value)) * 100 : 0;
 
         let status;
         if (Math.abs(relChange) < 5) status = 'little-change';
         else status = (m.goodDirection === 'up' ? absChange > 0 : absChange < 0) ? 'improving' : 'worsening';
-
-        // Flag metrics whose actual data span falls meaningfully short of SPAN_YEARS
-        // (e.g., Broadband in the 10-year view: 2016-2024 = 8 years available).
-        const actualSpan = latest.year - base.year;
-        const shortSpan = SPAN_YEARS - actualSpan >= 2 ? actualSpan : null;
 
         return {
             slug, metric: m.metric, unit: m.unit, isDec,
@@ -207,7 +206,6 @@
             baseYear: base.year,
             absChange, relChange, status,
             changeText: fmtChange(absChange, m.unit, isDec),
-            shortSpan,
         };
     }
 
@@ -516,10 +514,9 @@
             if (!el) return;
             el.innerHTML = sorted.map(({ r, tot, move }) => {
                 const cls = Utils.rankColorClass(r.standing.endRank, tot);
-                const shortNote = r.shortSpan ? ` <span class="fyc-short-span">(${r.shortSpan} yr data)</span>` : '';
                 return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                     <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
-                    <span class="fyc-rank-name">${r.metric}${shortNote}</span>
+                    <span class="fyc-rank-name">${r.metric}</span>
                     <span class="fyc-rank-cat">${CAT_SHORT[r.area] || r.area}</span>
                     ${Utils.rankMoveHtml(r)}
                 </a>`;
@@ -569,7 +566,6 @@
             let rowsHtml = '';
             for (const r of areaMetrics) {
                 const yearRange = `(${r.baseYear}\u2013${r.latestYear})`;
-                const shortNote = r.shortSpan ? ` <span class="fyc-short-span">\u00b7 ${r.shortSpan} years shown</span>` : '';
                 const standingLine = r.standing ? r.standing.standingText : '';
                 const countyLine = Utils.renderCountyLine(r.county);
 
@@ -579,7 +575,7 @@
                             <span class="fyc-metric-name">${r.metric}</span>
                             <span class="fyc-status ${r.status}">${Utils.statusLabel(r.status, r.standing)}</span>
                         </div>
-                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="${r.status === 'improving' ? 'fyc-val-pos' : r.status === 'worsening' ? 'fyc-val-neg' : ''}">${r.changeText}</span> ${yearRange}${shortNote}</div>
+                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="${r.status === 'improving' ? 'fyc-val-pos' : r.status === 'worsening' ? 'fyc-val-neg' : ''}">${r.changeText}</span> ${yearRange}</div>
                         ${standingLine ? `<div class="fyc-line3">${standingLine}</div>` : ''}
                         ${countyLine}
                     </a>`;
@@ -612,10 +608,9 @@
                     : `Rank #${r.standing.endRank}`;
             }
             const sep = rankText && r.changeText ? ' \u00b7 ' : '';
-            const shortNote = r.shortSpan ? ` <span class="fyc-short-span">\u00b7 ${r.shortSpan} yr data</span>` : '';
             return `<a href="../#${r.slug}" class="fyc-spot-item">
                 <span class="fyc-spot-metric">${r.metric}</span>
-                <span class="fyc-spot-detail">${rankText}${sep}${r.changeText}${shortNote}</span>
+                <span class="fyc-spot-detail">${rankText}${sep}${r.changeText}</span>
             </a>`;
         }
 

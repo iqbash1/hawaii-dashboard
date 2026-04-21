@@ -477,7 +477,7 @@ A standalone summary page for policymakers. Two routes share the same shell and 
 4. **Area sections** - collapsed by default; narrative summary with expand toggle
 5. **National Ranking table** - sortable by rank, category, or change-in-rank
 
-**Short data-span handling:** In the 10-year view, metrics whose earliest data is too recent to cover the full 10-year window are tagged with a muted "N years shown" note wherever they appear (area row, spotlight, rank table). Currently only `broadband_subscription_pct` triggers this (data starts 2016, so latest-2024 = 8 years). Threshold: shown when `SPAN_YEARS - actualSpan >= 2`.
+**Short data-span handling:** Metrics whose data doesn't cover the full look-back window are excluded from that view entirely. `computeChange` returns null when `latestYear - baseYear < SPAN_YEARS` (after the ±2-year fallback has been applied). Currently only `broadband_subscription_pct` triggers this on the 10-year view (data starts 2016, so latest-2024 = 8 years) — it's dropped from the spotlight, chips, scorecard area tallies, area list, and rank table. All other metrics appear in both views.
 
 ### Governor Term Overlay
 
@@ -774,7 +774,7 @@ npm test
 | Change Summary 5-year view renders one row per metric (26 rows) | Missing metric in `AREA_ORDER` (js/fyc.js) |
 | Change Summary 5-year H1 shows "5 years" with no short-span notes | Dropdown wiring or span inference regressed |
 | Change Summary 10-year view loads without JS errors | JS errors on `/ten-year-change/` page |
-| Change Summary 10-year view renders 26 rows + broadband "8 years shown" note | 10-year shell missing, short-span flag misfiring, or broadband data changed |
+| Change Summary 10-year view excludes broadband (renders 25 rows, no broadband in rank table) | 10-year shell missing, short-span exclusion filter regressed, or broadband data changed |
 
 ### CI
 
