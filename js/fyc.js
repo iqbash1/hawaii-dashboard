@@ -524,20 +524,29 @@
                     const bm = b.move != null ? b.move : -999;
                     return (bm - am) * rankSortDir;
                 }
+                if (rankSortBy === 'value') {
+                    // Signed "goodness" of the value change: positive = improvement,
+                    // negative = worsening (regardless of unit/direction).
+                    const gc = (x) => (x.r.goodDirection === 'up' ? 1 : -1) * (x.r.relChange || 0);
+                    return (gc(b) - gc(a)) * rankSortDir;
+                }
                 return 0;
             });
             const el = document.getElementById('fyc-rank-list');
             if (!el) return;
             el.innerHTML = sorted.map(({ r, tot, move }) => {
                 const cls = Utils.rankColorClass(r.standing.endRank, tot);
+                const absDir = absDirection(r);
+                const absCls = absDir ? ` fyc-val-${absDir}` : '';
                 return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                     <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
                     <span class="fyc-rank-name">${r.metric}</span>
                     <span class="fyc-rank-cat">${r.area}</span>
                     ${Utils.rankMoveHtml(r)}
+                    <span class="fyc-rank-val${absCls}">${r.changeText}</span>
                 </a>`;
             }).join('');
-            ['rank', 'category', 'move'].forEach(col => {
+            ['rank', 'category', 'move', 'value'].forEach(col => {
                 const hdr = document.getElementById('fyc-rhdr-' + col);
                 if (!hdr) return;
                 const isActive = rankSortBy === col;
@@ -563,7 +572,8 @@
                     <span class="fyc-rank-hdr-rank fyc-rank-hdr-sortable active" id="fyc-rhdr-rank" onclick="window._fycRankSort('rank')">Current rank<span class="fyc-rank-sort-ind">▲</span></span>
                     <span class="fyc-rank-hdr-name">Metric</span>
                     <span class="fyc-rank-hdr-cat fyc-rank-hdr-sortable" id="fyc-rhdr-category" onclick="window._fycRankSort('category')">Category<span class="fyc-rank-sort-ind">▲</span></span>
-                    <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">${SPAN_YEARS}-yr Change in rank<span class="fyc-rank-sort-ind">▲</span></span>
+                    <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">Rank change<span class="fyc-rank-sort-ind">▲</span></span>
+                    <span class="fyc-rank-hdr-val fyc-rank-hdr-sortable" id="fyc-rhdr-value" onclick="window._fycRankSort('value')">Value change<span class="fyc-rank-sort-ind">▲</span></span>
                 </div>
                 <div class="fyc-rank-list" id="fyc-rank-list"></div>
             </div>`;
