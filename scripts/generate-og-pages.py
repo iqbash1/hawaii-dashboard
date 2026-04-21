@@ -712,6 +712,32 @@ def generate_county_og_image(slug, metric, area, county_data, output_path):
 
 
 # ── Redirect HTML Generation ─────────────────────────────────────
+def _esc_html(s):
+    """Escape HTML text content. & < > only (quotes left alone for body text)."""
+    if s is None:
+        return ''
+    return (str(s).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
+
+
+def _inline_article(area, metric_name, rows_html, cta_href):
+    """Build a crawler/print/no-JS fallback <article> block.
+    rows_html is one or more already-rendered <p>/<ul>/etc. strings."""
+    if not rows_html:
+        return ''
+    return (
+        f'\n  <article style="max-width:640px;margin:2rem auto;padding:0 1rem;'
+        f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;'
+        f'color:#333;line-height:1.55;">\n'
+        f'    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;'
+        f'letter-spacing:0.05em;margin:0;">{_esc_html(area)}</p>\n'
+        f'    <h1 style="margin:0.25rem 0 1rem;font-size:1.5rem;">{_esc_html(metric_name)}</h1>\n'
+        f'    {rows_html}\n'
+        f'    <p style="margin-top:1.5rem;"><a href="{cta_href}">'
+        f'View interactive chart &rarr;</a></p>\n'
+        f'  </article>'
+    )
+
+
 def generate_redirect_html(slug, metric, area, rankings, output_path,
                            view='detail', county_data=None, rank_history=None,
                            variant_segment=None, image_suffix=None):
@@ -789,13 +815,8 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
     redirect_target = f"/{redirect_query}{redirect_hash}"
     refresh_target = f"{SITE_URL}/{redirect_query}{redirect_hash}"
 
-    # Inline body content (crawler / print / no-JS fallback). Invisible to JS users
-    # because the <script> redirect above fires before <body> paints.
-    def _esc(s):
-        if s is None:
-            return ''
-        return (str(s).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
-
+    # Inline body content (crawler / print / no-JS fallback). Invisible to JS
+    # users because the <script> redirect above fires before <body> paints.
     why = metric.get('whyItMatters', '') or ''
     inline_parts = []
 
@@ -806,19 +827,19 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
             yr = rank_history['latest_year']
             inline_parts.append(
                 f'<p><strong>Current rank:</strong> #{hi_rank} of {total} states '
-                f'({_esc(formatted)}, {yr})</p>'
+                f'({_esc_html(formatted)}, {yr})</p>'
             )
         rh_summary = (metric.get('rankHistoryNarrative') or {}).get('summary', '')
         if rh_summary:
-            inline_parts.append(f'<p>{_esc(rh_summary)}</p>')
+            inline_parts.append(f'<p>{_esc_html(rh_summary)}</p>')
     elif view == 'rankings':
         if rankings and rankings.get('hawaiiRank', 0) > 0:
             inline_parts.append(
                 f'<p><strong>Hawai\u02BBi rank:</strong> #{rankings["hawaiiRank"]} of '
-                f'{rankings["total"]} states ({_esc(formatted)}, {rankings["year"]})</p>'
+                f'{rankings["total"]} states ({_esc_html(formatted)}, {rankings["year"]})</p>'
             )
         if why:
-            inline_parts.append(f'<p>{_esc(why)}</p>')
+            inline_parts.append(f'<p>{_esc_html(why)}</p>')
     elif view == 'county':
         counties = county_data.get('counties', []) if county_data else []
         data = county_data.get('data', {}) if county_data else {}
@@ -832,15 +853,15 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
                         y = yrs[-1]
                         v = series[y]
                         rows.append(
-                            f'<li><strong>{_esc(cname)}:</strong> '
-                            f'{_esc(format_value(v, unit, dec))} ({y})</li>'
+                            f'<li><strong>{_esc_html(cname)}:</strong> '
+                            f'{_esc_html(format_value(v, unit, dec))} ({y})</li>'
                         )
             if rows:
                 inline_parts.append('<ul>' + ''.join(rows) + '</ul>')
         if why:
-            inline_parts.append(f'<p>{_esc(why)}</p>')
+            inline_parts.append(f'<p>{_esc_html(why)}</p>')
     else:  # detail / trend
-        summary_bits = [f'<strong>Current:</strong> {_esc(formatted)}']
+        summary_bits = [f'<strong>Current:</strong> {_esc_html(formatted)}']
         if latest_year:
             summary_bits.append(f'({latest_year})')
         head = ' '.join(summary_bits)
@@ -849,23 +870,11 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
                      f'of {rankings["total"]} states')
         inline_parts.append(f'<p>{head}</p>')
         if why:
-            inline_parts.append(f'<p>{_esc(why)}</p>')
+            inline_parts.append(f'<p>{_esc_html(why)}</p>')
 
-    inline_html = '\n    '.join(inline_parts)
-    inline_block = ''
-    if inline_html:
-        inline_block = (
-            f'\n  <article style="max-width:640px;margin:2rem auto;padding:0 1rem;'
-            f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;'
-            f'color:#333;line-height:1.55;">\n'
-            f'    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;'
-            f'letter-spacing:0.05em;margin:0;">{_esc(area)}</p>\n'
-            f'    <h1 style="margin:0.25rem 0 1rem;font-size:1.5rem;">{_esc(metric_name)}</h1>\n'
-            f'    {inline_html}\n'
-            f'    <p style="margin-top:1.5rem;"><a href="{refresh_target}">'
-            f'View interactive chart &rarr;</a></p>\n'
-            f'  </article>'
-        )
+    inline_block = _inline_article(area, metric_name,
+                                    '\n    '.join(inline_parts),
+                                    refresh_target)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1222,7 +1231,7 @@ def generate_rh_compare_og_image(slug, metric, area, rank_history, compare_state
 
 # ── Rank History Comparison Redirect Pages ───────────────────────
 def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, output_path,
-                                  image_url=None, variant_segment=None):
+                                  image_url=None, variant_segment=None, area=''):
     """Generate /rh/{slug}/{state-slug}/index.html for a Hawaiʻi-vs-state comparison.
 
     variant_segment: optional url path segment (e.g. 'severe') for threshold
@@ -1253,6 +1262,24 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
     redirect_target = f"/{redirect_query}{redirect_hash}"
     refresh_target = f"{SITE_URL}/{redirect_query}{redirect_hash}"
 
+    inline_parts = []
+    if rank_history and rank_history.get('hi_rank_latest'):
+        hi_rank = rank_history['hi_rank_latest']
+        total = rank_history['total']
+        yr = rank_history['latest_year']
+        inline_parts.append(
+            f'<p><strong>Hawai\u02BBi current rank:</strong> #{hi_rank} of {total} states ({yr})</p>'
+        )
+    inline_parts.append(
+        f'<p>Compares Hawai\u02BBi\u2019s rank history on this metric with {_esc_html(compare_state)}.</p>'
+    )
+    rh_summary = (metric.get('rankHistoryNarrative') or {}).get('summary', '')
+    if rh_summary:
+        inline_parts.append(f'<p>{_esc_html(rh_summary)}</p>')
+    inline_block = _inline_article(area or metric.get('area', ''), metric_name,
+                                    '\n    '.join(inline_parts),
+                                    refresh_target)
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1276,7 +1303,7 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
   <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
 <body>
-  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>
+  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>{inline_block}
 </body>
 </html>"""
 
@@ -1405,7 +1432,7 @@ def generate_trend_compare_og_image(slug, metric, area, rankings,
 
 
 def generate_trend_compare_redirect(slug, metric, compare_state, rankings, output_path,
-                                     image_url=None, variant_segment=None):
+                                     image_url=None, variant_segment=None, area=''):
     """Generate /t/{slug}/{state-slug}/index.html (optionally with variant suffix).
     Redirects humans to /#{slug}/detail/{state-slug} so the SPA routing opens
     the Trend tab with the chosen state pre-selected; crawlers pick up the
@@ -1435,6 +1462,30 @@ def generate_trend_compare_redirect(slug, metric, compare_state, rankings, outpu
     redirect_target = f"/{redirect_query}{redirect_hash}"
     refresh_target = f"{SITE_URL}/{redirect_query}{redirect_hash}"
 
+    # Inline body content (crawler / print / no-JS fallback).
+    unit = metric.get('unit', '')
+    dec = is_decimal_pct(metric)
+    latest_year, latest_val = get_latest(metric.get('hawaii', {}))
+    hi_formatted = format_value(latest_val, unit, dec) if latest_val is not None else 'N/A'
+    why = metric.get('whyItMatters', '') or ''
+
+    inline_parts = []
+    if rankings and rankings.get('hawaiiRank'):
+        hi_rank = rankings['hawaiiRank']
+        total = rankings['total']
+        inline_parts.append(
+            f'<p><strong>Hawai\u02BBi:</strong> {_esc_html(hi_formatted)} '
+            f'({latest_year}) &middot; rank #{hi_rank} of {total}</p>'
+        )
+    inline_parts.append(
+        f'<p>Compares Hawai\u02BBi\u2019s trend on this metric with {_esc_html(compare_state)}.</p>'
+    )
+    if why:
+        inline_parts.append(f'<p>{_esc_html(why)}</p>')
+    inline_block = _inline_article(area or metric.get('area', ''), metric_name,
+                                    '\n    '.join(inline_parts),
+                                    refresh_target)
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1458,7 +1509,7 @@ def generate_trend_compare_redirect(slug, metric, compare_state, rankings, outpu
   <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
 <body>
-  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>
+  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name} vs {compare_state}</a>&hellip;</p>{inline_block}
 </body>
 </html>"""
 
@@ -1516,7 +1567,7 @@ def generate_for_slug(slug, metric, area, state_data, county_data_all,
             generate_rh_compare_redirect(
                 slug, metric, state, rh,
                 os.path.join(REDIRECT_DIR_RH, slug, state_slug, 'index.html'),
-                image_url=img_url
+                image_url=img_url, area=area
             )
 
     # Trend-compare pages: one per state, for all 26 metrics (not just those
@@ -1537,7 +1588,7 @@ def generate_for_slug(slug, metric, area, state_data, county_data_all,
             generate_trend_compare_redirect(
                 slug, metric, state, rankings,
                 os.path.join(REDIRECT_DIR_T, slug, state_slug, 'index.html'),
-                image_url=img_url
+                image_url=img_url, area=area
             )
 
     # ── Variant pages + images (if any) ──
