@@ -1821,7 +1821,10 @@ def generate_qotd_redirect_html(question, output_path):
     """
     slug = question['slug']
     claim = question['claim']
-    title = "Do you know Hawaiʻi?"
+    answer_text = question.get('answer', '') or ''
+    is_true = question.get('correct', None)
+    chart_url = question.get('chartUrl', '/')
+    title = "Do you know Hawai\u02BBi?"
     description = claim
     image_url = f"{SITE_URL}/assets/og/q/{slug}.png"
     page_url = f"{SITE_URL}/q/{slug}/"
@@ -1831,6 +1834,30 @@ def generate_qotd_redirect_html(question, output_path):
     # Escape minimal HTML-attribute-breaking characters.
     def esc_attr(s):
         return s.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+
+    verdict = 'True' if is_true is True else ('False' if is_true is False else '')
+    answer_block = ''
+    if verdict or answer_text:
+        parts = []
+        if verdict:
+            parts.append(f'<strong>{verdict}.</strong>')
+        if answer_text:
+            parts.append(_esc_html(answer_text))
+        answer_block = f'<p>{" ".join(parts)}</p>'
+
+    inline_block = (
+        f'\n  <article style="max-width:640px;margin:2rem auto;padding:0 1rem;'
+        f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;'
+        f'color:#333;line-height:1.55;">\n'
+        f'    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;'
+        f'letter-spacing:0.05em;margin:0;">Do you know Hawai\u02BBi?</p>\n'
+        f'    <p style="margin:0.25rem 0 1rem;font-size:1.25rem;font-weight:600;">'
+        f'{_esc_html(claim)}</p>\n'
+        f'    {answer_block}\n'
+        f'    <p style="margin-top:1.5rem;"><a href="{chart_url}">'
+        f'See the data &rarr;</a></p>\n'
+        f'  </article>'
+    )
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1855,7 +1882,7 @@ def generate_qotd_redirect_html(question, output_path):
   <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
 <body>
-  <p>Redirecting to <a href="{refresh_target}">{esc_attr(title)}</a>&hellip;</p>
+  <p>Redirecting to <a href="{refresh_target}">{esc_attr(title)}</a>&hellip;</p>{inline_block}
 </body>
 </html>"""
 

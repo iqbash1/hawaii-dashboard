@@ -25,12 +25,33 @@ function escapeAttr(s) {
     return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
+function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function renderRedirect(q) {
     const shareUrl = `${SITE}/q/${q.id}/`;
     const target = `/?from_q=${q.id}`;
     const targetAbs = `${SITE}${target}`;
     const ogImage = `${SITE}/assets/og/q/${q.slug}.png`;
     const metaDesc = escapeAttr(q.claim);
+
+    // Inline body content for crawlers / print / no-JS (matches Python generator).
+    const verdict = q.correct === true ? 'True' : (q.correct === false ? 'False' : '');
+    const answerText = q.answer || '';
+    const chartUrl = q.chartUrl || '/';
+    const answerBits = [];
+    if (verdict) answerBits.push(`<strong>${verdict}.</strong>`);
+    if (answerText) answerBits.push(escapeHtml(answerText));
+    const answerBlock = answerBits.length ? `<p>${answerBits.join(' ')}</p>` : '';
+    const inlineBlock = `
+  <article style="max-width:640px;margin:2rem auto;padding:0 1rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#333;line-height:1.55;">
+    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;letter-spacing:0.05em;margin:0;">Do you know Hawaiʻi?</p>
+    <p style="margin:0.25rem 0 1rem;font-size:1.25rem;font-weight:600;">${escapeHtml(q.claim)}</p>
+    ${answerBlock}
+    <p style="margin-top:1.5rem;"><a href="${chartUrl}">See the data &rarr;</a></p>
+  </article>`;
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,7 +73,7 @@ function renderRedirect(q) {
   <meta http-equiv="refresh" content="0;url=${targetAbs}">
 </head>
 <body>
-  <p>Redirecting to <a href="${targetAbs}">Do you know Hawaiʻi?</a>&hellip;</p>
+  <p>Redirecting to <a href="${targetAbs}">Do you know Hawaiʻi?</a>&hellip;</p>${inlineBlock}
 </body>
 </html>
 `;
