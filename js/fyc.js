@@ -536,14 +536,13 @@
             if (!el) return;
             el.innerHTML = sorted.map(({ r, tot, move }) => {
                 const cls = Utils.rankColorClass(r.standing.endRank, tot);
-                const absDir = absDirection(r);
-                const absCls = absDir ? ` fyc-val-${absDir}` : '';
+                const absDir = absDirection(r) || 'neu';
                 return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                     <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
                     <span class="fyc-rank-name">${r.metric}</span>
                     <span class="fyc-rank-cat">${r.area}</span>
                     ${Utils.rankMoveHtml(r)}
-                    <span class="fyc-rank-val${absCls}">${r.changeText}</span>
+                    <span class="fyc-rank-val fyc-val-${absDir}">${r.changeText}</span>
                 </a>`;
             }).join('');
             ['rank', 'category', 'move', 'value'].forEach(col => {

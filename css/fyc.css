@@ -159,6 +159,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-val { font-size: var(--text-2xs); font-weight: 600; width: 130px; text-align: right; flex-shrink: 0; color: var(--text-muted); }
 .fyc-rank-val.fyc-val-pos { color: var(--positive); }
 .fyc-rank-val.fyc-val-neg { color: var(--negative); }
+.fyc-rank-val.fyc-val-neu { color: var(--neutral); }
 
 /* Print */
 @media print {
