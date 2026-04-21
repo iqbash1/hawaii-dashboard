@@ -614,7 +614,7 @@ COUNTY_COLORS = [
     (13, 124, 143),    # Honolulu - teal
     (230, 140, 50),    # Hawaii - orange
     (160, 80, 160),    # Maui - purple
-    (60, 160, 90),     # Kauai - green
+    (60, 160, 90),     # Kauaʻi - green
 ]
 
 
@@ -789,6 +789,84 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
     redirect_target = f"/{redirect_query}{redirect_hash}"
     refresh_target = f"{SITE_URL}/{redirect_query}{redirect_hash}"
 
+    # Inline body content (crawler / print / no-JS fallback). Invisible to JS users
+    # because the <script> redirect above fires before <body> paints.
+    def _esc(s):
+        if s is None:
+            return ''
+        return (str(s).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
+
+    why = metric.get('whyItMatters', '') or ''
+    inline_parts = []
+
+    if view == 'rank-history':
+        if rank_history and rank_history.get('hi_rank_latest'):
+            hi_rank = rank_history['hi_rank_latest']
+            total = rank_history['total']
+            yr = rank_history['latest_year']
+            inline_parts.append(
+                f'<p><strong>Current rank:</strong> #{hi_rank} of {total} states '
+                f'({_esc(formatted)}, {yr})</p>'
+            )
+        rh_summary = (metric.get('rankHistoryNarrative') or {}).get('summary', '')
+        if rh_summary:
+            inline_parts.append(f'<p>{_esc(rh_summary)}</p>')
+    elif view == 'rankings':
+        if rankings and rankings.get('hawaiiRank', 0) > 0:
+            inline_parts.append(
+                f'<p><strong>Hawai\u02BBi rank:</strong> #{rankings["hawaiiRank"]} of '
+                f'{rankings["total"]} states ({_esc(formatted)}, {rankings["year"]})</p>'
+            )
+        if why:
+            inline_parts.append(f'<p>{_esc(why)}</p>')
+    elif view == 'county':
+        counties = county_data.get('counties', []) if county_data else []
+        data = county_data.get('data', {}) if county_data else {}
+        if counties and data:
+            rows = []
+            for cname in counties:
+                series = data.get(cname, {}) or {}
+                if series:
+                    yrs = sorted(series.keys())
+                    if yrs:
+                        y = yrs[-1]
+                        v = series[y]
+                        rows.append(
+                            f'<li><strong>{_esc(cname)}:</strong> '
+                            f'{_esc(format_value(v, unit, dec))} ({y})</li>'
+                        )
+            if rows:
+                inline_parts.append('<ul>' + ''.join(rows) + '</ul>')
+        if why:
+            inline_parts.append(f'<p>{_esc(why)}</p>')
+    else:  # detail / trend
+        summary_bits = [f'<strong>Current:</strong> {_esc(formatted)}']
+        if latest_year:
+            summary_bits.append(f'({latest_year})')
+        head = ' '.join(summary_bits)
+        if rankings and rankings.get('hawaiiRank', 0) > 0:
+            head += (f' &middot; <strong>Rank:</strong> #{rankings["hawaiiRank"]} '
+                     f'of {rankings["total"]} states')
+        inline_parts.append(f'<p>{head}</p>')
+        if why:
+            inline_parts.append(f'<p>{_esc(why)}</p>')
+
+    inline_html = '\n    '.join(inline_parts)
+    inline_block = ''
+    if inline_html:
+        inline_block = (
+            f'\n  <article style="max-width:640px;margin:2rem auto;padding:0 1rem;'
+            f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;'
+            f'color:#333;line-height:1.55;">\n'
+            f'    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;'
+            f'letter-spacing:0.05em;margin:0;">{_esc(area)}</p>\n'
+            f'    <h1 style="margin:0.25rem 0 1rem;font-size:1.5rem;">{_esc(metric_name)}</h1>\n'
+            f'    {inline_html}\n'
+            f'    <p style="margin-top:1.5rem;"><a href="{refresh_target}">'
+            f'View interactive chart &rarr;</a></p>\n'
+            f'  </article>'
+        )
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -812,7 +890,7 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
   <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
 <body>
-  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name}</a>&hellip;</p>
+  <p>Redirecting to <a href="{refresh_target}">Hawai\u02BBi Dashboard &mdash; {metric_name}</a>&hellip;</p>{inline_block}
 </body>
 </html>"""
 
