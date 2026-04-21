@@ -28,7 +28,7 @@ hawaii-dashboard/
 ├── index.html              # Main page: header, card grid, detail modal, footer
 ├── css/
 │   ├── styles.css          # All shared styles (flat design, responsive)
-│   ├── fyc.css             # Change Summary page styles (5-year + 10-year)
+│   ├── fyc.css             # Change Summary page styles (all 5 views)
 │   └── about.css           # About page styles
 ├── js/
 │   ├── data.js             # Embedded metric data (Hawaiʻi + 50-state medianSeries per metric)
@@ -475,15 +475,15 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 
 ### Change Summary Pages (`/five-`, `/ten-`, `/fifteen-`, `/twenty-`, `/twenty-five-year-change/`)
 
-A standalone summary page for policymakers. Five routes share the same shell and logic, defaulting to a 5-year look-back at `/five-year-change/`. The page heading has a dropdown that links between the five routes. Rendering logic is in `js/fyc.js` (shared by all shells); shared pure functions (narrative generation, ranking helpers, county HTML) are in `js/utils.js`. The span (5/10/15/20/25) is inferred from `location.pathname` via `SPAN_WORD_TO_NUM` and threaded through computation and display strings. Key sections:
+A standalone summary page for policymakers. Five routes share the same shell and logic, defaulting to a 5-year look-back at `/five-year-change/`. The H1 heading has a dropdown on the word "N years" that links between the five routes. Rendering logic is in `js/fyc.js` (shared by all shells); shared pure functions (narrative generation, ranking helpers, county HTML) are in `js/utils.js`. The span (5/10/15/20/25) is inferred from `location.pathname` via `SPAN_WORD_TO_NUM` and threaded through computation and display strings. Key sections (in render order):
 
-1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45); each row shows "Rank #X → #Y · absolute change" (rank-first)
-2. **Ranking Changes chips** - one row, 3 tiles (Improved / Little Change / Worsened) counting rank movement; each tile links to the Dashboard with a synthetic bundle filter so the user sees the matching metrics. ✕ on the Dashboard pill returns the user to this page.
-3. **Policy Area Overview scorecard** - one row per area, sorted green → yellow → red; national rank, standing text, trend arrows
-4. **Area sections** - collapsed by default; narrative summary with expand toggle
-5. **National Ranking table** - sortable by rank, category, or change-in-rank
+1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45). Gains/Declines filter by **rank shift** (`startRank - endRank`), not by combined status — so a metric can appear in Biggest Declines if its rank dropped, even when its absolute value improved. Each row shows "Rank #X → #Y · absolute change" with the rank and value portions colored independently (see coloring rule below).
+2. **Ranking Changes chips** - 3 tiles (Improved / Little Change / Worsened) counting rank movement. Each tile links to the Dashboard with a synthetic bundle filter pre-applied. Clicking ✕ on the Dashboard pill returns to this view via the `return_to` query param (set from `SPAN_NUM_TO_PATH[SPAN_YEARS]`).
+3. **Policy Area Overview scorecard** - one row per area, sorted strong → mixed → weak. Left-border color and "X of Y above avg." text are both colored from the same signal: green (≥60% of the area's metrics above national median), yellow (mixed, 40-60%), red (≤40%). No stars — the fraction itself explains the color. Trend arrows at right show improving/worsening counts.
+4. **Area sections** - collapsed by default; `Utils.generateAreaNarrative()` produces a 5-7 sentence summary per area, expand toggle reveals individual metric rows.
+5. **National Ranking table** - all metrics with rank data, sortable by Current rank / Metric / Category / Rank change / Value change. Value change column mirrors spotlight format ("+13.1%", "-1,474 per 100K") and is colored green (improving) / red (worsening) / yellow (|relChange| < 5%).
 
-**Short data-span handling:** Metrics whose data doesn't cover the full look-back window are excluded from that view entirely. `computeChange` returns null when `latestYear - baseYear < SPAN_YEARS` (after the ±2-year fallback has been applied). Current coverage by view:
+**Span exclusion rule:** Metrics whose data doesn't cover the full look-back window are dropped from that view. `computeChange` returns null when `latestYear - baseYear < SPAN_YEARS` (after the ±2-year fallback has been applied). Current coverage by view:
 
 | View | Metrics included | Excluded (insufficient history) |
 |------|-------------------|--------------------------------|
@@ -493,7 +493,12 @@ A standalone summary page for policymakers. Five routes share the same shell and
 | 20-year | 14 | + ba-or-higher, real-pci, renter-burden, home-price, roads, food-insecurity, labor-productivity |
 | 25-year | 10 | + naep math/reading, renewables, net-migration |
 
-**Rank vs absolute-change coloring:** Rank movement and absolute-value change are colored independently — a metric can improve in value while its rank worsens (e.g., voter participation +13.8% over 10yr but rank #31→#50). Helpers `absDirection(r)` and `rankDirection(s)` drive inline span coloring in the spotlight detail, area row line2 (trend), and area row line3 (rank standing). `.fyc-val-pos` = green, `.fyc-val-neg` = red, empty = muted.
+**Rank vs absolute-change coloring (decoupled):** Rank movement and absolute-value change are colored independently — a metric can improve in value while its rank worsens because other states improved faster (e.g., Voter Participation over 10yr: rank #31→#50 red, +13.8% green). Two helpers in `js/fyc.js` drive this:
+
+- `absDirection(r)` returns `'pos'` | `'neg'` | `''` — based purely on `relChange` and `goodDirection`; returns `''` when `|relChange| < 5`.
+- `rankDirection(s)` returns `'pos'` | `'neg'` | `''` — based purely on `startRank` vs `endRank`.
+
+CSS classes: `.fyc-val-pos` = green, `.fyc-val-neg` = red, `.fyc-val-neu` = yellow (used in the ranking table's Value change column to distinguish "no meaningful change" from "no data"). Applied inline on rank text + value text in: spotlight detail, area row line 2 (Hawaiʻi trend), area row line 3 (Rank now #Y…), ranking table Value change column.
 
 ### Governor Term Overlay
 
@@ -788,9 +793,10 @@ npm test
 | `/rh/{slug}/{code}/` opens Rank history with comparison active | Comparison URL parsing or `slugToState()` broken |
 | Change Summary 5-year view loads without JS errors | JS errors on `/five-year-change/` page |
 | Change Summary 5-year view renders one row per metric (26 rows) | Missing metric in `AREA_ORDER` (js/fyc.js) |
-| Change Summary 5-year H1 shows "5 years" with no short-span notes | Dropdown wiring or span inference regressed |
+| Change Summary 5-year H1 shows "5 years" and broadband is included | Dropdown wiring, span inference, or exclusion filter regressed |
 | Change Summary 10-year view loads without JS errors | JS errors on `/ten-year-change/` page |
 | Change Summary 10-year view excludes broadband (renders 25 rows, no broadband in rank table) | 10-year shell missing, short-span exclusion filter regressed, or broadband data changed |
+| Change Summary 15/20/25-year views render expected row counts (21/14/10) | Span coverage changed — recompute exclusion table in docs |
 
 ### CI
 

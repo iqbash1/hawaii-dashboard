@@ -5,7 +5,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-header { padding: 2rem 1.5rem 0; text-align: center; max-width: 740px; margin: 0 auto; }
 .fyc-header h1 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
 .fyc-deck { font-size: var(--text-base); color: var(--text-secondary); line-height: 1.55; margin-bottom: 0.5rem; }
-.fyc-standing-note { font-size: var(--text-sm); color: var(--text-muted); line-height: 1.5; margin-bottom: 0; }
 
 /* Span toggle (dropdown inside H1: "5 years" / "10 years") */
 .fyc-span-toggle { position: relative; display: inline-block; }
@@ -151,7 +150,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-item.rank-good   .fyc-rank-num { color: var(--positive); }
 .fyc-rank-item.rank-mid    .fyc-rank-num { color: var(--neutral); }
 .fyc-rank-item.rank-bad    .fyc-rank-num { color: var(--negative); }
-/* 5-year move column */
+/* Rank change column */
 .fyc-rank-move { font-size: var(--text-2xs); font-weight: 700; width: 95px; text-align: left; flex-shrink: 0; }
 .fyc-rank-move.move-up     { color: var(--positive); }
 .fyc-rank-move.move-down   { color: var(--negative); }

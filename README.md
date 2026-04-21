@@ -12,13 +12,13 @@ Static site hosted on Cloudflare Pages. No backend, no database, no build step f
 index.html              Main page (single-page app)
 css/
   styles.css            All shared styles
-  fyc.css               Change Summary page styles (5-year + 10-year views)
+  fyc.css               Change Summary page styles (all 5 views)
   about.css             About page styles
 js/
   app.js                Application logic (routing, modal, cards, data export)
   charts.js             Chart.js rendering (sparklines, detail, rankings, county)
   utils.js              Shared pure functions (narrative, ranking helpers, county HTML)
-  fyc.js                Change Summary page logic (span-aware; shared by 5-year + 10-year shells)
+  fyc.js                Change Summary page logic (span-aware; shared by all 5 shells)
   data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)
   county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauai

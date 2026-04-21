@@ -1,7 +1,11 @@
 // ============================================================
-// Hawaiʻi Dashboard - Change Summary Page (5-year / 10-year)
+// Hawaiʻi Dashboard - Change Summary Page
 //
-// Extracted from five-year-change/index.html in Apr 2026.
+// Single module driving five distinct routes: /five-, /ten-,
+// /fifteen-, /twenty-, /twenty-five-year-change/. The look-back
+// window (SPAN_YEARS) is inferred from window.location.pathname
+// and threaded through all computations and display strings.
+//
 // Depends on: DASHBOARD_DATA, STATE_DATA, COUNTY_DATA, Utils
 // ============================================================
 
@@ -25,7 +29,6 @@
      * reads this constant. Metrics whose data doesn't cover SPAN_YEARS are
      * excluded from the view (see computeChange).
      */
-    const SPAN_WORDS = ['five', 'ten', 'fifteen', 'twenty', 'twenty-five'];
     const SPAN_WORD_TO_NUM = { five: 5, ten: 10, fifteen: 15, twenty: 20, 'twenty-five': 25 };
     const SPAN_NUM_TO_PATH = {
         5: '/five-year-change/',
@@ -52,7 +55,7 @@
         { area: 'Infrastructure, Resilience & Trust', metrics: ['road_poor_pct', 'broadband_subscription_pct', 'renewables_share_gen', 'rainy_day_fund_pct', 'voter_participation_rate', 'net_domestic_migration_rate'] },
     ];
 
-    /* ── Helpers (kept from original) ── */
+    /* ── Year-key and value helpers ── */
     function parseYear(key) {
         const parts = key.split('-');
         return Number(parts[parts.length - 1]);
@@ -407,43 +410,7 @@
             }
         }
 
-        // 2. Summary counts
-        const improved = allResults.filter(r => r.status === 'improving').length;
-        const worsened = allResults.filter(r => r.status === 'worsening').length;
-        const littleChange = allResults.filter(r => r.status === 'little-change').length;
-        const total = allResults.length;
-
-        let betterNow = 0, betterThen = 0, rankUp = 0, rankDown = 0;
-        for (const r of allResults) {
-            if (r.standing) {
-                if (r.standing.betterNow) betterNow++;
-                if (r.standing.betterThen) betterThen++;
-                if (r.standing.startRank != null) {
-                    if (r.standing.endRank < r.standing.startRank) rankUp++;
-                    else if (r.standing.endRank > r.standing.startRank) rankDown++;
-                }
-            }
-        }
-
-        // County pattern assessment
-        const metricsWithCounty = allResults.filter(r => r.county);
-        let countyPattern = 'mixed';
-        if (metricsWithCounty.length > 0) {
-            let alignedCount = 0;
-            for (const r of metricsWithCounty) {
-                if (r.county.compressed) {
-                    // All same direction; check if it matches state direction
-                    if (r.county.text.includes('improved') && r.status === 'improving') alignedCount++;
-                    else if (r.county.text.includes('worsened') && r.status === 'worsening') alignedCount++;
-                    else if (r.county.text.includes('little change') && r.status === 'little-change') alignedCount++;
-                }
-            }
-            const ratio = alignedCount / metricsWithCounty.length;
-            if (ratio >= 0.7) countyPattern = 'mostly aligned';
-            else if (ratio <= 0.2) countyPattern = 'diverging';
-        }
-
-        // 3. Rank change counts
+        // 2. Rank-move tiers for the "Ranking Changes" chips
         const RANK_SHIFT = Utils.RANK_SHIFT;
         const rankMoveTiers = { improved: [], stable: [], worsened: [] };
         for (const r of allResults) {
@@ -494,15 +461,13 @@
             </div>
         </div>`;
 
-        // 3c. Area scorecard
+        // 3. Area scorecard
         const scorecardHtml = buildAreaScorecard(allResults);
 
-        // 3e. National ranking table
+        // 4. National ranking table
         const allRanked = allResults
             .filter(r => r.standing && r.standing.endRank != null)
             .sort((a, b) => a.standing.endRank - b.standing.endRank);
-
-
 
         const rankData = allRanked.map(r => ({
             r,
@@ -636,7 +601,7 @@
         // 6. Method note
         const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
-        // 0. Spotlight: Biggest gains, Biggest declines, Most off-track
+        // 7. Spotlight: Biggest gains, Biggest declines, Most off-track
         // Rank-first display: rank movement is the primary governance signal;
         // absolute change is shown as secondary context.
         function spotlightItem(r) {
@@ -659,7 +624,7 @@
 
         // Rank shift is the primary filter for gains/declines: a metric's standing vs
         // other states is the spotlight signal. Absolute value may move the other way
-        // (e.g., Voter Participation over 30yr: rank #18→#50 but value +3.7%) and is
+        // (e.g., Voter Participation over 10yr: rank #31→#50 but value +13.8%) and is
         // shown alongside in its own color via spotlightItem's inline spans.
         function rankShift(r) {
             return (r.standing && r.standing.startRank != null && r.standing.endRank != null)
