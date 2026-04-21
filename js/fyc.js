@@ -323,8 +323,8 @@
         }
         rowItems.sort((a, b) => a.sortOrder - b.sortOrder);
         let rows = rowItems.map(i => i.html).join('');
-        return `<div class="fyc-scorecard">
-            <div class="fyc-scorecard-title">Policy area overview</div>
+        return `<div class="fyc-section-label">Policy Area Overview</div>
+        <div class="fyc-scorecard">
             <div class="fyc-scorecard-header">
                 <span class="fyc-scorecard-hdr fyc-scorecard-hdr-area">Area</span>
                 <span class="fyc-scorecard-hdr fyc-scorecard-hdr-standing">National rank</span>
@@ -398,7 +398,7 @@
             return `../?${q.toString()}`;
         }
         const chipsHtml = `<div class="fyc-chips-group">
-            <div class="fyc-chips-row-label">Ranking Changes</div>
+            <div class="fyc-section-label">Ranking Changes</div>
             <div class="fyc-chips">
                 <a class="fyc-chip rank-up" href="${tierHref('improved')}">
                     <div class="fyc-chip-count">${rankMoveTiers.improved.length}</div>
@@ -484,8 +484,8 @@
         };
 
         const rankTableHtml = `
+            <div class="fyc-section-label">National Ranking</div>
             <div class="fyc-rank-breakdown">
-                <div class="fyc-rank-breakdown-title">National ranking</div>
                 <div class="fyc-rank-header">
                     <span class="fyc-rank-hdr-rank fyc-rank-hdr-sortable active" id="fyc-rhdr-rank" onclick="window._fycRankSort('rank')">Current rank<span class="fyc-rank-sort-ind">▲</span></span>
                     <span class="fyc-rank-hdr-name">Metric</span>

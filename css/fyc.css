@@ -43,8 +43,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 
 /* Summary chips */
 .fyc-chips-group { margin-bottom: 2.5rem; }
-.fyc-chips-row-label { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; margin-top: 0.75rem; }
-.fyc-chips-row-label:first-child { margin-top: 0; }
+/* Shared uppercase label for page sections (Ranking Changes, Policy Area Overview, National Ranking) */
+.fyc-section-label { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; margin-top: 2rem; }
+.fyc-section-label:first-child { margin-top: 0; }
 .fyc-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
 /* Ranking Changes chips: each is an <a> linking to the Dashboard filtered to that tier */
 .fyc-chip { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); padding: 0.9rem 1rem; text-align: center; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
@@ -62,7 +63,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 
 /* Area scorecard */
 .fyc-scorecard { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 2.5rem; overflow: hidden; }
-.fyc-scorecard-title { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
 /* shared grid template: area | standing text | trend */
 .fyc-scorecard-header,
 .fyc-scorecard-row { display: grid; grid-template-columns: 1fr 180px 180px; gap: 1rem; align-items: center; }
@@ -120,8 +120,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-method { font-size: var(--text-xs); color: var(--text-muted); text-align: center; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border); line-height: 1.5; }
 
 /* National standing table */
-.fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-top: 2.5rem; margin-bottom: 1.5rem; overflow: hidden; }
-.fyc-rank-breakdown-title { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
+.fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
 .fyc-rank-header { display: flex; align-items: center; gap: 0.65rem; padding: 0.28rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
 .fyc-rank-hdr-rank { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 100px; flex-shrink: 0; text-align: left; }
 .fyc-rank-hdr-name { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; min-width: 0; text-align: left; }
