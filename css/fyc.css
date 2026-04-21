@@ -128,30 +128,30 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-top: 2.5rem; margin-bottom: 1.5rem; overflow: hidden; }
 .fyc-rank-breakdown-title { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
 .fyc-rank-header { display: flex; align-items: center; gap: 0.65rem; padding: 0.28rem 1rem; border-bottom: 1px solid var(--border); background: #fafbfc; }
-.fyc-rank-hdr-rank { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 100px; flex-shrink: 0; text-align: left; }
+.fyc-rank-hdr-rank { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 110px; flex-shrink: 0; text-align: left; }
 .fyc-rank-hdr-name { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; text-align: left; }
-.fyc-rank-hdr-cat  { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; flex-shrink: 0; }
-.fyc-rank-hdr-move { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 145px; text-align: left; flex-shrink: 0; }
+.fyc-rank-hdr-cat  { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 200px; flex-shrink: 0; }
+.fyc-rank-hdr-move { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 125px; text-align: left; flex-shrink: 0; }
 .fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; color: var(--text-secondary); border-radius: 3px; transition: background 0.1s, color 0.1s; }
 .fyc-rank-hdr-sortable:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 .fyc-rank-hdr-sortable.active { color: var(--text); }
-.fyc-rank-sort-ind { font-size: var(--text-2xs); margin-left: 3px; color: #999; }
+.fyc-rank-sort-ind { font-size: var(--text-2xs); margin-left: 2px; color: #999; }
 .fyc-rank-hdr-sortable.active .fyc-rank-sort-ind { color: var(--text); }
 .fyc-rank-list { padding: 0.15rem 0; }
 .fyc-rank-item { display: flex; align-items: center; gap: 0.65rem; padding: 0.32rem 1rem; text-decoration: none; border-bottom: 1px solid #f5f6f8; transition: background 0.12s; }
 .fyc-rank-item:last-child { border-bottom: none; }
 .fyc-rank-item:hover { background: #f7f9fa; }
-.fyc-rank-num { font-size: var(--text-xs); font-weight: 700; width: 100px; flex-shrink: 0; text-align: left; }
+.fyc-rank-num { font-size: var(--text-xs); font-weight: 700; width: 110px; flex-shrink: 0; text-align: left; }
 .fyc-rank-year { font-weight: 400; font-size: var(--text-2xs); color: var(--text-muted); }
 .fyc-rank-name { font-size: var(--text-sm); color: var(--hawaii-blue); flex: 1; text-align: left; }
 .fyc-rank-item:hover .fyc-rank-name { text-decoration: underline; }
-.fyc-rank-cat { font-size: var(--text-2xs); color: var(--text-muted); width: 130px; flex-shrink: 0; }
+.fyc-rank-cat { font-size: var(--text-2xs); color: var(--text-muted); width: 200px; flex-shrink: 0; }
 /* 3-tier rank colors: green / grey / red */
 .fyc-rank-item.rank-good   .fyc-rank-num { color: var(--positive); }
 .fyc-rank-item.rank-mid    .fyc-rank-num { color: var(--neutral); }
 .fyc-rank-item.rank-bad    .fyc-rank-num { color: var(--negative); }
 /* 5-year move column */
-.fyc-rank-move { font-size: var(--text-2xs); font-weight: 700; width: 145px; text-align: left; flex-shrink: 0; }
+.fyc-rank-move { font-size: var(--text-2xs); font-weight: 700; width: 125px; text-align: left; flex-shrink: 0; }
 .fyc-rank-move.move-up     { color: var(--positive); }
 .fyc-rank-move.move-down   { color: var(--negative); }
 .fyc-rank-move.move-stable { color: var(--neutral); font-weight: 400; }
