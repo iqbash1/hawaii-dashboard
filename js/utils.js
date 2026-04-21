@@ -1,7 +1,7 @@
 // ============================================================
 // Hawaiʻi Dashboard - Shared Utilities
 //
-// Pure functions used by the 5-Year Change page (and tests).
+// Pure functions used by the Change Summary page (5-year + 10-year) and tests.
 // Dual-export: browser global `Utils`, Node.js require().
 // Build: 2026-04-01
 // ============================================================
@@ -48,7 +48,7 @@ const Utils = {
     },
 
     /* ── statusLabel(status, standing) ──
-     * Returns the display string for a metric's status badge on the 5-Year Change page.
+     * Returns the display string for a metric's status badge on the Change Summary page.
      * Combines the trend direction with national ranking context.
      * Note: threshold of ±3 rank spots is intentionally separate from RANK_SHIFT.
      */
@@ -85,12 +85,15 @@ const Utils = {
     // Narrative Generation
     // ----------------------------------------------------------------
 
-    /* ── generateAreaNarrative(metrics) ──
+    /* ── generateAreaNarrative(metrics, spanYears) ──
      * Generates a 5-7 sentence executive-summary narrative for a policy area.
      * Combines trend direction, national ranking moves, median standing,
      * quartile position, and county-level divergence into prose.
+     * spanYears (default 5) controls the look-back window in the narrative copy.
      */
-    generateAreaNarrative(metrics) {
+    generateAreaNarrative(metrics, spanYears) {
+        const span = spanYears || 5;
+        const spanWord = span === 10 ? 'ten' : 'five';
         const n = metrics.length;
         const improving = metrics.filter(r => r.status === 'improving');
         const worsening = metrics.filter(r => r.status === 'worsening');
@@ -155,7 +158,7 @@ const Utils = {
                 const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
                 s.push(`Hawai\u02BBi holds a relatively strong national position here, though the trend is mixed: ${improving.length} ${this.pl(improving.length, 'metric')} improved while ${worsening.length} worsened, with ${best.metric} showing the most improvement (${best.changeText}).`);
             } else {
-                s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have changed little over the last 5 years.`);
+                s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have changed little over the last ${span} years.`);
             }
         } else if (rankQual === 'weak') {
             if (improving.length === 0 && worsening.length > 0) {
@@ -208,7 +211,7 @@ const Utils = {
                 }
                 s.push(`A mixed picture: ${improving.length} ${this.pl(improving.length, 'metric')} improved while ${worsening.length} worsened. The strongest improvement was ${best.metric} (${best.changeText}), while ${worstNote}.`);
             } else {
-                s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last 5 years.`);
+                s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last ${span} years.`);
             }
         }
 
@@ -246,15 +249,15 @@ const Utils = {
 
         // ── Sentence 4: Median standing with interpretation ──
         if (betterNow > betterThen) {
-            s.push(`Hawai\u02BBi now outperforms the median state on ${betterNow} of ${n} metrics; five years ago, it outperformed the median on ${betterThen}.`);
+            s.push(`Hawai\u02BBi now outperforms the median state on ${betterNow} of ${n} metrics; ${spanWord} years ago, it outperformed the median on ${betterThen}.`);
         } else if (betterNow < betterThen) {
-            s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics; five years ago, that figure was ${betterThen}.`);
+            s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics; ${spanWord} years ago, that figure was ${betterThen}.`);
         } else if (betterNow === 0) {
             s.push(`Hawai\u02BBi remains below the median state on every metric in this area.`);
         } else if (betterNow === n) {
-            s.push(`Hawai\u02BBi outperforms the median state on all ${n} metrics, holding that position from 5 years ago.`);
+            s.push(`Hawai\u02BBi outperforms the median state on all ${n} metrics, holding that position from ${span} years ago.`);
         } else {
-            s.push(`Hawai\u02BBi outperforms the median state on ${betterNow} of ${n} metrics, unchanged from 5 years ago.`);
+            s.push(`Hawai\u02BBi outperforms the median state on ${betterNow} of ${n} metrics, unchanged from ${span} years ago.`);
         }
 
         // ── Sentence 5: Bottom/top quartile callout if notable ──

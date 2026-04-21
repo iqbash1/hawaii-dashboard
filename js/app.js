@@ -1085,7 +1085,7 @@ const App = {
      */
     activateBundle(bundleOrId) {
         // Accept either a bundle id (from BUNDLES) or a pre-built bundle object
-        // (used for synthetic/ad-hoc bundles like the 5-Year Change ranking chips).
+        // (used for synthetic/ad-hoc bundles like the Change Summary ranking chips).
         let bundle;
         if (typeof bundleOrId === 'string') {
             bundle = (typeof BUNDLES !== 'undefined') && BUNDLES.find(b => b.id === bundleOrId);

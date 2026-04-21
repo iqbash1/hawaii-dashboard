@@ -291,10 +291,10 @@ test.describe('Module loading', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Five-year-change page
+// Change Summary pages (5-year and 10-year views)
 // ---------------------------------------------------------------------------
 
-test.describe('Five-year-change page', () => {
+test.describe('Change Summary — 5-year view', () => {
     test('loads without JS errors', async ({ page }) => {
         const jsErrors = [];
         page.on('pageerror', (err) => jsErrors.push(err.message));
@@ -312,5 +312,39 @@ test.describe('Five-year-change page', () => {
         await page.waitForSelector('.fyc-row', { state: 'attached' });
         const rows = await page.locator('.fyc-row').all();
         expect(rows.length).toBeGreaterThanOrEqual(26);
+    });
+
+    test('H1 shows "5 years" and no short-span notes appear', async ({ page }) => {
+        await page.goto('/five-year-change/');
+        await page.waitForSelector('.fyc-row', { state: 'attached' });
+        await expect(page.locator('.fyc-span-label')).toHaveText('5 years');
+        const shortCount = await page.locator('.fyc-short-span').count();
+        expect(shortCount).toBe(0);
+    });
+});
+
+test.describe('Change Summary — 10-year view', () => {
+    test('loads without JS errors', async ({ page }) => {
+        const jsErrors = [];
+        page.on('pageerror', (err) => jsErrors.push(err.message));
+
+        await page.goto('/ten-year-change/');
+        await page.waitForSelector('.fyc-row', { state: 'attached', timeout: 10_000 });
+
+        expect(jsErrors, `JS errors: ${jsErrors.join('; ')}`).toHaveLength(0);
+    });
+
+    test('renders 26 rows and flags broadband as short-span', async ({ page }) => {
+        await page.goto('/ten-year-change/');
+        await page.waitForSelector('.fyc-row', { state: 'attached' });
+
+        const rows = await page.locator('.fyc-row').all();
+        expect(rows.length).toBeGreaterThanOrEqual(26);
+
+        await expect(page.locator('.fyc-span-label')).toHaveText('10 years');
+
+        // Only broadband should carry the short-span note in the 10-year view
+        const broadbandRow = page.locator('.fyc-row', { has: page.locator('.fyc-metric-name', { hasText: 'Broadband' }) });
+        await expect(broadbandRow.locator('.fyc-short-span').first()).toContainText('8 years shown');
     });
 });

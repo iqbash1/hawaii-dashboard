@@ -88,7 +88,7 @@ All data comes from nonpartisan federal agencies:
 ## Pages
 
 - **Dashboard** (https://hawaiidashboard.org/): Main page with all 26 metric cards, trend charts, and modal detail views.
-- **5-Year Change** (https://hawaiidashboard.org/five-year-change/): How each metric changed over the last 5 years, with rank changes and county trends.
+- **Change Summary** (https://hawaiidashboard.org/five-year-change/): How each metric changed over the last 5 years, with rank changes and county trends. A 10-year view is available at https://hawaiidashboard.org/ten-year-change/ via a dropdown in the page heading.
 - **About** (https://hawaiidashboard.org/about/): Methodology, selection criteria, metric registry, data sources, governor terms.
 - **FAQ** (https://hawaiidashboard.org/faq/): 11 frequently asked questions about the dashboard's approach, methodology, and use.
 

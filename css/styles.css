@@ -13,8 +13,8 @@
  *   -- block modifiers use double-hyphen; state classes use plain adjective
  *
  * Page-scoped prefixes:
- *   .fyc-*   Five-Year Change page components  (five-year-change/)
- *   .sc-*    Scorecard sub-components          (five-year-change/)
+ *   .fyc-*   Change Summary page components  (five-year-change/, ten-year-change/)
+ *   .sc-*    Scorecard sub-components          (Change Summary pages)
  *   .rh-*    Rank-history sub-components       (modal)
  *
  * CSS custom properties:  --hawaii-blue, --border, --radius, etc.

@@ -28,7 +28,7 @@ hawaii-dashboard/
 ├── index.html              # Main page: header, card grid, detail modal, footer
 ├── css/
 │   ├── styles.css          # All shared styles (flat design, responsive)
-│   ├── fyc.css             # Five-year-change page styles
+│   ├── fyc.css             # Change Summary page styles (5-year + 10-year)
 │   └── about.css           # About page styles
 ├── js/
 │   ├── data.js             # Embedded metric data (Hawaiʻi + 50-state medianSeries per metric)
@@ -64,7 +64,9 @@ hawaii-dashboard/
 ├── about/
 │   └── index.html          # About page: mission, methodology, data registry
 ├── five-year-change/
-│   └── index.html          # 5-year summary page: chips, scorecard, sortable ranking table
+│   └── index.html          # Change Summary (5-year view): chips, scorecard, sortable ranking table
+├── ten-year-change/
+│   └── index.html          # Change Summary (10-year view): same UI, 10-year look-back
 ├── scripts/
 │   ├── generate-og-pages.py    # Generates ALL OG images + redirect pages (PIL-based)
 │   ├── generate-og-image.py    # Generates the homepage fallback OG image
@@ -395,11 +397,13 @@ Two dropdowns sit between the header and the metric grid: "I have a question..."
 
 **Synthetic bundles (ad-hoc filter via URL):**
 
-The Dashboard also accepts an ad-hoc filter that's not backed by the `BUNDLES` array. This is used by the 5-Year Change page chips (Improved / Little Change / Worsened) to send the user to a filtered Dashboard view matching a computed tier. URL shape:
+The Dashboard also accepts an ad-hoc filter that's not backed by the `BUNDLES` array. This is used by the Change Summary page chips (Improved / Little Change / Worsened) to send the user to a filtered Dashboard view matching a computed tier. URL shape:
 
 ```
 /?bundle=synthetic&metrics=slug1,slug2,slug3&title=Display+Title&return_to=/five-year-change/
 ```
+
+The `return_to` is set dynamically to `/five-year-change/` or `/ten-year-change/` based on which view the user came from.
 
 - `metrics` — comma-separated slug list (the bundle's metrics)
 - `title` — pill label shown in the "I have a question..." trigger
@@ -463,15 +467,17 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 3. **Governor term overlay** - same overlay as the Trend chart
 4. **Legend** - county color dots + dashed state line indicator
 
-### Five-Year Change Page (`/five-year-change/`)
+### Change Summary Page (`/five-year-change/` and `/ten-year-change/`)
 
-A standalone summary page for policymakers. Rendering logic is in `five-year-change/index.html`; shared pure functions (narrative generation, ranking helpers, county HTML) are imported from `js/utils.js`. Key sections:
+A standalone summary page for policymakers. Two routes share the same shell and logic: `/five-year-change/` defaults to a 5-year look-back, `/ten-year-change/` to a 10-year look-back. The page heading has a dropdown on the word "5 years"/"10 years" that links between the two routes. Rendering logic is in `js/fyc.js` (shared by both shells); shared pure functions (narrative generation, ranking helpers, county HTML) are in `js/utils.js`. The span (5 or 10) is inferred from `location.pathname` and threaded through computation and display strings. Key sections:
 
 1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45); each row shows "Rank #X → #Y · absolute change" (rank-first)
 2. **Ranking Changes chips** - one row, 3 tiles (Improved / Little Change / Worsened) counting rank movement; each tile links to the Dashboard with a synthetic bundle filter so the user sees the matching metrics. ✕ on the Dashboard pill returns the user to this page.
-3. **Policy Area Overview scorecard** - one row per area, sorted green → yellow → red; national rank, standing text, 5-year trend arrows
+3. **Policy Area Overview scorecard** - one row per area, sorted green → yellow → red; national rank, standing text, trend arrows
 4. **Area sections** - collapsed by default; narrative summary with expand toggle
-5. **National Ranking table** - sortable by rank, category, or 5-yr change
+5. **National Ranking table** - sortable by rank, category, or change-in-rank
+
+**Short data-span handling:** In the 10-year view, metrics whose earliest data is too recent to cover the full 10-year window are tagged with a muted "N years shown" note wherever they appear (area row, spotlight, rank table). Currently only `broadband_subscription_pct` triggers this (data starts 2016, so latest-2024 = 8 years). Threshold: shown when `SPAN_YEARS - actualSpan >= 2`.
 
 ### Governor Term Overlay
 
@@ -599,19 +605,19 @@ Pure utility functions. Dual-export for Node.js unit testing.
 
 ### `Utils` (utils.js)
 
-Shared pure functions used by the Five-Year Change page and unit tests. Dual-export: browser global via `<script>` tag, or `require()` for Node.js tests.
+Shared pure functions used by the Change Summary page and unit tests. Dual-export: browser global via `<script>` tag, or `require()` for Node.js tests.
 
 | Method/Property | Description |
 |----------------|-------------|
 | `RANK_SHIFT` | Minimum rank-position move (2 spots) to show an up/down arrow in the rank table |
 | `rankColorClass(rank, tot)` | Returns CSS class `rank-good`, `rank-mid`, or `rank-bad` based on which third of `tot` the `rank` falls in |
-| `rankMoveHtml(r)` | Returns an HTML `<span>` showing the 5-year rank movement for a metric row (up arrow, down arrow, FLAT, or dash) |
+| `rankMoveHtml(r)` | Returns an HTML `<span>` showing the rank movement for a metric row over the active span (up arrow, down arrow, FLAT, or dash) |
 | `statusLabel(status, standing)` | Returns the display string for a metric's status chip, combining trend direction (improving/worsening/little-change) with national ranking context (outpacing/behind/in step) |
 | `pl(count, singular, plural)` | Simple pluralization helper; auto-appends "s" if no explicit plural given |
-| `generateAreaNarrative(metrics)` | Generates a 5-7 sentence executive-summary narrative for a policy area, analyzing trend mix, ranking moves, median standing, quartile position, and county-level divergence |
+| `generateAreaNarrative(metrics, spanYears)` | Generates a 5-7 sentence executive-summary narrative for a policy area, analyzing trend mix, ranking moves, median standing, quartile position, and county-level divergence. `spanYears` (defaults to 5) controls copy like "the last 5 years" / "five years ago" |
 | `first2Sentences(text)` | Extracts the first two sentences from a string (used to truncate narratives in the scorecard) |
 | `areaId(area)` | Converts an area name to a URL-safe lowercase hyphenated ID (e.g. `"Safety & Health"` to `"safety-health"`) |
-| `renderCountyLine(countyData)` | Returns an HTML string for the county direction line on a Five-Year Change metric row |
+| `renderCountyLine(countyData)` | Returns an HTML string for the county direction line on a Change Summary metric row |
 
 ### `ChartUtils` (charts.js)
 
@@ -764,8 +770,11 @@ npm test
 | `/r/{slug}/` opens modal on Rank tab | Path routing for rankings share links broken |
 | `/rh/{slug}/` opens modal on Rank history tab | Path routing for rank history share links broken |
 | `/rh/{slug}/{code}/` opens Rank history with comparison active | Comparison URL parsing or `slugToState()` broken |
-| Five-year-change page loads without JS errors | JS errors on `/five-year-change/` page |
-| Five-year-change renders one row per metric (26 rows) | Missing metric in five-year-change AREA_ORDER |
+| Change Summary 5-year view loads without JS errors | JS errors on `/five-year-change/` page |
+| Change Summary 5-year view renders one row per metric (26 rows) | Missing metric in `AREA_ORDER` (js/fyc.js) |
+| Change Summary 5-year H1 shows "5 years" with no short-span notes | Dropdown wiring or span inference regressed |
+| Change Summary 10-year view loads without JS errors | JS errors on `/ten-year-change/` page |
+| Change Summary 10-year view renders 26 rows + broadband "8 years shown" note | 10-year shell missing, short-span flag misfiring, or broadband data changed |
 
 ### CI
 
