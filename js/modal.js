@@ -1315,21 +1315,42 @@ const Modal = {
     /**
      * Compute a neutral trend phrase comparing two 3-year windows.
      * Uses the same window logic as the card 5-year change indicator.
+     *
+     * 2020 and 2021 are excluded from the pool because the COVID collapse and
+     * snapback distort normal-times comparisons (unemployment spiked to 11.6%,
+     * labor-force participation dropped, business formation swung). The
+     * 2019-to-2022 shift in the windows is labeled in the phrase itself; see
+     * about/index.html methodology note.
      * @param {string} slug - Metric ID
-     * @returns {string|null} e.g. "improved 8.2% from the 2019-21 to 2022-24 average"
+     * @returns {string|null} e.g. "improved 8.2% from the 2017-19 to 2022-24 average (2020-21 excluded)"
      */
     computeTrendPhrase(slug) {
         const effective = App.getEffectiveData(slug);
         if (!effective || !effective.hawaii) return null;
         const m = App.getActiveMetricData(slug);
 
-        const sortedKeys = Object.keys(effective.hawaii)
+        const TREND_EXCLUDE_YEARS = new Set(['2020', '2021']);
+        const isPandemicYear = (k) => !String(k).includes('-') && TREND_EXCLUDE_YEARS.has(String(k));
+        const allKeys = Object.keys(effective.hawaii);
+        const excluded = allKeys.some(isPandemicYear);
+
+        const sortedKeys = allKeys
+            .filter(k => !isPandemicYear(k))
             .sort((a, b) => App.keyEnd(a) - App.keyEnd(b));
         if (sortedKeys.length < 4) return null;
 
-        const recent = sortedKeys.slice(-3);
-        const prior  = sortedKeys.slice(-6, -3);
-        if (prior.length < 2) return null;
+        // When the pandemic years were filtered out, pin each window to the
+        // pre-pandemic / post-pandemic side so the range labels stay
+        // contiguous (e.g., "2017-19" and "2022-24" rather than windows that
+        // straddle 2020-21). When no exclusion happened, use the original
+        // adjacent-window logic (last 3 vs prior 3).
+        const recent = excluded
+            ? sortedKeys.filter(k => App.keyEnd(k) > 2021).slice(-3)
+            : sortedKeys.slice(-3);
+        const prior = excluded
+            ? sortedKeys.filter(k => App.keyEnd(k) < 2020).slice(-3)
+            : sortedKeys.slice(-6, -3);
+        if (prior.length < 2 || recent.length < 1) return null;
 
         const avg = (keys) => {
             const vals = keys.map(k => effective.hawaii[k]).filter(v => v != null);
@@ -1348,8 +1369,9 @@ const Modal = {
         const pctPart = isFlat ? '' : ` ${Math.abs(pctChange) > 100 ? Math.abs(pctChange).toFixed(0) : Math.abs(pctChange).toFixed(1)}%`;
         const priorLbl  = Compute.formatYearRange(prior[0], prior[prior.length - 1], '\u2013');
         const recentLbl = Compute.formatYearRange(recent[0], recent[recent.length - 1], '\u2013');
+        const suffix = excluded ? ' (2020\u201321 excluded)' : '';
 
-        return `${word}${pctPart} from the ${priorLbl} to ${recentLbl} average`;
+        return `${word}${pctPart} from the ${priorLbl} to ${recentLbl} average${suffix}`;
     },
 
     /**
