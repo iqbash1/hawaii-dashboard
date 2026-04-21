@@ -88,7 +88,7 @@ const Utils = {
     /* ── generateAreaNarrative(metrics, spanYears) ──
      * Generates a 5-7 sentence executive-summary narrative for a policy area.
      * Combines trend direction, national ranking moves, median standing,
-     * quartile position, and county-level divergence into prose.
+     * and quartile position into prose.
      * spanYears (default 5) controls the look-back window in the narrative copy.
      */
     generateAreaNarrative(metrics, spanYears) {
@@ -114,32 +114,6 @@ const Utils = {
         const betterThen = metrics.filter(r => r.standing && r.standing.betterThen != null && r.standing.betterThen).length;
         const bottomQMetrics = metrics.filter(r => r.standing && r.standing.endRank > 37);
         const topQMetrics = metrics.filter(r => r.standing && r.standing.endRank <= 13);
-
-        // ── Gather county data ──
-        const withCounty = metrics.filter(r => r.county);
-        let countyDivergeCount = 0;
-        let countyAlignedCount = 0;
-        const countyOutliers = []; // specific county-metric pairs moving opposite to state
-        for (const r of withCounty) {
-            if (r.county.compressed) {
-                countyAlignedCount++;
-            } else if (r.county.counties) {
-                const dirs = r.county.counties.map(c => c.direction);
-                const hasOpposites = dirs.includes('improved') && dirs.includes('worsened');
-                if (hasOpposites) {
-                    countyDivergeCount++;
-                    // Find the outlier counties
-                    const majority = dirs.filter(d => d === 'improved').length >= dirs.filter(d => d === 'worsened').length ? 'improved' : 'worsened';
-                    for (const c of r.county.counties) {
-                        if (c.direction !== majority && c.direction !== 'flat') {
-                            countyOutliers.push({ county: c.county, direction: c.direction, metric: r.metric });
-                        }
-                    }
-                } else {
-                    countyAlignedCount++;
-                }
-            }
-        }
 
         // ── Sentence 1: Lead with rank-based area qualifier + trend detail ──
         // Qualification is driven by current national rank, not just 5-yr trend direction.
@@ -272,55 +246,6 @@ const Utils = {
             s.push(`${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} all rank in the top quartile, a position of relative strength.`);
         }
 
-        // ── Sentence 6-7: County pattern with specifics ──
-        if (withCounty.length === 0) {
-            s.push(`County-level data is not available for metrics in this area.`);
-        } else if (withCounty.length === 1) {
-            const r = withCounty[0];
-            if (r.county.compressed) {
-                s.push(`County data is limited to ${r.metric}, where all four counties moved in the same direction as the state.`);
-            } else {
-                // Name the specific divergence
-                const outlier = r.county.counties.find(c => c.direction === 'worsened') || r.county.counties.find(c => c.direction === 'improved');
-                if (outlier) {
-                    s.push(`County data is limited to ${r.metric}, where ${outlier.county} ${outlier.direction} while other counties did not.`);
-                } else {
-                    s.push(`County data is limited to ${r.metric}, where island-level trends varied.`);
-                }
-            }
-        } else {
-            if (countyDivergeCount === 0) {
-                s.push(`Across the ${withCounty.length} metrics with county data, all four counties generally tracked the statewide trend, suggesting these patterns are broadly shared across islands.`);
-            } else {
-                // Build a specific, memorable county sentence
-                if (countyOutliers.length > 0) {
-                    // Find the most frequently diverging county
-                    const freq = {};
-                    countyOutliers.forEach(o => { freq[o.county] = (freq[o.county] || 0) + 1; });
-                    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-                    const topCounty = sorted[0][0];
-                    const topCount = sorted[0][1];
-                    const topExamples = countyOutliers.filter(o => o.county === topCounty);
-
-                    if (topCount >= 2) {
-                        const metricNames = topExamples.map(o => o.metric);
-                        s.push(`At the county level, ${topCounty} stands out: it moved against the statewide direction on ${metricNames.join(' and ')}, suggesting island-specific conditions that the state average masks.`);
-                    } else {
-                        // Multiple counties diverging on different metrics
-                        const ex1 = countyOutliers[0];
-                        if (countyOutliers.length > 1) {
-                            const ex2 = countyOutliers.find(o => o.county !== ex1.county) || countyOutliers[1];
-                            s.push(`County trends split: ${ex1.county} ${ex1.direction} on ${ex1.metric} while the state moved the other way, and ${ex2.county} ${ex2.direction} on ${ex2.metric} against the statewide pattern.`);
-                        } else {
-                            s.push(`Most county trends track the state, but ${ex1.county} ${ex1.direction} on ${ex1.metric} while the rest of the state moved the other way.`);
-                        }
-                    }
-                } else {
-                    s.push(`County trends are uneven across the ${withCounty.length} metrics with island-level data, with no single island consistently diverging from the state.`);
-                }
-            }
-        }
-
         return s.join(' ');
     },
 
@@ -330,12 +255,15 @@ const Utils = {
 
     /* ── first2Sentences(text) ──
      * Extracts the first two sentences from a string.
+     * Splits on sentence-ending punctuation only when followed by whitespace
+     * and a capital letter — so periods inside numbers ("-25.3") and
+     * parentheticals don't trigger false boundaries.
      * Falls back to the full string if fewer than two sentences are found.
      */
     first2Sentences(text) {
-        const m = text.match(/[^.!?]+[.!?]+/g);
-        if (!m || m.length <= 2) return text;
-        return m.slice(0, 2).join('').trim();
+        const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z])/);
+        if (sentences.length <= 2) return text;
+        return sentences.slice(0, 2).join(' ').trim();
     },
 
     /* ── areaId(area) ──
@@ -344,28 +272,6 @@ const Utils = {
      */
     areaId(area) {
         return area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
-    },
-
-    // ----------------------------------------------------------------
-    // County HTML
-    // ----------------------------------------------------------------
-
-    /* ── renderCountyLine(countyData) ──
-     * Returns an HTML string for the county direction line on a metric row.
-     * Returns empty string if no county data is available.
-     */
-    renderCountyLine(countyData) {
-        if (!countyData) return '';
-        if (countyData.compressed) return `<div class="fyc-line4">${countyData.text}</div>`;
-
-        const parts = countyData.counties.map(c => {
-            let arrow, cls;
-            if (c.direction === 'improved') { arrow = '\u2191'; cls = 'county-improved'; }
-            else if (c.direction === 'worsened') { arrow = '\u2193'; cls = 'county-worsened'; }
-            else { arrow = '\u2192'; cls = 'county-flat'; }
-            return `${c.county} <span class="${cls}">${arrow}</span>`;
-        });
-        return `<div class="fyc-line4">Counties: ${parts.join(' \u00b7 ')}</div>`;
     },
 };
 

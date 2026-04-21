@@ -6,7 +6,7 @@
 // window (SPAN_YEARS) is inferred from window.location.pathname
 // and threaded through all computations and display strings.
 //
-// Depends on: DASHBOARD_DATA, STATE_DATA, COUNTY_DATA, Utils
+// Depends on: DASHBOARD_DATA, STATE_DATA, Utils
 // ============================================================
 
 /* Span-toggle dropdown (open/close only; options are real links) */
@@ -283,50 +283,6 @@
         return '';
     }
 
-    /* ── County directions ── */
-    function computeCountyDirections(slug) {
-        const cd = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
-        if (!cd) return null;
-        const m = DASHBOARD_DATA[slug];
-        const isDec = isDecimalPct(m);
-        const countyOrder = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
-        const results = [];
-
-        for (const county of countyOrder) {
-            const cData = cd.data[county];
-            if (!cData) { results.push({ county, direction: null }); continue; }
-            const cLatest = getLatest(cData);
-            if (!cLatest) { results.push({ county, direction: null }); continue; }
-            const cBase = getVal(cData, cLatest.year - SPAN_YEARS);
-            if (!cBase) { results.push({ county, direction: null }); continue; }
-
-            const change = cLatest.value - cBase.value;
-            const rel = cBase.value !== 0 ? (change / Math.abs(cBase.value)) * 100 : 0;
-
-            let direction;
-            if (Math.abs(rel) < 5) direction = 'flat';
-            else if (m.goodDirection === 'up' ? change > 0 : change < 0) direction = 'improved';
-            else direction = 'worsened';
-
-            results.push({ county, direction });
-        }
-
-        const valid = results.filter(r => r.direction !== null);
-        if (valid.length < 2) return null;
-
-        // Check for compression
-        const dirs = valid.map(r => r.direction);
-        const allSame = dirs.every(d => d === dirs[0]);
-        if (allSame && valid.length === 4) {
-            if (dirs[0] === 'improved') return { compressed: true, text: 'Counties: all 4 improved' };
-            if (dirs[0] === 'worsened') return { compressed: true, text: 'Counties: all 4 worsened' };
-            if (dirs[0] === 'flat') return { compressed: true, text: 'Counties: all 4 little change' };
-        }
-
-        return { compressed: false, counties: results.filter(r => r.direction !== null) };
-    }
-
-
     /* ── Area scorecard (one row per policy area) ── */
     function buildAreaScorecard(allResults) {
         const rowItems = [];
@@ -387,7 +343,6 @@
                 const change = computeChange(slug);
                 if (!change) continue;
                 const standing = computeStanding(slug, change.baseYear, change.latestYear, change.isDec, change.unit, change.goodDirection);
-                const county = computeCountyDirections(slug);
 
                 // Refine status: "improving" requires both trend AND rank to improve;
                 // "worsening" requires both trend AND rank to worsen.
@@ -405,7 +360,6 @@
                     status,
                     area: areaGroup.area,
                     standing,
-                    county,
                 });
             }
         }
@@ -559,7 +513,6 @@
                 const absDir = absDirection(r);
                 const rankDir = rankDirection(r.standing);
                 const absCls = absDir ? `fyc-val-${absDir}` : '';
-                const countyLine = Utils.renderCountyLine(r.county);
 
                 // Render line3 with rank portion colored by rank direction (independent of trend).
                 let line3Html = '';
@@ -581,7 +534,6 @@
                         </div>
                         <div class="fyc-line2">Hawai\u02BBi trend: <span class="${absCls}">${r.changeText}</span> ${yearRange}</div>
                         ${line3Html}
-                        ${countyLine}
                     </a>`;
             }
 
