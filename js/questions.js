@@ -33,7 +33,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q009",
     "slug": "buying-a-home-in-hawaii-costs-more-compared-to-income-than-rest-of-country",
-    "claim": "Buying a home in Hawaiʻi takes more years of resident income than in any other state.",
+    "claim": "Buying a home in Hawaiʻi takes more years of a resident's income than in any other state.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 8.7x versus the median of 4.2x.",
     "chartUrl": "/r/home_price_to_income/",
@@ -575,7 +575,7 @@ const QOTD_QUESTIONS = [
     "slug": "of-all-counties-honolulu-has-the-highest-unsheltered-homelessness",
     "claim": "Of all counties, Honolulu has the highest unsheltered homelessness.",
     "correct": false,
-    "answer": "In 2024, the county with the highest value was Kauai at 63.0 per 10K.",
+    "answer": "In 2024, the county with the highest value was Kauaʻi at 63.0 per 10K.",
     "chartUrl": "/c/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
     "metricLabel": "Homelessness",

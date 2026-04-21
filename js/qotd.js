@@ -203,7 +203,7 @@ const QOTD = {
                 if (!countyData || !metricData) return this._fallbackOgImage(fig, q);
                 const hiYears = Object.keys(metricData.hawaii || {}).sort();
                 const govBoxes = App.getGovernorBoxes(hiYears);
-                const colors = { 'Honolulu': '#2563EB', 'Hawaiʻi': '#C0392B', 'Maui': '#059669', 'Kauai': '#c08a1a' };
+                const colors = { 'Honolulu': '#2563EB', 'Hawaiʻi': '#C0392B', 'Maui': '#059669', 'Kauaʻi': '#c08a1a' };
                 ChartUtils.createCountyChart(canvas, countyData, metricData, govBoxes, colors, metricData);
                 return;
             }

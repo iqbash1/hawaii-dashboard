@@ -102,7 +102,7 @@ const EXPECTED_BLOCK = [
     'excelined.org', 'www.infrastructure.gov.au', 'www.kff.org', 'kff.org',
 ];
 
-const EXPECTED_COUNTIES = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
+const EXPECTED_COUNTIES = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauaʻi'];
 
 // Names to exclude from 50-state calculations (DC, territories, aggregates)
 const NOT_A_STATE = new Set([

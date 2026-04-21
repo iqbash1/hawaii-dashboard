@@ -1028,7 +1028,7 @@ const Modal = {
     },
 
     /**
-     * Render the County tab: multi-line chart for Honolulu, Hawaiʻi, Maui, and Kauai.
+     * Render the County tab: multi-line chart for Honolulu, Hawaiʻi, Maui, and Kauaʻi.
      * @param {string} slug - Metric ID
      */
     showCounty(slug) {
@@ -1083,7 +1083,7 @@ const Modal = {
             canvas, chartData, metricData, govBoxes, App.COUNTY_COLORS, stateRef
         );
         canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', `${metricData.metric} by Hawaiʻi county: Honolulu, Hawaiʻi, Maui, Kauai`);
+        canvas.setAttribute('aria-label', `${metricData.metric} by Hawaiʻi county: Honolulu, Hawaiʻi, Maui, Kauaʻi`);
     },
 
     /**

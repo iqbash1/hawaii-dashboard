@@ -239,7 +239,7 @@ const App = {
         'Honolulu': '#0D7C8F',
         'Hawai\u02BBi': '#E67E22',
         'Maui': '#8E44AD',
-        'Kauai': '#27AE60',
+        'Kauaʻi': '#27AE60',
     },
 
     // Hawaiʻi Governors - for chart overlay

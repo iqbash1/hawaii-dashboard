@@ -57,11 +57,11 @@ const METRIC_RULES = {
     violent_crime_rate:         { min: 15,    max: 800,    maxYoYPct: 2.00, format: 'rate' },
     property_crime_rate:        { min: 500,   max: 8000,   maxYoYPct: 0.40, format: 'rate' },
     pcp_per_100k:               { min: 40,    max: 200,    maxYoYPct: 0.20, format: 'rate' },
-    // Uninsured: county-level ACS samples are small; Kauai can swing 97% in a single year
+    // Uninsured: county-level ACS samples are small; Kauaʻi can swing 97% in a single year
     uninsured_rate:             { min: 0.01,  max: 0.25,   maxYoYPct: 1.20, format: 'decimal_pct' },
     suicide_rate:               { min: 3,     max: 35,     maxYoYPct: 0.50, format: 'rate' },
     acgr:                       { min: 60,    max: 100,    maxYoYPct: 0.10, format: 'whole_pct' },
-    // ba_or_higher: county ACS samples for small counties (Kauai) can swing 25-30% in a year
+    // ba_or_higher: county ACS samples for small counties (Kauaʻi) can swing 25-30% in a year
     ba_or_higher_pct:           { min: 0.15,  max: 0.55,   maxYoYPct: 0.35, format: 'decimal_pct' },
     naep_math_8:                { min: 220,   max: 320,    maxYoYPct: 0.05, format: 'score' },
     naep_reading_8:             { min: 220,   max: 300,    maxYoYPct: 0.05, format: 'score' },
@@ -69,7 +69,7 @@ const METRIC_RULES = {
     unemployment_rate:          { min: 0.01,  max: 0.25,   maxYoYPct: 8.00, format: 'decimal_pct' },
     labor_force_participation:  { min: 50,    max: 80,     maxYoYPct: 0.10, format: 'whole_pct' },
     real_per_capita_income:     { min: 30000, max: 80000, maxYoYPct: 0.15, format: 'dollar' },
-    // renter_cost_burden: county ACS samples for small counties (Kauai) can swing 50% in a year
+    // renter_cost_burden: county ACS samples for small counties (Kauaʻi) can swing 50% in a year
     renter_cost_burden_pct:     { min: 0.25,  max: 0.75,   maxYoYPct: 0.55, format: 'decimal_pct' },
     home_price_to_income:       { min: 2.0,   max: 15.0,   maxYoYPct: 0.25, format: 'ratio' },
     // Homeless PIT counts: methodology changes and small populations cause big swings
@@ -94,7 +94,7 @@ const METRIC_RULES = {
 };
 
 // Counties expected in county data
-const EXPECTED_COUNTIES = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
+const EXPECTED_COUNTIES = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauaʻi'];
 
 // ---- Tracking ----
 let errors = 0;

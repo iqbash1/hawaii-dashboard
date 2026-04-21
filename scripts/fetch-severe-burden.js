@@ -31,10 +31,10 @@ const FIPS_TO_STATE = {
 const COUNTY_FIPS = {
     '001': 'Hawai\u02BBi',
     '003': 'Honolulu',
-    '007': 'Kauai',
+    '007': 'Kauaʻi',
     '009': 'Maui',
 };
-const COUNTY_ORDER = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
+const COUNTY_ORDER = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauaʻi'];
 const COUNTY_FIPS_CODES = ['001', '003', '007', '009'];
 
 // Census ACS 1-year: 2005-2023 (skip 2020, not released due to COVID)

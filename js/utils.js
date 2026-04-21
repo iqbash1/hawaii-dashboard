@@ -228,7 +228,7 @@ const Utils = {
         } else if (betterNow < betterThen) {
             s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics; ${spanWord} years ago, that figure was ${betterThen}.`);
         } else if (betterNow === 0) {
-            s.push(`Hawai\u02BBi remains below the median state on every metric in this area.`);
+            s.push(`Hawai\u02BBi is worse than the median state on every metric in this area.`);
         } else if (betterNow === n) {
             s.push(`Hawai\u02BBi outperforms the median state on all ${n} metrics, holding that position from ${span} years ago.`);
         } else {
@@ -238,12 +238,12 @@ const Utils = {
         // ── Sentence 5: Bottom/top quartile callout if notable ──
         if (bottomQMetrics.length >= 2) {
             const names = bottomQMetrics.map(r => r.metric);
-            s.push(`${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} all sit in the bottom quartile nationally, signaling persistent structural challenges.`);
+            s.push(`${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} all rank in the bottom quarter of states, a persistent weakness.`);
         } else if (bottomQMetrics.length === 1) {
-            s.push(`${bottomQMetrics[0].metric} remains in the bottom quartile nationally (#${bottomQMetrics[0].standing.endRank}).`);
+            s.push(`${bottomQMetrics[0].metric} remains in the bottom quarter of states (#${bottomQMetrics[0].standing.endRank}).`);
         } else if (topQMetrics.length >= 2) {
             const names = topQMetrics.map(r => r.metric);
-            s.push(`${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} all rank in the top quartile, a position of relative strength.`);
+            s.push(`${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} all rank in the top quarter of states, a position of relative strength.`);
         }
 
         return s.join(' ');

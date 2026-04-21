@@ -4,7 +4,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -88,7 +88,7 @@ const COUNTY_DATA = {
         "2023": 0.0446,
         "2024": 0.0434
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2000": 0.0482,
         "2001": 0.0509,
         "2002": 0.044,
@@ -122,7 +122,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -161,7 +161,7 @@ const COUNTY_DATA = {
         "2022": 0.2902,
         "2023": 0.3119
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2013": 0.2481,
         "2014": 0.2959,
         "2015": 0.275,
@@ -174,7 +174,7 @@ const COUNTY_DATA = {
         "2023": 0.3065
       }
     },
-    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauai) carry wide margins of error and should be read as directional, not precise.",
+    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauaʻi) carry wide margins of error and should be read as directional, not precise.",
     "smoothCounty": true
   },
   "broadband_subscription_pct": {
@@ -182,7 +182,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -212,7 +212,7 @@ const COUNTY_DATA = {
         "2022": 0.8914,
         "2023": 0.9184
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2016": 0.8031,
         "2017": 0.8161,
         "2018": 0.8812,
@@ -222,7 +222,7 @@ const COUNTY_DATA = {
         "2023": 0.9306
       }
     },
-    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauai) carry wide margins of error and should be read as directional, not precise.",
+    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauaʻi) carry wide margins of error and should be read as directional, not precise.",
     "smoothCounty": true
   },
   "renter_cost_burden_pct": {
@@ -230,7 +230,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -269,7 +269,7 @@ const COUNTY_DATA = {
         "2022": 0.5061,
         "2023": 0.5465
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2013": 0.4313,
         "2014": 0.4918,
         "2015": 0.3817,
@@ -282,7 +282,7 @@ const COUNTY_DATA = {
         "2023": 0.5845
       }
     },
-    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauai) carry wide margins of error and should be read as directional, not precise.",
+    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauaʻi) carry wide margins of error and should be read as directional, not precise.",
     "smoothCounty": true,
     "thresholdVariants": {
       "50": {
@@ -347,7 +347,7 @@ const COUNTY_DATA = {
             "2022": 0.2276,
             "2023": 0.2882
           },
-          "Kauai": {
+          "Kauaʻi": {
             "2010": 0.2088,
             "2011": 0.2785,
             "2012": 0.2446,
@@ -371,7 +371,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -410,7 +410,7 @@ const COUNTY_DATA = {
         "2022": 0.03,
         "2023": 0.043
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2013": 0.09,
         "2014": 0.058,
         "2015": 0.043,
@@ -423,7 +423,7 @@ const COUNTY_DATA = {
         "2023": 0.026
       }
     },
-    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauai) carry wide margins of error and should be read as directional, not precise.",
+    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauaʻi) carry wide margins of error and should be read as directional, not precise.",
     "smoothCounty": true
   },
   "home_price_to_income": {
@@ -431,7 +431,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -470,7 +470,7 @@ const COUNTY_DATA = {
         "2022": 9.7,
         "2023": 11.2
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2013": 8.3,
         "2014": 7.6,
         "2015": 6.4,
@@ -483,7 +483,7 @@ const COUNTY_DATA = {
         "2023": 8.6
       }
     },
-    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauai) carry wide margins of error and should be read as directional, not precise.",
+    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauaʻi) carry wide margins of error and should be read as directional, not precise.",
     "smoothCounty": true
   },
   "labor_force_participation": {
@@ -491,7 +491,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -530,7 +530,7 @@ const COUNTY_DATA = {
         "2022": 64.5,
         "2023": 62.9
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2013": 63.8,
         "2014": 64.7,
         "2015": 67.2,
@@ -543,7 +543,7 @@ const COUNTY_DATA = {
         "2023": 64.9
       }
     },
-    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauai) carry wide margins of error and should be read as directional, not precise.",
+    "countyNote": "County estimates from Census ACS 1-Year. Small-county values (especially Kauaʻi) carry wide margins of error and should be read as directional, not precise.",
     "smoothCounty": true
   },
   "real_per_capita_income": {
@@ -551,7 +551,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -611,7 +611,7 @@ const COUNTY_DATA = {
         "2023": 48707,
         "2024": 49634
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2008": 37204,
         "2009": 34337,
         "2010": 35157,
@@ -637,7 +637,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -718,7 +718,7 @@ const COUNTY_DATA = {
         "2022": 14.2,
         "2023": 10
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2000": 11.4,
         "2001": 11.6,
         "2002": 13.4,
@@ -751,7 +751,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -832,7 +832,7 @@ const COUNTY_DATA = {
         "2022": 5.7,
         "2023": 1.1
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2000": 2.4,
         "2001": 3,
         "2002": 3.1,
@@ -865,7 +865,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -912,7 +912,7 @@ const COUNTY_DATA = {
         "2020": 236,
         "2021": 286.8
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2010": 361.9,
         "2011": 348,
         "2012": 306,
@@ -935,7 +935,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -982,7 +982,7 @@ const COUNTY_DATA = {
         "2020": 2058,
         "2021": 2145.3
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2010": 3642.5,
         "2011": 3871.3,
         "2012": 3782,
@@ -1005,7 +1005,7 @@ const COUNTY_DATA = {
       "Honolulu",
       "Hawaiʻi",
       "Maui",
-      "Kauai"
+      "Kauaʻi"
     ],
     "data": {
       "Honolulu": {
@@ -1041,7 +1041,7 @@ const COUNTY_DATA = {
         "2023": 23.6,
         "2024": 17.3
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2015": 20.7,
         "2016": 37.2,
         "2017": 34.5,
@@ -1091,7 +1091,7 @@ const COUNTY_DATA = {
             "2023": 42.9,
             "2024": 39.8
           },
-          "Kauai": {
+          "Kauaʻi": {
             "2015": 47.1,
             "2016": 61.5,
             "2017": 56.7,
@@ -1107,7 +1107,7 @@ const COUNTY_DATA = {
     }
   },
   "net_domestic_migration_rate": {
-    "counties": ["Honolulu", "Hawai\u02BBi", "Maui", "Kauai"],
+    "counties": ["Honolulu", "Hawai\u02BBi", "Maui", "Kauaʻi"],
     "data": {
       "Honolulu": {
         "2011": -11.6, "2012": -38.1, "2013": -28.5, "2014": -78.9, "2015": -75.4,
@@ -1124,7 +1124,7 @@ const COUNTY_DATA = {
         "2016": -27.8, "2017": -30.2, "2018": -15.9, "2019": -31.0,
         "2020": -7.4, "2021": -40.5, "2022": -80.2, "2023": -59.5, "2024": -156.3
       },
-      "Kauai": {
+      "Kauaʻi": {
         "2011": -7.0, "2012": -3.2, "2013": 56.5, "2014": 29.6, "2015": 17.1,
         "2016": -31.4, "2017": -26.0, "2018": -3.6, "2019": -31.9,
         "2020": -14.9, "2021": 34.5, "2022": -55.7, "2023": -34.8, "2024": -66.0

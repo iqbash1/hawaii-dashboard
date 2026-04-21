@@ -24,17 +24,17 @@ const path = require('path');
 const COUNTY_FIPS = {
     '001': 'Hawai\u02BBi',
     '003': 'Honolulu',
-    '007': 'Kauai',
+    '007': 'Kauaʻi',
     '009': 'Maui',
 };
-const COUNTY_ORDER = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauai'];
+const COUNTY_ORDER = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauaʻi'];
 const COUNTY_FIPS_CODES = ['001', '003', '007', '009'];
 
 // 5-digit FIPS for BEA/other APIs (state FIPS 15 + county FIPS)
 const COUNTY_FIPS_5 = {
     '15001': 'Hawai\u02BBi',
     '15003': 'Honolulu',
-    '15007': 'Kauai',
+    '15007': 'Kauaʻi',
     '15009': 'Maui',
     '15901': 'Maui',  // BEA combines Maui + Kalawao
 };
