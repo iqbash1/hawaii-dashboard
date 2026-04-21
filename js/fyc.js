@@ -339,19 +339,12 @@
 
             const id = Utils.areaId(areaGroup.area);
 
-            // Overall area signal - driven by national standing alone
+            // Overall area signal — driven by share of metrics better than median.
             const abovePct = withRank.length ? aboveMedian / withRank.length : 0.5;
             let areaClass = 'sc-mixed';
             if (abovePct >= 0.6) areaClass = 'sc-strong';
             else if (abovePct <= 0.4) areaClass = 'sc-weak';
 
-            // Stars: filled left-to-right (above = filled green, below = empty gray)
-            const starsSorted = [...withRank].sort((a, b) =>
-                (b.standing.betterNow ? 1 : 0) - (a.standing.betterNow ? 1 : 0)
-            );
-            const stars = starsSorted.map(m =>
-                `<span class="sc-star ${m.standing.betterNow ? 'above' : 'below'}" title="${m.metric}">${m.standing.betterNow ? '\u2605' : '\u2606'}</span>`
-            ).join('');
             const standingText = withRank.length
                 ? `${aboveMedian} of ${withRank.length} above avg.`
                 : '';
@@ -365,7 +358,6 @@
             const sortOrder = areaClass === 'sc-strong' ? 0 : areaClass === 'sc-mixed' ? 1 : 2;
             rowItems.push({ sortOrder, html: `<a href="#fyc-area-${id}" class="fyc-scorecard-row ${areaClass}">
                 <span class="fyc-scorecard-area">${areaGroup.area}</span>
-                <span class="sc-stars">${stars}</span>
                 <span class="fyc-scorecard-standing-text">${standingText}</span>
                 <span class="fyc-scorecard-trend">${trendParts.join(' ')}</span>
             </a>` });
@@ -376,7 +368,6 @@
             <div class="fyc-scorecard-title">Policy area overview</div>
             <div class="fyc-scorecard-header">
                 <span class="fyc-scorecard-hdr fyc-scorecard-hdr-area">Area</span>
-                <span class="fyc-scorecard-hdr fyc-scorecard-hdr-stars"></span>
                 <span class="fyc-scorecard-hdr fyc-scorecard-hdr-standing">National rank</span>
                 <span class="fyc-scorecard-hdr fyc-scorecard-hdr-trend">${SPAN_YEARS}-year trend</span>
             </div>
