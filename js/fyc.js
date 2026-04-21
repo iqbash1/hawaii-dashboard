@@ -560,7 +560,7 @@
             <div class="fyc-rank-breakdown">
                 <div class="fyc-rank-breakdown-title">National ranking</div>
                 <div class="fyc-rank-header">
-                    <span class="fyc-rank-hdr-rank fyc-rank-hdr-sortable active" id="fyc-rhdr-rank" onclick="window._fycRankSort('rank')">Rank<span class="fyc-rank-sort-ind"> ▲</span></span>
+                    <span class="fyc-rank-hdr-rank fyc-rank-hdr-sortable active" id="fyc-rhdr-rank" onclick="window._fycRankSort('rank')">Current rank<span class="fyc-rank-sort-ind"> ▲</span></span>
                     <span class="fyc-rank-hdr-name">Metric</span>
                     <span class="fyc-rank-hdr-cat fyc-rank-hdr-sortable" id="fyc-rhdr-category" onclick="window._fycRankSort('category')">Category<span class="fyc-rank-sort-ind"> ▲</span></span>
                     <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">${SPAN_YEARS}-yr Change in rank<span class="fyc-rank-sort-ind"> ▲</span></span>
