@@ -1071,15 +1071,8 @@ const App = {
      * Activate a named bundle: dim non-matching cards and update the URL.
      * @param {string} bundleId - Bundle identifier (e.g. 'affordability')
      */
-    activateBundle(bundleOrId) {
-        // Accept either a bundle id (from BUNDLES) or a pre-built bundle object
-        // (used for synthetic/ad-hoc bundles like the Change Summary ranking chips).
-        let bundle;
-        if (typeof bundleOrId === 'string') {
-            bundle = (typeof BUNDLES !== 'undefined') && BUNDLES.find(b => b.id === bundleOrId);
-        } else if (bundleOrId && Array.isArray(bundleOrId.metrics)) {
-            bundle = bundleOrId;
-        }
+    activateBundle(bundleId) {
+        const bundle = (typeof BUNDLES !== 'undefined') && BUNDLES.find(b => b.id === bundleId);
         if (!bundle) return;
         this._activeBundle = bundle;
 
