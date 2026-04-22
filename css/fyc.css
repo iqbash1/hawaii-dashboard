@@ -41,21 +41,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
     .fyc-spotlight { grid-template-columns: 1fr; }
 }
 
-/* Summary chips */
-.fyc-chips-group { margin-bottom: 2.5rem; }
-/* Shared uppercase label for page sections (Ranking Changes, Policy Area Overview, National Ranking) */
+/* Shared uppercase label for page sections (Policy Area Overview, National Ranking) */
 .fyc-section-label { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.4rem; margin-top: 2rem; }
 .fyc-section-label:first-child { margin-top: 0; }
-.fyc-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
-/* Ranking Changes chips: each is an <a> linking to the Dashboard filtered to that tier */
-.fyc-chip { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); padding: 0.9rem 1rem; text-align: center; cursor: pointer; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
-.fyc-chip:hover { border-color: var(--hawaii-blue); }
-.fyc-chip:focus-visible { outline: 2px solid var(--hawaii-blue); outline-offset: 2px; }
-.fyc-chip-count { font-size: 1.8rem; font-weight: 700; line-height: 1; }
-.fyc-chip-label { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
-.fyc-chip.rank-up   .fyc-chip-count, .fyc-chip.rank-up   .fyc-chip-label { color: var(--positive); }
-.fyc-chip.rank-same .fyc-chip-count, .fyc-chip.rank-same .fyc-chip-label { color: var(--neutral); }
-.fyc-chip.rank-down .fyc-chip-count, .fyc-chip.rank-down .fyc-chip-label { color: var(--negative); }
 
 /* Print button */
 .fyc-print-btn { position: fixed; top: 3.25rem; right: 1rem; font-size: var(--text-sm); padding: 0.35rem 0.75rem; min-height: 36px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text-muted); cursor: pointer; z-index: 100; line-height: 1.6; }
@@ -182,10 +170,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
     .fyc-header { padding: 1.5rem 1rem 0; }
     .fyc-header h1 { font-size: 1.25rem; }
     .fyc-container { padding: 1.25rem 1rem 2rem; }
-    .fyc-chips { flex-wrap: wrap; gap: 0.4rem; }
-    .fyc-chip { flex: 1 1 calc(50% - 0.2rem); max-width: none; padding: 0.5rem 0.4rem; }
-    .fyc-chip-count { font-size: 1.1rem; }
-    .fyc-chip-label { font-size: var(--text-2xs); }
     .fyc-metric-name { font-size: var(--text-sm); }
     .fyc-line2 { font-size: var(--text-sm); }
     .fyc-line3 { font-size: var(--text-xs); }

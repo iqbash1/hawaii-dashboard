@@ -30,13 +30,6 @@
      * excluded from the view (see computeChange).
      */
     const SPAN_WORD_TO_NUM = { five: 5, ten: 10, fifteen: 15, twenty: 20, 'twenty-five': 25 };
-    const SPAN_NUM_TO_PATH = {
-        5: '/five-year-change/',
-        10: '/ten-year-change/',
-        15: '/fifteen-year-change/',
-        20: '/twenty-year-change/',
-        25: '/twenty-five-year-change/',
-    };
     function inferSpan(pathname) {
         const m = pathname.match(/\/([a-z-]+)-year-change\//);
         return m && SPAN_WORD_TO_NUM[m[1]] ? SPAN_WORD_TO_NUM[m[1]] : 5;
@@ -364,61 +357,10 @@
             }
         }
 
-        // 2. Rank-move tiers for the "Ranking Changes" chips
-        const RANK_SHIFT = Utils.RANK_SHIFT;
-        const rankMoveTiers = { improved: [], stable: [], worsened: [] };
-        for (const r of allResults) {
-            if (!r.standing || r.standing.endRank == null) continue;
-            const move = r.standing.startRank != null ? r.standing.startRank - r.standing.endRank : null;
-            if (move != null && move >= RANK_SHIFT)       rankMoveTiers.improved.push({ r, move });
-            else if (move != null && move <= -RANK_SHIFT) rankMoveTiers.worsened.push({ r, move });
-            else                                          rankMoveTiers.stable.push({ r, move });
-        }
-
-        // Ranking Changes: each chip navigates to the Dashboard with a synthetic
-        // bundle filter (same UI as the "I have a question..." dropdown).
-        const tierSlugs = {
-            improved: rankMoveTiers.improved.map(({ r }) => r.slug).filter(Boolean),
-            stable:   rankMoveTiers.stable.map(({ r }) => r.slug).filter(Boolean),
-            worsened: rankMoveTiers.worsened.map(({ r }) => r.slug).filter(Boolean),
-        };
-        const tierTitles = {
-            improved: `Metrics that improved in rank (last ${SPAN_YEARS} years)`,
-            stable:   `Metrics with little rank change (last ${SPAN_YEARS} years)`,
-            worsened: `Metrics that worsened in rank (last ${SPAN_YEARS} years)`,
-        };
-        const returnTo = SPAN_NUM_TO_PATH[SPAN_YEARS];
-        function tierHref(tier) {
-            const q = new URLSearchParams({
-                bundle: 'synthetic',
-                metrics: tierSlugs[tier].join(','),
-                title: tierTitles[tier],
-                return_to: returnTo,
-            });
-            return `../?${q.toString()}`;
-        }
-        const chipsHtml = `<div class="fyc-chips-group">
-            <div class="fyc-section-label">Ranking Changes</div>
-            <div class="fyc-chips">
-                <a class="fyc-chip rank-up" href="${tierHref('improved')}">
-                    <div class="fyc-chip-count">${rankMoveTiers.improved.length}</div>
-                    <div class="fyc-chip-label">Improved</div>
-                </a>
-                <a class="fyc-chip rank-same" href="${tierHref('stable')}">
-                    <div class="fyc-chip-count">${rankMoveTiers.stable.length}</div>
-                    <div class="fyc-chip-label">Little Change</div>
-                </a>
-                <a class="fyc-chip rank-down" href="${tierHref('worsened')}">
-                    <div class="fyc-chip-count">${rankMoveTiers.worsened.length}</div>
-                    <div class="fyc-chip-label">Worsened</div>
-                </a>
-            </div>
-        </div>`;
-
-        // 3. Area scorecard
+        // 2. Area scorecard
         const scorecardHtml = buildAreaScorecard(allResults);
 
-        // 4. National ranking table
+        // 3. National ranking table
         const allRanked = allResults
             .filter(r => r.standing && r.standing.endRank != null)
             .sort((a, b) => a.standing.endRank - b.standing.endRank);
@@ -496,7 +438,7 @@
                 <div class="fyc-rank-list" id="fyc-rank-list"></div>
             </div>`;
 
-        // 5. Area sections
+        // 4. Area sections
 
         let areasHtml = '';
         for (const areaGroup of AREA_ORDER) {
@@ -550,10 +492,10 @@
                 </div>`;
         }
 
-        // 6. Method note
+        // 5. Method note
         const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
-        // 7. Spotlight: Biggest gains, Biggest declines, Most off-track
+        // 6. Spotlight: Biggest gains, Biggest declines, Most off-track
         // Rank-first display: rank movement is the primary governance signal;
         // absolute change is shown as secondary context.
         function spotlightItem(r) {
@@ -620,8 +562,8 @@
             </div>
         </div>`;
 
-        // Assemble: spotlight → chips → scorecard → areas → ranking table → method
-        document.getElementById('fyc-content').innerHTML = spotlightHtml + chipsHtml + scorecardHtml + areasHtml + rankTableHtml + methodHtml;
+        // Assemble: spotlight → scorecard → areas → ranking table → method
+        document.getElementById('fyc-content').innerHTML = spotlightHtml + scorecardHtml + areasHtml + rankTableHtml + methodHtml;
         renderRankRows();
 
         // GA4: track metric clicks from FYC page

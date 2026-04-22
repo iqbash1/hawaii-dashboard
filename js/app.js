@@ -282,22 +282,10 @@ const App = {
 
         this.renderQuestionDropdown();
 
-        // Restore bundle from URL param on load:
-        //   /?bundle=affordability                            — named bundle from BUNDLES
-        //   /?bundle=synthetic&metrics=slug1,slug2&title=…    — ad-hoc bundle (e.g. from 5YC chips)
+        // Restore named bundle from ?bundle=<id> on load (from BUNDLES).
         const params = new URLSearchParams(window.location.search);
         const initBundle = params.get('bundle');
-        if (initBundle === 'synthetic') {
-            const slugs = (params.get('metrics') || '').split(',').map(s => s.trim()).filter(Boolean);
-            const title = params.get('title') || 'Selected metrics';
-            if (slugs.length) {
-                this.activateBundle({
-                    id: '__synthetic',
-                    title,
-                    metrics: slugs.map(id => ({ id, view: 't' })),
-                });
-            }
-        } else if (initBundle) {
+        if (initBundle) {
             this.activateBundle(initBundle);
         }
 
@@ -1107,16 +1095,9 @@ const App = {
         });
 
         // Preserve bundle in URL without disrupting path routing.
-        // Synthetic bundles keep the metrics+title params the caller set; named bundles use id only.
         const url = new URL(window.location.href);
-        if (bundle.id === '__synthetic') {
-            // leave bundle=synthetic&metrics=…&title=… as-is
-        } else {
-            url.searchParams.set('bundle', bundle.id);
-            url.searchParams.delete('metrics');
-            url.searchParams.delete('title');
-            history.replaceState(null, '', url.pathname + url.search);
-        }
+        url.searchParams.set('bundle', bundle.id);
+        history.replaceState(null, '', url.pathname + url.search);
 
         // Scroll to first bundle card
         const firstMatch = document.querySelector('.card.bundle-match');
@@ -1137,26 +1118,7 @@ const App = {
         document.querySelectorAll('.card.bundle-match').forEach(c => c.classList.remove('bundle-match'));
 
         const url = new URL(window.location.href);
-        const returnToParam = url.searchParams.get('return_to');
         url.searchParams.delete('bundle');
-        url.searchParams.delete('metrics');
-        url.searchParams.delete('title');
-        url.searchParams.delete('return_to');
-
-        // If the bundle was opened with a return_to hint (e.g. from the 5-Year
-        // Change chips), send the user back there. Only accept same-origin paths
-        // to avoid open-redirect abuse.
-        let returnUrl = null;
-        if (returnToParam) {
-            try {
-                const u = new URL(returnToParam, window.location.origin);
-                if (u.origin === window.location.origin) returnUrl = u.pathname + u.search;
-            } catch (e) { /* ignore malformed return_to */ }
-        }
-        if (returnUrl) {
-            window.location.href = returnUrl;
-            return;
-        }
         history.replaceState(null, '', url.pathname + (url.search !== '?' ? url.search : ''));
     },
 
