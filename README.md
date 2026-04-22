@@ -21,7 +21,7 @@ js/
   fyc.js                Change Summary page logic (span-aware; shared by all 5 shells)
   data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)
-  county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauai
+  county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauaʻi
 five-year-change/       Change Summary — 5-year view (default)
 ten-year-change/        Change Summary — 10-year view
 fifteen-year-change/    Change Summary — 15-year view
