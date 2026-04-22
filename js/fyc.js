@@ -94,6 +94,45 @@
         return sign + r.toLocaleString();
     }
 
+    /* ── Format current (unsigned) level with unit; mirrors fmtChange ── */
+    function fmtValue(value, unit, isDec) {
+        if (value == null) return '';
+        if (isDec) return (value * 100).toFixed(1) + '%';
+        if (unit === '%') return value.toFixed(1) + '%';
+        if (unit === '$') {
+            const a = Math.round(value);
+            return '$' + (a >= 1000 ? (a / 1000).toFixed(1) + 'K' : a.toLocaleString());
+        }
+        if (unit === '\u00d7') return value.toFixed(1) + '\u00d7';
+        if (unit === '\u00a2/kWh') return value.toFixed(1) + '\u00a2';
+        if (unit === 'per 100K') { const r = value >= 10 ? Math.round(value) : +value.toFixed(1); return r.toLocaleString() + ' per 100K'; }
+        if (unit === 'per 10K') return value.toFixed(1) + ' per 10K';
+        if (unit === 'Index (2017=100)' || unit === 'score') {
+            return (value >= 10 ? Math.round(value) : +value.toFixed(1)).toLocaleString() + ' points';
+        }
+        const r = value >= 10 ? Math.round(value) : +value.toFixed(1);
+        return r.toLocaleString();
+    }
+
+    /* ── Signed delta with unit stripped where the level carries it already.
+     * Used when the delta sits next to the current value in parens, e.g.,
+     * "218 per 100K (-68)" rather than "218 per 100K (-68 per 100K)". Units
+     * that genuinely differ in meaning from the level (%, $) keep their
+     * unit so "3.5% (-0.7%)" is unambiguous about percentage points. ── */
+    function fmtChangeCompact(absChange, unit, isDec) {
+        const sign = absChange > 0 ? '+' : '';
+        // Strip verbose unit suffixes that visibly repeat alongside the level
+        // ("218 per 100K (-68 per 100K)" → "(-68)"). Short symbolic units (%, $,
+        // ×, ¢) stay on both places because a bare "+10" next to "40.6¢" is
+        // ambiguous about which unit it inherits.
+        const STRIP = new Set(['per 100K', 'per 10K', 'Index (2017=100)', 'score']);
+        if (STRIP.has(unit)) {
+            const r = Math.abs(absChange) >= 10 ? Math.round(absChange) : +absChange.toFixed(1);
+            return sign + r.toLocaleString();
+        }
+        return fmtChange(absChange, unit, isDec);
+    }
+
     /* ── Format gap in native units (unsigned, with "better"/"worse") ── */
     function fmtGap(gapValue, unit, isDec, betterOrWorse) {
         // Gap values from getRankForYear are already in display units
@@ -214,8 +253,11 @@
             goodDirection: m.goodDirection,
             latestYear: latest.year,
             baseYear: base.year,
+            latestValue: latest.value,
             absChange, relChange, status,
             changeText: fmtChange(absChange, m.unit, isDec),
+            valueText: fmtValue(latest.value, m.unit, isDec),
+            changeTextCompact: fmtChangeCompact(absChange, m.unit, isDec),
         };
     }
 
@@ -378,27 +420,24 @@
                     const bm = b.move != null ? b.move : -999;
                     return (bm - am) * rankSortDir;
                 }
-                if (rankSortBy === 'value') {
-                    // Signed "goodness" of the value change: positive = improvement,
-                    // negative = worsening (regardless of unit/direction).
-                    const gc = (x) => (x.r.goodDirection === 'up' ? 1 : -1) * (x.r.relChange || 0);
-                    return (gc(b) - gc(a)) * rankSortDir;
-                }
                 return 0;
             });
             const el = document.getElementById('fyc-rank-list');
             if (!el) return;
             el.innerHTML = sorted.map(({ r, tot, move }) => {
                 const cls = Utils.rankColorClass(r.standing.endRank, tot);
+                const delta = r.changeTextCompact
+                    ? ` <span class="fyc-rank-delta">(${r.changeTextCompact})</span>`
+                    : '';
                 return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                     <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
                     <span class="fyc-rank-name">${r.metric}</span>
                     <span class="fyc-rank-cat">${r.area}</span>
                     ${Utils.rankMoveHtml(r)}
-                    <span class="fyc-rank-val">${r.changeText}</span>
+                    <span class="fyc-rank-val"><span class="fyc-rank-val-level">${r.valueText}</span>${delta}</span>
                 </a>`;
             }).join('');
-            ['rank', 'category', 'move', 'value'].forEach(col => {
+            ['rank', 'category', 'move'].forEach(col => {
                 const hdr = document.getElementById('fyc-rhdr-' + col);
                 if (!hdr) return;
                 const isActive = rankSortBy === col;
@@ -425,7 +464,7 @@
                     <span class="fyc-rank-hdr-name">Metric</span>
                     <span class="fyc-rank-hdr-cat fyc-rank-hdr-sortable" id="fyc-rhdr-category" onclick="window._fycRankSort('category')">Category<span class="fyc-rank-sort-ind">▲</span></span>
                     <span class="fyc-rank-hdr-move fyc-rank-hdr-sortable" id="fyc-rhdr-move" onclick="window._fycRankSort('move')">Rank change<span class="fyc-rank-sort-ind">▲</span></span>
-                    <span class="fyc-rank-hdr-val fyc-rank-hdr-sortable" id="fyc-rhdr-value" onclick="window._fycRankSort('value')">Value change<span class="fyc-rank-sort-ind">▲</span></span>
+                    <span class="fyc-rank-hdr-val">Current value</span>
                 </div>
                 <div class="fyc-rank-list" id="fyc-rank-list"></div>
             </div>`;

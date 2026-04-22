@@ -118,7 +118,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-hdr-name { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; min-width: 0; text-align: left; }
 .fyc-rank-hdr-cat  { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 170px; flex-shrink: 0; }
 .fyc-rank-hdr-move { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 95px; text-align: left; flex-shrink: 0; }
-.fyc-rank-hdr-val  { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 130px; text-align: right; flex-shrink: 0; }
+.fyc-rank-hdr-val  { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 190px; text-align: right; flex-shrink: 0; }
 .fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; color: var(--text-secondary); border-radius: 3px; transition: background 0.1s, color 0.1s; }
 .fyc-rank-hdr-sortable:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 .fyc-rank-hdr-sortable.active { color: var(--text); }
@@ -142,11 +142,13 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-move.move-up     { color: var(--positive); }
 .fyc-rank-move.move-down   { color: var(--negative); }
 .fyc-rank-move.move-stable { color: var(--neutral); font-weight: 400; }
-/* Rank table: rank move is the primary signal (colored via .move-up/down);
- * abs-change stays muted as secondary context to avoid double-encoding direction.
- * Goal: reader gets direction from the ↑/↓ arrow and doesn't have to cross-
- * reference the value sign against goodDirection. See Change Summary review. */
-.fyc-rank-val { font-size: var(--text-2xs); font-weight: 500; width: 130px; text-align: right; flex-shrink: 0; color: var(--text-muted); }
+/* Rank table value column: current level is primary (default weight), delta is
+ * secondary (muted parenthetical) so the row is self-contained — reader sees
+ * both where Hawaiʻi is now and how it moved. Rank move (prev column) carries
+ * the direction signal; this column deliberately has no color coding. */
+.fyc-rank-val { font-size: var(--text-2xs); width: 190px; text-align: right; flex-shrink: 0; color: var(--text); }
+.fyc-rank-val-level { font-weight: 600; }
+.fyc-rank-delta { color: var(--text-muted); font-weight: 400; margin-left: 0.15rem; }
 
 /* Print */
 @media print {
