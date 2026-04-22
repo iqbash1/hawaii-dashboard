@@ -191,23 +191,41 @@ const Utils = {
         }
 
         // ── Sentence 2-3: Ranking narrative (biggest moves, or overall pattern) ──
-        if (bigClimbs.length > 0 && bigDrops.length > 0) {
-            const topClimb = bigClimbs[0];
-            const topDrop = bigDrops[0];
+        // Avoid repeating any metric already named in sentence 1: FYC only
+        // renders the first two sentences, so a duplicate metric+number pair
+        // wastes the entire second slot. Filter bigClimbs/bigDrops accordingly.
+        const sentence1 = s[0] || '';
+        const freshClimbs = bigClimbs.filter(m => !sentence1.includes(m.metric));
+        const freshDrops  = bigDrops.filter(m => !sentence1.includes(m.metric));
+        if (freshClimbs.length > 0 && freshDrops.length > 0) {
+            const topClimb = freshClimbs[0];
+            const topDrop = freshDrops[0];
             s.push(`National rankings improved and worsened within the same area: ${topClimb.metric} improved ${topClimb.move} spots to #${topClimb.endRank}, while ${topDrop.metric} worsened ${-topDrop.move} spots to #${topDrop.endRank}.`);
-        } else if (bigClimbs.length > 0) {
-            const topClimb = bigClimbs[0];
+        } else if (freshClimbs.length > 0) {
+            const topClimb = freshClimbs[0];
             s.push(`The standout ranking gain was ${topClimb.metric}, which improved ${topClimb.move} spots nationally to #${topClimb.endRank}.`);
-            if (bigClimbs.length > 1) {
-                const second = bigClimbs[1];
+            if (freshClimbs.length > 1) {
+                const second = freshClimbs[1];
                 s.push(`${second.metric} also improved ${second.move} spots to #${second.endRank}.`);
             }
-        } else if (bigDrops.length > 0) {
-            const topDrop = bigDrops[0];
+        } else if (freshDrops.length > 0) {
+            const topDrop = freshDrops[0];
             s.push(`The most concerning ranking shift was ${topDrop.metric}, which worsened ${-topDrop.move} spots nationally to #${topDrop.endRank}.`);
-            if (bigDrops.length > 1) {
-                const second = bigDrops[1];
+            if (freshDrops.length > 1) {
+                const second = freshDrops[1];
                 s.push(`${second.metric} also worsened ${-second.move} spots to #${second.endRank}.`);
+            }
+        } else if (bigClimbs.length > 0 || bigDrops.length > 0) {
+            // Sentence 1 already named the only notable movers. Summarize
+            // the aggregate direction instead of repeating them.
+            const upCount = bigClimbs.length;
+            const downCount = bigDrops.length;
+            if (upCount && downCount) {
+                s.push(`Other metrics in this area held relatively steady in rank.`);
+            } else if (upCount) {
+                s.push(`Other metrics in this area held relatively steady, with no further rank gains of 5 spots or more.`);
+            } else {
+                s.push(`Other metrics in this area held relatively steady, with no further rank drops of 5 spots or more.`);
             }
         } else {
             // No big moves, describe the general position
