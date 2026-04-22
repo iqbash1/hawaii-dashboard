@@ -54,12 +54,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css?v=20260416a">
-    <link rel="stylesheet" href="../css/fyc.css?v=20260421b">
+    <link rel="stylesheet" href="../css/fyc.css?v=20260422a">
 </head>
 <body>
     <nav class="top-nav">
         <a href="/" class="top-nav-link">Dashboard</a>
-        <a href="/five-year-change/" class="top-nav-link active">Change Summary</a>
+        <a href="/five-year-change/" class="top-nav-link active">Summary</a>
         <a href="/about/" class="top-nav-link">About</a>
         <a href="/faq/" class="top-nav-link">FAQ</a>
     </nav>
@@ -73,6 +73,8 @@
                 <svg class="fyc-span-caret" width="12" height="12" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3 L5 7 L9 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <ul class="fyc-span-menu" role="listbox" hidden>
+                <li role="option" aria-selected="false"><a class="fyc-span-option" href="/one-year-change/" data-span="1">1 year</a></li>
+                <li role="option" aria-selected="false"><a class="fyc-span-option" href="/three-year-change/" data-span="3">3 years</a></li>
                 <li role="option" aria-selected="false"><a class="fyc-span-option" href="/five-year-change/" data-span="5">5 years</a></li>
                 <li role="option" aria-selected="true"><a class="fyc-span-option active" href="/ten-year-change/" data-span="10">10 years</a></li>
                 <li role="option" aria-selected="false"><a class="fyc-span-option" href="/fifteen-year-change/" data-span="15">15 years</a></li>
@@ -89,8 +91,8 @@
 
     <script src="../js/data.js?v=20260416a"></script>
     <script src="../js/state-data.js?v=20260416a"></script>
-    <script src="../js/utils.js?v=20260420d"></script>
-    <script src="../js/fyc.js?v=20260421b"></script>
+    <script src="../js/utils.js?v=20260422a"></script>
+    <script src="../js/fyc.js?v=20260422a"></script>
 
     <footer class="footer">
         <p class="footer-updated">Last reviewed: 13 April 2026</p>

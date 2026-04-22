@@ -93,8 +93,12 @@ const Utils = {
      */
     generateAreaNarrative(metrics, spanYears) {
         const span = spanYears || 5;
-        const SPAN_WORDS = { 5: 'five', 10: 'ten', 15: 'fifteen', 20: 'twenty', 25: 'twenty-five' };
+        const SPAN_WORDS = { 1: 'one', 3: 'three', 5: 'five', 10: 'ten', 15: 'fifteen', 20: 'twenty', 25: 'twenty-five' };
         const spanWord = SPAN_WORDS[span] || String(span);
+        // For span=1, "over the last year" / "a year ago" read naturally;
+        // plural forms would be "over the last 1 years" / "one years ago".
+        const spanPhrase = span === 1 ? 'year' : `${span} years`;
+        const spanAgoPhrase = span === 1 ? 'a year ago' : `${spanWord} years ago`;
         const n = metrics.length;
         const improving = metrics.filter(r => r.status === 'improving');
         const worsening = metrics.filter(r => r.status === 'worsening');
@@ -133,7 +137,7 @@ const Utils = {
                 const best = improving.reduce((a, b) => Math.abs(b.relChange) > Math.abs(a.relChange) ? b : a);
                 s.push(`Hawai\u02BBi holds a relatively strong national position here, though the trend is mixed: ${improving.length} ${this.pl(improving.length, 'metric')} improved while ${worsening.length} worsened, with ${best.metric} showing the most improvement (${best.changeText}).`);
             } else {
-                s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have changed little over the last ${span} years.`);
+                s.push(`This is one of Hawai\u02BBi's stronger areas nationally, though metrics have changed little over the last ${spanPhrase}.`);
             }
         } else if (rankQual === 'weak') {
             if (improving.length === 0 && worsening.length > 0) {
@@ -186,7 +190,7 @@ const Utils = {
                 }
                 s.push(`A mixed picture: ${improving.length} ${this.pl(improving.length, 'metric')} improved while ${worsening.length} worsened. The strongest improvement was ${best.metric} (${best.changeText}), while ${worstNote}.`);
             } else {
-                s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last ${span} years.`);
+                s.push(`This area has been largely static, with all ${n} metrics showing little meaningful change over the last ${spanPhrase}.`);
             }
         }
 
@@ -242,15 +246,15 @@ const Utils = {
 
         // ── Sentence 4: Median standing with interpretation ──
         if (betterNow > betterThen) {
-            s.push(`Hawai\u02BBi now outperforms the median state on ${betterNow} of ${n} metrics; ${spanWord} years ago, it outperformed the median on ${betterThen}.`);
+            s.push(`Hawai\u02BBi now outperforms the median state on ${betterNow} of ${n} metrics; ${spanAgoPhrase}, it outperformed the median on ${betterThen}.`);
         } else if (betterNow < betterThen) {
-            s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics; ${spanWord} years ago, that figure was ${betterThen}.`);
+            s.push(`Hawai\u02BBi outperforms the median state on only ${betterNow} of ${n} metrics; ${spanAgoPhrase}, that figure was ${betterThen}.`);
         } else if (betterNow === 0) {
             s.push(`Hawai\u02BBi is worse than the median state on every metric in this area.`);
         } else if (betterNow === n) {
-            s.push(`Hawai\u02BBi outperforms the median state on all ${n} metrics, holding that position from ${span} years ago.`);
+            s.push(`Hawai\u02BBi outperforms the median state on all ${n} metrics, holding that position from ${spanAgoPhrase}.`);
         } else {
-            s.push(`Hawai\u02BBi outperforms the median state on ${betterNow} of ${n} metrics, unchanged from ${span} years ago.`);
+            s.push(`Hawai\u02BBi outperforms the median state on ${betterNow} of ${n} metrics, unchanged from ${spanAgoPhrase}.`);
         }
 
         // ── Sentence 5: Bottom/top quartile callout if notable ──

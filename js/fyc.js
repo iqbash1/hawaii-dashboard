@@ -29,7 +29,7 @@
      * reads this constant. Metrics whose data doesn't cover SPAN_YEARS are
      * excluded from the view (see computeChange).
      */
-    const SPAN_WORD_TO_NUM = { five: 5, ten: 10, fifteen: 15, twenty: 20, 'twenty-five': 25 };
+    const SPAN_WORD_TO_NUM = { one: 1, three: 3, five: 5, ten: 10, fifteen: 15, twenty: 20, 'twenty-five': 25 };
     function inferSpan(pathname) {
         const m = pathname.match(/\/([a-z-]+)-year-change\//);
         return m && SPAN_WORD_TO_NUM[m[1]] ? SPAN_WORD_TO_NUM[m[1]] : 5;
@@ -237,9 +237,21 @@
         const base = getVal(m.hawaii, latest.year - SPAN_YEARS);
         if (!base) return null;
 
-        // Exclude metrics whose data doesn't cover a full SPAN_YEARS window.
-        // In the 10-year view this drops Households with Broadband (2016-2024 = 8 years).
-        if (latest.year - base.year < SPAN_YEARS) return null;
+        const gap = latest.year - base.year;
+
+        // Longer spans (5/10/15/20/25) exclude metrics whose data window is
+        // shorter than SPAN_YEARS — a 10-year view should not show an 8-year
+        // change (drops Households with Broadband from 10-year, etc.).
+        //
+        // The 1-year view instead keeps those metrics and flags them with a
+        // "not reported annually" note, since many national sources (NAEP,
+        // some Census releases) skip years. Rows with gap === 0 (base fell
+        // back to the same year as latest) are still dropped — no signal.
+        if (SPAN_YEARS === 1) {
+            if (gap < 1) return null;
+        } else if (gap < SPAN_YEARS) {
+            return null;
+        }
 
         const absChange = latest.value - base.value;
         const relChange = base.value !== 0 ? (absChange / Math.abs(base.value)) * 100 : 0;
@@ -255,6 +267,10 @@
             baseYear: base.year,
             latestValue: latest.value,
             absChange, relChange, status,
+            // Flag rows where the realized gap doesn't match the nominal span.
+            // Only surfaced in the 1-year view (see row rendering).
+            staleGap: gap !== SPAN_YEARS,
+            gapYears: gap,
             changeText: fmtChange(absChange, m.unit, isDec),
             valueText: fmtValue(latest.value, m.unit, isDec),
             changeTextCompact: fmtChangeCompact(absChange, m.unit, isDec),
@@ -499,13 +515,19 @@
                     line3Html = `<div class="fyc-line3">National standing: ${rankPart}${gapTail ? ' \u00b7 ' + gapTail : ''}</div>`;
                 }
 
+                // 1-year view only: surface a cadence note when the realized
+                // gap is longer than 1 year (source doesn't report annually).
+                const staleNote = (SPAN_YEARS === 1 && r.staleGap)
+                    ? ` <span class="fyc-stale-note">not reported annually</span>`
+                    : '';
+
                 rowsHtml += `
                     <a href="../#${r.slug}" class="fyc-row">
                         <div class="fyc-line1">
                             <span class="fyc-metric-name">${r.metric}</span>
                             <span class="fyc-status ${r.status}">${Utils.statusLabel(r.status, r.standing)}</span>
                         </div>
-                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="fyc-abs-change">${r.changeText}</span> ${yearRange}</div>
+                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="fyc-abs-change">${r.changeText}</span> ${yearRange}${staleNote}</div>
                         ${line3Html}
                     </a>`;
             }

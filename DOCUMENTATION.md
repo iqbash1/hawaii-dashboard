@@ -64,10 +64,14 @@ hawaii-dashboard/
 │   └── {slug}/{code}/index.html   # Per-comparison redirect pages (49 per metric)
 ├── about/
 │   └── index.html          # About page: mission, methodology, data registry
+├── one-year-change/
+│   └── index.html          # Change Summary (1-year view): spotlight, scorecard, sortable ranking table
+├── three-year-change/
+│   └── index.html          # Change Summary (3-year view)
 ├── five-year-change/
-│   └── index.html          # Change Summary (5-year view): spotlight, scorecard, sortable ranking table
+│   └── index.html          # Change Summary (5-year view)
 ├── ten-year-change/
-│   └── index.html          # Change Summary (10-year view): same UI, 10-year look-back
+│   └── index.html          # Change Summary (10-year view)
 ├── fifteen-year-change/
 │   └── index.html          # Change Summary (15-year view)
 ├── twenty-year-change/
@@ -461,9 +465,9 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 3. **Governor term overlay** - same overlay as the Trend chart
 4. **Legend** - county color dots + dashed state line indicator
 
-### Change Summary Pages (`/five-`, `/ten-`, `/fifteen-`, `/twenty-`, `/twenty-five-year-change/`)
+### Change Summary Pages (`/one-`, `/three-`, `/five-`, `/ten-`, `/fifteen-`, `/twenty-`, `/twenty-five-year-change/`)
 
-A standalone summary page for policymakers. Five routes share the same shell and logic, defaulting to a 5-year look-back at `/five-year-change/`. The H1 heading has a dropdown on the word "N years" that links between the five routes. Rendering logic is in `js/fyc.js` (shared by all shells); shared pure functions (narrative generation, ranking helpers) are in `js/utils.js`. The span (5/10/15/20/25) is inferred from `location.pathname` via `SPAN_WORD_TO_NUM` and threaded through computation and display strings. Key sections (in render order):
+A standalone summary page for policymakers, linked from the top nav as "Summary." Seven routes share the same shell and logic, defaulting to a 5-year look-back at `/five-year-change/`. The H1 heading has a dropdown on the word "N years" that links between the seven routes. Rendering logic is in `js/fyc.js` (shared by all shells); shared pure functions (narrative generation, ranking helpers) are in `js/utils.js`. The span (1/3/5/10/15/20/25) is inferred from `location.pathname` via `SPAN_WORD_TO_NUM` and threaded through computation and display strings. Key sections (in render order):
 
 1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45). Gains/Declines filter by **rank shift** (`startRank - endRank`), not by combined status — so a metric can appear in Biggest Declines if its rank dropped, even when its absolute value improved. Each row shows "Rank #X → #Y (±change)" — rank transition colored per direction, absolute change shown as a muted parenthetical so the two signals don't compete (see coloring rule below).
 2. **Policy Area Overview scorecard** - one row per area, sorted strong → mixed → weak. Left-border color and "X of Y better than the median" text are both colored from the same signal: green (≥60% of the area's metrics better than median), yellow (mixed, 40-60%), red (≤40%). Trend arrows at right show improving/worsening counts.
@@ -476,11 +480,15 @@ A standalone summary page for policymakers. Five routes share the same shell and
 
 | View | Metrics included | Excluded (insufficient history) |
 |------|-------------------|--------------------------------|
+| 1-year | 26 | — (relaxed — see below) |
+| 3-year | 24 | naep math/reading (biennial, gap 2) |
 | 5-year | 26 | — |
 | 10-year | 25 | broadband |
 | 15-year | 21 | broadband, pcp, uninsured, acgr, homeless |
 | 20-year | 14 | + ba-or-higher, real-pci, renter-burden, home-price, roads, food-insecurity, labor-productivity |
 | 25-year | 10 | + naep math/reading, renewables, net-migration |
+
+**1-year view — relaxed exclusion:** `/one-year-change/` keeps metrics whose realized gap is more than 1 year (e.g., NAEP 2022→2024 shows a 2-year change) and tags them with a **"not reported annually"** label via `.fyc-stale-note`. The only exclusion is `gap < 1` (base fell back to the same year as latest — no signal). Rationale: for a 1-year view, a biennial metric's 2-year change is more useful than hiding the metric outright. Longer spans (3/5/10/15/20/25) keep the strict exclusion.
 
 **Rank is the voice, abs-change is the caption:** The Change Summary's visual direction signal is the **rank movement**, not the value change. This avoids a readability trap: for any metric where lower is better (crime, unemployment, uninsured, food insecurity, etc.), a rank arrow `↑` and a value sign `−` point opposite ways for the same real-world outcome, forcing readers to cross-reference `goodDirection` to decide which `+` is good. Rank moves carry color (`.move-up` green / `.move-down` red / `.move-stable` grey); the current value and its delta are rendered in default/muted weight with no color coding.
 
