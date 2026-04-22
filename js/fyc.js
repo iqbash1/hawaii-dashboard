@@ -305,7 +305,7 @@
             else if (abovePct <= 0.4) areaClass = 'sc-weak';
 
             const standingText = withRank.length
-                ? `${aboveMedian} of ${withRank.length} better than the median.`
+                ? `${aboveMedian} of ${withRank.length} better than the median`
                 : '';
 
             // Trend arrows
