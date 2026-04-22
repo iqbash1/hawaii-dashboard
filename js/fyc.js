@@ -257,18 +257,11 @@
         return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: null, betterNow, betterThen: null };
     }
 
-    /* ── Direction helpers for inline coloring ──
-     * absDirection(r)  — colors the absolute-change number by pure trend direction,
-     *                    independent of rank. "Little change" (|relChange| < 5) returns ''.
-     * rankDirection(s) — colors the rank-change text by rank movement (improved/worsened).
-     * These intentionally decouple: a metric can improve in value while worsening in rank
-     * when other states improve faster (e.g., voter participation +13.8% but rank #31→#50).
+    /* ── Direction helper for rank-move coloring ──
+     * rankDirection(s) — colors the rank-transition text by rank movement
+     * (improved/worsened). Rank is the primary direction signal in the Change
+     * Summary; abs-change is deliberately muted to avoid double-encoding.
      */
-    function absDirection(r) {
-        if (Math.abs(r.relChange) < 5) return '';
-        const good = (r.goodDirection === 'up') ? (r.absChange > 0) : (r.absChange < 0);
-        return good ? 'pos' : 'neg';
-    }
     function rankDirection(s) {
         if (!s || s.startRank == null || s.endRank == null) return '';
         if (s.endRank < s.startRank) return 'pos';
@@ -397,13 +390,12 @@
             if (!el) return;
             el.innerHTML = sorted.map(({ r, tot, move }) => {
                 const cls = Utils.rankColorClass(r.standing.endRank, tot);
-                const absDir = absDirection(r) || 'neu';
                 return `<a href="../#${r.slug}" class="fyc-rank-item ${cls}">
                     <span class="fyc-rank-num">#${r.standing.endRank} <span class="fyc-rank-year">(${r.latestYear})</span></span>
                     <span class="fyc-rank-name">${r.metric}</span>
                     <span class="fyc-rank-cat">${r.area}</span>
                     ${Utils.rankMoveHtml(r)}
-                    <span class="fyc-rank-val fyc-val-${absDir}">${r.changeText}</span>
+                    <span class="fyc-rank-val">${r.changeText}</span>
                 </a>`;
             }).join('');
             ['rank', 'category', 'move', 'value'].forEach(col => {
@@ -452,9 +444,9 @@
             let rowsHtml = '';
             for (const r of areaMetrics) {
                 const yearRange = `(${r.baseYear}\u2013${r.latestYear})`;
-                const absDir = absDirection(r);
                 const rankDir = rankDirection(r.standing);
-                const absCls = absDir ? `fyc-val-${absDir}` : '';
+                // Abs-change stays muted; status badge (line 1) + rank (line 3)
+                // carry the direction signal. See Option A review notes.
 
                 // Render line3 with rank portion colored by rank direction (independent of trend).
                 let line3Html = '';
@@ -474,7 +466,7 @@
                             <span class="fyc-metric-name">${r.metric}</span>
                             <span class="fyc-status ${r.status}">${Utils.statusLabel(r.status, r.standing)}</span>
                         </div>
-                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="${absCls}">${r.changeText}</span> ${yearRange}</div>
+                        <div class="fyc-line2">Hawai\u02BBi trend: <span class="fyc-abs-change">${r.changeText}</span> ${yearRange}</div>
                         ${line3Html}
                     </a>`;
             }
@@ -500,7 +492,6 @@
         // absolute change is shown as secondary context.
         function spotlightItem(r) {
             const rankDir = rankDirection(r.standing);
-            const absDir = absDirection(r);
             let rankHtml = '';
             if (r.standing) {
                 const rankCls = rankDir ? ` fyc-val-${rankDir}` : '';
@@ -508,11 +499,14 @@
                     ? `<span class="${rankCls.trim()}">Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}</span>`
                     : `<span>Rank #${r.standing.endRank}</span>`;
             }
-            const absCls = absDir ? ` fyc-val-${absDir}` : '';
-            const sep = rankHtml && r.changeText ? ' \u00b7 ' : '';
+            // Abs value is secondary context: wrapped in parens and muted, not
+            // colored. Rank direction carries the direction signal.
+            const absPart = r.changeText
+                ? `${rankHtml ? ' ' : ''}<span class="fyc-spot-abs">(${r.changeText})</span>`
+                : '';
             return `<a href="../#${r.slug}" class="fyc-spot-item">
                 <span class="fyc-spot-metric">${r.metric}</span>
-                <span class="fyc-spot-detail">${rankHtml}${sep}<span class="${absCls.trim()}">${r.changeText}</span></span>
+                <span class="fyc-spot-detail">${rankHtml}${absPart}</span>
             </a>`;
         }
 
