@@ -339,8 +339,9 @@ const QOTD = {
                     <h2 class="qotd-claim">${this._escape(q.claim)}</h2>
                     <div class="qotd-verdict qotd-verdict--${gotItRight ? 'correct' : 'incorrect'}" aria-live="polite">
                         <span class="qotd-verdict-glyph" aria-hidden="true">${gotItRight ? '✓' : '✗'}</span>
-                        <span class="qotd-verdict-text">Answer: <strong>${verdict}</strong>${gotItRight ? ' (You got it!)' : ''}</span>
+                        <span class="qotd-verdict-text">${gotItRight ? 'You got it!' : 'Not quite.'}</span>
                     </div>
+                    <p class="qotd-answer-reveal">Answer: <strong>${verdict}</strong></p>
                     <p class="qotd-answer-text">${this._escape(q.answer)}</p>
                     <figure class="qotd-chart" data-qotd-chart>
                         <div class="qotd-chart-canvas-wrap"><canvas class="qotd-chart-canvas" aria-label="Chart showing ${this._escape(q.metricLabel)} data"></canvas></div>

@@ -2096,6 +2096,17 @@ body {
     font-size: 1.25rem;
     line-height: 1;
 }
+/* Answer reveal is on its own line (separate from the verdict pill) so the
+ * ✓/✗ glyph can't be misread as negating the revealed True/False. */
+.qotd-answer-reveal {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text, #222);
+    margin: 0.75rem 0 0.35rem;
+}
+.qotd-answer-reveal strong {
+    font-weight: 700;
+}
 .qotd-answer-text {
     font-size: 1rem;
     line-height: 1.55;
