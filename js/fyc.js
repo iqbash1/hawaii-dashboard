@@ -308,11 +308,11 @@
             const betterThen = isBetterThanMedian(startRank.hawaiiValue, startRank.medianValue);
 
             standingText = `National standing: Rank now #${endRank.rank} (was #${startRank.rank}) \u00b7 Gap vs median now ${endGapText} (was ${startGapText})`;
-            return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: startRank.rank, betterNow, betterThen };
+            return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: startRank.rank, betterNow, betterThen, endMedianValue: endRank.medianValue };
         }
 
         standingText = `National standing: Rank now #${endRank.rank} of ${endRank.total} \u00b7 Gap vs median now ${endGapText}`;
-        return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: null, betterNow, betterThen: null };
+        return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: null, betterNow, betterThen: null, endMedianValue: endRank.medianValue };
     }
 
     /* ── Direction helper for rank-move coloring ──
@@ -560,12 +560,17 @@
                 // by the filter rule, so the rank is always colored bad. Mirrors
                 // .rank-bad in the National Ranking table.
                 const rankHtml = `<span class="fyc-spot-rank-bad">Rank #${r.standing.endRank}</span>`;
-                const valuePart = r.valueText
-                    ? ` <span class="fyc-spot-abs">\u00b7 ${r.valueText}</span>`
+                // Median value is already in display units (getAllRanksForYear
+                // pre-scales decimal percents), so format with isDec=false.
+                const medianText = r.standing && r.standing.endMedianValue != null
+                    ? fmtValue(r.standing.endMedianValue, r.unit, false)
+                    : '';
+                const contrast = r.valueText
+                    ? ` <span class="fyc-spot-abs">\u00b7 ${r.valueText}${medianText ? ` vs median ${medianText}` : ''}</span>`
                     : '';
                 return `<a href="../#${r.slug}" class="fyc-spot-item">
                     <span class="fyc-spot-metric">${r.metric}</span>
-                    <span class="fyc-spot-detail">${rankHtml}${valuePart}</span>
+                    <span class="fyc-spot-detail">${rankHtml}${contrast}</span>
                 </a>`;
             }
 
