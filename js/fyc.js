@@ -133,16 +133,16 @@
         return fmtChange(absChange, unit, isDec);
     }
 
-    /* ── Unsigned value with verbose unit stripped (same policy as
-     * fmtChangeCompact). Used when a second value sits right next to a
-     * value-with-unit, e.g. "28.2 per 10K vs median 3.6". ── */
+    /* ── Unsigned value with verbose trailing unit stripped. Used when a
+     * second value sits right next to a value-with-unit — e.g.
+     * "28.2 per 10K vs median 3.6" or "-97.4 → -64.6 per 10K". Strips
+     * "per 100K", "per 10K", and "points" from the end; keeps short
+     * symbolic units (%, $, ×, ¢) because they'd be ambiguous bare.
+     * Number precision matches fmtValue exactly — we only remove the
+     * trailing unit token from the formatted string. ── */
     function fmtValueCompact(value, unit, isDec) {
-        const STRIP = new Set(['per 100K', 'per 10K', 'Index (2017=100)', 'score']);
-        if (STRIP.has(unit)) {
-            const r = Math.abs(value) >= 10 ? Math.round(value) : +value.toFixed(1);
-            return r.toLocaleString();
-        }
-        return fmtValue(value, unit, isDec);
+        const full = fmtValue(value, unit, isDec);
+        return full.replace(/ (per 100K|per 10K|points)$/, '');
     }
 
     /* ── Format gap in native units (unsigned, with "better"/"worse") ── */
@@ -320,11 +320,11 @@
             const betterThen = isBetterThanMedian(startRank.hawaiiValue, startRank.medianValue);
 
             standingText = `National standing: Rank now #${endRank.rank} (was #${startRank.rank}) \u00b7 Gap vs median now ${endGapText} (was ${startGapText})`;
-            return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: startRank.rank, betterNow, betterThen, endMedianValue: endRank.medianValue };
+            return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: startRank.rank, betterNow, betterThen };
         }
 
         standingText = `National standing: Rank now #${endRank.rank} of ${endRank.total} \u00b7 Gap vs median now ${endGapText}`;
-        return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: null, betterNow, betterThen: null, endMedianValue: endRank.medianValue };
+        return { standingText, endRank: endRank.rank, endTotal: endRank.total, startRank: null, betterNow, betterThen: null };
     }
 
     /* ── Direction helper for rank-move coloring ──
@@ -568,23 +568,20 @@
         // coloring. A green "#49 → #48" there fought the column's message.
         function spotlightItem(r, { variant = 'movement' } = {}) {
             if (variant === 'standing') {
-                // Position signal, not direction: every row here is endRank ≥ 45
-                // by the filter rule, so the rank is always colored bad. Mirrors
-                // .rank-bad in the National Ranking table.
-                const rankHtml = `<span class="fyc-spot-rank-bad">Rank #${r.standing.endRank}</span>`;
-                // Median value is already in display units (getAllRanksForYear
-                // pre-scales decimal percents), so format with isDec=false.
-                // Compact variant strips "per 10K" / "per 100K" / "points" since
-                // the Hawai'i value right before it already carries the unit.
-                const medianText = r.standing && r.standing.endMedianValue != null
-                    ? fmtValueCompact(r.standing.endMedianValue, r.unit, false)
-                    : '';
-                const contrast = r.valueText
-                    ? ` <span class="fyc-spot-abs">\u00b7 ${r.valueText}${medianText ? ` vs median ${medianText}` : ''}</span>`
+                // Same layout as Biggest Gains / Declines (rank transition +
+                // muted value change in parens), but rank is colored by
+                // position — red — rather than direction, since the column
+                // filters to persistent bottom-tier metrics.
+                const rankTransition = r.standing.startRank != null
+                    ? `Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}`
+                    : `Rank #${r.standing.endRank}`;
+                const rankHtml = `<span class="fyc-spot-rank-bad">${rankTransition}</span>`;
+                const absPart = r.changeText
+                    ? ` <span class="fyc-spot-abs">(${r.changeText})</span>`
                     : '';
                 return `<a href="../#${r.slug}" class="fyc-spot-item">
                     <span class="fyc-spot-metric">${r.metric}</span>
-                    <span class="fyc-spot-detail">${rankHtml}${contrast}</span>
+                    <span class="fyc-spot-detail">${rankHtml}${absPart}</span>
                 </a>`;
             }
 
@@ -625,8 +622,17 @@
             .sort((a, b) => rankShift(a) - rankShift(b))      // most negative first
             .slice(0, 5);
 
+        // "Stuck near the bottom" — persistent bottom-tier weaknesses:
+        // metrics whose rank was already bad at the start of the span AND
+        // is still bad now. Gives the third Spotlight column a span-dependent
+        // role (it was a static snapshot before). Excludes metrics with no
+        // start-rank data — can't confirm persistence without both endpoints.
         const offTrack = [...allResults]
-            .filter(r => r.standing && r.standing.endRank != null && r.standing.endRank >= 45)
+            .filter(r => r.standing
+                && r.standing.endRank != null
+                && r.standing.startRank != null
+                && r.standing.endRank >= 45
+                && r.standing.startRank >= 40)
             .sort((a, b) => b.standing.endRank - a.standing.endRank)
             .slice(0, 5);
 
@@ -644,7 +650,7 @@
                 </div>
             </div>
             <div class="fyc-spot-col fyc-spot-offtrack">
-                <div class="fyc-spot-label">Most off-track nationally</div>
+                <div class="fyc-spot-label">Stuck near the bottom</div>
                 <div class="fyc-spot-card">
                     ${offTrack.length ? offTrack.map(r => spotlightItem(r, { variant: 'standing' })).join('') : '<span class="fyc-spot-empty">No data</span>'}
                 </div>
