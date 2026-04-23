@@ -19,6 +19,8 @@ cp -r js dist/
 cp -r assets dist/
 cp -r about dist/
 cp -r faq dist/
+cp -r one-year-change dist/
+cp -r three-year-change dist/
 cp -r five-year-change dist/
 cp -r ten-year-change dist/
 cp -r fifteen-year-change dist/
@@ -37,7 +39,7 @@ cp -r q dist/
 SHA=$(git rev-parse --short HEAD)
 # CI runs Linux sed (no -i extension needed); local macOS needs -i ''
 # Using perl for cross-platform compatibility
-perl -pi -e "s/\\?v=[^\"]*\"/\\?v=${SHA}\"/g" dist/index.html dist/about/index.html dist/five-year-change/index.html dist/ten-year-change/index.html dist/fifteen-year-change/index.html dist/twenty-year-change/index.html dist/twenty-five-year-change/index.html
+perl -pi -e "s/\\?v=[^\"]*\"/\\?v=${SHA}\"/g" dist/index.html dist/about/index.html dist/one-year-change/index.html dist/three-year-change/index.html dist/five-year-change/index.html dist/ten-year-change/index.html dist/fifteen-year-change/index.html dist/twenty-year-change/index.html dist/twenty-five-year-change/index.html
 echo "Cache-bust: ?v=${SHA}"
 
 echo "Build complete: $(find dist -type f | wc -l | tr -d ' ') files in dist/"
