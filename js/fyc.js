@@ -133,6 +133,18 @@
         return fmtChange(absChange, unit, isDec);
     }
 
+    /* ── Unsigned value with verbose unit stripped (same policy as
+     * fmtChangeCompact). Used when a second value sits right next to a
+     * value-with-unit, e.g. "28.2 per 10K vs median 3.6". ── */
+    function fmtValueCompact(value, unit, isDec) {
+        const STRIP = new Set(['per 100K', 'per 10K', 'Index (2017=100)', 'score']);
+        if (STRIP.has(unit)) {
+            const r = Math.abs(value) >= 10 ? Math.round(value) : +value.toFixed(1);
+            return r.toLocaleString();
+        }
+        return fmtValue(value, unit, isDec);
+    }
+
     /* ── Format gap in native units (unsigned, with "better"/"worse") ── */
     function fmtGap(gapValue, unit, isDec, betterOrWorse) {
         // Gap values from getRankForYear are already in display units
@@ -562,8 +574,10 @@
                 const rankHtml = `<span class="fyc-spot-rank-bad">Rank #${r.standing.endRank}</span>`;
                 // Median value is already in display units (getAllRanksForYear
                 // pre-scales decimal percents), so format with isDec=false.
+                // Compact variant strips "per 10K" / "per 100K" / "points" since
+                // the Hawai'i value right before it already carries the unit.
                 const medianText = r.standing && r.standing.endMedianValue != null
-                    ? fmtValue(r.standing.endMedianValue, r.unit, false)
+                    ? fmtValueCompact(r.standing.endMedianValue, r.unit, false)
                     : '';
                 const contrast = r.valueText
                     ? ` <span class="fyc-spot-abs">\u00b7 ${r.valueText}${medianText ? ` vs median ${medianText}` : ''}</span>`
