@@ -2508,7 +2508,7 @@ const DASHBOARD_DATA = {
   },
   "net_domestic_migration_rate": {
     "area": "Infrastructure, Resilience & Trust",
-    "metric": "People Moving In vs. Out",
+    "metric": "Net Migration",
     "officialName": "Net inflow of U.S. residents moving from other states, per 10,000 residents; positive means more arrivals than departures.",
     "sourceCategory": "federal",
     "unit": "per 10K",

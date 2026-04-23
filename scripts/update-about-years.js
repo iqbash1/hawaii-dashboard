@@ -50,7 +50,7 @@ const NAME_TO_SLUG = {
     'Food Insecurity Rate':                                 'food_insecurity_rate',
     'Rainy Day Fund':                                       'rainy_day_fund_pct',
     'Voter Participation Rate':                             'voter_participation_rate',
-    'People Moving In vs. Out':                             'net_domestic_migration_rate',
+    'Net Migration':                                        'net_domestic_migration_rate',
     'New Business Entry Rate':                              'estabs_entry_rate',
     'Net Employer Business Formation':                      'net_employer_formation',
     'Labor Productivity':                                   'labor_productivity',

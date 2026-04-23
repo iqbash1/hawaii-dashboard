@@ -362,7 +362,7 @@ const QOTD_QUESTIONS = [
     "answer": "In 2024, Hawaiʻi was -64.6 per 10K versus the median of 6.2 per 10K.",
     "chartUrl": "/r/net_domestic_migration_rate/",
     "metric": "net_domestic_migration_rate",
-    "metricLabel": "People Moving In vs. Out",
+    "metricLabel": "Net Migration",
     "topic": "Infrastructure, Resilience & Trust",
     "variant": "V1"
   },
@@ -554,7 +554,7 @@ const QOTD_QUESTIONS = [
     "answer": "In 2024, Hawaiʻi County was the only county gaining residents at +29.9 per 10K; Honolulu lost 69.1 per 10K.",
     "chartUrl": "/c/net_domestic_migration_rate/",
     "metric": "net_domestic_migration_rate",
-    "metricLabel": "People Moving In vs. Out",
+    "metricLabel": "Net Migration",
     "topic": "Infrastructure, Resilience & Trust",
     "variant": "V8"
   },
