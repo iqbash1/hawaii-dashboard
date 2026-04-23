@@ -556,7 +556,10 @@
         // coloring. A green "#49 → #48" there fought the column's message.
         function spotlightItem(r, { variant = 'movement' } = {}) {
             if (variant === 'standing') {
-                const rankHtml = `<span>Rank #${r.standing.endRank}</span>`;
+                // Position signal, not direction: every row here is endRank ≥ 45
+                // by the filter rule, so the rank is always colored bad. Mirrors
+                // .rank-bad in the National Ranking table.
+                const rankHtml = `<span class="fyc-spot-rank-bad">Rank #${r.standing.endRank}</span>`;
                 const valuePart = r.valueText
                     ? ` <span class="fyc-spot-abs">\u00b7 ${r.valueText}</span>`
                     : '';
