@@ -549,9 +549,23 @@
         const methodHtml = `<p class="fyc-method">Years vary by metric because source data updates on different schedules.</p>`;
 
         // 6. Spotlight: Biggest gains, Biggest declines, Most off-track
-        // Rank-first display: rank movement is the primary governance signal;
-        // absolute change is shown as secondary context.
-        function spotlightItem(r) {
+        // Gains/Declines are movement-based, so they show the rank transition
+        // (Rank #X → #Y, colored by direction) plus a muted abs-change.
+        // Off-track is a current-standing snapshot (endRank ≥ 45), so it
+        // shows only the current rank and current value, with no direction
+        // coloring. A green "#49 → #48" there fought the column's message.
+        function spotlightItem(r, { variant = 'movement' } = {}) {
+            if (variant === 'standing') {
+                const rankHtml = `<span>Rank #${r.standing.endRank}</span>`;
+                const valuePart = r.valueText
+                    ? ` <span class="fyc-spot-abs">\u00b7 ${r.valueText}</span>`
+                    : '';
+                return `<a href="../#${r.slug}" class="fyc-spot-item">
+                    <span class="fyc-spot-metric">${r.metric}</span>
+                    <span class="fyc-spot-detail">${rankHtml}${valuePart}</span>
+                </a>`;
+            }
+
             const rankDir = rankDirection(r.standing);
             let rankHtml = '';
             if (r.standing) {
@@ -560,8 +574,6 @@
                     ? `<span class="${rankCls.trim()}">Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}</span>`
                     : `<span>Rank #${r.standing.endRank}</span>`;
             }
-            // Abs value is secondary context: wrapped in parens and muted, not
-            // colored. Rank direction carries the direction signal.
             const absPart = r.changeText
                 ? `${rankHtml ? ' ' : ''}<span class="fyc-spot-abs">(${r.changeText})</span>`
                 : '';
@@ -612,7 +624,7 @@
             <div class="fyc-spot-col fyc-spot-offtrack">
                 <div class="fyc-spot-label">Most off-track nationally</div>
                 <div class="fyc-spot-card">
-                    ${offTrack.length ? offTrack.map(spotlightItem).join('') : '<span class="fyc-spot-empty">No data</span>'}
+                    ${offTrack.length ? offTrack.map(r => spotlightItem(r, { variant: 'standing' })).join('') : '<span class="fyc-spot-empty">No data</span>'}
                 </div>
             </div>
         </div>`;
