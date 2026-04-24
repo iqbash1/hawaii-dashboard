@@ -3,8 +3,9 @@
 Generate Question-of-the-Day OG preview images (1200x630) for every question
 in js/questions.js.
 
-Each card shows: "DO YOU KNOW HAWAIʻI?" eyebrow, the claim text, True/False
-pills (so the preview looks like a quiz at a glance), and the site footer.
+Each card shows: big centered "DO YOU KNOW HAWAIʻI?" hero, the claim
+below in a quieter weight, and prominent TRUE (filled) / FALSE (outlined)
+pills so the preview reads as a quiz at a glance.
 
 Output: assets/og/q/{slug}.png  — slug matches each question's `slug` field
 to keep existing q/{id}/index.html og:image references valid.
@@ -24,12 +25,11 @@ QUESTIONS_JS = os.path.join(BASE, 'js', 'questions.js')
 OUT_DIR = os.path.join(BASE, 'assets', 'og', 'q')
 
 W, H = 1200, 630
-BG = (245, 245, 245)            # light gray background
-CARD = (255, 255, 255)          # white inner card
-TEAL = (13, 124, 143)           # Hawaii blue/teal (--hawaii-blue)
-TEXT = (51, 51, 51)              # dark text
-MUTED = (102, 102, 102)          # muted text
-DIVIDER = (234, 234, 234)        # light divider
+BG = (248, 249, 250)
+CARD = (255, 255, 255)
+TEAL = (13, 124, 143)           # --hawaii-blue
+TEXT = (40, 40, 40)
+DIVIDER = (230, 232, 235)
 
 FONT_CANDIDATES = [
     '/System/Library/Fonts/Supplemental/Arial Bold.ttf',
@@ -83,13 +83,10 @@ def wrap_text(draw, text, font, max_width):
     return lines
 
 
-def draw_pill(draw, x, y, w, h, label, font, outline, text_color, fill=None):
-    """Draw a rounded pill (outlined button)."""
+def draw_pill(draw, x, y, w, h, label, font, *, fill, text_color, outline, outline_w=3):
     radius = h // 2
-    if fill:
-        draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=fill, outline=outline, width=3)
-    else:
-        draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, outline=outline, width=3)
+    draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=fill,
+                           outline=outline, width=outline_w)
     bbox = draw.textbbox((0, 0), label, font=font)
     tw = bbox[2] - bbox[0]
     th = bbox[3] - bbox[1]
@@ -100,54 +97,49 @@ def render(q, out_path):
     im = Image.new('RGB', (W, H), BG)
     draw = ImageDraw.Draw(im)
 
-    # Outer card
-    card_m = 32
-    draw.rounded_rectangle([card_m, card_m, W - card_m, H - card_m], radius=16, fill=CARD, outline=DIVIDER, width=1)
+    # Outer white card
+    m = 28
+    draw.rounded_rectangle([m, m, W - m, H - m], radius=20, fill=CARD,
+                           outline=DIVIDER, width=1)
 
-    # Top accent
-    draw.rectangle([card_m, card_m, W - card_m, card_m + 8], fill=TEAL)
+    # HERO: "DO YOU KNOW HAWAIʻI?" — big, centered, teal
+    hero_font = pick_font(FONT_CANDIDATES, 72)
+    hero = 'DO YOU KNOW HAWAIʻI?'
+    bbox = draw.textbbox((0, 0), hero, font=hero_font)
+    tw = bbox[2] - bbox[0]
+    draw.text(((W - tw) // 2, 70), hero, fill=TEAL, font=hero_font)
 
-    eyebrow_font = pick_font(FONT_CANDIDATES, 24)
-    claim_font = pick_font(FONT_CANDIDATES, 56)
-    btn_font = pick_font(FONT_CANDIDATES, 36)
-    footer_font = pick_font(FONT_REGULAR_CANDIDATES, 20)
+    # Accent underline under the hero
+    ax = (W - 120) // 2
+    draw.rectangle([ax, 170, ax + 120, 176], fill=TEAL)
 
-    # Eyebrow
-    eyebrow = 'DO YOU KNOW HAWAIʻI?'
-    draw.text((80, 80), eyebrow, fill=TEAL, font=eyebrow_font)
-
-    # Claim: wrap and center vertically in the available region between
-    # the eyebrow (~140) and the pill row (~440), so there's always a
-    # clear gap above the buttons.
-    claim_top_bound = 150
-    claim_bottom_bound = 430
-    max_width = W - 200
-    # Auto-shrink font for long claims so we never overflow vertically.
-    for size in (56, 50, 44, 40):
-        claim_font = pick_font(FONT_CANDIDATES, size)
+    # Claim: quieter, centered, auto-shrinks for long lines
+    claim_top, claim_bot = 210, 410
+    max_width = W - 180
+    for size in (44, 40, 36, 32):
+        claim_font = pick_font(FONT_REGULAR_CANDIDATES, size)
         lines = wrap_text(draw, q['claim'], claim_font, max_width)
-        line_h = claim_font.size + 12
+        line_h = claim_font.size + 10
         total = line_h * len(lines)
-        if total <= (claim_bottom_bound - claim_top_bound):
+        if total <= (claim_bot - claim_top):
             break
-    y = claim_top_bound + ((claim_bottom_bound - claim_top_bound) - total) // 2
+    y = claim_top + ((claim_bot - claim_top) - total) // 2
     for line in lines:
         bbox = draw.textbbox((0, 0), line, font=claim_font)
         tw = bbox[2] - bbox[0]
         draw.text(((W - tw) // 2, y), line, fill=TEXT, font=claim_font)
         y += line_h
 
-    # True/False pills (outlined, teal) — anchored near the bottom with
-    # room for the footer.
-    btn_w, btn_h = 220, 76
+    # TRUE (filled) / FALSE (outlined) — big, quiz energy
+    btn_font = pick_font(FONT_CANDIDATES, 40)
+    btn_w, btn_h = 240, 88
     gap = 40
     pill_y = 470
     cx = W // 2
-    draw_pill(draw, cx - btn_w - gap // 2, pill_y, btn_w, btn_h, 'True', btn_font, TEAL, TEAL)
-    draw_pill(draw, cx + gap // 2, pill_y, btn_w, btn_h, 'False', btn_font, TEAL, TEAL)
-
-    # Footer
-    draw.text((80, H - 72), 'hawaiidashboard.org', fill=MUTED, font=footer_font)
+    draw_pill(draw, cx - btn_w - gap // 2, pill_y, btn_w, btn_h, 'TRUE', btn_font,
+              fill=TEAL, text_color=(255, 255, 255), outline=TEAL)
+    draw_pill(draw, cx + gap // 2, pill_y, btn_w, btn_h, 'FALSE', btn_font,
+              fill=CARD, text_color=TEAL, outline=TEAL)
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     im.save(out_path, 'PNG', optimize=True)
