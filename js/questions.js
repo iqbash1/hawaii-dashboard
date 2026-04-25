@@ -104,9 +104,9 @@ const QOTD_QUESTIONS = [
   },
   {
     "id": "q077",
-    "slug": "hawaii-has-more-unsheltered-homelessness-than-the-rest-of-the-country",
-    "claim": "Hawaiʻi has a higher rate of unsheltered homelessness than most states.",
-    "correct": true,
+    "slug": "hawaii-has-lower-unsheltered-homelessness-than-most-states",
+    "claim": "Hawaiʻi has a lower rate of unsheltered homelessness than most states.",
+    "correct": false,
     "answer": "In 2024, Hawaiʻi was 28.2 per 10K versus the median of 3.5 per 10K.",
     "chartUrl": "/r/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
