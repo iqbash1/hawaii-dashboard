@@ -566,6 +566,12 @@ body {
     text-decoration: underline;
 }
 
+/* 3-tier rank colors — mirrors Summary page National Ranking table.
+   Top third → green, middle third → grey, bottom third → red. */
+.comp-rank.rank-good { color: var(--positive); }
+.comp-rank.rank-mid  { color: var(--neutral); }
+.comp-rank.rank-bad  { color: var(--negative); }
+
 /* Touch devices have no hover; show the underline affordance at rest so the
    click target is discoverable. */
 @media (hover: none) {

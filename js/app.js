@@ -701,7 +701,11 @@ const App = {
             if (hasRankings) {
                 const rankings = this.getStateRankings(slug);
                 if (rankings && rankings.hawaiiRank > 0) {
-                    rankHtml = `<span class="comp-rank" data-slug="${slug}" title="#1 is the best-performing state. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</span>`;
+                    // 3-tier rank color: top third → good, middle → mid, bottom → bad.
+                    // Mirrors Utils.rankColorClass / Summary page National Ranking table.
+                    const rankPct = rankings.hawaiiRank / rankings.total;
+                    const rankClass = rankPct <= 0.33 ? 'rank-good' : rankPct <= 0.67 ? 'rank-mid' : 'rank-bad';
+                    rankHtml = `<span class="comp-rank ${rankClass}" data-slug="${slug}" title="#1 is the best-performing state. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</span>`;
                 }
             }
             const hasCounty = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
