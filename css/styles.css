@@ -541,29 +541,13 @@ body {
     line-height: 1.25;
 }
 
-.comp-rank,
-.comp-county {
+/* Rank is plain colored text — the RYG tier IS the signal, no link affordance. */
+.comp-rank {
     font-family: var(--font-heading);
     font-size: var(--text-xs);
     font-weight: 600;
-    color: var(--hawaii-blue);
-    cursor: pointer;
-    opacity: 0.85;
+    color: var(--text-muted);
     display: inline-block;
-    transition: opacity var(--transition);
-}
-
-.comp-county {
-    /* Secondary cue — slightly quieter than the rank above. */
-    font-weight: 500;
-    opacity: 0.7;
-    margin-top: 0.05rem;
-}
-
-.comp-rank:hover,
-.comp-county:hover {
-    opacity: 1;
-    text-decoration: underline;
 }
 
 /* 3-tier rank colors — mirrors Summary page National Ranking table.
@@ -572,10 +556,27 @@ body {
 .comp-rank.rank-mid  { color: var(--neutral); }
 .comp-rank.rank-bad  { color: var(--negative); }
 
+/* "By county" — the only navigational affordance in the meta row. */
+.comp-county {
+    font-family: var(--font-heading);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--hawaii-blue);
+    cursor: pointer;
+    opacity: 0.7;
+    display: inline-block;
+    margin-top: 0.05rem;
+    transition: opacity var(--transition);
+}
+
+.comp-county:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
 /* Touch devices have no hover; show the underline affordance at rest so the
    click target is discoverable. */
 @media (hover: none) {
-    .comp-rank,
     .comp-county {
         opacity: 1;
         text-decoration: underline;

@@ -703,7 +703,7 @@ const App = {
                 if (rankings && rankings.hawaiiRank > 0) {
                     // Single source of truth — same tier function as the Summary page.
                     const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
-                    rankHtml = `<span class="comp-rank ${rankClass}" data-slug="${slug}" title="#1 is the best-performing state. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</span>`;
+                    rankHtml = `<span class="comp-rank ${rankClass}">Rank #${rankings.hawaiiRank} of ${rankings.total}</span>`;
                 }
             }
             const hasCounty = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
@@ -951,14 +951,6 @@ const App = {
                         Modal.openModal(slug, areaGroup.area);
                     }
                 });
-
-                const rankEl = card.querySelector('.comp-rank');
-                if (rankEl) {
-                    rankEl.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        Modal.openModal(slug, areaGroup.area, 'rankings');
-                    });
-                }
 
                 const countyEl = card.querySelector('.comp-county');
                 if (countyEl) {
