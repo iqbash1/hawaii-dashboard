@@ -1054,31 +1054,39 @@ const Modal = {
             noteEl.style.display = 'none';
         }
 
-        // Apply 3-year centered rolling average if flagged
+        // 3-year centered rolling average — same kernel for state and counties
+        // so the state line on the county chart smooths identically and the
+        // visual stays internally consistent (no spike where the raw 1-year
+        // jumps but the smoothed counties don't).
+        const smooth3 = (raw) => {
+            if (!raw) return raw;
+            const years = Object.keys(raw).sort();
+            const out = {};
+            for (let i = 0; i < years.length; i++) {
+                const window = [];
+                for (let j = Math.max(0, i - 1); j <= Math.min(years.length - 1, i + 1); j++) {
+                    if (raw[years[j]] != null) window.push(raw[years[j]]);
+                }
+                out[years[i]] = window.length ? +(window.reduce((a, b) => a + b, 0) / window.length).toFixed(4) : null;
+            }
+            return out;
+        };
+
+        // Apply the same smoothing to county and state data when flagged.
         let chartData = countyData;
+        let stateRef = countyData.hideStateLine ? null : metricData.hawaii;
         if (isSmoothed) {
             const smoothed = { ...countyData, data: {} };
             for (const county of countyData.counties) {
-                const raw = countyData.data[county];
-                const years = Object.keys(raw).sort();
-                const out = {};
-                for (let i = 0; i < years.length; i++) {
-                    const window = [];
-                    for (let j = Math.max(0, i - 1); j <= Math.min(years.length - 1, i + 1); j++) {
-                        if (raw[years[j]] != null) window.push(raw[years[j]]);
-                    }
-                    out[years[i]] = window.length ? +(window.reduce((a, b) => a + b, 0) / window.length).toFixed(4) : null;
-                }
-                smoothed.data[county] = out;
+                smoothed.data[county] = smooth3(countyData.data[county]);
             }
             chartData = smoothed;
+            if (stateRef) stateRef = smooth3(stateRef);
         }
 
         const canvas = document.getElementById('county-chart');
         const labels = Object.keys(Object.values(chartData.data)[0]).sort();
         const govBoxes = App.getGovernorBoxes(labels);
-
-        const stateRef = countyData.hideStateLine ? null : metricData.hawaii;
         Modal.countyChart = ChartUtils.createCountyChart(
             canvas, chartData, metricData, govBoxes, App.COUNTY_COLORS, stateRef
         );
