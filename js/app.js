@@ -695,21 +695,28 @@ const App = {
         const avgFormatted = ChartUtils.formatCardValue(latestAvg.value, metricData.unit, isDecimal);
 
         let rankHtml = '';
+        let countyHtml = '';
         if (slug) {
             const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
             if (hasRankings) {
                 const rankings = this.getStateRankings(slug);
                 if (rankings && rankings.hawaiiRank > 0) {
-                    rankHtml = `<div class="comp-rank" data-slug="${slug}" title="#1 is the best-performing state. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</div>`;
+                    rankHtml = `<span class="comp-rank" data-slug="${slug}" title="#1 is the best-performing state. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</span>`;
                 }
             }
+            const hasCounty = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
+            if (hasCounty) {
+                countyHtml = `<span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">By county →</span>`;
+            }
         }
+        const sep = (rankHtml && countyHtml) ? '<span class="comp-meta-sep" aria-hidden="true">·</span>' : '';
+        const metaRow = (rankHtml || countyHtml) ? `<div class="comp-meta">${rankHtml}${sep}${countyHtml}</div>` : '';
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
                 <div class="comp-label">50-state median</div>
                 <div class="comp-detail">${avgFormatted}</div>
-                ${rankHtml}
+                ${metaRow}
             </div>
         `;
     },
@@ -949,6 +956,14 @@ const App = {
                     rankEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         Modal.openModal(slug, areaGroup.area, 'rankings');
+                    });
+                }
+
+                const countyEl = card.querySelector('.comp-county');
+                if (countyEl) {
+                    countyEl.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        Modal.openModal(slug, areaGroup.area, 'county');
                     });
                 }
 

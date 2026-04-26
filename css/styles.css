@@ -533,27 +533,45 @@ body {
 }
 
 
-.comp-rank {
+.comp-meta {
+    margin-top: 0.15rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.35rem;
+    line-height: 1.25;
+}
+
+.comp-rank,
+.comp-county {
     font-family: var(--font-heading);
     font-size: var(--text-xs);
     font-weight: 600;
     color: var(--hawaii-blue);
     cursor: pointer;
-    margin-top: 0.15rem;
     opacity: 0.85;
     display: inline-block;
     transition: opacity var(--transition);
 }
 
-.comp-rank:hover {
+.comp-rank:hover,
+.comp-county:hover {
     opacity: 1;
     text-decoration: underline;
+}
+
+.comp-meta-sep {
+    color: var(--text-muted);
+    opacity: 0.6;
+    font-size: var(--text-xs);
 }
 
 /* Touch devices have no hover; show the underline affordance at rest so the
    click target is discoverable. */
 @media (hover: none) {
-    .comp-rank {
+    .comp-rank,
+    .comp-county {
         opacity: 1;
         text-decoration: underline;
     }
@@ -1895,7 +1913,8 @@ body {
         max-height: 36px;
     }
 
-    .comp-rank {
+    .comp-rank,
+    .comp-county {
         color: #333;
     }
 
