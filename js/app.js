@@ -709,8 +709,7 @@ const App = {
                 countyHtml = `<span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">By county →</span>`;
             }
         }
-        const sep = (rankHtml && countyHtml) ? '<span class="comp-meta-sep" aria-hidden="true">·</span>' : '';
-        const metaRow = (rankHtml || countyHtml) ? `<div class="comp-meta">${rankHtml}${sep}${countyHtml}</div>` : '';
+        const metaRow = (rankHtml || countyHtml) ? `<div class="comp-meta">${rankHtml}${countyHtml}</div>` : '';
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
