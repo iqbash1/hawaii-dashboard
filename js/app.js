@@ -706,7 +706,7 @@ const App = {
             }
             const hasCounty = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
             if (hasCounty) {
-                countyHtml = `<span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">By county →</span>`;
+                countyHtml = `<span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">By county</span>`;
             }
         }
         const metaRow = (rankHtml || countyHtml) ? `<div class="comp-meta">${rankHtml}${countyHtml}</div>` : '';
