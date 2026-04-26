@@ -701,10 +701,8 @@ const App = {
             if (hasRankings) {
                 const rankings = this.getStateRankings(slug);
                 if (rankings && rankings.hawaiiRank > 0) {
-                    // 3-tier rank color: top third → good, middle → mid, bottom → bad.
-                    // Mirrors Utils.rankColorClass / Summary page National Ranking table.
-                    const rankPct = rankings.hawaiiRank / rankings.total;
-                    const rankClass = rankPct <= 0.33 ? 'rank-good' : rankPct <= 0.67 ? 'rank-mid' : 'rank-bad';
+                    // Single source of truth — same tier function as the Summary page.
+                    const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
                     rankHtml = `<span class="comp-rank ${rankClass}" data-slug="${slug}" title="#1 is the best-performing state. Click to see full rankings.">Rank #${rankings.hawaiiRank} of ${rankings.total}</span>`;
                 }
             }
