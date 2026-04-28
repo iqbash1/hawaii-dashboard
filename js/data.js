@@ -169,7 +169,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "Annual",
     "nextUpdate": "Oct",
     "rankHistoryNarrative": {
-      "summary": "Hawaiʻi has ranked #5 to #21 since 1985, mostly in the #8 to #14 range, running 35 to 40 percent better than the median. Geographic isolation limits weapons trafficking, and multigenerational community networks where people look out for each other.",
+      "summary": "Hawaiʻi has typically ranked in the top quarter of states for safety since 1985. Geographic isolation limits weapons trafficking, and multigenerational community networks where people look out for each other.",
       "mode": "protect",
       "benchmarks": [
         {
