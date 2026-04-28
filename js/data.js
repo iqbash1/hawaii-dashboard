@@ -17,7 +17,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FBI Crime Data Explorer",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
-    "whyItMatters": "Violent crime shapes whether people feel safe at home, at school, and in public. Against Hawaiʻi's 1.4 million residents, every 10 per 100K on this rate represents roughly 140 reported incidents a year.",
+    "whyItMatters": "Violent crime shapes whether people feel safe at home, at school, and in public.",
     "scale": {
       "denominator": 1441387,
       "denominatorRounded": 1440000,
@@ -204,7 +204,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "FBI Uniform Crime Reports",
     "sourceUrl": "https://cde.ucr.cjis.gov/",
-    "whyItMatters": "Property crime brings direct financial loss and insecurity to households and businesses. Against Hawaiʻi's 1.4 million residents, every 100 per 100K on this rate represents roughly 1,400 reported incidents a year.",
+    "whyItMatters": "Property crime brings direct financial loss and insecurity to households and businesses.",
     "scale": {
       "denominator": 1441387,
       "denominatorRounded": 1440000,
@@ -1604,7 +1604,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "HUD PIT Count",
     "sourceUrl": "https://www.huduser.gov/portal/datasets/ahar.html",
-    "whyItMatters": "Unsheltered homelessness means people sleeping on streets, in parks, and in cars, the most visible sign that housing has become unaffordable. Against Hawaiʻi's 1.4 million residents, every 1 per 10K on this rate represents roughly 140 more people outside on a given night.",
+    "whyItMatters": "Unsheltered homelessness means people sleeping on streets, in parks, and in cars, the most visible sign that housing has become unaffordable.",
     "scale": {
       "denominator": 1441387,
       "denominatorRounded": 1440000,
@@ -2516,7 +2516,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "Census PEP",
     "sourceUrl": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html",
-    "whyItMatters": "Net migration shows whether Hawaiʻi is keeping and attracting people. Against Hawaiʻi's 1.4 million residents, every 10 per 10K on this rate represents roughly 1,400 more people arriving or leaving on net each year.",
+    "whyItMatters": "Net migration is a verdict metric. Individual moves happen for many reasons, but in aggregate it may show whether people believe they can build a better life in Hawaiʻi or elsewhere.",
     "scale": {
       "denominator": 1441387,
       "denominatorRounded": 1440000,
