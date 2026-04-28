@@ -169,7 +169,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "Annual",
     "nextUpdate": "Oct",
     "rankHistoryNarrative": {
-      "summary": "Hawaiʻi has typically ranked in the top quarter of states for safety since 1985. Geographic isolation limits weapons trafficking, and multigenerational community networks where people look out for each other.",
+      "summary": "Hawaiʻi has typically ranked in the top quarter of states for safety since 1985.",
       "mode": "protect",
       "benchmarks": [
         {
