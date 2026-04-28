@@ -391,7 +391,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "up",
     "source": "HRSA Area Health Resource File",
     "sourceUrl": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
-    "whyItMatters": "Having enough primary care doctors affects whether people can see one before problems become emergencies. The count excludes military physicians in the TRICARE system, so a change of 1 per 100K represents roughly 14 additional civilian-serving primary care doctors.",
+    "whyItMatters": "Having enough primary care doctors affects whether people can see one before problems become emergencies. The count excludes military physicians, so a change of 1 per 100K represents roughly 14 additional civilian-serving primary care doctors.",
     "scale": {
       "denominator": 1370000,
       "denominatorRounded": null,
