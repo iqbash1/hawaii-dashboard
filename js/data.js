@@ -174,7 +174,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Maine",
-          "text": "Like Hawaiʻi, Maine is geographically isolated with low population density and close-knit, multigenerational communities. Maine has ranked #1 or #2 in violent crime rate for most of the past three decades and has maintained that position through significant economic and demographic shifts. Maine's rate has stayed below 130 per 100K for most of the past decade, roughly a third of the median. The core factors are consistent: low population density that limits anonymity, very low gang activity, and community-centered law enforcement that emphasizes relationship-based approaches over reactive response.",
+          "text": "Like Hawaiʻi, Maine is geographically isolated with low population density and close-knit, multigenerational communities. Maine has ranked #1 or #2 in violent crime rate for most of the past three decades and has maintained that position through significant economic and demographic shifts. The core factors are consistent: low population density that limits anonymity, very low gang activity, and community-centered law enforcement that emphasizes relationship-based approaches over reactive response.",
           "source": {
             "label": "FBI Crime Data Explorer - FBI UCR",
             "url": "https://cde.ucr.cjis.gov/"
