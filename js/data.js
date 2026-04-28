@@ -805,7 +805,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "Annual",
     "nextUpdate": "Sep",
     "rankHistoryNarrative": {
-      "summary": "Hawaiʻi has ranked near the middle since 2005, tracking 1 to 2 points better than the median. The rank holds steady because most states improved at similar rates. In-migration of college-educated military and federal employees inflates the attainment rate.",
+      "summary": "Hawaiʻi has ranked near the middle since 2005, just better than median. The rank holds steady because most states improved at similar rates. In-migration of college-educated military and federal employees inflates the attainment rate.",
       "mode": "protect",
       "benchmarks": [
         {
