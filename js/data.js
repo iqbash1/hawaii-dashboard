@@ -476,7 +476,7 @@ const DASHBOARD_DATA = {
     "goodDirection": "down",
     "source": "Census ACS / KFF",
     "sourceUrl": "https://www.kff.org/topic/uninsured/",
-    "whyItMatters": "Without insurance, routine doctor visits, medicine, and treatment become too expensive for many families. Hawaiʻi has about 1.37 million civilians (excluding active-duty military, who have TRICARE), so each percentage point on this rate represents roughly 14,000 uninsured people.",
+    "whyItMatters": "Without insurance, routine doctor visits, medicine, and treatment become too expensive for many families. Hawaiʻi has about 1.37 million civilians (excluding active-duty military), so each percentage point on this rate represents roughly 14,000 uninsured people.",
     "scale": {
       "denominator": 1370000,
       "denominatorRounded": 1370000,
