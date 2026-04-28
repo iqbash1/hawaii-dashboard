@@ -1054,20 +1054,20 @@ const Modal = {
             noteEl.style.display = 'none';
         }
 
-        // 3-year centered rolling average — same kernel for state and counties
-        // so the state line on the county chart smooths identically and the
-        // visual stays internally consistent (no spike where the raw 1-year
-        // jumps but the smoothed counties don't).
+        // 3-year centered rolling average — same kernel applied to county AND
+        // state series so the lines on the county chart smooth identically.
+        // Without this, raw state would spike where the smoothed counties
+        // don't, making the state line appear to leave the county band.
         const smooth3 = (raw) => {
             if (!raw) return raw;
             const years = Object.keys(raw).sort();
             const out = {};
             for (let i = 0; i < years.length; i++) {
-                const window = [];
+                const bin = [];
                 for (let j = Math.max(0, i - 1); j <= Math.min(years.length - 1, i + 1); j++) {
-                    if (raw[years[j]] != null) window.push(raw[years[j]]);
+                    if (raw[years[j]] != null) bin.push(raw[years[j]]);
                 }
-                out[years[i]] = window.length ? +(window.reduce((a, b) => a + b, 0) / window.length).toFixed(4) : null;
+                out[years[i]] = bin.length ? +(bin.reduce((a, b) => a + b, 0) / bin.length).toFixed(4) : null;
             }
             return out;
         };

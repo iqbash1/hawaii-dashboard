@@ -418,7 +418,9 @@ Each of the 26 metrics gets its own card displaying:
 3. **Latest Hawaiʻi value** (large, bold number)
 4. **Sparkline chart** - Hawaiʻi (solid teal line) vs. Other State Median (gray dashed line)
 5. **Two comparison sections:**
-   - **vs Other States** - "Better" (green) or "Worse" (red) with the median, plus rank badge
+   - **vs Other States** - "Better" (green) or "Worse" (red) with the median, plus a meta row showing:
+     - **Rank #X of 50** — plain colored text (no link affordance), tier-colored via `Utils.rankColorClass(rank, total)` — same kernel the Summary page National Ranking table uses (top third → `--positive`, middle third → `--neutral`, bottom third → `--negative`).
+     - **By county** — small muted teal link, only present for the 14 metrics with `COUNTY_DATA`. Clicking opens the modal directly on the County tab.
    - **vs Prior Year** - percentage change with "Improving" or "Worsening" label
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum). Each card has `id="{slug}"` so direct links (`/#slug`) scroll to the card and open its modal.
@@ -464,6 +466,8 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 2. **State reference line** - bold dashed black line showing the statewide value
 3. **Governor term overlay** - same overlay as the Trend chart
 4. **Legend** - county color dots + dashed state line indicator
+
+**Smoothing.** When `smoothCounty: true` is set on a metric in `county-data.js`, a 3-year centered rolling average (`smooth3` helper in `modal.js`) is applied to **both** the county series and the state reference line so the lines stay visually consistent. Without symmetric smoothing, a raw 1-year ACS spike on the state series can leave the smoothed county band, creating the false impression that the state value sits outside the county range.
 
 ### Change Summary Pages (`/one-`, `/three-`, `/five-`, `/ten-`, `/fifteen-`, `/twenty-`, `/twenty-five-year-change/`)
 
