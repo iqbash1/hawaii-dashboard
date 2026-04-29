@@ -153,7 +153,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q010",
     "slug": "hawaii-is-the-least-affordable-state-to-buy-a-home",
-    "claim": "Hawaiʻi is the least affordable state to buy a home.",
+    "claim": "Hawaiʻi is the least affordable state for an average resident to buy a home.",
     "correct": true,
     "answer": "Hawaiʻi has the #1 highest value among 50 states in 2024 (8.7x).",
     "chartUrl": "/r/home_price_to_income/",
