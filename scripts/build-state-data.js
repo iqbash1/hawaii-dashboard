@@ -242,7 +242,14 @@ async function fetchUninsured() {
     console.log('Fetching: Uninsured rate (Census ACS Subject Table S2701)...');
     const data = {};
 
-    for (const year of ACS_YEARS) {
+    // S2701_C05_001E semantics changed between 2014 and 2015. In ACS 2013-2014
+    // it returned the INSURED share (~80-95%); in ACS 2015+ it returns the
+    // UNINSURED share (~3-17%). Mixing them produces a 14x spike around 2014.
+    // Pre-2015 historical values live in data.js; recompute-data.js preserves
+    // them via its mergeAndUpdate logic when they are absent from state-data.
+    const yearsToFetch = ACS_YEARS.filter(y => y >= 2015);
+
+    for (const year of yearsToFetch) {
         try {
             const url = `https://api.census.gov/data/${year}/acs/acs1/subject?get=NAME,S2701_C05_001E&for=state:*`;
             const json = await fetchJSON(url);
