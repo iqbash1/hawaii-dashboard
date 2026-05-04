@@ -70,6 +70,7 @@ jobs:
         id: validate
         run: |
           set +e
+          set -o pipefail   # capture validator's real exit code, not tee's
           node scripts/validate-data.js --strict 2>&1 | tee /tmp/validation-output.txt
           EXIT_CODE=$?
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"

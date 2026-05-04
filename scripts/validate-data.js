@@ -185,7 +185,18 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
             if (prev === null || curr === null || prev === 0) continue;
 
             const changePct = Math.abs((curr - prev) / prev);
-            if (changePct > rules.maxYoYPct) {
+            // Hard fail on >10x YoY change for decimal_pct metrics. These are
+            // bounded 0-1 rates where a 10x jump effectively can only mean
+            // the source got inverted/unit-shifted/corrupted. Catches the
+            // May 2026 uninsured_rate ACS S2701 column-semantics inversion
+            // (12.5x; commit 5ec4c642). Threshold is set above the largest
+            // legitimate decimal_pct spike on record — Maui's 2020 COVID
+            // unemployment swing of ~6.4x — to avoid false positives. Other
+            // formats can have valid large swings (recession on counts,
+            // etc.), so the rule applies only to decimal_pct.
+            if (rules.format === 'decimal_pct' && changePct > 10.0) {
+                error(`${slug} ${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}) — likely inverted or corrupted source`);
+            } else if (changePct > rules.maxYoYPct) {
                 warn(`${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
             }
         }
@@ -284,7 +295,11 @@ for (const [slug, metric] of Object.entries(COUNTY_DATA)) {
             if (prev === null || curr === null || prev === 0) continue;
 
             const changePct = Math.abs((curr - prev) / prev);
-            if (changePct > rules.maxYoYPct) {
+            // Hard fail on >5x YoY for decimal_pct metrics only (see hawaii
+            // spike check above for rationale).
+            if (rules.format === 'decimal_pct' && changePct > 10.0) {
+                error(`${slug} ${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}) — likely inverted or corrupted source`);
+            } else if (changePct > rules.maxYoYPct) {
                 warn(`${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
             }
         }
