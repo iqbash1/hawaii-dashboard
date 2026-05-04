@@ -32,6 +32,17 @@ jobs:
           npm install --production 2>/dev/null || true
           pip install Pillow --quiet
 
+      # ----- One-time setup: ensure the data-refresh label exists -----
+      # `gh pr create --label data-refresh` (below) hard-fails if the label is
+      # missing. Idempotent: succeeds silently if the label already exists.
+      - name: Ensure data-refresh label exists
+        run: |
+          gh label create data-refresh \
+            --description "Automated monthly data refresh PRs" \
+            --color "1f6feb" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # ----- Snapshot current data for diffing later -----
       - name: Snapshot current data
         run: |
