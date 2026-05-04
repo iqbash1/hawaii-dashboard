@@ -37,6 +37,7 @@ jobs:
         run: |
           cp js/state-data.js /tmp/state-data-before.js
           cp js/data.js /tmp/data-before.js
+          cp js/data.js /tmp/data.js.original   # recompute-data.js reads this for header preservation
           cp js/county-data.js /tmp/county-data-before.js
           cp about/index.html /tmp/about-before.html
 
