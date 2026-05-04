@@ -10,6 +10,7 @@
     "Router": "writable",
     "Compute": "writable",
     "ChartUtils": "writable",
+    "Utils": "writable",
     "DASHBOARD_DATA": "readonly",
     "STATE_DATA": "readonly",
     "COUNTY_DATA": "readonly",
