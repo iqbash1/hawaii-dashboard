@@ -342,8 +342,13 @@ async function fetchUnemployment() {
                         const byYear = {};
                         for (const d of series.data) {
                             if (d.period === 'M13') continue;
+                            // BLS uses '-' for unpublished months (e.g. future months
+                            // of the in-progress year). parseFloat('-') is NaN, which
+                            // would corrupt the average and serialize as null in JSON.
+                            const v = parseFloat(d.value);
+                            if (isNaN(v)) continue;
                             if (!byYear[d.year]) byYear[d.year] = [];
-                            byYear[d.year].push(parseFloat(d.value));
+                            byYear[d.year].push(v);
                         }
                         for (const [year, vals] of Object.entries(byYear)) {
                             if (vals.length < 6) continue; // Need at least 6 months
