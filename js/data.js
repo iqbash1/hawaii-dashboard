@@ -1041,7 +1041,8 @@ const DASHBOARD_DATA = {
       "2021": 0.0597,
       "2022": 0.0324,
       "2023": 0.0287,
-      "2024": 0.0277
+      "2024": 0.0277,
+      "2025": 0.0234
     },
     "medianSeries": {
       "1976": 0.0666,
@@ -1092,7 +1093,8 @@ const DASHBOARD_DATA = {
       "2021": 0.0478,
       "2022": 0.0324,
       "2023": 0.0319,
-      "2024": 0.036
+      "2024": 0.036,
+      "2025": 0.0395
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Tourism employment floor</strong> · Hawaiʻi's visitor economy provides a persistent baseline of service-sector jobs, but tourism-related sectors had recovered to only 94% of pre-pandemic GDP by late 2024 <a href=\"https://dbedt.hawaii.gov/economic/qser/outlook-economy/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; roughly 50% of hospitality tasks are technically automatable, posing a medium-term displacement risk. <a href=\"https://www.mckinsey.com/industries/travel/our-insights/future-of-tourism-bridging-the-labor-gap-enhancing-customer-experience\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Sector-based training</strong> · Randomized trials of programs such as Project QUEST and Year Up show sustained earnings gains of $5,000-$8,000 per year lasting a decade or more <a href=\"https://www.brookings.edu/articles/do-sectoral-training-programs-work-what-the-evidence-on-project-quest-and-year-up-really-shows/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's federally funded training pipeline aligns with this model but remains small relative to at-risk occupations. <a href=\"https://labor.hawaii.gov/wp-content/uploads/2025/12/WIOA-Annual-Report-PY24_12.01.2025.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Reemployment speed</strong> · Rapid-reattachment services such as reemployment bonuses and job-search assistance shorten unemployment spells more cost-effectively than extended benefits <a href=\"https://www.brookings.edu/articles/building-americas-job-skills-with-effective-workforce-programs-a-training-strategy-to-raise-wages-and-increase-work-opportunities/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's single-sector concentration amplifies the value of cross-industry reskilling during tourism downturns. <a href=\"https://uhero.hawaii.edu/potential-opportunities-to-diversify-the-economy-of-hawai%CA%BBi/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "updateCadence": "Annual",
