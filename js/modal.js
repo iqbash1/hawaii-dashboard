@@ -584,6 +584,15 @@ const Modal = {
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
 
+        // Detail (Trend) tab is valid for every metric \u2014 always wire its
+        // onclick. The previous logic only wired it inside the hasStateData
+        // branch, so metrics without state-level data but with county data
+        // (e.g. labor_force_participation, violent_crime_rate) had a visible
+        // but unresponsive Trend tab once the County branch un-hid the tab
+        // bar.
+        tabDetail.style.display = '';
+        tabDetail.onclick = () => Modal.switchTab('detail', slug);
+
         if (hasStateData) {
             tabBar.style.display = '';
             // Compute rank for tab label
@@ -592,8 +601,7 @@ const Modal = {
                 ? `<span class="tab-rank">#${rankings.hawaiiRank}</span>`
                 : '';
             tabRankings.innerHTML = `<span>Rank ${rankLabel}</span><span class="tab-sub">How Hawai\u02BBi compares now</span>`;
-
-            tabDetail.onclick = () => Modal.switchTab('detail', slug);
+            tabRankings.style.display = '';
             tabRankings.onclick = () => Modal.switchTab('rankings', slug);
 
             const tabRankHistory = document.getElementById('tab-rank-history');
@@ -601,6 +609,10 @@ const Modal = {
             tabRankHistory.onclick = () => Modal.switchTab('rank-history', slug);
         } else {
             tabBar.style.display = 'none';
+            // Hide the rank-related tabs explicitly so they cannot leak
+            // into view when the County branch below re-shows the tab bar.
+            tabRankings.style.display = 'none';
+            tabRankings.onclick = null;
             document.getElementById('tab-rank-history').style.display = 'none';
         }
 
