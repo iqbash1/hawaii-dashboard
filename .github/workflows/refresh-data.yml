@@ -115,9 +115,26 @@ jobs:
           echo -e "$SUMMARY" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
 
-      # ----- If validation failed with errors, open an issue instead of PR -----
-      - name: Open issue on validation failure
-        if: steps.validate.outputs.exit_code == '2'
+      # ----- Distinguish ERRORS from WARNINGS in the validator output -----
+      # Both produce exit code 2 in --strict mode, but they need different
+      # handling: errors mean the data itself is suspect (open an issue,
+      # halt), while warnings are mostly advisory (e.g. narrative staleness,
+      # source-overdue notices) and should not block a PR.
+      - name: Count errors vs warnings in validator output
+        id: errors
+        run: |
+          if [ -f /tmp/validation-output.txt ]; then
+            ERR=$(grep -c "ERROR:" /tmp/validation-output.txt 2>/dev/null || echo 0)
+            WARN=$(grep -c "WARN:" /tmp/validation-output.txt 2>/dev/null || echo 0)
+          else
+            ERR=0; WARN=0
+          fi
+          echo "error_count=$ERR" >> "$GITHUB_OUTPUT"
+          echo "warning_count=$WARN" >> "$GITHUB_OUTPUT"
+
+      # ----- If validation surfaced ERRORS, open an issue (block the PR) -----
+      - name: Open issue on validation errors
+        if: steps.errors.outputs.error_count != '0'
         uses: actions/github-script@v7
         with:
           script: |
@@ -132,9 +149,10 @@ jobs:
               labels: ['data-quality']
             });
 
-      # ----- If data changed and validation passed, open a PR -----
+      # ----- If data changed and there are no ERRORS, open a PR -----
+      # (Warnings are surfaced in the PR body so the reviewer can act on them.)
       - name: Create pull request
-        if: steps.changes.outputs.changed == 'true' && steps.validate.outputs.exit_code != '2'
+        if: steps.changes.outputs.changed == 'true' && steps.errors.outputs.error_count == '0'
         run: |
           BRANCH="data-refresh/$(date +%Y-%m-%d)"
           git config user.name "github-actions[bot]"
@@ -145,11 +163,11 @@ jobs:
           git commit -m "Data refresh: $(date +%B\ %Y)
 
           Automated monthly data refresh from federal APIs.
-          Run validation: $([ '${{ steps.validate.outputs.exit_code }}' = '0' ] && echo 'PASS' || echo 'PASS with warnings')"
+          Run validation: $([ '${{ steps.errors.outputs.warning_count }}' = '0' ] && echo 'PASS' || echo 'PASS with ${{ steps.errors.outputs.warning_count }} warnings')"
           git push origin "$BRANCH"
 
           # Build PR body
-          VALIDATION_STATUS=$([ '${{ steps.validate.outputs.exit_code }}' = '0' ] && echo 'All checks passed' || echo 'Passed with warnings (review below)')
+          VALIDATION_STATUS=$([ '${{ steps.errors.outputs.warning_count }}' = '0' ] && echo 'All checks passed' || echo 'Passed with ${{ steps.errors.outputs.warning_count }} warnings (review below)')
           BODY=$(cat <<'PREOF'
           ## Monthly Data Refresh
 
