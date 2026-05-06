@@ -62,6 +62,19 @@
     --transition: 0.15s ease;
 }
 
+/* --- Global default link color ---
+ * Existing scoped rules (.modal-source a, .cn-text a, .cn-cite, etc.)
+ * already use --hawaii-blue and win on specificity. This rule catches
+ * any plain <a> in content blocks (e.g. /off-the-charts/ posts) that
+ * would otherwise fall back to the browser-default bright blue.
+ */
+a {
+    color: var(--hawaii-blue);
+}
+a:hover {
+    color: var(--hawaii-blue-dark);
+}
+
 /* --- Top Navigation --- */
 .top-nav {
     display: flex;
