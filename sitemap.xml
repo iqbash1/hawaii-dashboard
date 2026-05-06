@@ -49,6 +49,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/expensive-states/</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/renewables-prices/</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://hawaiidashboard.org/c/ba_or_higher_pct/</loc>
     <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>

@@ -19,6 +19,21 @@
     <meta name="twitter:image" content="https://hawaiidashboard.org/assets/og/off-the-charts.png">
     <link rel="canonical" href="https://hawaiidashboard.org/off-the-charts/">
 
+    <!-- Backward compat: old fragment URLs (#slug) redirect to canonical post pages.
+         Runs only when a hash is present, so Googlebot indexing the archive sees the
+         archive itself; only humans following an old shared link get redirected. -->
+    <script>
+        (function () {
+            var h = window.location.hash;
+            if (!h) return;
+            var slug = h.slice(1).split(/[?&]/)[0];
+            var allowed = { 'expensive-states': 1, 'renewables-prices': 1 };
+            if (allowed[slug]) {
+                window.location.replace('/off-the-charts/' + slug + '/');
+            }
+        })();
+    </script>
+
     <!-- Structured data -->
     <script type="application/ld+json">
     {
@@ -26,7 +41,28 @@
       "@type": "Blog",
       "name": "Off the Charts",
       "url": "https://hawaiidashboard.org/off-the-charts/",
-      "description": "Cross-reads from the Hawaiʻi Dashboard data."
+      "description": "Cross-reads from the Hawaiʻi Dashboard data.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Hawaiʻi Dashboard",
+        "url": "https://hawaiidashboard.org"
+      },
+      "blogPost": [
+        {
+          "@type": "BlogPosting",
+          "headline": "Expensive states are rich. Not Hawaiʻi.",
+          "url": "https://hawaiidashboard.org/off-the-charts/expensive-states/",
+          "datePublished": "2026-05-05",
+          "image": "https://hawaiidashboard.org/assets/og/off-the-charts/expensive-states.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "headline": "Hawaiʻi quadrupled its renewables. The energy prices got worse.",
+          "url": "https://hawaiidashboard.org/off-the-charts/renewables-prices/",
+          "datePublished": "2026-04-28",
+          "image": "https://hawaiidashboard.org/assets/og/off-the-charts/renewables-prices.png"
+        }
+      ]
     }
     </script>
     <script type="application/ld+json">
@@ -65,19 +101,18 @@
     <link rel="stylesheet" href="../css/about.css?v=20260422c">
 
     <style>
-        .otc-post { max-width: 720px; margin: 0 auto; padding: 0 1rem 2rem; }
-        .otc-post-date { color: #888; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 0.5rem; }
-        .otc-post h2 { font-size: 1.75rem; line-height: 1.3; margin: 0.25rem 0 1.5rem; font-weight: 600; }
-        .otc-post p { line-height: 1.65; margin: 0 0 1rem; }
-        .otc-table { border-collapse: collapse; width: 100%; max-width: 460px; margin: 1.25rem 0 1.5rem; font-size: 0.95rem; }
-        .otc-table th, .otc-table td { padding: 0.55rem 0.85rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        .otc-table th.otc-num, .otc-table td.otc-num { text-align: center; }
-        .otc-table th { font-weight: 600; background: #f9fafb; color: #555; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.04em; }
-        .otc-table tr.otc-highlight td.otc-num { color: #d03135; font-weight: 600; }
-        /* Link color now inherits from the global a rule in styles.css */
-        .otc-post a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
-        .otc-post ul.otc-bullets { list-style: square; padding-left: 1.5rem; margin: 0 0 1rem; }
-        .otc-post ul.otc-bullets li { line-height: 1.65; margin: 0 0 0.4rem; }
+        .otc-archive { max-width: 720px; margin: 0 auto; padding: 0 1rem 2rem; }
+        .otc-archive-item { padding: 1.75rem 0 1.5rem; border-bottom: 1px solid #e5e7eb; }
+        .otc-archive-item:first-child { padding-top: 0.5rem; }
+        .otc-archive-item:last-child { border-bottom: none; }
+        .otc-archive-date { color: #888; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 0.5rem; }
+        .otc-archive-item h2 { font-size: 1.625rem; line-height: 1.3; margin: 0.25rem 0 0.75rem; font-weight: 600; }
+        .otc-archive-item h2 a { color: #2d3748; text-decoration: none; }
+        .otc-archive-item h2 a:hover { color: #0D7C8F; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+        .otc-dek { color: #4a5568; line-height: 1.6; margin: 0 0 0.75rem; }
+        .otc-read-more { font-size: 0.95rem; }
+        .otc-read-more a { color: #0D7C8F; text-decoration: none; font-weight: 500; }
+        .otc-read-more a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
     </style>
 </head>
 <body>
@@ -91,63 +126,26 @@
 
     <header class="methods-header">
         <h1>Off the Charts</h1>
+        <p class="methods-subtitle">Cross-reads from the Hawai&#x02BB;i Dashboard. Short, surprising insights stitched from multiple metric views.</p>
     </header>
 
-    <article class="otc-post" id="expensive-states">
-        <p class="otc-post-date">5 May 2026</p>
-        <h2>Expensive states are rich. Not Hawai&#x02BB;i.</h2>
+    <section class="otc-archive">
 
-        <p>Look at the five most unaffordable states for housing in 2024 (years of income needed to buy a home, per <a href="/r/home_price_to_income/">home price-to-income ratio</a>):</p>
+        <article class="otc-archive-item" id="expensive-states">
+            <p class="otc-archive-date">5 May 2026</p>
+            <h2><a href="/off-the-charts/expensive-states/">Expensive states are rich. Not Hawai&#x02BB;i.</a></h2>
+            <p class="otc-dek">Four of the five most unaffordable states for housing have high incomes to help. Hawai&#x02BB;i has the highest housing burden in the country and real per capita income fifth-from-bottom.</p>
+            <p class="otc-read-more"><a href="/off-the-charts/expensive-states/">Read post &rarr;</a></p>
+        </article>
 
-        <table class="otc-table">
-            <thead>
-                <tr>
-                    <th>State</th>
-                    <th class="otc-num">HPI</th>
-                    <th class="otc-num">Income rank</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="otc-highlight"><td>Hawai&#x02BB;i</td><td class="otc-num">8.7</td><td class="otc-num">#46</td></tr>
-                <tr><td>California</td><td class="otc-num">7.6</td><td class="otc-num">#12</td></tr>
-                <tr><td>Washington</td><td class="otc-num">6.1</td><td class="otc-num">#9</td></tr>
-                <tr><td>Colorado</td><td class="otc-num">5.9</td><td class="otc-num">#7</td></tr>
-                <tr><td>Massachusetts</td><td class="otc-num">5.8</td><td class="otc-num">#3</td></tr>
-            </tbody>
-        </table>
+        <article class="otc-archive-item" id="renewables-prices">
+            <p class="otc-archive-date">28 April 2026</p>
+            <h2><a href="/off-the-charts/renewables-prices/">Hawai&#x02BB;i quadrupled its renewables. The energy prices got worse.</a></h2>
+            <p class="otc-dek">From 2003 to 2024, Hawai&#x02BB;i&rsquo;s renewable share quadrupled and the residential electricity price gap with the mainland more than tripled. A smaller ratepayer base is carrying both the legacy oil system and the clean-energy buildout.</p>
+            <p class="otc-read-more"><a href="/off-the-charts/renewables-prices/">Read post &rarr;</a></p>
+        </article>
 
-        <p>Four of the five have high incomes to help with high housing costs. They&rsquo;re expensive places where residents earn enough to absorb the cost. Hawai&#x02BB;i is the outlier: highest housing burden in the country, with <a href="/r/real_per_capita_income/">real per capita income</a> of just $52,272, fifth-from-bottom nationally.</p>
-
-        <p>This is the math behind the migration. Residents can stomach high costs when high pay comes with it. People can stomach being underpaid if their cost of living is low. Hawai&#x02BB;i asks them to accept both, and Hawai&#x02BB;i&rsquo;s <a href="/r/net_domestic_migration_rate/">outmigration</a> shows what happens when they decline.</p>
-
-        <p>&ldquo;High-cost peer&rdquo; comparisons flatter us. We&rsquo;re the only state in America where the cost has decoupled from the wage entirely.</p>
-    </article>
-
-    <hr style="max-width: 720px; margin: 2.5rem auto 2.25rem; border: none; border-top: 1px solid #e5e7eb;">
-
-    <article class="otc-post" id="renewables-prices">
-        <p class="otc-post-date">28 April 2026</p>
-        <h2>Hawai&#x02BB;i quadrupled its renewables. The energy prices got worse.</h2>
-
-        <p>People often think of Hawai&#x02BB;i as a green-energy leader. The data is less flattering.</p>
-
-        <p>In 2024, renewables made up 21.3% of Hawai&#x02BB;i&rsquo;s electricity generation, <a href="/r/renewables_share_gen/">ranked #22 out of 50 states</a>. Vermont, South Dakota, Washington, Idaho, and Iowa each generate roughly three times as much of their electricity from renewables.</p>
-
-        <p>Still, Hawai&#x02BB;i has made real progress. <a href="/t/renewables_share_gen/">Its renewable share quadrupled from 2003 to 2024</a>.</p>
-
-        <p>But here&rsquo;s the part that should bother every ratepayer: electric bills did not get lower. They got <strong>much</strong> worse. A smaller ratepayer base is carrying both: cost of legacy oil infrastructure and the clean-energy buildout.</p>
-
-        <ul class="otc-bullets">
-            <li>In 2003, Hawai&#x02BB;i&rsquo;s residential electricity price was 16.7¢ per kWh, compared with a national median of 8.1¢. The gap was 8.7¢.</li>
-            <li>By 2024, Hawai&#x02BB;i was at <a href="/t/residential_price_cpkwh/">42.9¢ per kWh</a>, while the national median was 14.8¢. The gap was now 28.0¢.</li>
-        </ul>
-
-        <p>Over the same two decades, Hawai&#x02BB;i quadrupled its renewable share and the energy price gap with the mainland more than tripled.</p>
-
-        <p>That does not mean the clean-energy transition is pointless. It is worth pursuing for climate, energy security, and reducing dependence on imported fuel.</p>
-
-        <p>As a path to lower electric bills, it isn&rsquo;t one. So far.</p>
-    </article>
+    </section>
 
     <footer class="footer">
         <p class="footer-updated">Last reviewed: 13 April 2026</p>
