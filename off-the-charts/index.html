@@ -69,8 +69,9 @@
         .otc-post-date { color: #888; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 0.5rem; }
         .otc-post h2 { font-size: 1.75rem; line-height: 1.3; margin: 0.25rem 0 1.5rem; font-weight: 600; }
         .otc-post p { line-height: 1.65; margin: 0 0 1rem; }
-        .otc-table { border-collapse: collapse; width: 100%; max-width: 480px; margin: 1.25rem 0 1.5rem; font-size: 0.95rem; }
+        .otc-table { border-collapse: collapse; width: 100%; max-width: 560px; margin: 1.25rem 0 1.5rem; font-size: 0.95rem; }
         .otc-table th, .otc-table td { padding: 0.55rem 0.85rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        .otc-table th.otc-num, .otc-table td.otc-num { text-align: center; }
         .otc-table th { font-weight: 600; background: #f9fafb; color: #555; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.04em; }
         .otc-table tr.otc-highlight { background: #fff7ed; font-weight: 600; }
         .otc-post a { color: #1d4ed8; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
@@ -98,14 +99,19 @@
 
         <table class="otc-table">
             <thead>
-                <tr><th>State</th><th>HPI</th><th>Income rank</th></tr>
+                <tr>
+                    <th>State</th>
+                    <th class="otc-num">HPI</th>
+                    <th class="otc-num">Income rank</th>
+                    <th class="otc-num">Real per capita income</th>
+                </tr>
             </thead>
             <tbody>
-                <tr class="otc-highlight"><td>Hawai&#x02BB;i</td><td>8.7</td><td>#46</td></tr>
-                <tr><td>California</td><td>7.6</td><td>#12</td></tr>
-                <tr><td>Washington</td><td>6.1</td><td>#9</td></tr>
-                <tr><td>Colorado</td><td>5.9</td><td>#7</td></tr>
-                <tr><td>Massachusetts</td><td>5.8</td><td>#3</td></tr>
+                <tr class="otc-highlight"><td>Hawai&#x02BB;i</td><td class="otc-num">8.7</td><td class="otc-num">#46</td><td class="otc-num">$52,272</td></tr>
+                <tr><td>California</td><td class="otc-num">7.6</td><td class="otc-num">#12</td><td class="otc-num">$63,028</td></tr>
+                <tr><td>Washington</td><td class="otc-num">6.1</td><td class="otc-num">#9</td><td class="otc-num">$64,421</td></tr>
+                <tr><td>Colorado</td><td class="otc-num">5.9</td><td class="otc-num">#7</td><td class="otc-num">$65,223</td></tr>
+                <tr><td>Massachusetts</td><td class="otc-num">5.8</td><td class="otc-num">#3</td><td class="otc-num">$71,629</td></tr>
             </tbody>
         </table>
 
