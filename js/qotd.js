@@ -214,7 +214,11 @@ const QOTD = {
                 if (!rankHistory) return this._fallbackOgImage(fig, q);
                 const hiYears = Object.keys(metricData.hawaii || {}).sort();
                 const govBoxes = App.getGovernorBoxes(hiYears);
-                ChartUtils.createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, () => {}, null);
+                const compareMatch = q.chartUrl.match(/^\/rh\/[^/]+\/([^/]+)\/?$/);
+                const initialCompare = (compareMatch && typeof Router !== 'undefined')
+                    ? Router.slugToState(compareMatch[1])
+                    : null;
+                ChartUtils.createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, () => {}, initialCompare);
                 return;
             }
             return this._fallbackOgImage(fig, q);

@@ -249,7 +249,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q003",
     "slug": "smaller-share-of-hawaii-residents-lack-health-insurance-than-california",
-    "claim": "Fewer Hawaiʻi residents lack health insurance than in California.",
+    "claim": "A smaller share of Hawaiʻi residents lack health insurance than in California.",
     "correct": true,
     "answer": "In 2024, 3.5% of Hawaiʻi residents lacked health insurance, versus 5.9% of Californians.",
     "chartUrl": "/rh/uninsured_rate/ca/",
