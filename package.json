@@ -15,6 +15,7 @@
     "lint:fix": "eslint --fix js/app.js js/modal.js js/export.js js/routing.js js/compute.js js/charts.js js/bundles.js",
     "validate": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict",
+    "validate:fresh": "node scripts/validate-data.js --fresh-fetch",
     "recompute": "node scripts/recompute-data.js",
     "og": "python3 scripts/generate-og-pages.py",
     "serve": "python3 -m http.server 8080",

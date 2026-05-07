@@ -11,12 +11,23 @@
 //   { source, calculation, rawVariables,
 //     data: { "2013": { "Alabama": val, ... }, ... } }
 //
-// Metrics covered (9 of 18):
+// Metrics covered (8 of 26):
 //   Census ACS: ba_or_higher_pct, broadband_subscription_pct,
 //               renter_cost_burden_pct, uninsured_rate
 //   BLS:        unemployment_rate
 //   BEA:        real_per_capita_income
 //   EIA:        residential_price_cpkwh, renewables_share_gen
+// The other 18 metrics in state-data.js come from one-time backfill
+// scripts (see scripts/backfill-*) for sources without a stable API.
+//
+// Data integrity rule (May 2026 audit lesson):
+//   This script is the ONLY sanctioned writer of state-data.js values
+//   for the 8 federal-API metrics above. Do NOT hand-paste fresh
+//   numbers in. If you need a year this script doesn't currently
+//   produce, fix the script (e.g., extend ACS_YEARS) and re-run.
+//   Run `npm run validate:fresh` (or `node scripts/validate-data.js
+//   --fresh-fetch`) to confirm data.js values still match the live
+//   API before committing.
 // ============================================================
 
 const fs = require('fs');

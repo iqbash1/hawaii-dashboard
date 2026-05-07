@@ -87,6 +87,23 @@ jobs:
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
           exit 0  # don't fail the step; we handle it below
 
+      # ----- Fresh-fetch comparison (inform-only for v1) -----
+      # Re-fetches each ACS metric's latest year directly from Census and
+      # compares to data.js. Catches the class of bug that introduced
+      # renter_cost_burden_pct 2024 = 0.5059 in March 2026 (hand-pasted
+      # value drifting from the canonical fetch result). Inform-only:
+      # writes results to the PR body but does not block merge.
+      - name: Fresh-fetch comparison (inform-only)
+        id: validate_fresh
+        continue-on-error: true
+        run: |
+          set +e
+          set -o pipefail
+          node scripts/validate-data.js --fresh-fetch 2>&1 | tee /tmp/validation-fresh.txt
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
+
       # ----- Check what changed -----
       - name: Detect changes
         id: changes
