@@ -1412,7 +1412,7 @@ const DASHBOARD_DATA = {
       "2021": 0.5799,
       "2022": 0.5783,
       "2023": 0.5665,
-      "2024": 0.5059
+      "2024": 0.5496
     },
     "medianSeries": {
       "2005": 0.4759,
@@ -1433,7 +1433,7 @@ const DASHBOARD_DATA = {
       "2021": 0.4901,
       "2022": 0.4952,
       "2023": 0.4927,
-      "2024": 0.4588
+      "2024": 0.4939
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Housing supply and permitting</strong> · Preliminary research finds Minneapolis rents grew 17-34% less after eliminating single-family zoning <a href=\"https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5347083\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; each new building lowers nearby rents 5-7% through tenants moving up and freeing units for others <a href=\"https://direct.mit.edu/rest/article/105/2/359/100977/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>. Hawaiʻi's permitting and regulatory process is among the slowest in the nation <a href=\"https://uhero.hawaii.edu/the-hawaii-housing-factbook-2025/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Affordability preservation</strong> · Rent stabilization alone has not reduced burden in high-cost states; preserving existing affordable units from conversion or demolition prevents displacement at lower cost than new construction. <a href=\"https://www.huduser.gov/portal/periodicals/cityscpe/vol17num1/article1.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Rental assistance</strong> · HUD data shows vouchers cut participant housing costs by roughly half, but fewer than 1 in 4 eligible households nationally receives them. <a href=\"https://www.huduser.gov/portal/datasets/assoc/pha-valueof-508c.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "updateCadence": "Annual",
