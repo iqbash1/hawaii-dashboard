@@ -16,8 +16,7 @@
 //               renter_cost_burden_pct, uninsured_rate
 //   BLS:        unemployment_rate
 //   BEA:        real_per_capita_income
-//   EIA:        residential_price_cpkwh, renewables_share_gen,
-//               net_energy_import_pct
+//   EIA:        residential_price_cpkwh, renewables_share_gen
 // ============================================================
 
 const fs = require('fs');
@@ -518,67 +517,6 @@ async function fetchRenewablesShare() {
     }
 }
 
-async function fetchNetEnergyImport() {
-    console.log('Fetching: Net energy import % (EIA SEDS)...');
-
-    try {
-        const baseUrl = `https://api.eia.gov/v2/seds/data/?api_key=${KEYS.EIA}&frequency=annual&data[0]=value&sort[0][column]=period&sort[0][direction]=desc&length=5000`;
-
-        // FIX: Use TEPRB (total primary energy production) not TETPB (per capita consumption)
-        const [resProd, resCons] = await Promise.all([
-            fetchJSON(baseUrl + '&facets[seriesId][]=TEPRB'),
-            fetchJSON(baseUrl + '&facets[seriesId][]=TETCB'),
-        ]);
-
-        if (!resProd.response?.data || !resCons.response?.data) throw new Error('No EIA SEDS data');
-
-        const prodByYearState = {};
-        for (const d of resProd.response.data) {
-            if (d.value === null) continue;
-            const stateName = ABBR_TO_STATE[d.stateId];
-            if (!stateName) continue;
-            const year = d.period.toString();
-            if (!prodByYearState[year]) prodByYearState[year] = {};
-            prodByYearState[year][stateName] = parseFloat(d.value);
-        }
-
-        const consByYearState = {};
-        for (const d of resCons.response.data) {
-            if (d.value === null) continue;
-            const stateName = ABBR_TO_STATE[d.stateId];
-            if (!stateName) continue;
-            const year = d.period.toString();
-            if (!consByYearState[year]) consByYearState[year] = {};
-            consByYearState[year][stateName] = parseFloat(d.value);
-        }
-
-        const data = {};
-        for (const year of Object.keys(consByYearState).sort()) {
-            const yearStates = {};
-            for (const [state, cons] of Object.entries(consByYearState[year])) {
-                const prod = prodByYearState[year]?.[state];
-                if (prod !== undefined && cons > 0) {
-                    yearStates[state] = parseFloat(((cons - prod) / cons).toFixed(4));
-                }
-            }
-            if (Object.keys(yearStates).length > 0) {
-                data[year] = yearStates;
-            }
-        }
-
-        console.log(`  OK ${Object.keys(data).length} years`);
-        return Object.keys(data).length > 0 ? {
-            source: 'EIA State Energy Data System (SEDS)',
-            calculation: '(Total energy consumption - Total energy production) / Total energy consumption. Positive = net importer.',
-            rawVariables: '(TETCB - TEPRB) / TETCB',
-            data,
-        } : null;
-    } catch (err) {
-        console.log(`  FAIL: ${err.message}`);
-        return null;
-    }
-}
-
 // ===========================================================
 // Main
 // ===========================================================
@@ -596,7 +534,6 @@ async function main() {
         ['real_per_capita_income', fetchRealPerCapitaIncome],
         ['residential_price_cpkwh', fetchResidentialPrice],
         ['renewables_share_gen', fetchRenewablesShare],
-        ['net_energy_import_pct', fetchNetEnergyImport],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
