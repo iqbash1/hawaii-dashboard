@@ -60,7 +60,7 @@ meta_font = font(22)
 
 title_x, title_y = 80, 120
 draw.text((title_x, title_y), "Off the Charts", fill=INK, font=title_font)
-draw.text((title_x, title_y + 110), "Cross-reads from the Hawaiʻi Dashboard", fill=MUTED, font=sub_font)
+draw.text((title_x, title_y + 110), "Short, surprising insights hiding in the dashboard", fill=MUTED, font=sub_font)
 
 # --- Trend visualization (bottom half) ---
 # Five baseline trend lines (muted, modest variance) + one outlier
