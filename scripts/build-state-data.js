@@ -33,7 +33,7 @@ const KEYS = {
 const FIPS_TO_STATE = {
     '01': 'Alabama', '02': 'Alaska', '04': 'Arizona', '05': 'Arkansas',
     '06': 'California', '08': 'Colorado', '09': 'Connecticut', '10': 'Delaware',
-    '12': 'Florida', '13': 'Georgia', '15': 'Hawaii',
+    '12': 'Florida', '13': 'Georgia', '15': 'Hawaiʻi',
     '16': 'Idaho', '17': 'Illinois', '18': 'Indiana', '19': 'Iowa',
     '20': 'Kansas', '21': 'Kentucky', '22': 'Louisiana', '23': 'Maine',
     '24': 'Maryland', '25': 'Massachusetts', '26': 'Michigan', '27': 'Minnesota',
@@ -50,7 +50,7 @@ const FIPS_TO_STATE = {
 const ABBR_TO_STATE = {
     'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas',
     'CA': 'California', 'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware',
-    'FL': 'Florida', 'GA': 'Georgia', 'HI': 'Hawaii',
+    'FL': 'Florida', 'GA': 'Georgia', 'HI': 'Hawaiʻi',
     'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
     'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine',
     'MD': 'Maryland', 'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota',
@@ -65,8 +65,22 @@ const ABBR_TO_STATE = {
 
 const ALL_FIPS = Object.keys(FIPS_TO_STATE);
 
-// Census ACS 1-year: 2013-2023 (2020 was NOT released due to COVID)
-const ACS_YEARS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023];
+// Census ACS 1-year: auto-rolling list from 2013 through current calendar year.
+// 2020 ACS 1-year was NOT released (COVID data quality), so it stays skipped.
+// Each fetcher already wraps its API call in try/catch and silently skips
+// years the API returns 404/empty for (e.g., the current year before its
+// September release), so the upper bound is safe to be aspirational. Lesson
+// from May 2026 audit: a hardcoded upper bound stranded 2024 for 8 weeks
+// even though Census published it on schedule.
+const ACS_YEARS = (() => {
+    const years = [];
+    const currentYear = new Date().getFullYear();
+    const SKIP = new Set([2020]);
+    for (let y = 2013; y <= currentYear; y++) {
+        if (!SKIP.has(y)) years.push(y);
+    }
+    return years;
+})();
 
 // Minimum year to include in output (keeps file size reasonable)
 const MIN_YEAR = 2001;
