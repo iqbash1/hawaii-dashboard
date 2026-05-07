@@ -1,7 +1,7 @@
 // ============================================================
 // Hawaiʻi Dashboard - Question of the Day bank
 //
-// 57 questions, rotated deterministically by day index
+// 49 questions, rotated deterministically by day index
 // starting from QOTD_DAY_ZERO (see js/qotd.js).
 //
 // Fields:
@@ -23,7 +23,7 @@ const QOTD_QUESTIONS = [
     "slug": "smaller-share-of-hawaii-residents-lack-health-insurance-than-rest-of-country",
     "claim": "Fewer Hawaiʻi residents lack health insurance than in most states.",
     "correct": true,
-    "answer": "In 2024, 3.5% of Hawaiʻi residents lacked health insurance, versus the median of 7.5%.",
+    "answer": "In 2024, 3.5% of Hawaiʻi residents lacked health insurance, versus the median of 7.3%.",
     "chartUrl": "/r/uninsured_rate/",
     "metric": "uninsured_rate",
     "metricLabel": "Uninsured Rate",
