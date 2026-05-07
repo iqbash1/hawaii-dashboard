@@ -1,50 +1,48 @@
 // Off the Charts — Share button.
-// Uses the Web Share API where available (mobile + modern desktop),
-// falls back to clipboard copy with a toast for older browsers.
+// Matches the dashboard's modal-share-btn / qotd-share-btn pattern: copies
+// the canonical URL to clipboard, then flashes "Copied!" on the button for
+// 2 seconds. Looks for any .share-btn[data-share-url] on the page.
 (function () {
     'use strict';
 
-    function showToast(message) {
-        var toast = document.createElement('div');
-        toast.className = 'otc-toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        // Trigger reflow so the transition runs
-        // eslint-disable-next-line no-unused-expressions
-        toast.offsetHeight;
-        toast.classList.add('otc-toast-visible');
+    function execFallback(url) {
+        var ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) { /* ignored */ }
+        document.body.removeChild(ta);
+    }
+
+    function flashCopied(btn) {
+        var label = btn.querySelector('span');
+        var original = label ? label.textContent : null;
+        btn.classList.add('copied');
+        if (label) label.textContent = 'Copied!';
         setTimeout(function () {
-            toast.classList.remove('otc-toast-visible');
-            setTimeout(function () { toast.remove(); }, 300);
+            btn.classList.remove('copied');
+            if (label && original !== null) label.textContent = original;
         }, 2000);
     }
 
     function bind(btn) {
         btn.addEventListener('click', function () {
             var url = btn.getAttribute('data-share-url') || window.location.href;
-            var title = btn.getAttribute('data-share-title') || document.title;
-
-            if (navigator.share) {
-                navigator.share({ title: title, url: url }).catch(function () {
-                    // User cancelled or share failed — silent
-                });
-                return;
-            }
-
+            var doCopy;
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(url).then(function () {
-                    showToast('Link copied');
-                }).catch(function () {
-                    window.prompt('Copy this link:', url);
+                doCopy = navigator.clipboard.writeText(url).catch(function () {
+                    execFallback(url);
                 });
-                return;
+            } else {
+                execFallback(url);
+                doCopy = Promise.resolve();
             }
-
-            window.prompt('Copy this link:', url);
+            doCopy.finally(function () { flashCopied(btn); });
         });
     }
 
-    var buttons = document.querySelectorAll('.otc-share-btn');
+    var buttons = document.querySelectorAll('.share-btn[data-share-url]');
     for (var i = 0; i < buttons.length; i++) {
         bind(buttons[i]);
     }

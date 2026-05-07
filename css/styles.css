@@ -2082,8 +2082,9 @@ body {
     color: #fff;
     outline: none;
 }
-/* Share button — visually identical to .modal-share-btn so the share affordance reads the same everywhere on the dashboard. */
-.qotd-share-btn {
+/* Share button — visually identical to .modal-share-btn so the share affordance reads the same everywhere on the dashboard. .share-btn is the generic alias; .qotd-share-btn is kept for the QOTD-specific markup. */
+.qotd-share-btn,
+.share-btn {
     height: 36px;
     padding: 0 0.85rem;
     gap: 0.4rem;
@@ -2100,15 +2101,19 @@ body {
     font-family: inherit;
     transition: background 0.15s, border-color 0.15s;
 }
-.qotd-share-btn svg { stroke: #fff; }
+.qotd-share-btn svg,
+.share-btn svg { stroke: #fff; }
 .qotd-share-btn:hover,
-.qotd-share-btn:focus-visible {
+.qotd-share-btn:focus-visible,
+.share-btn:hover,
+.share-btn:focus-visible {
     background: var(--hawaii-blue-dark, #075b6a);
     border-color: var(--hawaii-blue-dark, #075b6a);
     color: #fff;
     outline: none;
 }
-.qotd-share-btn.copied {
+.qotd-share-btn.copied,
+.share-btn.copied {
     background: var(--positive);
     border-color: var(--positive);
     color: #fff;
