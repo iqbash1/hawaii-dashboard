@@ -27,7 +27,6 @@ cp -r fifteen-year-change dist/
 cp -r twenty-year-change dist/
 cp -r twenty-five-year-change dist/
 cp -r off-the-charts dist/
-cp -r methods dist/
 cp -r t dist/
 cp -r r dist/
 cp -r rh dist/
@@ -42,5 +41,53 @@ SHA=$(git rev-parse --short HEAD)
 # Using perl for cross-platform compatibility
 perl -pi -e "s/\\?v=[^\"]*\"/\\?v=${SHA}\"/g" dist/index.html dist/about/index.html dist/faq/index.html dist/one-year-change/index.html dist/three-year-change/index.html dist/five-year-change/index.html dist/ten-year-change/index.html dist/fifteen-year-change/index.html dist/twenty-year-change/index.html dist/twenty-five-year-change/index.html dist/off-the-charts/index.html dist/off-the-charts/expensive-states/index.html dist/off-the-charts/renewables-prices/index.html
 echo "Cache-bust: ?v=${SHA}"
+
+# Rewrite <lastmod> in dist/sitemap.xml from each file's last git-commit date.
+# Source sitemap.xml stays human-editable; only dist/ gets fresh dates so the
+# sitemap can never silently go stale relative to the actual content.
+python3 - <<'PY'
+import re, subprocess
+from pathlib import Path
+
+SITE = "https://hawaiidashboard.org"
+ROOT = Path(".")
+sm = ROOT / "dist/sitemap.xml"
+text = sm.read_text()
+
+def url_to_path(url: str) -> Path | None:
+    rel = url.removeprefix(SITE).strip("/")
+    cand = ROOT / "dist" / rel / "index.html" if rel else ROOT / "dist/index.html"
+    return cand if cand.exists() else None
+
+def last_commit_date(rel: Path) -> str | None:
+    # Use the source path (not dist) for git log
+    src = Path(str(rel).replace("dist/", "", 1))
+    try:
+        out = subprocess.check_output(
+            ["git", "log", "-1", "--format=%cs", "--", str(src)],
+            stderr=subprocess.DEVNULL,
+        ).decode().strip()
+        return out or None
+    except Exception:
+        return None
+
+def repl(m):
+    url = m.group("url")
+    p = url_to_path(url)
+    if not p:
+        return m.group(0)
+    d = last_commit_date(p)
+    if not d:
+        return m.group(0)
+    return f"<loc>{url}</loc>\n    <lastmod>{d}</lastmod>"
+
+new = re.sub(
+    r"<loc>(?P<url>[^<]+)</loc>\s*<lastmod>[^<]+</lastmod>",
+    repl,
+    text,
+)
+sm.write_text(new)
+print("Sitemap lastmod refreshed from git log.")
+PY
 
 echo "Build complete: $(find dist -type f | wc -l | tr -d ' ') files in dist/"
