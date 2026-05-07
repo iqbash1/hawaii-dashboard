@@ -16,6 +16,7 @@
     "validate": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict",
     "validate:fresh": "node scripts/validate-data.js --fresh-fetch",
+    "audit": "python3 scripts/audit-internal.py",
     "recompute": "node scripts/recompute-data.js",
     "og": "python3 scripts/generate-og-pages.py",
     "serve": "python3 -m http.server 8080",
