@@ -816,7 +816,7 @@ const ChartUtils = {
                     ctx.textAlign = 'center';
                     const lines = [
                         { val: distStats.q1, dash: [4, 4], alpha: 0.2, width: 1 },
-                        { val: distStats.median, dash: [6, 3], alpha: 0.3, width: 1.5, label: 'Median' },
+                        { val: distStats.median, dash: [6, 3], alpha: 0.3, width: 1.5, label: 'US' },
                         { val: distStats.q3, dash: [4, 4], alpha: 0.2, width: 1 },
                     ];
                     lines.forEach(line => {
