@@ -987,6 +987,22 @@ const App = {
                 const sourceText = effective.source ? `<span class="card-source">${effective.source}</span>` : '';
                 const footerHtml = (sourceText || countyLink)
                     ? `<div class="card-footer">${sourceText}${countyLink}</div>` : '';
+                // Inline legend — actual line strokes (solid teal + dashed
+                // gray) so the reader maps line shape to label without
+                // crossing into the chart space. Hidden when there's no
+                // median line to compare to.
+                const hasMedianLine = effective.medianSeries && Object.keys(effective.medianSeries).length > 0;
+                const legendHtml = hasMedianLine ? `
+                    <div class="card-legend" aria-hidden="true">
+                        <span class="card-legend-item">
+                            <svg class="card-legend-stroke" width="16" height="6" viewBox="0 0 16 6" aria-hidden="true"><line x1="0" y1="3" x2="16" y2="3" stroke="#0D7C8F" stroke-width="2"/></svg>
+                            <span>Hawaiʻi</span>
+                        </span>
+                        <span class="card-legend-item">
+                            <svg class="card-legend-stroke" width="16" height="6" viewBox="0 0 16 6" aria-hidden="true"><line x1="0" y1="3" x2="16" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
+                            <span>50-state median</span>
+                        </span>
+                    </div>` : '';
                 card.innerHTML = `
                     <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">
@@ -999,6 +1015,7 @@ const App = {
                     <div class="card-sparkline">
                         <canvas></canvas>
                     </div>
+                    ${legendHtml}
                     <div class="card-comparisons">
                         ${this.buildVsAvgHtml(effective, slug)}
                         ${this.buildVsYearHtml(effective)}
