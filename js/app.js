@@ -716,11 +716,18 @@ const App = {
         }
         const metaRow = rankHtml ? `<div class="comp-meta">${rankHtml}</div>` : '';
 
+        // Two-row layout symmetric with the year-change block:
+        //   Row 1 (label): "US: 15.3¢"        ← comparator label + value
+        //   Row 2 (verdict): "Bottom tier · #50 of 50"  ← Hawaiʻi's standing
+        // The verdict here is the rank tier, color-coded via .comp-rank.
+        const verdictHtml = rankHtml || `<div class="comp-detail">${avgFormatted}</div>`;
+        const labelText = rankHtml
+            ? `US: ${avgFormatted}`
+            : 'US';
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
-                <div class="comp-label">US</div>
-                <div class="comp-detail">${avgFormatted}</div>
-                ${metaRow}
+                <div class="comp-label">${labelText}</div>
+                ${verdictHtml}
             </div>
         `;
     },
