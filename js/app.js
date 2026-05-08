@@ -718,7 +718,7 @@ const App = {
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
-                <div class="comp-label">50-state median</div>
+                <div class="comp-label">US</div>
                 <div class="comp-detail">${avgFormatted}</div>
                 ${metaRow}
             </div>
@@ -1000,7 +1000,7 @@ const App = {
                         </span>
                         <span class="card-legend-item">
                             <svg class="card-legend-stroke" width="16" height="6" viewBox="0 0 16 6" aria-hidden="true"><line x1="0" y1="3" x2="16" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
-                            <span>50-state median</span>
+                            <span>US</span>
                         </span>
                     </div>` : '';
                 card.innerHTML = `

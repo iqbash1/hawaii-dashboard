@@ -234,9 +234,10 @@ const ChartUtils = {
         const labels = Object.keys(data.hawaii);
         const mapVal = allowZero ? (v => v ?? null) : (v => v === 0 ? null : v);
         const hawaiiValues = labels.map(y => mapVal(data.hawaii[y]));
-        // Comparator defaults to the 50-state median; when a state is
-        // picked, the caller passes { label, timeSeries } and it swaps in.
-        const compLabel = (comparator && comparator.label) ? comparator.label : '50-state median';
+        // Comparator defaults to "US" (the 50-state median, plain-named for
+        // readers); when a state is picked, the caller passes
+        // { label, timeSeries } and it swaps in.
+        const compLabel = (comparator && comparator.label) ? comparator.label : 'US';
         const compSource = (comparator && comparator.timeSeries) ? comparator.timeSeries : data.medianSeries;
         const compValues = labels.map(y => {
             const v = compSource[y];

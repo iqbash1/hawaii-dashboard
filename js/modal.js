@@ -112,7 +112,7 @@ const Modal = {
 
     /** Label for the "no state selected" option, varies by active tab. */
     _compareDefaultLabel(tab) {
-        return tab === 'rank-history' ? '\u2014 none \u2014' : '50-state median';
+        return tab === 'rank-history' ? '\u2014 none \u2014' : 'US';
     },
 
     /** Show/hide the compare bar and update its default-option label for this tab. */
@@ -171,7 +171,7 @@ const Modal = {
         const hiYears = Object.keys(metricData.hawaii).sort();
         const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         const isRange = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
-        const compLabel = (comparator && comparator.label) ? comparator.label : 'median';
+        const compLabel = (comparator && comparator.label) ? comparator.label : 'US';
         subtitleEl.innerHTML = isRange
             ? `Hawai\u02BBi vs. ${compLabel} \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
             : `Hawai\u02BBi vs. ${compLabel} \u00B7 ${dirHint}`;
@@ -357,8 +357,8 @@ const Modal = {
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
-            ? `Hawai\u02BBi vs. 50-state median \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
-            : `Hawai\u02BBi vs. 50-state median \u00B7 ${dirHint}`;
+            ? `Hawai\u02BBi vs. US \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
+            : `Hawai\u02BBi vs. US \u00B7 ${dirHint}`;
         // Render the dynamic "Bottom line" brief
         const briefEl = document.getElementById('modal-brief');
         const briefText = Modal.computeBrief(slug);
@@ -626,7 +626,7 @@ const Modal = {
             canvas.style.display = 'none';
         }
         canvas.setAttribute('role', 'img');
-        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs ${comparator ? comparator.label : '50-state median'}`);
+        canvas.setAttribute('aria-label', `${effective.metric} trend: Hawaiʻi vs ${comparator ? comparator.label : 'US'}`);
 
         // Chart note: always shows smoothing disclosure; also shows trim-year note when applicable
         const chartNoteEl = document.getElementById('modal-chart-note');
@@ -1409,7 +1409,7 @@ const Modal = {
 
         let brief = `Bottom line: ${intro}, ranking #${rank} nationally.`;
         if (trend) brief += ` It has ${trend},`;
-        brief += ` and is ${vsAvg} the median.`;
+        brief += ` and is ${vsAvg} the US.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;
 
         return brief;
