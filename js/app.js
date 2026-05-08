@@ -1033,11 +1033,27 @@ const App = {
                     shareEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         const url = `${location.origin}/t/${slug}/`;
+                        // Show an explicit, visible toast next to the button —
+                        // a 13x13 icon color-change alone is too subtle to read
+                        // as success feedback. Color + aria-label still update
+                        // for screen readers and pointer-on-button cases.
                         const flash = (msg) => {
                             const original = shareEl.getAttribute('aria-label');
                             shareEl.classList.add('is-copied');
                             shareEl.setAttribute('aria-label', msg);
+                            // Remove any in-flight toast from a previous click.
+                            card.querySelectorAll('.card-share-toast').forEach(t => t.remove());
+                            const toast = document.createElement('span');
+                            toast.className = 'card-share-toast';
+                            toast.textContent = msg;
+                            // Mounted on the card (not the button) so the
+                            // card's positioning + overflow are the only
+                            // ancestors that affect rendering.
+                            card.appendChild(toast);
+                            requestAnimationFrame(() => toast.classList.add('is-visible'));
                             setTimeout(() => {
+                                toast.classList.remove('is-visible');
+                                setTimeout(() => toast.remove(), 200);
                                 shareEl.classList.remove('is-copied');
                                 shareEl.setAttribute('aria-label', original);
                             }, 1500);

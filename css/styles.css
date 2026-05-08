@@ -726,6 +726,34 @@ body {
     opacity: 1;
 }
 
+/* Floating "Link copied" toast — anchored near the share button so the
+   user sees explicit success feedback without relying on a 13x13 icon
+   color change. Positioned in the card's top-right under the share icon. */
+.card-share-toast {
+    position: absolute;
+    top: 2.4rem;
+    right: 0.6rem;
+    background: #2c2c2c;
+    color: #fff;
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-2px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 5;
+}
+
+.card-share-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* Directional context line — sits between the value and the chart so the
    reader knows whether an upward line is good or bad without parsing the
    green/red fill. */
