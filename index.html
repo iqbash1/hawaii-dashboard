@@ -225,6 +225,11 @@
                 </select>
             </div>
             <div class="modal-official" id="modal-official-name" style="display:none;"></div>
+            <!-- Bottom-line summary — lives above all tab panels and the
+                 consolidated narrative so it stays visible across tab switches
+                 and across both narrative modes. Hidden by default; openModal
+                 reveals it once computeBrief() returns text. -->
+            <div class="modal-brief" id="modal-brief" style="display:none;"></div>
             <div id="modal-detail-view" role="tabpanel">
                 <p class="trend-subtitle" id="trend-subtitle"></p>
                 <div class="modal-chart-container">
@@ -243,7 +248,6 @@
                         <h3>Why it matters</h3>
                         <p id="modal-why"></p>
                     </div>
-                    <div class="modal-brief" id="modal-brief" style="display:none;"></div>
                     <details class="modal-section modal-how-toggle">
                         <summary>How to read the chart</summary>
                         <p id="modal-how"></p>
