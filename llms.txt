@@ -54,7 +54,7 @@ The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai�
 - **Rankings**: All 50 states ranked. #1 = best performance (direction depends on metric).
 - **Income adjustment**: Per Capita Income uses BEA SARPI (State Annual Real Personal Income) in constant 2017 dollars, adjusting for both inflation and regional price differences.
 - **Comparator states**: Each metric includes "Lessons from other states" with states chosen for sharing a specific structural condition with Hawaiʻi, not overall similarity.
-- **County data**: 14 of 26 metrics have county-level breakdowns for Honolulu, Hawaiʻi (Big Island), Maui, and Kauai.
+- **County data**: 14 of 26 metrics have county-level breakdowns for Honolulu, Hawaiʻi (Big Island), Maui, and Kauaʻi.
 
 ## Selection criteria for metrics
 

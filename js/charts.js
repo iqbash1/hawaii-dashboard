@@ -464,7 +464,7 @@ const ChartUtils = {
 
     /**
      * Create a multi-line county chart for the modal.
-     * Displays historical trends for Honolulu, Hawaiʻi, Maui, and Kauai
+     * Displays historical trends for Honolulu, Hawaiʻi, Maui, and Kauaʻi
      * with optional state-level reference line and governor term overlays.
      * @param {HTMLCanvasElement} canvas - Target canvas element
      * @param {Object} countyData - County data object: { counties, data }
