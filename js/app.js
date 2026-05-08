@@ -981,9 +981,6 @@ const App = {
                     : effective.goodDirection === 'down' ? 'lower is better' : '';
                 const directionHtml = directionLabel
                     ? `<div class="card-direction">${directionLabel}</div>` : '';
-                // Share icon — top-right of card, copies the trend route. Stops
-                // propagation so it doesn't also open the modal.
-                const shareHtml = `<button class="card-share-btn" type="button" data-slug="${slug}" aria-label="Copy link to ${effective.metric}" title="Copy link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>`;
                 // Source attribution — small line at the bottom, paired with the
                 // county link when both exist. Provides at-a-glance trust signal.
                 const countyLink = this.buildCountyLinkHtml(slug);
@@ -991,7 +988,6 @@ const App = {
                 const footerHtml = (sourceText || countyLink)
                     ? `<div class="card-footer">${sourceText}${countyLink}</div>` : '';
                 card.innerHTML = `
-                    ${shareHtml}
                     <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">
                         <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, effective.unit, isDecimal)}</span>
@@ -1025,54 +1021,6 @@ const App = {
                     countyEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         Modal.openModal(slug, areaGroup.area, 'county');
-                    });
-                }
-
-                const shareEl = card.querySelector('.card-share-btn');
-                if (shareEl) {
-                    shareEl.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const url = `${location.origin}/t/${slug}/`;
-                        // Show an explicit, visible toast next to the button —
-                        // a 13x13 icon color-change alone is too subtle to read
-                        // as success feedback. Color + aria-label still update
-                        // for screen readers and pointer-on-button cases.
-                        const flash = (msg) => {
-                            const original = shareEl.getAttribute('aria-label');
-                            shareEl.classList.add('is-copied');
-                            shareEl.setAttribute('aria-label', msg);
-                            // Remove any in-flight toast from a previous click.
-                            card.querySelectorAll('.card-share-toast').forEach(t => t.remove());
-                            const toast = document.createElement('span');
-                            toast.className = 'card-share-toast';
-                            toast.textContent = msg;
-                            // Mounted on the card (not the button) so the
-                            // card's positioning + overflow are the only
-                            // ancestors that affect rendering.
-                            card.appendChild(toast);
-                            requestAnimationFrame(() => toast.classList.add('is-visible'));
-                            setTimeout(() => {
-                                toast.classList.remove('is-visible');
-                                setTimeout(() => toast.remove(), 200);
-                                shareEl.classList.remove('is-copied');
-                                shareEl.setAttribute('aria-label', original);
-                            }, 1500);
-                        };
-                        if (navigator.clipboard?.writeText) {
-                            navigator.clipboard.writeText(url).then(
-                                () => flash('Link copied'),
-                                () => flash('Copy failed'),
-                            );
-                        } else {
-                            flash('Copy not supported');
-                        }
-                        if (typeof App._trackEvent === 'function') {
-                            App._trackEvent('card_share_clicked', { slug });
-                        }
-                    });
-                    // Block Enter/Space on the share button from triggering the card click
-                    shareEl.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') e.stopPropagation();
                     });
                 }
 
