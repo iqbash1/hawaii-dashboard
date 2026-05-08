@@ -205,15 +205,6 @@ body {
     font-variant: normal;
     text-transform: none;
 }
-.cap-item {
-    text-decoration: none;
-    color: var(--text-muted);
-    transition: color var(--transition);
-}
-.cap-item:hover {
-    color: var(--hawaii-blue);
-}
-
 /* --- Question dropdown --- */
 .question-search-wrap {
     position: relative;
@@ -1044,23 +1035,6 @@ body {
     font-weight: 600;
 }
 
-.modal-body {
-    padding: 1.25rem 2rem 2rem;
-}
-
-.modal-section {
-    margin-bottom: 1.25rem;
-}
-
-.modal-section h3 {
-    font-size: var(--text-base);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-muted);
-    margin-bottom: 0.4rem;
-}
-
 .modal-how-toggle summary {
     font-size: var(--text-base);
     font-weight: 700;
@@ -1084,13 +1058,6 @@ body {
 .modal-how-toggle summary::-webkit-details-marker {
     display: none;
 }
-
-.modal-section p {
-    font-size: var(--text-xl);
-    line-height: 1.65;
-    color: var(--text);
-}
-
 
 .modal-source {
     font-size: var(--text-base);
@@ -1204,21 +1171,6 @@ body {
     text-align: right;
     padding: 0.1rem 0.5rem 0;
     margin: 0;
-}
-
-.modal-data-note {
-    display: flex;
-    align-items: center;
-    border-left: 3px solid #f0c36d;
-    padding: 0.35rem 0 0.35rem 0.75rem;
-    margin-top: 0.5rem;
-}
-
-.modal-data-note p {
-    font-size: var(--text-base);
-    color: var(--text-muted);
-    margin: 0;
-    line-height: 1.4;
 }
 
 .table-toggle-wrap {
@@ -1786,15 +1738,6 @@ body {
         height: min(280px, 42vh);
     }
 
-    .modal-body {
-        padding: 0.75rem 1rem 1.5rem;
-    }
-
-    .modal-section p {
-        font-size: var(--text-lg);
-        line-height: 1.58;
-    }
-
     .modal-official {
         padding: 0.6rem 1rem;
         margin-top: 0.75rem;
@@ -2104,10 +2047,6 @@ body {
         padding: 1rem 0 1.5rem;
         overflow: visible;
         page-break-after: always;
-    }
-
-    .modal-body {
-        padding: 0 1rem;
     }
 
     .modal-official {

@@ -369,49 +369,12 @@ const Modal = {
             briefEl.style.display = 'none';
         }
 
-        document.getElementById('modal-why').innerHTML = metricData.whyItMatters;
-        document.getElementById('modal-how').textContent = metricData.howToRead;
-
-        // Potential drivers
-        const driversSection = document.getElementById('modal-drivers-section');
-        const driversText = document.getElementById('modal-drivers');
-        if (metricData.potentialDrivers) {
-            driversText.innerHTML = metricData.potentialDrivers;
-            driversSection.style.display = '';
-        } else {
-            driversSection.style.display = 'none';
-        }
-
-        // Key levers
-        const policyLeversSection = document.getElementById('modal-policy-levers-section');
-        const policyLeversText = document.getElementById('modal-policy-levers');
-        if (metricData.policyLevers) {
-            policyLeversText.innerHTML = metricData.policyLevers;
-            policyLeversSection.style.display = '';
-        } else {
-            policyLeversSection.style.display = 'none';
-        }
-
-        // Data quality note
-        const dataNoteCont = document.getElementById('modal-data-note');
-        if (metricData.dataNote) {
-            dataNoteCont.innerHTML = `<p>\u26A0 Data note: ${metricData.dataNote}</p>`;
-            dataNoteCont.style.display = '';
-        } else {
-            dataNoteCont.style.display = 'none';
-        }
-
-        // Consolidated narrative vs per-tab narrative
+        // Consolidated narrative \u2014 every metric uses this path. The data
+        // fields whyItMatters / howToRead / potentialDrivers / policyLevers
+        // / dataNote are folded into _buildConsolidatedNarrative below.
         const consolidatedEl = document.getElementById('modal-consolidated');
-        const narrativeBodyEl = document.getElementById('modal-narrative-body');
-        if (metricData.useConsolidated) {
-            consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
-            consolidatedEl.style.display = '';
-            narrativeBodyEl.style.display = 'none';
-        } else {
-            consolidatedEl.style.display = 'none';
-            narrativeBodyEl.style.display = '';
-        }
+        consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
+        consolidatedEl.style.display = '';
 
         // Source definition bar - shown below the tab bar, visible on all tabs
         const officialEl = document.getElementById('modal-official-name');
@@ -1134,7 +1097,7 @@ const Modal = {
 
         // Update consolidated narrative
         const consolidatedEl = document.getElementById('modal-consolidated');
-        if (metricData.useConsolidated && consolidatedEl) {
+        if (consolidatedEl) {
             consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
         }
 
@@ -1334,7 +1297,7 @@ const Modal = {
 
     /**
      * Compute a neutral trend phrase comparing two 3-year windows.
-     * Uses the same window logic as the card 5-year change indicator.
+     * Uses the same window logic as the card change-phrase indicator.
      *
      * 2020 and 2021 are excluded from the pool because the COVID collapse and
      * snapback distort normal-times comparisons (unemployment spiked to 11.6%,

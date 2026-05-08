@@ -1,4 +1,7 @@
 /only / 301
-/q/hawaii-renters-spend-less-on-rent-than-five-years-ago /q/more-hawaii-renters-cost-burdened-than-five-years-ago/ 301
 /methods /about/ 301
 /methods/* /about/ 301
+# Catch any old slug-based QOTD URLs (the live pattern is /q/q001/ etc.;
+# 49 slug-named dirs were deleted in cleanup). Static files take precedence,
+# so live /q/qNNN/ continue to serve normally; only stale slug URLs redirect.
+/q/* / 301
