@@ -569,16 +569,30 @@ body {
 .comp-rank.rank-mid  { color: var(--neutral); }
 .comp-rank.rank-bad  { color: var(--negative); }
 
-/* "By county" — the only navigational affordance in the meta row. */
+/* Rank tier prefix — keeps the rank text colored by tier, but the "Top tier"
+   word reads slightly less bold than the number it labels. */
+.comp-rank-tier {
+    font-weight: 600;
+}
+
+/* "By county" navigation — lives on its own row below the comparisons so it
+   is not read as a third line of rank metadata. Centered, low-weight, with
+   the standard underline affordance on touch and hover. */
+.card-county-link {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
 .comp-county {
     font-family: var(--font-heading);
     font-size: var(--text-xs);
     font-weight: 500;
     color: var(--hawaii-blue);
     cursor: pointer;
-    opacity: 0.7;
+    opacity: 0.8;
     display: inline-block;
-    margin-top: 0.05rem;
     transition: opacity var(--transition);
 }
 

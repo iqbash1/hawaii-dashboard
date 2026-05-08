@@ -695,23 +695,25 @@ const App = {
         const avgFormatted = ChartUtils.formatCardValue(latestAvg.value, metricData.unit, isDecimal);
 
         let rankHtml = '';
-        let countyHtml = '';
         if (slug) {
             const hasRankings = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
             if (hasRankings) {
                 const rankings = this.getStateRankings(slug);
                 if (rankings && rankings.hawaiiRank > 0) {
                     // Single source of truth — same tier function as the Summary page.
+                    // Rank is direction-aware (rank 1 = best for the metric, regardless of
+                    // whether high or low values are "good"). Prepend the tier word so
+                    // readers don't have to know that — "Top tier · #1 of 50" reads cleanly
+                    // for both metrics where high is good and metrics where low is good.
                     const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
-                    rankHtml = `<span class="comp-rank ${rankClass}">Rank #${rankings.hawaiiRank} of ${rankings.total}</span>`;
+                    const tierLabel = rankClass === 'rank-good' ? 'Top tier'
+                        : rankClass === 'rank-mid' ? 'Middle tier'
+                        : 'Bottom tier';
+                    rankHtml = `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel}</span> · #${rankings.hawaiiRank} of ${rankings.total}</span>`;
                 }
             }
-            const hasCounty = typeof COUNTY_DATA !== 'undefined' && COUNTY_DATA[slug];
-            if (hasCounty) {
-                countyHtml = `<span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">By county</span>`;
-            }
         }
-        const metaRow = (rankHtml || countyHtml) ? `<div class="comp-meta">${rankHtml}${countyHtml}</div>` : '';
+        const metaRow = rankHtml ? `<div class="comp-meta">${rankHtml}</div>` : '';
 
         return `
             <div class="card-comp ${isBetter ? 'positive' : 'negative'}">
@@ -720,6 +722,14 @@ const App = {
                 ${metaRow}
             </div>
         `;
+    },
+
+    /** Build the "By county" navigation link as its own row, decoupled from
+     *  the median-comparator block so users don't read it as rank metadata. */
+    buildCountyLinkHtml(slug) {
+        if (!slug) return '';
+        if (typeof COUNTY_DATA === 'undefined' || !COUNTY_DATA[slug]) return '';
+        return `<div class="card-county-link"><span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">View by county →</span></div>`;
     },
 
     /** Build "vs Prior Year" comparison HTML for a card */
@@ -940,6 +950,7 @@ const App = {
                         ${this.buildVsAvgHtml(effective, slug)}
                         ${this.buildVsYearHtml(effective)}
                     </div>
+                    ${this.buildCountyLinkHtml(slug)}
                 `;
 
                 // Keyboard accessibility
