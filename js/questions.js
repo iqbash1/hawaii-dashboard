@@ -141,7 +141,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q005",
     "slug": "most-hawaii-renters-spend-over-30-percent-on-rent",
-    "claim": "Rent is harder to afford in Hawaiʻi than in most US states.",
+    "claim": "More Hawaiʻi renter households are cost-burdened than in most states.",
     "correct": true,
     "answer": "In 2024, Hawaiʻi was 55.0% versus the median of 49.4%.",
     "chartUrl": "/r/renter_cost_burden_pct/",
@@ -261,14 +261,14 @@ const QOTD_QUESTIONS = [
   {
     "id": "q006",
     "slug": "hawaii-is-one-of-the-hardest-states-to-afford-rent",
-    "claim": "Hawaiʻi is one of the hardest states to afford rent.",
+    "claim": "Rent is harder to afford in Hawaiʻi than in most US states.",
     "correct": true,
-    "answer": "Hawaiʻi has the #4 highest value among 50 states in 2024 (55.0%).",
+    "answer": "In 2024, 55.0% of Hawaiʻi renter households spent over 30% of income on rent, versus 49.4% in most states.",
     "chartUrl": "/r/renter_cost_burden_pct/",
     "metric": "renter_cost_burden_pct",
     "metricLabel": "Renter Housing Cost Burden",
     "topic": "Housing & Cost of Living",
-    "variant": "V4"
+    "variant": "V1"
   },
   {
     "id": "q011",
