@@ -112,8 +112,67 @@ const ChartUtils = {
         const goodColor = `rgba(5, 150, 105, ${fillAlpha.toFixed(2)})`;
         const badColor = `rgba(192, 57, 43, ${fillAlpha.toFixed(2)})`;
 
+        // Peak-value annotation — labels Hawaiʻi's all-time high (or low, for
+        // metrics where lower is better) on the sparkline, giving first-time
+        // readers an at-a-glance sense of historical range without adding a
+        // y-axis. Only labels the extreme that contrasts most with "today" so
+        // the chart stays uncluttered on metrics that are near their peak.
+        const formatPeakLabel = (val) => ChartUtils.formatCardValue(val, data.unit, ChartUtils.isDecimalPctMetric(data));
+        const peakIndex = (() => {
+            // For "higher is better" metrics, the historical high is the peak.
+            // For "lower is better", the historical high is the worst-ever, but
+            // it's still the most informative anchor (shows how far we've come
+            // OR how bad it can get). Always pick the all-time HIGH.
+            let best = -Infinity, bestIdx = -1;
+            for (let i = 0; i < values.length; i++) {
+                if (values[i] != null && values[i] > best) {
+                    best = values[i];
+                    bestIdx = i;
+                }
+            }
+            return bestIdx;
+        })();
+        const showPeakLabel = peakIndex >= 0
+            && values[peakIndex] != null
+            && Math.abs(values[peakIndex] - latestHI) > Math.abs(latestHI) * 0.10
+            && peakIndex !== values.length - 1;
+        const peakPlugin = showPeakLabel ? {
+            id: 'sparklinePeakLabel',
+            afterDatasetsDraw(chart) {
+                const meta = chart.getDatasetMeta(0);
+                const point = meta?.data?.[peakIndex];
+                if (!point) return;
+                const c = chart.ctx;
+                c.save();
+                c.font = '10px ' + getComputedStyle(document.body).getPropertyValue('--font-heading').trim();
+                c.fillStyle = '#9aa0a6';
+                c.textBaseline = 'bottom';
+                const label = formatPeakLabel(values[peakIndex]);
+                // Clamp horizontally so a peak near either edge doesn't get
+                // clipped by the canvas boundary. Switch alignment as needed.
+                const labelWidth = c.measureText(label).width;
+                const { left, right, top } = chart.chartArea;
+                let x = point.x;
+                let align = 'center';
+                if (point.x - labelWidth / 2 < left) {
+                    x = point.x;
+                    align = 'left';
+                } else if (point.x + labelWidth / 2 > right) {
+                    x = point.x;
+                    align = 'right';
+                }
+                c.textAlign = align;
+                // 4px above the data point; flip below if it would clip the top
+                // of the chart area.
+                const y = point.y - 4 < top + 10 ? point.y + 14 : point.y - 4;
+                c.fillText(label, x, y);
+                c.restore();
+            },
+        } : null;
+
         return new Chart(ctx, {
             type: 'line',
+            plugins: peakPlugin ? [peakPlugin] : [],
             data: {
                 labels: labels,
                 datasets: [

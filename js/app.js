@@ -277,6 +277,7 @@ const App = {
      */
     init() {
         this.renderCards();
+        this.renderAreaChips();
 
         Modal.setupModal();
 
@@ -724,12 +725,44 @@ const App = {
         `;
     },
 
-    /** Build the "By county" navigation link as its own row, decoupled from
-     *  the median-comparator block so users don't read it as rank metadata. */
+    /** Render the policy-area chip nav above the grid. Each chip links to its
+     *  section heading via the stable id assigned in renderCards(). */
+    renderAreaChips() {
+        const host = document.getElementById('area-chips');
+        if (!host) return;
+        host.innerHTML = this.AREA_ORDER.map(areaGroup => {
+            const id = 'area-' + areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            const icon = AREA_ICONS[areaGroup.area] || '';
+            return `<a href="#${id}" class="area-chip" data-area-id="${id}">
+                <span class="area-chip-icon" aria-hidden="true">${icon}</span>
+                <span class="area-chip-label">${areaGroup.area}</span>
+            </a>`;
+        }).join('');
+        // Smooth scroll instead of the default jump; account for the sticky nav.
+        host.querySelectorAll('.area-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                const id = chip.dataset.areaId;
+                const target = document.getElementById(id);
+                if (!target) return;
+                e.preventDefault();
+                const navOffset = 80; // approximate sticky-nav height
+                const y = target.getBoundingClientRect().top + window.scrollY - navOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+                history.replaceState(null, '', `#${id}`);
+                if (typeof App._trackEvent === 'function') {
+                    App._trackEvent('area_chip_clicked', { area: id });
+                }
+            });
+        });
+    },
+
+    /** Build the "By county" navigation link. Lives in the card footer next to
+     *  source attribution; decoupled from the median-comparator block so users
+     *  don't read it as rank metadata. */
     buildCountyLinkHtml(slug) {
         if (!slug) return '';
         if (typeof COUNTY_DATA === 'undefined' || !COUNTY_DATA[slug]) return '';
-        return `<div class="card-county-link"><span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">View by county →</span></div>`;
+        return `<span class="comp-county" data-slug="${slug}" title="See this metric broken out by Hawaiʻi county.">View by county →</span>`;
     },
 
     /** Build "vs Prior Year" comparison HTML for a card */
@@ -753,12 +786,15 @@ const App = {
         const isImproving = metricData.goodDirection === 'up' ? change > 0 : change < 0;
         const isFlat = Math.abs(pctChange) < 0.5;
 
-        const arrow = change > 0 ? '\u2191' : change < 0 ? '\u2193' : '\u2192';
         const absPct = Math.abs(pctChange);
+        const pctText = absPct > 100 ? `${absPct.toFixed(0)}%` : `${absPct.toFixed(1)}%`;
+        // Verb-led phrasing \u2014 directional words land more cleanly than \u2191/\u2193 for
+        // first-time readers, who otherwise have to mentally invert "down = good"
+        // for metrics where lower is better.
         let pctLabel;
-        if (isFlat) pctLabel = '\u2192 Flat';
-        else if (absPct > 100) pctLabel = `${arrow} ${absPct.toFixed(0)}%`;
-        else pctLabel = `${arrow} ${absPct.toFixed(1)}%`;
+        if (isFlat) pctLabel = 'held steady';
+        else if (isImproving) pctLabel = `improved ${pctText}`;
+        else pctLabel = `worsened ${pctText}`;
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
         // Compact labels: start year full, end year 2-digit - e.g. "2020-24 vs 2017-21"
@@ -767,7 +803,7 @@ const App = {
 
         return `
             <div class="card-comp ${cls}" title="Change in the 3-year rolling average: ${recentLabel} window compared with the ${priorLabel} window">
-                <div class="comp-label">${recentLabel} vs ${priorLabel}<span class="comp-avg-hint"> (3-yr avg)</span></div>
+                <div class="comp-label">${recentLabel} vs ${priorLabel}</div>
                 <div class="comp-verdict">${pctLabel}</div>
             </div>
         `;
@@ -913,6 +949,9 @@ const App = {
             // Section heading for this area
             const section = document.createElement('div');
             section.className = 'area-section-heading';
+            // Stable id so the chip nav and any deep link can scroll to a
+            // section without depending on the area name in URLs.
+            section.id = 'area-' + areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
             section.innerHTML = `<span class="area-section-icon">${AREA_ICONS[areaGroup.area] || ''}</span><span class="area-section-label">${areaGroup.area}</span>`;
             grid.appendChild(section);
 
@@ -935,13 +974,31 @@ const App = {
                 const monthlyHtml = effective.latestMonthly
                     ? `<div class="card-latest-monthly">Latest: ${ChartUtils.formatValue(effective.latestMonthly.value, effective.unit, false)} (${effective.latestMonthly.period})</div>`
                     : '';
+                // Directional context — disambiguates whether the line going up is good
+                // or bad, without making the reader infer it from the green/red fill.
+                const directionLabel = effective.goodDirection === 'up'
+                    ? 'higher is better'
+                    : effective.goodDirection === 'down' ? 'lower is better' : '';
+                const directionHtml = directionLabel
+                    ? `<div class="card-direction">${directionLabel}</div>` : '';
+                // Share icon — top-right of card, copies the trend route. Stops
+                // propagation so it doesn't also open the modal.
+                const shareHtml = `<button class="card-share-btn" type="button" data-slug="${slug}" aria-label="Copy link to ${effective.metric}" title="Copy link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>`;
+                // Source attribution — small line at the bottom, paired with the
+                // county link when both exist. Provides at-a-glance trust signal.
+                const countyLink = this.buildCountyLinkHtml(slug);
+                const sourceText = effective.source ? `<span class="card-source">${effective.source}</span>` : '';
+                const footerHtml = (sourceText || countyLink)
+                    ? `<div class="card-footer">${sourceText}${countyLink}</div>` : '';
                 card.innerHTML = `
+                    ${shareHtml}
                     <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">
                         <span class="card-hawaii-value">${ChartUtils.formatCardValue(latest.value, effective.unit, isDecimal)}</span>
                         ${unitSuffix}
                         <span class="card-year">(${latest.year})</span>
                     </div>
+                    ${directionHtml}
                     ${monthlyHtml}
                     <div class="card-sparkline">
                         <canvas></canvas>
@@ -950,7 +1007,7 @@ const App = {
                         ${this.buildVsAvgHtml(effective, slug)}
                         ${this.buildVsYearHtml(effective)}
                     </div>
-                    ${this.buildCountyLinkHtml(slug)}
+                    ${footerHtml}
                 `;
 
                 // Keyboard accessibility
@@ -968,6 +1025,38 @@ const App = {
                     countyEl.addEventListener('click', (e) => {
                         e.stopPropagation();
                         Modal.openModal(slug, areaGroup.area, 'county');
+                    });
+                }
+
+                const shareEl = card.querySelector('.card-share-btn');
+                if (shareEl) {
+                    shareEl.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const url = `${location.origin}/t/${slug}/`;
+                        const flash = (msg) => {
+                            const original = shareEl.getAttribute('aria-label');
+                            shareEl.classList.add('is-copied');
+                            shareEl.setAttribute('aria-label', msg);
+                            setTimeout(() => {
+                                shareEl.classList.remove('is-copied');
+                                shareEl.setAttribute('aria-label', original);
+                            }, 1500);
+                        };
+                        if (navigator.clipboard?.writeText) {
+                            navigator.clipboard.writeText(url).then(
+                                () => flash('Link copied'),
+                                () => flash('Copy failed'),
+                            );
+                        } else {
+                            flash('Copy not supported');
+                        }
+                        if (typeof App._trackEvent === 'function') {
+                            App._trackEvent('card_share_clicked', { slug });
+                        }
+                    });
+                    // Block Enter/Space on the share button from triggering the card click
+                    shareEl.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') e.stopPropagation();
                     });
                 }
 

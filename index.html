@@ -141,6 +141,11 @@
         </div>
     </section>
 
+    <!-- Policy-area chips — topic-first navigation. Clicking a chip jumps to
+         that section of the dashboard grid. Populated by app.js from
+         App.AREA_ORDER so it stays in sync with the sections below. -->
+    <nav class="area-chips" id="area-chips" aria-label="Jump to policy area"></nav>
+
     <!-- Grid of cards -->
     <main class="dashboard-grid" id="dashboard-grid">
         <!-- Skeleton mirrors real grid: 5 area headings + 26 metric cards (matches AREA_ORDER) -->
