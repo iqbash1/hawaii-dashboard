@@ -1247,7 +1247,7 @@ const ChartUtils = {
                         c.fillStyle = '#bbb';
                         c.font = '400 9px Inter';
                     }
-                    c.fillText(`#${entry.rank} ${code}`, right + 6, y + 3.5);
+                    c.fillText(code, right + 6, y + 3.5);
                 }
             }
         };
@@ -1311,7 +1311,7 @@ const ChartUtils = {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: { right: 54, top: 10, bottom: 5, left: 5 } },
+                layout: { padding: { right: 34, top: 10, bottom: 5, left: 5 } },
                 scales: {
                     y: {
                         reverse: true,
@@ -1394,7 +1394,7 @@ const ChartUtils = {
             const rowH = (bottom - top) / visibleRange;
 
             // Hit zone: from chartArea right edge outward to cover the label text
-            if (mx >= right - 4 && mx <= right + 70) {
+            if (mx >= right - 4 && mx <= right + 50) {
                 for (const entry of latestYearRanked) {
                     if (entry.rank < yScale.min || entry.rank > yScale.max) continue;
                     const y = yScale.getPixelForValue(entry.rank);
