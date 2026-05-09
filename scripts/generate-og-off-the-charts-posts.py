@@ -30,6 +30,13 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "reading-without-raising",
+        "title": "How Hawaiʻi rose in reading without raising a single score.",
+        "date":  "9 May 2026",
+        # The outlier line conveys: HI flat while the rest fall to meet it.
+        "outlier": "high",
+    },
+    {
         "slug": "expensive-states",
         "title": "Expensive states are rich. Not Hawaiʻi.",
         "date":  "5 May 2026",

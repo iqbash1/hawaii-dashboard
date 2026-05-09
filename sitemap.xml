@@ -50,9 +50,15 @@
   </url>
   <url>
     <loc>https://hawaiidashboard.org/off-the-charts/</loc>
-    <lastmod>2026-05-06</lastmod>
+    <lastmod>2026-05-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/reading-without-raising/</loc>
+    <lastmod>2026-05-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://hawaiidashboard.org/off-the-charts/expensive-states/</loc>
