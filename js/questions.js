@@ -274,7 +274,7 @@ const QOTD_QUESTIONS = [
     "id": "q011",
     "slug": "it-has-gotten-harder-to-afford-a-home-in-hawaii-in-the-last-five-years",
     "claim": "It has gotten harder to afford a home in Hawaiʻi in the last five years.",
-    "correct": false,
+    "correct": true,
     "answer": "From 2019 to 2024, Hawaiʻi moved from 8.1x to 8.7x (+7.4%).",
     "chartUrl": "/five-year-change/",
     "metric": "home_price_to_income",
