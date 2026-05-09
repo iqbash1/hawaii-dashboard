@@ -716,7 +716,7 @@ const ChartUtils = {
 
         const abbreviateState = (name) => STATE_ABBREVS[name] || name.slice(0, 2).toUpperCase();
 
-        const labels = stateValues.map((s, i) => `#${i + 1} ${abbreviateState(s.state)}`);
+        const labels = stateValues.map(s => abbreviateState(s.state));
         const values = stateValues.map(s => s.value);
         // Dynamic height: 22px per bar + 70px top for dot strip, minimum 500px
         const dotStripHeight = 70;
@@ -992,7 +992,7 @@ const ChartUtils = {
                         callbacks: {
                             title: (items) => {
                                 const idx = items[0]?.dataIndex;
-                                return idx != null ? stateValues[idx].state : '';
+                                return idx != null ? `#${idx + 1} ${stateValues[idx].state}` : '';
                             },
                             label: (ctx) => fmt(ctx.raw, unit)
                         }
