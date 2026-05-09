@@ -716,7 +716,7 @@ const ChartUtils = {
 
         const abbreviateState = (name) => STATE_ABBREVS[name] || name.slice(0, 2).toUpperCase();
 
-        const labels = stateValues.map(s => abbreviateState(s.state));
+        const labels = stateValues.map((s, i) => `#${i + 1} ${abbreviateState(s.state)}`);
         const values = stateValues.map(s => s.value);
         // Dynamic height: 22px per bar + 70px top for dot strip, minimum 500px
         const dotStripHeight = 70;
@@ -743,7 +743,7 @@ const ChartUtils = {
 
         // Precompute formatted value labels and Hawaii index
         const formattedLabels = values.map(v => fmt(v, unit));
-        const hawaiiIdx = labels.findIndex(l => l === 'HI');
+        const hawaiiIdx = stateValues.findIndex(s => this.isHawaii(s.state));
 
         // 3 evenly spaced x-axis ticks: start, middle, end
         const minVal = Math.min(...values);
@@ -784,7 +784,7 @@ const ChartUtils = {
         };
 
         // Integrated dot strip + distribution lines plugin
-        const hiIdx = labels.findIndex(l => l === 'HI');
+        const hiIdx = hawaiiIdx;
         const dotStripPlugin = {
             id: 'dotStripAndDistLines',
             afterDatasetsDraw(chart) {
@@ -798,14 +798,14 @@ const ChartUtils = {
                 if (distStats) {
                     const q1x = xScale.getPixelForValue(distStats.q1);
                     const q3x = xScale.getPixelForValue(distStats.q3);
-                    const bestX = xScale.getPixelForValue(values[0]);
-                    const worstX = xScale.getPixelForValue(values[n - 1]);
                     const isGoodDown = goodDirection === 'down';
 
-                    const topZoneLeft = isGoodDown ? bestX : q3x;
-                    const topZoneRight = isGoodDown ? q1x : bestX;
-                    const botZoneLeft = isGoodDown ? q3x : worstX;
-                    const botZoneRight = isGoodDown ? worstX : q1x;
+                    // Top band extends to the chart edge on the "best" side;
+                    // bottom band extends to the chart edge on the "worst" side.
+                    const topZoneLeft = isGoodDown ? chartArea.left : q3x;
+                    const topZoneRight = isGoodDown ? q1x : chartArea.right;
+                    const botZoneLeft = isGoodDown ? q3x : chartArea.left;
+                    const botZoneRight = isGoodDown ? chartArea.right : q1x;
 
                     ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
                     ctx.fillRect(topZoneLeft, topEdge, topZoneRight - topZoneLeft, chartArea.bottom - topEdge);
@@ -1010,10 +1010,10 @@ const ChartUtils = {
                             font: (ctx) => ({
                                 size: 11,
                                 family: "'Inter', sans-serif",
-                                weight: ctx.tick?.label === 'HI' ? 'bold' : 'normal',
+                                weight: ctx.index === hawaiiIdx ? 'bold' : 'normal',
                             }),
                             color: (ctx) => {
-                                return ctx.tick?.label === 'HI'
+                                return ctx.index === hawaiiIdx
                                     ? self.HAWAII_BLUE : '#555';
                             },
                         }
