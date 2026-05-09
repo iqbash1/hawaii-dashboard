@@ -31,7 +31,7 @@ SLATE    = (56, 75, 91)
 POSTS = [
     {
         "slug": "reading-without-raising",
-        "title": "How Hawaiʻi rose in reading without raising a single score.",
+        "title": "How Hawaiʻi rose in 8th-grade reading without raising its score.",
         "date":  "9 May 2026",
         # The outlier line conveys: HI flat while the rest fall to meet it.
         "outlier": "high",
