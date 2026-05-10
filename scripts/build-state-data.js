@@ -1176,6 +1176,382 @@ async function fetchRainyDayFund() {
 }
 
 // ===========================================================
+// Census PEP Fetcher (net_domestic_migration_rate)
+// ===========================================================
+//
+// Source: Census Population Estimates Program (PEP). RDOMESTICMIG is the
+// rate of net domestic in-migration per 1,000 mid-year residents (positive
+// means more arrivals than departures). State-data stores per 10,000
+// (officialName "per 10,000 residents"); we multiply the source by 10.
+//
+// Two source endpoints because Census changed the PEP API after vintage
+// 2019. For 2011-2019 we use the 2019 vintage components API
+// (PERIOD_CODE 2..10 → calendar 2011..2019). For 2020+ we read the NST-EST
+// bulk CSV (RDOMESTICMIG{year} columns) since Census deprecated the
+// components endpoint after 2019 vintage.
+//
+// 2020 not covered: PEP does not publish a rate for the decennial base year
+// between vintages. State-data also lacks 2020 (gap is structural, not a
+// data-quality issue).
+//
+// 2001-2010 not covered: state-data carries legacy values from older
+// vintages and a one-time backfill (per-1K then, per-10K from 2003+);
+// no current canonical endpoint reproduces them. Fetcher returns 2011+,
+// build merges preserve 2001-2010 from existing state-data.
+
+const PEP_2019_VINTAGE_URL = 'https://api.census.gov/data/2019/pep/components'
+    + '?get=NAME,RDOMESTICMIG,PERIOD_CODE&for=state:*';
+const PEP_2024_NST_URL = 'https://www2.census.gov/programs-surveys/popest/datasets'
+    + '/2020-2024/state/totals/NST-EST2024-ALLDATA.csv';
+const PEP_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
+// PERIOD_CODE → calendar year for 2019 vintage (PC 2 = 2011 through PC 10 = 2019).
+// PC 1 is the April 2010 base (partial year); state-data does not store it.
+const PEP_PC_TO_YEAR = { '2': '2011', '3': '2012', '4': '2013', '5': '2014',
+    '6': '2015', '7': '2016', '8': '2017', '9': '2018', '10': '2019' };
+
+async function fetchNetDomesticMigration() {
+    console.log('Fetching: Net domestic migration (Census PEP)...');
+    const data = {};
+    const known = new Set(Object.values(NAEP_ABBR_TO_STATE));
+
+    // 1) 2019 vintage API for 2011-2019
+    try {
+        const r = await fetch(PEP_2019_VINTAGE_URL);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const rows = await r.json();
+        if (!Array.isArray(rows) || rows.length < 2) throw new Error('empty response');
+        const head = rows[0];
+        const nameIdx = head.indexOf('NAME');
+        const rateIdx = head.indexOf('RDOMESTICMIG');
+        const pcIdx = head.indexOf('PERIOD_CODE');
+        if (nameIdx < 0 || rateIdx < 0 || pcIdx < 0) throw new Error('headers missing');
+        let pts = 0;
+        for (const row of rows.slice(1)) {
+            const rate = row[rateIdx];
+            if (rate === null || rate === undefined) continue;
+            const yr = PEP_PC_TO_YEAR[row[pcIdx]];
+            if (!yr) continue;
+            const state = PEP_NAME_TO_OUR_NAME[row[nameIdx]] || row[nameIdx];
+            if (!known.has(state)) continue;
+            const per10k = parseFloat(rate) * 10;
+            if (!isFinite(per10k)) continue;
+            if (!data[yr]) data[yr] = {};
+            data[yr][state] = parseFloat(per10k.toFixed(1));
+            pts++;
+        }
+        console.log(`  2019 vintage (2011-2019): ${pts} state-year cells`);
+    } catch (err) {
+        console.log(`  WARN 2019 vintage fetch failed: ${err.message}`);
+    }
+
+    // 2) 2024 vintage NST CSV for 2021-2024 (no 2020 rate per Census methodology)
+    try {
+        const r = await fetch(PEP_2024_NST_URL, {
+            headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const text = await r.text();
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        const head = parseCsvRow(lines[0]);
+        const nameIdx = head.indexOf('NAME');
+        const sumlevIdx = head.indexOf('SUMLEV');
+        const rateIdxByYear = {};
+        for (const yr of ['2021', '2022', '2023', '2024']) {
+            rateIdxByYear[yr] = head.indexOf(`RDOMESTICMIG${yr}`);
+        }
+        if (nameIdx < 0 || sumlevIdx < 0 || Object.values(rateIdxByYear).some(i => i < 0)) {
+            throw new Error('headers missing in NST CSV');
+        }
+        let pts = 0;
+        for (const line of lines.slice(1)) {
+            const cells = parseCsvRow(line);
+            if (cells[sumlevIdx] !== '040') continue; // 040 = state row; skip national/regional
+            const rawName = cells[nameIdx];
+            const state = PEP_NAME_TO_OUR_NAME[rawName] || rawName;
+            if (!known.has(state)) continue;
+            for (const [yr, ri] of Object.entries(rateIdxByYear)) {
+                const rate = parseFloat(cells[ri]);
+                if (!isFinite(rate)) continue;
+                const per10k = parseFloat((rate * 10).toFixed(1));
+                if (!data[yr]) data[yr] = {};
+                data[yr][state] = per10k;
+                pts++;
+            }
+        }
+        console.log(`  2024 vintage NST CSV (2021-2024): ${pts} state-year cells`);
+    } catch (err) {
+        console.log(`  WARN 2024 vintage fetch failed: ${err.message}`);
+    }
+
+    const years = Object.keys(data).sort();
+    if (years.length === 0) {
+        console.log('  FAIL: no years populated');
+        return null;
+    }
+    console.log(`  Total: ${years.length} years (${years[0]}-${years[years.length - 1]})`);
+    return {
+        source: 'Census Population Estimates Program',
+        calculation: 'RDOMESTICMIG (per 1,000) × 10 = rate per 10,000 residents. Positive means more arrivals than departures.',
+        rawVariables: '2011-2019: api.census.gov 2019 vintage components RDOMESTICMIG by PERIOD_CODE 2-10. 2020-2024: NST-EST2024-ALLDATA.csv RDOMESTICMIG{year} columns (2020 has no rate per Census methodology).',
+        data,
+    };
+}
+
+// ===========================================================
+// DOT FHWA Fetcher (road_poor_pct)
+// ===========================================================
+//
+// Source: Federal Highway Administration, Highway Statistics, Table HM-64
+// (Road Length by Measured Pavement Roughness). Published annually for
+// 2000-2024 (missing 2010 and 2021, same gaps as FHWA's underlying source).
+// Hosted on data.transportation.gov as Socrata dataset 26bt-cq5y.
+//
+// Calculation: poor-pavement share = miles with IRI > 170 / total reported
+// miles, summed across all (area × functional system) combinations.
+// IRI buckets in the source: <60, 60-94, 95-119, 120-144, 145-170, 171-194,
+// 195-220, >220 (plus Not_Reported / Not Reported / Not, which we exclude
+// from both numerator and denominator).
+//
+// API note: a single aggregated SoQL query (~11,900 grouped rows for all
+// 50 states × ~23 years × ~8 buckets) avoids paginating 75K raw rows.
+
+const FHWA_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
+const FHWA_POOR_BUCKETS = new Set(['171-194', '195-220', '>220']);
+const FHWA_KNOWN_BUCKETS = new Set([
+    '<60', '60-94', '95-119', '120-144', '145-170',
+    '171-194', '195-220', '>220',
+]);
+
+async function fetchRoadPoor() {
+    console.log('Fetching: Road in poor condition (FHWA HM-64 via data.transportation.gov)...');
+    const url = 'https://data.transportation.gov/resource/26bt-cq5y.json'
+        + '?$select=year,state,iri_range,sum(iri) as mi'
+        + '&$group=year,state,iri_range'
+        + '&$limit=50000';
+    let rows;
+    try {
+        const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' } });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        rows = await r.json();
+    } catch (err) {
+        console.log(`  FAIL: ${err.message}`);
+        return null;
+    }
+    if (!Array.isArray(rows) || rows.length === 0) {
+        console.log('  FAIL: empty Socrata response');
+        return null;
+    }
+    const known = new Set(Object.values(NAEP_ABBR_TO_STATE));
+    // year → state → { poor, total }
+    const agg = {};
+    for (const row of rows) {
+        const yr = row.year;
+        const stateRaw = row.state;
+        const rng = row.iri_range;
+        const mi = parseFloat(row.mi);
+        if (!yr || !stateRaw || !isFinite(mi)) continue;
+        if (!FHWA_KNOWN_BUCKETS.has(rng)) continue; // skips Not_Reported / Not Reported / Not / blank
+        const state = FHWA_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+        if (!known.has(state)) continue;
+        if (!agg[yr]) agg[yr] = {};
+        if (!agg[yr][state]) agg[yr][state] = { poor: 0, total: 0 };
+        agg[yr][state].total += mi;
+        if (FHWA_POOR_BUCKETS.has(rng)) agg[yr][state].poor += mi;
+    }
+    const data = {};
+    let cells = 0;
+    for (const yr of Object.keys(agg).sort()) {
+        for (const state of Object.keys(agg[yr])) {
+            const { poor, total } = agg[yr][state];
+            if (total <= 0) continue;
+            if (!data[yr]) data[yr] = {};
+            data[yr][state] = parseFloat((poor / total).toFixed(4));
+            cells++;
+        }
+    }
+    const years = Object.keys(data).sort();
+    console.log(`  OK ${cells} state-year cells across ${years.length} years (${years[0]}-${years[years.length - 1]})`);
+    return years.length > 0 ? {
+        source: 'FHWA Highway Statistics, Table HM-64 (IRI-based pavement roughness)',
+        calculation: 'Miles with IRI > 170 / Total miles rated, across all functional systems',
+        rawVariables: "data.transportation.gov dataset 26bt-cq5y; numerator = sum miles in iri_range bucket '171-194','195-220','>220'; denominator = sum miles in all reported buckets (excludes Not_Reported / Not Reported / Not)",
+        data,
+    } : null;
+}
+
+// ===========================================================
+// UF Election Lab Fetcher (voter_participation_rate)
+// ===========================================================
+//
+// Source: United States Elections Project, hosted by University of Florida
+// Election Lab (election.lab.ufl.edu). Data compiled by Michael P. McDonald.
+// VEP turnout rate = ballots counted / voting-eligible population, where
+// VEP subtracts non-citizens and ineligible felons from the voting-age
+// population. State-data stores as decimals (0.4916 = 49.16%).
+//
+// Two URLs because UF publishes:
+//   1. A consolidated historical CSV (1980-2022, v1.2) for all completed
+//      federal cycles. Stable URL, versioned when revisions roll in.
+//   2. A per-cycle CSV for the most recent election (e.g. 2024G_v0.3).
+//      The version suffix increments as McDonald refines ballot counts
+//      post-election. We probe descending versions and take the highest
+//      one with complete VEP_TURNOUT_RATE values for ≥45 states.
+//
+// CSV note: TOTAL_BALLOTS_COUNTED is quoted-comma-delimited
+// ("1,424,087"), so a simple split(',') corrupts column indices. We use
+// a small quote-aware parser.
+
+const UF_HISTORICAL_URL = 'https://election.lab.ufl.edu/data-downloads/turnoutdata/Turnout_1980_2022_v1.2.csv';
+const UF_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
+
+function parseCsvRow(line) {
+    const cells = [];
+    let cur = '';
+    let inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') {
+            inQuote = !inQuote;
+        } else if (c === ',' && !inQuote) {
+            cells.push(cur);
+            cur = '';
+        } else {
+            cur += c;
+        }
+    }
+    cells.push(cur);
+    return cells;
+}
+
+async function fetchVoterParticipation() {
+    console.log('Fetching: Voter participation (UF Election Lab)...');
+    const data = {}; // year → state → decimal rate
+    const known = new Set(Object.values(NAEP_ABBR_TO_STATE));
+    const headers = { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' };
+
+    // 1) Historical 1980-2022 consolidated CSV
+    let historicalCsv;
+    try {
+        const r = await fetch(UF_HISTORICAL_URL, { headers });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        historicalCsv = await r.text();
+    } catch (err) {
+        console.log(`  FAIL historical fetch: ${err.message}`);
+        return null;
+    }
+
+    const histLines = historicalCsv.split(/\r?\n/).filter(l => l.trim().length > 0);
+    const histHeaders = parseCsvRow(histLines[0]);
+    const hIdx = {
+        year: histHeaders.indexOf('YEAR'),
+        state: histHeaders.indexOf('STATE'),
+        rate: histHeaders.indexOf('VEP_TURNOUT_RATE'),
+        vote: histHeaders.indexOf('VOTE_FOR_HIGHEST_OFFICE'),
+        vep: histHeaders.indexOf('VEP'),
+    };
+    if (hIdx.year < 0 || hIdx.state < 0 || hIdx.rate < 0 || hIdx.vote < 0 || hIdx.vep < 0) {
+        console.log(`  FAIL: historical CSV headers missing required columns`);
+        return null;
+    }
+
+    // McDonald's published methodology: VEP_TURNOUT_RATE = TOTAL_BALLOTS_COUNTED / VEP
+    // when ballots-counted is reported. When it isn't (most pre-2004 states),
+    // VOTE_FOR_HIGHEST_OFFICE / VEP is the documented fallback numerator. The
+    // CSV leaves VEP_TURNOUT_RATE empty in those rows; we apply the fallback
+    // so coverage matches state-data (50 states × 22 years, not 33-46).
+    function unquoteNumber(s) {
+        if (!s) return NaN;
+        return parseFloat(s.replace(/[",]/g, ''));
+    }
+
+    let histPoints = 0;
+    for (const line of histLines.slice(1)) {
+        const cells = parseCsvRow(line);
+        const year = cells[hIdx.year]?.trim();
+        const stateRaw = cells[hIdx.state]?.trim();
+        if (!year || !stateRaw) continue;
+        if (stateRaw === 'United States') continue;
+        const state = UF_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+        if (!known.has(state)) continue;
+        const rateStr = cells[hIdx.rate]?.trim();
+        let pct = NaN;
+        if (rateStr) {
+            pct = parseFloat(rateStr.replace('%', ''));
+        } else {
+            const vote = unquoteNumber(cells[hIdx.vote]);
+            const vep = unquoteNumber(cells[hIdx.vep]);
+            if (isFinite(vote) && isFinite(vep) && vep > 0) {
+                pct = (vote / vep) * 100;
+            }
+        }
+        if (!isFinite(pct)) continue;
+        if (!data[year]) data[year] = {};
+        data[year][state] = parseFloat((pct / 100).toFixed(4));
+        histPoints++;
+    }
+    console.log(`  Historical 1980-2022: ${histPoints} data points across ${Object.keys(data).length} years`);
+
+    // 2) Latest cycle — probe versions, then fall back one cycle if needed
+    const currYear = new Date().getFullYear();
+    const cycleCandidates = [currYear - (currYear % 2), currYear - (currYear % 2) - 2];
+    const versionCandidates = ['v2.0','v1.2','v1.1','v1.0','v0.9','v0.8','v0.7','v0.6','v0.5','v0.4','v0.3','v0.2','v0.1'];
+    for (const yr of cycleCandidates) {
+        const yrKey = String(yr);
+        if (data[yrKey]) continue; // already provided by historical
+        let landed = false;
+        for (const v of versionCandidates) {
+            const url = `https://election.lab.ufl.edu/data-downloads/turnoutdata/Turnout_${yr}G_${v}.csv`;
+            try {
+                const r = await fetch(url, { headers });
+                if (!r.ok) continue;
+                const csv = await r.text();
+                const lines = csv.split(/\r?\n/).filter(l => l.trim().length > 0);
+                if (lines.length < 10) continue;
+                const heads = parseCsvRow(lines[0]);
+                const li = {
+                    state: heads.indexOf('STATE'),
+                    rate: heads.indexOf('VEP_TURNOUT_RATE'),
+                };
+                if (li.state < 0 || li.rate < 0) continue;
+                const yrData = {};
+                let added = 0;
+                for (const line of lines.slice(1)) {
+                    const cells = parseCsvRow(line);
+                    const stateRaw = cells[li.state]?.trim();
+                    const rateStr = cells[li.rate]?.trim();
+                    if (!stateRaw || !rateStr) continue;
+                    if (stateRaw === 'United States') continue;
+                    const state = UF_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+                    if (!known.has(state)) continue;
+                    const pct = parseFloat(rateStr.replace('%', ''));
+                    if (!isFinite(pct)) continue;
+                    yrData[state] = parseFloat((pct / 100).toFixed(4));
+                    added++;
+                }
+                if (added >= 45) {
+                    data[yrKey] = yrData;
+                    console.log(`  Latest cycle ${yr}G_${v}: ${added} states`);
+                    landed = true;
+                    break;
+                }
+            } catch {
+                // try next version
+            }
+        }
+        if (landed) break;
+    }
+
+    const years = Object.keys(data).sort();
+    console.log(`  Total: ${years.length} years (${years[0]}-${years[years.length - 1]})`);
+    return years.length > 0 ? {
+        source: 'United States Elections Project (electproject.org) / University of Florida Election Lab (election.lab.ufl.edu). Data compiled by Michael P. McDonald.',
+        calculation: 'VEP Turnout Rate = Total Ballots Counted / Voting-Eligible Population. VEP is constructed by modifying the Voting-Age Population (VAP), subtracting non-citizens and ineligible felons. Where total ballots counted unavailable, vote for highest office is used as numerator. Values are expressed as decimals (e.g., 0.66 = 66%).',
+        rawVariables: 'Turnout_1980_2022_v1.2.csv (historical compilation) + Turnout_{cycle}G_v*.csv (latest cycle, version probed)',
+        data,
+    } : null;
+}
+
+// ===========================================================
 // Main
 // ===========================================================
 
@@ -1202,6 +1578,9 @@ async function main() {
         ['estabs_entry_rate', fetchEstabsEntryRate],
         ['net_employer_formation', fetchNetEmployerFormation],
         ['labor_productivity', fetchLaborProductivity],
+        ['voter_participation_rate', fetchVoterParticipation],
+        ['road_poor_pct', fetchRoadPoor],
+        ['net_domestic_migration_rate', fetchNetDomesticMigration],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -1372,6 +1751,9 @@ module.exports = {
         estabs_entry_rate: fetchEstabsEntryRate,
         net_employer_formation: fetchNetEmployerFormation,
         labor_productivity: fetchLaborProductivity,
+        voter_participation_rate: fetchVoterParticipation,
+        road_poor_pct: fetchRoadPoor,
+        net_domestic_migration_rate: fetchNetDomesticMigration,
     },
 };
 
