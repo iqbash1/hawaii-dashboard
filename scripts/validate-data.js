@@ -125,7 +125,7 @@ const SOURCE_COVERAGE = {
     residential_price_cpkwh:    { expectedStart: 1970, source: 'EIA Form 826/861',    note: 'State retail electricity prices from 1970' },
     renewables_share_gen:       { expectedStart: 2001, source: 'EIA electric-power',  note: 'EIA v2 electric-power API has annual state generation from 2001; pre-2001 requires SEDS aggregation' },
     ba_or_higher_pct:           { expectedStart: 2008, source: 'Census ACS B15003',   note: 'B15003 detailed-attainment table available from 2008' },
-    renter_cost_burden_pct:     { expectedStart: 2012, source: 'Census ACS B25070',   note: 'B25070 with all-state coverage from 2012' },
+    renter_cost_burden_pct:     { expectedStart: 2008, source: 'Census ACS B25070',   note: 'B25070 with all-state coverage from 2008 (1-year ACS skipped 2020 for COVID)' },
     uninsured_rate:             { expectedStart: 2010, skipYears: [2013, 2014], source: 'Census ACS DP03', note: 'DP03_0099PE used 2010-2012 (S2701 variable semantics flipped 2014->2015); 2013-14 deliberately skipped in state-data; data.js HI has those years from KFF/equivalent' },
     broadband_subscription_pct: { expectedStart: 2016, source: 'Census ACS B28002',   note: 'Census changed B28002 variable definition in 2016; pre-2016 values measure a different (narrower) broadband concept and are deliberately excluded' },
     home_price_to_income:       { expectedStart: 2005, source: 'Census ACS + FHFA',   note: 'ACS median home value + income from 2005' },

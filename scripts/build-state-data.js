@@ -503,23 +503,36 @@ async function fetchRenewablesShare() {
     try {
         const base = `https://api.eia.gov/v2/electricity/electric-power-operational-data/data/?api_key=${KEYS.EIA}&frequency=annual&data[0]=generation&facets[sectorid][]=99&sort[0][column]=period&sort[0][direction]=desc&length=5000`;
 
-        // FIX: Use REN (all renewables including hydro) instead of AOR (excludes hydro)
-        const [resRenew, resTotal] = await Promise.all([
-            fetchJSON(base + '&facets[fueltypeid][]=REN'),
+        // AOR (all renewables excluding hydro) + HYC (conventional hydro) = total renewables.
+        // This is identical to REN in years where REN exists (2003+) and extends coverage
+        // back to 2001-2002 where the REN aggregate is not published.
+        const [resAor, resHyc, resTotal] = await Promise.all([
+            fetchJSON(base + '&facets[fueltypeid][]=AOR'),
+            fetchJSON(base + '&facets[fueltypeid][]=HYC'),
             fetchJSON(base + '&facets[fueltypeid][]=ALL'),
         ]);
 
-        if (!resRenew.response?.data || !resTotal.response?.data) throw new Error('No EIA data');
+        if (!resAor.response?.data || !resHyc.response?.data || !resTotal.response?.data) throw new Error('No EIA data');
 
         // Build lookups: year → state → generation
-        const renewByYearState = {};
-        for (const d of resRenew.response.data) {
+        const aorByYearState = {};
+        for (const d of resAor.response.data) {
             if (d.generation === null) continue;
             const stateName = ABBR_TO_STATE[d.location];
             if (!stateName) continue;
             const year = d.period.toString();
-            if (!renewByYearState[year]) renewByYearState[year] = {};
-            renewByYearState[year][stateName] = parseFloat(d.generation);
+            if (!aorByYearState[year]) aorByYearState[year] = {};
+            aorByYearState[year][stateName] = parseFloat(d.generation);
+        }
+
+        const hycByYearState = {};
+        for (const d of resHyc.response.data) {
+            if (d.generation === null) continue;
+            const stateName = ABBR_TO_STATE[d.location];
+            if (!stateName) continue;
+            const year = d.period.toString();
+            if (!hycByYearState[year]) hycByYearState[year] = {};
+            hycByYearState[year][stateName] = parseFloat(d.generation);
         }
 
         const totalByYearState = {};
@@ -536,8 +549,10 @@ async function fetchRenewablesShare() {
         for (const year of Object.keys(totalByYearState).sort()) {
             const yearStates = {};
             for (const [state, total] of Object.entries(totalByYearState[year])) {
-                const renew = renewByYearState[year]?.[state];
-                if (renew !== undefined && total > 0) {
+                const aor = aorByYearState[year]?.[state] ?? 0;
+                const hyc = hycByYearState[year]?.[state] ?? 0;
+                const renew = aor + hyc;
+                if (total > 0) {
                     const share = renew / total;
                     if (share >= 0 && share <= 1) {
                         yearStates[state] = parseFloat(share.toFixed(4));
@@ -552,8 +567,8 @@ async function fetchRenewablesShare() {
         console.log(`  OK ${Object.keys(data).length} years`);
         return Object.keys(data).length > 0 ? {
             source: 'EIA Electric Power Operational Data',
-            calculation: 'Total renewables generation including hydro (REN) / All fuels generation (ALL), sector 99 (all sectors).',
-            rawVariables: 'fueltypeid=REN generation / fueltypeid=ALL generation, sectorid=99',
+            calculation: 'Total renewables generation (AOR all-renewables-excl-hydro + HYC conventional-hydro) / All fuels generation (ALL), sector 99 (all sectors).',
+            rawVariables: '(fueltypeid=AOR + fueltypeid=HYC) generation / fueltypeid=ALL generation, sectorid=99',
             data,
         } : null;
     } catch (err) {
@@ -670,9 +685,31 @@ async function main() {
     if (preservedYearCount > 0) {
         console.log(`  Total preserved historical state-years: ${preservedYearCount}`);
     }
+    // Sort top-level slugs, year keys, and state keys for deterministic output.
+    // Without this, year-level merge produces noisy diffs every run as object-key
+    // insertion order shifts (existing object keys come first, fetched-only keys
+    // append at the end, even when values are identical).
     const sortedMerged = {};
     for (const slug of Object.keys(merged).sort()) {
-        sortedMerged[slug] = merged[slug];
+        const m = merged[slug];
+        if (m && m.data && typeof m.data === 'object') {
+            const sortedData = {};
+            for (const yr of Object.keys(m.data).sort()) {
+                const yearObj = m.data[yr];
+                if (yearObj && typeof yearObj === 'object' && !Array.isArray(yearObj)) {
+                    const sortedYear = {};
+                    for (const st of Object.keys(yearObj).sort()) {
+                        sortedYear[st] = yearObj[st];
+                    }
+                    sortedData[yr] = sortedYear;
+                } else {
+                    sortedData[yr] = yearObj;
+                }
+            }
+            sortedMerged[slug] = { ...m, data: sortedData };
+        } else {
+            sortedMerged[slug] = m;
+        }
     }
 
     const timestamp = new Date().toISOString();
