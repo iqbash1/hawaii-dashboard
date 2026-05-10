@@ -353,10 +353,15 @@ test.describe('Change Summary — 10-year view', () => {
 });
 
 test.describe('Change Summary — longer-window views (15/20/25)', () => {
+    // Row counts shift when historical backfills extend a metric's earliest
+    // year past the window threshold. After the 2026-05 source-floor backfills:
+    //   15y gained unsheltered_homeless_rate (now 2007+, gap >= 15)
+    //   25y gained naep_math_8 (now 1990+, gap >= 25)
+    // Update these values whenever a metric crosses an inclusion threshold.
     const EXPECTED = [
-        { path: '/fifteen-year-change/',   label: '15 years', rows: 21 },
+        { path: '/fifteen-year-change/',   label: '15 years', rows: 22 },
         { path: '/twenty-year-change/',    label: '20 years', rows: 14 },
-        { path: '/twenty-five-year-change/', label: '25 years', rows: 10 },
+        { path: '/twenty-five-year-change/', label: '25 years', rows: 11 },
     ];
     for (const { path, label, rows } of EXPECTED) {
         test(`${path} loads without JS errors and shows ${rows} rows`, async ({ page }) => {
