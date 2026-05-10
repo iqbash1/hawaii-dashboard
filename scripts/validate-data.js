@@ -139,13 +139,22 @@ const SOURCE_COVERAGE = {
     labor_productivity:         { expectedStart: 2007, source: 'BLS State LP',        note: 'Experimental state series from 2007' },
     road_poor_pct:              { expectedStart: 2007, source: 'FHWA HPMS',           note: 'Pavement condition standardized 2007' },
     naep_math_8:                { expectedStart: 1990, source: 'NCES NAEP',           note: '8th-grade math biennial from 1990; current scale 2003' },
-    naep_reading_8:             { expectedStart: 1992, source: 'NCES NAEP',           note: '8th-grade reading biennial from 1992; current scale 2003' },
+    naep_reading_8:             { expectedStart: 1998, source: 'NCES NAEP',           note: '8th-grade state-level reading from 1998 (state-grade-8 reading not assessed pre-1998); current scale 2003' },
     unsheltered_homeless_rate:  { expectedStart: 2007, source: 'HUD AHAR/PIT',        note: 'Annual PIT counts from 2007' },
     violent_crime_rate:         { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960' },
     property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960' },
     // Structural floors (source itself starts here; not a backfill candidate):
     acgr:                       { expectedStart: 2011, source: 'NCES EDFacts',        note: 'ACGR first published 2010-11 SY (= 2011)' },
     pcp_per_100k:               { expectedStart: 2010, source: 'HRSA AHRF',           note: 'AHRF county file vintage 2010' },
+};
+
+// Years where partial state coverage (25-44 states) is expected and not a
+// data-quality warning. Used by Section 3a to downgrade those warnings to info.
+// NAEP grade-8 state participation was voluntary pre-NCLB (2003); typical
+// pre-2003 cohort sizes were ~36-41 states.
+const PARTIAL_COVERAGE_YEARS = {
+    naep_math_8:    [1990, 1992, 1996, 2000],
+    naep_reading_8: [1998, 2002],
 };
 
 // Counties expected in county data
@@ -278,14 +287,23 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
     }
 
     // Check for internal gaps (missing years within the range)
-    // Skip metrics with non-annual data (food_insecurity uses multi-year keys)
+    // Skip metrics with non-annual data (food_insecurity uses multi-year keys).
+    // NAEP grade-8 was administered every 2-4 years pre-NCLB (1990, 92, 96, 2000)
+    // before settling into reliable biennial cadence in 2003+. The 4-year gaps
+    // 1992->1996, 1996->2000, and reading's 1998->2002 are inherent to the
+    // assessment schedule and not a data-quality issue.
+    const expected4YGap = (slug === 'naep_math_8' || slug === 'naep_reading_8');
     if (!String(hiYears[0]).includes('-')) {
         for (let i = 1; i < hiYears.length; i++) {
             const gap = hiYears[i] - hiYears[i - 1];
             if (gap > 1 && gap <= 3) {
                 // Small gaps are normal (e.g., Census skipping 2020)
             } else if (gap > 3) {
-                warn(`hawaii has ${gap}-year gap: ${hiYears[i-1]} to ${hiYears[i]}`);
+                if (expected4YGap && hiYears[i] <= 2003) {
+                    // NAEP pre-2003 schedule; not a warning.
+                } else {
+                    warn(`hawaii has ${gap}-year gap: ${hiYears[i-1]} to ${hiYears[i]}`);
+                }
             }
         }
     }
@@ -476,12 +494,20 @@ if (STATE_DATA) {
         // ERROR: < 25 states -- rankings would be meaningless (below the threshold used to compute medianSeries)
         // WARN:  25-44 states -- significant partial coverage; rankings valid but incomplete
         // (45-49 states is acceptable for metrics where a few states routinely don't report, e.g. ACGR)
+        // Some sources have legitimately incomplete pre-mandate years (e.g. NAEP
+        // pre-2003 voluntary state participation). Those are listed in
+        // PARTIAL_COVERAGE_YEARS and counted as info rather than warnings.
+        const partialOK = new Set((PARTIAL_COVERAGE_YEARS[slug] || []).map(String));
         for (const year of years) {
             const states = Object.keys(sd.data[year]);
             if (states.length < 25) {
                 error(`${slug} ${year}: only ${states.length} states (expected ~${EXPECTED_STATE_COUNT})`);
             } else if (states.length < 45) {
-                warn(`${slug} ${year}: ${states.length} states (expected ${EXPECTED_STATE_COUNT})`);
+                if (partialOK.has(year)) {
+                    info(`${slug} ${year}: ${states.length} states (expected partial coverage)`);
+                } else {
+                    warn(`${slug} ${year}: ${states.length} states (expected ${EXPECTED_STATE_COUNT})`);
+                }
             }
         }
 

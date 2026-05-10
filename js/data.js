@@ -846,6 +846,10 @@ const DASHBOARD_DATA = {
     "useConsolidated": true,
     "dataNote": "NAEP is administered every 2 years. Hawaiʻi did not participate in some earlier rounds.",
     "hawaii": {
+      "1990": 251.02,
+      "1992": 257.41,
+      "1996": 262.13,
+      "2000": 262.77,
       "2003": 265.73,
       "2005": 265.63,
       "2007": 268.77,
@@ -859,6 +863,10 @@ const DASHBOARD_DATA = {
       "2024": 270.04
     },
     "medianSeries": {
+      "1990": 263.18,
+      "1992": 267.35,
+      "1996": 270.215,
+      "2000": 276.01,
       "2003": 279.39,
       "2005": 280.885,
       "2007": 283.25,
@@ -916,6 +924,8 @@ const DASHBOARD_DATA = {
     "useConsolidated": true,
     "dataNote": "NAEP is administered every 2 years. Hawaiʻi did not participate in some earlier rounds.",
     "hawaii": {
+      "1998": 249.69,
+      "2002": 251.61,
       "2003": 251.28,
       "2005": 248.51,
       "2007": 251.33,
@@ -929,6 +939,8 @@ const DASHBOARD_DATA = {
       "2024": 257.28
     },
     "medianSeries": {
+      "1998": 262.145,
+      "2002": 264.72,
       "2003": 264.465,
       "2005": 263.73,
       "2007": 263.825,
