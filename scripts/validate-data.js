@@ -121,7 +121,7 @@ const METRIC_RULES = {
 const SOURCE_COVERAGE = {
     unemployment_rate:          { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000003 from 1976' },
     labor_force_participation:  { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000008 from 1976' },
-    real_per_capita_income:     { expectedStart: 1976, source: 'BEA SAINC',           note: 'BEA SAINC goes back to 1929; chart parity floor 1976' },
+    real_per_capita_income:     { expectedStart: 2008, source: 'BEA SARPI',           note: 'SARPI table (real per capita personal income, chained 2017 dollars) was first published for 2008+. Pre-2008 would require nominal SAINC + custom deflator.' },
     residential_price_cpkwh:    { expectedStart: 1970, source: 'EIA Form 826/861',    note: 'State retail electricity prices from 1970' },
     renewables_share_gen:       { expectedStart: 2001, source: 'EIA electric-power',  note: 'EIA v2 electric-power API has annual state generation from 2001; pre-2001 requires SEDS aggregation' },
     ba_or_higher_pct:           { expectedStart: 2008, source: 'Census ACS B15003',   note: 'B15003 detailed-attainment table available from 2008' },
