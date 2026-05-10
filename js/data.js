@@ -1633,6 +1633,11 @@ const DASHBOARD_DATA = {
     "useConsolidated": true,
     "dataNote": "Based on HUD Point-in-Time counts, a single-night snapshot. Methodology changes between years can affect comparability.",
     "hawaii": {
+      "2007": 25.52,
+      "2008": 25.21,
+      "2009": 18.67,
+      "2010": 16.84,
+      "2011": 18.45,
       "2012": 18.07,
       "2013": 18.39,
       "2014": 21.95,
@@ -1647,6 +1652,11 @@ const DASHBOARD_DATA = {
       "2024": 28.16
     },
     "medianSeries": {
+      "2007": 3.085,
+      "2008": 3.25,
+      "2009": 2.74,
+      "2010": 2.86,
+      "2011": 3.77,
       "2012": 3.385,
       "2013": 2.955,
       "2014": 2.245,
