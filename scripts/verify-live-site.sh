@@ -205,13 +205,19 @@ done
 # -----------------------------------------------------------------------------
 section "APP.JS INTEGRITY"
 
-# Sentinel: unique string added in Phase 2; confirms current build is live
-# Update this string whenever a new deployment adds a new identifiable marker.
+# Sentinel: unique string that must appear somewhere in the live JS bundle.
+# After the Phase 3 modal extraction the marker moved out of app.js into
+# modal.js; check both files (and any future module split is still covered)
+# by fetching modal.js separately and grepping it.
 SENTINEL="[HI-DASH]"
-if grep -qF "$SENTINEL" "$APP_JS_FILE"; then
-    ok "app.js contains deployment sentinel: ${SENTINEL}"
+modal_js_path=$(echo "$html" | grep -o 'js/modal\.js[^"]*' | head -1)
+[ -z "$modal_js_path" ] && modal_js_path="js/modal.js"
+MODAL_JS_FILE="${TMPDIR_VER}/modal.js"
+curl -fsL --max-time 30 "${BASE}/${modal_js_path}" 2>/dev/null > "$MODAL_JS_FILE" || true
+if grep -qF "$SENTINEL" "$APP_JS_FILE" || { [ -s "$MODAL_JS_FILE" ] && grep -qF "$SENTINEL" "$MODAL_JS_FILE"; }; then
+    ok "deployment sentinel ${SENTINEL} present in live JS bundle"
 else
-    fail "app.js missing sentinel: ${SENTINEL} (stale build; Phase 2 code not live)"
+    fail "sentinel ${SENTINEL} missing from app.js and modal.js (stale build)"
 fi
 
 # Also confirm utils.js script tag is present in five-year-change page

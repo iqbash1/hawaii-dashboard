@@ -714,8 +714,6 @@ const App = {
                 }
             }
         }
-        const metaRow = rankHtml ? `<div class="comp-meta">${rankHtml}</div>` : '';
-
         // Two-row layout symmetric with the year-change block:
         //   Row 1 (label): "US: 15.3¢"        ← comparator label + value
         //   Row 2 (verdict): "Bottom tier · #50 of 50"  ← Hawaiʻi's standing

@@ -1077,7 +1077,6 @@ const Modal = {
     _refreshCurrentView(slug, areaName) {
         const metricData = App.getActiveMetricData(slug);
         if (!metricData) return;
-        const effective = App.getEffectiveData(slug);
 
         // Update official name
         const officialEl = document.getElementById('modal-official-name');
