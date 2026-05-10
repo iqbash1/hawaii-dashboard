@@ -1117,7 +1117,7 @@ const DASHBOARD_DATA = {
       "asOf": "2026-04-13"
     },
     "rankHistoryNarrative": {
-      "summary": "Hawaiʻi has typically ranked #3 to #8 over the past 40 years. The exception was 2020, when tourism dependence drove unemployment to 11.6 percent and the rank to near last. Recovery took until 2022 to return to the top 10, illustrating the volatility of a single-sector economy.",
+      "summary": "Hawaiʻi has typically ranked #3 to #8 over the past 40 years. The exception was 2020, when tourism dependence drove unemployment to 11.6 percent and the rank to near last. Recovery took until 2022 to return to the top 10 and continued through 2025, when Hawaiʻi reached #2 — the strongest position on record.",
       "mode": "protect",
       "benchmarks": [
         {
@@ -2991,7 +2991,7 @@ const DASHBOARD_DATA = {
     "updateCadence": "Annual",
     "nextUpdate": "Jan",
     "rankHistoryNarrative": {
-      "summary": "Hawaiʻi's rank swung from #7 in 2018 to #48 in 2023 before settling at #46. The volatility reflects tourism's outsized role in GDP: visitor spending moves output faster than hours worked can adjust.",
+      "summary": "Hawaiʻi's rank swung from #7 in 2018 to #48 in 2023 before settling at #46 in 2024. The volatility reflects tourism's outsized role in GDP: visitor spending moves output faster than hours worked can adjust.",
       "mode": "learn",
       "benchmarks": [
         {
