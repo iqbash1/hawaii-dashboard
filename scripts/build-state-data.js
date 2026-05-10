@@ -422,6 +422,75 @@ async function fetchUnemployment() {
 }
 
 // ===========================================================
+// BLS LAUS Flat-File Fetcher (Labor Force Participation)
+// ===========================================================
+//
+// labor_force_participation comes from the same source as unemployment_rate
+// (BLS LAUS series LAUST{FIPS}0000000000008, M13 annual avg) but uses the
+// public flat-file feed instead of the JSON API. Reasons:
+//   1. Single download (~13MB) vs. 12 API requests, against a 25/day quota
+//      that fetchUnemployment already consumes most of.
+//   2. Same numbers as the API; values come from the same upstream pipeline.
+//   3. No registration / API key required.
+//
+// Cache: files are kept in /tmp for 1 hour to avoid re-downloading within
+// a single monthly-refresh session. Production GitHub Actions starts cold.
+async function fetchLaborForceParticipation() {
+    console.log('Fetching: Labor force participation rate (BLS LAUS flat file)...');
+
+    try {
+        const FLAT_URL = 'https://download.bls.gov/pub/time.series/la/la.data.2.AllStatesU';
+        const CACHE_PATH = '/tmp/la.data.2.AllStatesU';
+        let buf;
+        if (fs.existsSync(CACHE_PATH) && (Date.now() - fs.statSync(CACHE_PATH).mtimeMs) < 3600 * 1000 && fs.statSync(CACHE_PATH).size > 1000000) {
+            buf = fs.readFileSync(CACHE_PATH, 'utf8');
+        } else {
+            const res = await fetch(FLAT_URL, {
+                headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
+            });
+            if (!res.ok) throw new Error(`flat-file HTTP ${res.status}`);
+            const ab = await res.arrayBuffer();
+            if (ab.byteLength < 1000000) throw new Error(`flat-file too small (${ab.byteLength} bytes)`);
+            buf = Buffer.from(ab).toString('utf8');
+            fs.writeFileSync(CACHE_PATH, buf);
+        }
+
+        const data = {};
+        let parsed = 0;
+        for (const l of buf.split('\n')) {
+            if (!l.startsWith('LAUST')) continue;
+            const parts = l.split('\t').map(p => p.trim());
+            if (parts.length < 4) continue;
+            const series = parts[0];
+            // Measure code 008 = labor force participation rate
+            if (!/0000000000008$/.test(series)) continue;
+            if (parts[2] !== 'M13') continue; // annual average only
+            const fips = series.substring(5, 7);
+            const stateName = FIPS_TO_STATE[fips];
+            if (!stateName) continue;
+            const yr = parts[1];
+            const val = parseFloat(parts[3]);
+            if (isNaN(val) || val < 30 || val > 90) continue;
+            if (!data[yr]) data[yr] = {};
+            data[yr][stateName] = val;
+            parsed++;
+        }
+
+        const yrCount = Object.keys(data).length;
+        console.log(`  OK ${yrCount} years (${parsed} state-years)`);
+        return yrCount > 0 ? {
+            source: 'U.S. Bureau of Labor Statistics, Local Area Unemployment Statistics (LAUS), annual average',
+            calculation: 'Percentage of non-institutionalized civilians age 16+ who are employed or actively seeking employment.',
+            rawVariables: 'BLS LAUS series LAUST{FIPS}0000000000008, period M13 (annual avg)',
+            data,
+        } : null;
+    } catch (err) {
+        console.log(`  FAIL: ${err.message}`);
+        return null;
+    }
+}
+
+// ===========================================================
 // BEA Fetcher - Full Time Series
 // ===========================================================
 
@@ -591,6 +660,7 @@ async function main() {
         ['renter_cost_burden_pct', fetchRenterCostBurden],
         ['uninsured_rate', fetchUninsured],
         ['unemployment_rate', fetchUnemployment],
+        ['labor_force_participation', fetchLaborForceParticipation],
         ['real_per_capita_income', fetchRealPerCapitaIncome],
         ['residential_price_cpkwh', fetchResidentialPrice],
         ['renewables_share_gen', fetchRenewablesShare],

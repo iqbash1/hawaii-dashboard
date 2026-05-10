@@ -802,9 +802,11 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
     const latestYear = Math.max(...hiKeys.map(k => { const y = k.match(/(\d{4})$/); return y ? Number(y[1]) : 0; }));
     if (!latestYear) continue;
 
-    // Expected: by nextUpdate month, we should have data for (current year - 1) or newer
-    // If we're past the expected month and data is 2+ years old, it's overdue
-    const expectedDataYear = now.getFullYear() - 1;
+    // Per-metric data lag (years between data year and release year). Default 1
+    // (release in current year for prior-year data). CDC WONDER / NAEP / Census
+    // have 2+ year lags. Set m.dataLag in the metric metadata to override.
+    const dataLag = (typeof m.dataLag === 'number' && m.dataLag > 0) ? m.dataLag : 1;
+    const expectedDataYear = now.getFullYear() - dataLag;
     const pastUpdateMonth = now.getMonth() >= monthIdx;
 
     if (pastUpdateMonth && latestYear < expectedDataYear) {
