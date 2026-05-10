@@ -1107,6 +1107,11 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
         'update-narrative-years.js', // year-stamp text updates
         'update_metric_year.py',   // year-stamp text updates (Python variant)
     ]);
+    const SANCTIONED_COUNTY_DATA_WRITERS = new Set([
+        'build-county-data.js',    // 4-county aggregator
+        'fetch-severe-burden.js',  // severe renter cost burden, county-level
+        'fetch-verylow-food-insecurity.js', // very-low food insecurity, county-level
+    ]);
     // Backfill scripts are one-time-use writers. Allowed but flagged with
     // a warning so they get moved to scripts/archive/ after their work
     // is committed (per Phase 7 of the coverage overhaul).
@@ -1124,15 +1129,17 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
             if (!entry.name.endsWith('.js') && !entry.name.endsWith('.py')) continue;
             const filePath = path.join(scriptsDir, entry.name);
             const content = fs.readFileSync(filePath, 'utf8');
-            // Detect writes to state-data.js or data.js
+            // Detect writes to state-data.js, data.js, or county-data.js
             const writesStateData = /STATE_DATA_PATH|state-data\.js/.test(content) &&
                                     /(writeFileSync|fs\.writeFile|f\.write\(|open\([^)]+['"]w['"])/.test(content);
             const writesDataJs = /DATA_PATH\b|data\.js(?![A-Za-z])/.test(content) &&
                                  /(writeFileSync|fs\.writeFile|f\.write\(|open\([^)]+['"]w['"])/.test(content);
+            const writesCountyData = /COUNTY_DATA_PATH|county-data\.js/.test(content) &&
+                                     /(writeFileSync|fs\.writeFile|f\.write\(|open\([^)]+['"]w['"])/.test(content);
             // Filter false positives (e.g., audit scripts that read but don't write)
-            const looksLikeWriter = /writeFileSync\s*\([^)]*(?:STATE_DATA_PATH|DATA_PATH|state-data|data\.js)/i.test(content) ||
-                                    /open\([^)]*(state-data\.js|data\.js)[^)]*['"]w['"]/i.test(content) ||
-                                    /(DATA_PATH|STATE_DATA_PATH|data\.js|state-data\.js)\s*[,)\s]+.*\n.*f\.write/i.test(content);
+            const looksLikeWriter = /writeFileSync\s*\([^)]*(?:STATE_DATA_PATH|DATA_PATH|COUNTY_DATA_PATH|state-data|county-data|data\.js)/i.test(content) ||
+                                    /open\([^)]*(state-data\.js|county-data\.js|data\.js)[^)]*['"]w['"]/i.test(content) ||
+                                    /(DATA_PATH|STATE_DATA_PATH|COUNTY_DATA_PATH|data\.js|state-data\.js|county-data\.js)\s*[,)\s]+.*\n.*f\.write/i.test(content);
             if (!looksLikeWriter) continue;
             const isBackfill = entry.name.startsWith(BACKFILL_WRITER_PREFIX) || BACKFILL_WRITER_ALSO.has(entry.name);
             if (writesStateData && !SANCTIONED_STATE_DATA_WRITERS.has(entry.name)) {
@@ -1151,8 +1158,17 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
                     violations++;
                 }
             }
+            if (writesCountyData && !SANCTIONED_COUNTY_DATA_WRITERS.has(entry.name)) {
+                if (isBackfill) {
+                    if (!backfillsFound.includes(entry.name)) backfillsFound.push(entry.name);
+                } else {
+                    error(`[writer-allowlist] ${entry.name} writes to county-data.js but is not in the sanctioned list`);
+                    violations++;
+                }
+            }
         }
-        console.log(`  Sanctioned writers: ${[...SANCTIONED_STATE_DATA_WRITERS, ...SANCTIONED_DATA_JS_WRITERS].length} files`);
+        const totalSanctioned = [...SANCTIONED_STATE_DATA_WRITERS, ...SANCTIONED_DATA_JS_WRITERS, ...SANCTIONED_COUNTY_DATA_WRITERS].length;
+        console.log(`  Sanctioned writers: ${totalSanctioned} files (state-data: ${SANCTIONED_STATE_DATA_WRITERS.size}, data.js: ${SANCTIONED_DATA_JS_WRITERS.size}, county-data: ${SANCTIONED_COUNTY_DATA_WRITERS.size})`);
         if (backfillsFound.length > 0) {
             warn(`[writer-allowlist] ${backfillsFound.length} one-time backfill scripts present in scripts/ (consider moving to scripts/archive/ after use): ${backfillsFound.slice(0, 5).join(', ')}${backfillsFound.length > 5 ? '...' : ''}`);
         }
@@ -1166,14 +1182,95 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 }
 
 // ============================================================
-// Phase 15 (opt-in via --fresh-fetch): re-fetch the latest year's
+// Section 15: County-data parity (always-on)
+// Closes the third-file governance hole noted in the May 2026
+// dashboard-clean session. Catches:
+//   - county metrics referencing slugs that don't exist in state-data
+//   - missing counties (every metric should have all 4)
+//   - county year coverage stale relative to state-data Hawaiʻi
+//   - Honolulu-specific gap (~70% of state pop; if Honolulu lags HI,
+//     the population-weighted state value is essentially undefined)
+// ============================================================
+{
+    console.log('\n--- Section 15: County-data parity ---');
+    const EXPECTED_COUNTY_SET = ['Honolulu', 'Hawaiʻi', 'Maui', 'Kauaʻi'];
+    const HONOLULU_LAG_TOLERANCE = 1; // county data may legitimately lag state by 1 year
+    const COUNTY_LAG_WARN = 2;        // 2y+ lag is worth flagging
+
+    let okMetrics = 0;
+    let warningMetrics = 0;
+    const missingFromStateData = [];
+
+    for (const slug of Object.keys(COUNTY_DATA)) {
+        const cm = COUNTY_DATA[slug];
+        const sm = STATE_DATA[slug];
+
+        // 15a. Every county metric must have a state-data counterpart
+        if (!sm || !sm.data) {
+            error(`[county-parity] ${slug} exists in county-data.js but not in state-data.js`);
+            missingFromStateData.push(slug);
+            continue;
+        }
+
+        // 15b. All 4 counties must be present
+        const counties = cm.counties || [];
+        const missing = EXPECTED_COUNTY_SET.filter(c => !counties.includes(c));
+        if (missing.length > 0) {
+            error(`[county-parity] ${slug}: missing counties: ${missing.join(', ')}`);
+            continue;
+        }
+        const dataMissing = EXPECTED_COUNTY_SET.filter(c => !cm.data?.[c] || Object.keys(cm.data[c]).length === 0);
+        if (dataMissing.length > 0) {
+            error(`[county-parity] ${slug}: counties with no data: ${dataMissing.join(', ')}`);
+            continue;
+        }
+
+        // 15c. Find latest year HI in state-data has, vs latest year Honolulu has.
+        // Honolulu is ~70% of HI population; if Honolulu lags HI by >1 year,
+        // the dashboard's county-tab story becomes inconsistent with the
+        // detail-tab story.
+        const sdHiYears = Object.keys(sm.data)
+            .filter(y => {
+                const v = sm.data[y]?.['Hawaiʻi'];
+                return v != null && !isNaN(parseFloat(v));
+            })
+            .map(Number).sort((a, b) => a - b);
+        if (sdHiYears.length === 0) continue;
+        const sdLatest = sdHiYears[sdHiYears.length - 1];
+
+        const honoluluYears = Object.keys(cm.data['Honolulu'] || {})
+            .filter(y => cm.data['Honolulu'][y] != null)
+            .map(Number).sort((a, b) => a - b);
+        if (honoluluYears.length === 0) {
+            error(`[county-parity] ${slug}: Honolulu has no non-null values`);
+            continue;
+        }
+        const honLatest = honoluluYears[honoluluYears.length - 1];
+        const honLag = sdLatest - honLatest;
+
+        if (honLag > COUNTY_LAG_WARN) {
+            warn(`[county-parity] ${slug}: Honolulu county data ends ${honLatest} but state-data Hawaiʻi reaches ${sdLatest} (${honLag}y lag). County tab will show stale years vs. detail tab.`);
+            warningMetrics++;
+        } else if (honLag > HONOLULU_LAG_TOLERANCE) {
+            console.log(`  INFO [${slug}] Honolulu ${honLatest} vs HI ${sdLatest} (${honLag}y lag, within tolerance)`);
+            okMetrics++;
+        } else {
+            okMetrics++;
+        }
+    }
+
+    console.log(`  Summary: ${okMetrics} aligned/within-tolerance, ${warningMetrics} county-lag warnings, ${missingFromStateData.length} missing-from-state-data errors`);
+}
+
+// ============================================================
+// Section 16 (opt-in via --fresh-fetch): re-fetch the latest year's
 // Hawaiʻi value from federal APIs and compare to data.js.
 // Catches the class of bug that introduced renter_cost_burden_pct
 // 2024 = 0.5059 in March 2026 — a hand-pasted value that drifted
 // from the canonical fetch result.
 // ============================================================
 async function runFreshFetch() {
-    console.log('\n--- Section 15: Fresh fetch (latest year vs federal API) ---');
+    console.log('\n--- Section 16: Fresh fetch (latest year vs federal API) ---');
     const https = require('https');
 
     function fetchJSON(url) {
