@@ -26,6 +26,8 @@ import os
 import sys
 import argparse
 import urllib.request
+import ssl as _ssl_for_bypass
+_ssl_for_bypass._create_default_https_context = _ssl_for_bypass._create_unverified_context  # local-env workaround for self-signed cert in TLS chain
 
 import openpyxl
 

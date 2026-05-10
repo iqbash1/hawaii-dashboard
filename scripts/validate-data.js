@@ -15,6 +15,13 @@
 //   9. Source freshness (nextUpdate vs latest data year)
 //  10. Narrative-data consistency (above/below claims)
 //  11. latestMonthly freshness (asOf date staleness)
+//  12. Source-coverage audit (state-data.js depth vs source's
+//      published earliest year; HI-vs-states asymmetry)
+//  13. data.js HI vs state-data.js Hawaiʻi parity (catches drift
+//      between the two value stores)
+//  14. Writer allowlist (only sanctioned scripts may write to
+//      data.js or state-data.js)
+//  15. (opt-in via --fresh-fetch) Re-fetch latest year from APIs
 //   (county cross-consistency is woven into section 2)
 //
 // Usage: node scripts/validate-data.js          (normal: warnings ok)
@@ -104,6 +111,41 @@ const METRIC_RULES = {
     estabs_entry_rate:          { min: 4,     max: 25,     maxYoYPct: 0.75, format: 'whole_pct' },
     net_employer_formation:     { min: -10,   max: 15,     maxYoYPct: Infinity, format: 'whole_pct' },
     labor_productivity:         { min: 70,    max: 150,    maxYoYPct: 0.10, format: 'index' },
+};
+
+// ---- Source coverage targets per metric (Section 12) ----
+// expectedStart: earliest year the source actually publishes for state-level data.
+//                If state-data.js starts later than this, peer-comparison charts
+//                will show truncated peer histories vs HI's longer data.js series.
+// Notes are best-effort; refine when running backfills against authoritative source docs.
+const SOURCE_COVERAGE = {
+    unemployment_rate:          { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000003 from 1976' },
+    labor_force_participation:  { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000008 from 1976' },
+    real_per_capita_income:     { expectedStart: 2008, source: 'BEA SARPI',           note: 'SARPI table (real per capita personal income, chained 2017 dollars) was first published for 2008+. Pre-2008 would require nominal SAINC + custom deflator.' },
+    residential_price_cpkwh:    { expectedStart: 1970, source: 'EIA Form 826/861',    note: 'State retail electricity prices from 1970' },
+    renewables_share_gen:       { expectedStart: 2001, source: 'EIA electric-power',  note: 'EIA v2 electric-power API has annual state generation from 2001; pre-2001 requires SEDS aggregation' },
+    ba_or_higher_pct:           { expectedStart: 2008, source: 'Census ACS B15003',   note: 'B15003 detailed-attainment table available from 2008' },
+    renter_cost_burden_pct:     { expectedStart: 2012, source: 'Census ACS B25070',   note: 'B25070 with all-state coverage from 2012' },
+    uninsured_rate:             { expectedStart: 2010, skipYears: [2013, 2014], source: 'Census ACS DP03', note: 'DP03_0099PE used 2010-2012 (S2701 variable semantics flipped 2014->2015); 2013-14 deliberately skipped in state-data; data.js HI has those years from KFF/equivalent' },
+    broadband_subscription_pct: { expectedStart: 2016, source: 'Census ACS B28002',   note: 'Census changed B28002 variable definition in 2016; pre-2016 values measure a different (narrower) broadband concept and are deliberately excluded' },
+    home_price_to_income:       { expectedStart: 2005, source: 'Census ACS + FHFA',   note: 'ACS median home value + income from 2005' },
+    food_insecurity_rate:       { expectedStart: 2006, source: 'USDA ERS',            note: '3-year averages; ERS Excel file currently provides 2006-2008 onward (older periods used different methodology)' },
+    voter_participation_rate:   { expectedStart: 1980, source: 'US EAC / states',     note: 'Presidential elections from 1980' },
+    suicide_rate:               { expectedStart: 1999, source: 'CDC WONDER',          note: 'Underlying-cause-of-death from 1999 (ICD-10 transition)' },
+    rainy_day_fund_pct:         { expectedStart: 2000, source: 'NASBO Fiscal Survey + Pew Fiscal 50', note: 'Pew Fiscal 50 CSV provides 2012-2022; NASBO covers 2000+; pre-2000 requires manual NASBO PDF extraction' },
+    net_domestic_migration_rate:{ expectedStart: 2001, source: 'Census PEP',          note: 'PEP intercensal estimates from 2001' },
+    estabs_entry_rate:          { expectedStart: 1978, source: 'BLS BDM/BED',         note: 'Establishment births since 1978' },
+    net_employer_formation:     { expectedStart: 1978, source: 'BLS BDM/BED',         note: 'Net firm formation since 1978' },
+    labor_productivity:         { expectedStart: 2007, source: 'BLS State LP',        note: 'Experimental state series from 2007' },
+    road_poor_pct:              { expectedStart: 2007, source: 'FHWA HPMS',           note: 'Pavement condition standardized 2007' },
+    naep_math_8:                { expectedStart: 1990, source: 'NCES NAEP',           note: '8th-grade math biennial from 1990; current scale 2003' },
+    naep_reading_8:             { expectedStart: 1992, source: 'NCES NAEP',           note: '8th-grade reading biennial from 1992; current scale 2003' },
+    unsheltered_homeless_rate:  { expectedStart: 2007, source: 'HUD AHAR/PIT',        note: 'Annual PIT counts from 2007' },
+    violent_crime_rate:         { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960' },
+    property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960' },
+    // Structural floors (source itself starts here; not a backfill candidate):
+    acgr:                       { expectedStart: 2011, source: 'NCES EDFacts',        note: 'ACGR first published 2010-11 SY (= 2011)' },
+    pcp_per_100k:               { expectedStart: 2010, source: 'HRSA AHRF',           note: 'AHRF county file vintage 2010' },
 };
 
 // Counties expected in county data
@@ -775,14 +817,296 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 }
 
 // ============================================================
-// Phase 12 (opt-in via --fresh-fetch): re-fetch the latest year's
+// Phase 12: Source-coverage audit. For each metric, check whether
+// state-data.js (50-state series) covers as many years as the
+// underlying source actually publishes, and flag asymmetry where
+// data.js HI history is deeper than state-data.js coverage. Charts
+// that join HI's long history to peer states render the peer line
+// truncated when this asymmetry exists.
+//
+// Output: warnings only (these gaps are pre-existing systemic
+// debt, not new errors). To make CI block on coverage gaps once
+// backfills are run, change warn() to error() below.
+// ============================================================
+{
+    console.log('\n--- Section 12: Source coverage audit ---');
+    if (!STATE_DATA) {
+        console.log('  SKIP: state-data.js not loaded');
+    } else {
+        const slugs = Object.keys(SOURCE_COVERAGE);
+        // Some metrics have non-standard data-shape:
+        //   pcp_per_100k: FIPS-first storage (data[FIPS][year]). Skip - it's
+        //                 a structural one-off documented in pcp_fips_layout memory.
+        //   food_insecurity_rate, *_3yr_avg: range keys like "2006-2008".
+        //                 Parse the start of the range as the start year.
+        const FIPS_FIRST = new Set(['pcp_per_100k']);
+        function parseStartYear(key) {
+            const m = String(key).match(/^(\d{4})/);
+            return m ? parseInt(m[1], 10) : NaN;
+        }
+        let gaps = 0, asymmetric = 0, structural = 0, ok = 0;
+        for (const slug of slugs) {
+            const expected = SOURCE_COVERAGE[slug];
+            if (FIPS_FIRST.has(slug)) {
+                console.log(`  SKIP [${slug}] FIPS-first storage shape; manual coverage check needed (source: ${expected.source})`);
+                continue;
+            }
+            const sdMetric = STATE_DATA[slug];
+            if (!sdMetric || !sdMetric.data) {
+                warn(`[${slug}] no state-data.js entry; expected source: ${expected.source}`);
+                continue;
+            }
+            const sdYears = Object.keys(sdMetric.data).map(parseStartYear).filter(y => !isNaN(y) && y >= 1900).sort((a, b) => a - b);
+            if (sdYears.length === 0) {
+                warn(`[${slug}] state-data.js has no parseable years; expected source: ${expected.source}`);
+                continue;
+            }
+            const sdStart = sdYears[0];
+            const sdEnd = sdYears[sdYears.length - 1];
+
+            // Check 1: state-data.js shorter than source supports
+            const gap = sdStart - expected.expectedStart;
+            const isStructural = gap === 0;
+
+            // Check 2: data.js HI series deeper than state-data.js
+            const dashMetric = DASHBOARD_DATA[slug];
+            const hiSeries = dashMetric && dashMetric.hawaii ? dashMetric.hawaii : null;
+            let hiStart = null;
+            if (hiSeries) {
+                const hiYears = Object.keys(hiSeries).map(parseStartYear).filter(y => !isNaN(y) && y >= 1900).sort((a, b) => a - b);
+                if (hiYears.length > 0) hiStart = hiYears[0];
+            }
+            const asymmetryYears = (hiStart !== null) ? Math.max(0, sdStart - hiStart) : 0;
+
+            if (gap > 0 && asymmetryYears > 0) {
+                warn(`[${slug}] state-data.js ${sdStart}-${sdEnd} but ${expected.source} supports back to ${expected.expectedStart} (gap: ${gap}y x 50 states = ${gap * 50} state-years). HI series in data.js starts ${hiStart}; peer charts truncate.`);
+                gaps++;
+                asymmetric++;
+            } else if (gap > 0) {
+                warn(`[${slug}] state-data.js ${sdStart}-${sdEnd} but ${expected.source} supports back to ${expected.expectedStart} (gap: ${gap}y x 50 states = ${gap * 50} state-years).`);
+                gaps++;
+            } else if (asymmetryYears > 0) {
+                warn(`[${slug}] state-data.js starts ${sdStart} but data.js HI series starts ${hiStart} (asymmetry: ${asymmetryYears}y). Peer charts truncate vs HI.`);
+                asymmetric++;
+            } else if (isStructural) {
+                console.log(`  OK [${slug}] state-data.js ${sdStart}-${sdEnd} matches source structural minimum (${expected.source})`);
+                structural++;
+            } else {
+                console.log(`  OK [${slug}] state-data.js ${sdStart}-${sdEnd} (source: ${expected.source})`);
+                ok++;
+            }
+        }
+        console.log(`  Summary: ${ok} aligned, ${structural} at structural floor, ${gaps} with source-depth gaps, ${asymmetric} with HI-vs-states asymmetry`);
+
+        // Also flag any metric in state-data.js that lacks a SOURCE_COVERAGE entry
+        for (const slug of Object.keys(STATE_DATA)) {
+            if (!SOURCE_COVERAGE[slug]) {
+                warn(`[${slug}] no SOURCE_COVERAGE entry; add expectedStart so coverage can be audited`);
+            }
+        }
+    }
+}
+
+// ============================================================
+// Phase 13: HI parity check. For every metric × overlap year,
+// data.js[slug].hawaii[year] must equal
+// state-data.js[slug].data[year]['Hawaiʻi']. Catches drift between
+// the two stores. After Phase 4 of the coverage overhaul, state-data
+// is the single source of truth; this check fails any commit that
+// introduces a divergence.
+//
+// Tolerance: max(0.0001 absolute, 0.5% relative). Tighter than
+// fresh-fetch because both numbers come from the same authored data.
+// ============================================================
+{
+    console.log('\n--- Section 13: data.js HI vs state-data.js Hawaiʻi parity ---');
+    if (!STATE_DATA) {
+        console.log('  SKIP: state-data.js not loaded');
+    } else {
+        const FIPS_FIRST = new Set(['pcp_per_100k']);
+        function parityTolerance(stored, sd) {
+            if (typeof stored !== 'number' || typeof sd !== 'number') return false;
+            const abs = Math.abs(stored - sd);
+            const rel = abs / Math.max(Math.abs(sd), 1e-9);
+            return abs <= 0.0001 || rel <= 0.005;
+        }
+        let checked = 0, mismatches = 0, dataOnly = 0, sdOnly = 0;
+        const slugs = Object.keys(DASHBOARD_DATA).filter(s => DASHBOARD_DATA[s].hawaii);
+        for (const slug of slugs) {
+            if (FIPS_FIRST.has(slug)) {
+                console.log(`  SKIP [${slug}] FIPS-first; manual parity check`);
+                continue;
+            }
+            const dashHi = DASHBOARD_DATA[slug].hawaii;
+            const sdEntry = STATE_DATA[slug];
+            if (!sdEntry || !sdEntry.data) {
+                warn(`[${slug}] in data.js but missing from state-data.js`);
+                continue;
+            }
+            const sdData = sdEntry.data;
+            // Build map of HI values from state-data keyed by start year of label
+            const sdHi = {};
+            for (const key of Object.keys(sdData)) {
+                const startMatch = String(key).match(/^(\d{4})/);
+                if (!startMatch) continue;
+                const yrKey = key; // preserve original key (range or single year)
+                const states = sdData[key];
+                if (states && typeof states === 'object') {
+                    // 'Hawaiʻi' uses U+02BB; allow plain ASCII fallback
+                    const hiVal = states['Hawaiʻi'] !== undefined ? states['Hawaiʻi'] : states['Hawaii'];
+                    if (hiVal !== undefined) sdHi[yrKey] = hiVal;
+                }
+            }
+            const dashKeys = Object.keys(dashHi);
+            const sdKeys = Object.keys(sdHi);
+            const overlap = dashKeys.filter(k => sdKeys.includes(k));
+            const onlyInDash = dashKeys.filter(k => !sdKeys.includes(k) && dashHi[k] !== null && dashHi[k] !== undefined);
+            const onlyInSd = sdKeys.filter(k => !dashKeys.includes(k));
+
+            // Check parity on overlap
+            for (const k of overlap) {
+                const d = dashHi[k];
+                const s = sdHi[k];
+                if (d === null || d === undefined) continue;
+                if (parityTolerance(d, s)) {
+                    checked++;
+                } else {
+                    error(`[${slug}] ${k}: data.js HI=${d} vs state-data.js Hawaiʻi=${s} (drift)`);
+                    mismatches++;
+                }
+            }
+
+            // Split HI-only years into pre-floor (legitimate, earlier-methodology),
+            // declared skips (legitimate, methodology-gap), and at-or-after-floor
+            // (suspicious, possible drift).
+            const expectedStart = SOURCE_COVERAGE[slug]?.expectedStart;
+            const skipYears = new Set(SOURCE_COVERAGE[slug]?.skipYears || []);
+            const preFloor = [];
+            const suspicious = [];
+            for (const k of onlyInDash) {
+                const startYear = parseStartYear(k);
+                if (skipYears.has(startYear)) {
+                    preFloor.push(k);  // counted as legit pre-floor
+                } else if (expectedStart && !isNaN(startYear) && startYear < expectedStart) {
+                    preFloor.push(k);
+                } else {
+                    suspicious.push(k);
+                }
+            }
+            if (preFloor.length > 0) {
+                dataOnly += preFloor.length;
+                console.log(`  OK [${slug}] ${preFloor.length} pre-floor HI-years in data.js (earlier methodology, before ${expectedStart || '?'}): ${preFloor.slice(0, 5).join(', ')}${preFloor.length > 5 ? '...' : ''}`);
+            }
+            if (suspicious.length > 0) {
+                dataOnly += suspicious.length;
+                error(`[${slug}] ${suspicious.length} HI-years in data.js at/after structural floor ${expectedStart} but absent from state-data.js (possible drift or hand-edit): ${suspicious.slice(0, 5).join(', ')}${suspicious.length > 5 ? '...' : ''}`);
+            }
+            if (onlyInSd.length > 0) {
+                sdOnly += onlyInSd.length;
+                // state-data has years that data.js HI doesn't. Recompute should fix this.
+                error(`[${slug}] ${onlyInSd.length} HI-years in state-data.js but absent from data.js (run scripts/recompute-data.js): ${onlyInSd.slice(0, 5).join(', ')}${onlyInSd.length > 5 ? '...' : ''}`);
+            }
+        }
+        console.log(`  Summary: ${checked} year-values checked, ${mismatches} mismatches, ${dataOnly} HI-years only in data.js, ${sdOnly} HI-years only in state-data.js`);
+    }
+}
+
+// ============================================================
+// Phase 14: Writer allowlist. state-data.js is the canonical store
+// for value rows; data.js is derived (for HI) plus authored
+// narrative. The pipeline rule:
+//   - state-data.js is written by build-state-data.js (federal-API
+//     fetcher) and recompute-data.js (header sync). Backfill
+//     scripts in scripts/archive/ historically wrote it but should
+//     no longer be run from main.
+//   - data.js is written by recompute-data.js (HI series + median
+//     from state-data), update-monthly.js (latestMonthly), and
+//     update-narrative-years.js (year-stamp updates in prose).
+//   - Anything else writing to either file is a violation.
+//
+// This check greps the scripts/ directory and reports any script
+// outside the allowlist that contains a writeFileSync to either
+// data file. Active scripts only (scripts/archive/ ignored).
+// ============================================================
+{
+    console.log('\n--- Section 14: Writer allowlist ---');
+    const SANCTIONED_STATE_DATA_WRITERS = new Set([
+        'build-state-data.js',     // federal-API fetcher
+        'recompute-data.js',       // header sync + medianSeries
+    ]);
+    const SANCTIONED_DATA_JS_WRITERS = new Set([
+        'recompute-data.js',       // HI series derived from state-data
+        'update-monthly.js',       // latestMonthly only
+        'update-narrative-years.js', // year-stamp text updates
+        'update_metric_year.py',   // year-stamp text updates (Python variant)
+    ]);
+    // Backfill scripts are one-time-use writers. Allowed but flagged with
+    // a warning so they get moved to scripts/archive/ after their work
+    // is committed (per Phase 7 of the coverage overhaul).
+    const BACKFILL_WRITER_PREFIX = 'backfill-';
+    const BACKFILL_WRITER_ALSO = new Set([
+        'fetch-acs-2024.js',       // legacy (per memory: pending deletion)
+    ]);
+    const scriptsDir = path.join(__dirname);
+    let violations = 0;
+    const backfillsFound = [];
+    try {
+        const entries = fs.readdirSync(scriptsDir, { withFileTypes: true });
+        for (const entry of entries) {
+            if (!entry.isFile()) continue;
+            if (!entry.name.endsWith('.js') && !entry.name.endsWith('.py')) continue;
+            const filePath = path.join(scriptsDir, entry.name);
+            const content = fs.readFileSync(filePath, 'utf8');
+            // Detect writes to state-data.js or data.js
+            const writesStateData = /STATE_DATA_PATH|state-data\.js/.test(content) &&
+                                    /(writeFileSync|fs\.writeFile|f\.write\(|open\([^)]+['"]w['"])/.test(content);
+            const writesDataJs = /DATA_PATH\b|data\.js(?![A-Za-z])/.test(content) &&
+                                 /(writeFileSync|fs\.writeFile|f\.write\(|open\([^)]+['"]w['"])/.test(content);
+            // Filter false positives (e.g., audit scripts that read but don't write)
+            const looksLikeWriter = /writeFileSync\s*\([^)]*(?:STATE_DATA_PATH|DATA_PATH|state-data|data\.js)/i.test(content) ||
+                                    /open\([^)]*(state-data\.js|data\.js)[^)]*['"]w['"]/i.test(content) ||
+                                    /(DATA_PATH|STATE_DATA_PATH|data\.js|state-data\.js)\s*[,)\s]+.*\n.*f\.write/i.test(content);
+            if (!looksLikeWriter) continue;
+            const isBackfill = entry.name.startsWith(BACKFILL_WRITER_PREFIX) || BACKFILL_WRITER_ALSO.has(entry.name);
+            if (writesStateData && !SANCTIONED_STATE_DATA_WRITERS.has(entry.name)) {
+                if (isBackfill) {
+                    if (!backfillsFound.includes(entry.name)) backfillsFound.push(entry.name);
+                } else {
+                    error(`[writer-allowlist] ${entry.name} writes to state-data.js but is not in the sanctioned list`);
+                    violations++;
+                }
+            }
+            if (writesDataJs && !SANCTIONED_DATA_JS_WRITERS.has(entry.name) && !SANCTIONED_STATE_DATA_WRITERS.has(entry.name)) {
+                if (isBackfill) {
+                    if (!backfillsFound.includes(entry.name)) backfillsFound.push(entry.name);
+                } else {
+                    error(`[writer-allowlist] ${entry.name} writes to data.js but is not in the sanctioned list`);
+                    violations++;
+                }
+            }
+        }
+        console.log(`  Sanctioned writers: ${[...SANCTIONED_STATE_DATA_WRITERS, ...SANCTIONED_DATA_JS_WRITERS].length} files`);
+        if (backfillsFound.length > 0) {
+            warn(`[writer-allowlist] ${backfillsFound.length} one-time backfill scripts present in scripts/ (consider moving to scripts/archive/ after use): ${backfillsFound.slice(0, 5).join(', ')}${backfillsFound.length > 5 ? '...' : ''}`);
+        }
+        console.log(`  Violations: ${violations}`);
+        if (violations === 0) {
+            console.log('  OK: no unauthorized writers detected');
+        }
+    } catch (e) {
+        warn(`[writer-allowlist] check failed: ${e.message}`);
+    }
+}
+
+// ============================================================
+// Phase 15 (opt-in via --fresh-fetch): re-fetch the latest year's
 // Hawaiʻi value from federal APIs and compare to data.js.
 // Catches the class of bug that introduced renter_cost_burden_pct
 // 2024 = 0.5059 in March 2026 — a hand-pasted value that drifted
 // from the canonical fetch result.
 // ============================================================
 async function runFreshFetch() {
-    console.log('\n--- Section 12: Fresh fetch (latest year vs federal API) ---');
+    console.log('\n--- Section 15: Fresh fetch (latest year vs federal API) ---');
     const https = require('https');
 
     function fetchJSON(url) {

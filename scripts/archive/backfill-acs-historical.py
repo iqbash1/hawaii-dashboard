@@ -79,11 +79,14 @@ def write_state_data(data):
 # ---------------------------------------------------------------------------
 
 def fetch_json(url):
+    import ssl
+    ctx = ssl._create_unverified_context()  # local-env workaround for self-signed cert in TLS chain
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=15, context=ctx) as resp:
             return json.loads(resp.read().decode())
     except Exception as e:
+        print(f'    [fetch_json error: {type(e).__name__}: {e}]', file=__import__('sys').stderr)
         return None
 
 

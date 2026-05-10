@@ -83,18 +83,31 @@ const ALL_FIPS = Object.keys(FIPS_TO_STATE);
 // September release), so the upper bound is safe to be aspirational. Lesson
 // from May 2026 audit: a hardcoded upper bound stranded 2024 for 8 weeks
 // even though Census published it on schedule.
+// ACS_YEARS now starts at the lowest floor among the ACS metrics this
+// script fetches. ba_or_higher_pct uses B15003 from 2008; renter_cost_burden
+// uses B25070 from 2012; uninsured_rate uses S2701 from 2015 (with skipYears
+// handled in fetchUninsured); broadband uses B28002 from 2016 (handled in
+// fetchBroadband). 2008 is the lowest. Each fetcher's try/catch silently
+// skips years for which the API returns 404/empty (e.g., metrics that don't
+// exist for a given year, or the current year before publication).
+//
+// Per the Phase 5 source-depth audit (validate-data.js Section 12), holding
+// to known structural floors prevents future drift back to the hardcoded
+// 2013 lower bound that masked ~2,500 state-years until May 2026.
 const ACS_YEARS = (() => {
     const years = [];
     const currentYear = new Date().getFullYear();
-    const SKIP = new Set([2020]);
-    for (let y = 2013; y <= currentYear; y++) {
+    const SKIP = new Set([2020]);  // ACS 1-year was suppressed for 2020
+    for (let y = 2008; y <= currentYear; y++) {
         if (!SKIP.has(y)) years.push(y);
     }
     return years;
 })();
 
-// Minimum year to include in output (keeps file size reasonable)
-const MIN_YEAR = 2001;
+// Minimum year to include in output (keeps file size reasonable).
+// Lowered from 2001 to 1970 to accommodate residential_price_cpkwh (EIA SEDS
+// floor) and unemployment_rate / labor_force_participation (BLS LAUS floor).
+const MIN_YEAR = 1970;
 
 // Rate limiting: 300ms between requests to avoid throttling
 let lastFetchTime = 0;
@@ -310,11 +323,18 @@ async function fetchUnemployment() {
         const seriesIds = ALL_FIPS.map(fips => `LASST${fips}0000000000003`);
 
         // BLS v1: 25 series/request, 10-year window, 25 requests/day (no key)
-        // Use two windows to cover 2012-2025, minimal batches
-        const timeWindows = [
-            { start: '2012', end: '2021' },
-            { start: '2022', end: '2025' },
-        ];
+        // Auto-rolling: cover BLS LAUS structural floor (1976) to current year
+        // in 10-year chunks. Each refresh re-fetches the full history; values
+        // are stable so this is idempotent. With 50 states / 25 per batch = 2
+        // batches × N windows, current span (1976-2026) = 12 windows × 2 = 24
+        // requests, just under the 25/day no-key limit. To extend further or
+        // run more often, set BLS_API_KEY in env (raises limit to 500/day).
+        const BLS_LAUS_START = 1976; // matches SOURCE_COVERAGE.unemployment_rate
+        const BLS_LAUS_END = new Date().getFullYear();
+        const timeWindows = [];
+        for (let s = BLS_LAUS_START; s <= BLS_LAUS_END; s += 10) {
+            timeWindows.push({ start: String(s), end: String(Math.min(s + 9, BLS_LAUS_END)) });
+        }
         const batches = [];
         for (let i = 0; i < seriesIds.length; i += 25) {
             batches.push(seriesIds.slice(i, i + 25));
@@ -614,9 +634,42 @@ async function main() {
             console.log(`  WARNING: could not parse existing state-data.js (${err.message}); writing fresh`);
         }
     }
-    // Fetched results win for the metrics they cover; existing entries
-    // are preserved for everything else. Sort by slug for stable diffs.
-    const merged = { ...existing, ...results };
+    // Year-level merge: fetched values win for years they cover; pre-existing
+    // years (from one-time backfill scripts) are preserved when the API fetch
+    // doesn't return them. This protects backfills like the EIA SEDS
+    // residential_price_cpkwh 1970-2000 series, which the retail-sales API
+    // can't reach (it only returns 2001+). Without year-level merging, the
+    // monthly refresh would silently wipe pre-2001 history every cycle.
+    const merged = {};
+    const allSlugs = new Set([...Object.keys(existing), ...Object.keys(results)]);
+    let preservedYearCount = 0;
+    for (const slug of [...allSlugs].sort()) {
+        if (!results[slug]) {
+            merged[slug] = existing[slug];
+        } else if (!existing[slug] || !existing[slug].data) {
+            merged[slug] = results[slug];
+        } else {
+            // Both have this metric — merge year-level data
+            const existingYears = Object.keys(existing[slug].data || {});
+            const fetchedYears = Object.keys(results[slug].data || {});
+            const preservedYears = existingYears.filter(y => !fetchedYears.includes(y));
+            if (preservedYears.length > 0) {
+                preservedYearCount += preservedYears.length;
+                console.log(`  ${slug}: preserved ${preservedYears.length} historical years from existing state-data.js (${preservedYears[0]}-${preservedYears[preservedYears.length-1]})`);
+            }
+            merged[slug] = {
+                ...existing[slug],     // base from existing (rare metadata only in old file)
+                ...results[slug],      // fresh metadata wins
+                data: {
+                    ...existing[slug].data, // existing year data
+                    ...results[slug].data,  // fresh year data overwrites for overlap years
+                },
+            };
+        }
+    }
+    if (preservedYearCount > 0) {
+        console.log(`  Total preserved historical state-years: ${preservedYearCount}`);
+    }
     const sortedMerged = {};
     for (const slug of Object.keys(merged).sort()) {
         sortedMerged[slug] = merged[slug];
