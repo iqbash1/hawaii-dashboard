@@ -42,6 +42,9 @@ jobs:
           # build-state-data.js runs. BLS issues keys separately (Labor not
           # on api.data.gov). Set in repo Settings → Secrets when ready.
           BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
+          # FRED (St Louis Fed) — wraps BLS State Labor Productivity in a
+          # cleaner JSON API. Single key, free, instant signup.
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           # CDC WONDER (HHS) is also separately registered.
           CDC_WONDER_KEY: ${{ secrets.CDC_WONDER_KEY }}
         # --audit-only mode: exit reflects ONLY Section 16 drift, so

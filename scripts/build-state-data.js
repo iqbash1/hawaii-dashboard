@@ -869,6 +869,61 @@ async function fetchUnshelteredHomelessRate() {
 }
 
 // ===========================================================
+// FRED Fetcher (labor_productivity)
+// ===========================================================
+//
+// Source: Federal Reserve Economic Data (FRED), wrapping BLS State Labor
+// Productivity. Series ID pattern: IPUZNL000{2-digit-FIPS}0000 = "Labor
+// Productivity for Private Nonfarm in {State}". Annual, index 2017=100.
+// Coverage 2007-2024 (matches BLS State LP exactly).
+//
+// Why FRED instead of BLS API: FRED already mirrors the BLS series,
+// uses a simpler series_id pattern, has cleaner JSON, and the free key
+// raises rate limits without paperwork. Single key, single endpoint per
+// state, consistent across years.
+
+async function fetchLaborProductivity() {
+    console.log('Fetching: Labor productivity (FRED, BLS-sourced)...');
+    const key = process.env.FRED_API_KEY;
+    if (!key) {
+        console.log('  SKIP: FRED_API_KEY not set');
+        return null;
+    }
+    const data = {};
+    let stateCount = 0;
+    for (const fips of ALL_FIPS) {
+        const stateName = FIPS_TO_STATE[fips];
+        const seriesId = `IPUZNL000${fips}0000`;
+        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${key}&file_type=json`;
+        try {
+            const r = await fetch(url);
+            if (!r.ok) continue;
+            const j = await r.json();
+            for (const o of j.observations || []) {
+                if (o.value === '.' || o.value == null) continue;
+                const v = parseFloat(o.value);
+                if (!isFinite(v)) continue;
+                const yr = o.date.slice(0, 4);
+                if (!data[yr]) data[yr] = {};
+                data[yr][stateName] = parseFloat(v.toFixed(3));
+            }
+            stateCount++;
+        } catch (err) {
+            // Silent skip; audit will surface missing states
+        }
+        await sleep(120);
+    }
+    const yrCount = Object.keys(data).length;
+    console.log(`  OK ${yrCount} years across ${stateCount} states`);
+    return yrCount > 0 ? {
+        source: 'BLS State Labor Productivity, Output per Hour Index (2017=100)',
+        calculation: 'Labor Productivity for Private Nonfarm sector by state, annual index. Sourced via FRED (St Louis Fed) which mirrors BLS State Labor Productivity series.',
+        rawVariables: 'FRED series IPUZNL000{2-digit-FIPS}0000',
+        data,
+    } : null;
+}
+
+// ===========================================================
 // Census BDS Fetcher (estabs_entry_rate + net_employer_formation)
 // ===========================================================
 //
@@ -1144,6 +1199,7 @@ async function main() {
         ['home_price_to_income', fetchHomePriceToIncome],
         ['estabs_entry_rate', fetchEstabsEntryRate],
         ['net_employer_formation', fetchNetEmployerFormation],
+        ['labor_productivity', fetchLaborProductivity],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -1313,6 +1369,7 @@ module.exports = {
         home_price_to_income: fetchHomePriceToIncome,
         estabs_entry_rate: fetchEstabsEntryRate,
         net_employer_formation: fetchNetEmployerFormation,
+        labor_productivity: fetchLaborProductivity,
     },
 };
 
