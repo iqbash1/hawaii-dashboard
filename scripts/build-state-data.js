@@ -869,6 +869,76 @@ async function fetchUnshelteredHomelessRate() {
 }
 
 // ===========================================================
+// USDA ERS Fetcher (food_insecurity_rate)
+// ===========================================================
+//
+// Source: USDA ERS Food Security Interactive Charts data file
+//   https://www.ers.usda.gov/media/649/data-file-for-interactive-charts.xlsx
+//
+// Sheet: "Food security by State" — three-year rolling periods, e.g.
+// "2006-2008" through current. State-data.js stores year keys with
+// regular hyphens; the source file uses em-dashes which are normalized
+// to hyphens here.
+//
+// Calculation: column "Food insecurity prevalence" (percent), divided
+// by 100 to match state-data's decimal storage convention.
+
+const ERS_URL = 'https://www.ers.usda.gov/media/649/data-file-for-interactive-charts.xlsx';
+const ERS_SHEET = 'Food security by State';
+
+async function fetchFoodInsecurity() {
+    console.log('Fetching: Food insecurity rate (USDA ERS interactive charts)...');
+    try {
+        const res = await fetch(ERS_URL, {
+            headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buf = Buffer.from(await res.arrayBuffer());
+        if (buf.length < 50000) throw new Error(`ERS file too small: ${buf.length}`);
+        const tmp = '/tmp/ers-food-insecurity.xlsx';
+        fs.writeFileSync(tmp, buf);
+
+        let XLSX;
+        try { XLSX = require('xlsx'); }
+        catch (e) { throw new Error('xlsx package missing'); }
+        const wb = XLSX.readFile(tmp);
+        const sh = wb.Sheets[ERS_SHEET];
+        if (!sh) throw new Error(`sheet "${ERS_SHEET}" not found`);
+        const rows = XLSX.utils.sheet_to_json(sh, { header: 1, blankrows: false });
+
+        const data = {};
+        const knownStates = new Set(Object.values(NAEP_ABBR_TO_STATE));
+        for (const r of rows.slice(1)) {
+            const periodRaw = r[0];
+            const ab = r[1];
+            const pct = r[2];
+            if (typeof periodRaw !== 'string' || typeof ab !== 'string') continue;
+            // ERS uses em-dash (–, U+2013) between years; state-data uses hyphen-minus.
+            const periodKey = periodRaw.replace(/–|—/g, '-').trim();
+            if (!/^\d{4}-\d{4}$/.test(periodKey)) continue;
+            const stateName = NAEP_ABBR_TO_STATE[ab];
+            if (!stateName || !knownStates.has(stateName)) continue;
+            const val = parseFloat(pct);
+            if (!isFinite(val) || val < 0 || val > 50) continue;
+            if (!data[periodKey]) data[periodKey] = {};
+            data[periodKey][stateName] = parseFloat((val / 100).toFixed(4));
+        }
+
+        const yrCount = Object.keys(data).length;
+        console.log(`  OK ${yrCount} year-periods`);
+        return yrCount > 0 ? {
+            source: 'USDA Economic Research Service, Food Security in U.S. Households',
+            calculation: 'Three-year rolling average prevalence of food insecurity by state, in percent (decimal in storage).',
+            rawVariables: 'USDA ERS data-file-for-interactive-charts.xlsx, sheet "Food security by State", col "Food insecurity prevalence"',
+            data,
+        } : null;
+    } catch (err) {
+        console.log(`  FAIL: ${err.message}`);
+        return null;
+    }
+}
+
+// ===========================================================
 // Pew Fiscal 50 Fetcher (rainy_day_fund_pct)
 // ===========================================================
 //
@@ -958,6 +1028,7 @@ async function main() {
         ['naep_reading_8', fetchNaepReading8],
         ['unsheltered_homeless_rate', fetchUnshelteredHomelessRate],
         ['rainy_day_fund_pct', fetchRainyDayFund],
+        ['food_insecurity_rate', fetchFoodInsecurity],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -1123,6 +1194,7 @@ module.exports = {
         naep_reading_8: fetchNaepReading8,
         unsheltered_homeless_rate: fetchUnshelteredHomelessRate,
         rainy_day_fund_pct: fetchRainyDayFund,
+        food_insecurity_rate: fetchFoodInsecurity,
     },
 };
 
