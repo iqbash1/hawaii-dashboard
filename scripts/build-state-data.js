@@ -634,9 +634,42 @@ async function main() {
             console.log(`  WARNING: could not parse existing state-data.js (${err.message}); writing fresh`);
         }
     }
-    // Fetched results win for the metrics they cover; existing entries
-    // are preserved for everything else. Sort by slug for stable diffs.
-    const merged = { ...existing, ...results };
+    // Year-level merge: fetched values win for years they cover; pre-existing
+    // years (from one-time backfill scripts) are preserved when the API fetch
+    // doesn't return them. This protects backfills like the EIA SEDS
+    // residential_price_cpkwh 1970-2000 series, which the retail-sales API
+    // can't reach (it only returns 2001+). Without year-level merging, the
+    // monthly refresh would silently wipe pre-2001 history every cycle.
+    const merged = {};
+    const allSlugs = new Set([...Object.keys(existing), ...Object.keys(results)]);
+    let preservedYearCount = 0;
+    for (const slug of [...allSlugs].sort()) {
+        if (!results[slug]) {
+            merged[slug] = existing[slug];
+        } else if (!existing[slug] || !existing[slug].data) {
+            merged[slug] = results[slug];
+        } else {
+            // Both have this metric — merge year-level data
+            const existingYears = Object.keys(existing[slug].data || {});
+            const fetchedYears = Object.keys(results[slug].data || {});
+            const preservedYears = existingYears.filter(y => !fetchedYears.includes(y));
+            if (preservedYears.length > 0) {
+                preservedYearCount += preservedYears.length;
+                console.log(`  ${slug}: preserved ${preservedYears.length} historical years from existing state-data.js (${preservedYears[0]}-${preservedYears[preservedYears.length-1]})`);
+            }
+            merged[slug] = {
+                ...existing[slug],     // base from existing (rare metadata only in old file)
+                ...results[slug],      // fresh metadata wins
+                data: {
+                    ...existing[slug].data, // existing year data
+                    ...results[slug].data,  // fresh year data overwrites for overlap years
+                },
+            };
+        }
+    }
+    if (preservedYearCount > 0) {
+        console.log(`  Total preserved historical state-years: ${preservedYearCount}`);
+    }
     const sortedMerged = {};
     for (const slug of Object.keys(merged).sort()) {
         sortedMerged[slug] = merged[slug];
