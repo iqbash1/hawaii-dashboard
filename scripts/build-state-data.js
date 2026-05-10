@@ -647,6 +647,228 @@ async function fetchRenewablesShare() {
 }
 
 // ===========================================================
+// NCES NAEP Fetcher (8th-grade math + reading)
+// ===========================================================
+//
+// Source: NCES NAEP Data Service (no API key required)
+//   https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx
+//
+// State-level NAEP grade-8 math runs every 2 years from 2003+ (and
+// every ~2-4 years 1990-2000). Grade-8 reading runs from 1998+ at the
+// state level. Pre-2002, only sample R2 (accommodations not permitted)
+// was administered; 2002+ uses R3 (accommodations permitted). When both
+// samples exist for a given (year, state), R3 is preferred — it's the
+// long-term-trend baseline NCES uses going forward.
+
+const NAEP_ABBR_TO_STATE = (() => {
+    // Reuse FIPS_TO_STATE values as the canonical state-name set;
+    // map USPS abbreviation → state name via a one-time inversion.
+    const out = {};
+    const usps = {
+        AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
+        CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
+        HI:'Hawaiʻi', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa',
+        KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland',
+        MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi',
+        MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada', NH:'New Hampshire',
+        NJ:'New Jersey', NM:'New Mexico', NY:'New York', NC:'North Carolina',
+        ND:'North Dakota', OH:'Ohio', OK:'Oklahoma', OR:'Oregon', PA:'Pennsylvania',
+        RI:'Rhode Island', SC:'South Carolina', SD:'South Dakota', TN:'Tennessee',
+        TX:'Texas', UT:'Utah', VT:'Vermont', VA:'Virginia', WA:'Washington',
+        WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming',
+    };
+    Object.assign(out, usps);
+    return out;
+})();
+const NAEP_ALL_JURISDICTIONS = Object.keys(NAEP_ABBR_TO_STATE).join(',');
+
+async function fetchNaepGrade8(label, subject, subscale) {
+    console.log(`Fetching: NAEP ${label} grade 8 (NCES NAEP Data Service)...`);
+    try {
+        const url = 'https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx'
+            + `?type=data&subject=${subject}&grade=8&subscale=${subscale}`
+            + '&variable=TOTAL&jurisdiction=' + NAEP_ALL_JURISDICTIONS
+            + '&stattype=MN:MN';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const j = await res.json();
+        if (!j.result) throw new Error('no result array');
+
+        // Sample preference: R2 (accommodations not permitted) wins over R3
+        // (accommodations permitted) on transition years (1998, 2000) where
+        // both exist. This matches the original NAEP-historical backfill
+        // which seeded state-data with R2 values for those years; mismatched
+        // preferences would drift state-data away from the audit and fail
+        // Section 16. For 2002+ years, only R3 exists so the preference
+        // is moot; for 1990/1992/1996, only R2 exists.
+        const samplePref = ['R2', 'R3'];
+        const byYearState = {};
+        for (const r of j.result) {
+            if (r.isStatDisplayable !== 1 || r.value === 999 || r.value == null) continue;
+            const stName = NAEP_ABBR_TO_STATE[r.jurisdiction];
+            if (!stName) continue;
+            const yr = r.year.toString();
+            const key = `${yr}__${stName}`;
+            const score = samplePref.indexOf(r.sample);
+            if (score < 0) continue;
+            const existing = byYearState[key];
+            if (!existing || score < samplePref.indexOf(existing.sample)) {
+                byYearState[key] = { value: r.value, sample: r.sample, year: yr, state: stName };
+            }
+        }
+
+        const data = {};
+        for (const { value, year, state } of Object.values(byYearState)) {
+            if (!data[year]) data[year] = {};
+            data[year][state] = parseFloat(value.toFixed(2));
+        }
+
+        const yrCount = Object.keys(data).length;
+        console.log(`  OK ${yrCount} years`);
+        return yrCount > 0 ? {
+            source: 'NCES NAEP Data Service',
+            calculation: `Average scale score for grade 8 ${label}, all students. Sample R3 preferred (current scale, 2002+); R2 used for pre-2002 years (accommodations-not-permitted long-term-trend basis).`,
+            rawVariables: `subject=${subject}, grade=8, subscale=${subscale}, variable=TOTAL, stattype=MN:MN`,
+            data,
+        } : null;
+    } catch (err) {
+        console.log(`  FAIL: ${err.message}`);
+        return null;
+    }
+}
+
+async function fetchNaepMath8() {
+    return fetchNaepGrade8('mathematics', 'mathematics', 'MRPCM');
+}
+
+async function fetchNaepReading8() {
+    return fetchNaepGrade8('reading', 'reading', 'RRPCM');
+}
+
+// ===========================================================
+// HUD PIT Fetcher (unsheltered_homeless_rate)
+// ===========================================================
+//
+// Source: HUD User "2007-2024 PIT Counts by State" (XLSB) + BEA SAINC1
+// state populations.
+//   https://www.huduser.gov/portal/sites/default/files/xls/2007-2024-PIT-Counts-by-State.xlsb
+//
+// Calculation: rate = (Unsheltered Homeless / state population) × 10,000.
+// HUD updates the file once a year (typically December) with the latest
+// PIT count appended; older sheets are stable. The auditor will detect
+// any retroactive revision in the per-year-state-unsheltered-count cells.
+//
+// Dependency: xlsx (SheetJS) is added to devDependencies. The package
+// has known ReDoS / prototype-pollution advisories that apply when it
+// processes untrusted input; here it parses HUD-published binary Excel
+// files in a dev/CI context, so the practical risk is limited.
+
+const HUD_PIT_URL = 'https://www.huduser.gov/portal/sites/default/files/xls/2007-2024-PIT-Counts-by-State.xlsb';
+const HUD_PIT_CACHE = '/tmp/pit-counts.xlsb';
+const HUD_ABBR_TO_STATE = NAEP_ABBR_TO_STATE; // same USPS → state-name map
+
+async function fetchUnshelteredHomelessRate() {
+    console.log('Fetching: Unsheltered homeless rate (HUD PIT + BEA population)...');
+    try {
+        // 1. Download XLSB (cached for 1 hour)
+        let needsDownload = true;
+        if (fs.existsSync(HUD_PIT_CACHE)) {
+            const ageMs = Date.now() - fs.statSync(HUD_PIT_CACHE).mtimeMs;
+            if (ageMs < 3600 * 1000 && fs.statSync(HUD_PIT_CACHE).size > 1000000) {
+                needsDownload = false;
+            }
+        }
+        if (needsDownload) {
+            const res = await fetch(HUD_PIT_URL, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+                    'Accept': '*/*',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                },
+                redirect: 'follow',
+            });
+            if (!res.ok) throw new Error(`HUD PIT HTTP ${res.status}`);
+            const buf = Buffer.from(await res.arrayBuffer());
+            if (buf.length < 1000000) throw new Error(`PIT file too small: ${buf.length} bytes`);
+            fs.writeFileSync(HUD_PIT_CACHE, buf);
+        }
+
+        // 2. Parse all year sheets
+        let XLSX;
+        try {
+            XLSX = require('xlsx');
+        } catch (e) {
+            throw new Error('xlsx package missing; run `npm install --save-dev xlsx`');
+        }
+        const wb = XLSX.readFile(HUD_PIT_CACHE);
+        const yearSheets = wb.SheetNames.filter(n => /^\d{4}$/.test(n)).sort();
+        const counts = {}; // year → state → unsheltered count
+        for (const yr of yearSheets) {
+            const rows = XLSX.utils.sheet_to_json(wb.Sheets[yr], { header: 1, blankrows: false });
+            const idxUnsh = rows[0].findIndex(h => h === 'Unsheltered Homeless');
+            if (idxUnsh < 0) continue;
+            counts[yr] = {};
+            for (const r of rows.slice(1)) {
+                const abbr = r[0];
+                const val = r[idxUnsh];
+                if (typeof abbr !== 'string' || !HUD_ABBR_TO_STATE[abbr]) continue;
+                if (typeof val !== 'number' || val <= 0) continue;
+                counts[yr][HUD_ABBR_TO_STATE[abbr]] = val;
+            }
+        }
+
+        // 3. Fetch BEA SAINC1 LineCode=2 populations for all PIT years
+        const yearList = Object.keys(counts).sort().join(',');
+        const beaUrl = `https://apps.bea.gov/api/data?UserID=${KEYS.BEA}`
+            + `&method=GetData&datasetname=Regional&TableName=SAINC1&LineCode=2`
+            + `&Year=${yearList}&GeoFips=STATE&ResultFormat=JSON`;
+        const beaRes = await fetch(beaUrl);
+        if (!beaRes.ok) throw new Error(`BEA SAINC1 HTTP ${beaRes.status}`);
+        const beaJson = await beaRes.json();
+        const beaData = beaJson.BEAAPI?.Results?.Data;
+        if (!beaData) throw new Error('BEA SAINC1: no Data array');
+        const pops = {}; // year → state → population
+        const stateSet = new Set(Object.values(HUD_ABBR_TO_STATE));
+        for (const r of beaData) {
+            const yr = r.TimePeriod;
+            const beaName = r.GeoName.replace(/\s*\*$/, '').trim();
+            const stateName = beaName === 'Hawaii' ? 'Hawaiʻi' : beaName;
+            if (!stateSet.has(stateName)) continue;
+            const pop = parseInt(r.DataValue);
+            if (!pop || pop < 100000) continue;
+            if (!pops[yr]) pops[yr] = {};
+            pops[yr][stateName] = pop;
+        }
+
+        // 4. Compute rate per (year, state)
+        const data = {};
+        for (const yr of Object.keys(counts).sort()) {
+            const yearStates = {};
+            for (const [stateName, count] of Object.entries(counts[yr])) {
+                const pop = pops[yr]?.[stateName];
+                if (!pop) continue;
+                const rate = (count / pop) * 10000;
+                if (rate < 0.1 || rate > 200) continue;
+                yearStates[stateName] = parseFloat(rate.toFixed(2));
+            }
+            if (Object.keys(yearStates).length > 0) data[yr] = yearStates;
+        }
+
+        const yrCount = Object.keys(data).length;
+        console.log(`  OK ${yrCount} years`);
+        return yrCount > 0 ? {
+            source: 'HUD Point-in-Time Count',
+            calculation: 'Unsheltered homeless per 10,000 residents. Numerator: HUD PIT "Unsheltered Homeless" column. Denominator: BEA SAINC1 LineCode 2 (state population).',
+            rawVariables: 'HUD User 2007-2024-PIT-Counts-by-State.xlsb sheet[year], column "Unsheltered Homeless"; BEA SAINC1 line 2 population.',
+            data,
+        } : null;
+    } catch (err) {
+        console.log(`  FAIL: ${err.message}`);
+        return null;
+    }
+}
+
+// ===========================================================
 // Main
 // ===========================================================
 
@@ -664,6 +886,9 @@ async function main() {
         ['real_per_capita_income', fetchRealPerCapitaIncome],
         ['residential_price_cpkwh', fetchResidentialPrice],
         ['renewables_share_gen', fetchRenewablesShare],
+        ['naep_math_8', fetchNaepMath8],
+        ['naep_reading_8', fetchNaepReading8],
+        ['unsheltered_homeless_rate', fetchUnshelteredHomelessRate],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -825,6 +1050,9 @@ module.exports = {
         real_per_capita_income: fetchRealPerCapitaIncome,
         residential_price_cpkwh: fetchResidentialPrice,
         renewables_share_gen: fetchRenewablesShare,
+        naep_math_8: fetchNaepMath8,
+        naep_reading_8: fetchNaepReading8,
+        unsheltered_homeless_rate: fetchUnshelteredHomelessRate,
     },
 };
 
