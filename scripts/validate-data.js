@@ -17,7 +17,9 @@
 //  11. latestMonthly freshness (asOf date staleness)
 //  12. Source-coverage audit (state-data.js depth vs source's
 //      published earliest year; HI-vs-states asymmetry)
-//  13. (opt-in via --fresh-fetch) Re-fetch latest year from APIs
+//  13. data.js HI vs state-data.js Hawaiʻi parity (catches drift
+//      between the two value stores)
+//  14. (opt-in via --fresh-fetch) Re-fetch latest year from APIs
 //   (county cross-consistency is woven into section 2)
 //
 // Usage: node scripts/validate-data.js          (normal: warnings ok)
@@ -904,14 +906,97 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 }
 
 // ============================================================
-// Phase 13 (opt-in via --fresh-fetch): re-fetch the latest year's
+// Phase 13: HI parity check. For every metric × overlap year,
+// data.js[slug].hawaii[year] must equal
+// state-data.js[slug].data[year]['Hawaiʻi']. Catches drift between
+// the two stores. After Phase 4 of the coverage overhaul, state-data
+// is the single source of truth; this check fails any commit that
+// introduces a divergence.
+//
+// Tolerance: max(0.0001 absolute, 0.5% relative). Tighter than
+// fresh-fetch because both numbers come from the same authored data.
+// ============================================================
+{
+    console.log('\n--- Section 13: data.js HI vs state-data.js Hawaiʻi parity ---');
+    if (!STATE_DATA) {
+        console.log('  SKIP: state-data.js not loaded');
+    } else {
+        const FIPS_FIRST = new Set(['pcp_per_100k']);
+        function parityTolerance(stored, sd) {
+            if (typeof stored !== 'number' || typeof sd !== 'number') return false;
+            const abs = Math.abs(stored - sd);
+            const rel = abs / Math.max(Math.abs(sd), 1e-9);
+            return abs <= 0.0001 || rel <= 0.005;
+        }
+        let checked = 0, mismatches = 0, dataOnly = 0, sdOnly = 0;
+        const slugs = Object.keys(DASHBOARD_DATA).filter(s => DASHBOARD_DATA[s].hawaii);
+        for (const slug of slugs) {
+            if (FIPS_FIRST.has(slug)) {
+                console.log(`  SKIP [${slug}] FIPS-first; manual parity check`);
+                continue;
+            }
+            const dashHi = DASHBOARD_DATA[slug].hawaii;
+            const sdEntry = STATE_DATA[slug];
+            if (!sdEntry || !sdEntry.data) {
+                warn(`[${slug}] in data.js but missing from state-data.js`);
+                continue;
+            }
+            const sdData = sdEntry.data;
+            // Build map of HI values from state-data keyed by start year of label
+            const sdHi = {};
+            for (const key of Object.keys(sdData)) {
+                const startMatch = String(key).match(/^(\d{4})/);
+                if (!startMatch) continue;
+                const yrKey = key; // preserve original key (range or single year)
+                const states = sdData[key];
+                if (states && typeof states === 'object') {
+                    // 'Hawaiʻi' uses U+02BB; allow plain ASCII fallback
+                    const hiVal = states['Hawaiʻi'] !== undefined ? states['Hawaiʻi'] : states['Hawaii'];
+                    if (hiVal !== undefined) sdHi[yrKey] = hiVal;
+                }
+            }
+            const dashKeys = Object.keys(dashHi);
+            const sdKeys = Object.keys(sdHi);
+            const overlap = dashKeys.filter(k => sdKeys.includes(k));
+            const onlyInDash = dashKeys.filter(k => !sdKeys.includes(k) && dashHi[k] !== null && dashHi[k] !== undefined);
+            const onlyInSd = sdKeys.filter(k => !dashKeys.includes(k));
+
+            // Check parity on overlap
+            for (const k of overlap) {
+                const d = dashHi[k];
+                const s = sdHi[k];
+                if (d === null || d === undefined) continue;
+                if (parityTolerance(d, s)) {
+                    checked++;
+                } else {
+                    error(`[${slug}] ${k}: data.js HI=${d} vs state-data.js Hawaiʻi=${s} (drift)`);
+                    mismatches++;
+                }
+            }
+
+            if (onlyInDash.length > 0) {
+                dataOnly += onlyInDash.length;
+                warn(`[${slug}] ${onlyInDash.length} years in data.js HI but absent from state-data.js: ${onlyInDash.slice(0, 5).join(', ')}${onlyInDash.length > 5 ? '...' : ''}`);
+            }
+            if (onlyInSd.length > 0) {
+                sdOnly += onlyInSd.length;
+                // This shouldn't normally happen (data.js HI should mirror state-data.js HI)
+                warn(`[${slug}] ${onlyInSd.length} years in state-data.js HI but absent from data.js: ${onlyInSd.slice(0, 5).join(', ')}${onlyInSd.length > 5 ? '...' : ''}`);
+            }
+        }
+        console.log(`  Summary: ${checked} year-values checked, ${mismatches} mismatches, ${dataOnly} HI-years only in data.js, ${sdOnly} HI-years only in state-data.js`);
+    }
+}
+
+// ============================================================
+// Phase 14 (opt-in via --fresh-fetch): re-fetch the latest year's
 // Hawaiʻi value from federal APIs and compare to data.js.
 // Catches the class of bug that introduced renter_cost_burden_pct
 // 2024 = 0.5059 in March 2026 — a hand-pasted value that drifted
 // from the canonical fetch result.
 // ============================================================
 async function runFreshFetch() {
-    console.log('\n--- Section 13: Fresh fetch (latest year vs federal API) ---');
+    console.log('\n--- Section 14: Fresh fetch (latest year vs federal API) ---');
     const https = require('https');
 
     function fetchJSON(url) {
