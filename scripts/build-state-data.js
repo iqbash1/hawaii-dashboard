@@ -884,9 +884,11 @@ async function fetchUnshelteredHomelessRate() {
 
 async function fetchLaborProductivity() {
     console.log('Fetching: Labor productivity (FRED, BLS-sourced)...');
-    const key = process.env.FRED_API_KEY;
+    // Prefer env var (CI rotation-friendly), fall back to the KEYS constant
+    // stored in this script. Matches how BEA/EIA fetchers consume KEYS.
+    const key = process.env.FRED_API_KEY || KEYS.FRED;
     if (!key) {
-        console.log('  SKIP: FRED_API_KEY not set');
+        console.log('  SKIP: no FRED key available (FRED_API_KEY env or KEYS.FRED)');
         return null;
     }
     const data = {};
