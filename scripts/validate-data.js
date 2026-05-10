@@ -19,7 +19,9 @@
 //      published earliest year; HI-vs-states asymmetry)
 //  13. data.js HI vs state-data.js Hawaiʻi parity (catches drift
 //      between the two value stores)
-//  14. (opt-in via --fresh-fetch) Re-fetch latest year from APIs
+//  14. Writer allowlist (only sanctioned scripts may write to
+//      data.js or state-data.js)
+//  15. (opt-in via --fresh-fetch) Re-fetch latest year from APIs
 //   (county cross-consistency is woven into section 2)
 //
 // Usage: node scripts/validate-data.js          (normal: warnings ok)
@@ -124,7 +126,7 @@ const SOURCE_COVERAGE = {
     renewables_share_gen:       { expectedStart: 2001, source: 'EIA electric-power',  note: 'EIA v2 electric-power API has annual state generation from 2001; pre-2001 requires SEDS aggregation' },
     ba_or_higher_pct:           { expectedStart: 2008, source: 'Census ACS B15003',   note: 'B15003 detailed-attainment table available from 2008' },
     renter_cost_burden_pct:     { expectedStart: 2012, source: 'Census ACS B25070',   note: 'B25070 with all-state coverage from 2012' },
-    uninsured_rate:             { expectedStart: 2010, source: 'Census ACS DP03',     note: 'DP03_0099PE used 2010-2012 (S2701 variable semantics flipped 2014->2015); 2013-14 deliberately skipped' },
+    uninsured_rate:             { expectedStart: 2010, skipYears: [2013, 2014], source: 'Census ACS DP03', note: 'DP03_0099PE used 2010-2012 (S2701 variable semantics flipped 2014->2015); 2013-14 deliberately skipped in state-data; data.js HI has those years from KFF/equivalent' },
     broadband_subscription_pct: { expectedStart: 2016, source: 'Census ACS B28002',   note: 'Census changed B28002 variable definition in 2016; pre-2016 values measure a different (narrower) broadband concept and are deliberately excluded' },
     home_price_to_income:       { expectedStart: 2005, source: 'Census ACS + FHFA',   note: 'ACS median home value + income from 2005' },
     food_insecurity_rate:       { expectedStart: 2006, source: 'USDA ERS',            note: '3-year averages; ERS Excel file currently provides 2006-2008 onward (older periods used different methodology)' },
@@ -974,14 +976,35 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
                 }
             }
 
-            if (onlyInDash.length > 0) {
-                dataOnly += onlyInDash.length;
-                warn(`[${slug}] ${onlyInDash.length} years in data.js HI but absent from state-data.js: ${onlyInDash.slice(0, 5).join(', ')}${onlyInDash.length > 5 ? '...' : ''}`);
+            // Split HI-only years into pre-floor (legitimate, earlier-methodology),
+            // declared skips (legitimate, methodology-gap), and at-or-after-floor
+            // (suspicious, possible drift).
+            const expectedStart = SOURCE_COVERAGE[slug]?.expectedStart;
+            const skipYears = new Set(SOURCE_COVERAGE[slug]?.skipYears || []);
+            const preFloor = [];
+            const suspicious = [];
+            for (const k of onlyInDash) {
+                const startYear = parseStartYear(k);
+                if (skipYears.has(startYear)) {
+                    preFloor.push(k);  // counted as legit pre-floor
+                } else if (expectedStart && !isNaN(startYear) && startYear < expectedStart) {
+                    preFloor.push(k);
+                } else {
+                    suspicious.push(k);
+                }
+            }
+            if (preFloor.length > 0) {
+                dataOnly += preFloor.length;
+                console.log(`  OK [${slug}] ${preFloor.length} pre-floor HI-years in data.js (earlier methodology, before ${expectedStart || '?'}): ${preFloor.slice(0, 5).join(', ')}${preFloor.length > 5 ? '...' : ''}`);
+            }
+            if (suspicious.length > 0) {
+                dataOnly += suspicious.length;
+                error(`[${slug}] ${suspicious.length} HI-years in data.js at/after structural floor ${expectedStart} but absent from state-data.js (possible drift or hand-edit): ${suspicious.slice(0, 5).join(', ')}${suspicious.length > 5 ? '...' : ''}`);
             }
             if (onlyInSd.length > 0) {
                 sdOnly += onlyInSd.length;
-                // This shouldn't normally happen (data.js HI should mirror state-data.js HI)
-                warn(`[${slug}] ${onlyInSd.length} years in state-data.js HI but absent from data.js: ${onlyInSd.slice(0, 5).join(', ')}${onlyInSd.length > 5 ? '...' : ''}`);
+                // state-data has years that data.js HI doesn't. Recompute should fix this.
+                error(`[${slug}] ${onlyInSd.length} HI-years in state-data.js but absent from data.js (run scripts/recompute-data.js): ${onlyInSd.slice(0, 5).join(', ')}${onlyInSd.length > 5 ? '...' : ''}`);
             }
         }
         console.log(`  Summary: ${checked} year-values checked, ${mismatches} mismatches, ${dataOnly} HI-years only in data.js, ${sdOnly} HI-years only in state-data.js`);
@@ -989,14 +1012,101 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 }
 
 // ============================================================
-// Phase 14 (opt-in via --fresh-fetch): re-fetch the latest year's
+// Phase 14: Writer allowlist. state-data.js is the canonical store
+// for value rows; data.js is derived (for HI) plus authored
+// narrative. The pipeline rule:
+//   - state-data.js is written by build-state-data.js (federal-API
+//     fetcher) and recompute-data.js (header sync). Backfill
+//     scripts in scripts/archive/ historically wrote it but should
+//     no longer be run from main.
+//   - data.js is written by recompute-data.js (HI series + median
+//     from state-data), update-monthly.js (latestMonthly), and
+//     update-narrative-years.js (year-stamp updates in prose).
+//   - Anything else writing to either file is a violation.
+//
+// This check greps the scripts/ directory and reports any script
+// outside the allowlist that contains a writeFileSync to either
+// data file. Active scripts only (scripts/archive/ ignored).
+// ============================================================
+{
+    console.log('\n--- Section 14: Writer allowlist ---');
+    const SANCTIONED_STATE_DATA_WRITERS = new Set([
+        'build-state-data.js',     // federal-API fetcher
+        'recompute-data.js',       // header sync + medianSeries
+    ]);
+    const SANCTIONED_DATA_JS_WRITERS = new Set([
+        'recompute-data.js',       // HI series derived from state-data
+        'update-monthly.js',       // latestMonthly only
+        'update-narrative-years.js', // year-stamp text updates
+        'update_metric_year.py',   // year-stamp text updates (Python variant)
+    ]);
+    // Backfill scripts are one-time-use writers. Allowed but flagged with
+    // a warning so they get moved to scripts/archive/ after their work
+    // is committed (per Phase 7 of the coverage overhaul).
+    const BACKFILL_WRITER_PREFIX = 'backfill-';
+    const BACKFILL_WRITER_ALSO = new Set([
+        'fetch-acs-2024.js',       // legacy (per memory: pending deletion)
+    ]);
+    const scriptsDir = path.join(__dirname);
+    let violations = 0;
+    const backfillsFound = [];
+    try {
+        const entries = fs.readdirSync(scriptsDir, { withFileTypes: true });
+        for (const entry of entries) {
+            if (!entry.isFile()) continue;
+            if (!entry.name.endsWith('.js') && !entry.name.endsWith('.py')) continue;
+            const filePath = path.join(scriptsDir, entry.name);
+            const content = fs.readFileSync(filePath, 'utf8');
+            // Detect writes to state-data.js or data.js
+            const writesStateData = /STATE_DATA_PATH|state-data\.js/.test(content) &&
+                                    /(writeFileSync|fs\.writeFile|f\.write\(|open\([^)]+['"]w['"])/.test(content);
+            const writesDataJs = /DATA_PATH\b|data\.js(?![A-Za-z])/.test(content) &&
+                                 /(writeFileSync|fs\.writeFile|f\.write\(|open\([^)]+['"]w['"])/.test(content);
+            // Filter false positives (e.g., audit scripts that read but don't write)
+            const looksLikeWriter = /writeFileSync\s*\([^)]*(?:STATE_DATA_PATH|DATA_PATH|state-data|data\.js)/i.test(content) ||
+                                    /open\([^)]*(state-data\.js|data\.js)[^)]*['"]w['"]/i.test(content) ||
+                                    /(DATA_PATH|STATE_DATA_PATH|data\.js|state-data\.js)\s*[,)\s]+.*\n.*f\.write/i.test(content);
+            if (!looksLikeWriter) continue;
+            const isBackfill = entry.name.startsWith(BACKFILL_WRITER_PREFIX) || BACKFILL_WRITER_ALSO.has(entry.name);
+            if (writesStateData && !SANCTIONED_STATE_DATA_WRITERS.has(entry.name)) {
+                if (isBackfill) {
+                    if (!backfillsFound.includes(entry.name)) backfillsFound.push(entry.name);
+                } else {
+                    error(`[writer-allowlist] ${entry.name} writes to state-data.js but is not in the sanctioned list`);
+                    violations++;
+                }
+            }
+            if (writesDataJs && !SANCTIONED_DATA_JS_WRITERS.has(entry.name) && !SANCTIONED_STATE_DATA_WRITERS.has(entry.name)) {
+                if (isBackfill) {
+                    if (!backfillsFound.includes(entry.name)) backfillsFound.push(entry.name);
+                } else {
+                    error(`[writer-allowlist] ${entry.name} writes to data.js but is not in the sanctioned list`);
+                    violations++;
+                }
+            }
+        }
+        console.log(`  Sanctioned writers: ${[...SANCTIONED_STATE_DATA_WRITERS, ...SANCTIONED_DATA_JS_WRITERS].length} files`);
+        if (backfillsFound.length > 0) {
+            warn(`[writer-allowlist] ${backfillsFound.length} one-time backfill scripts present in scripts/ (consider moving to scripts/archive/ after use): ${backfillsFound.slice(0, 5).join(', ')}${backfillsFound.length > 5 ? '...' : ''}`);
+        }
+        console.log(`  Violations: ${violations}`);
+        if (violations === 0) {
+            console.log('  OK: no unauthorized writers detected');
+        }
+    } catch (e) {
+        warn(`[writer-allowlist] check failed: ${e.message}`);
+    }
+}
+
+// ============================================================
+// Phase 15 (opt-in via --fresh-fetch): re-fetch the latest year's
 // Hawaiʻi value from federal APIs and compare to data.js.
 // Catches the class of bug that introduced renter_cost_burden_pct
 // 2024 = 0.5059 in March 2026 — a hand-pasted value that drifted
 // from the canonical fetch result.
 // ============================================================
 async function runFreshFetch() {
-    console.log('\n--- Section 14: Fresh fetch (latest year vs federal API) ---');
+    console.log('\n--- Section 15: Fresh fetch (latest year vs federal API) ---');
     const https = require('https');
 
     function fetchJSON(url) {
