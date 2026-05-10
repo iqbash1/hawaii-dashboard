@@ -43,6 +43,8 @@ itself; the archive is excluded from the scan.
 
 ### Other one-off
 - `fetch-acs-2024.js` — superseded by ACS_YEARS auto-roll in build-state-data.js (per May 2026 audit Fix 1)
+- `backfill-naep-historical.js` — NCES NAEP grade-8 math (1990-2000) and reading (1998-2002), via the public NAEP Data Service. Uses sample R2 (accommodations not permitted) for pre-2002 years per the official NAEP long-term-trend convention.
+- `backfill-hud-pit-historical.js` — HUD PIT unsheltered_homeless_rate 2007-2011, via the published 2007-2024 by-state XLSB workbook + BEA SAINC1 population denominators. Re-run prerequisite: `npm install --no-save xlsx`.
 
 ## Local-environment cert workaround
 

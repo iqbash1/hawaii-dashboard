@@ -23,6 +23,11 @@
 //   - Skips any state-year where unsheltered count is missing or zero.
 //   - DC excluded (state-data convention).
 //   - Run validate:strict afterward, then recompute-data.js.
+//
+// Dependencies:
+//   Reads .xlsb (Excel binary workbook) via the SheetJS `xlsx` package.
+//   Not listed in package.json since this is a one-off archive script.
+//   Re-run prerequisite: `npm install --no-save xlsx`
 // =============================================================================
 
 const fs = require('fs');
