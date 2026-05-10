@@ -33,11 +33,17 @@ jobs:
       - name: Run fresh-fetch audit
         id: audit
         env:
+          # api.data.gov umbrella key — covers FBI Crime Data Explorer,
+          # NCES Digest, NREL, USDA, and other federal APIs routed through
+          # api.usa.gov / api.data.gov gateways. Single key, instant signup.
+          API_DATA_GOV_KEY: ${{ secrets.API_DATA_GOV_KEY }}
           # BLS public API is 25 requests/day no-key. The free key raises
           # to 500/day — enough headroom for two daily audits + monthly
-          # build-state-data.js runs. Set in repo Settings → Secrets.
+          # build-state-data.js runs. BLS issues keys separately (Labor not
+          # on api.data.gov). Set in repo Settings → Secrets when ready.
           BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
-          # CDC WONDER and any other keyed sources go here as added.
+          # CDC WONDER (HHS) is also separately registered.
+          CDC_WONDER_KEY: ${{ secrets.CDC_WONDER_KEY }}
         # --audit-only mode: exit reflects ONLY Section 16 drift, so
         # unrelated warnings (e.g. county data lag) don't trigger a
         # data-drift issue creation.
