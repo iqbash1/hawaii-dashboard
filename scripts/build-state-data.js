@@ -811,7 +811,26 @@ const STATE_DATA = ${JSON.stringify(sortedMerged, null, 2)};
     }
 }
 
-main().catch(err => {
-    console.error('Fatal error:', err);
-    process.exit(1);
-});
+// Export fetchers so validate-data.js can call them in audit mode without
+// re-running main(). The audit reuses the exact same code path that
+// produces state-data.js — eliminating drift between fetcher and auditor.
+module.exports = {
+    fetchers: {
+        ba_or_higher_pct: fetchBaOrHigher,
+        broadband_subscription_pct: fetchBroadband,
+        renter_cost_burden_pct: fetchRenterCostBurden,
+        uninsured_rate: fetchUninsured,
+        unemployment_rate: fetchUnemployment,
+        labor_force_participation: fetchLaborForceParticipation,
+        real_per_capita_income: fetchRealPerCapitaIncome,
+        residential_price_cpkwh: fetchResidentialPrice,
+        renewables_share_gen: fetchRenewablesShare,
+    },
+};
+
+if (require.main === module) {
+    main().catch(err => {
+        console.error('Fatal error:', err);
+        process.exit(1);
+    });
+}

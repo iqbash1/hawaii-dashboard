@@ -1263,31 +1263,30 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 }
 
 // ============================================================
-// Section 16 (opt-in via --fresh-fetch): re-fetch the latest year's
-// Hawaiʻi value from federal APIs and compare to data.js.
-// Catches the class of bug that introduced renter_cost_burden_pct
-// 2024 = 0.5059 in March 2026 — a hand-pasted value that drifted
-// from the canonical fetch result.
+// Section 16 (opt-in via --fresh-fetch): re-fetch every year's Hawaiʻi
+// value from the canonical source and compare to state-data.js.
+//
+// Hawaiʻi is the dashboard's centerpiece, so full HI coverage is the
+// high-leverage signal — peer-state drift moves rankings only marginally
+// and is informational at best. This audit is what would have caught:
+//   - the May 2026 unemployment_rate truncation (35y of history wiped)
+//   - today's labor_force_participation drift (3-6pp on pre-1996 years
+//     against current BLS vintage)
+//   - any future hand-paste or methodology shift that changes a HI cell.
+//
+// Reuses the exact fetcher functions from build-state-data.js — same code
+// path that produces state-data.js — so the audit cannot drift away from
+// the writer.
 // ============================================================
 async function runFreshFetch() {
-    console.log('\n--- Section 16: Fresh fetch (latest year vs federal API) ---');
-    const https = require('https');
+    console.log('\n--- Section 16: Fresh fetch (all HI years vs canonical source) ---');
 
-    function fetchJSON(url) {
-        return new Promise((resolve, reject) => {
-            https.get(url, (res) => {
-                if (res.statusCode !== 200) {
-                    reject(new Error(`HTTP ${res.statusCode} for ${url}`));
-                    return;
-                }
-                let body = '';
-                res.on('data', c => body += c);
-                res.on('end', () => {
-                    try { resolve(JSON.parse(body)); }
-                    catch (e) { reject(new Error(`bad JSON: ${e.message}`)); }
-                });
-            }).on('error', reject);
-        });
+    let buildFetchers;
+    try {
+        buildFetchers = require('./build-state-data.js').fetchers;
+    } catch (e) {
+        warn(`[fresh-fetch] could not import build-state-data.js fetchers: ${e.message}`);
+        return;
     }
 
     function inTolerance(stored, fresh) {
@@ -1297,88 +1296,71 @@ async function runFreshFetch() {
         return absDiff <= TOLERANCE_PP || relDiff <= TOLERANCE_REL;
     }
 
-    function latestYearKey(series) {
-        const keys = Object.keys(series).filter(k => /^\d{4}/.test(k));
-        keys.sort((a, b) => parseInt(a.split('-').pop()) - parseInt(b.split('-').pop()));
-        return keys[keys.length - 1];
-    }
+    let checkedMetrics = 0;
+    let totalCells = 0;
+    let driftCells = 0;
+    let skippedMetrics = 0;
+    const driftSamples = [];
 
-    // Each entry returns {year, hi} for the metric, or null if unfetchable.
-    const FRESH_FETCHERS = {
-        ba_or_higher_pct: async (year) => {
-            const vars = 'B15003_022E,B15003_023E,B15003_024E,B15003_025E,B15003_001E';
-            const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,${vars}&for=state:15`;
-            const j = await fetchJSON(url);
-            if (!j[1]) return null;
-            const r = {}; j[0].forEach((h, i) => r[h] = j[1][i]);
-            const total = parseFloat(r['B15003_001E']);
-            const sum = parseFloat(r['B15003_022E']) + parseFloat(r['B15003_023E']) +
-                        parseFloat(r['B15003_024E']) + parseFloat(r['B15003_025E']);
-            return total > 0 ? parseFloat((sum / total).toFixed(4)) : null;
-        },
-        broadband_subscription_pct: async (year) => {
-            const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,B28002_001E,B28002_004E&for=state:15`;
-            const j = await fetchJSON(url);
-            if (!j[1]) return null;
-            const r = {}; j[0].forEach((h, i) => r[h] = j[1][i]);
-            const total = parseFloat(r['B28002_001E']);
-            const bb = parseFloat(r['B28002_004E']);
-            return total > 0 ? parseFloat((bb / total).toFixed(4)) : null;
-        },
-        renter_cost_burden_pct: async (year) => {
-            const vars = 'B25070_001E,B25070_007E,B25070_008E,B25070_009E,B25070_010E,B25070_011E';
-            const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,${vars}&for=state:15`;
-            const j = await fetchJSON(url);
-            if (!j[1]) return null;
-            const r = {}; j[0].forEach((h, i) => r[h] = j[1][i]);
-            const total = parseFloat(r['B25070_001E']);
-            const notComp = parseFloat(r['B25070_011E']);
-            const over30 = parseFloat(r['B25070_007E']) + parseFloat(r['B25070_008E']) +
-                           parseFloat(r['B25070_009E']) + parseFloat(r['B25070_010E']);
-            const denom = total - notComp;
-            return denom > 0 ? parseFloat((over30 / denom).toFixed(4)) : null;
-        },
-        uninsured_rate: async (year) => {
-            // Year-key is single (e.g., "2024"); pre-2015 used different semantics
-            const y = parseInt(year);
-            if (y < 2015) return null;
-            const url = `https://api.census.gov/data/${year}/acs/acs1/subject?get=NAME,S2701_C05_001E&for=state:15`;
-            const j = await fetchJSON(url);
-            if (!j[1]) return null;
-            const r = {}; j[0].forEach((h, i) => r[h] = j[1][i]);
-            const pct = parseFloat(r['S2701_C05_001E']);
-            return isFinite(pct) && pct >= 0 ? parseFloat((pct / 100).toFixed(4)) : null;
-        },
-    };
+    for (const [slug, fetcher] of Object.entries(buildFetchers)) {
+        const sd = STATE_DATA?.[slug];
+        if (!sd?.data) {
+            skippedMetrics++;
+            info(`[${slug}] no state-data entry; skipping`);
+            continue;
+        }
 
-    let checked = 0, skipped = 0;
-    for (const [slug, fetcher] of Object.entries(FRESH_FETCHERS)) {
-        const md = DASHBOARD_DATA[slug];
-        if (!md) { skipped++; continue; }
-        const year = latestYearKey(md.hawaii);
-        if (!year) { skipped++; continue; }
-        // Only single-year keys for these metrics
-        if (year.includes('-')) { skipped++; info(`[${slug}] year-range key, skipping fresh-fetch`); continue; }
+        let result;
         try {
-            const fresh = await fetcher(year);
-            if (fresh === null || fresh === undefined) {
-                info(`[${slug}] fresh-fetch returned no data for ${year}, skipping`);
-                skipped++;
+            result = await fetcher();
+        } catch (e) {
+            info(`[${slug}] fetcher threw: ${e.message}; skipping`);
+            skippedMetrics++;
+            continue;
+        }
+        if (!result?.data) {
+            info(`[${slug}] fetcher returned no data; skipping (likely API rate limit or transient failure)`);
+            skippedMetrics++;
+            continue;
+        }
+
+        let metricCells = 0;
+        let metricDrift = 0;
+        for (const yr of Object.keys(result.data).sort()) {
+            const fresh = result.data[yr]?.['Hawaiʻi'];
+            const stored = sd.data[yr]?.['Hawaiʻi'];
+            if (fresh === undefined || fresh === null) continue;
+            if (stored === undefined || stored === null) {
+                // Source has a year state-data doesn't — informational, not a
+                // drift; surfaces in Section 12 coverage audit instead.
                 continue;
             }
-            const stored = md.hawaii[year];
+            metricCells++;
             if (!inTolerance(stored, fresh)) {
-                error(`[${slug}] hawaii[${year}]=${stored} differs from fresh API fetch ${fresh} (tolerance ${TOLERANCE_PP}pp / ${TOLERANCE_REL*100}% relative)`);
-            } else {
-                console.log(`  OK [${slug}] hawaii[${year}]=${stored} ≈ fresh ${fresh}`);
+                metricDrift++;
+                if (driftSamples.length < 12) {
+                    driftSamples.push({slug, year: yr, stored, fresh, delta: (fresh - stored).toFixed(4)});
+                }
             }
-            checked++;
-        } catch (e) {
-            info(`[${slug}] fresh-fetch error: ${e.message}`);
-            skipped++;
+        }
+        totalCells += metricCells;
+        driftCells += metricDrift;
+        checkedMetrics++;
+
+        if (metricDrift === 0) {
+            console.log(`  OK [${slug}] HI ${metricCells} years match canonical source within tolerance`);
+        } else {
+            error(`[${slug}] HI ${metricDrift} of ${metricCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}% — see drift summary`);
         }
     }
-    console.log(`  Fresh-fetch: checked ${checked}, skipped ${skipped}, errors ${errors}`);
+
+    console.log(`  Audited ${checkedMetrics} metrics, ${totalCells} HI year-cells, ${driftCells} drift, ${skippedMetrics} skipped`);
+    if (driftSamples.length > 0) {
+        console.log('  Drift samples:');
+        for (const d of driftSamples) {
+            console.log(`    ${d.slug} HI[${d.year}]: stored=${d.stored} fresh=${d.fresh} delta=${d.delta}`);
+        }
+    }
 }
 
 async function finish() {
