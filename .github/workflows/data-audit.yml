@@ -38,7 +38,10 @@ jobs:
           # build-state-data.js runs. Set in repo Settings → Secrets.
           BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
           # CDC WONDER and any other keyed sources go here as added.
-        run: npm run validate:fresh
+        # --audit-only mode: exit reflects ONLY Section 16 drift, so
+        # unrelated warnings (e.g. county data lag) don't trigger a
+        # data-drift issue creation.
+        run: npm run audit:drift
 
       - name: Open issue on drift
         if: failure()

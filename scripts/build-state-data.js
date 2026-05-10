@@ -869,6 +869,74 @@ async function fetchUnshelteredHomelessRate() {
 }
 
 // ===========================================================
+// Pew Fiscal 50 Fetcher (rainy_day_fund_pct)
+// ===========================================================
+//
+// Source: Pew Fiscal 50 / NASBO Fiscal Survey of States, RSRV CSV
+//   https://www.pew.org/-/media/data-visualizations/interactives/2024/fiscal50/data/RSRV_20260212.csv
+//
+// The CSV URL embeds a date suffix (RSRV_20260212.csv) that Pew updates
+// when they publish a new vintage (typically annually around December
+// after NASBO publishes the Fiscal Survey of States). The fetcher uses
+// the most recent published URL we know about; future updates will need
+// the URL refreshed in this constant. The Pew Fiscal 50 page itself
+// (https://www.pew.org/en/research-and-analysis/data-visualizations/2014/fiscal-50)
+// always links to the current vintage.
+
+const PEW_RDF_URL = 'https://www.pew.org/-/media/data-visualizations/interactives/2024/fiscal50/data/RSRV_20260212.csv';
+const PEW_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
+const PEW_SKIP_AB = new Set(['US', 'MWR', 'NER', 'SR', 'WR']);
+
+async function fetchRainyDayFund() {
+    console.log('Fetching: Rainy day fund (Pew Fiscal 50)...');
+    try {
+        const res = await fetch(PEW_RDF_URL, {
+            headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        const headers = lines[0].split(',');
+        const rdfpCols = headers
+            .map((h, i) => {
+                const m = h.match(/^RDFp(\d{4})$/);
+                return m ? { idx: i, year: m[1] } : null;
+            })
+            .filter(Boolean);
+
+        const data = {}; // year → state → rate
+        const knownStates = new Set(Object.values(NAEP_ABBR_TO_STATE));
+        for (const line of lines.slice(1)) {
+            const fields = line.split(',');
+            const stateRaw = fields[0]?.replace(/^"|"$/g, '');
+            const ab = fields[1];
+            if (!ab || PEW_SKIP_AB.has(ab)) continue;
+            const stateName = PEW_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+            if (!knownStates.has(stateName)) continue;
+            for (const { idx, year } of rdfpCols) {
+                const v = parseFloat(fields[idx]);
+                if (!isFinite(v) || v < 0 || v > 1) continue;
+                if (!data[year]) data[year] = {};
+                // Match the existing state-data rounding (4 decimals)
+                data[year][stateName] = parseFloat(v.toFixed(4));
+            }
+        }
+
+        const yrCount = Object.keys(data).length;
+        console.log(`  OK ${yrCount} years`);
+        return yrCount > 0 ? {
+            source: 'NASBO Fiscal Survey of States via Pew Fiscal 50',
+            calculation: 'Rainy day fund balance as fraction of total state-fund expenditures, end of fiscal year. Source-published as decimal (e.g. 0.145 = 14.5%).',
+            rawVariables: 'Pew Fiscal 50 RSRV_<vintage>.csv, columns RDFp{year}',
+            data,
+        } : null;
+    } catch (err) {
+        console.log(`  FAIL: ${err.message}`);
+        return null;
+    }
+}
+
+// ===========================================================
 // Main
 // ===========================================================
 
@@ -889,6 +957,7 @@ async function main() {
         ['naep_math_8', fetchNaepMath8],
         ['naep_reading_8', fetchNaepReading8],
         ['unsheltered_homeless_rate', fetchUnshelteredHomelessRate],
+        ['rainy_day_fund_pct', fetchRainyDayFund],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -1053,6 +1122,7 @@ module.exports = {
         naep_math_8: fetchNaepMath8,
         naep_reading_8: fetchNaepReading8,
         unsheltered_homeless_rate: fetchUnshelteredHomelessRate,
+        rainy_day_fund_pct: fetchRainyDayFund,
     },
 };
 

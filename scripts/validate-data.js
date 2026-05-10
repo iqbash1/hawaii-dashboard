@@ -40,6 +40,10 @@ const path = require('path');
 
 const STRICT = process.argv.includes('--strict');
 const FRESH_FETCH = process.argv.includes('--fresh-fetch');
+// AUDIT_ONLY: exit code reflects only Section 16 drift, ignoring other
+// warnings/errors. Used by the scheduled cron audit workflow so the
+// drift signal isn't drowned out by unrelated dashboard warnings.
+const AUDIT_ONLY = process.argv.includes('--audit-only');
 // Tolerance for fresh-fetch comparisons. Override via --tolerance-pp=N or --tolerance-rel=N.
 const TOLERANCE_PP = (() => {
     const m = process.argv.find(a => a.startsWith('--tolerance-pp='));
@@ -1361,19 +1365,32 @@ async function runFreshFetch() {
             console.log(`    ${d.slug} HI[${d.year}]: stored=${d.stored} fresh=${d.fresh} delta=${d.delta}`);
         }
     }
+    return driftCells;
 }
 
 async function finish() {
-    if (FRESH_FETCH) await runFreshFetch();
+    let auditDriftCells = 0;
+    if (FRESH_FETCH || AUDIT_ONLY) auditDriftCells = await runFreshFetch() || 0;
 
     console.log('\n=== VALIDATION SUMMARY ===\n');
-console.log(`  Mode:     ${STRICT ? 'STRICT (CI)' : 'Normal'}`);
+console.log(`  Mode:     ${AUDIT_ONLY ? 'AUDIT-ONLY' : STRICT ? 'STRICT (CI)' : 'Normal'}`);
 console.log(`  Errors:   ${errors}`);
 console.log(`  Warnings: ${warnings}`);
 console.log(`  State metrics:  ${Object.keys(DASHBOARD_DATA).length}`);
 console.log(`  County metrics: ${Object.keys(COUNTY_DATA).length}`);
 if (STATE_DATA) {
     console.log(`  State-data metrics: ${Object.keys(STATE_DATA).length}`);
+}
+
+// AUDIT_ONLY: exit purely on audit drift, ignoring unrelated warnings.
+if (AUDIT_ONLY) {
+    if (auditDriftCells > 0) {
+        console.log(`\n  RESULT: AUDIT FAIL — ${auditDriftCells} HI year-cells drifted from canonical source\n`);
+        process.exit(2);
+    } else {
+        console.log('\n  RESULT: AUDIT PASS — every audited HI year-cell matches canonical source within tolerance\n');
+        process.exit(0);
+    }
 }
 
 if (errors > 0) {
