@@ -869,6 +869,118 @@ async function fetchUnshelteredHomelessRate() {
 }
 
 // ===========================================================
+// Census BDS Fetcher (estabs_entry_rate + net_employer_formation)
+// ===========================================================
+//
+// Census Business Dynamics Statistics. One API call returns all years
+// 1978-current for all 50 states. ESTABS_ENTRY_RATE and ESTABS_EXIT_RATE
+// are both percentages of establishments. net_employer_formation is the
+// difference (entry - exit), expressed in percentage points.
+
+async function fetchBdsBoth() {
+    console.log('Fetching: BDS establishment dynamics (Census BDS timeseries)...');
+    try {
+        const url = 'https://api.census.gov/data/timeseries/bds?get=ESTABS_ENTRY_RATE,ESTABS_EXIT_RATE,YEAR&for=state:*';
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const j = await r.json();
+        const headers = j[0];
+        const eIdx = headers.indexOf('ESTABS_ENTRY_RATE');
+        const xIdx = headers.indexOf('ESTABS_EXIT_RATE');
+        const yIdx = headers.indexOf('YEAR');
+        const sIdx = headers.indexOf('state');
+
+        const entry = {};
+        const formation = {};
+        for (const row of j.slice(1)) {
+            const fips = row[sIdx];
+            const stateName = FIPS_TO_STATE[fips];
+            if (!stateName) continue;
+            const yr = row[yIdx];
+            const eRate = parseFloat(row[eIdx]);
+            const xRate = parseFloat(row[xIdx]);
+            if (!isFinite(eRate) || !isFinite(xRate)) continue;
+            if (!entry[yr]) entry[yr] = {};
+            if (!formation[yr]) formation[yr] = {};
+            entry[yr][stateName] = parseFloat(eRate.toFixed(3));
+            formation[yr][stateName] = parseFloat((eRate - xRate).toFixed(3));
+        }
+
+        const yEntry = Object.keys(entry).length;
+        const yForm = Object.keys(formation).length;
+        console.log(`  OK entry=${yEntry}y, formation=${yForm}y`);
+        return {
+            estabs_entry_rate: yEntry > 0 ? {
+                source: 'Census Business Dynamics Statistics',
+                calculation: 'Establishment entry rate (new establishments as % of total).',
+                rawVariables: 'ESTABS_ENTRY_RATE from BDS timeseries',
+                data: entry,
+            } : null,
+            net_employer_formation: yForm > 0 ? {
+                source: 'Census Business Dynamics Statistics',
+                calculation: 'Net establishment formation rate (entry - exit).',
+                rawVariables: 'ESTABS_ENTRY_RATE - ESTABS_EXIT_RATE from BDS timeseries',
+                data: formation,
+            } : null,
+        };
+    } catch (err) {
+        console.log(`  FAIL: ${err.message}`);
+        return { estabs_entry_rate: null, net_employer_formation: null };
+    }
+}
+
+// Cache to avoid double-fetching when both BDS metrics run
+let _bdsCache = null;
+async function fetchEstabsEntryRate() {
+    if (!_bdsCache) _bdsCache = await fetchBdsBoth();
+    return _bdsCache.estabs_entry_rate;
+}
+async function fetchNetEmployerFormation() {
+    if (!_bdsCache) _bdsCache = await fetchBdsBoth();
+    return _bdsCache.net_employer_formation;
+}
+
+// ===========================================================
+// Census ACS Fetcher (home_price_to_income)
+// ===========================================================
+//
+// home_price_to_income = B25077 (median value of owner-occupied units)
+// / B19013 (median household income). Census ACS 1-year is published
+// from 2005 onward (with 2020 skipped due to COVID survey suppression).
+
+async function fetchHomePriceToIncome() {
+    console.log('Fetching: Home price to income ratio (Census ACS B25077 / B19013)...');
+    const data = {};
+    const currentYear = new Date().getFullYear();
+    const SKIP = new Set([2020]);
+    for (let yr = 2005; yr <= currentYear; yr++) {
+        if (SKIP.has(yr)) continue;
+        try {
+            const url = `https://api.census.gov/data/${yr}/acs/acs1?get=NAME,B25077_001E,B19013_001E&for=state:*`;
+            const json = await fetchJSON(url);
+            const states = parseCensusResponse(json, (row) => {
+                const value = parseFloat(row['B25077_001E']);
+                const income = parseFloat(row['B19013_001E']);
+                if (!isFinite(value) || !isFinite(income) || income <= 0 || value <= 0) return null;
+                return parseFloat((value / income).toFixed(2));
+            });
+            if (Object.keys(states).length > 0) {
+                data[yr.toString()] = states;
+                process.stdout.write(` ${yr}`);
+            }
+        } catch (err) { /* skip year */ }
+        await sleep(250);
+    }
+    console.log(` -> ${Object.keys(data).length} years`);
+    return Object.keys(data).length > 0 ? {
+        source: 'Census ACS 1-Year, Tables B25077 (Median Home Value) + B19013 (Median Household Income)',
+        calculation: 'Median value of owner-occupied housing units / Median household income',
+        rawVariables: 'B25077_001E / B19013_001E',
+        data,
+    } : null;
+}
+
+// ===========================================================
 // USDA ERS Fetcher (food_insecurity_rate)
 // ===========================================================
 //
@@ -1029,10 +1141,13 @@ async function main() {
         ['unsheltered_homeless_rate', fetchUnshelteredHomelessRate],
         ['rainy_day_fund_pct', fetchRainyDayFund],
         ['food_insecurity_rate', fetchFoodInsecurity],
+        ['home_price_to_income', fetchHomePriceToIncome],
+        ['estabs_entry_rate', fetchEstabsEntryRate],
+        ['net_employer_formation', fetchNetEmployerFormation],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
-    const censusSlugs = ['ba_or_higher_pct', 'broadband_subscription_pct', 'renter_cost_burden_pct', 'uninsured_rate'];
+    const censusSlugs = ['ba_or_higher_pct', 'broadband_subscription_pct', 'renter_cost_burden_pct', 'uninsured_rate', 'home_price_to_income'];
     for (const [slug, fn] of fetchers.filter(([s]) => censusSlugs.includes(s))) {
         try {
             const result = await fn();
@@ -1195,6 +1310,9 @@ module.exports = {
         unsheltered_homeless_rate: fetchUnshelteredHomelessRate,
         rainy_day_fund_pct: fetchRainyDayFund,
         food_insecurity_rate: fetchFoodInsecurity,
+        home_price_to_income: fetchHomePriceToIncome,
+        estabs_entry_rate: fetchEstabsEntryRate,
+        net_employer_formation: fetchNetEmployerFormation,
     },
 };
 
