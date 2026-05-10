@@ -300,11 +300,16 @@ fi
 section "SECONDARY PAGES"
 
 # /five-year-change/ rows are JS-rendered; verify the JS template and data are wired up.
-# Check 1: fyc-row class appears in the inline JS template literal (code is present)
-if echo "$fyc_html" | grep -q "fyc-row"; then
-    ok "/five-year-change/ JS template contains fyc-row class"
+# Check 1: fyc.js module is loaded and contains the fyc-row template literal.
+# (After the modal-extraction architecture refactor, the template lives in
+# js/fyc.js rather than inline in the HTML.)
+fyc_js_path=$(echo "$fyc_html" | grep -oE 'js/fyc\.js[^"]*' | head -1)
+[ -z "$fyc_js_path" ] && fyc_js_path="js/fyc.js"
+fyc_js_body=$(curl -fsL --max-time 20 "${BASE}/${fyc_js_path#../}" 2>/dev/null || echo "")
+if echo "$fyc_js_body" | grep -q "fyc-row"; then
+    ok "fyc.js contains fyc-row template literal"
 else
-    fail "/five-year-change/ missing fyc-row in JS template (code may be broken)"
+    fail "fyc.js missing fyc-row template (code may be broken)"
 fi
 # Check 2: data.js is loaded (26 metrics confirmed above; FYC uses the same data)
 if echo "$fyc_html" | grep -q "data\.js"; then
