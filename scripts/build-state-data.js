@@ -1402,21 +1402,8 @@ const CDE_OFFENSE = {
     property_crime_rate: 'property-crime',
 };
 
-// CDE returns state names with plain ASCII "Hawaii"; the abbreviation map below
-// translates back to our ʻokina form.
-const CDE_ABBR_TO_NAME = {
-    AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
-    CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
-    HI:'Hawaiʻi', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa',
-    KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland',
-    MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi',
-    MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada', NH:'New Hampshire',
-    NJ:'New Jersey', NM:'New Mexico', NY:'New York', NC:'North Carolina',
-    ND:'North Dakota', OH:'Ohio', OK:'Oklahoma', OR:'Oregon', PA:'Pennsylvania',
-    RI:'Rhode Island', SC:'South Carolina', SD:'South Dakota', TN:'Tennessee',
-    TX:'Texas', UT:'Utah', VT:'Vermont', VA:'Virginia', WA:'Washington',
-    WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming',
-};
+// CDE returns state names with plain ASCII "Hawaii"; the file-level
+// ABBR_TO_STATE map (declared above) translates back to the ʻokina form.
 
 async function fetchFbiCdeCrime(slug) {
     const offense = CDE_OFFENSE[slug];
@@ -1435,8 +1422,8 @@ async function fetchFbiCdeCrime(slug) {
     let statesOk = 0;
     let statesFailed = 0;
 
-    for (const abbr of Object.keys(CDE_ABBR_TO_NAME)) {
-        const stateName = CDE_ABBR_TO_NAME[abbr];
+    for (const abbr of Object.keys(ABBR_TO_STATE)) {
+        const stateName = ABBR_TO_STATE[abbr];
         const url = `${CDE_BASE}/summarized/state/${abbr}/${offense}`
             + `?from=01-${fromYear}&to=12-${toYear}&api_key=${key}`;
         let monthly;
@@ -1646,20 +1633,8 @@ async function fetchPcpPer100k() {
         return null;
     }
 
-    // Abbreviation → state-data state name (Hawaiʻi spelling preserved).
-    const PCP_ABBR_TO_NAME = {
-        AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
-        CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
-        HI:'Hawaiʻi', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa',
-        KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland',
-        MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi',
-        MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada', NH:'New Hampshire',
-        NJ:'New Jersey', NM:'New Mexico', NY:'New York', NC:'North Carolina',
-        ND:'North Dakota', OH:'Ohio', OK:'Oklahoma', OR:'Oregon', PA:'Pennsylvania',
-        RI:'Rhode Island', SC:'South Carolina', SD:'South Dakota', TN:'Tennessee',
-        TX:'Texas', UT:'Utah', VT:'Vermont', VA:'Virginia', WA:'Washington',
-        WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming',
-    };
+    // CHR uses USPS abbreviations; the file-level ABBR_TO_STATE preserves
+    // Hawaiʻi's ʻokina. NAME_TO_FIPS is the inverse of FIPS_TO_STATE.
     const NAME_TO_FIPS = Object.fromEntries(
         Object.entries(FIPS_TO_STATE).map(([f, name]) => [name, f])
     );
@@ -1674,14 +1649,14 @@ async function fetchPcpPer100k() {
         if (f[iCty] !== '000') continue;
         const yr = f[iYr];
         const abbr = f[iAbbr];
-        if (!yr || !PCP_ABBR_TO_NAME[abbr]) continue;
+        if (!yr || !ABBR_TO_STATE[abbr]) continue;
         const num = parseInt((f[iNum] || '').replace(/,/g, ''), 10);
         const den = parseInt((f[iDen] || '').replace(/,/g, ''), 10);
         if (!Number.isFinite(num) || !Number.isFinite(den) || den <= 0) continue;
-        const fips = NAME_TO_FIPS[PCP_ABBR_TO_NAME[abbr]];
+        const fips = NAME_TO_FIPS[ABBR_TO_STATE[abbr]];
         if (!fips) continue;
         if (!chrByYear[yr]) chrByYear[yr] = {};
-        chrByYear[yr][abbr] = { num, den, fips, name: PCP_ABBR_TO_NAME[abbr] };
+        chrByYear[yr][abbr] = { num, den, fips, name: ABBR_TO_STATE[abbr] };
         chrCells++;
     }
     const chrYears = Object.keys(chrByYear).sort();
