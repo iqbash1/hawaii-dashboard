@@ -89,8 +89,15 @@ const RECOMPUTE_METRICS = [
 const SKIP_METRICS = [];
 
 // ==========================================================
-// Step 1: Fix ACGR in STATE_DATA
+// Step 1: Remove stale ACGR years that the canonical fetcher doesn't cover
 // ==========================================================
+//
+// Prior to Forever-clean part 4, this step also hand-corrected Hawaiʻi
+// ACGR values to a hardcoded "NCES" series (82, 82, 83, 83, 85, 85, 86, 86)
+// that came from an older NCES Digest edition (d20-d21 era). When fetchAcgr
+// in build-state-data.js was wired (d23, raw 1-decimal precision), the
+// hardcoded override silently reverted the fresh values every recompute.
+// Override deleted; fetcher is now the canonical writer for acgr values.
 
 function fixACGR() {
     const acgr = STATE_DATA.acgr;
@@ -98,17 +105,9 @@ function fixACGR() {
 
     const fixes = [];
 
-    // Fix Hawaii ACGR values to match NCES (from data.js)
-    const ncesHI = { 2015: 82.0, 2016: 82.0, 2017: 83.0, 2018: 83.0, 2019: 85.0, 2020: 85.0, 2021: 86.0, 2022: 86.0 };
-    for (const [year, val] of Object.entries(ncesHI)) {
-        if (acgr.data[year] && acgr.data[year]['Hawaiʻi'] !== val) {
-            const old = acgr.data[year]['Hawaiʻi'];
-            acgr.data[year]['Hawaiʻi'] = val;
-            fixes.push(`ACGR Hawaii ${year}: ${old} → ${val}`);
-        }
-    }
-
-    // Remove bogus 2023-2024
+    // Remove 2023-2024 if they leaked in (NCES Digest d23 only covers
+    // school years through 2021-22 = state-data "2022"). A later edition
+    // may add them; the fetcher and merge logic handle that automatically.
     ['2023', '2024'].forEach(year => {
         if (acgr.data[year]) {
             delete acgr.data[year];

@@ -1196,6 +1196,107 @@ async function fetchRainyDayFund() {
 }
 
 // ===========================================================
+// NCES Digest Fetcher (acgr)
+// ===========================================================
+//
+// Source: NCES Digest of Education Statistics, Table 219.46 — Public high
+// school 4-year adjusted cohort graduation rates by state. Annual,
+// published as an XLSX workbook. Latest edition d23 covers school years
+// 2011-12 through 2021-22 (11 cohort years).
+//
+// Year mapping: state-data stores by graduation year, i.e. school year
+// 2011-12 -> state-data "2012" (year class graduated).
+//
+// Precision: NCES displays whole numbers in the published HTML/PDF but
+// the XLSX cells carry the underlying 1-decimal values (e.g. 82.7). We
+// read raw cell values to preserve the fidelity state-data uses.
+//
+// 2011 coverage: state-data carries 2011 from older Digest editions; d23
+// does not include school year 2010-11. The build merge preserves the
+// existing 2011 cell.
+//
+// URL pattern needs a bump when NCES publishes d24, d25, etc. The probe
+// tries the latest known edition first and falls back one step.
+
+const NCES_TABLE = 'tabn219.46.xlsx';
+const NCES_ACGR_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
+// School-year XLSX column -> state-data calendar year (graduation year).
+const NCES_ACGR_COL_TO_YEAR = [
+    { col: 1, yr: '2012' },  // 2011-12
+    { col: 3, yr: '2013' },  // 2012-13
+    { col: 5, yr: '2014' },  // 2013-14
+    { col: 6, yr: '2015' },  // 2014-15
+    { col: 7, yr: '2016' },  // 2015-16
+    { col: 8, yr: '2017' },  // 2016-17
+    { col: 9, yr: '2018' },  // 2017-18
+    { col: 10, yr: '2019' }, // 2018-19
+    { col: 11, yr: '2020' }, // 2019-20
+    { col: 13, yr: '2021' }, // 2020-21
+    { col: 15, yr: '2022' }, // 2021-22
+];
+
+async function fetchAcgr() {
+    console.log('Fetching: ACGR public high school graduation rate (NCES Digest)...');
+    const xlsx = require('xlsx');
+    const editions = ['d23', 'd24', 'd25', 'd26']; // probe latest first
+    let buffer = null;
+    let editionUsed = null;
+    for (const ed of editions.slice().reverse()) {
+        const url = `https://nces.ed.gov/programs/digest/${ed}/tables/xls/${NCES_TABLE}`;
+        try {
+            const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' } });
+            if (!r.ok) continue;
+            buffer = Buffer.from(await r.arrayBuffer());
+            editionUsed = ed;
+            break;
+        } catch { /* try previous edition */ }
+    }
+    if (!buffer) {
+        console.log(`  FAIL: no NCES Digest edition responded with the XLSX`);
+        return null;
+    }
+    let rows;
+    try {
+        const wb = xlsx.read(buffer, { type: 'buffer' });
+        rows = xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true });
+    } catch (err) {
+        console.log(`  FAIL XLSX parse: ${err.message}`);
+        return null;
+    }
+
+    const known = new Set(Object.values(NAEP_ABBR_TO_STATE));
+    const data = {};
+    let cells = 0;
+    for (const row of rows) {
+        const rawName = (row[0] || '').toString();
+        // Strip footnote markers like 'Alabama\\12\\' and trim
+        const stateRaw = rawName.replace(/\\\d+\\/g, '').trim();
+        if (!stateRaw) continue;
+        const state = NCES_ACGR_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+        if (!known.has(state)) continue; // skips DC, Puerto Rico, BIE, US, etc.
+        for (const { col, yr } of NCES_ACGR_COL_TO_YEAR) {
+            const v = row[col];
+            if (typeof v !== 'number' || !isFinite(v)) continue;
+            if (!data[yr]) data[yr] = {};
+            data[yr][state] = parseFloat(v.toFixed(1));
+            cells++;
+        }
+    }
+    const years = Object.keys(data).sort();
+    if (years.length === 0) {
+        console.log('  FAIL: no rows parsed');
+        return null;
+    }
+    console.log(`  OK edition ${editionUsed}: ${cells} state-year cells across ${years.length} years (${years[0]}-${years[years.length - 1]})`);
+    return {
+        source: 'NCES Digest of Education Statistics, Table 219.46',
+        calculation: 'Public high school 4-year adjusted cohort graduation rate (ACGR)',
+        rawVariables: `NCES Digest ${editionUsed} Table 219.46 (tabn219.46.xlsx); raw cell values preserve 1-decimal precision`,
+        data,
+    };
+}
+
+// ===========================================================
 // Census PEP Fetcher (net_domestic_migration_rate)
 // ===========================================================
 //
@@ -1601,6 +1702,7 @@ async function main() {
         ['voter_participation_rate', fetchVoterParticipation],
         ['road_poor_pct', fetchRoadPoor],
         ['net_domestic_migration_rate', fetchNetDomesticMigration],
+        ['acgr', fetchAcgr],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -1775,6 +1877,7 @@ module.exports = {
         voter_participation_rate: fetchVoterParticipation,
         road_poor_pct: fetchRoadPoor,
         net_domestic_migration_rate: fetchNetDomesticMigration,
+        acgr: fetchAcgr,
     },
 };
 

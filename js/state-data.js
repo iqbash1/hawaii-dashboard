@@ -1,7 +1,7 @@
 // ============================================================
 // Hawaiʻi Dashboard - All-State Time Series Data
 //
-// Updated: 2026-05-11T00:22:50.111Z
+// Updated: 2026-05-11T01:34:37.965Z
 //
 // Contains per-state values across all available years for
 // metrics with federal API access.
@@ -14,7 +14,7 @@ const STATE_DATA = {
   "acgr": {
     "source": "NCES Digest of Education Statistics, Table 219.46",
     "calculation": "Public high school 4-year adjusted cohort graduation rate (ACGR)",
-    "rawVariables": "NCES Common Core of Data",
+    "rawVariables": "NCES Digest d23 Table 219.46 (tabn219.46.xlsx); raw cell values preserve 1-decimal precision",
     "data": {
       "2011": {
         "Alabama": 72,
@@ -231,7 +231,7 @@ const STATE_DATA = {
         "Delaware": 85.6,
         "Florida": 77.9,
         "Georgia": 78.8,
-        "Hawaiʻi": 82,
+        "Hawaiʻi": 81.6,
         "Idaho": 78.9,
         "Illinois": 85.6,
         "Indiana": 87.1,
@@ -283,7 +283,7 @@ const STATE_DATA = {
         "Delaware": 85.5,
         "Florida": 80.7,
         "Georgia": 79.4,
-        "Hawaiʻi": 82,
+        "Hawaiʻi": 82.7,
         "Idaho": 79.7,
         "Illinois": 85.5,
         "Indiana": 86.8,
@@ -335,7 +335,7 @@ const STATE_DATA = {
         "Delaware": 86.9,
         "Florida": 82.3,
         "Georgia": 80.6,
-        "Hawaiʻi": 83,
+        "Hawaiʻi": 82.7,
         "Idaho": 79.7,
         "Illinois": 87,
         "Indiana": 83.8,
@@ -387,7 +387,7 @@ const STATE_DATA = {
         "Delaware": 86.9,
         "Florida": 86.3,
         "Georgia": 81.6,
-        "Hawaiʻi": 83,
+        "Hawaiʻi": 84.5,
         "Idaho": 80.7,
         "Illinois": 86.5,
         "Indiana": 88.1,
@@ -439,7 +439,7 @@ const STATE_DATA = {
         "Delaware": 89,
         "Florida": 87.2,
         "Georgia": 82,
-        "Hawaiʻi": 85,
+        "Hawaiʻi": 85.2,
         "Idaho": 80.8,
         "Illinois": 86.2,
         "Indiana": 87.2,
@@ -491,7 +491,7 @@ const STATE_DATA = {
         "Delaware": 89,
         "Florida": 90.2,
         "Georgia": 83.8,
-        "Hawaiʻi": 85,
+        "Hawaiʻi": 86.3,
         "Idaho": 82.2,
         "Indiana": 90.9,
         "Iowa": 91.8,
