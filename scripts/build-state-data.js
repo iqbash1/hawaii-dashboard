@@ -83,22 +83,36 @@ const ALL_FIPS = Object.keys(FIPS_TO_STATE);
 // September release), so the upper bound is safe to be aspirational. Lesson
 // from May 2026 audit: a hardcoded upper bound stranded 2024 for 8 weeks
 // even though Census published it on schedule.
-// ACS_YEARS now starts at the lowest floor among the ACS metrics this
-// script fetches. ba_or_higher_pct uses B15003 from 2008; renter_cost_burden
-// uses B25070 from 2012; uninsured_rate uses S2701 from 2015 (with skipYears
-// handled in fetchUninsured); broadband uses B28002 from 2016 (handled in
-// fetchBroadband). 2008 is the lowest. Each fetcher's try/catch silently
-// skips years for which the API returns 404/empty (e.g., metrics that don't
-// exist for a given year, or the current year before publication).
+// ACS_YEARS starts at the lowest floor among the ACS metrics this script
+// fetches:
+//   B25070 (renter_cost_burden_pct) — full state coverage from 2005
+//   B25077 + B19013 (home_price_to_income) — from 2005 (fetcher uses its
+//     own 2005 floor explicitly; not gated by ACS_YEARS)
+//   B15003 (ba_or_higher_pct) — from 2008 (table didn't exist before)
+//   S2701 (uninsured_rate) — from 2010 (fetcher applies its own 2010 floor)
+//   B28002 (broadband_subscription_pct) — from 2016 (fetcher applies own
+//     2016 floor; pre-2016 variable measured a narrower concept)
+//
+// Each fetcher's try/catch silently skips years where its specific table
+// returns 404/empty, so we can set ACS_YEARS to the lowest of any table
+// (2005) without polluting metrics whose tables start later.
+//
+// Prior to May 2026 the floor was hardcoded at 2008 — a stale assumption
+// inherited from the era when only B15003 and B25070 were being fetched,
+// and B25070's actual 2005 floor was misremembered as 2008. That bug
+// stranded 2005-2007 coverage for renter_cost_burden_pct on all 50 states
+// even though Hawaiʻi had those years from a one-time backfill. The chart's
+// "compare with California" line started at 2008 while the Hawaiʻi line
+// started at 2005, creating a visually asymmetric pre-floor gap. Lowering
+// to 2005 recovers 2005-2007 × 50 states for renter.
 //
 // Per the Phase 5 source-depth audit (validate-data.js Section 12), holding
-// to known structural floors prevents future drift back to the hardcoded
-// 2013 lower bound that masked ~2,500 state-years until May 2026.
+// to true structural floors prevents this kind of stale-default drift.
 const ACS_YEARS = (() => {
     const years = [];
     const currentYear = new Date().getFullYear();
     const SKIP = new Set([2020]);  // ACS 1-year was suppressed for 2020
-    for (let y = 2008; y <= currentYear; y++) {
+    for (let y = 2005; y <= currentYear; y++) {
         if (!SKIP.has(y)) years.push(y);
     }
     return years;
