@@ -104,6 +104,8 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-line2 { font-size: var(--text-md); color: var(--text-secondary); margin-top: 0.3rem; }
 /* Abs-change value is secondary context (muted); rank + status carry direction. */
 .fyc-line2 .fyc-abs-change { font-weight: 500; }
+/* Applied dynamically in fyc.js via `fyc-val-${rankDir}` template literal —
+ * the dash-variable form is invisible to a naive grep for the literal class. */
 .fyc-val-pos { color: var(--positive); font-weight: 600; }
 .fyc-val-neg { color: var(--negative); font-weight: 600; }
 .fyc-line3 { font-size: var(--text-sm); color: var(--text-muted); margin-top: 0.15rem; }

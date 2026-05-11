@@ -2,8 +2,6 @@
 body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .methods-header { background: var(--bg); padding: 1.5rem 1.5rem 1rem; text-align: center; }
 .methods-header h1 { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
-.methods-header .back-link { color: var(--hawaii-blue); text-decoration: none; font-size: var(--text-sm); font-weight: 500; }
-.methods-header .back-link:hover { text-decoration: underline; }
 .methods-content { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 3rem; }
 .methods-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
 .methods-section h2 { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 700; color: var(--text); margin-bottom: 0.75rem; }
@@ -48,9 +46,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .audience-table a { color: var(--hawaii-blue); text-decoration: none; }
 .audience-table a:hover { text-decoration: underline; }
 
-.update-list { list-style: disc; padding-left: 1.25rem; }
-.update-list li { padding: 0.25rem 0; font-size: var(--text-base); color: var(--text-secondary); }
-.update-date { font-weight: 600; color: var(--text); }
 .methods-footer-note { font-size: var(--text-sm); color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
 
 @media print {

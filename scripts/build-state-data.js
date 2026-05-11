@@ -1402,8 +1402,8 @@ const CDE_OFFENSE = {
     property_crime_rate: 'property-crime',
 };
 
-// CDE returns state names with plain ASCII "Hawaii"; state-data uses ʻokina.
-const CDE_NAME_TO_OUR_NAME = { 'Hawaii': 'Hawaiʻi' };
+// CDE returns state names with plain ASCII "Hawaii"; the abbreviation map below
+// translates back to our ʻokina form.
 const CDE_ABBR_TO_NAME = {
     AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
     CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
