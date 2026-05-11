@@ -278,7 +278,6 @@ def phase4(data, state_data):
         ("California", 7.6),
         ("Washington", 6.1),
         ("Colorado", 5.9),
-        ("Massachusetts", 5.8),
     ]
     for st, claim in table_claims:
         v = state_value(state_data, "home_price_to_income", "2024", st)
@@ -289,30 +288,19 @@ def phase4(data, state_data):
         if abs(v - claim) > 0.06:
             add("phase4", "P0", "expensive-states",
                 f"table shows {st}={claim} but data has {v}")
-    # Top 5 most unaffordable order. The post is a published snapshot, and
-    # the #5 slot is a near-tie that can flip year to year (Massachusetts and
-    # Oregon sit ~0.05 apart on home_price_to_income, in either direction in
-    # most recent vintages). Audit policy: the top-4 must always match, and
-    # the #5 state must be one of the realistic candidates (MA or Oregon
-    # by current data); promotion below #7 means the snapshot is genuinely
-    # stale and editorial review is needed.
+    # Top 4 most unaffordable order. The post shows the top 4 only — #5
+    # historically sat at a near-tie (Massachusetts and Oregon were 0.05
+    # apart on home_price_to_income in 2024), and picking one over the
+    # other was editorially indefensible. The top-4 are stable across
+    # vintages so the audit can check them strictly.
     sd_2024 = state_data.get("home_price_to_income", {}).get("data", {}).get("2024", {})
     if sd_2024:
         ranked = sorted(sd_2024.items(), key=lambda kv: kv[1], reverse=True)
-        top5 = [name for name, _ in ranked[:5]]
+        top4 = [name for name, _ in ranked[:4]]
         expected_top4 = ["Hawaiʻi", "California", "Washington", "Colorado"]
-        acceptable_5th = {"Massachusetts", "Oregon"}
-        if top5[:4] != expected_top4:
+        if top4 != expected_top4:
             add("phase4", "P0", "expensive-states",
-                f"top-4 should be {expected_top4}; data ranks {top5[:4]}")
-        elif top5[4] not in acceptable_5th:
-            # Massachusetts is in the published snapshot. Allow either MA
-            # or Oregon at #5; flag if a different state takes the slot
-            # (signals a real ranking shift that warrants editorial review).
-            top7 = [name for name, _ in ranked[:7]]
-            if "Massachusetts" not in top7:
-                add("phase4", "P0", "expensive-states",
-                    f"published #5 is Massachusetts but Massachusetts is now outside the top-7 ({top7}); update the snapshot")
+                f"top-4 should be {expected_top4}; data ranks {top4}")
     # Real per capita income $52,272 fifth-from-bottom
     rpci = data["real_per_capita_income"]
     hi_inc = rpci["hawaii"].get("2024")
