@@ -1408,7 +1408,7 @@ const Modal = {
 
         let brief = `Bottom line: ${intro}, ranking #${rank} nationally.`;
         if (trend) brief += ` It has ${trend},`;
-        brief += ` and is ${vsAvg} the US.`;
+        brief += ` and is ${vsAvg} the US median.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;
 
         return brief;
