@@ -1363,6 +1363,38 @@ async function runFreshFetch() {
         } else {
             error(`[${slug}] HI ${metricDrift} of ${metricCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}% — see drift summary`);
         }
+
+        // Threshold-variant audit: when the fetcher returns alternate-threshold
+        // series (e.g. renter_cost_burden_pct 50%+ severe) and state-data has
+        // them, diff the HI year-cells the same way. Without this, a fetcher
+        // could silently return a wrong variant series and the dashboard's
+        // dropdown view would drift undetected.
+        if (result.thresholdVariants && sd.thresholdVariants) {
+            for (const [vk, fv] of Object.entries(result.thresholdVariants)) {
+                const sv = sd.thresholdVariants[vk];
+                if (!fv?.data || !sv?.data) continue;
+                let vCells = 0, vDrift = 0;
+                for (const yr of Object.keys(fv.data).sort()) {
+                    const fresh = fv.data[yr]?.['Hawaiʻi'];
+                    const stored = sv.data[yr]?.['Hawaiʻi'];
+                    if (fresh == null || stored == null) continue;
+                    vCells++;
+                    if (!inTolerance(stored, fresh)) {
+                        vDrift++;
+                        if (driftSamples.length < 12) {
+                            driftSamples.push({slug: `${slug}/${vk}`, year: yr, stored, fresh, delta: (fresh - stored).toFixed(4)});
+                        }
+                    }
+                }
+                totalCells += vCells;
+                driftCells += vDrift;
+                if (vDrift === 0) {
+                    console.log(`  OK [${slug}/${vk}] HI ${vCells} years match canonical source within tolerance`);
+                } else {
+                    error(`[${slug}/${vk}] HI ${vDrift} of ${vCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}% — see drift summary`);
+                }
+            }
+        }
     }
 
     console.log(`  Audited ${checkedMetrics} metrics, ${totalCells} HI year-cells, ${driftCells} drift, ${skippedMetrics} skipped`);

@@ -260,14 +260,16 @@ async function fetchBroadband() {
 }
 
 async function fetchRenterCostBurden() {
-    console.log('Fetching: Renter cost burden (Census ACS B25070)...');
+    console.log('Fetching: Renter cost burden (Census ACS B25070, 30%+ and 50%+)...');
     const vars = 'B25070_001E,B25070_007E,B25070_008E,B25070_009E,B25070_010E,B25070_011E';
-    const data = {};
+    const data = {};      // 30%+ burdened (base)
+    const dataSevere = {}; // 50%+ severe (thresholdVariant)
 
     for (const year of ACS_YEARS) {
         try {
             const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,${vars}&for=state:*`;
             const json = await fetchJSON(url);
+            // 30%+ burdened
             const states = parseCensusResponse(json, (row) => {
                 const total = parseFloat(row['B25070_001E']);
                 const notComp = parseFloat(row['B25070_011E']);
@@ -278,21 +280,46 @@ async function fetchRenterCostBurden() {
                 const pct = over30 / denom;
                 return (pct > 0 && pct <= 1) ? parseFloat(pct.toFixed(4)) : null;
             });
+            // 50%+ severe (single bucket / denom)
+            const severeStates = parseCensusResponse(json, (row) => {
+                const total = parseFloat(row['B25070_001E']);
+                const notComp = parseFloat(row['B25070_011E']);
+                const over50 = parseFloat(row['B25070_010E']);
+                const denom = total - notComp;
+                if (isNaN(denom) || denom <= 0 || isNaN(over50)) return null;
+                const pct = over50 / denom;
+                return (pct > 0 && pct <= 1) ? parseFloat(pct.toFixed(4)) : null;
+            });
             if (Object.keys(states).length > 0) {
                 data[year.toString()] = states;
+                if (Object.keys(severeStates).length > 0) {
+                    dataSevere[year.toString()] = severeStates;
+                }
                 process.stdout.write(` ${year}`);
             }
         } catch (err) { /* skip year */ }
         await sleep(250);
     }
 
-    console.log(` -> ${Object.keys(data).length} years`);
-    return Object.keys(data).length > 0 ? {
+    console.log(` -> ${Object.keys(data).length} years (30%+), ${Object.keys(dataSevere).length} years (50%+)`);
+    if (Object.keys(data).length === 0) return null;
+    const result = {
         source: 'Census ACS 1-Year, Table B25070',
         calculation: 'Renters paying 30%+ of income on rent / (Total renters - Not computed)',
         rawVariables: '(B25070_007E + B25070_008E + B25070_009E + B25070_010E) / (B25070_001E - B25070_011E)',
         data,
-    } : null;
+    };
+    if (Object.keys(dataSevere).length > 0) {
+        result.thresholdVariants = {
+            "50": {
+                source: 'Census ACS 1-Year, Table B25070',
+                calculation: 'Renters paying 50%+ of income on rent (severely burdened) / (Total renters - Not computed)',
+                rawVariables: 'B25070_010E / (B25070_001E - B25070_011E)',
+                data: dataSevere,
+            },
+        };
+    }
+    return result;
 }
 
 async function fetchUninsured() {
@@ -1918,6 +1945,33 @@ async function main() {
                     ...results[slug].data,  // fresh year data overwrites for overlap years
                 },
             };
+            // Threshold variants: preserve existing variants the fetcher didn't
+            // return (so daily refresh doesn't wipe legacy backfilled variants
+            // like road_poor_pct "notgood" or food_insecurity_rate "verylow").
+            // When the fetcher does return a variant, merge year-level just like
+            // the main data block.
+            const existingVariants = existing[slug].thresholdVariants || {};
+            const fetchedVariants = results[slug].thresholdVariants || {};
+            const variantKeys = new Set([...Object.keys(existingVariants), ...Object.keys(fetchedVariants)]);
+            if (variantKeys.size > 0) {
+                const mergedVariants = {};
+                for (const vk of variantKeys) {
+                    const ev = existingVariants[vk];
+                    const fv = fetchedVariants[vk];
+                    if (!fv) {
+                        mergedVariants[vk] = ev;
+                    } else if (!ev || !ev.data) {
+                        mergedVariants[vk] = fv;
+                    } else {
+                        mergedVariants[vk] = {
+                            ...ev,
+                            ...fv,
+                            data: { ...ev.data, ...fv.data },
+                        };
+                    }
+                }
+                merged[slug].thresholdVariants = mergedVariants;
+            }
         }
     }
     if (preservedYearCount > 0) {
@@ -1927,24 +1981,40 @@ async function main() {
     // Without this, year-level merge produces noisy diffs every run as object-key
     // insertion order shifts (existing object keys come first, fetched-only keys
     // append at the end, even when values are identical).
+    function sortDataBlock(dataObj) {
+        if (!dataObj || typeof dataObj !== 'object') return dataObj;
+        const sortedData = {};
+        for (const yr of Object.keys(dataObj).sort()) {
+            const yearObj = dataObj[yr];
+            if (yearObj && typeof yearObj === 'object' && !Array.isArray(yearObj)) {
+                const sortedYear = {};
+                for (const st of Object.keys(yearObj).sort()) {
+                    sortedYear[st] = yearObj[st];
+                }
+                sortedData[yr] = sortedYear;
+            } else {
+                sortedData[yr] = yearObj;
+            }
+        }
+        return sortedData;
+    }
+
     const sortedMerged = {};
     for (const slug of Object.keys(merged).sort()) {
         const m = merged[slug];
         if (m && m.data && typeof m.data === 'object') {
-            const sortedData = {};
-            for (const yr of Object.keys(m.data).sort()) {
-                const yearObj = m.data[yr];
-                if (yearObj && typeof yearObj === 'object' && !Array.isArray(yearObj)) {
-                    const sortedYear = {};
-                    for (const st of Object.keys(yearObj).sort()) {
-                        sortedYear[st] = yearObj[st];
-                    }
-                    sortedData[yr] = sortedYear;
-                } else {
-                    sortedData[yr] = yearObj;
+            const sortedData = sortDataBlock(m.data);
+            const sortedVariants = {};
+            if (m.thresholdVariants && typeof m.thresholdVariants === 'object') {
+                for (const vk of Object.keys(m.thresholdVariants).sort()) {
+                    const v = m.thresholdVariants[vk];
+                    sortedVariants[vk] = v && v.data ? { ...v, data: sortDataBlock(v.data) } : v;
                 }
             }
             sortedMerged[slug] = { ...m, data: sortedData };
+            if (Object.keys(sortedVariants).length > 0) {
+                sortedMerged[slug].thresholdVariants = sortedVariants;
+            }
         } else {
             sortedMerged[slug] = m;
         }
