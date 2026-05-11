@@ -1196,6 +1196,133 @@ async function fetchRainyDayFund() {
 }
 
 // ===========================================================
+// CDC Suicide Rate Fetcher (suicide_rate)
+// ===========================================================
+//
+// Source: three CDC NCHS / NVSS datasets stitched to cover 1999-2024:
+//   1999-2017: data.cdc.gov bi63-dtpu — "NCHS - Leading Causes of Death",
+//     filter cause_name='Suicide'; field 'aadr' = age-adjusted death rate.
+//   2018:      AFSP suicide-statistics page (chart.js data) — third-party
+//     republication of CDC WISQARS/NVSS. Used because data.cdc.gov has a
+//     one-year gap between bi63 (ends 2017) and fpsi-y8tj (starts 2019).
+//     Year mapping pulled from the page's data-years attribute so the
+//     fetcher self-adjusts when AFSP shifts the rolling 10-year window.
+//   2019-2024: data.cdc.gov fpsi-y8tj — "Mapping Injury, Overdose, and
+//     Violence - State", filter intent='All_Suicide'.
+//
+// State-data already has 1999-2024 matching each of these three sources
+// exactly. The new fetcher reproduces them so the audit can verify drift
+// from canonical going forward.
+//
+// ICD-10 codes underlying: X60-X84 (intentional self-harm), U03 (suicide
+// by terrorist methods), Y87.0 (sequelae of intentional self-harm).
+
+const SUICIDE_BI63_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
+
+async function fetchSuicide() {
+    console.log('Fetching: Suicide rate (CDC NCHS multi-source)...');
+    const data = {};
+    const known = new Set(Object.values(NAEP_ABBR_TO_STATE));
+    const headers = { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' };
+
+    // 1) 1999-2017 from CDC bi63-dtpu
+    try {
+        const url = "https://data.cdc.gov/resource/bi63-dtpu.json"
+            + "?$where=cause_name='Suicide'&$limit=50000&$order=year,state";
+        const r = await fetch(url, { headers });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const rows = await r.json();
+        let pts = 0;
+        for (const row of rows) {
+            const yr = row.year;
+            const stateRaw = row.state;
+            const aadr = parseFloat(row.aadr);
+            if (!yr || !stateRaw || !isFinite(aadr)) continue;
+            if (stateRaw === 'United States') continue;
+            const state = SUICIDE_BI63_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+            if (!known.has(state)) continue;
+            if (!data[yr]) data[yr] = {};
+            data[yr][state] = parseFloat(aadr.toFixed(2));
+            pts++;
+        }
+        console.log(`  bi63 (1999-2017): ${pts} state-year cells`);
+    } catch (err) {
+        console.log(`  WARN bi63 fetch failed: ${err.message}`);
+    }
+
+    // 2) 2018 from AFSP — uses page's data-years attribute for year mapping
+    try {
+        const r = await fetch('https://afsp.org/suicide-statistics/', { headers });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const html = await r.text();
+        const yearsMatch = html.match(/data-years="([^"]+)"/);
+        const stateLineMatch = html.match(/<state-line[^>]*data-state="([^"]+)"/);
+        if (!yearsMatch || !stateLineMatch) throw new Error('AFSP page schema changed');
+        const years = yearsMatch[1].split(',').map(s => s.trim());
+        const idx2018 = years.indexOf('2018');
+        if (idx2018 < 0) throw new Error('2018 not in AFSP year range');
+        const decode = (s) => s
+            .replace(/&#34;/g, '"').replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'").replace(/&apos;/g, "'")
+            .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        const series = JSON.parse(decode(stateLineMatch[1]));
+        let pts = 0;
+        for (const s of series) {
+            if (!s.label || s.label === 'US Average') continue;
+            const stateRaw = s.label;
+            const state = SUICIDE_BI63_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+            if (!known.has(state)) continue;
+            const v = parseFloat(s.data?.[idx2018]);
+            if (!isFinite(v)) continue;
+            if (!data['2018']) data['2018'] = {};
+            data['2018'][state] = parseFloat(v.toFixed(2));
+            pts++;
+        }
+        console.log(`  AFSP (2018): ${pts} states`);
+    } catch (err) {
+        console.log(`  WARN AFSP 2018 fetch failed: ${err.message} — 2018 will preserve from state-data`);
+    }
+
+    // 3) 2019-2024 from CDC fpsi-y8tj (Mapping Injury, Overdose, and Violence)
+    try {
+        const url = "https://data.cdc.gov/resource/fpsi-y8tj.json"
+            + "?$where=intent='All_Suicide'&$limit=10000&$order=period,name";
+        const r = await fetch(url, { headers });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const rows = await r.json();
+        let pts = 0;
+        for (const row of rows) {
+            const yr = row.period;
+            if (!yr || yr === 'TTM' || !/^\d{4}$/.test(yr)) continue; // skip rolling-12 entry
+            const stateRaw = row.name;
+            const rate = parseFloat(row.rate);
+            if (!stateRaw || !isFinite(rate)) continue;
+            const state = SUICIDE_BI63_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
+            if (!known.has(state)) continue;
+            if (!data[yr]) data[yr] = {};
+            data[yr][state] = parseFloat(rate.toFixed(2));
+            pts++;
+        }
+        console.log(`  fpsi (2019+): ${pts} state-year cells`);
+    } catch (err) {
+        console.log(`  WARN fpsi fetch failed: ${err.message}`);
+    }
+
+    const years = Object.keys(data).sort();
+    if (years.length === 0) {
+        console.log('  FAIL: no source returned data');
+        return null;
+    }
+    console.log(`  Total: ${years.length} years (${years[0]}-${years[years.length - 1]})`);
+    return {
+        source: 'CDC NCHS / NVSS — Leading Causes of Death (bi63-dtpu, 1999-2017), AFSP republication (2018), Mapping Injury Overdose and Violence (fpsi-y8tj, 2019+)',
+        calculation: 'Age-adjusted death rate per 100,000 population for intentional self-harm (suicide). ICD-10 codes X60-X84, U03, Y87.0.',
+        rawVariables: "bi63-dtpu aadr where cause_name='Suicide'; AFSP afsp.org/suicide-statistics/ state-line component; fpsi-y8tj rate where intent='All_Suicide'",
+        data,
+    };
+}
+
+// ===========================================================
 // NCES Digest Fetcher (acgr)
 // ===========================================================
 //
@@ -1703,6 +1830,7 @@ async function main() {
         ['road_poor_pct', fetchRoadPoor],
         ['net_domestic_migration_rate', fetchNetDomesticMigration],
         ['acgr', fetchAcgr],
+        ['suicide_rate', fetchSuicide],
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -1878,6 +2006,7 @@ module.exports = {
         road_poor_pct: fetchRoadPoor,
         net_domestic_migration_rate: fetchNetDomesticMigration,
         acgr: fetchAcgr,
+        suicide_rate: fetchSuicide,
     },
 };
 
