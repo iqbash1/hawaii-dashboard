@@ -1,7 +1,11 @@
 /only / 301
 /methods /about/ 301
 /methods/* /about/ 301
-# Catch any old slug-based QOTD URLs (the live pattern is /q/q001/ etc.;
-# 49 slug-named dirs were deleted in cleanup). Static files take precedence,
-# so live /q/qNNN/ continue to serve normally; only stale slug URLs redirect.
-/q/* / 301
+# QOTD URLs live at /q/{id}/ (e.g., /q/q037/). The slug-based URL pattern
+# was retired May 2026 and those directories were deleted, so a broad
+# /q/* redirect is not needed — stale slug URLs hit a natural 404. A
+# `/q/* / 301` rule used to live here but was found to 301 the valid
+# qNNN paths too: Cloudflare Pages evaluates _redirects BEFORE static
+# content, contrary to the previous comment that claimed otherwise.
+# OG bots crawling /q/q037/ were redirected to / and never saw the
+# question's meta tags. Removed.
