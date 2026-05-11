@@ -1060,7 +1060,14 @@ def phase10():
         except ValueError:
             add("phase10", "P2", "footer dates",
                 f"All footers say 'Last reviewed: {the_date}' (unparseable; expected 'DD Mmm YYYY')")
-    # Sitemap lastmod vs git
+    # Sitemap lastmod vs git. build.sh rewrites <lastmod> in dist/sitemap.xml at
+    # deploy time from each file's last git-commit date, so the served sitemap
+    # is always fresh. The source sitemap.xml is human-editable and will
+    # routinely lag by 1-N commits as new commits touch referenced files —
+    # that's normal and not actionable. Only flag drift that is structurally
+    # stale (>7 days) so the audit catches genuinely-forgotten updates without
+    # firing on every commit.
+    import datetime
     sitemap = (ROOT / "sitemap.xml").read_text()
     entries = re.findall(r"<loc>([^<]+)</loc>\s*<lastmod>([^<]+)</lastmod>", sitemap)
     stale_count = 0
@@ -1079,10 +1086,17 @@ def phase10():
         except Exception:
             continue
         if ts and ts > lastmod:
-            stale_count += 1
+            try:
+                ts_d = datetime.date.fromisoformat(ts)
+                lm_d = datetime.date.fromisoformat(lastmod)
+                drift_days = (ts_d - lm_d).days
+                if drift_days > 7:
+                    stale_count += 1
+            except ValueError:
+                stale_count += 1  # unparseable → flag
     if stale_count:
         add("phase10", "P2", "sitemap.xml",
-            f"{stale_count} URLs have <lastmod> older than the file's last git commit")
+            f"{stale_count} URLs have <lastmod> >7 days behind the file's last git commit (source sitemap routinely lags by ~1 commit; build.sh rewrites dist/sitemap.xml on deploy)")
 
 
 # -----------------------------------------------------------------------

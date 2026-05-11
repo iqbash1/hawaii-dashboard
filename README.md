@@ -43,13 +43,16 @@ scripts/
 
 ## Data pipeline
 
-Data comes from federal APIs (Census ACS, BLS, FBI, BEA, EIA, CDC, FHWA, HUD, NCES, HRSA). Four scripts handle the refresh cycle:
+Data comes from federal APIs (Census ACS, BLS, FBI CDE, BEA, EIA, CDC NCHS, FHWA, HUD, NCES, HRSA, USDA ERS, Pew). Four scripts handle the refresh cycle:
 
 ```
-scripts/build-state-data.js     Fetch per-state data from 9 federal APIs
+scripts/build-state-data.js     Fetch per-state data — 24 wired federal-API fetchers
+                                (2 crime metrics carry a frozen.through:2019 boundary in
+                                 SOURCE_COVERAGE: pre-2020 historical UCR vintage, 2020+
+                                 live via FBI CDE)
 scripts/build-county-data.js    Fetch per-county data from Census/BLS/BEA/FBI
 scripts/recompute-data.js       Derive hawaiʻi + 50-state medianSeries from state-data
-scripts/validate-data.js        Check ranges, YoY changes, cross-tab consistency
+scripts/validate-data.js        Schema + parity + writer-allowlist + fresh-fetch drift audit
 ```
 
 Run the full pipeline:
@@ -60,7 +63,9 @@ node scripts/recompute-data.js
 node scripts/validate-data.js
 ```
 
-A GitHub Actions workflow (`.github/workflows/refresh-data.yml`) runs this monthly and opens a PR if data changed.
+Two GitHub Actions workflows automate the cycle:
+- `.github/workflows/refresh-data.yml` — monthly full refresh, opens a PR if data changed.
+- `.github/workflows/data-audit.yml` — twice-daily drift audit (1 PM + 6 PM HST) that re-fetches every wired metric and compares against state-data at strict tolerance (0.5% relative / 0.0001 absolute). Failure opens a `data-drift` issue.
 
 ## OG image generation
 

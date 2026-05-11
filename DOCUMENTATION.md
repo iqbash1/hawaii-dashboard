@@ -98,16 +98,20 @@ hawaii-dashboard/
 │   ├── playwright.config.js    # Test runner config (port 8765, Chromium)
 │   ├── smoke.spec.js           # Critical-path E2E smoke tests (Playwright)
 │   ├── utils.test.js           # Unit tests for js/utils.js (Node.js built-in test runner)
-│   └── compute.test.js         # Unit tests for js/compute.js (Node.js built-in test runner)
+│   ├── compute.test.js         # Unit tests for js/compute.js
+│   ├── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
+│   └── smoke.spec.js           # End-to-end smoke tests (Playwright)
 ├── .github/
 │   └── workflows/
 │       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs
+│       ├── data-audit.yml      # Twice-daily fresh-fetch audit (state-data vs canonical source)
 │       ├── tests.yml           # Smoke tests on every push/PR to main
+│       ├── rotate-backup.yml   # Off-site git mirror backup
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
 ├── faq/
 │   └── index.html          # FAQ page: 11 Q&A pairs, feedback form
 ├── robots.txt              # Crawl directives for search engines and AI bots
-├── sitemap.xml             # 17-URL sitemap (4 main + 13 county pages)
+├── sitemap.xml             # Site sitemap (~25 URLs; build.sh rewrites lastmod in dist/)
 ├── llms.txt                # Plain-text site summary for AI chat engines
 └── DOCUMENTATION.md
 ```
@@ -244,7 +248,6 @@ Each metric follows this structure:
   goodDirection: "up" | "down",
   source: "Federal agency name",
   sourceUrl: "https://...",
-  updateCadence: "Annual" | "Biennial" | ...,   // shown in modal subtitle; defaults to "Annual" if omitted
   whyItMatters: "One sentence: why this metric matters to residents",
   howToRead: "How to interpret the chart visually",
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
@@ -688,33 +691,44 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 
 ## Updating Data
 
-### Automated (monthly)
+### Automated (monthly refresh)
 
 `.github/workflows/refresh-data.yml` runs on the first of each month:
-1. Fetches fresh data from BLS, BEA, Census, EIA, CDC, and other APIs
-2. Runs `recompute-data.js` to update derived fields
+1. Fetches fresh data from BLS, BEA, Census, EIA, CDC, FBI CDE, USDA, FHWA, HRSA (26 of 26 metrics covered as of Forever-clean parts 1-8)
+2. Runs `recompute-data.js` to derive `data.js` from `state-data.js` (HI series + 50-state medianSeries)
 3. Runs `update-about-years.js` to update year ranges in `about/index.html`
 4. Runs `generate-og-pages.py` to regenerate OG images
 5. Validates data integrity
 6. Opens a pull request for human review before merge
 
-### Manual (adding a year of data)
+### Automated (twice-daily drift audit)
 
-1. Edit `js/data.js` - add the new year's value to `hawaii` and `medianSeries` for each metric
-2. Edit `js/state-data.js` - add the new year's per-state values
-3. Run `python3 scripts/generate-og-pages.py` to regenerate OG images and redirect pages
-4. Commit and push
+`.github/workflows/data-audit.yml` runs at 1 PM and 6 PM HST:
+- For every wired federal-API metric, re-fetches the current canonical-source values for all Hawaiʻi years and compares against `state-data.js`. Strict tolerance: 0.5% relative or 0.0001 absolute.
+- Failure opens a `data-drift` issue automatically; the workflow's `--audit-only` mode keeps unrelated structural warnings from triggering false drift alerts.
+- Two crime metrics carry an explicit `frozen.through: 2019` boundary in `SOURCE_COVERAGE` — pre-2020 values are static historical artifacts (FBI ceased UCR annual reports after 2019); 2020+ is live via FBI CDE / NIBRS.
+
+### Manual (one-off value update)
+
+state-data.js is the canonical store. data.js is derived. To update a year cell:
+1. Edit `js/state-data.js` directly (or re-run `scripts/build-state-data.js` with the right env vars to fetch fresh).
+2. Run `node scripts/recompute-data.js` so the change propagates to `data.js` HI series and `medianSeries`.
+3. Run `npm run validate:fresh` to confirm 0 drift against canonical source.
+4. Run `python3 scripts/generate-og-pages.py --slug {affected-slug}` to refresh OG images and `/t/ /r/ /rh/` redirect stubs.
+5. Commit and push.
 
 ### Adding a new metric
 
-1. Add the metric object to `DASHBOARD_DATA` in `js/data.js` - include both `officialName` (full federal metric name, shown below the chart) and `unitLabel` (5-15 words describing what the number measures, shown on cards and in the modal header, e.g. `"% of eligible voters who cast a ballot"`)
-2. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `js/app.js`
-3. Add per-state data to `js/state-data.js`
-4. Add a validation rule entry to `METRIC_RULES` in `scripts/validate-data.js`
-5. If county data is available, add to `js/county-data.js` and add a `countyNarrative` field to the metric object in `data.js`
-6. Add `potentialDrivers` (HTML string with hyperlinked citations) and set `useConsolidated: true` on the metric object
-7. Run `python3 scripts/generate-og-pages.py` to generate OG assets
-8. Commit and push
+1. Pick a federal canonical source and add a fetcher to `scripts/build-state-data.js` following the existing pattern (return `{source, calculation, rawVariables, data: {year: {stateName: value}}}`); wire it into both the main fetcher array and `module.exports.fetchers`.
+2. Run the fetcher once to populate `js/state-data.js`.
+3. Add the metric object to `DASHBOARD_DATA` in `js/data.js` — include `officialName` (full federal metric name, shown below the chart) and `unitLabel` (5-15 words describing what the number measures, e.g. `"% of eligible voters who cast a ballot"`).
+4. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `js/app.js`.
+5. Add a validation rule entry to `METRIC_RULES` and an entry to `SOURCE_COVERAGE` in `scripts/validate-data.js`.
+6. If county data is available, add to `js/county-data.js` and add a `countyNarrative` field on the metric object.
+7. Add `potentialDrivers` (HTML string with hyperlinked citations) and set `useConsolidated: true` on the metric object.
+8. Run `node scripts/recompute-data.js` to populate HI series + medianSeries.
+9. Run `python3 scripts/generate-og-pages.py --slug {new-slug}` for OG assets.
+10. Commit and push.
 
 ---
 
