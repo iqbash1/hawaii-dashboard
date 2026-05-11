@@ -45,13 +45,20 @@ const FRESH_FETCH = process.argv.includes('--fresh-fetch');
 // drift signal isn't drowned out by unrelated dashboard warnings.
 const AUDIT_ONLY = process.argv.includes('--audit-only');
 // Tolerance for fresh-fetch comparisons. Override via --tolerance-pp=N or --tolerance-rel=N.
+// Defaults match the "Forever-clean" intent stated in commit 03127571: fail on any
+// HI cell exceeding 0.5% relative or 0.0001 absolute drift. The original v1 prototype
+// used 1pp / 5% (commit 4c73e881); that loose threshold let real source-vintage
+// changes slip through. Forever-clean part 3 (commit TBD) reconciled the trailing
+// drift cells (home_price_to_income precision, net_employer_formation BDS vintage,
+// unsheltered_homeless_rate HUD precision) and tightened the gate to its intended
+// quality bar.
 const TOLERANCE_PP = (() => {
     const m = process.argv.find(a => a.startsWith('--tolerance-pp='));
-    return m ? parseFloat(m.split('=')[1]) : 0.01; // 1pp
+    return m ? parseFloat(m.split('=')[1]) : 0.0001; // 0.01pp
 })();
 const TOLERANCE_REL = (() => {
     const m = process.argv.find(a => a.startsWith('--tolerance-rel='));
-    return m ? parseFloat(m.split('=')[1]) : 0.05; // 5%
+    return m ? parseFloat(m.split('=')[1]) : 0.005; // 0.5%
 })();
 
 // ---- Load data files ----

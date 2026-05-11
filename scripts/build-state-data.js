@@ -151,6 +151,26 @@ function filterYears(data) {
     return filtered;
 }
 
+/** Drop years where Hawaiʻi is missing — keeps state-data Section 11
+ *  (HI-presence) clean even when a source has partial-state years
+ *  (e.g. HUD didn't run the 2021 unsheltered PIT count nationally, so
+ *  the fetcher returns 2021 with 42 states but no HI). */
+function dropHiMissingYears(data, slug) {
+    const filtered = {};
+    let dropped = 0;
+    for (const [year, states] of Object.entries(data)) {
+        if (states && states['Hawaiʻi'] != null) {
+            filtered[year] = states;
+        } else {
+            dropped++;
+        }
+    }
+    if (dropped > 0) {
+        console.log(`  ${slug}: dropped ${dropped} year(s) where source lacks Hawaiʻi`);
+    }
+    return filtered;
+}
+
 /** Parse Census ACS response into { stateName: value } */
 function parseCensusResponse(json, computeFn) {
     const headers = json[0];
@@ -1608,9 +1628,10 @@ async function main() {
         }
     }
 
-    // Filter all metrics to MIN_YEAR+
+    // Filter all metrics to MIN_YEAR+, and drop years missing Hawaiʻi
     for (const slug of Object.keys(results)) {
         results[slug].data = filterYears(results[slug].data);
+        results[slug].data = dropHiMissingYears(results[slug].data, slug);
     }
 
     // MERGE with existing state-data.js \u2014 this script only fetches the 9
