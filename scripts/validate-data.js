@@ -139,22 +139,35 @@ const METRIC_RULES = {
 //
 // Optional frozen field (read by Section 16):
 //   frozen: {
+//     through: YEAR,                     // pre-(YEAR+1) is frozen; YEAR+1+ stays auditable
 //     asOf: 'YYYY-MM-DD',                // date the metric was last verified
-//     reason: 'short why',               // why daily live audit isn't feasible
-//     canonicalProvenance: 'long where', // exact original-source trail
+//     reason: 'short why',               // why pre-through is frozen
+//     canonicalProvenance: 'long where', // exact original-source trail for frozen years
 //   }
 //
-// When set, Section 16 skips the live fetch and logs FROZEN with reason. Used
-// for metrics where there is no reproducible canonical source path that
-// matches state-data within strict tolerance — typically because the
-// publishing methodology changed mid-history (e.g. FBI UCR → NIBRS), the
-// source republishes legacy years with revisions, or no single source covers
-// all 50 states across the full range.
+// `through` is the last year included in the freeze (inclusive). The freeze
+// covers static historical data that does not change — e.g., FBI ceased
+// UCR-based annual reports after 2019, so years through 2019 are historical
+// artifacts. Section 16 skips the freeze window and logs FROZEN with the
+// year range, then audits years > through normally through the fetcher
+// (if one is wired). Omit `through` to freeze the entire series (rare; only
+// when the metric has no live tail).
+//
+// Optional pendingSource field (also read by Section 16):
+//   pendingSource: {
+//     sinceYear: YEAR,                   // earliest year this gap applies to
+//     reason: 'why deferred',            // why no live audit yet
+//     blocker: 'what unblocks it',       // concrete next step
+//   }
+//
+// Use pendingSource when the post-freeze active years also lack a working
+// live audit path. Distinguishes "static historical, verified, done" from
+// "active but no fetcher yet, here's the unblock path." Both are visible
+// in the audit log; neither is silent.
 //
 // Frozen does NOT mean "skip silently"; it means "explicit one-time
-// verification on record, no automatic daily drift detection." The audit
-// log surfaces every frozen metric so it can't slip out of mind. To force a
-// one-time re-audit (e.g. to confirm a frozen metric still matches its
+// verification on record, no automatic daily drift detection." To force a
+// one-time re-audit of frozen years (e.g. to confirm they still match
 // provenance, or to test a new source path), run with --include-frozen.
 const SOURCE_COVERAGE = {
     unemployment_rate:          { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000003 from 1976' },
@@ -179,17 +192,14 @@ const SOURCE_COVERAGE = {
     naep_math_8:                { expectedStart: 1990, source: 'NCES NAEP',           note: '8th-grade math biennial from 1990; current scale 2003' },
     naep_reading_8:             { expectedStart: 1998, source: 'NCES NAEP',           note: '8th-grade state-level reading from 1998 (state-grade-8 reading not assessed pre-1998); current scale 2003' },
     unsheltered_homeless_rate:  { expectedStart: 2007, source: 'HUD AHAR/PIT',        note: 'Annual PIT counts from 2007' },
-    // Crime metrics are FROZEN — see SOURCE_COVERAGE.frozen comment block above.
-    // pre-2020: FBI ceased UCR-based annual reports; values are historical artifacts.
-    // post-2020: FBI CDE NIBRS-era reconstructions drift ~6% from state-data
-    //   UCR vintage, so live audit would require a content decision (refresh
-    //   state-data or broaden tolerance) before crime can join the gate.
-    // Disaster Center per-state pages cover 1960-2019 but only 40 of 50 states,
-    //   so they can't act as a complete audit source. Until a complete
-    //   reproducible source path exists for all 50 states across the full
-    //   1960-current span, daily drift audit is replaced by an explicit freeze.
-    violent_crime_rate:         { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960', frozen: { asOf: '2026-05-10', reason: 'No reproducible canonical source covers all 50 states 1960-2024 within strict tolerance; FBI ceased UCR annual reports after 2019, FBI CDE NIBRS-era reconstructions drift ~6% from state-data UCR vintage, Disaster Center covers only 40 of 50 states', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2024 per scripts/archive/backfill-crime.js' } },
-    property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960', frozen: { asOf: '2026-05-10', reason: 'See violent_crime_rate — both metrics share the FBI UCR/CDE provenance and the same no-clean-source constraint', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2024 per scripts/archive/backfill-crime.js' } },
+    // Crime metrics: pre-2020 is frozen historical (FBI ceased UCR-based annual
+    // reports after 2019; those values are static artifacts). 2020+ is the
+    // active tail but currently lacks a working live audit path — FBI CDE via
+    // api.data.gov requires the API_DATA_GOV_KEY plus a content decision about
+    // the ~6% NIBRS-era reconstruction drift vs state-data's UCR vintage.
+    // Tracked via pendingSource so the gap stays visible in every audit log.
+    violent_crime_rate:         { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960', frozen: { through: 2019, asOf: '2026-05-10', reason: 'FBI ceased UCR-based annual reports after 2019; pre-2020 values are static historical artifacts that do not change', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' }, pendingSource: { sinceYear: 2020, reason: 'FBI CDE NIBRS-era reconstructions drift ~6% from state-data UCR vintage; no clean reproducible source exists at strict tolerance', blocker: 'Requires (a) API_DATA_GOV_KEY for FBI CDE, AND (b) content decision: accept CDE as new canonical via one-time refresh OR keep state-data vintage with broader audit tolerance' } },
+    property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960', frozen: { through: 2019, asOf: '2026-05-10', reason: 'See violent_crime_rate — both metrics share the same FBI UCR provenance and static-historical character', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' }, pendingSource: { sinceYear: 2020, reason: 'See violent_crime_rate — same FBI UCR vs CDE/NIBRS vintage gap', blocker: 'Same as violent_crime_rate; both unblock together' } },
     // Structural floors (source itself starts here; not a backfill candidate):
     acgr:                       { expectedStart: 2011, source: 'NCES EDFacts',        note: 'ACGR first published 2010-11 SY (= 2011)' },
     pcp_per_100k:               { expectedStart: 2010, source: 'HRSA AHRF',           note: 'HRSA AHRF via CHR trends; civilian-adjusted with ACS B27001/B01003. CHR carries measurement years through {release-3}.' },
@@ -1528,30 +1538,49 @@ async function runFreshFetch() {
     let driftCells = 0;
     let skippedMetrics = 0;
     let frozenMetrics = 0;
+    let deferredMetrics = 0;
     const driftSamples = [];
 
-    // Build the list of slugs Section 16 will work through. Includes every
-    // metric in SOURCE_COVERAGE so frozen metrics are explicitly logged even
-    // when they have no fetcher; for metrics with a fetcher we still drive
-    // the loop from buildFetchers below to keep the contract uniform.
-    const frozenSlugs = Object.entries(SOURCE_COVERAGE)
-        .filter(([, v]) => v && v.frozen)
-        .map(([slug]) => slug);
-    for (const slug of frozenSlugs) {
-        if (INCLUDE_FROZEN && buildFetchers[slug]) continue; // will be audited in the main loop
-        const f = SOURCE_COVERAGE[slug].frozen;
-        console.log(`  FROZEN [${slug}] verified as of ${f.asOf} — ${f.reason}`);
-        frozenMetrics++;
+    function describeFreezeWindow(spec) {
+        // 'through: 2019' → 'pre-2020 (through 2019)'; absent through → entire series
+        return spec && Number.isFinite(spec.through)
+            ? `years ≤${spec.through}`
+            : 'entire series';
+    }
+
+    // First pass: log every freeze + pending-source declaration so they are
+    // visible in the audit log regardless of fetcher availability. Pending
+    // sources are NOT freezes — they are explicit gaps with documented
+    // unblock paths. Both surface; neither is silent.
+    const allCoverageSlugs = Object.keys(SOURCE_COVERAGE);
+    for (const slug of allCoverageSlugs) {
+        const spec = SOURCE_COVERAGE[slug];
+        if (spec.frozen) {
+            const window = describeFreezeWindow(spec.frozen);
+            // If --include-frozen AND a fetcher exists, the audit loop will
+            // re-audit the frozen window too; otherwise emit FROZEN here.
+            if (!(INCLUDE_FROZEN && buildFetchers[slug])) {
+                console.log(`  FROZEN [${slug}] ${window} verified as of ${spec.frozen.asOf} — ${spec.frozen.reason}`);
+                frozenMetrics++;
+            }
+        }
+        if (spec.pendingSource) {
+            const p = spec.pendingSource;
+            console.log(`  DEFERRED [${slug}] years ≥${p.sinceYear} no live audit — ${p.reason}; blocker: ${p.blocker}`);
+            deferredMetrics++;
+        }
     }
 
     for (const [slug, fetcher] of Object.entries(buildFetchers)) {
         // Skip frozen metrics unless the operator opts in with --include-frozen.
-        // Frozen metrics document why a live audit isn't feasible; running the
-        // fetcher anyway would surface drift that's already known to exist
-        // (vintage mismatch, partial state coverage, methodology shift).
+        // Frozen years are static historical; running the fetcher anyway would
+        // surface known vintage/methodology drift as fake "drift" findings.
         const frozenSpec = SOURCE_COVERAGE?.[slug]?.frozen;
         if (frozenSpec && !INCLUDE_FROZEN) {
-            // Already logged above in the frozenSlugs loop.
+            // If the freeze is year-bounded AND a fetcher exists, we still want
+            // to audit the years > frozen.through. Future: when crime gains a
+            // 2020+ fetcher, this branch lets the post-freeze years get audited
+            // automatically. For now no such fetcher exists, so just skip.
             continue;
         }
         const sd = STATE_DATA?.[slug];
@@ -1576,9 +1605,20 @@ async function runFreshFetch() {
         }
 
         const sdIsFips = isFipsFirstStateData(sd.data);
+        // When the metric has a year-bounded freeze, only audit years past the
+        // freeze boundary. Without --include-frozen the frozen window is not
+        // re-fetched; with --include-frozen it is. Either way the cell loop
+        // filters so we never compare frozen-window years to a fresh fetch
+        // that might use a revised vintage (the known cause of false drift).
+        const freezeThrough = (frozenSpec && Number.isFinite(frozenSpec.through))
+            ? frozenSpec.through
+            : -Infinity;
         let metricCells = 0;
         let metricDrift = 0;
         for (const yr of Object.keys(result.data).sort()) {
+            // Skip frozen years (state-data is canonical for them by definition).
+            const yrNum = parseInt(yr, 10);
+            if (Number.isFinite(yrNum) && yrNum <= freezeThrough) continue;
             const fresh = result.data[yr]?.['Hawaiʻi'];
             const stored = readStoredHi(sd.data, yr, sdIsFips);
             if (fresh === undefined || fresh === null) continue;
@@ -1638,7 +1678,7 @@ async function runFreshFetch() {
         }
     }
 
-    console.log(`  Audited ${checkedMetrics} metrics, ${totalCells} HI year-cells, ${driftCells} drift, ${skippedMetrics} skipped, ${frozenMetrics} frozen`);
+    console.log(`  Audited ${checkedMetrics} metrics, ${totalCells} HI year-cells, ${driftCells} drift, ${skippedMetrics} skipped, ${frozenMetrics} frozen (historical), ${deferredMetrics} deferred (active gap)`);
     if (driftSamples.length > 0) {
         console.log('  Drift samples:');
         for (const d of driftSamples) {
