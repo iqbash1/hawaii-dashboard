@@ -1182,20 +1182,15 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
         'recompute-data.js',       // HI series derived from state-data
         'update-monthly.js',       // latestMonthly only
         'update-narrative-years.js', // year-stamp text updates
-        'update_metric_year.py',   // year-stamp text updates (Python variant)
     ]);
     const SANCTIONED_COUNTY_DATA_WRITERS = new Set([
         'build-county-data.js',    // 4-county aggregator
-        'fetch-severe-burden.js',  // severe renter cost burden, county-level
-        'fetch-verylow-food-insecurity.js', // very-low food insecurity, county-level
     ]);
     // Backfill scripts are one-time-use writers. Allowed but flagged with
     // a warning so they get moved to scripts/archive/ after their work
     // is committed (per Phase 7 of the coverage overhaul).
     const BACKFILL_WRITER_PREFIX = 'backfill-';
-    const BACKFILL_WRITER_ALSO = new Set([
-        'fetch-acs-2024.js',       // legacy (per memory: pending deletion)
-    ]);
+    const BACKFILL_WRITER_ALSO = new Set();
     const scriptsDir = path.join(__dirname);
     let violations = 0;
     const backfillsFound = [];

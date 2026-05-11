@@ -18,7 +18,9 @@ narratives. The only sanctioned writers are:
 - `scripts/recompute-data.js` — derives HI series + medianSeries from state-data
 - `scripts/update-monthly.js` — writes only the `latestMonthly` field
 - `scripts/update-narrative-years.js` — year-stamp updates in narrative prose
-- `scripts/update_metric_year.py` — same purpose, Python variant
+
+**county-data.js**:
+- `scripts/build-county-data.js` — 4-county aggregator
 
 Anything in this archive directory is **not allowed** to run as part of routine
 operations. `validate-data.js` Section 14 enforces this for files in `scripts/`
@@ -42,9 +44,16 @@ itself; the archive is excluded from the scan.
 - `backfill-unemployment.js` — earlier BLS LAUS variant
 
 ### Other one-off
-- `fetch-acs-2024.js` — superseded by ACS_YEARS auto-roll in build-state-data.js (per May 2026 audit Fix 1)
 - `backfill-naep-historical.js` — NCES NAEP grade-8 math (1990-2000) and reading (1998-2002), via the public NAEP Data Service. Uses sample R2 (accommodations not permitted) for pre-2002 years per the official NAEP long-term-trend convention.
 - `backfill-hud-pit-historical.js` — HUD PIT unsheltered_homeless_rate 2007-2011, via the published 2007-2024 by-state XLSB workbook + BEA SAINC1 population denominators. Re-run prerequisite: `npm install --no-save xlsx`.
+
+### Print-only utilities (archived May 2026)
+- `fetch-severe-burden.js` — prints Census ACS B25070 50%+ severe renter cost burden as JSON for hand-paste into state-data / county-data / data.js threshold variants. Superseded by build-state-data's thresholdVariants flow for state-level (`renter_cost_burden_pct/50`); kept here for county-level severe burden re-derivation.
+- `fetch-verylow-food-insecurity.js` — prints USDA ERS very-low food security as JSON for hand-paste into the same variant slots. Superseded by build-state-data's `food_insecurity_rate` fetcher for state-level; kept for county-level very-low re-derivation.
+
+### Audit / value-edit utilities (archived May 2026)
+- `audit_state_data.py` — original Python audit script that walked state-data.js for typos, year-over-year spikes, rank checks, and incomplete-coverage flags. Superseded by `scripts/validate-data.js` Sections 1-18, which run the same checks in JS and are wired into the build/CI pipeline.
+- `update_metric_year.py` — safely overwrote a single `state-data.js[metric][data][year]` cell from a values.json file, with a confirmation prompt before writing. Useful for one-off value patches when API revisions hit a specific year. Kept for re-runnability if a similar surgical edit is needed; not part of the routine pipeline.
 
 ## Local-environment cert workaround
 
