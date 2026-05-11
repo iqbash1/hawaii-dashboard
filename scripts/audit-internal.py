@@ -278,7 +278,7 @@ def phase4(data, state_data):
         ("California", 7.6),
         ("Washington", 6.1),
         ("Colorado", 5.9),
-        ("Massachusetts", 5.8),
+        ("Oregon", 5.8),
     ]
     for st, claim in table_claims:
         v = state_value(state_data, "home_price_to_income", "2024", st)
@@ -294,7 +294,7 @@ def phase4(data, state_data):
     if sd_2024:
         ranked = sorted(sd_2024.items(), key=lambda kv: kv[1], reverse=True)
         top5 = [name for name, _ in ranked[:5]]
-        expected_top5 = ["Hawaiʻi", "California", "Washington", "Colorado", "Massachusetts"]
+        expected_top5 = ["Hawaiʻi", "California", "Washington", "Colorado", "Oregon"]
         if top5 != expected_top5:
             add("phase4", "P0", "expensive-states",
                 f"table top-5 order should be {expected_top5}; data ranks {top5}")
@@ -367,17 +367,27 @@ def phase4(data, state_data):
         if ratio < 3.0:
             add("phase4", "P0", "renewables-prices",
                 f"'more than tripled' but gap ratio is {ratio:.2f}")
-    # Five comparators: VT, SD, WA, ID, IA generate 'roughly three times as much'
-    comparators = ["Vermont", "South Dakota", "Washington", "Idaho", "Iowa"]
-    for st in comparators:
+    # Comparator language:
+    #   Vermont:                "nearly five times as much" → expect ratio 4.5-5.0x
+    #   SD / WA / ID / IA:      "more than three times as much" → expect ratio ≥ 3.0x
+    vt_v = state_value(state_data, "renewables_share_gen", "2024", "Vermont")
+    if vt_v is not None and rs_2024:
+        vt_pct = vt_v * 100 if vt_v < 1.5 else vt_v
+        hi_pct = rs_2024 * 100 if rs_2024 < 1.5 else rs_2024
+        vt_ratio = vt_pct / hi_pct
+        if vt_ratio < 4.5 or vt_ratio > 5.0:
+            add("phase4", "P1", "renewables-prices",
+                f"'nearly five times' but Vermont 2024={vt_pct:.1f}% / HI {hi_pct:.1f}% = {vt_ratio:.2f}x")
+    over3_comparators = ["South Dakota", "Washington", "Idaho", "Iowa"]
+    for st in over3_comparators:
         v = state_value(state_data, "renewables_share_gen", "2024", st)
         if v is not None and rs_2024:
             v_pct = v * 100 if v < 1.5 else v
             hi_pct = rs_2024 * 100 if rs_2024 < 1.5 else rs_2024
             ratio = v_pct / hi_pct
-            if ratio < 2.5 or ratio > 3.6:
+            if ratio < 3.0:
                 add("phase4", "P1", "renewables-prices",
-                    f"'roughly three times as much' but {st} 2024={v_pct:.1f}% / HI {hi_pct:.1f}% = {ratio:.2f}x")
+                    f"'more than three times' but {st} 2024={v_pct:.1f}% / HI {hi_pct:.1f}% = {ratio:.2f}x")
 
 
 # -----------------------------------------------------------------------
@@ -1037,8 +1047,19 @@ def phase10():
             "'Last reviewed' dates differ. Distribution: " + " · ".join(msg_parts))
     elif dates_by_page:
         the_date = next(iter(dates_by_page.values()))
-        add("phase10", "P2", "footer dates",
-            f"All footers say 'Last reviewed: {the_date}' — verify whether this should be updated since recent edits")
+        # Parse "DD Mmm YYYY" and only flag if >45 days stale. All-agreeing
+        # current dates are fine; the advisory is only valuable when the
+        # date is drifting behind recent edits.
+        try:
+            import datetime
+            review_dt = datetime.datetime.strptime(the_date, "%d %b %Y").date()
+            age_days = (datetime.date.today() - review_dt).days
+            if age_days > 45:
+                add("phase10", "P2", "footer dates",
+                    f"All footers say 'Last reviewed: {the_date}' ({age_days} days old); update if site has changed since")
+        except ValueError:
+            add("phase10", "P2", "footer dates",
+                f"All footers say 'Last reviewed: {the_date}' (unparseable; expected 'DD Mmm YYYY')")
     # Sitemap lastmod vs git
     sitemap = (ROOT / "sitemap.xml").read_text()
     entries = re.findall(r"<loc>([^<]+)</loc>\s*<lastmod>([^<]+)</lastmod>", sitemap)
