@@ -194,12 +194,13 @@ const SOURCE_COVERAGE = {
     unsheltered_homeless_rate:  { expectedStart: 2007, source: 'HUD AHAR/PIT',        note: 'Annual PIT counts from 2007' },
     // Crime metrics: pre-2020 is frozen historical (FBI ceased UCR-based annual
     // reports after 2019; those values are static artifacts). 2020+ is the
-    // active tail but currently lacks a working live audit path — FBI CDE via
-    // api.data.gov requires the API_DATA_GOV_KEY plus a content decision about
-    // the ~6% NIBRS-era reconstruction drift vs state-data's UCR vintage.
-    // Tracked via pendingSource so the gap stays visible in every audit log.
-    violent_crime_rate:         { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960', frozen: { through: 2019, asOf: '2026-05-10', reason: 'FBI ceased UCR-based annual reports after 2019; pre-2020 values are static historical artifacts that do not change', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' }, pendingSource: { sinceYear: 2020, reason: 'FBI CDE NIBRS-era reconstructions drift ~6% from state-data UCR vintage; no clean reproducible source exists at strict tolerance', blocker: 'Requires (a) API_DATA_GOV_KEY for FBI CDE, AND (b) content decision: accept CDE as new canonical via one-time refresh OR keep state-data vintage with broader audit tolerance' } },
-    property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960', frozen: { through: 2019, asOf: '2026-05-10', reason: 'See violent_crime_rate — both metrics share the same FBI UCR provenance and static-historical character', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' }, pendingSource: { sinceYear: 2020, reason: 'See violent_crime_rate — same FBI UCR vs CDE/NIBRS vintage gap', blocker: 'Same as violent_crime_rate; both unblock together' } },
+    // active tail, audited live via FBI CDE through api.usa.gov/crime/fbi/cde
+    // (NIBRS-era reconstructions). state-data 2020+ values were refreshed to
+    // CDE vintage on 2026-05-10 as a one-time methodology cleanup; the freeze
+    // boundary at 2019 preserves the original UCR vintage for the historical
+    // window while live audit runs daily on 2020+.
+    violent_crime_rate:         { expectedStart: 1960, source: 'FBI UCR (pre-2020) / FBI CDE NIBRS (2020+)', note: 'UCR state series from 1960; CDE/NIBRS-era values from 2020', frozen: { through: 2019, asOf: '2026-05-10', reason: 'FBI ceased UCR-based annual reports after 2019; pre-2020 values are static historical artifacts that do not change', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' } },
+    property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR (pre-2020) / FBI CDE NIBRS (2020+)', note: 'UCR state series from 1960; CDE/NIBRS-era values from 2020', frozen: { through: 2019, asOf: '2026-05-10', reason: 'See violent_crime_rate — both metrics share the same FBI UCR provenance and static-historical character', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' } },
     // Structural floors (source itself starts here; not a backfill candidate):
     acgr:                       { expectedStart: 2011, source: 'NCES EDFacts',        note: 'ACGR first published 2010-11 SY (= 2011)' },
     pcp_per_100k:               { expectedStart: 2010, source: 'HRSA AHRF',           note: 'HRSA AHRF via CHR trends; civilian-adjusted with ACS B27001/B01003. CHR carries measurement years through {release-3}.' },
@@ -1572,15 +1573,20 @@ async function runFreshFetch() {
     }
 
     for (const [slug, fetcher] of Object.entries(buildFetchers)) {
-        // Skip frozen metrics unless the operator opts in with --include-frozen.
-        // Frozen years are static historical; running the fetcher anyway would
-        // surface known vintage/methodology drift as fake "drift" findings.
+        // Three freeze cases:
+        //   (a) frozen with no `through` field → entire series is frozen;
+        //       skip the fetcher entirely. Running it would surface known
+        //       vintage drift as fake findings.
+        //   (b) frozen.through: YEAR → year-bounded freeze. Run the fetcher
+        //       normally; the cell loop below filters out years ≤ through,
+        //       so only the live tail (years > through) is audited.
+        //   (c) no frozen field → normal live audit.
+        // --include-frozen forces (a) and (b) to act like (c), re-auditing
+        // the frozen window for one-time re-verification.
         const frozenSpec = SOURCE_COVERAGE?.[slug]?.frozen;
-        if (frozenSpec && !INCLUDE_FROZEN) {
-            // If the freeze is year-bounded AND a fetcher exists, we still want
-            // to audit the years > frozen.through. Future: when crime gains a
-            // 2020+ fetcher, this branch lets the post-freeze years get audited
-            // automatically. For now no such fetcher exists, so just skip.
+        const entireSeriesFrozen = frozenSpec && !Number.isFinite(frozenSpec.through);
+        if (entireSeriesFrozen && !INCLUDE_FROZEN) {
+            // Already logged at the top of Section 16.
             continue;
         }
         const sd = STATE_DATA?.[slug];

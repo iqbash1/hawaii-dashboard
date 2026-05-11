@@ -1364,6 +1364,200 @@ async function fetchSuicide() {
 }
 
 // ===========================================================
+// FBI CDE Fetcher (violent_crime_rate + property_crime_rate, 2020+)
+// ===========================================================
+//
+// Source: FBI Crime Data Explorer (CDE), routed through the api.data.gov
+// gateway at api.usa.gov/crime/fbi/cde. The "summarized" endpoint returns
+// MONTHLY crime rates per 100,000 population for a (state, offense) pair;
+// summing the 12 monthly rates yields the annual rate. Coverage extends
+// from 1985 through the most recent reporting year (typically lagging
+// 6-12 months from current).
+//
+// Coverage window: 2020 onward only. Pre-2020 crime data in state-data
+// comes from FBI's "Crime in the United States" annual reports (UCR
+// vintage) and is frozen per validate-data.js SOURCE_COVERAGE.frozen —
+// CDE's NIBRS-era reconstructions differ from the original UCR reports
+// by 2-15% on overlap years, so audit-vs-CDE on pre-2020 would surface
+// known methodology-shift drift as fake regressions. The freeze.through
+// filter in Section 16 already strips frozen years; the fetcher mirrors
+// the policy by requesting only 2020+ from CDE.
+//
+// FIPS shape: violent_crime_rate and property_crime_rate use the standard
+// year-first storage shape (data[year][stateName]). The fetcher returns
+// the same shape; no FIPS-first adapter needed (unlike pcp_per_100k).
+//
+// Authentication: api.data.gov key (FBI CDE shares the api.data.gov
+// umbrella with NCES, USDA, NREL, etc.). Read from API_DATA_GOV_KEY env
+// var, set by the CI workflow from GitHub Actions Secrets. Without a
+// key the fetcher fails gracefully and returns null (audit skips with
+// info log).
+//
+// Rate limits: 1,000 req/hour at the default tier. 50 states × 2 offenses
+// × 1 multi-year query each = 100 requests; ~5 minutes under the limit.
+
+const CDE_BASE = 'https://api.usa.gov/crime/fbi/cde';
+const CDE_OFFENSE = {
+    violent_crime_rate: 'violent-crime',
+    property_crime_rate: 'property-crime',
+};
+
+// CDE returns state names with plain ASCII "Hawaii"; state-data uses ʻokina.
+const CDE_NAME_TO_OUR_NAME = { 'Hawaii': 'Hawaiʻi' };
+const CDE_ABBR_TO_NAME = {
+    AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
+    CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
+    HI:'Hawaiʻi', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa',
+    KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland',
+    MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi',
+    MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada', NH:'New Hampshire',
+    NJ:'New Jersey', NM:'New Mexico', NY:'New York', NC:'North Carolina',
+    ND:'North Dakota', OH:'Ohio', OK:'Oklahoma', OR:'Oregon', PA:'Pennsylvania',
+    RI:'Rhode Island', SC:'South Carolina', SD:'South Dakota', TN:'Tennessee',
+    TX:'Texas', UT:'Utah', VT:'Vermont', VA:'Virginia', WA:'Washington',
+    WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming',
+};
+
+async function fetchFbiCdeCrime(slug) {
+    const offense = CDE_OFFENSE[slug];
+    if (!offense) throw new Error(`fetchFbiCdeCrime: unknown slug ${slug}`);
+    console.log(`Fetching: ${slug} 2020+ (FBI CDE / NIBRS-era reconstruction)...`);
+
+    const key = process.env.API_DATA_GOV_KEY;
+    if (!key) {
+        console.log('  SKIP: API_DATA_GOV_KEY env var not set');
+        return null;
+    }
+
+    const fromYear = 2020;
+    const toYear = new Date().getFullYear();
+    const data = {}; // year → { stateName: annualRate }
+    let statesOk = 0;
+    let statesFailed = 0;
+
+    for (const abbr of Object.keys(CDE_ABBR_TO_NAME)) {
+        const stateName = CDE_ABBR_TO_NAME[abbr];
+        const url = `${CDE_BASE}/summarized/state/${abbr}/${offense}`
+            + `?from=01-${fromYear}&to=12-${toYear}&api_key=${key}`;
+        let monthly;
+        try {
+            const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
+            if (!res.ok) {
+                // 503s are common on CDE; one retry usually clears it.
+                if (res.status >= 500 && res.status < 600) {
+                    await sleep(1500);
+                    const retry = await fetch(url, { signal: AbortSignal.timeout(20000) });
+                    if (!retry.ok) throw new Error(`HTTP ${retry.status} (after retry)`);
+                    monthly = await retry.json();
+                } else {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+            } else {
+                monthly = await res.json();
+            }
+        } catch (err) {
+            statesFailed++;
+            console.log(`  WARN ${abbr}: ${err.message}; skipping`);
+            await sleep(200);
+            continue;
+        }
+
+        // Response shape: offenses.rates['<StateName> Offenses'] = { 'MM-YYYY': rate, ... }
+        const rates = monthly?.offenses?.rates;
+        if (!rates) {
+            statesFailed++;
+            console.log(`  WARN ${abbr}: no offenses.rates in response`);
+            await sleep(200);
+            continue;
+        }
+        // The state's own offense rate is keyed by "<state name (as CDE writes it)> Offenses".
+        // CDE uses ASCII "Hawaii" (no ʻokina); we map back to our name when storing.
+        const offensesKey = Object.keys(rates)
+            .find(k => k.endsWith(' Offenses') && !k.startsWith('United States'));
+        if (!offensesKey) {
+            statesFailed++;
+            await sleep(200);
+            continue;
+        }
+        const monthlyRates = rates[offensesKey];
+
+        // Sum 12 months per year, dropping years CDE hasn't fully settled.
+        // CDE accepts NIBRS submissions on a rolling basis; the most recent
+        // calendar year often shows all 12 months "present" but with the
+        // trailing months reflecting only partial agency reporting (e.g.,
+        // December 2025 HI violent = 6.51 while every other month is 13-20).
+        // Filter: month 12 must be ≥ 50% of the median of months 1-11.
+        // Robust against legitimate seasonal variability (real winter dips
+        // run 80-95% of summer) while catching the partial-reporting cliff.
+        const byYear = {};
+        for (const [mmyyyy, rateStr] of Object.entries(monthlyRates)) {
+            const m = String(mmyyyy).match(/^(\d{2})-(\d{4})$/);
+            if (!m) continue;
+            const mo = m[1];
+            const yr = m[2];
+            const rate = parseFloat(rateStr);
+            if (!Number.isFinite(rate)) continue;
+            if (!byYear[yr]) byYear[yr] = { months: {} };
+            byYear[yr].months[mo] = rate;
+        }
+        for (const [yr, agg] of Object.entries(byYear)) {
+            const monthEntries = Object.entries(agg.months);
+            if (monthEntries.length !== 12) continue; // require all 12 months present
+            const dec = agg.months['12'];
+            const others = monthEntries.filter(([m]) => m !== '12').map(([, v]) => v).sort((a, b) => a - b);
+            const median11 = others[5]; // middle of 11 sorted values
+            if (!Number.isFinite(dec) || !Number.isFinite(median11)) continue;
+            // Drop year if December is anomalously low — sign of partial agency
+            // reporting that CDE will revise upward as submissions land.
+            if (median11 > 0 && dec < median11 * 0.5) continue;
+            const sum = monthEntries.reduce((s, [, v]) => s + v, 0);
+            if (!data[yr]) data[yr] = {};
+            data[yr][stateName] = parseFloat(sum.toFixed(1));
+        }
+        statesOk++;
+        await sleep(150); // rate-limit friendly
+    }
+
+    // Drop years where coverage is partial (< 50 states). CDE's most recent
+    // year often has 1-3 states with anomalously low December rates (the
+    // per-state filter above already strips those), which leaves the year
+    // with 47-49 of 50 states. State-data integrity requires consistent
+    // 50-state coverage for ranking views, so partial-coverage years are
+    // discarded entirely. The cron audit picks them up automatically once
+    // FBI's NIBRS submissions settle.
+    const dropped = [];
+    for (const yr of Object.keys(data)) {
+        const states = Object.keys(data[yr]).length;
+        if (states < 50) {
+            dropped.push(`${yr} (${states}/50)`);
+            delete data[yr];
+        }
+    }
+    if (dropped.length > 0) {
+        console.log(`  Dropped partial-coverage years: ${dropped.join(', ')}`);
+    }
+
+    const years = Object.keys(data).sort();
+    if (years.length === 0) {
+        console.log(`  FAIL: no complete-year data assembled (${statesOk} states OK, ${statesFailed} failed)`);
+        return null;
+    }
+    const stateCount = data[years[years.length - 1]] ? Object.keys(data[years[years.length - 1]]).length : 0;
+    console.log(`  ${statesOk}/50 states OK, ${statesFailed} failed; ${years.length} complete years (${years[0]}-${years[years.length - 1]}); ${stateCount} states in latest year`);
+
+    const label = slug === 'violent_crime_rate' ? 'violent' : 'property';
+    return {
+        source: 'FBI Crime Data Explorer (CDE), NIBRS-era reconstruction via api.usa.gov/crime/fbi/cde',
+        calculation: `Annual ${label} crime rate per 100,000 population, computed as the sum of CDE's 12 monthly rates per year. CDE reconstructs ${label}-crime totals from agency-level NIBRS submissions; values may differ from FBI's pre-2021 "Crime in the United States" annual reports (UCR vintage) by 2-15% on overlap years.`,
+        rawVariables: `summarized/state/{ABBR}/${offense} endpoint, offenses.rates["{State Name} Offenses"] monthly series (01-${fromYear} through 12-{currentYear})`,
+        data,
+    };
+}
+
+async function fetchViolentCrimeRate() { return fetchFbiCdeCrime('violent_crime_rate'); }
+async function fetchPropertyCrimeRate() { return fetchFbiCdeCrime('property_crime_rate'); }
+
+// ===========================================================
 // CHR + Census ACS Fetcher (pcp_per_100k)
 // ===========================================================
 //
@@ -2073,6 +2267,8 @@ async function main() {
         ['net_domestic_migration_rate', fetchNetDomesticMigration],
         ['acgr', fetchAcgr],
         ['suicide_rate', fetchSuicide],
+        ['violent_crime_rate', fetchViolentCrimeRate],
+        ['property_crime_rate', fetchPropertyCrimeRate],
         // pcp_per_100k is intentionally NOT in main()'s fetcher array. The
         // fetcher returns the uniform year-first shape (data[year][state])
         // that Section 16's audit expects, but state-data.js stores PCP in
@@ -2304,6 +2500,8 @@ module.exports = {
         acgr: fetchAcgr,
         suicide_rate: fetchSuicide,
         pcp_per_100k: fetchPcpPer100k,
+        violent_crime_rate: fetchViolentCrimeRate,
+        property_crime_rate: fetchPropertyCrimeRate,
     },
 };
 

@@ -93,10 +93,10 @@ const DASHBOARD_DATA = {
       "2018": 248.6,
       "2019": 285.5,
       "2020": 254.2,
-      "2021": 274,
-      "2022": 259.6,
-      "2023": 187.1,
-      "2024": 217.68
+      "2021": 269.9,
+      "2022": 275.9,
+      "2023": 244.4,
+      "2024": 230.5
     },
     "medianSeries": {
       "1960": 97,
@@ -160,10 +160,10 @@ const DASHBOARD_DATA = {
       "2018": 344.3,
       "2019": 349.65,
       "2020": 373.7,
-      "2021": 336.5,
-      "2022": 332.2,
-      "2023": 329.25,
-      "2024": 320.215
+      "2021": 338.65,
+      "2022": 362.45,
+      "2023": 351.8,
+      "2024": 327.8
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Community and geography</strong> · Tight-knit multigenerational households and island isolation both suppress violent crime; comprehensive gun laws limit the most lethal weapon types. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8460118/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Violence intervention</strong> · Community violence intervention programs and youth-facing workers drove recent national crime declines; federal CVI funding has since been cut roughly in half. <a href=\"https://counciloncj.org/whats-driving-the-drop-in-homicide-how-low-might-it-go/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Treatment and housing access</strong> · No long-term dual-diagnosis residential treatment exists outside Oʻahu <a href=\"https://health.hawaii.gov/substance-abuse/files/2023/05/Draft-State-Plan-2022-May-2023-Edition.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; housing instability is linked to increased violence in neglected neighborhoods. <a href=\"https://www.brookings.edu/articles/want-to-reduce-violence-invest-in-place/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "updateCadence": "Annual",
@@ -280,10 +280,10 @@ const DASHBOARD_DATA = {
       "2018": 2888,
       "2019": 2841.2,
       "2020": 2411.4,
-      "2021": 2533.2,
-      "2022": 2481.7,
-      "2023": 2142.5,
-      "2024": 1946.8
+      "2021": 2673.7,
+      "2022": 2591.4,
+      "2023": 2196.8,
+      "2024": 2052.6
     },
     "medianSeries": {
       "1960": 1469.1,
@@ -347,10 +347,10 @@ const DASHBOARD_DATA = {
       "2018": 2248.05,
       "2019": 2112.25,
       "2020": 1959.05,
-      "2021": 1769.35,
-      "2022": 1810.6,
-      "2023": 1830.5,
-      "2024": 1627.1
+      "2021": 1616.35,
+      "2022": 1857.7,
+      "2023": 1811.6,
+      "2024": 1687
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Treatment and diversion</strong> · Drug courts reduce recidivism roughly 12 percentage points on average <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC3859122/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; methamphetamine drives a disproportionate share of theft-driven crime in Hawaiʻi, yet only a fraction of those needing treatment receive it. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8111791/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Place-based prevention</strong> · Hot-spots policing produces statistically significant property-crime reductions without displacing crime to nearby areas <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8356500/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; improved street lighting cuts crime roughly 21 percent in treated areas, partly through stronger more eyes on the block. <a href=\"https://www.campbellcollaboration.org/review/effects-of-improved-street-lighting-on-crime/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Reentry and supervision</strong> · Hawaiʻi’s Justice Reinvestment Initiative shifted resources toward supervising higher-risk individuals and community treatment <a href=\"https://csgjusticecenter.org/projects/justice-reinvestment/past-states/hawaii/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; recidivism falls when reentry programs pair housing stability with employment support and behavioral health services. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC3859122/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "updateCadence": "Annual",
