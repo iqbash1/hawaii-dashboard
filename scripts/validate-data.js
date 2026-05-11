@@ -174,6 +174,13 @@ const EXPECTED_COUNTIES = ['Honolulu', 'Hawai\u02BBi', 'Maui', 'Kauaʻi'];
 // ---- Tracking ----
 let errors = 0;
 let warnings = 0;
+// Structural errors that must also block --audit-only mode. The daily cron
+// runs --audit-only and exits purely on Section 16 drift, ignoring most
+// errors to keep noise down. But silent structural bugs (e.g. a metric's
+// thresholdVariant defined in data.js without a matching state-data variant)
+// would let renter-style display bugs ship undetected. Section 17 increments
+// this counter; AUDIT_ONLY treats it like drift.
+let auditCriticalErrors = 0;
 
 function error(msg) {
     console.log(`  ERROR: ${msg}`);
@@ -1274,6 +1281,56 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 }
 
 // ============================================================
+// Section 17: thresholdVariants parity (state-data ↔ data.js)
+//
+// For every metric where data.js defines a thresholdVariants overlay (e.g.
+// renter_cost_burden_pct -> "50" severe), state-data MUST carry the same
+// variant with a populated `data` block. Without it, App.getActiveStateData()
+// falls back to the base STATE_DATA — meaning the dashboard silently shows:
+//   - Hawaiʻi line on the chart: variant-correct (reads data.js variant.hawaii)
+//   - Comparator state line: base 30%+ data (silent fallback)
+//   - Bottom-line narrative value: base data via getEffectiveData merge
+//   - Ranking + #N display: base STATE_DATA values
+//
+// renter_cost_burden_pct shipped with this gap from the May 2024 backfill
+// through commit 8d295a2e (May 2026). Visible to readers as a mismatched
+// Hawaiʻi vs. California compare-with line + narrative number that didn't
+// match the chart.
+//
+// Hard error — silent rendering bugs erode the credibility floor of the
+// strict-tolerance audit gate.
+// ============================================================
+{
+    console.log('\n--- Section 17: thresholdVariants parity (state-data ↔ data.js) ---');
+    let checked = 0;
+    let issues = 0;
+    for (const [slug, dd] of Object.entries(DASHBOARD_DATA)) {
+        if (!dd || !dd.thresholdVariants) continue;
+        const sd = STATE_DATA?.[slug];
+        for (const [vk, dv] of Object.entries(dd.thresholdVariants)) {
+            checked++;
+            if (!sd) {
+                error(`[${slug}/${vk}] data.js defines threshold variant but state-data.${slug} is missing entirely — comparator/rank/effective-data have nothing to fall back to coherently`);
+                issues++;
+                auditCriticalErrors++;
+                continue;
+            }
+            const sv = sd.thresholdVariants?.[vk];
+            if (!sv || !sv.data || Object.keys(sv.data).length === 0) {
+                error(`[${slug}/${vk}] data.js defines threshold variant but state-data.${slug}.thresholdVariants["${vk}"] is missing/empty — comparator + rank + effective Hawaiʻi will silently fall back to base ${slug} values while the chart's Hawaiʻi line reads the variant. Add the variant data to state-data (fetcher should return it via thresholdVariants).`);
+                issues++;
+                auditCriticalErrors++;
+            }
+        }
+    }
+    if (checked > 0 && issues === 0) {
+        console.log(`  OK: all ${checked} data.js threshold variants have matching state-data variants`);
+    } else if (checked === 0) {
+        console.log(`  No threshold variants defined in data.js`);
+    }
+}
+
+// ============================================================
 // Section 16 (opt-in via --fresh-fetch): re-fetch every year's Hawaiʻi
 // value from the canonical source and compare to state-data.js.
 //
@@ -1421,10 +1478,16 @@ if (STATE_DATA) {
     console.log(`  State-data metrics: ${Object.keys(STATE_DATA).length}`);
 }
 
-// AUDIT_ONLY: exit purely on audit drift, ignoring unrelated warnings.
+// AUDIT_ONLY: exit on Section 16 drift OR audit-critical structural errors.
+// The cron must fail when structural data-integrity invariants break (e.g.
+// renter-style thresholdVariants gap), not just when API values drift —
+// otherwise silent display bugs ship undetected.
 if (AUDIT_ONLY) {
-    if (auditDriftCells > 0) {
-        console.log(`\n  RESULT: AUDIT FAIL — ${auditDriftCells} HI year-cells drifted from canonical source\n`);
+    if (auditDriftCells > 0 || auditCriticalErrors > 0) {
+        const parts = [];
+        if (auditDriftCells > 0) parts.push(`${auditDriftCells} HI year-cells drifted from canonical source`);
+        if (auditCriticalErrors > 0) parts.push(`${auditCriticalErrors} structural integrity error(s) — see Section 17`);
+        console.log(`\n  RESULT: AUDIT FAIL — ${parts.join('; ')}\n`);
         process.exit(2);
     } else {
         console.log('\n  RESULT: AUDIT PASS — every audited HI year-cell matches canonical source within tolerance\n');
