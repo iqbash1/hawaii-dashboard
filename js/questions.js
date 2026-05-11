@@ -299,9 +299,9 @@ const QOTD_QUESTIONS = [
   {
     "id": "q037",
     "slug": "hawaii-is-in-the-top-10-states-for-low-violent-crime",
-    "claim": "Hawaiʻi is in the top 10 states for low violent crime.",
-    "correct": false,
-    "answer": "Hawaiʻi ranks #12 of 50 in 2024.",
+    "claim": "Hawaiʻi is among the top ranked states for low violent crime.",
+    "correct": true,
+    "answer": "Hawaiʻi ranks #12 of 50 in 2024, in the top quartile.",
     "chartUrl": "/r/violent_crime_rate/",
     "metric": "violent_crime_rate",
     "metricLabel": "Violent Crime Rate",
