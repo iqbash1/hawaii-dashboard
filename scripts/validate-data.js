@@ -40,6 +40,7 @@ const path = require('path');
 
 const STRICT = process.argv.includes('--strict');
 const FRESH_FETCH = process.argv.includes('--fresh-fetch');
+const PROBE_FLOOR = process.argv.includes('--probe-floor');
 // AUDIT_ONLY: exit code reflects only Section 16 drift, ignoring other
 // warnings/errors. Used by the scheduled cron audit workflow so the
 // drift signal isn't drowned out by unrelated dashboard warnings.
@@ -136,9 +137,9 @@ const SOURCE_COVERAGE = {
     residential_price_cpkwh:    { expectedStart: 1970, source: 'EIA Form 826/861',    note: 'State retail electricity prices from 1970' },
     renewables_share_gen:       { expectedStart: 2001, source: 'EIA electric-power',  note: 'EIA v2 electric-power API has annual state generation from 2001; pre-2001 requires SEDS aggregation' },
     ba_or_higher_pct:           { expectedStart: 2008, source: 'Census ACS B15003',   note: 'B15003 detailed-attainment table available from 2008. data.js HI series carries 2005-2007 from an earlier ACS methodology (B15002) for HI continuity; not extended to peer states.', acceptedHiAsymmetry: true },
-    renter_cost_burden_pct:     { expectedStart: 2005, source: 'Census ACS B25070',   note: 'B25070 with all-state coverage from 2005 (1-year ACS skipped 2020 for COVID). Floor lowered from 2008 to 2005 in May 2026 after audit confirmed Census API returns valid B25070 for all 50 states from 2005; the prior 2008 floor was a stale default inherited from B15003 (which legitimately starts at 2008).' },
+    renter_cost_burden_pct:     { expectedStart: 2005, source: 'Census ACS B25070',   note: 'B25070 with all-state coverage from 2005 (1-year ACS skipped 2020 for COVID). Floor lowered from 2008 to 2005 in May 2026 after audit confirmed Census API returns valid B25070 for all 50 states from 2005; the prior 2008 floor was a stale default inherited from B15003 (which legitimately starts at 2008).', verifiedFloorAt: '2026-05-10' },
     uninsured_rate:             { expectedStart: 2010, skipYears: [2013, 2014], source: 'Census ACS DP03', note: 'DP03_0099PE used 2010-2012 (S2701 variable semantics flipped 2014->2015); 2013-14 deliberately skipped in state-data; data.js HI has those years from KFF/equivalent' },
-    broadband_subscription_pct: { expectedStart: 2016, source: 'Census ACS B28002',   note: 'Census changed B28002 variable definition in 2016; pre-2016 values measure a different (narrower) broadband concept and are deliberately excluded' },
+    broadband_subscription_pct: { expectedStart: 2016, source: 'Census ACS B28002',   note: 'Census changed B28002 variable definition in 2016; pre-2016 values measure a different (narrower) broadband concept and are deliberately excluded. Confirmed by direct probe May 2026: HI B28002_004E shifted from ~10-13% (2013-2015) to ~83-93% (2016+), a ~70pp jump indicating different concept.', verifiedFloorAt: '2026-05-10', verifiedFloorReason: 'B28002_004E variable redefined at 2016 (probe: 2013-2015 measure narrow concept, 2016+ measure broadband-as-defined)' },
     home_price_to_income:       { expectedStart: 2005, source: 'Census ACS + FHFA',   note: 'ACS median home value + income from 2005' },
     food_insecurity_rate:       { expectedStart: 2006, source: 'USDA ERS',            note: '3-year averages; ERS Excel file currently provides 2006-2008 onward (older periods used different methodology)' },
     voter_participation_rate:   { expectedStart: 1980, source: 'US EAC / states',     note: 'Presidential elections from 1980' },
@@ -1331,6 +1332,99 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 }
 
 // ============================================================
+// Section 18 (opt-in via --probe-floor): probe canonical source for years
+// BEFORE the codified expectedStart in SOURCE_COVERAGE. If the source
+// returns valid data, the floor is artificially low and may be silently
+// stranding state-year coverage.
+//
+// ORIGIN: commit 1e4517d9 (May 2026 coverage overhaul) wrote SOURCE_COVERAGE
+// with expectedStart=2008 for renter_cost_burden_pct and a code comment
+// claiming "B25070 from 2012" — both wrong. Census ACS B25070 actually
+// publishes valid all-state data from 2005. Section 12 then said
+// "OK at structural floor" for ~24 months because it compared state-data
+// to the codified spec, not to what the source actually has.
+//
+// THE MISSING CONTROL: expectedStart values were hand-curated and never
+// verified against the source. Section 12 audited state-data against
+// expectedStart but never audited expectedStart against the API. A floor
+// set too high was indistinguishable from a floor at the true minimum.
+//
+// This probe inverts that: it asks the API directly for years just before
+// expectedStart. If the API returns valid HI data, expectedStart is too
+// high. Audit-critical error in --probe-floor mode (also blocks the daily
+// cron when added to its invocation).
+//
+// Implementation note: this probe is opt-in because it makes ~15-20 extra
+// API calls per run (3 years × ~5 ACS tables + 1 Socrata + 1 FRED + ...).
+// For routine local validation we skip it; for monthly source-audit cron
+// we run it.
+// ============================================================
+async function runProbeFloor() {
+    console.log('\n--- Section 18: Pre-floor source probe (--probe-floor) ---');
+
+    // Each probe maps a metric slug to: a Census ACS table to test, OR a
+    // generic probe fn. We start with the ACS tables since that's where
+    // the May 2026 bug lived; future probes can target Socrata, FRED, etc.
+    const PROBES = {
+        ba_or_higher_pct:           { kind: 'acs1', table: 'B15003_001E' },
+        broadband_subscription_pct: { kind: 'acs1', table: 'B28002_001E' },
+        renter_cost_burden_pct:     { kind: 'acs1', table: 'B25070_001E' },
+        uninsured_rate:             { kind: 'acs1', table: 'DP03_0099PE' },
+        home_price_to_income:       { kind: 'acs1', table: 'B25077_001E' },
+    };
+    const ACS_ABSOLUTE_FLOOR = 2005; // ACS 1-year did not publish state-level before 2005
+
+    async function acs1Probes(table, year) {
+        const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,${table}&for=state:15`;
+        try {
+            const r = await fetch(url);
+            if (!r.ok) return false;
+            const txt = await r.text();
+            if (txt.startsWith('<') || txt.includes('"error"') || txt.includes('unknown variable')) return false;
+            const rows = JSON.parse(txt);
+            return rows.length > 1 && rows[1][1] != null && rows[1][1] !== 'null' && rows[1][1] !== '';
+        } catch { return false; }
+    }
+
+    let probed = 0;
+    let issues = 0;
+    for (const [slug, probe] of Object.entries(PROBES)) {
+        const cov = SOURCE_COVERAGE[slug];
+        if (!cov?.expectedStart) continue;
+        // Skip floors with a verifiedFloorReason — the floor was confirmed
+        // intentional (methodology change, variable redefinition, etc.).
+        // The verification trail lives in SOURCE_COVERAGE.note.
+        if (cov.verifiedFloorReason) {
+            console.log(`  SKIP [${slug}] expectedStart=${cov.expectedStart} marked verified: ${cov.verifiedFloorReason.slice(0, 80)}`);
+            continue;
+        }
+        const probeYears = [cov.expectedStart - 3, cov.expectedStart - 2, cov.expectedStart - 1]
+            .filter(y => y >= ACS_ABSOLUTE_FLOOR);
+        if (probeYears.length === 0) {
+            console.log(`  [${slug}] expectedStart=${cov.expectedStart} already at absolute ACS floor; no pre-years to probe`);
+            continue;
+        }
+        const found = [];
+        for (const yr of probeYears) {
+            probed++;
+            if (probe.kind === 'acs1' && await acs1Probes(probe.table, yr)) {
+                found.push(yr);
+            }
+            await new Promise(r => setTimeout(r, 250)); // gentle rate limit
+        }
+        if (found.length > 0) {
+            error(`[${slug}] expectedStart=${cov.expectedStart} but Census ACS 1-year ${probe.table} returns valid HI data for ${found.join(', ')}. Floor may be artificially low — verify, lower ACS_YEARS / per-fetcher floor, refresh state-data, update SOURCE_COVERAGE.`);
+            issues++;
+            auditCriticalErrors++;
+        } else {
+            console.log(`  OK [${slug}] no pre-floor data in ${probe.table} (probed ${probeYears.join(', ')})`);
+        }
+    }
+    console.log(`  Probed ${probed} (metric, year) combinations across ${Object.keys(PROBES).length} metrics; ${issues} floor(s) too high`);
+    return issues;
+}
+
+// ============================================================
 // Section 16 (opt-in via --fresh-fetch): re-fetch every year's Hawaiʻi
 // value from the canonical source and compare to state-data.js.
 //
@@ -1467,6 +1561,7 @@ async function runFreshFetch() {
 async function finish() {
     let auditDriftCells = 0;
     if (FRESH_FETCH || AUDIT_ONLY) auditDriftCells = await runFreshFetch() || 0;
+    if (PROBE_FLOOR) await runProbeFloor();
 
     console.log('\n=== VALIDATION SUMMARY ===\n');
 console.log(`  Mode:     ${AUDIT_ONLY ? 'AUDIT-ONLY' : STRICT ? 'STRICT (CI)' : 'Normal'}`);
