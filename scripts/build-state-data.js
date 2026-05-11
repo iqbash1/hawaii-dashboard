@@ -1364,6 +1364,207 @@ async function fetchSuicide() {
 }
 
 // ===========================================================
+// CHR + Census ACS Fetcher (pcp_per_100k)
+// ===========================================================
+//
+// Source: HRSA Area Health Resource File, distributed by County Health
+// Rankings (UW Population Health Institute) as the annual trends CSV.
+// Each release publishes one new measurement year for PCP and republishes
+// the full 12-year history. The CSV's measureid=4 series is the count of
+// active primary care MDs and DOs by state-year (state rows are countycode
+// "000"), with denominator equal to the total population vintage CHR used.
+//
+// Civilian adjustment: state-data stores PCPs per 100,000 *civilian*
+// noninstitutionalized population (Census ACS B27001_001E), not total
+// residents — military physicians and their TRICARE-served population are
+// outside the civilian primary care system. The fetcher re-applies the
+// civilian-ratio adjustment that produced the canonical state-data values:
+//   civAdj_per_100K = num / (denom × civRatio_acs) × 100000
+// where civRatio_acs = B27001_001E / B01003_001E for that measurement year.
+// For 2020 (no ACS 1-year release), the civilian ratio is interpolated as
+// the mean of the 2019 and 2021 ACS ratios — matching the methodology that
+// produced state-data's 2020 cells.
+//
+// Storage shape: pcp_per_100k uniquely uses FIPS-first storage
+// (data[FIPS][year]) in state-data.js (see pcp_fips_layout memory). The
+// fetcher returns the uniform year-first contract every other fetcher uses
+// (data[year][state]); validate-data.js Section 16 detects the FIPS-first
+// state-data shape and adapts the HI lookup accordingly.
+//
+// Year coverage: CHR trends carries measurement years 2010 through {release
+// year - 3}. state-data extends to 2023, but those latest two years (2022,
+// 2023) come from HRSA AHRF direct backfills that pre-date this fetcher's
+// existence; they remain HI-only beyond CHR coverage and stay informational
+// in the audit until CHR catches up.
+//
+// URL pattern bumps when CHR publishes the next year's trends. The fetcher
+// probes the most recent candidate first and falls back one year if 404.
+
+const CHR_TRENDS_RELEASES = [2027, 2026, 2025, 2024]; // most recent first
+const CHR_PCP_MEASURE_ID = '4';
+
+async function fetchPcpPer100k() {
+    console.log('Fetching: PCP per 100K civilian-adjusted (CHR trends + Census ACS B27001)...');
+    const headers = { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' };
+
+    // 1) Download CHR trends CSV (try most recent release first).
+    let csvText = null;
+    let releaseYear = null;
+    for (const ry of CHR_TRENDS_RELEASES) {
+        const url = `https://www.countyhealthrankings.org/sites/default/files/media/document/chr_trends_csv_${ry}.csv`;
+        try {
+            const res = await fetch(url, { headers, signal: AbortSignal.timeout(120000), redirect: 'follow' });
+            if (!res.ok) { console.log(`  CHR ${ry} trends HTTP ${res.status}; trying older`); continue; }
+            csvText = await res.text();
+            if (csvText.length < 1_000_000) { csvText = null; continue; }
+            releaseYear = ry;
+            console.log(`  CHR trends release: ${ry} (${(csvText.length / 1e6).toFixed(1)} MB)`);
+            break;
+        } catch (err) {
+            console.log(`  CHR ${ry} trends fetch failed: ${err.message}`);
+        }
+    }
+    if (!csvText) { console.log('  FAIL: no CHR trends release reachable'); return null; }
+
+    // 2) Parse CSV. The trends file embeds numerator and denominator strings
+    // with thousands separators inside quoted fields (e.g. "1,285"), so the
+    // splitter must respect the quote state.
+    function parseCsvLine(s) {
+        const out = []; let cur = ''; let inQ = false;
+        for (let i = 0; i < s.length; i++) {
+            const ch = s[i];
+            if (ch === '"') { inQ = !inQ; continue; }
+            if (ch === ',' && !inQ) { out.push(cur); cur = ''; continue; }
+            cur += ch;
+        }
+        out.push(cur); return out;
+    }
+    const lines = csvText.split(/\r?\n/);
+    const header = parseCsvLine(lines[0]);
+    const iYr = header.indexOf('yearspan');
+    const iAbbr = header.indexOf('state');
+    const iCty = header.indexOf('countycode');
+    const iMid = header.indexOf('measureid');
+    const iNum = header.indexOf('numerator');
+    const iDen = header.indexOf('denominator');
+    if ([iYr, iAbbr, iCty, iMid, iNum, iDen].some(i => i < 0)) {
+        console.log('  FAIL: CHR trends CSV header missing required columns');
+        return null;
+    }
+
+    // Abbreviation → state-data state name (Hawaiʻi spelling preserved).
+    const PCP_ABBR_TO_NAME = {
+        AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
+        CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
+        HI:'Hawaiʻi', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa',
+        KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland',
+        MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi',
+        MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada', NH:'New Hampshire',
+        NJ:'New Jersey', NM:'New Mexico', NY:'New York', NC:'North Carolina',
+        ND:'North Dakota', OH:'Ohio', OK:'Oklahoma', OR:'Oregon', PA:'Pennsylvania',
+        RI:'Rhode Island', SC:'South Carolina', SD:'South Dakota', TN:'Tennessee',
+        TX:'Texas', UT:'Utah', VT:'Vermont', VA:'Virginia', WA:'Washington',
+        WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming',
+    };
+    const NAME_TO_FIPS = Object.fromEntries(
+        Object.entries(FIPS_TO_STATE).map(([f, name]) => [name, f])
+    );
+
+    // Build { year: { abbr: {num, denom, fips} } }
+    const chrByYear = {};
+    let chrCells = 0;
+    for (let i = 1; i < lines.length; i++) {
+        if (!lines[i]) continue;
+        const f = parseCsvLine(lines[i]);
+        if (f[iMid] !== CHR_PCP_MEASURE_ID) continue;
+        if (f[iCty] !== '000') continue;
+        const yr = f[iYr];
+        const abbr = f[iAbbr];
+        if (!yr || !PCP_ABBR_TO_NAME[abbr]) continue;
+        const num = parseInt((f[iNum] || '').replace(/,/g, ''), 10);
+        const den = parseInt((f[iDen] || '').replace(/,/g, ''), 10);
+        if (!Number.isFinite(num) || !Number.isFinite(den) || den <= 0) continue;
+        const fips = NAME_TO_FIPS[PCP_ABBR_TO_NAME[abbr]];
+        if (!fips) continue;
+        if (!chrByYear[yr]) chrByYear[yr] = {};
+        chrByYear[yr][abbr] = { num, den, fips, name: PCP_ABBR_TO_NAME[abbr] };
+        chrCells++;
+    }
+    const chrYears = Object.keys(chrByYear).sort();
+    if (chrYears.length === 0) {
+        console.log('  FAIL: no PCP rows found in CHR trends');
+        return null;
+    }
+    console.log(`  CHR PCP measure rows: ${chrCells} state-year cells across ${chrYears[0]}-${chrYears[chrYears.length - 1]}`);
+
+    // 3) Fetch ACS 1-year B01003 + B27001 for each measurement year. ACS 2020
+    // 1-year was suppressed (COVID survey quality); we'll interpolate that
+    // year's civilian ratio from 2019 and 2021.
+    const acsRatio = {}; // year (number) → { fips: civilianPop / totalPop }
+    for (const yrStr of chrYears) {
+        const yr = parseInt(yrStr, 10);
+        if (yr === 2020) continue;
+        try {
+            const url = `https://api.census.gov/data/${yr}/acs/acs1?get=B01003_001E,B27001_001E&for=state:*`;
+            const j = await fetchJSON(url);
+            const h = j[0];
+            const iTotal = h.indexOf('B01003_001E');
+            const iCiv = h.indexOf('B27001_001E');
+            const iFips = h.indexOf('state');
+            if (iTotal < 0 || iCiv < 0 || iFips < 0) throw new Error(`ACS ${yr}: headers missing`);
+            acsRatio[yr] = {};
+            for (let i = 1; i < j.length; i++) {
+                const fips = j[i][iFips];
+                const total = parseInt(j[i][iTotal], 10);
+                const civ = parseInt(j[i][iCiv], 10);
+                if (total > 0 && civ > 0) acsRatio[yr][fips] = civ / total;
+            }
+        } catch (err) {
+            console.log(`  ACS ${yr} fetch failed: ${err.message}; year will be skipped`);
+        }
+    }
+
+    // 4) Interpolate 2020 civilian ratio from 2019 and 2021 (per-state mean).
+    if (chrByYear['2020'] && acsRatio[2019] && acsRatio[2021]) {
+        acsRatio[2020] = {};
+        for (const fips of Object.keys(acsRatio[2019])) {
+            const r19 = acsRatio[2019][fips];
+            const r21 = acsRatio[2021][fips];
+            if (r19 && r21) acsRatio[2020][fips] = (r19 + r21) / 2;
+        }
+    }
+
+    // 5) Compute civilian-adjusted rate per (state, year) and assemble the
+    // year-first response shape that Section 16 expects.
+    const data = {};
+    let cells = 0;
+    for (const yrStr of chrYears) {
+        const yr = parseInt(yrStr, 10);
+        const ratios = acsRatio[yr];
+        if (!ratios) continue;
+        for (const d of Object.values(chrByYear[yrStr])) {
+            const ratio = ratios[d.fips];
+            if (!ratio) continue;
+            const civAdj = d.num / (d.den * ratio) * 100000;
+            if (!Number.isFinite(civAdj)) continue;
+            if (!data[yrStr]) data[yrStr] = {};
+            data[yrStr][d.name] = parseFloat(civAdj.toFixed(1));
+            cells++;
+        }
+    }
+
+    const outYears = Object.keys(data).sort();
+    if (outYears.length === 0) { console.log('  FAIL: no rates computed'); return null; }
+    console.log(`  Computed ${cells} state-year cells across ${outYears.length} years (${outYears[0]}-${outYears[outYears.length - 1]})`);
+    return {
+        source: `HRSA Area Health Resource File via County Health Rankings (release ${releaseYear}), adjusted to civilian noninstitutionalized population (Census ACS B27001)`,
+        calculation: 'Non-federal, practicing MDs and DOs under age 75 in primary care specialties per 100,000 civilian noninstitutionalized population. civAdj = chr_num / (chr_denom × civRatio_acs) × 100,000, where civRatio_acs = B27001_001E / B01003_001E for that year. ACS 2020 civilian ratio is the mean of the 2019 and 2021 ratios (ACS 1-year was not released for 2020).',
+        rawVariables: 'CHR trends CSV measureid=4 (Primary care physicians), state rows countycode=000 (numerator + denominator); ACS 1-year B01003_001E (total population) + B27001_001E (civilian noninstitutionalized population).',
+        data,
+    };
+}
+
+// ===========================================================
 // NCES Digest Fetcher (acgr)
 // ===========================================================
 //
@@ -1872,6 +2073,17 @@ async function main() {
         ['net_domestic_migration_rate', fetchNetDomesticMigration],
         ['acgr', fetchAcgr],
         ['suicide_rate', fetchSuicide],
+        // pcp_per_100k is intentionally NOT in main()'s fetcher array. The
+        // fetcher returns the uniform year-first shape (data[year][state])
+        // that Section 16's audit expects, but state-data.js stores PCP in
+        // its unique FIPS-first shape (data[FIPS][year]). The year-level
+        // merge below assumes both shapes match, so adding pcp here would
+        // corrupt the FIPS-first storage with year-keyed entries.
+        // For now, pcp_per_100k is audit-only via module.exports.fetchers;
+        // the existing state-data values stay in place, and the audit
+        // verifies they continue to match the canonical source. Promoting
+        // to a refresh fetcher requires a per-slug shape adapter in the
+        // merge step (year-first → FIPS-first conversion).
     ];
 
     // Census ACS sequentially (rate limit friendly, many calls)
@@ -2091,6 +2303,7 @@ module.exports = {
         net_domestic_migration_rate: fetchNetDomesticMigration,
         acgr: fetchAcgr,
         suicide_rate: fetchSuicide,
+        pcp_per_100k: fetchPcpPer100k,
     },
 };
 

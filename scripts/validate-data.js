@@ -157,7 +157,7 @@ const SOURCE_COVERAGE = {
     property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR/NIBRS',       note: 'UCR state series from 1960' },
     // Structural floors (source itself starts here; not a backfill candidate):
     acgr:                       { expectedStart: 2011, source: 'NCES EDFacts',        note: 'ACGR first published 2010-11 SY (= 2011)' },
-    pcp_per_100k:               { expectedStart: 2010, source: 'HRSA AHRF',           note: 'AHRF county file vintage 2010' },
+    pcp_per_100k:               { expectedStart: 2010, source: 'HRSA AHRF',           note: 'HRSA AHRF via CHR trends; civilian-adjusted with ACS B27001/B01003. CHR carries measurement years through {release-3}.' },
 };
 
 // Years where partial state coverage (25-44 states) is expected and not a
@@ -916,8 +916,9 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
     } else {
         const slugs = Object.keys(SOURCE_COVERAGE);
         // Some metrics have non-standard data-shape:
-        //   pcp_per_100k: FIPS-first storage (data[FIPS][year]). Skip - it's
-        //                 a structural one-off documented in pcp_fips_layout memory.
+        //   pcp_per_100k: FIPS-first storage (data[FIPS][year]). Year keys
+        //                 live one layer down inside the HI bucket (FIPS '15').
+        //                 Walk that bucket to read year coverage.
         //   food_insecurity_rate, *_3yr_avg: range keys like "2006-2008".
         //                 Parse the start of the range as the start year.
         const FIPS_FIRST = new Set(['pcp_per_100k']);
@@ -928,16 +929,17 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
         let gaps = 0, asymmetric = 0, structural = 0, ok = 0;
         for (const slug of slugs) {
             const expected = SOURCE_COVERAGE[slug];
-            if (FIPS_FIRST.has(slug)) {
-                console.log(`  SKIP [${slug}] FIPS-first storage shape; manual coverage check needed (source: ${expected.source})`);
-                continue;
-            }
             const sdMetric = STATE_DATA[slug];
             if (!sdMetric || !sdMetric.data) {
                 warn(`[${slug}] no state-data.js entry; expected source: ${expected.source}`);
                 continue;
             }
-            const sdYears = Object.keys(sdMetric.data).map(parseStartYear).filter(y => !isNaN(y) && y >= 1900).sort((a, b) => a - b);
+            // FIPS-first: read year coverage from HI (FIPS '15') bucket. The
+            // 'name' key inside the bucket is skipped via the regex filter.
+            const yearSource = FIPS_FIRST.has(slug)
+                ? (sdMetric.data['15'] || {})
+                : sdMetric.data;
+            const sdYears = Object.keys(yearSource).map(parseStartYear).filter(y => !isNaN(y) && y >= 1900).sort((a, b) => a - b);
             if (sdYears.length === 0) {
                 warn(`[${slug}] state-data.js has no parseable years; expected source: ${expected.source}`);
                 continue;
@@ -1019,10 +1021,6 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
         let checked = 0, mismatches = 0, dataOnly = 0, sdOnly = 0;
         const slugs = Object.keys(DASHBOARD_DATA).filter(s => DASHBOARD_DATA[s].hawaii);
         for (const slug of slugs) {
-            if (FIPS_FIRST.has(slug)) {
-                console.log(`  SKIP [${slug}] FIPS-first; manual parity check`);
-                continue;
-            }
             const dashHi = DASHBOARD_DATA[slug].hawaii;
             const sdEntry = STATE_DATA[slug];
             if (!sdEntry || !sdEntry.data) {
@@ -1030,17 +1028,31 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
                 continue;
             }
             const sdData = sdEntry.data;
-            // Build map of HI values from state-data keyed by start year of label
+            // Build map of HI values from state-data keyed by start year of label.
+            // FIPS-first metrics nest year keys one layer deeper inside the HI
+            // (FIPS '15') bucket; everything else is data[year][stateName].
             const sdHi = {};
-            for (const key of Object.keys(sdData)) {
-                const startMatch = String(key).match(/^(\d{4})/);
-                if (!startMatch) continue;
-                const yrKey = key; // preserve original key (range or single year)
-                const states = sdData[key];
-                if (states && typeof states === 'object') {
-                    // 'Hawaiʻi' uses U+02BB; allow plain ASCII fallback
-                    const hiVal = states['Hawaiʻi'] !== undefined ? states['Hawaiʻi'] : states['Hawaii'];
-                    if (hiVal !== undefined) sdHi[yrKey] = hiVal;
+            if (FIPS_FIRST.has(slug)) {
+                const hiBucket = sdData['15'];
+                if (hiBucket && typeof hiBucket === 'object') {
+                    for (const key of Object.keys(hiBucket)) {
+                        if (key === 'name') continue;
+                        if (!String(key).match(/^(\d{4})/)) continue;
+                        const v = hiBucket[key];
+                        if (v !== undefined && v !== null) sdHi[key] = v;
+                    }
+                }
+            } else {
+                for (const key of Object.keys(sdData)) {
+                    const startMatch = String(key).match(/^(\d{4})/);
+                    if (!startMatch) continue;
+                    const yrKey = key; // preserve original key (range or single year)
+                    const states = sdData[key];
+                    if (states && typeof states === 'object') {
+                        // 'Hawaiʻi' uses U+02BB; allow plain ASCII fallback
+                        const hiVal = states['Hawaiʻi'] !== undefined ? states['Hawaiʻi'] : states['Hawaii'];
+                        if (hiVal !== undefined) sdHi[yrKey] = hiVal;
+                    }
                 }
             }
             const dashKeys = Object.keys(dashHi);
@@ -1458,6 +1470,24 @@ async function runFreshFetch() {
         return absDiff <= TOLERANCE_PP || relDiff <= TOLERANCE_REL;
     }
 
+    // FIPS-first storage detector: pcp_per_100k stores data[FIPS][year]
+    // with a 'name' key on each FIPS bucket; every other metric uses
+    // data[year][stateName]. The audit's fetcher contract is uniform
+    // (year-first), so the lookup of the stored HI value is the only
+    // place that needs to know about the shape.
+    function isFipsFirstStateData(sdData) {
+        if (!sdData) return false;
+        const firstKey = Object.keys(sdData)[0];
+        if (!firstKey || !/^\d{2}$/.test(firstKey)) return false;
+        const bucket = sdData[firstKey];
+        return !!(bucket && typeof bucket === 'object' && typeof bucket.name === 'string');
+    }
+    function readStoredHi(sdData, yr, isFips) {
+        if (!sdData) return undefined;
+        if (isFips) return sdData['15']?.[yr];           // HI FIPS = '15'
+        return sdData[yr]?.['Hawaiʻi'];
+    }
+
     let checkedMetrics = 0;
     let totalCells = 0;
     let driftCells = 0;
@@ -1486,11 +1516,12 @@ async function runFreshFetch() {
             continue;
         }
 
+        const sdIsFips = isFipsFirstStateData(sd.data);
         let metricCells = 0;
         let metricDrift = 0;
         for (const yr of Object.keys(result.data).sort()) {
             const fresh = result.data[yr]?.['Hawaiʻi'];
-            const stored = sd.data[yr]?.['Hawaiʻi'];
+            const stored = readStoredHi(sd.data, yr, sdIsFips);
             if (fresh === undefined || fresh === null) continue;
             if (stored === undefined || stored === null) {
                 // Source has a year state-data doesn't — informational, not a
