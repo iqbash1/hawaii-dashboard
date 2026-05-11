@@ -1,12 +1,14 @@
 // ============================================================
 // Hawaiʻi Dashboard - Question of the Day bank
 //
-// 49 questions, rotated deterministically by day index
+// 48 questions, rotated deterministically by day index
 // starting from QOTD_DAY_ZERO (see js/qotd.js).
 //
 // Fields:
-//   id          stable ID (q001-q100)
-//   slug        URL-friendly slug (used at /q/{slug}/)
+//   id          stable ID (q001-q100); URL is /q/{id}/
+//   slug        URL-friendly handle (used for the OG image filename at
+//                 /assets/og/q/{slug}.png — the slug-based redirect page
+//                 pattern was dropped May 2026 in favor of id-based URLs)
 //   claim       the daily claim shown to the user
 //   correct     true | false — the answer
 //   answer      1-sentence proof-from-data sentence shown on reveal
@@ -179,7 +181,7 @@ const QOTD_QUESTIONS = [
     "slug": "hawaii-has-a-lower-violent-crime-rate-than-the-rest-of-the-country",
     "claim": "Hawaiʻi has a lower violent crime rate than most states.",
     "correct": true,
-    "answer": "In 2024, Hawaiʻi was 230.5 per 100K versus the median of 331.1 per 100K.",
+    "answer": "In 2024, Hawaiʻi was 230.5 per 100K versus the median of 327.8 per 100K.",
     "chartUrl": "/r/violent_crime_rate/",
     "metric": "violent_crime_rate",
     "metricLabel": "Violent Crime Rate",
@@ -191,7 +193,7 @@ const QOTD_QUESTIONS = [
     "slug": "hawaii-has-a-lower-property-crime-rate-than-the-rest-of-the-country",
     "claim": "Hawaiʻi has a lower property crime rate than the rest of the country.",
     "correct": false,
-    "answer": "In 2024, Hawaiʻi was 2052.6 per 100K versus the median of 1697.7 per 100K.",
+    "answer": "In 2024, Hawaiʻi was 2052.6 per 100K versus the median of 1687.0 per 100K.",
     "chartUrl": "/r/property_crime_rate/",
     "metric": "property_crime_rate",
     "metricLabel": "Property Crime Rate",

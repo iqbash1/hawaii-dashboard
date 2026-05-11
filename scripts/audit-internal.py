@@ -396,8 +396,14 @@ def phase5(data, state_data, questions):
     NUMS_RE = re.compile(r"(-?[0-9]+(?:\.[0-9]+)?)")
 
     def parse_answer(ans):
-        """Return (year_key, list_of_numbers).
-        year_key is 'YYYY' or 'YYYY-YYYY' depending on the answer template."""
+        """Return (year_key, hi_value, median_or_comparator_value).
+        year_key is 'YYYY' or 'YYYY-YYYY' depending on the answer template.
+
+        The HI value is the first number after the year reference. The
+        comparator value (median or peer state) is the first number after
+        the 'versus' / 'vs.' / 'than' pivot. Threshold numbers embedded in
+        the answer body (e.g., 'spent over 30% of income') are skipped —
+        only numbers in the post-pivot tail count as the comparator."""
         # Year range first (e.g., "In 2022-2024, ...")
         ym = re.search(r"\bIn\s+([0-9]{4}-[0-9]{4})\b", ans)
         if ym:
@@ -410,11 +416,25 @@ def phase5(data, state_data, questions):
         # Strip the matched year(s) from clean_text so they don't appear as numbers
         if year:
             clean_text = clean_text.replace(year, "")
-        nums = [float(x) for x in NUMS_RE.findall(clean_text)]
+        # Split on the pivot phrase. Numbers before the pivot are HI-side;
+        # numbers after are comparator-side. Pivot phrases (in priority
+        # order): "versus the median of", "versus", "vs.", "vs ", " than ".
+        pivot_match = re.search(r"\bversus the median of\b|\bversus\b|\bvs\.?\b|\bthan\b", clean_text)
+        if pivot_match:
+            head = clean_text[:pivot_match.start()]
+            tail = clean_text[pivot_match.end():]
+            head_nums = [float(x) for x in NUMS_RE.findall(head)]
+            tail_nums = [float(x) for x in NUMS_RE.findall(tail)]
+            # Combined nums list: HI value is the first head number; the
+            # comparator is the first tail number.
+            nums = []
+            if head_nums: nums.append(head_nums[0])
+            if tail_nums: nums.append(tail_nums[0])
+        else:
+            nums = [float(x) for x in NUMS_RE.findall(clean_text)]
         return year, nums
 
     qdir = ROOT / "q"
-    pages_seen = set()
 
     for q in questions:
         qid = q.get("id")
@@ -425,12 +445,9 @@ def phase5(data, state_data, questions):
         answer = q.get("answer", "")
         chart_url = q.get("chartUrl", "")
 
-        # Verify page exists
-        page = qdir / slug
-        if not page.exists():
-            add("phase5", "P0", f"q[{qid}]", f"questions.js says slug='{slug}' but /q/{slug}/ does not exist")
-        else:
-            pages_seen.add(slug)
+        # QOTD redirect pages live at /q/{id}/ (e.g., /q/q036/), not /q/{slug}/.
+        # The slug is used for the OG image filename at /assets/og/q/{slug}.png.
+        # The id-based existence check is performed below at line ~560.
 
         # Verify metric exists in data.js
         if metric not in data:
@@ -547,19 +564,25 @@ def phase5(data, state_data, questions):
                     add("phase5", "P0", f"q[{qid}]",
                         f"verdict 'correct={correct}' contradicts data: HI={hi_val} vs median={med_val} for {year}, claim direction='{claim}'")
 
-    # Pages with no matching question (excluding the qNNN-style ID pages that
-    # mirror the slug pages by design — q001, q002, etc.)
+    # QOTD pages live at /q/{id}/ (slug-based pages were dropped May 2026 in
+    # favor of stable id-keyed URLs). Verify each questions.js entry has its
+    # corresponding qNNN/ directory, and flag any qNNN/ orphan with no
+    # matching entry in questions.js.
     if qdir.exists():
+        active_ids = {q.get("id") for q in questions if q.get("id")}
         all_pages = {p.name for p in qdir.iterdir() if p.is_dir()}
         qid_pages = {p for p in all_pages if re.fullmatch(r"q[0-9]{3}", p)}
-        unused = (all_pages - qid_pages) - pages_seen
-        if unused:
+        non_qid_pages = all_pages - qid_pages
+        if non_qid_pages:
             add("phase5", "P2", "q/",
-                f"{len(unused)} /q/{{slug}}/ pages have no matching entry in questions.js: {sorted(unused)[:5]}")
-        # Verify each questions.js entry has a qNNN page too
-        for q in questions:
-            qid = q.get("id")
-            if qid and not (qdir / qid).exists():
+                f"{len(non_qid_pages)} non-qNNN page(s) under /q/ — slug-based redirect pattern was dropped May 2026: {sorted(non_qid_pages)[:5]}")
+        orphan_qids = qid_pages - active_ids
+        if orphan_qids:
+            add("phase5", "P2", "q/",
+                f"{len(orphan_qids)} qNNN page(s) have no matching entry in questions.js: {sorted(orphan_qids)[:5]}")
+        # Verify each questions.js entry has its qNNN page
+        for qid in active_ids:
+            if not (qdir / qid).exists():
                 add("phase5", "P1", f"q[{qid}]",
                     f"questions.js declares id={qid} but /q/{qid}/ does not exist")
     # questions.js comment says "57 questions" — verify
@@ -818,7 +841,6 @@ def phase7():
         "off-the-charts/renewables-prices/index.html",
         "about/index.html",
         "faq/index.html",
-        "methods/index.html",
         "index.html",
         "five-year-change/index.html",
         "ten-year-change/index.html",
@@ -897,7 +919,6 @@ def phase9():
         "index.html",
         "about/index.html",
         "faq/index.html",
-        "methods/index.html",
         "off-the-charts/index.html",
         "off-the-charts/expensive-states/index.html",
         "off-the-charts/renewables-prices/index.html",
@@ -987,7 +1008,6 @@ def phase10():
         "off-the-charts/renewables-prices/index.html",
         "about/index.html",
         "faq/index.html",
-        "methods/index.html",
         "index.html",
         "five-year-change/index.html",
         "ten-year-change/index.html",
