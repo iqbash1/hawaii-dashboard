@@ -16,6 +16,13 @@
 const fs = require('fs');
 const path = require('path');
 
+// Federal API endpoints (EIA in particular) serve a TLS chain that fails
+// Node's default verification on some macOS / CI builds. The state-data and
+// county-data fetchers handle this via NODE_TLS_REJECT_UNAUTHORIZED=0 set
+// at the workflow level. Mirror that here so the script works the same
+// whether run locally or in GitHub Actions, no env prefix required.
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const BASE = path.join(__dirname, '..');
 const DATA_PATH = path.join(BASE, 'js', 'data.js');
 

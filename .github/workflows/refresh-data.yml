@@ -2,8 +2,11 @@ name: Monthly Data Refresh
 
 on:
   schedule:
-    # 7:17 AM UTC on the 5th of each month (avoid :00/:30 load spikes)
-    - cron: '17 7 5 * *'
+    # 7:17 AM UTC on the 23rd of each month (avoid :00/:30 load spikes).
+    # The 23rd is chosen so BLS state LAUS (typically released on the 3rd
+    # Friday, between the 17th and 22nd) is reliably out before we run.
+    # This keeps annual fetches and latestMonthly updates on the same cycle.
+    - cron: '17 7 23 * *'
   workflow_dispatch:  # allow manual trigger from GitHub UI
 
 permissions:
@@ -68,6 +71,16 @@ jobs:
       # ----- Recompute derived values -----
       - name: Recompute data.js from state-data.js
         run: node scripts/recompute-data.js
+
+      # ----- Refresh latestMonthly callouts (4 metrics: UR, LFP, electricity
+      #       price, renewables share). Must run AFTER recompute-data.js so
+      #       the recomputed data.js is the file we patch, not a stale copy.
+      #       recompute-data.js only overwrites hawaii + medianSeries fields,
+      #       so it preserves whatever latestMonthly is already in data.js;
+      #       this step then refreshes those four blocks to the latest BLS /
+      #       EIA monthly value.
+      - name: Refresh latestMonthly values (BLS + EIA)
+        run: node scripts/update-monthly.js
 
       # ----- Update derived files -----
       - name: Update about/index.html year ranges
