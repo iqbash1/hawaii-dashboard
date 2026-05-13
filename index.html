@@ -146,6 +146,22 @@
          App.AREA_ORDER so it stays in sync with the sections below. -->
     <nav class="area-chips" id="area-chips" aria-label="Jump to policy area"></nav>
 
+    <!-- Chart key — single global legend that explains the line styles used
+         in every card chart below. Replaces the per-card legend that
+         previously repeated this signal on each card; the line treatments
+         are identical across the grid. -->
+    <div class="chart-key" aria-hidden="true">
+        <span class="chart-key-label">Chart key</span>
+        <span class="chart-key-item">
+            <svg class="chart-key-stroke" width="20" height="6" viewBox="0 0 20 6" aria-hidden="true"><line x1="0" y1="3" x2="20" y2="3" stroke="#0D7C8F" stroke-width="2"/></svg>
+            <span>Hawaiʻi</span>
+        </span>
+        <span class="chart-key-item">
+            <svg class="chart-key-stroke" width="20" height="6" viewBox="0 0 20 6" aria-hidden="true"><line x1="0" y1="3" x2="20" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
+            <span>US</span>
+        </span>
+    </div>
+
     <!-- Grid of cards -->
     <main class="dashboard-grid" id="dashboard-grid">
         <!-- Skeleton mirrors real grid: 5 area headings + 26 metric cards (matches AREA_ORDER) -->
