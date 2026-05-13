@@ -30,6 +30,13 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "productivity-vs-unemployment",
+        "title": "One of America's tightest labor markets, with the weakest productivity growth.",
+        "date":  "12 May 2026",
+        # The outlier line conveys: HI's productivity rank fell sharply.
+        "outlier": "low",
+    },
+    {
         "slug": "reading-without-raising",
         "title": "How Hawaiʻi rose in 8th-grade reading without raising its score.",
         "date":  "9 May 2026",
