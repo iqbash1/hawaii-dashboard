@@ -1290,9 +1290,11 @@ const App = {
      * @private
      */
     _trackEvent(eventName, params) {
-        // Google Analytics 4 / GTM
-        if (window.dataLayer) {
-            window.dataLayer.push({ event: eventName, ...params });
+        // Google Analytics 4 (gtag.js direct). dataLayer.push of a raw
+        // {event,...} object is the GTM-relay shape and is silently ignored
+        // by gtag.js, so we route through the gtag() function instead.
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, params);
         }
         // Microsoft Clarity: tag the session with the metric slug for filtering
         if (window.clarity) {
