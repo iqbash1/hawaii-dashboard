@@ -1026,6 +1026,7 @@ const App = {
                         ${this.buildVsYearHtml(effective)}
                     </div>
                     ${footerHtml}
+                    <div class="card-cta">View details <span class="card-cta-arrow">→</span></div>
                 `;
 
                 // Keyboard accessibility
