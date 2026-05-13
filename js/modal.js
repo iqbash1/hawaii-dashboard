@@ -1301,10 +1301,10 @@ const Modal = {
      * 2020 and 2021 are excluded from the pool because the COVID collapse and
      * snapback distort normal-times comparisons (unemployment spiked to 11.6%,
      * labor-force participation dropped, business formation swung). The
-     * 2019-to-2022 shift in the windows is labeled in the phrase itself; see
-     * about/index.html methodology note.
+     * precise windows (and the exclusion convention) are documented in the
+     * about/index.html methodology note rather than the lead sentence.
      * @param {string} slug - Metric ID
-     * @returns {string|null} e.g. "improved 8.2% from the 2017-19 to 2022-24 average (2020-21 excluded)"
+     * @returns {string|null} e.g. "improved 8.2% over the last five years"
      */
     computeTrendPhrase(slug) {
         const effective = App.getEffectiveData(slug);
@@ -1322,10 +1322,8 @@ const Modal = {
         if (sortedKeys.length < 4) return null;
 
         // When the pandemic years were filtered out, pin each window to the
-        // pre-pandemic / post-pandemic side so the range labels stay
-        // contiguous (e.g., "2017-19" and "2022-24" rather than windows that
-        // straddle 2020-21). When no exclusion happened, use the original
-        // adjacent-window logic (last 3 vs prior 3).
+        // pre-pandemic / post-pandemic side. When no exclusion happened, use
+        // the original adjacent-window logic (last 3 vs prior 3).
         const recent = excluded
             ? sortedKeys.filter(k => App.keyEnd(k) > 2021).slice(-3)
             : sortedKeys.slice(-3);
@@ -1349,11 +1347,8 @@ const Modal = {
 
         const word    = isFlat ? 'held flat' : (isImproving ? 'improved' : 'worsened');
         const pctPart = isFlat ? '' : ` ${Math.abs(pctChange) > 100 ? Math.abs(pctChange).toFixed(0) : Math.abs(pctChange).toFixed(1)}%`;
-        const priorLbl  = Compute.formatYearRange(prior[0], prior[prior.length - 1], '\u2013');
-        const recentLbl = Compute.formatYearRange(recent[0], recent[recent.length - 1], '\u2013');
-        const suffix = excluded ? ' (2020\u201321 excluded)' : '';
 
-        return `${word}${pctPart} from the ${priorLbl} to ${recentLbl} average${suffix}`;
+        return `${word}${pctPart} over the last five years`;
     },
 
     /**
