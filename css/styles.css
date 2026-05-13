@@ -669,16 +669,21 @@ body {
     }
 }
 
-/* Directional context line — sits between the value and the chart so the
+/* Directional context chip — sits between the value and the chart so the
    reader knows whether an upward line is good or bad without parsing the
-   green/red fill. */
+   green/red fill. Pill-shaped so it reads as a tag, not narrative italic. */
 .card-direction {
-    font-size: 11px;
-    font-style: italic;
+    align-self: flex-start;
+    font-size: 10px;
+    font-weight: 500;
     color: var(--text-muted);
-    margin-top: -0.25rem;
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-top: -0.1rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
 }
 
 /* Inline legend — sits between the chart and the comparisons row, mapping
