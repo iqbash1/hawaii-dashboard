@@ -595,7 +595,7 @@ All modal rendering: open/close, tab switching, chart creation, rankings, rank h
 | `showRankHistory(slug)` | Renders rank-over-time chart with state comparison dropdown |
 | `showCounty(slug)` | Renders county comparison chart |
 | `computeBrief(slug)` | Builds the dynamic "Bottom line" paragraph from BRIEF_TEMPLATES |
-| `computeTrendPhrase(slug)` | Compares a pre-pandemic vs post-pandemic 3-year window for "improved/worsened X%". 2020 and 2021 are filtered out of the data pool so the COVID shock doesn't distort normal-times comparisons; phrase appends "(2020–21 excluded)" when the exclusion applies. See About page methodology note. |
+| `computeTrendPhrase(slug)` | Compares a pre-pandemic vs post-pandemic 3-year window and returns `"improved/worsened X% over the last five years"` (or `"held flat over the last five years"` for sub-0.5% changes). 2020 and 2021 are filtered out of the data pool so the COVID shock doesn't distort normal-times comparisons; the precise windows and exclusion convention are documented in the About page methodology note rather than the phrase itself. |
 | `_buildConsolidatedNarrative(m)` | Renders 7 narrative sections: Why, National standing, County, Drivers, Lessons, Policy levers, Data note |
 | `renderBundleNav(slug)` | Shows Prev/Next nav inside modal when a bundle is active |
 
@@ -734,23 +734,24 @@ state-data.js is the canonical store. data.js is derived. To update a year cell:
 
 ## Analytics
 
-Three platforms are active on all pages (`index.html`, `about/index.html`, `five-year-change/index.html`, `faq/index.html`):
+Four platforms are active on all pages (`index.html`, `about/index.html`, `five-year-change/index.html`, `off-the-charts/index.html`, `faq/index.html`):
 
 | Platform | Purpose | Setup |
 |----------|---------|-------|
 | Cloudflare Web Analytics | Pageviews, Core Web Vitals, traffic sources, country/browser breakdown | Active via Cloudflare dashboard; no beacon tag needed in HTML |
-| Microsoft Clarity | Session recordings, heatmaps, rage-click detection | Project ID `w5pye8kkrb`; script tag in `<head>` of all 3 pages |
+| Google Analytics 4 | Pageviews, sessions, geo breakdown, and custom-event funnel | Property `G-5MSPMJVFE5`; `gtag.js` script tag in `<head>` of every page (loaded direct, no GTM container) |
+| Microsoft Clarity | Session recordings, heatmaps, rage-click detection | Project ID `w5pye8kkrb`; script tag in `<head>` of every page |
 | Google Search Console | Search queries, click-through rates, index coverage | Verified via Cloudflare DNS; no HTML meta tag needed |
 
 ### Custom Events
 
-`App._trackEvent(eventName, params)` is a thin wrapper that routes events to every connected platform. It is called automatically inside `openModal()` on every metric click:
+`App._trackEvent(eventName, params)` is a thin wrapper that routes events to every connected platform. It calls `window.gtag('event', name, params)` for GA4 (gtag.js direct, no GTM container; raw `dataLayer.push({event,...})` would be silently ignored) and `window.clarity('event', name)` for Clarity. Example call inside `openModal()`:
 
 ```js
 this._trackEvent('modal_open', { slug, name: metricData.metric, area: metricData.area });
 ```
 
-To add more events (e.g. tab switches, link clicks), call `this._trackEvent()` with any name and params object:no changes needed at the platform level.
+To add more events (e.g. tab switches, link clicks), call `this._trackEvent()` with any name and params object: no changes needed at the platform level.
 
 **What this enables in Clarity:** filter session recordings to only sessions where a user opened a specific metric (`metric_slug = property_crime_rate`, etc.), making it easy to see how users engage with any given modal.
 

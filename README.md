@@ -127,7 +127,7 @@ bash scripts/verify-live-site.sh --no-wait
 
 ## Analytics
 
-Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings, project `w5pye8kkrb`), and Google Search Console (search queries, verified via DNS) are active on all pages. `App._trackEvent()` fires a `modal_open` event on every metric click, tagging the slug/name/area to Clarity and GA4 dataLayer.
+Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings, project `w5pye8kkrb`), Google Analytics 4 (property `G-5MSPMJVFE5`, gtag.js direct, no GTM), and Google Search Console (search queries, verified via DNS) are active on all pages. `App._trackEvent()` routes custom events (`modal_open`, `tab_viewed`, `qotd_answered`, etc.) to GA4 via `gtag('event', ...)` and to Clarity via `clarity('event', ...)`.
 
 ## Style rules
 
