@@ -42,12 +42,19 @@ ten-year-change/             Change Summary, 10-year view
 fifteen-year-change/         Change Summary, 15-year view
 twenty-year-change/          Change Summary, 20-year view
 twenty-five-year-change/     Change Summary, 25-year view
-t/{slug}/index.html          Detail view redirect pages (with OG tags)
-r/{slug}/index.html          Rankings view redirect pages (with OG tags)
-c/{slug}/index.html          County view redirect pages (with OG tags)
-rh/{slug}/index.html         Rank history redirect pages (with OG tags)
+t/{slug}/index.html          Detail view redirect pages (canonical→/c/, OG tags)
+r/{slug}/index.html          Rankings view redirect pages (canonical→/c/, OG tags)
+c/{slug}/index.html          Metric landing page: full content, Dataset JSON-LD,
+                             headline figure, rank, county + trend tables, CTA. One
+                             per metric (all 26). Indexable; self-canonical.
+rh/{slug}/index.html         Rank history redirect pages (canonical→/c/, OG tags)
 rh/{slug}/{code}/index.html  Rank history comparison redirect pages (49 per metric)
 q/{id}/index.html            QOTD question redirect pages (one per question; meta-refresh to /?from_q={id})
+data/{slug}_state.csv        Static per-metric state series (long format:
+                             year,state,value across 50 states). Declared as
+                             schema.org Dataset.distribution on /c/{slug}/.
+data/{slug}_county.csv       Static per-metric county series (when county data
+                             exists; long format: year,county,value).
 assets/og/                   Open Graph preview images (1200x630)
 assets/og/q/                 Per-question QOTD OG cards
 assets/og/off-the-charts/    Per-post OTC OG cards
@@ -89,13 +96,20 @@ Two GitHub Actions workflows automate the cycle:
 - `.github/workflows/refresh-data.yml`: monthly full refresh, opens a PR if data changed.
 - `.github/workflows/data-audit.yml`: twice-daily drift audit (1 PM + 6 PM HST) that re-fetches every wired metric and compares against state-data at strict tolerance (0.5% relative / 0.0001 absolute). Failure opens a `data-drift` issue.
 
-## OG image generation
+## OG images, landing pages, and static CSVs
 
 ```bash
 python3 scripts/generate-og-pages.py
 ```
 
-Generates all per-metric OG images (detail, rankings, county, rank history) and redirect pages with matching meta tags. Requires `Pillow` (`pip3 install Pillow`).
+Single command rebuilds, per metric:
+- OG images: detail, rankings, county, rank history (1200×630 PNG)
+- `/c/{slug}/index.html`: full landing page with Dataset + BreadcrumbList JSON-LD, headline figure, national rank, county and state-trend tables, source attribution, cross-links, CTA
+- `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/` redirect pages with OG tags and `canonical` → `/c/{slug}/` (consolidates ranking authority to one URL per metric)
+- `/data/{slug}_state.csv` (always) and `/data/{slug}_county.csv` (when county data exists)
+- QOTD OG cards + redirect pages
+
+Requires `Pillow` (`pip3 install Pillow`).
 
 ## Metrics (26)
 

@@ -127,9 +127,11 @@ hawaii-dashboard/
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
 ├── faq/
 │   └── index.html          # FAQ page: 11 Q&A pairs, feedback form
-├── robots.txt              # Crawl directives for search engines and AI bots
-├── sitemap.xml             # Site sitemap (~25 URLs; build.sh rewrites lastmod in dist/)
-├── llms.txt                # Plain-text site summary for AI chat engines
+├── robots.txt              # Crawl directives for search engines and AI bots (all AI bots allowlisted)
+├── sitemap.xml             # Site sitemap (41 URLs with inline <image:image> entries; build.sh rewrites lastmod in dist/)
+├── llms.txt                # Plain-text site summary for AI chat engines (Anthropic/Answer.AI llms.txt convention)
+├── _headers                # Cloudflare response headers: HSTS, CSP, Referrer-Policy, Permissions-Policy, per-route cache rules
+├── data/                   # Static per-metric CSV exports (37 files: 26 state + 11 county) referenced by Dataset.distribution
 └── DOCUMENTATION.md
 ```
 
@@ -206,7 +208,7 @@ The dashboard uses **path-based URLs** so every metric view can be shared with a
 | Metric trend + compare + threshold | `/t/{slug}/{code}/{variant}/` | `hawaiidashboard.org/t/renter_cost_burden_pct/ca/severe/` |
 | Metric trend + threshold | `/t/{slug}/{variant}/` | `hawaiidashboard.org/t/renter_cost_burden_pct/severe/` |
 | State rankings | `/r/{slug}/` | `hawaiidashboard.org/r/naep_math_8/` |
-| County view | `/c/{slug}/` | `hawaiidashboard.org/c/unemployment_rate/` |
+| Metric landing page | `/c/{slug}/` | `hawaiidashboard.org/c/unemployment_rate/` |
 | Rank history | `/rh/{slug}/` | `hawaiidashboard.org/rh/naep_math_8/` |
 | Rank history + compare state | `/rh/{slug}/{code}/` | `hawaiidashboard.org/rh/violent_crime_rate/ca/` |
 | Rank history + compare + threshold | `/rh/{slug}/{code}/{variant}/` | `hawaiidashboard.org/rh/renter_cost_burden_pct/ca/severe/` |
@@ -214,22 +216,26 @@ The dashboard uses **path-based URLs** so every metric view can be shared with a
 
 Disambiguation: when two segments follow the slug, the second is tried as a 2-letter state code first (via `Router.slugToState`); if it resolves, the third segment (if any) is the threshold variant. Otherwise the single trailing segment is treated as a threshold. State codes (2 letters) and threshold keywords (`severe`, `verylow`, `notgood`, `total`) don't collide.
 
-- **`/t/`** = **t**rend (sparkline + value + rank)
-- **`/r/`** = **r**ankings (bar chart of all 50 states)
-- **`/c/`** = **c**ounty (multi-line chart of 4 Hawaiʻi counties)
-- **`/rh/`** = **r**ank **h**istory (line chart of Hawaiʻi's rank over time)
+- **`/t/`** = **t**rend share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
+- **`/r/`** = **r**ankings share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
+- **`/c/`** = **c**anonical metric landing page. Real indexable content (no redirect): keyword-rich title, Dataset + BreadcrumbList JSON-LD with `distribution` referencing `/data/{slug}_*.csv`, headline figure with national rank, county and state-trend tables, cross-links to related metrics, source attribution, CTA back to the SPA. One per metric (26 total). All other view types (`/t/`, `/r/`, `/rh/`) consolidate authority here via canonical-link.
+- **`/rh/`** = **r**ank **h**istory share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
+
+### Canonical consolidation
+
+To prevent keyword cannibalization, only `/c/{slug}/` is treated as the indexable canonical for a metric. The other three view types (`/t/`, `/r/`, `/rh/`) are share-only pages: they serve rich OG previews to crawlers and a `<script>window.location.replace`/`<meta http-equiv="refresh">` redirect to the SPA for humans, and their `<link rel="canonical">` points back to `/c/{slug}/`. Sitemap.xml only lists `/c/` URLs (plus home, About, FAQ, Change Summary year-span views, Off the Charts archive, and Off the Charts posts).
 
 ### How Sharing Works
 
-1. User opens a metric modal - URL bar shows `/t/{slug}/` or `/r/{slug}/`
+1. User opens a metric modal - URL bar shows `/t/{slug}/`, `/r/{slug}/`, `/c/{slug}/`, or `/rh/{slug}/`
 2. User copies URL (or clicks **Share** in the modal footer)
-3. When pasted into iMessage/Twitter/etc., the crawler fetches the redirect page at `/t/{slug}/index.html`
+3. When pasted into iMessage/Twitter/etc., the crawler fetches the redirect page at `/t/{slug}/index.html` (or rich landing page at `/c/{slug}/index.html`)
 4. Crawler sees metric-specific `og:title`, `og:description`, `og:image` - renders a rich preview
-5. When a real user clicks the link, JS instantly redirects to `/#slug` - SPA opens the modal
+5. When a real user clicks `/t/`, `/r/`, or `/rh/` link, JS instantly redirects to `/#slug` - SPA opens the modal. When they click a `/c/` link, the landing page renders directly with a "View interactive chart →" button into the SPA.
 
-### Regenerating OG Assets
+### Regenerating OG Assets, Landing Pages, and CSVs
 
-When data changes, regenerate all OG images and redirect pages:
+When data changes, regenerate everything per-metric in one command:
 
 ```bash
 python3 scripts/generate-og-pages.py
@@ -239,9 +245,12 @@ This single script reads `js/data.js`, `js/state-data.js`, and `js/county-data.j
 - 26 trend OG cards (`assets/og/{slug}.png`)
 - 26 rankings OG cards (`assets/og/{slug}_rankings.png`)
 - 26 rank history OG cards (`assets/og/{slug}_rank_history.png`)
-- 1,274 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`) -- one per metric per state (26 × 49)
-- Up to 13 county OG cards (`assets/og/{slug}_county.png`)
-- All redirect pages in `t/`, `r/`, `rh/`, `c/` (including `rh/{slug}/{code}/` comparison pages)
+- 1,274 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`) — one per metric per state (26 × 49)
+- 11 county OG cards (`assets/og/{slug}_county.png`) — for metrics with county data
+- 26 trend comparison cards per metric per state (`assets/og/{slug}_t_{code}.png`)
+- All `/c/{slug}/index.html` landing pages (full content, Dataset JSON-LD with `distribution`, headline figure, county and state-trend tables, source attribution, cross-links, CTA)
+- All redirect pages in `t/`, `r/`, `rh/` (with canonical-link to `/c/{slug}/`, no longer self-canonical)
+- All static CSVs in `/data/` (`{slug}_state.csv` per metric, `{slug}_county.csv` for the 11 metrics with county data)
 
 All images are PIL-rendered (1200×630 PNG). No browser or Puppeteer dependency.
 
@@ -970,26 +979,44 @@ Tests run automatically on every push to `main` and on all pull requests via `.g
 
 ## SEO & AI Discoverability
 
-### Search engine optimization
+### Per-page <head> across all indexed surfaces
 
-All 4 main pages have:
-- `<title>`, `<meta name="description">`, `<link rel="canonical">`
-- Open Graph tags (og:type, og:url, og:title, og:description, og:image, og:site_name)
+Every indexable page has:
+- Keyword-front-loaded `<title>` (e.g. `"Hawaii Unemployment Rate: 2.3% (2025), Ranked #2 of 50 States | Hawaiʻi Dashboard"` on `/c/unemployment_rate/`)
+- `<meta name="description">` trimmed to the ~155-char SERP snippet sweet spot
+- `<link rel="canonical">` — either self-canonical (`/c/`, `/`, `/about/`, `/faq/`, `/off-the-charts/`, change summaries, OtC posts) or canonical-link to `/c/{slug}/` (`/t/`, `/r/`, `/rh/` share pages, including per-state comparison variants)
+- `<meta name="robots" content="max-image-preview:large, max-snippet:-1">` — opt in to larger SERP image previews and full-length snippets
+- Open Graph tags (og:type, og:url, og:title, og:description, og:image, og:site_name) plus 1200×630 OG image
 - Twitter Card tags (summary_large_image)
-- JSON-LD structured data (BreadcrumbList on all pages; Organization + WebSite on homepage; FAQPage on /faq/)
-- Apple touch icon
+- BreadcrumbList JSON-LD with the page's position in the hierarchy
 
-Additional SEO infrastructure:
-- `robots.txt` - allows all crawlers, explicitly permits AI bots
-- `sitemap.xml` - 26 URLs (main pages, Change Summary year-span views, About, FAQ, Off the Charts archive + posts) with priority hints; `<lastmod>` auto-rewritten at build time from each file's git history
-- `_headers` - security headers (CSP, X-Frame-Options) and cache-control (1yr immutable for assets)
+### Per-surface structured data
+
+| Surface | JSON-LD types |
+|---|---|
+| Home (`/`) | Organization + WebSite + BreadcrumbList + ItemList (enumerates all 26 metric pages with their human-readable names — transfers topical authority to each `/c/`) |
+| `/c/{slug}/` (26 pages) | Dataset (with `temporalCoverage`, `spatialCoverage`, `variableMeasured`, `publisher`, and `distribution` referencing `/data/{slug}_state.csv` + `/data/{slug}_county.csv` when applicable) + BreadcrumbList |
+| `/about/` | AboutPage + BreadcrumbList |
+| `/faq/` | FAQPage (all 11 Q&A pairs) + BreadcrumbList |
+| `/off-the-charts/` archive | Blog + BreadcrumbList |
+| `/off-the-charts/{slug}/` posts | Article + BreadcrumbList |
+
+### Machine-readable data exports
+
+`/data/{slug}_state.csv` (one per metric, 26 files) and `/data/{slug}_county.csv` (one per metric with county data, 11 files) are pre-generated by `scripts/generate-og-pages.py` in long format (`year, state, value` and `year, county, value` respectively). They're served with `Content-Type: text/csv; charset=utf-8` and `Access-Control-Allow-Origin: *` so they can be fetched cross-origin (Python pandas, R, Datasette, etc.). The schema.org `Dataset.distribution` on each `/c/{slug}/` declares them so Google Dataset Search and AI crawlers can discover the underlying data, not just the rendered page.
+
+### Site-level SEO infrastructure
+
+- `robots.txt` — allows all crawlers, explicitly permits AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, etc.)
+- `sitemap.xml` — 41 URLs (home, 7 change-summary year-spans, About, FAQ, Off the Charts archive, 4 OtC posts, 26 `/c/` metric pages) with inline `<image:image>` entries for each URL's OG image (image-sitemap extension namespace). Priority hints; `<lastmod>` auto-rewritten at build time from each file's git history.
+- `_headers` — Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML.
 
 ### AI chat engine optimization
 
-- `llms.txt` - plain-text site summary (~150 lines) describing the dashboard, all 26 metrics, methodology, data sources, and URL structure. Follows the llms.txt convention for AI system context.
-- `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended, and other AI crawlers.
-- All 4 pages have semantic HTML with descriptive headings.
-- FAQ page has FAQPage JSON-LD schema, enabling Google rich results.
+- `llms.txt` — plain-text site summary (~150 lines) describing the dashboard, all 26 metrics, methodology, data sources, URL structure, and the `/data/{slug}_*.csv` endpoints. Follows the [Anthropic / Answer.AI llms.txt convention](https://llmstxt.org/) for AI system context.
+- `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, OAI-SearchBot, and other AI crawlers.
+- All pages have semantic HTML with descriptive headings.
+- FAQ page has FAQPage JSON-LD schema enabling Google rich results; metric landing pages have Dataset JSON-LD for Google Dataset Search.
 
 ### Validation tools
 
