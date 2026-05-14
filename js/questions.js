@@ -335,7 +335,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q056",
     "slug": "renewable-electricity-has-gone-up-in-hawaii-in-the-last-five-years",
-    "claim": "Hawaiʻi gets more electricity from renewables than five years ago.",
+    "claim": "Hawaiʻi gets more electricity from renewables today than five years ago.",
     "correct": true,
     "answer": "Hawaiʻi's renewable share of electricity went from 15.9% to 22.1% between 2020 and 2025 (+38.9%).",
     "chartUrl": "/t/renewables_share_gen/",
