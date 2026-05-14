@@ -146,7 +146,7 @@ const METRIC_RULES = {
 //   }
 //
 // `through` is the last year included in the freeze (inclusive). The freeze
-// covers static historical data that does not change — e.g., FBI ceased
+// covers static historical data that does not change: e.g., FBI ceased
 // UCR-based annual reports after 2019, so years through 2019 are historical
 // artifacts. Section 16 skips the freeze window and logs FROZEN with the
 // year range, then audits years > through normally through the fetcher
@@ -200,7 +200,7 @@ const SOURCE_COVERAGE = {
     // boundary at 2019 preserves the original UCR vintage for the historical
     // window while live audit runs daily on 2020+.
     violent_crime_rate:         { expectedStart: 1960, source: 'FBI UCR (pre-2020) / FBI CDE NIBRS (2020+)', note: 'UCR state series from 1960; CDE/NIBRS-era values from 2020', frozen: { through: 2019, asOf: '2026-05-10', reason: 'FBI ceased UCR-based annual reports after 2019; pre-2020 values are static historical artifacts that do not change', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' } },
-    property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR (pre-2020) / FBI CDE NIBRS (2020+)', note: 'UCR state series from 1960; CDE/NIBRS-era values from 2020', frozen: { through: 2019, asOf: '2026-05-10', reason: 'See violent_crime_rate — both metrics share the same FBI UCR provenance and static-historical character', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' } },
+    property_crime_rate:        { expectedStart: 1960, source: 'FBI UCR (pre-2020) / FBI CDE NIBRS (2020+)', note: 'UCR state series from 1960; CDE/NIBRS-era values from 2020', frozen: { through: 2019, asOf: '2026-05-10', reason: 'See violent_crime_rate: both metrics share the same FBI UCR provenance and static-historical character', canonicalProvenance: 'Hand-curated from FBI CDE / Crime in the United States Table 1 / Table 5 downloads, vintage as published 2013-2019 per scripts/archive/backfill-crime.js' } },
     // Structural floors (source itself starts here; not a backfill candidate):
     acgr:                       { expectedStart: 2011, source: 'NCES EDFacts',        note: 'ACGR first published 2010-11 SY (= 2011)' },
     pcp_per_100k:               { expectedStart: 2010, source: 'HRSA AHRF',           note: 'HRSA AHRF via CHR trends; civilian-adjusted with ACS B27001/B01003. CHR carries measurement years through {release-3}.' },
@@ -319,12 +319,12 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
             // the source got inverted/unit-shifted/corrupted. Catches the
             // May 2026 uninsured_rate ACS S2701 column-semantics inversion
             // (12.5x; commit 5ec4c642). Threshold is set above the largest
-            // legitimate decimal_pct spike on record — Maui's 2020 COVID
-            // unemployment swing of ~6.4x — to avoid false positives. Other
+            // legitimate decimal_pct spike on record: Maui's 2020 COVID
+            // unemployment swing of ~6.4x: to avoid false positives. Other
             // formats can have valid large swings (recession on counts,
             // etc.), so the rule applies only to decimal_pct.
             if (rules.format === 'decimal_pct' && changePct > 10.0) {
-                error(`${slug} ${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}) — likely inverted or corrupted source`);
+                error(`${slug} ${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}): likely inverted or corrupted source`);
             } else if (changePct > rules.maxYoYPct) {
                 warn(`${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
             }
@@ -436,7 +436,7 @@ for (const [slug, metric] of Object.entries(COUNTY_DATA)) {
             // Hard fail on >5x YoY for decimal_pct metrics only (see hawaii
             // spike check above for rationale).
             if (rules.format === 'decimal_pct' && changePct > 10.0) {
-                error(`${slug} ${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}) — likely inverted or corrupted source`);
+                error(`${slug} ${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}): likely inverted or corrupted source`);
             } else if (changePct > rules.maxYoYPct) {
                 warn(`${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
             }
@@ -470,7 +470,7 @@ for (const [slug, metric] of Object.entries(COUNTY_DATA)) {
 
         // For each overlapping year, check that county values are plausibly
         // related to the state value (within 3x for rates, reasonable for %).
-        // Skip metrics where strong inter-county offsetting is structural —
+        // Skip metrics where strong inter-county offsetting is structural;
         // e.g. net_domestic_migration_rate has Honolulu losing while neighbor
         // islands gain (interisland flows + external moves), so county
         // magnitudes routinely exceed the small state-net by 5x-10x.
@@ -824,7 +824,7 @@ if (STATE_DATA) {
         //      ("since YYYY", "from YYYY", date ranges, parenthetical event
         //      years like "(2020)").
         // A narrative made only of anchor references ("since 2008") is
-        // considered timeless — its claim doesn't go stale just because data
+        // considered timeless: its claim doesn't go stale just because data
         // moved forward. Those should be reviewed separately on a periodic
         // editorial pass, not on every refresh.
         const latestStr = String(latestDataYear);
@@ -1340,7 +1340,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 // For every metric where data.js defines a thresholdVariants overlay (e.g.
 // renter_cost_burden_pct -> "50" severe), state-data MUST carry the same
 // variant with a populated `data` block. Without it, App.getActiveStateData()
-// falls back to the base STATE_DATA — meaning the dashboard silently shows:
+// falls back to the base STATE_DATA: meaning the dashboard silently shows:
 //   - Hawaiʻi line on the chart: variant-correct (reads data.js variant.hawaii)
 //   - Comparator state line: base 30%+ data (silent fallback)
 //   - Bottom-line narrative value: base data via getEffectiveData merge
@@ -1351,7 +1351,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 // Hawaiʻi vs. California compare-with line + narrative number that didn't
 // match the chart.
 //
-// Hard error — silent rendering bugs erode the credibility floor of the
+// Hard error: silent rendering bugs erode the credibility floor of the
 // strict-tolerance audit gate.
 // ============================================================
 {
@@ -1364,14 +1364,14 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
         for (const [vk, dv] of Object.entries(dd.thresholdVariants)) {
             checked++;
             if (!sd) {
-                error(`[${slug}/${vk}] data.js defines threshold variant but state-data.${slug} is missing entirely — comparator/rank/effective-data have nothing to fall back to coherently`);
+                error(`[${slug}/${vk}] data.js defines threshold variant but state-data.${slug} is missing entirely: comparator/rank/effective-data have nothing to fall back to coherently`);
                 issues++;
                 auditCriticalErrors++;
                 continue;
             }
             const sv = sd.thresholdVariants?.[vk];
             if (!sv || !sv.data || Object.keys(sv.data).length === 0) {
-                error(`[${slug}/${vk}] data.js defines threshold variant but state-data.${slug}.thresholdVariants["${vk}"] is missing/empty — comparator + rank + effective Hawaiʻi will silently fall back to base ${slug} values while the chart's Hawaiʻi line reads the variant. Add the variant data to state-data (fetcher should return it via thresholdVariants).`);
+                error(`[${slug}/${vk}] data.js defines threshold variant but state-data.${slug}.thresholdVariants["${vk}"] is missing/empty: comparator + rank + effective Hawaiʻi will silently fall back to base ${slug} values while the chart's Hawaiʻi line reads the variant. Add the variant data to state-data (fetcher should return it via thresholdVariants).`);
                 issues++;
                 auditCriticalErrors++;
             }
@@ -1392,7 +1392,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 //
 // ORIGIN: commit 1e4517d9 (May 2026 coverage overhaul) wrote SOURCE_COVERAGE
 // with expectedStart=2008 for renter_cost_burden_pct and a code comment
-// claiming "B25070 from 2012" — both wrong. Census ACS B25070 actually
+// claiming "B25070 from 2012": both wrong. Census ACS B25070 actually
 // publishes valid all-state data from 2005. Section 12 then said
 // "OK at structural floor" for ~24 months because it compared state-data
 // to the codified spec, not to what the source actually has.
@@ -1444,7 +1444,7 @@ async function runProbeFloor() {
     for (const [slug, probe] of Object.entries(PROBES)) {
         const cov = SOURCE_COVERAGE[slug];
         if (!cov?.expectedStart) continue;
-        // Skip floors with a verifiedFloorReason — the floor was confirmed
+        // Skip floors with a verifiedFloorReason: the floor was confirmed
         // intentional (methodology change, variable redefinition, etc.).
         // The verification trail lives in SOURCE_COVERAGE.note.
         if (cov.verifiedFloorReason) {
@@ -1466,7 +1466,7 @@ async function runProbeFloor() {
             await new Promise(r => setTimeout(r, 250)); // gentle rate limit
         }
         if (found.length > 0) {
-            error(`[${slug}] expectedStart=${cov.expectedStart} but Census ACS 1-year ${probe.table} returns valid HI data for ${found.join(', ')}. Floor may be artificially low — verify, lower ACS_YEARS / per-fetcher floor, refresh state-data, update SOURCE_COVERAGE.`);
+            error(`[${slug}] expectedStart=${cov.expectedStart} but Census ACS 1-year ${probe.table} returns valid HI data for ${found.join(', ')}. Floor may be artificially low: verify, lower ACS_YEARS / per-fetcher floor, refresh state-data, update SOURCE_COVERAGE.`);
             issues++;
             auditCriticalErrors++;
         } else {
@@ -1482,15 +1482,15 @@ async function runProbeFloor() {
 // value from the canonical source and compare to state-data.js.
 //
 // Hawaiʻi is the dashboard's centerpiece, so full HI coverage is the
-// high-leverage signal — peer-state drift moves rankings only marginally
+// high-leverage signal: peer-state drift moves rankings only marginally
 // and is informational at best. This audit is what would have caught:
 //   - the May 2026 unemployment_rate truncation (35y of history wiped)
 //   - today's labor_force_participation drift (3-6pp on pre-1996 years
 //     against current BLS vintage)
 //   - any future hand-paste or methodology shift that changes a HI cell.
 //
-// Reuses the exact fetcher functions from build-state-data.js — same code
-// path that produces state-data.js — so the audit cannot drift away from
+// Reuses the exact fetcher functions from build-state-data.js: same code
+// path that produces state-data.js: so the audit cannot drift away from
 // the writer.
 // ============================================================
 async function runFreshFetch() {
@@ -1546,7 +1546,7 @@ async function runFreshFetch() {
 
     // First pass: log every freeze + pending-source declaration so they are
     // visible in the audit log regardless of fetcher availability. Pending
-    // sources are NOT freezes — they are explicit gaps with documented
+    // sources are NOT freezes: they are explicit gaps with documented
     // unblock paths. Both surface; neither is silent.
     const allCoverageSlugs = Object.keys(SOURCE_COVERAGE);
     for (const slug of allCoverageSlugs) {
@@ -1556,13 +1556,13 @@ async function runFreshFetch() {
             // If --include-frozen AND a fetcher exists, the audit loop will
             // re-audit the frozen window too; otherwise emit FROZEN here.
             if (!(INCLUDE_FROZEN && buildFetchers[slug])) {
-                console.log(`  FROZEN [${slug}] ${window} verified as of ${spec.frozen.asOf} — ${spec.frozen.reason}`);
+                console.log(`  FROZEN [${slug}] ${window} verified as of ${spec.frozen.asOf}: ${spec.frozen.reason}`);
                 frozenMetrics++;
             }
         }
         if (spec.pendingSource) {
             const p = spec.pendingSource;
-            console.log(`  DEFERRED [${slug}] years ≥${p.sinceYear} no live audit — ${p.reason}; blocker: ${p.blocker}`);
+            console.log(`  DEFERRED [${slug}] years ≥${p.sinceYear} no live audit: ${p.reason}; blocker: ${p.blocker}`);
             deferredMetrics++;
         }
     }
@@ -1624,7 +1624,7 @@ async function runFreshFetch() {
             const stored = readStoredHi(sd.data, yr, sdIsFips);
             if (fresh === undefined || fresh === null) continue;
             if (stored === undefined || stored === null) {
-                // Source has a year state-data doesn't — informational, not a
+                // Source has a year state-data doesn't: informational, not a
                 // drift; surfaces in Section 12 coverage audit instead.
                 continue;
             }
@@ -1643,7 +1643,7 @@ async function runFreshFetch() {
         if (metricDrift === 0) {
             console.log(`  OK [${slug}] HI ${metricCells} years match canonical source within tolerance`);
         } else {
-            error(`[${slug}] HI ${metricDrift} of ${metricCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}% — see drift summary`);
+            error(`[${slug}] HI ${metricDrift} of ${metricCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}%: see drift summary`);
         }
 
         // Threshold-variant audit: when the fetcher returns alternate-threshold
@@ -1673,7 +1673,7 @@ async function runFreshFetch() {
                 if (vDrift === 0) {
                     console.log(`  OK [${slug}/${vk}] HI ${vCells} years match canonical source within tolerance`);
                 } else {
-                    error(`[${slug}/${vk}] HI ${vDrift} of ${vCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}% — see drift summary`);
+                    error(`[${slug}/${vk}] HI ${vDrift} of ${vCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}%: see drift summary`);
                 }
             }
         }
@@ -1706,17 +1706,17 @@ if (STATE_DATA) {
 
 // AUDIT_ONLY: exit on Section 16 drift OR audit-critical structural errors.
 // The cron must fail when structural data-integrity invariants break (e.g.
-// renter-style thresholdVariants gap), not just when API values drift —
+// renter-style thresholdVariants gap), not just when API values drift;
 // otherwise silent display bugs ship undetected.
 if (AUDIT_ONLY) {
     if (auditDriftCells > 0 || auditCriticalErrors > 0) {
         const parts = [];
         if (auditDriftCells > 0) parts.push(`${auditDriftCells} HI year-cells drifted from canonical source`);
-        if (auditCriticalErrors > 0) parts.push(`${auditCriticalErrors} structural integrity error(s) — see Section 17`);
-        console.log(`\n  RESULT: AUDIT FAIL — ${parts.join('; ')}\n`);
+        if (auditCriticalErrors > 0) parts.push(`${auditCriticalErrors} structural integrity error(s): see Section 17`);
+        console.log(`\n  RESULT: AUDIT FAIL: ${parts.join('; ')}\n`);
         process.exit(2);
     } else {
-        console.log('\n  RESULT: AUDIT PASS — every audited HI year-cell matches canonical source within tolerance\n');
+        console.log('\n  RESULT: AUDIT PASS: every audited HI year-cell matches canonical source within tolerance\n');
         process.exit(0);
     }
 }

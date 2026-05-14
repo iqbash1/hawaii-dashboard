@@ -104,7 +104,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-line2 { font-size: var(--text-md); color: var(--text-secondary); margin-top: 0.3rem; }
 /* Abs-change value is secondary context (muted); rank + status carry direction. */
 .fyc-line2 .fyc-abs-change { font-weight: 500; }
-/* Applied dynamically in fyc.js via `fyc-val-${rankDir}` template literal —
+/* Applied dynamically in fyc.js via `fyc-val-${rankDir}` template literal;
  * the dash-variable form is invisible to a naive grep for the literal class. */
 .fyc-val-pos { color: var(--positive); font-weight: 600; }
 .fyc-val-neg { color: var(--negative); font-weight: 600; }
@@ -150,7 +150,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-rank-move.move-down   { color: var(--negative); }
 .fyc-rank-move.move-stable { color: var(--neutral); font-weight: 400; }
 /* Rank table value column: current level is primary (default weight), delta is
- * secondary (muted parenthetical) so the row is self-contained — reader sees
+ * secondary (muted parenthetical) so the row is self-contained: reader sees
  * both where Hawaiʻi is now and how it moved. Rank move (prev column) carries
  * the direction signal; this column deliberately has no color coding. */
 .fyc-rank-val { font-size: var(--text-2xs); width: 190px; text-align: right; flex-shrink: 0; color: var(--text); }

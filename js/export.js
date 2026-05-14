@@ -71,7 +71,7 @@ const Export = {
             } else {
                 const allYears = Object.keys(sd.data).sort();
                 // Map each raw state key to its display form; some sources ship
-                // Hawaiʻi without the ʻokina — canonicalize for the header and
+                // Hawaiʻi without the ʻokina: canonicalize for the header and
                 // keep the raw key for data lookup.
                 const rawStates = [...new Set(
                     Object.values(sd.data).flatMap(d => Object.keys(d))

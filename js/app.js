@@ -701,10 +701,10 @@ const App = {
             if (hasRankings) {
                 const rankings = this.getStateRankings(slug);
                 if (rankings && rankings.hawaiiRank > 0) {
-                    // Single source of truth — same tier function as the Summary page.
+                    // Single source of truth: same tier function as the Summary page.
                     // Rank is direction-aware (rank 1 = best for the metric, regardless of
                     // whether high or low values are "good"). Prepend the tier word so
-                    // readers don't have to know that — "Top tier · #1 of 50" reads cleanly
+                    // readers don't have to know which. "Top tier · #1 of 50" reads cleanly
                     // for both metrics where high is good and metrics where low is good.
                     const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
                     const tierLabel = rankClass === 'rank-good' ? 'Top tier'
@@ -979,14 +979,14 @@ const App = {
                 const monthlyHtml = effective.latestMonthly
                     ? `<div class="card-latest-monthly">Latest: ${ChartUtils.formatValue(effective.latestMonthly.value, effective.unit, false)} (${effective.latestMonthly.period})</div>`
                     : '';
-                // Directional context — disambiguates whether the line going up is good
+                // Directional context: disambiguates whether the line going up is good
                 // or bad, without making the reader infer it from the green/red fill.
                 const directionLabel = effective.goodDirection === 'up'
                     ? 'higher is better'
                     : effective.goodDirection === 'down' ? 'lower is better' : '';
                 const directionHtml = directionLabel
                     ? `<div class="card-direction">${directionLabel}</div>` : '';
-                // Source attribution — small line at the bottom, paired with the
+                // Source attribution: small line at the bottom, paired with the
                 // county link when both exist. Provides at-a-glance trust signal.
                 const countyLink = this.buildCountyLinkHtml(slug);
                 const sourceText = effective.source ? `<span class="card-source">${effective.source}</span>` : '';

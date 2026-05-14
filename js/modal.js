@@ -112,7 +112,7 @@ const Modal = {
 
     /** Label for the "no state selected" option, varies by active tab. */
     _compareDefaultLabel(tab) {
-        return tab === 'rank-history' ? '\u2014 none \u2014' : 'US';
+        return tab === 'rank-history' ? '(none)' : 'US';
     },
 
     /** Show/hide the compare bar and update its default-option label for this tab. */
@@ -1029,7 +1029,7 @@ const Modal = {
             noteEl.style.display = 'none';
         }
 
-        // 3-year centered rolling average — same kernel applied to county AND
+        // 3-year centered rolling average: same kernel applied to county AND
         // state series so the lines on the county chart smooth identically.
         // Without this, raw state would spike where the smoothed counties
         // don't, making the state line appear to leave the county band.

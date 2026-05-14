@@ -7,10 +7,10 @@
 // Fields:
 //   id          stable ID (q001-q100); URL is /q/{id}/
 //   slug        URL-friendly handle (used for the OG image filename at
-//                 /assets/og/q/{slug}.png — the slug-based redirect page
+//                 /assets/og/q/{slug}.png: the slug-based redirect page
 //                 pattern was dropped May 2026 in favor of id-based URLs)
 //   claim       the daily claim shown to the user
-//   correct     true | false — the answer
+//   correct     true | false: the answer
 //   answer      1-sentence proof-from-data sentence shown on reveal
 //   chartUrl    exact dashboard chart URL backing the claim
 //   metric      dashboard metric slug (for iframe / analytics)

@@ -27,7 +27,7 @@ const Router = {
     /** Handle permalink routing: /t/{slug}/, /r/{slug}/, /c/{slug}/, /rh/{slug}/, /q/{id}/, or legacy #{slug} */
     handleRoute() {
         // Shared QOTD landing: /q/{id}/ pages are static meta-refresh redirects
-        // to /?from_q={id}. Treat the query param as a tracking signal only —
+        // to /?from_q={id}. Treat the query param as a tracking signal only;
         // the teaser on the home page already shows today's question.
         const fromQ = new URLSearchParams(window.location.search).get('from_q');
         if (fromQ && typeof QOTD !== 'undefined') {
@@ -93,7 +93,7 @@ const Router = {
             const hash = window.location.hash.slice(1);
             if (!hash) return;
             const parts = hash.split('/');
-            // Legacy QOTD hash route: #q/{slug|id} — just strip and let the
+            // Legacy QOTD hash route: #q/{slug|id}: just strip and let the
             // teaser render today's question.
             if (parts[0] === 'q' && parts[1]) {
                 if (typeof QOTD !== 'undefined') QOTD.trackSharedUrlLanding(parts[1]);

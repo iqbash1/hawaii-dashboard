@@ -467,7 +467,7 @@ body {
     gap: 1rem;
 }
 
-/* --- Area chips — topic-first nav above the grid --- */
+/* --- Area chips: topic-first nav above the grid --- */
 .area-chips {
     max-width: var(--content-max);
     margin: 1rem auto 1.25rem;
@@ -595,7 +595,7 @@ body {
 }
 
 
-/* Rank verdict — the second row of the median comparator block. Sized to
+/* Rank verdict: the second row of the median comparator block. Sized to
    mirror .comp-verdict on the year-change block so both rows of both
    blocks line up visually. */
 .comp-rank {
@@ -606,7 +606,7 @@ body {
     display: inline-block;
 }
 
-/* 3-tier rank colors — mirrors Summary page National Ranking table.
+/* 3-tier rank colors: mirrors Summary page National Ranking table.
    Top third → green, middle third → grey, bottom third → red. */
 .comp-rank.rank-good { color: var(--positive); }
 .comp-rank.rank-mid  { color: var(--neutral); }
@@ -618,7 +618,7 @@ body {
     font-weight: 500;
 }
 
-/* Card footer — combines source attribution (left) with the "View by county"
+/* Card footer: combines source attribution (left) with the "View by county"
    link (right) on a single low-weight row, separated from the comparisons by
    a thin divider. Either can be absent; the row collapses to one item. */
 .card-footer {
@@ -635,10 +635,10 @@ body {
     justify-content: center;
 }
 
-/* Primary CTA — always-visible affordance that the card opens a detail view.
+/* Primary CTA: always-visible affordance that the card opens a detail view.
    Visually decoupled from the source/county footer so it reads as "action"
    rather than "evidence." Right-aligned, teal, with a subtle arrow that
-   nudges right on hover. The whole card is the click target — this is the
+   nudges right on hover. The whole card is the click target: this is the
    visible signal, not its own click handler. */
 .card-cta {
     margin-top: 0.5rem;
@@ -703,7 +703,7 @@ body {
     }
 }
 
-/* Directional context chip — sits between the value and the chart so the
+/* Directional context chip: sits between the value and the chart so the
    reader knows whether an upward line is good or bad without parsing the
    green/red fill. Pill-shaped so it reads as a tag, not narrative italic. */
 .card-direction {
@@ -720,7 +720,7 @@ body {
     letter-spacing: 0.01em;
 }
 
-/* Global chart key — single row above the dashboard grid that explains
+/* Global chart key: single row above the dashboard grid that explains
    the line treatments used by every card chart below. SVG strokes match
    the chart's actual line treatment (HAWAII_BLUE 2px solid · #999 1.5px
    dashed) so the key reads as a true legend, not a generic icon. */
@@ -2182,7 +2182,7 @@ body {
     color: #fff;
     outline: none;
 }
-/* Share button — visually identical to .modal-share-btn so the share affordance reads the same everywhere on the dashboard. .share-btn is the generic alias; .qotd-share-btn is kept for the QOTD-specific markup. */
+/* Share button: visually identical to .modal-share-btn so the share affordance reads the same everywhere on the dashboard. .share-btn is the generic alias; .qotd-share-btn is kept for the QOTD-specific markup. */
 .qotd-share-btn,
 .share-btn {
     height: 36px;
@@ -2319,7 +2319,7 @@ body {
     }
 }
 
-/* QOTD homepage teaser — styled as a white card so it pops against the
+/* QOTD homepage teaser: styled as a white card so it pops against the
    gray page background. Negative top margin pulls it up so the card's
    border overlaps the header's bottom border (no gray gap between). */
 .qotd-teaser {
@@ -2333,7 +2333,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     text-align: center;
 }
-/* Close button — matches .modal-close so the dismiss affordance reads the same across the site. */
+/* Close button: matches .modal-close so the dismiss affordance reads the same across the site. */
 .qotd-teaser-close {
     position: absolute;
     top: 0.75rem;

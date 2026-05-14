@@ -278,7 +278,7 @@ const Utils = {
     /* ── first2Sentences(text) ──
      * Extracts the first two sentences from a string.
      * Splits on sentence-ending punctuation only when followed by whitespace
-     * and a capital letter — so periods inside numbers ("-25.3") and
+     * and a capital letter: so periods inside numbers ("-25.3") and
      * parentheticals don't trigger false boundaries.
      * Falls back to the full string if fewer than two sentences are found.
      */

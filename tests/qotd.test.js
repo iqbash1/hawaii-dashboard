@@ -185,7 +185,7 @@ describe('QOTD dismiss', () => {
     });
 
     it('dismiss is keyed per day index', () => {
-        // Freeze at launch day, dismiss, then advance to next day — should reset.
+        // Freeze at launch day, dismiss, then advance to next day: should reset.
         const origNow = Date.now;
         Date.now = () => Date.UTC(2026, 3, 18, 22, 0, 0);
         try {
@@ -205,7 +205,7 @@ describe('QOTD dismiss', () => {
 // Every V1/V2 question whose answer quotes a numeric comparator
 // must clear that gap under the current 50-state median definition.
 // This would have caught the Phase 2 number shifts if any crossed
-// below 10% — Phase 1 audit confirmed none do, but the formal
+// below 10%: Phase 1 audit confirmed none do, but the formal
 // guardrail belongs in the test suite going forward.
 // ----------------------------------------------------------------
 
@@ -248,7 +248,7 @@ describe('QOTD V1/V2 gap threshold (≥10% of comparator)', () => {
 // data.js, the value must equal what `Compute.median` produces on
 // the 50-state slice from state-data.js (exclude DC/PR, include HI).
 // This is the runtime counterpart of `scripts/audit-median-unification.js`
-// I1 — keeping it in the test suite guards the pipeline from ever
+// I1: keeping it in the test suite guards the pipeline from ever
 // drifting back to the 49-state convention.
 // ----------------------------------------------------------------
 

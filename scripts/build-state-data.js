@@ -85,19 +85,19 @@ const ALL_FIPS = Object.keys(FIPS_TO_STATE);
 // even though Census published it on schedule.
 // ACS_YEARS starts at the lowest floor among the ACS metrics this script
 // fetches:
-//   B25070 (renter_cost_burden_pct) — full state coverage from 2005
-//   B25077 + B19013 (home_price_to_income) — from 2005 (fetcher uses its
+//   B25070 (renter_cost_burden_pct): full state coverage from 2005
+//   B25077 + B19013 (home_price_to_income): from 2005 (fetcher uses its
 //     own 2005 floor explicitly; not gated by ACS_YEARS)
-//   B15003 (ba_or_higher_pct) — from 2008 (table didn't exist before)
-//   S2701 (uninsured_rate) — from 2010 (fetcher applies its own 2010 floor)
-//   B28002 (broadband_subscription_pct) — from 2016 (fetcher applies own
+//   B15003 (ba_or_higher_pct): from 2008 (table didn't exist before)
+//   S2701 (uninsured_rate): from 2010 (fetcher applies its own 2010 floor)
+//   B28002 (broadband_subscription_pct): from 2016 (fetcher applies own
 //     2016 floor; pre-2016 variable measured a narrower concept)
 //
 // Each fetcher's try/catch silently skips years where its specific table
 // returns 404/empty, so we can set ACS_YEARS to the lowest of any table
 // (2005) without polluting metrics whose tables start later.
 //
-// Prior to May 2026 the floor was hardcoded at 2008 — a stale assumption
+// Prior to May 2026 the floor was hardcoded at 2008: a stale assumption
 // inherited from the era when only B15003 and B25070 were being fetched,
 // and B25070's actual 2005 floor was misremembered as 2008. That bug
 // stranded 2005-2007 coverage for renter_cost_burden_pct on all 50 states
@@ -165,7 +165,7 @@ function filterYears(data) {
     return filtered;
 }
 
-/** Drop years where Hawaiʻi is missing — keeps state-data Section 11
+/** Drop years where Hawaiʻi is missing: keeps state-data Section 11
  *  (HI-presence) clean even when a source has partial-state years
  *  (e.g. HUD didn't run the 2021 unsheltered PIT count nationally, so
  *  the fetcher returns 2021 with 42 states but no HI). */
@@ -718,7 +718,7 @@ async function fetchRenewablesShare() {
 // every ~2-4 years 1990-2000). Grade-8 reading runs from 1998+ at the
 // state level. Pre-2002, only sample R2 (accommodations not permitted)
 // was administered; 2002+ uses R3 (accommodations permitted). When both
-// samples exist for a given (year, state), R3 is preferred — it's the
+// samples exist for a given (year, state), R3 is preferred: it's the
 // long-term-trend baseline NCES uses going forward.
 
 const NAEP_ABBR_TO_STATE = (() => {
@@ -1105,7 +1105,7 @@ async function fetchHomePriceToIncome() {
 // Source: USDA ERS Food Security Interactive Charts data file
 //   https://www.ers.usda.gov/media/649/data-file-for-interactive-charts.xlsx
 //
-// Sheet: "Food security by State" — three-year rolling periods, e.g.
+// Sheet: "Food security by State": three-year rolling periods, e.g.
 // "2006-2008" through current. State-data.js stores year keys with
 // regular hyphens; the source file uses em-dashes which are normalized
 // to hyphens here.
@@ -1241,14 +1241,14 @@ async function fetchRainyDayFund() {
 // ===========================================================
 //
 // Source: three CDC NCHS / NVSS datasets stitched to cover 1999-2024:
-//   1999-2017: data.cdc.gov bi63-dtpu — "NCHS - Leading Causes of Death",
+//   1999-2017: data.cdc.gov bi63-dtpu: "NCHS - Leading Causes of Death",
 //     filter cause_name='Suicide'; field 'aadr' = age-adjusted death rate.
-//   2018:      AFSP suicide-statistics page (chart.js data) — third-party
+//   2018:      AFSP suicide-statistics page (chart.js data): third-party
 //     republication of CDC WISQARS/NVSS. Used because data.cdc.gov has a
 //     one-year gap between bi63 (ends 2017) and fpsi-y8tj (starts 2019).
 //     Year mapping pulled from the page's data-years attribute so the
 //     fetcher self-adjusts when AFSP shifts the rolling 10-year window.
-//   2019-2024: data.cdc.gov fpsi-y8tj — "Mapping Injury, Overdose, and
+//   2019-2024: data.cdc.gov fpsi-y8tj: "Mapping Injury, Overdose, and
 //     Violence - State", filter intent='All_Suicide'.
 //
 // State-data already has 1999-2024 matching each of these three sources
@@ -1291,7 +1291,7 @@ async function fetchSuicide() {
         console.log(`  WARN bi63 fetch failed: ${err.message}`);
     }
 
-    // 2) 2018 from AFSP — uses page's data-years attribute for year mapping
+    // 2) 2018 from AFSP: uses page's data-years attribute for year mapping
     try {
         const r = await fetch('https://afsp.org/suicide-statistics/', { headers });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -1321,7 +1321,7 @@ async function fetchSuicide() {
         }
         console.log(`  AFSP (2018): ${pts} states`);
     } catch (err) {
-        console.log(`  WARN AFSP 2018 fetch failed: ${err.message} — 2018 will preserve from state-data`);
+        console.log(`  WARN AFSP 2018 fetch failed: ${err.message}: 2018 will preserve from state-data`);
     }
 
     // 3) 2019-2024 from CDC fpsi-y8tj (Mapping Injury, Overdose, and Violence)
@@ -1356,7 +1356,7 @@ async function fetchSuicide() {
     }
     console.log(`  Total: ${years.length} years (${years[0]}-${years[years.length - 1]})`);
     return {
-        source: 'CDC NCHS / NVSS — Leading Causes of Death (bi63-dtpu, 1999-2017), AFSP republication (2018), Mapping Injury Overdose and Violence (fpsi-y8tj, 2019+)',
+        source: 'CDC NCHS / NVSS: Leading Causes of Death (bi63-dtpu, 1999-2017), AFSP republication (2018), Mapping Injury Overdose and Violence (fpsi-y8tj, 2019+)',
         calculation: 'Age-adjusted death rate per 100,000 population for intentional self-harm (suicide). ICD-10 codes X60-X84, U03, Y87.0.',
         rawVariables: "bi63-dtpu aadr where cause_name='Suicide'; AFSP afsp.org/suicide-statistics/ state-line component; fpsi-y8tj rate where intent='All_Suicide'",
         data,
@@ -1376,7 +1376,7 @@ async function fetchSuicide() {
 //
 // Coverage window: 2020 onward only. Pre-2020 crime data in state-data
 // comes from FBI's "Crime in the United States" annual reports (UCR
-// vintage) and is frozen per validate-data.js SOURCE_COVERAGE.frozen —
+// vintage) and is frozen per validate-data.js SOURCE_COVERAGE.frozen;
 // CDE's NIBRS-era reconstructions differ from the original UCR reports
 // by 2-15% on overlap years, so audit-vs-CDE on pre-2020 would surface
 // known methodology-shift drift as fake regressions. The freeze.through
@@ -1494,7 +1494,7 @@ async function fetchFbiCdeCrime(slug) {
             const others = monthEntries.filter(([m]) => m !== '12').map(([, v]) => v).sort((a, b) => a - b);
             const median11 = others[5]; // middle of 11 sorted values
             if (!Number.isFinite(dec) || !Number.isFinite(median11)) continue;
-            // Drop year if December is anomalously low — sign of partial agency
+            // Drop year if December is anomalously low: sign of partial agency
             // reporting that CDE will revise upward as submissions land.
             if (median11 > 0 && dec < median11 * 0.5) continue;
             const sum = monthEntries.reduce((s, [, v]) => s + v, 0);
@@ -1557,13 +1557,13 @@ async function fetchPropertyCrimeRate() { return fetchFbiCdeCrime('property_crim
 //
 // Civilian adjustment: state-data stores PCPs per 100,000 *civilian*
 // noninstitutionalized population (Census ACS B27001_001E), not total
-// residents — military physicians and their TRICARE-served population are
+// residents: military physicians and their TRICARE-served population are
 // outside the civilian primary care system. The fetcher re-applies the
 // civilian-ratio adjustment that produced the canonical state-data values:
 //   civAdj_per_100K = num / (denom × civRatio_acs) × 100000
 // where civRatio_acs = B27001_001E / B01003_001E for that measurement year.
 // For 2020 (no ACS 1-year release), the civilian ratio is interpolated as
-// the mean of the 2019 and 2021 ACS ratios — matching the methodology that
+// the mean of the 2019 and 2021 ACS ratios: matching the methodology that
 // produced state-data's 2020 cells.
 //
 // Storage shape: pcp_per_100k uniquely uses FIPS-first storage
@@ -1737,7 +1737,7 @@ async function fetchPcpPer100k() {
 // NCES Digest Fetcher (acgr)
 // ===========================================================
 //
-// Source: NCES Digest of Education Statistics, Table 219.46 — Public high
+// Source: NCES Digest of Education Statistics, Table 219.46: Public high
 // school 4-year adjusted cohort graduation rates by state. Annual,
 // published as an XLSX workbook. Latest edition d23 covers school years
 // 2011-12 through 2021-22 (11 cohort years).
@@ -2150,7 +2150,7 @@ async function fetchVoterParticipation() {
     }
     console.log(`  Historical 1980-2022: ${histPoints} data points across ${Object.keys(data).length} years`);
 
-    // 2) Latest cycle — probe versions, then fall back one cycle if needed
+    // 2) Latest cycle: probe versions, then fall back one cycle if needed
     const currYear = new Date().getFullYear();
     const cycleCandidates = [currYear - (currYear % 2), currYear - (currYear % 2) - 2];
     const versionCandidates = ['v2.0','v1.2','v1.1','v1.0','v0.9','v0.8','v0.7','v0.6','v0.5','v0.4','v0.3','v0.2','v0.1'];
@@ -2326,7 +2326,7 @@ async function main() {
         } else if (!existing[slug] || !existing[slug].data) {
             merged[slug] = results[slug];
         } else {
-            // Both have this metric — merge year-level data
+            // Both have this metric: merge year-level data
             const existingYears = Object.keys(existing[slug].data || {});
             const fetchedYears = Object.keys(results[slug].data || {});
             const preservedYears = existingYears.filter(y => !fetchedYears.includes(y));
@@ -2448,7 +2448,7 @@ const STATE_DATA = ${JSON.stringify(sortedMerged, null, 2)};
 
 // Export fetchers so validate-data.js can call them in audit mode without
 // re-running main(). The audit reuses the exact same code path that
-// produces state-data.js — eliminating drift between fetcher and auditor.
+// produces state-data.js: eliminating drift between fetcher and auditor.
 module.exports = {
     fetchers: {
         ba_or_higher_pct: fetchBaOrHigher,

@@ -25,7 +25,7 @@
 (function() {
     /* ── Span configuration ──
      * SPAN_YEARS controls the look-back window. One numeric value per route.
-     * Everything downstream — computations, narratives, chip labels, headers —
+     * Everything downstream (computations, narratives, chip labels, headers)
      * reads this constant. Metrics whose data doesn't cover SPAN_YEARS are
      * excluded from the view (see computeChange).
      */
@@ -134,11 +134,11 @@
     }
 
     /* ── Unsigned value with verbose trailing unit stripped. Used when a
-     * second value sits right next to a value-with-unit — e.g.
+     * second value sits right next to a value-with-unit: e.g.
      * "28.2 per 10K vs median 3.6" or "-97.4 → -64.6 per 10K". Strips
      * "per 100K", "per 10K", and "points" from the end; keeps short
      * symbolic units (%, $, ×, ¢) because they'd be ambiguous bare.
-     * Number precision matches fmtValue exactly — we only remove the
+     * Number precision matches fmtValue exactly: we only remove the
      * trailing unit token from the formatted string. ── */
     function fmtValueCompact(value, unit, isDec) {
         const full = fmtValue(value, unit, isDec);
@@ -252,13 +252,13 @@
         const gap = latest.year - base.year;
 
         // Longer spans (5/10/15/20/25) exclude metrics whose data window is
-        // shorter than SPAN_YEARS — a 10-year view should not show an 8-year
+        // shorter than SPAN_YEARS: a 10-year view should not show an 8-year
         // change (drops Households with Broadband from 10-year, etc.).
         //
         // The 1-year view instead keeps those metrics and flags them with a
         // "not reported annually" note, since many national sources (NAEP,
         // some Census releases) skip years. Rows with gap === 0 (base fell
-        // back to the same year as latest) are still dropped — no signal.
+        // back to the same year as latest) are still dropped: no signal.
         if (SPAN_YEARS === 1) {
             if (gap < 1) return null;
         } else if (gap < SPAN_YEARS) {
@@ -328,7 +328,7 @@
     }
 
     /* ── Direction helper for rank-move coloring ──
-     * rankDirection(s) — colors the rank-transition text by rank movement
+     * rankDirection(s): colors the rank-transition text by rank movement
      * (improved/worsened). Rank is the primary direction signal in the Change
      * Summary; abs-change is deliberately muted to avoid double-encoding.
      */
@@ -354,7 +354,7 @@
 
             const id = Utils.areaId(areaGroup.area);
 
-            // Overall area signal — driven by share of metrics better than median.
+            // Overall area signal: driven by share of metrics better than median.
             const abovePct = withRank.length ? aboveMedian / withRank.length : 0.5;
             let areaClass = 'sc-mixed';
             if (abovePct >= 0.6) areaClass = 'sc-strong';
@@ -570,7 +570,7 @@
             if (variant === 'standing') {
                 // Same layout as Biggest Gains / Declines (rank transition +
                 // muted value change in parens), but rank is colored by
-                // position — red — rather than direction, since the column
+                // position (red), rather than direction, since the column
                 // filters to persistent bottom-tier metrics.
                 const rankTransition = r.standing.startRank != null
                     ? `Rank #${r.standing.startRank} \u2192 #${r.standing.endRank}`
@@ -622,11 +622,11 @@
             .sort((a, b) => rankShift(a) - rankShift(b))      // most negative first
             .slice(0, 5);
 
-        // "Stuck near the bottom" — persistent bottom-tier weaknesses:
+        // "Stuck near the bottom" finds persistent bottom-tier weaknesses:
         // metrics whose rank was already bad at the start of the span AND
         // is still bad now. Gives the third Spotlight column a span-dependent
         // role (it was a static snapshot before). Excludes metrics with no
-        // start-rank data — can't confirm persistence without both endpoints.
+        // start-rank data: can't confirm persistence without both endpoints.
         const offTrack = [...allResults]
             .filter(r => r.standing
                 && r.standing.endRank != null

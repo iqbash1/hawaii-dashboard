@@ -33,7 +33,7 @@ const DATA_PATH = path.join(BASE, 'js', 'data.js');
 // Source for non-derived fields (narratives, comparators, metadata) is the
 // CURRENT data.js itself. A previous version of this script read from a
 // /tmp/data.js.original snapshot, which silently reverted any narrative
-// edits made between snapshots — the May 2026 dashboard-clean session got
+// edits made between snapshots: the May 2026 dashboard-clean session got
 // caught by that. Reading the current file is round-trip-safe because
 // recompute only overwrites hawaii + medianSeries; everything else is
 // preserved exactly as written.
@@ -43,7 +43,7 @@ const ORIGINAL_DATA_PATH = DATA_PATH;
 const sdContent = fs.readFileSync(STATE_DATA_PATH, 'utf8');
 eval(sdContent.replace('const STATE_DATA', 'global.STATE_DATA'));
 
-// --- Load DASHBOARD_DATA (current data.js — narratives + metadata are preserved) ---
+// --- Load DASHBOARD_DATA (current data.js: narratives + metadata are preserved) ---
 const origContent = fs.readFileSync(ORIGINAL_DATA_PATH, 'utf8');
 eval(origContent.replace('const DASHBOARD_DATA', 'global.DASHBOARD_DATA'));
 

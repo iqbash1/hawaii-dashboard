@@ -294,7 +294,7 @@ test.describe('Module loading', () => {
 // Change Summary pages (5-, 10-, 15-, 20-, 25-year views)
 // ---------------------------------------------------------------------------
 
-test.describe('Change Summary — 5-year view', () => {
+test.describe('Change Summary: 5-year view', () => {
     test('loads without JS errors', async ({ page }) => {
         const jsErrors = [];
         page.on('pageerror', (err) => jsErrors.push(err.message));
@@ -323,7 +323,7 @@ test.describe('Change Summary — 5-year view', () => {
     });
 });
 
-test.describe('Change Summary — 10-year view', () => {
+test.describe('Change Summary: 10-year view', () => {
     test('loads without JS errors', async ({ page }) => {
         const jsErrors = [];
         page.on('pageerror', (err) => jsErrors.push(err.message));
@@ -352,7 +352,7 @@ test.describe('Change Summary — 10-year view', () => {
     });
 });
 
-test.describe('Change Summary — longer-window views (15/20/25)', () => {
+test.describe('Change Summary: longer-window views (15/20/25)', () => {
     // Row counts shift when historical backfills extend a metric's earliest
     // year past the window threshold. After the 2026-05 source-floor backfills:
     //   15y gained unsheltered_homeless_rate (now 2007+, gap >= 15)

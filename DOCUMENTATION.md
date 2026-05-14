@@ -439,8 +439,8 @@ Each of the 26 metrics gets its own card displaying:
 4. **Sparkline chart** - Hawaiʻi (solid teal line) vs. Other State Median (gray dashed line)
 5. **Two comparison sections:**
    - **vs Other States** - "Better" (green) or "Worse" (red) with the median, plus a meta row showing:
-     - **Rank #X of 50** — plain colored text (no link affordance), tier-colored via `Utils.rankColorClass(rank, total)` — same kernel the Summary page National Ranking table uses (top third → `--positive`, middle third → `--neutral`, bottom third → `--negative`).
-     - **By county** — small muted teal link, only present for the 14 metrics with `COUNTY_DATA`. Clicking opens the modal directly on the County tab.
+     - **Rank #X of 50**: plain colored text (no link affordance), tier-colored via `Utils.rankColorClass(rank, total)`: same kernel the Summary page National Ranking table uses (top third → `--positive`, middle third → `--neutral`, bottom third → `--negative`).
+     - **By county**: small muted teal link, only present for the 14 metrics with `COUNTY_DATA`. Clicking opens the modal directly on the County tab.
    - **vs Prior Year** - percentage change with "Improving" or "Worsening" label
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum). Each card has `id="{slug}"` so direct links (`/#slug`) scroll to the card and open its modal.
@@ -457,7 +457,7 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 
 **Tab microcopy:** Every tab button shows a one-line subtitle via a `.tab-sub` `<span>` inside the button: "How Hawaiʻi compares now" (Rank), "Performance over time" (Trend), "Gaining or losing ground?" (Rank history), "How counties compare" (County). The subtitle inherits the active tab color at 70% opacity.
 
-**Shared "Compare with" dropdown bar:** Sits below the tab row, above the chart content. Visible only on Trend and Rank history (hidden on Rank and County since those have no comparator). State selection is shared: picking California on Trend keeps it on Rank history and vice versa. The default-option label is tab-aware: "50-state median" on Trend (matches the dashed line shown there), "— none —" on Rank history (where no comparator means just Hawaiʻi's rank line). DOM element: `#compare-bar` / `#compare-select`, composing the `.dropdown-trigger` base class.
+**Shared "Compare with" dropdown bar:** Sits below the tab row, above the chart content. Visible only on Trend and Rank history (hidden on Rank and County since those have no comparator). State selection is shared: picking California on Trend keeps it on Rank history and vice versa. The default-option label is tab-aware: "50-state median" on Trend (matches the dashed line shown there), "(none)" on Rank history (where no comparator means just Hawaiʻi's rank line). DOM element: `#compare-bar` / `#compare-select`, composing the `.dropdown-trigger` base class.
 
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the 50-state median; the shared dropdown swaps in any of the 49 other states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
@@ -493,30 +493,30 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 
 A standalone summary page for policymakers, linked from the top nav as "Summary." Seven routes share the same shell and logic, defaulting to a 5-year look-back at `/five-year-change/`. The H1 heading has a dropdown on the word "N years" that links between the seven routes. Rendering logic is in `js/fyc.js` (shared by all shells); shared pure functions (narrative generation, ranking helpers) are in `js/utils.js`. The span (1/3/5/10/15/20/25) is inferred from `location.pathname` via `SPAN_WORD_TO_NUM` and threaded through computation and display strings. Key sections (in render order):
 
-1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45). Gains/Declines filter by **rank shift** (`startRank - endRank`), not by combined status — so a metric can appear in Biggest Declines if its rank dropped, even when its absolute value improved. Each row shows "Rank #X → #Y (±change)" — rank transition colored per direction, absolute change shown as a muted parenthetical so the two signals don't compete (see coloring rule below).
+1. **Spotlight cards** - Biggest Gains, Biggest Declines, Most Off-Track Nationally (rank ≥45). Gains/Declines filter by **rank shift** (`startRank - endRank`), not by combined status: so a metric can appear in Biggest Declines if its rank dropped, even when its absolute value improved. Each row shows "Rank #X → #Y (±change)": rank transition colored per direction, absolute change shown as a muted parenthetical so the two signals don't compete (see coloring rule below).
 2. **Policy Area Overview scorecard** - one row per area, sorted strong → mixed → weak. Left-border color and "X of Y better than the median" text are both colored from the same signal: green (≥60% of the area's metrics better than median), yellow (mixed, 40-60%), red (≤40%). Trend arrows at right show improving/worsening counts.
 3. **Area sections** - collapsed by default; `Utils.generateAreaNarrative()` produces a multi-sentence summary per area (trend mix, ranking moves, median standing, quartile callout); only the first two sentences render on the page. Sentence 2 filters out any metric already named in sentence 1 so the same metric+number pair never repeats. Expand toggle reveals individual metric rows.
-4. **National Ranking table** - all metrics with rank data, sortable by Current rank / Metric / Category / Rank change. The Current value column is display-only (no sort) and shows the current level paired with the 5-year delta as a muted parenthetical: `3.5% (-0.7%)`, `218 per 100K (-68)`, `$52.3K (+$5.6K)`. Verbose unit suffixes (`per 100K`, `per 10K`, `points`) are stripped from the delta to avoid visible redundancy; short symbolic units (`%`, `$`, `×`, `¢`) stay on both sides to keep the delta unambiguous. The column is no longer color-coded — rank change (prev column) carries the direction signal.
+4. **National Ranking table** - all metrics with rank data, sortable by Current rank / Metric / Category / Rank change. The Current value column is display-only (no sort) and shows the current level paired with the 5-year delta as a muted parenthetical: `3.5% (-0.7%)`, `218 per 100K (-68)`, `$52.3K (+$5.6K)`. Verbose unit suffixes (`per 100K`, `per 10K`, `points`) are stripped from the delta to avoid visible redundancy; short symbolic units (`%`, `$`, `×`, `¢`) stay on both sides to keep the delta unambiguous. The column is no longer color-coded: rank change (prev column) carries the direction signal.
 
-**No county breakdowns.** The Change Summary views are statewide-only — county comparisons live in the modal on the Dashboard (County tab), not here. Removed April 2026 to simplify; `COUNTY_DATA` is not loaded by these shells.
+**No county breakdowns.** The Change Summary views are statewide-only: county comparisons live in the modal on the Dashboard (County tab), not here. Removed April 2026 to simplify; `COUNTY_DATA` is not loaded by these shells.
 
 **Span exclusion rule:** Metrics whose data doesn't cover the full look-back window are dropped from that view. `computeChange` returns null when `latestYear - baseYear < SPAN_YEARS` (after the ±2-year fallback has been applied). Current coverage by view:
 
 | View | Metrics included | Excluded (insufficient history) |
 |------|-------------------|--------------------------------|
-| 1-year | 26 | — (relaxed — see below) |
+| 1-year | 26 |: (relaxed: see below) |
 | 3-year | 24 | naep math/reading (biennial, gap 2) |
-| 5-year | 26 | — |
+| 5-year | 26 |: |
 | 10-year | 25 | broadband |
 | 15-year | 21 | broadband, pcp, uninsured, acgr, homeless |
 | 20-year | 14 | + ba-or-higher, real-pci, renter-burden, home-price, roads, food-insecurity, labor-productivity |
 | 25-year | 10 | + naep math/reading, renewables, net-migration |
 
-**1-year view — relaxed exclusion:** `/one-year-change/` keeps metrics whose realized gap is more than 1 year (e.g., NAEP 2022→2024 shows a 2-year change) and tags them with a **"not reported annually"** label via `.fyc-stale-note`. The only exclusion is `gap < 1` (base fell back to the same year as latest — no signal). Rationale: for a 1-year view, a biennial metric's 2-year change is more useful than hiding the metric outright. Longer spans (3/5/10/15/20/25) keep the strict exclusion.
+**1-year view: relaxed exclusion:** `/one-year-change/` keeps metrics whose realized gap is more than 1 year (e.g., NAEP 2022→2024 shows a 2-year change) and tags them with a **"not reported annually"** label via `.fyc-stale-note`. The only exclusion is `gap < 1` (base fell back to the same year as latest: no signal). Rationale: for a 1-year view, a biennial metric's 2-year change is more useful than hiding the metric outright. Longer spans (3/5/10/15/20/25) keep the strict exclusion.
 
 **Rank is the voice, abs-change is the caption:** The Change Summary's visual direction signal is the **rank movement**, not the value change. This avoids a readability trap: for any metric where lower is better (crime, unemployment, uninsured, food insecurity, etc.), a rank arrow `↑` and a value sign `−` point opposite ways for the same real-world outcome, forcing readers to cross-reference `goodDirection` to decide which `+` is good. Rank moves carry color (`.move-up` green / `.move-down` red / `.move-stable` grey); the current value and its delta are rendered in default/muted weight with no color coding.
 
-- `rankDirection(s)` returns `'pos'` | `'neg'` | `''` — based on `startRank` vs `endRank`. Used to color the rank transition text in the Spotlight (`Rank #47 → #22` in green) and the per-area "Rank now #Y (was #Z)" row.
+- `rankDirection(s)` returns `'pos'` | `'neg'` | `''`: based on `startRank` vs `endRank`. Used to color the rank transition text in the Spotlight (`Rank #47 → #22` in green) and the per-area "Rank now #Y (was #Z)" row.
 - Abs-change coloring was removed in April 2026; the old `absDirection(r)` helper is gone.
 
 CSS classes: `.fyc-val-pos` = green, `.fyc-val-neg` = red. Applied inline on the rank transition in the Spotlight and the rank-now portion of each area row's line 3. The `.fyc-rank-val` column in the National Ranking table and the `.fyc-abs-change` span in area row line 2 both stay muted regardless of direction. `.fyc-rank-move` in the same table is colored by rank direction via `.move-up/.move-down/.move-stable`.
@@ -723,7 +723,7 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 `.github/workflows/data-audit.yml` runs at 1 PM and 6 PM HST:
 - For every wired federal-API metric, re-fetches the current canonical-source values for all Hawaiʻi years and compares against `state-data.js`. Strict tolerance: 0.5% relative or 0.0001 absolute.
 - Failure opens a `data-drift` issue automatically; the workflow's `--audit-only` mode keeps unrelated structural warnings from triggering false drift alerts.
-- Two crime metrics carry an explicit `frozen.through: 2019` boundary in `SOURCE_COVERAGE` — pre-2020 values are static historical artifacts (FBI ceased UCR annual reports after 2019); 2020+ is live via FBI CDE / NIBRS.
+- Two crime metrics carry an explicit `frozen.through: 2019` boundary in `SOURCE_COVERAGE`: pre-2020 values are static historical artifacts (FBI ceased UCR annual reports after 2019); 2020+ is live via FBI CDE / NIBRS.
 
 ### Manual (one-off value update)
 
@@ -738,7 +738,7 @@ state-data.js is the canonical store. data.js is derived. To update a year cell:
 
 1. Pick a federal canonical source and add a fetcher to `scripts/build-state-data.js` following the existing pattern (return `{source, calculation, rawVariables, data: {year: {stateName: value}}}`); wire it into both the main fetcher array and `module.exports.fetchers`.
 2. Run the fetcher once to populate `js/state-data.js`.
-3. Add the metric object to `DASHBOARD_DATA` in `js/data.js` — include `officialName` (full federal metric name, shown below the chart) and `unitLabel` (5-15 words describing what the number measures, e.g. `"% of eligible voters who cast a ballot"`).
+3. Add the metric object to `DASHBOARD_DATA` in `js/data.js`: include `officialName` (full federal metric name, shown below the chart) and `unitLabel` (5-15 words describing what the number measures, e.g. `"% of eligible voters who cast a ballot"`).
 4. Add the metric slug to the appropriate area in `App.AREA_ORDER` in `js/app.js`.
 5. Add a validation rule entry to `METRIC_RULES` and an entry to `SOURCE_COVERAGE` in `scripts/validate-data.js`.
 6. If county data is available, add to `js/county-data.js` and add a `countyNarrative` field on the metric object.
@@ -960,7 +960,7 @@ npm test
 | Change Summary 5-year H1 shows "5 years" and broadband is included | Dropdown wiring, span inference, or exclusion filter regressed |
 | Change Summary 10-year view loads without JS errors | JS errors on `/ten-year-change/` page |
 | Change Summary 10-year view excludes broadband (renders 25 rows, no broadband in rank table) | 10-year shell missing, short-span exclusion filter regressed, or broadband data changed |
-| Change Summary 15/20/25-year views render expected row counts (21/14/10) | Span coverage changed — recompute exclusion table in docs |
+| Change Summary 15/20/25-year views render expected row counts (21/14/10) | Span coverage changed: recompute exclusion table in docs |
 
 ### CI
 
@@ -1008,7 +1008,7 @@ The default trend-chart comparator is the **median** of the 49 other states (exc
 
 **Why median, not mean.** State-level distributions for most dashboard metrics are right-skewed with long tails. A handful of outlier states pull the mean away from the typical state, which misrepresents what "other states" look like. Median is robust to those tails and aligns with the rank-distribution chart that already anchors on rank 25.5. For single-unit comparison of Hawaiʻi to its peers, median is the honest statistic.
 
-Concrete example: renewables_share_gen in 2003 — Hawaiʻi 5.6%, mean of 49 states 12.9%, median 5.0%. The mean is pulled up by hydro- and wind-heavy states; the median reflects the typical state. Roughly 10 of 26 metrics have at least one year where Hawaiʻi's sign vs the comparator flips between the two statistics.
+Concrete example: renewables_share_gen in 2003: Hawaiʻi 5.6%, mean of 49 states 12.9%, median 5.0%. The mean is pulled up by hydro- and wind-heavy states; the median reflects the typical state. Roughly 10 of 26 metrics have at least one year where Hawaiʻi's sign vs the comparator flips between the two statistics.
 
 **Where median is used.** Trend-chart dashed line, sparkline, Bottom Line brief, modal data table, XLSX Chart Data tab values + methodology cells, OG image subtitle.
 
