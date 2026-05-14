@@ -12,33 +12,55 @@ Static site hosted on Cloudflare Pages. No backend, no database, no build step f
 index.html              Main page (single-page app)
 css/
   styles.css            All shared styles
-  fyc.css               Change Summary page styles (all 5 views)
+  fyc.css               Change Summary page styles (shared by all year-span views)
   about.css             About page styles
 js/
-  app.js                Application logic (routing, modal, cards, data export)
-  charts.js             Chart.js rendering (sparklines, detail, rankings, county)
-  utils.js              Shared pure functions (narrative, ranking helpers, county HTML)
-  fyc.js                Change Summary page logic (span-aware; shared by all 5 shells)
+  app.js                Coordinator: init, card rendering, bundles, metric search, helpers, analytics
+  modal.js              Modal: open/close, tabs, charts, narrative, Bottom Line brief
+  charts.js             Chart.js rendering (sparklines, detail, rankings, rank history, county)
+  routing.js            URL parsing, permalink routing, state slug conversion
+  export.js             XLSX download with lazy-loaded SheetJS
+  compute.js            Pure utilities (parseYearLabel, keyEnd, median, comparisonPhrase, etc.); dual-export for Node tests
+  utils.js              Shared narrative + ranking helpers (Change Summary page + tests)
+  fyc.js                Change Summary page logic (span-aware; shared by all 7 shells)
+  bundles.js            Bundle config: resident-voice question bundles with metric lists
+  qotd.js               Question of the Day controller (teaser render, answer state, share)
+  questions.js          QOTD question bank (48 entries, 8 template variants)
+  otc-share.js          Off the Charts share-button handler (clipboard copy)
   data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)
   county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauaʻi
-five-year-change/       Change Summary — 5-year view (default)
-ten-year-change/        Change Summary — 10-year view
-fifteen-year-change/    Change Summary — 15-year view
-twenty-year-change/     Change Summary — 20-year view
-twenty-five-year-change/ Change Summary — 25-year view
-about/index.html        About page (metric registry, comparator rules)
-t/{slug}/index.html     Detail view redirect pages (with OG tags)
-r/{slug}/index.html     Rankings view redirect pages (with OG tags)
-c/{slug}/index.html     County view redirect pages (with OG tags)
+about/index.html             About page (metric registry, comparator rules)
+faq/index.html               FAQ page (11 Q&A, feedback form)
+off-the-charts/              Short-form blog (archive + per-post canonical pages)
+  index.html                 Archive index
+  {slug}/index.html          Full canonical post page (Article + BreadcrumbList JSON-LD)
+one-year-change/             Change Summary, 1-year view
+three-year-change/           Change Summary, 3-year view
+five-year-change/            Change Summary, 5-year view (default)
+ten-year-change/             Change Summary, 10-year view
+fifteen-year-change/         Change Summary, 15-year view
+twenty-year-change/          Change Summary, 20-year view
+twenty-five-year-change/     Change Summary, 25-year view
+t/{slug}/index.html          Detail view redirect pages (with OG tags)
+r/{slug}/index.html          Rankings view redirect pages (with OG tags)
+c/{slug}/index.html          County view redirect pages (with OG tags)
 rh/{slug}/index.html         Rank history redirect pages (with OG tags)
 rh/{slug}/{code}/index.html  Rank history comparison redirect pages (49 per metric)
+q/{id}/index.html            QOTD question redirect pages (one per question; meta-refresh to /?from_q={id})
 assets/og/                   Open Graph preview images (1200x630)
+assets/og/q/                 Per-question QOTD OG cards
+assets/og/off-the-charts/    Per-post OTC OG cards
 tests/
   utils.test.js         Unit tests for utils.js (Node.js built-in test runner)
+  compute.test.js       Unit tests for compute.js
+  qotd.test.js          QOTD bank validators (claim/answer/medianSeries invariants)
   smoke.spec.js         End-to-end smoke tests (Playwright)
 scripts/
   verify-live-site.sh   Post-deploy verification (50 checks, run with --no-wait)
+  generate-qotd-og.py   Regenerates QOTD OG cards from the question bank
+  generate-qotd-redirects.js  Regenerates static q/{id}/ redirect pages
+  generate-og-off-the-charts-posts.py  Regenerates per-post OTC OG cards
 ```
 
 ## Data pipeline
@@ -92,6 +114,16 @@ Generates all per-metric OG images (detail, rankings, county, rank history) and 
 - **Two comparisons per metric**: Over time (trend) and against other states (ranking)
 - **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 26 cards, up to 4 tabs per metric
 - **Governor overlay**: Alternating bands show which governor was in office during each period
+
+## Beyond the grid
+
+The home grid is the core, but the site has four supporting surfaces:
+
+- **Change Summary** (`/five-year-change/` and 6 sibling year-span views): sortable scoreboard of what improved, what declined, and what stayed stuck, by area and metric. Shared logic via `js/fyc.js`; same shell renders 1/3/5/10/15/20/25-year spans.
+- **About** (`/about/`): mission, methodology, comparator rules, metric registry. Source ledger for every claim on the site.
+- **FAQ** (`/faq/`): 11 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
+- **Question of the Day** (white card teaser on the home page; `/q/{id}/` shareable URL per question): 48-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
+- **Off the Charts** (`/off-the-charts/`): short-form blog at 175–200 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
 
 ## Local development
 
