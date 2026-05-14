@@ -635,40 +635,6 @@ body {
     justify-content: center;
 }
 
-/* Primary CTA: always-visible affordance that the card opens a detail view.
-   Visually decoupled from the source/county footer so it reads as "action"
-   rather than "evidence." Right-aligned, teal, with a subtle arrow that
-   nudges right on hover. The whole card is the click target: this is the
-   visible signal, not its own click handler. */
-.card-cta {
-    margin-top: 0.5rem;
-    text-align: right;
-    font-family: var(--font-heading);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--hawaii-blue);
-    line-height: 1.2;
-    opacity: 0.85;
-    transition: opacity var(--transition);
-}
-
-.card-cta-arrow {
-    display: inline-block;
-    margin-left: 2px;
-    transition: transform var(--transition);
-}
-
-.card:hover .card-cta,
-.card:focus-within .card-cta {
-    opacity: 1;
-    text-decoration: underline;
-}
-
-.card:hover .card-cta-arrow,
-.card:focus-within .card-cta-arrow {
-    transform: translateX(2px);
-}
-
 .card-source {
     font-family: var(--font-heading);
     font-size: 11px;
