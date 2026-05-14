@@ -44,6 +44,7 @@ REDIRECT_DIR_R  = os.path.join(BASE_DIR, 'r')    # /r/{slug}/  rankings pages
 REDIRECT_DIR_C  = os.path.join(BASE_DIR, 'c')    # /c/{slug}/  county pages
 REDIRECT_DIR_RH = os.path.join(BASE_DIR, 'rh')   # /rh/{slug}/ rank-history pages
 REDIRECT_DIR_Q  = os.path.join(BASE_DIR, 'q')    # /q/{slug}/  question-of-the-day pages
+DATA_DIR        = os.path.join(BASE_DIR, 'data') # /data/{slug}_state.csv etc.
 SITE_URL = 'https://hawaiidashboard.org'
 
 # ── 49 comparison states (all US states except Hawaiʻi) ──────────
@@ -807,6 +808,74 @@ def _latest_with_value(series):
     return None, None
 
 
+def _csv_quote(s):
+    """Minimal CSV quoting. Wraps in double-quotes if comma/quote/newline; doubles inner quotes."""
+    s = '' if s is None else str(s)
+    if any(c in s for c in (',', '"', '\n', '\r')):
+        return '"' + s.replace('"', '""') + '"'
+    return s
+
+
+def generate_metric_csv(slug, state_entry, county_entry):
+    """Write static CSV exports for a metric to /data/{slug}_state.csv and
+    optionally /data/{slug}_county.csv (when county data exists). Long format:
+    one row per (period, region, value). Used by Dataset.distribution in the
+    metric landing-page JSON-LD so machine-readable data has a real URL."""
+    written = []
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    # State CSV. STATE_DATA shape can be either:
+    #   { 'data': { year: { stateName: value, ... }, ... } } — common shape
+    #   { 'data': { fipsCode: { 'name': 'Hawaiʻi', '2023': v, ... } } } — pcp_per_100k
+    if state_entry and state_entry.get('data'):
+        data = state_entry['data']
+        rows = [['year', 'state', 'value']]
+        first_key = next(iter(data))
+        first_val = data[first_key]
+        is_pcp_layout = isinstance(first_val, dict) and 'name' in first_val
+        if is_pcp_layout:
+            # FIPS-keyed: iterate FIPS entries, each has 'name' + year->value
+            for entry in data.values():
+                name = entry.get('name', '')
+                for year, val in entry.items():
+                    if year == 'name' or val is None:
+                        continue
+                    rows.append([year, name, val])
+        else:
+            for year, by_state in data.items():
+                if not isinstance(by_state, dict):
+                    continue
+                for state_name, val in by_state.items():
+                    if val is None:
+                        continue
+                    rows.append([year, state_name, val])
+        # Sort: year asc, state asc
+        rows[1:] = sorted(rows[1:], key=lambda r: (str(r[0]), str(r[1])))
+        out = os.path.join(DATA_DIR, f'{slug}_state.csv')
+        with open(out, 'w', encoding='utf-8', newline='') as f:
+            for r in rows:
+                f.write(','.join(_csv_quote(c) for c in r) + '\n')
+        written.append(out)
+
+    # County CSV
+    if county_entry and county_entry.get('data') and county_entry.get('counties'):
+        rows = [['year', 'county', 'value']]
+        for county_name in county_entry['counties']:
+            cd = county_entry['data'].get(county_name, {}) or {}
+            for year, val in cd.items():
+                if val is None:
+                    continue
+                rows.append([year, county_name, val])
+        rows[1:] = sorted(rows[1:], key=lambda r: (str(r[0]), str(r[1])))
+        out = os.path.join(DATA_DIR, f'{slug}_county.csv')
+        with open(out, 'w', encoding='utf-8', newline='') as f:
+            for r in rows:
+                f.write(','.join(_csv_quote(c) for c in r) + '\n')
+        written.append(out)
+
+    return written
+
+
 def _related_metrics(slug, area, dashboard, limit=3):
     """Return up to `limit` (slug, metric_name) pairs for other metrics in the
     same area, for cross-link footer."""
@@ -823,7 +892,7 @@ def _related_metrics(slug, area, dashboard, limit=3):
 
 
 def generate_metric_landing_html(slug, metric, area, rankings, county_data,
-                                 dashboard, output_path):
+                                 dashboard, output_path, state_entry=None):
     """Build the /c/{slug}/ landing page. Real (non-redirecting) HTML with
     JSON-LD Dataset schema, headline figure + rank, county + state-trend
     tables, cross-links, and CTA back to the interactive SPA.
@@ -914,6 +983,26 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
         dataset_json['publisher'] = {'@type': 'Organization',
                                      'name': source_name,
                                      'url': source_url or SITE_URL}
+    # distribution: real static CSVs at /data/{slug}_state.csv (always when
+    # state data exists) and /data/{slug}_county.csv (when county data exists).
+    # These are generated alongside the landing page by generate_metric_csv().
+    distributions = []
+    if state_entry and state_entry.get('data'):
+        distributions.append({
+            '@type': 'DataDownload',
+            'encodingFormat': 'text/csv',
+            'name': f'{metric_name} — state series',
+            'contentUrl': f'{SITE_URL}/data/{slug}_state.csv',
+        })
+    if county_data and county_data.get('data'):
+        distributions.append({
+            '@type': 'DataDownload',
+            'encodingFormat': 'text/csv',
+            'name': f'{metric_name} — county series',
+            'contentUrl': f'{SITE_URL}/data/{slug}_county.csv',
+        })
+    if distributions:
+        dataset_json['distribution'] = distributions
     # Drop None values for cleaner JSON
     dataset_json = {k: v for k, v in dataset_json.items() if v is not None}
     dataset_ld = json.dumps(dataset_json, ensure_ascii=False, indent=2)
@@ -1268,7 +1357,7 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
   <meta name="twitter:description" content="{description}">
   <meta name="twitter:image" content="{image_url}">
   <meta name="description" content="{description}">
-  <link rel="canonical" href="{page_url}">
+  <link rel="canonical" href="{SITE_URL}/c/{slug}/">
   <script>window.location.replace('{redirect_target}');</script>
   <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
@@ -1672,7 +1761,7 @@ def generate_rh_compare_redirect(slug, metric, compare_state, rank_history, outp
   <meta name="twitter:description" content="{description}">
   <meta name="twitter:image" content="{image_url}">
   <meta name="description" content="{description}">
-  <link rel="canonical" href="{page_url}">
+  <link rel="canonical" href="{SITE_URL}/c/{slug}/">
   <script>window.location.replace('{redirect_target}');</script>
   <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
@@ -1878,7 +1967,7 @@ def generate_trend_compare_redirect(slug, metric, compare_state, rankings, outpu
   <meta name="twitter:description" content="{description}">
   <meta name="twitter:image" content="{image_url}">
   <meta name="description" content="{description}">
-  <link rel="canonical" href="{page_url}">
+  <link rel="canonical" href="{SITE_URL}/c/{slug}/">
   <script>window.location.replace('{redirect_target}');</script>
   <meta http-equiv="refresh" content="0;url={refresh_target}">
 </head>
@@ -1921,11 +2010,15 @@ def generate_for_slug(slug, metric, area, state_data, county_data_all,
     if cd:
         generate_county_og_image(slug, metric, area, cd,
                                  os.path.join(ASSETS_OG, f'{slug}_county.png'))
+    # Static CSV exports for Dataset.distribution + machine-readable data.
+    state_entry_for_slug = state_data.get(slug)
+    generate_metric_csv(slug, state_entry_for_slug, cd)
     # /c/{slug}/ landing page is produced for every metric (with or without
     # county data) so each metric has a single indexable canonical page.
     generate_metric_landing_html(
         slug, metric, area, rankings, cd, dashboard,
         os.path.join(REDIRECT_DIR_C, slug, 'index.html'),
+        state_entry=state_entry_for_slug,
     )
 
     rh = compute_rank_history(slug, dashboard, state_data)

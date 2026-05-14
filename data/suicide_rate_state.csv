@@ -1,0 +1,1301 @@
+year,state,value
+1999,Alabama,12.5
+1999,Alaska,16.8
+1999,Arizona,15.5
+1999,Arkansas,12.6
+1999,California,9.6
+1999,Colorado,13.7
+1999,Connecticut,7.9
+1999,Delaware,11
+1999,Florida,12.2
+1999,Georgia,11.2
+1999,Hawaiʻi,11.1
+1999,Idaho,14.8
+1999,Illinois,8.3
+1999,Indiana,10.4
+1999,Iowa,10.3
+1999,Kansas,11.2
+1999,Kentucky,11.6
+1999,Louisiana,11.9
+1999,Maine,13.4
+1999,Maryland,8.3
+1999,Massachusetts,6.7
+1999,Michigan,9.9
+1999,Minnesota,9
+1999,Mississippi,11
+1999,Missouri,12.6
+1999,Montana,17.7
+1999,Nebraska,10.5
+1999,Nevada,21.3
+1999,New Hampshire,11.2
+1999,New Jersey,6.6
+1999,New Mexico,18.1
+1999,New York,6.3
+1999,North Carolina,11
+1999,North Dakota,11.1
+1999,Ohio,9.7
+1999,Oklahoma,14.4
+1999,Oregon,13.9
+1999,Pennsylvania,10.3
+1999,Rhode Island,9.1
+1999,South Carolina,10.5
+1999,South Dakota,13.7
+1999,Tennessee,12.7
+1999,Texas,10.2
+1999,Utah,14
+1999,Vermont,10.3
+1999,Virginia,11.2
+1999,Washington,14
+1999,West Virginia,12.1
+1999,Wisconsin,11.1
+1999,Wyoming,20.3
+2000,Alabama,13.1
+2000,Alaska,21.5
+2000,Arizona,15.6
+2000,Arkansas,13
+2000,California,9.1
+2000,Colorado,14.3
+2000,Connecticut,8.8
+2000,Delaware,10.4
+2000,Florida,12.4
+2000,Georgia,10.7
+2000,Hawaiʻi,11.2
+2000,Idaho,13.3
+2000,Illinois,8.1
+2000,Indiana,11.3
+2000,Iowa,9.8
+2000,Kansas,12.2
+2000,Kentucky,12.8
+2000,Louisiana,10.7
+2000,Maine,11.8
+2000,Maryland,9
+2000,Massachusetts,6
+2000,Michigan,9.9
+2000,Minnesota,8.9
+2000,Mississippi,10.5
+2000,Missouri,12.5
+2000,Montana,17.5
+2000,Nebraska,11.3
+2000,Nevada,20.2
+2000,New Hampshire,10.3
+2000,New Jersey,6.6
+2000,New Mexico,18.3
+2000,New York,5.9
+2000,North Carolina,12
+2000,North Dakota,10.4
+2000,Ohio,9.5
+2000,Oklahoma,14.6
+2000,Oregon,14.1
+2000,Pennsylvania,10.8
+2000,Rhode Island,7.1
+2000,South Carolina,11.1
+2000,South Dakota,12.7
+2000,Tennessee,12.7
+2000,Texas,10.2
+2000,Utah,14.7
+2000,Vermont,12.3
+2000,Virginia,10.8
+2000,Washington,12.4
+2000,West Virginia,13.2
+2000,Wisconsin,10.9
+2000,Wyoming,16.8
+2001,Alabama,11.4
+2001,Alaska,15.9
+2001,Arizona,14.8
+2001,Arkansas,14.3
+2001,California,8.5
+2001,Colorado,16.5
+2001,Connecticut,8.1
+2001,Delaware,13.5
+2001,Florida,13.5
+2001,Georgia,11.4
+2001,Hawaiʻi,10.9
+2001,Idaho,16.3
+2001,Illinois,9.2
+2001,Indiana,11.7
+2001,Iowa,10.2
+2001,Kansas,10.9
+2001,Kentucky,12.1
+2001,Louisiana,11.2
+2001,Maine,12.1
+2001,Maryland,8.4
+2001,Massachusetts,6.5
+2001,Michigan,10.5
+2001,Minnesota,9.6
+2001,Mississippi,11.7
+2001,Missouri,12.8
+2001,Montana,19.3
+2001,Nebraska,10.9
+2001,Nevada,18.7
+2001,New Hampshire,13.2
+2001,New Jersey,6.8
+2001,New Mexico,20.3
+2001,New York,6.5
+2001,North Carolina,12
+2001,North Dakota,12.7
+2001,Ohio,10.6
+2001,Oklahoma,14.9
+2001,Oregon,14.4
+2001,Pennsylvania,10.2
+2001,Rhode Island,8.1
+2001,South Carolina,11.4
+2001,South Dakota,14
+2001,Tennessee,12.2
+2001,Texas,10.9
+2001,Utah,15.5
+2001,Vermont,11.4
+2001,Virginia,11
+2001,Washington,11.9
+2001,West Virginia,15
+2001,Wisconsin,11.7
+2001,Wyoming,16.4
+2002,Alabama,11.5
+2002,Alaska,20.8
+2002,Arizona,16.6
+2002,Arkansas,14
+2002,California,9.6
+2002,Colorado,16.2
+2002,Connecticut,7.3
+2002,Delaware,9.1
+2002,Florida,13.3
+2002,Georgia,11.1
+2002,Hawaiʻi,9.5
+2002,Idaho,15.5
+2002,Illinois,9.2
+2002,Indiana,12.1
+2002,Iowa,10.7
+2002,Kansas,12.7
+2002,Kentucky,13
+2002,Louisiana,11.2
+2002,Maine,12.5
+2002,Maryland,8.8
+2002,Massachusetts,6.6
+2002,Michigan,11.1
+2002,Minnesota,9.8
+2002,Mississippi,12.2
+2002,Missouri,12.1
+2002,Montana,20
+2002,Nebraska,11.8
+2002,Nevada,19.7
+2002,New Hampshire,10.3
+2002,New Jersey,6.3
+2002,New Mexico,19.2
+2002,New York,6.3
+2002,North Carolina,11.8
+2002,North Dakota,14.3
+2002,Ohio,11.2
+2002,Oklahoma,14.4
+2002,Oregon,14.4
+2002,Pennsylvania,10.7
+2002,Rhode Island,7.9
+2002,South Carolina,10.8
+2002,South Dakota,12.3
+2002,Tennessee,13.3
+2002,Texas,11.1
+2002,Utah,16.2
+2002,Vermont,14.3
+2002,Virginia,10.9
+2002,Washington,13.4
+2002,West Virginia,14.9
+2002,Wisconsin,11.3
+2002,Wyoming,20.8
+2003,Alabama,11.4
+2003,Alaska,20.3
+2003,Arizona,15.5
+2003,Arkansas,13.6
+2003,California,9.9
+2003,Colorado,16.1
+2003,Connecticut,7.5
+2003,Delaware,11.4
+2003,Florida,12.8
+2003,Georgia,11.6
+2003,Hawaiʻi,10.2
+2003,Idaho,16.4
+2003,Illinois,8
+2003,Indiana,11.9
+2003,Iowa,11.9
+2003,Kansas,12.8
+2003,Kentucky,13.6
+2003,Louisiana,10.3
+2003,Maine,10
+2003,Maryland,8.9
+2003,Massachusetts,6.5
+2003,Michigan,10.2
+2003,Minnesota,9.8
+2003,Mississippi,11.9
+2003,Missouri,11.8
+2003,Montana,19.5
+2003,Nebraska,10.2
+2003,Nevada,19.9
+2003,New Hampshire,12
+2003,New Jersey,6.7
+2003,New Mexico,18.6
+2003,New York,5.9
+2003,North Carolina,11.2
+2003,North Dakota,12.3
+2003,Ohio,9.3
+2003,Oklahoma,13.7
+2003,Oregon,16.2
+2003,Pennsylvania,10.6
+2003,Rhode Island,7.7
+2003,South Carolina,11.5
+2003,South Dakota,13.5
+2003,Tennessee,12.9
+2003,Texas,11.1
+2003,Utah,15.4
+2003,Vermont,13
+2003,Virginia,10.9
+2003,Washington,13.1
+2003,West Virginia,14
+2003,Wisconsin,11.6
+2003,Wyoming,21.8
+2004,Alabama,11.7
+2004,Alaska,23
+2004,Arizona,15.8
+2004,Arkansas,13
+2004,California,9.7
+2004,Colorado,17.2
+2004,Connecticut,8.2
+2004,Delaware,11
+2004,Florida,13
+2004,Georgia,11.3
+2004,Hawaiʻi,8.9
+2004,Idaho,17.6
+2004,Illinois,8.1
+2004,Indiana,11.3
+2004,Iowa,11.5
+2004,Kansas,13.7
+2004,Kentucky,13.3
+2004,Louisiana,11.9
+2004,Maine,12.4
+2004,Maryland,8.8
+2004,Massachusetts,6.4
+2004,Michigan,10.9
+2004,Minnesota,10.2
+2004,Mississippi,12.2
+2004,Missouri,12.4
+2004,Montana,18.8
+2004,Nebraska,9.5
+2004,Nevada,18.9
+2004,New Hampshire,9.9
+2004,New Jersey,6.8
+2004,New Mexico,18.8
+2004,New York,6
+2004,North Carolina,11.9
+2004,North Dakota,11.1
+2004,Ohio,11.4
+2004,Oklahoma,14.4
+2004,Oregon,15.1
+2004,Pennsylvania,11.1
+2004,Rhode Island,7.6
+2004,South Carolina,11.3
+2004,South Dakota,14.8
+2004,Tennessee,13.2
+2004,Texas,10.7
+2004,Utah,17.2
+2004,Vermont,14.5
+2004,Virginia,10.9
+2004,Washington,13.3
+2004,West Virginia,15.4
+2004,Wisconsin,11.9
+2004,Wyoming,17.5
+2005,Alabama,11.5
+2005,Alaska,19.9
+2005,Arizona,16.4
+2005,Arkansas,14.3
+2005,California,9.1
+2005,Colorado,17.2
+2005,Connecticut,8.1
+2005,Delaware,9.7
+2005,Florida,12.5
+2005,Georgia,10.6
+2005,Hawaiʻi,8.2
+2005,Idaho,16.5
+2005,Illinois,8.6
+2005,Indiana,11.9
+2005,Iowa,11.2
+2005,Kansas,13.3
+2005,Kentucky,13.4
+2005,Louisiana,11
+2005,Maine,12.4
+2005,Maryland,8.4
+2005,Massachusetts,7.2
+2005,Michigan,11
+2005,Minnesota,10.5
+2005,Mississippi,12.7
+2005,Missouri,12.5
+2005,Montana,21.7
+2005,Nebraska,10.9
+2005,Nevada,19.8
+2005,New Hampshire,12
+2005,New Jersey,6.1
+2005,New Mexico,17.8
+2005,New York,6
+2005,North Carolina,11.5
+2005,North Dakota,13.7
+2005,Ohio,11.5
+2005,Oklahoma,14.8
+2005,Oregon,14.9
+2005,Pennsylvania,11.1
+2005,Rhode Island,6.3
+2005,South Carolina,11.8
+2005,South Dakota,15.4
+2005,Tennessee,14
+2005,Texas,10.9
+2005,Utah,15.4
+2005,Vermont,12.5
+2005,Virginia,11.2
+2005,Washington,12.8
+2005,West Virginia,13.2
+2005,Wisconsin,11.6
+2005,Wyoming,17.3
+2006,Alabama,12.4
+2006,Alaska,19.9
+2006,Arizona,16.3
+2006,Arkansas,13.3
+2006,California,9.3
+2006,Colorado,15.3
+2006,Connecticut,8
+2006,Delaware,10.3
+2006,Florida,12.6
+2006,Georgia,10.3
+2006,Hawaiʻi,9
+2006,Idaho,15.8
+2006,Illinois,7.9
+2006,Indiana,13
+2006,Iowa,11.2
+2006,Kansas,13.9
+2006,Kentucky,14.6
+2006,Louisiana,11.5
+2006,Maine,11
+2006,Maryland,8.6
+2006,Massachusetts,6.7
+2006,Michigan,11.2
+2006,Minnesota,10.6
+2006,Mississippi,11.4
+2006,Missouri,13.5
+2006,Montana,19.7
+2006,Nebraska,11.2
+2006,Nevada,19.3
+2006,New Hampshire,11.2
+2006,New Jersey,6.5
+2006,New Mexico,17.9
+2006,New York,6.7
+2006,North Carolina,12.2
+2006,North Dakota,13.3
+2006,Ohio,11.3
+2006,Oklahoma,15
+2006,Oregon,15.3
+2006,Pennsylvania,10.8
+2006,Rhode Island,8.2
+2006,South Carolina,11.8
+2006,South Dakota,16
+2006,Tennessee,14.1
+2006,Texas,10.3
+2006,Utah,16
+2006,Vermont,12.2
+2006,Virginia,11.1
+2006,Washington,12.3
+2006,West Virginia,14
+2006,Wisconsin,12
+2006,Wyoming,21.7
+2007,Alabama,12.4
+2007,Alaska,22.6
+2007,Arizona,16.5
+2007,Arkansas,14.2
+2007,California,9.9
+2007,Colorado,16.6
+2007,Connecticut,7.3
+2007,Delaware,10.6
+2007,Florida,13.2
+2007,Georgia,10.9
+2007,Hawaiʻi,9.5
+2007,Idaho,15
+2007,Illinois,8.6
+2007,Indiana,12.3
+2007,Iowa,10.7
+2007,Kansas,13.7
+2007,Kentucky,15.1
+2007,Louisiana,12
+2007,Maine,13.6
+2007,Maryland,9
+2007,Massachusetts,7.7
+2007,Michigan,11.1
+2007,Minnesota,10.8
+2007,Mississippi,13.6
+2007,Missouri,13.5
+2007,Montana,19.4
+2007,Nebraska,10.1
+2007,Nevada,18
+2007,New Hampshire,11.2
+2007,New Jersey,6.7
+2007,New Mexico,20.3
+2007,New York,7.1
+2007,North Carolina,11.6
+2007,North Dakota,14.2
+2007,Ohio,11.1
+2007,Oklahoma,14.7
+2007,Oregon,15.3
+2007,Pennsylvania,11.1
+2007,Rhode Island,8.8
+2007,South Carolina,11.6
+2007,South Dakota,12.5
+2007,Tennessee,13.4
+2007,Texas,10.5
+2007,Utah,15.8
+2007,Vermont,13.9
+2007,Virginia,11.1
+2007,Washington,13.1
+2007,West Virginia,15.7
+2007,Wisconsin,12.7
+2007,Wyoming,19.3
+2008,Alabama,12.6
+2008,Alaska,24.4
+2008,Arizona,15.5
+2008,Arkansas,15.5
+2008,California,10.3
+2008,Colorado,16.1
+2008,Connecticut,8.5
+2008,Delaware,11.9
+2008,Florida,13.9
+2008,Georgia,10.4
+2008,Hawaiʻi,9.7
+2008,Idaho,16.7
+2008,Illinois,9.3
+2008,Indiana,12.6
+2008,Iowa,12.6
+2008,Kansas,12.1
+2008,Kentucky,14
+2008,Louisiana,12
+2008,Maine,12.7
+2008,Maryland,8.7
+2008,Massachusetts,7.5
+2008,Michigan,11.8
+2008,Minnesota,11.2
+2008,Mississippi,13.9
+2008,Missouri,13
+2008,Montana,20.6
+2008,Nebraska,10.6
+2008,Nevada,19.7
+2008,New Hampshire,13.1
+2008,New Jersey,6.8
+2008,New Mexico,20.9
+2008,New York,7.1
+2008,North Carolina,12.3
+2008,North Dakota,13.1
+2008,Ohio,12.2
+2008,Oklahoma,15.7
+2008,Oregon,14.5
+2008,Pennsylvania,11.8
+2008,Rhode Island,9.9
+2008,South Carolina,12
+2008,South Dakota,15.7
+2008,Tennessee,15.1
+2008,Texas,10.8
+2008,Utah,15.9
+2008,Vermont,14.1
+2008,Virginia,11.8
+2008,Washington,13.2
+2008,West Virginia,13.7
+2008,Wisconsin,12.8
+2008,Wyoming,22.6
+2009,Alabama,13.7
+2009,Alaska,20
+2009,Arizona,16.7
+2009,Arkansas,14.5
+2009,California,10.2
+2009,Colorado,18.7
+2009,Connecticut,8.5
+2009,Delaware,11.7
+2009,Florida,14.4
+2009,Georgia,11.9
+2009,Hawaiʻi,12.5
+2009,Idaho,20.3
+2009,Illinois,9.1
+2009,Indiana,12.8
+2009,Iowa,11.9
+2009,Kansas,13.6
+2009,Kentucky,13.5
+2009,Louisiana,10.9
+2009,Maine,14
+2009,Maryland,9.3
+2009,Massachusetts,7.8
+2009,Michigan,11.5
+2009,Minnesota,10.8
+2009,Mississippi,13.1
+2009,Missouri,14.3
+2009,Montana,21.2
+2009,Nebraska,9.3
+2009,Nevada,18.7
+2009,New Hampshire,11.9
+2009,New Jersey,6.2
+2009,New Mexico,18.2
+2009,New York,7
+2009,North Carolina,12.2
+2009,North Dakota,13.9
+2009,Ohio,10
+2009,Oklahoma,15.3
+2009,Oregon,16.2
+2009,Pennsylvania,12.2
+2009,Rhode Island,10.8
+2009,South Carolina,13
+2009,South Dakota,16.3
+2009,Tennessee,14.6
+2009,Texas,11.6
+2009,Utah,17.9
+2009,Vermont,13
+2009,Virginia,11.7
+2009,Washington,13.3
+2009,West Virginia,13.1
+2009,Wisconsin,12.5
+2009,Wyoming,20.4
+2010,Alabama,14
+2010,Alaska,22.8
+2010,Arizona,17
+2010,Arkansas,15.5
+2010,California,10.3
+2010,Colorado,16.8
+2010,Connecticut,9.4
+2010,Delaware,11.3
+2010,Florida,13.7
+2010,Georgia,11.7
+2010,Hawaiʻi,15
+2010,Idaho,18.8
+2010,Illinois,9
+2010,Indiana,13.1
+2010,Iowa,12.1
+2010,Kansas,14
+2010,Kentucky,14.2
+2010,Louisiana,12.3
+2010,Maine,13.2
+2010,Maryland,8.3
+2010,Massachusetts,8.8
+2010,Michigan,12.5
+2010,Minnesota,11.2
+2010,Mississippi,13
+2010,Missouri,14
+2010,Montana,21.8
+2010,Nebraska,10.4
+2010,Nevada,19.8
+2010,New Hampshire,14.1
+2010,New Jersey,7.7
+2010,New Mexico,20.1
+2010,New York,7.7
+2010,North Carolina,12
+2010,North Dakota,15.6
+2010,Ohio,12.2
+2010,Oklahoma,16.5
+2010,Oregon,17.1
+2010,Pennsylvania,11.9
+2010,Rhode Island,12.3
+2010,South Carolina,13.5
+2010,South Dakota,17.5
+2010,Tennessee,14.6
+2010,Texas,11.8
+2010,Utah,18.3
+2010,Vermont,15.7
+2010,Virginia,11.7
+2010,Washington,13.9
+2010,West Virginia,14.1
+2010,Wisconsin,13.4
+2010,Wyoming,22.4
+2011,Alabama,13.2
+2011,Alaska,20
+2011,Arizona,17.8
+2011,Arkansas,16
+2011,California,10.4
+2011,Colorado,17.5
+2011,Connecticut,9.8
+2011,Delaware,11
+2011,Florida,13.9
+2011,Georgia,11.7
+2011,Hawaiʻi,12.8
+2011,Idaho,18.2
+2011,Illinois,9.3
+2011,Indiana,13.5
+2011,Iowa,13.9
+2011,Kansas,13.8
+2011,Kentucky,15.2
+2011,Louisiana,12.5
+2011,Maine,16.6
+2011,Maryland,9.2
+2011,Massachusetts,8.4
+2011,Michigan,12.2
+2011,Minnesota,12.5
+2011,Mississippi,13.1
+2011,Missouri,15.3
+2011,Montana,22.5
+2011,Nebraska,10.5
+2011,Nevada,18.4
+2011,New Hampshire,13.8
+2011,New Jersey,7.5
+2011,New Mexico,20.3
+2011,New York,8.2
+2011,North Carolina,12.3
+2011,North Dakota,14.9
+2011,Ohio,12.3
+2011,Oklahoma,18.5
+2011,Oregon,16.6
+2011,Pennsylvania,13.2
+2011,Rhode Island,8.9
+2011,South Carolina,13.6
+2011,South Dakota,15.7
+2011,Tennessee,14.4
+2011,Texas,11.5
+2011,Utah,19.4
+2011,Vermont,17.8
+2011,Virginia,12.6
+2011,Washington,14.3
+2011,West Virginia,15.9
+2011,Wisconsin,12.8
+2011,Wyoming,23.2
+2012,Alabama,14.7
+2012,Alaska,23
+2012,Arizona,17.3
+2012,Arkansas,16.3
+2012,California,10
+2012,Colorado,19.7
+2012,Connecticut,9.9
+2012,Delaware,13.2
+2012,Florida,14.4
+2012,Georgia,11.7
+2012,Hawaiʻi,13.1
+2012,Idaho,19
+2012,Illinois,9.8
+2012,Indiana,14.3
+2012,Iowa,12.7
+2012,Kansas,17.4
+2012,Kentucky,16.2
+2012,Louisiana,12.4
+2012,Maine,14.5
+2012,Maryland,9.5
+2012,Massachusetts,8.7
+2012,Michigan,12.5
+2012,Minnesota,12
+2012,Mississippi,14
+2012,Missouri,14.9
+2012,Montana,22.6
+2012,Nebraska,12.5
+2012,Nevada,18.2
+2012,New Hampshire,14.1
+2012,New Jersey,7.4
+2012,New Mexico,21.3
+2012,New York,8.3
+2012,North Carolina,12.7
+2012,North Dakota,15.2
+2012,Ohio,13
+2012,Oklahoma,17.6
+2012,Oregon,17.8
+2012,Pennsylvania,12.4
+2012,Rhode Island,9.5
+2012,South Carolina,13.7
+2012,South Dakota,16.8
+2012,Tennessee,14.6
+2012,Texas,11.9
+2012,Utah,21
+2012,Vermont,13
+2012,Virginia,12.7
+2012,Washington,14.5
+2012,West Virginia,17.1
+2012,Wisconsin,12.4
+2012,Wyoming,29.6
+2013,Alabama,14.4
+2013,Alaska,23.2
+2013,Arizona,17.5
+2013,Arkansas,17.3
+2013,California,10.2
+2013,Colorado,18.6
+2013,Connecticut,8.7
+2013,Delaware,12.5
+2013,Florida,13.8
+2013,Georgia,12
+2013,Hawaiʻi,11.8
+2013,Idaho,19.2
+2013,Illinois,9.9
+2013,Indiana,14.3
+2013,Iowa,14.4
+2013,Kansas,14.7
+2013,Kentucky,15.6
+2013,Louisiana,12.4
+2013,Maine,17.4
+2013,Maryland,9.2
+2013,Massachusetts,8.2
+2013,Michigan,12.9
+2013,Minnesota,12.1
+2013,Mississippi,13
+2013,Missouri,15.6
+2013,Montana,23.7
+2013,Nebraska,11.6
+2013,Nevada,18.6
+2013,New Hampshire,12.8
+2013,New Jersey,8
+2013,New Mexico,20.3
+2013,New York,8.1
+2013,North Carolina,12.6
+2013,North Dakota,17.3
+2013,Ohio,12.9
+2013,Oklahoma,17.2
+2013,Oregon,16.8
+2013,Pennsylvania,13.4
+2013,Rhode Island,12.2
+2013,South Carolina,14
+2013,South Dakota,18
+2013,Tennessee,15.4
+2013,Texas,11.7
+2013,Utah,21.4
+2013,Vermont,16.8
+2013,Virginia,12.5
+2013,Washington,14.1
+2013,West Virginia,16.4
+2013,Wisconsin,14.4
+2013,Wyoming,21.5
+2014,Alabama,14.5
+2014,Alaska,22.1
+2014,Arizona,18
+2014,Arkansas,17.3
+2014,California,10.5
+2014,Colorado,19.9
+2014,Connecticut,9.8
+2014,Delaware,13.2
+2014,Florida,13.9
+2014,Georgia,12.6
+2014,Hawaiʻi,13.8
+2014,Idaho,20
+2014,Illinois,10.5
+2014,Indiana,14.3
+2014,Iowa,12.9
+2014,Kansas,15.7
+2014,Kentucky,16
+2014,Louisiana,14.3
+2014,Maine,15.7
+2014,Maryland,9.8
+2014,Massachusetts,8.2
+2014,Michigan,13.3
+2014,Minnesota,12.2
+2014,Mississippi,12.5
+2014,Missouri,16.3
+2014,Montana,23.9
+2014,Nebraska,13.4
+2014,Nevada,19.6
+2014,New Hampshire,17.8
+2014,New Jersey,8.3
+2014,New Mexico,21
+2014,New York,8.1
+2014,North Carolina,13.1
+2014,North Dakota,17.8
+2014,Ohio,12.6
+2014,Oklahoma,19.1
+2014,Oregon,18.6
+2014,Pennsylvania,13.3
+2014,Rhode Island,10.1
+2014,South Carolina,15.2
+2014,South Dakota,17.1
+2014,Tennessee,14.8
+2014,Texas,12.2
+2014,Utah,20.5
+2014,Vermont,18.7
+2014,Virginia,12.9
+2014,Washington,15.2
+2014,West Virginia,18.1
+2014,Wisconsin,13.1
+2014,Wyoming,20.6
+2015,Alabama,14.9
+2015,Alaska,26.9
+2015,Arizona,18.2
+2015,Arkansas,19.1
+2015,California,10.3
+2015,Colorado,19.5
+2015,Connecticut,9.9
+2015,Delaware,12.6
+2015,Florida,14.4
+2015,Georgia,12.7
+2015,Hawaiʻi,13.5
+2015,Idaho,22.1
+2015,Illinois,10.3
+2015,Indiana,14.4
+2015,Iowa,13.9
+2015,Kansas,16.3
+2015,Kentucky,17.1
+2015,Louisiana,15.2
+2015,Maine,16
+2015,Maryland,8.8
+2015,Massachusetts,8.9
+2015,Michigan,13.8
+2015,Minnesota,13.2
+2015,Mississippi,14
+2015,Missouri,17.1
+2015,Montana,25.3
+2015,Nebraska,11.7
+2015,Nevada,18.4
+2015,New Hampshire,16.5
+2015,New Jersey,8.3
+2015,New Mexico,23.7
+2015,New York,7.8
+2015,North Carolina,13.4
+2015,North Dakota,17.5
+2015,Ohio,13.9
+2015,Oklahoma,20.3
+2015,Oregon,17.8
+2015,Pennsylvania,14
+2015,Rhode Island,11.2
+2015,South Carolina,14.8
+2015,South Dakota,20.4
+2015,Tennessee,15.7
+2015,Texas,12.5
+2015,Utah,22.4
+2015,Vermont,14.8
+2015,Virginia,12.7
+2015,Washington,15.4
+2015,West Virginia,17.4
+2015,Wisconsin,14.7
+2015,Wyoming,28
+2016,Alabama,15.7
+2016,Alaska,25.8
+2016,Arizona,17.7
+2016,Arkansas,18.2
+2016,California,10.5
+2016,Colorado,20.5
+2016,Connecticut,10.1
+2016,Delaware,11.5
+2016,Florida,14
+2016,Georgia,13.3
+2016,Hawaiʻi,12.1
+2016,Idaho,21.4
+2016,Illinois,10.7
+2016,Indiana,15.4
+2016,Iowa,14.6
+2016,Kansas,17.9
+2016,Kentucky,16.8
+2016,Louisiana,14.2
+2016,Maine,15.9
+2016,Maryland,9.4
+2016,Massachusetts,8.8
+2016,Michigan,13.3
+2016,Minnesota,13.2
+2016,Mississippi,12.7
+2016,Missouri,18.4
+2016,Montana,25.9
+2016,Nebraska,13.1
+2016,Nevada,21.4
+2016,New Hampshire,17.2
+2016,New Jersey,7.2
+2016,New Mexico,22.5
+2016,New York,8.1
+2016,North Carolina,13
+2016,North Dakota,19
+2016,Ohio,14.2
+2016,Oklahoma,21
+2016,Oregon,17.8
+2016,Pennsylvania,14.7
+2016,Rhode Island,11.2
+2016,South Carolina,15.7
+2016,South Dakota,20.2
+2016,Tennessee,16.3
+2016,Texas,12.6
+2016,Utah,21.8
+2016,Vermont,17.3
+2016,Virginia,13.2
+2016,Washington,14.9
+2016,West Virginia,19.3
+2016,Wisconsin,14.7
+2016,Wyoming,25.2
+2017,Alabama,16.6
+2017,Alaska,27
+2017,Arizona,18.2
+2017,Arkansas,20.8
+2017,California,10.5
+2017,Colorado,20.3
+2017,Connecticut,10.5
+2017,Delaware,11.6
+2017,Florida,14
+2017,Georgia,13.6
+2017,Hawaiʻi,15.2
+2017,Idaho,23.2
+2017,Illinois,11.2
+2017,Indiana,16.3
+2017,Iowa,15
+2017,Kansas,19.1
+2017,Kentucky,16.9
+2017,Louisiana,15.2
+2017,Maine,18.9
+2017,Maryland,9.9
+2017,Massachusetts,9.5
+2017,Michigan,14.1
+2017,Minnesota,13.9
+2017,Mississippi,15
+2017,Missouri,18.5
+2017,Montana,28.9
+2017,Nebraska,14.7
+2017,Nevada,20.3
+2017,New Hampshire,18.9
+2017,New Jersey,8.3
+2017,New Mexico,23.3
+2017,New York,8.1
+2017,North Carolina,14.3
+2017,North Dakota,20.1
+2017,Ohio,14.8
+2017,Oklahoma,19.1
+2017,Oregon,19
+2017,Pennsylvania,15
+2017,Rhode Island,11.8
+2017,South Carolina,16.3
+2017,South Dakota,22.5
+2017,Tennessee,16.8
+2017,Texas,13.4
+2017,Utah,22.7
+2017,Vermont,18.3
+2017,Virginia,13.4
+2017,Washington,16.9
+2017,West Virginia,21.1
+2017,Wisconsin,15.4
+2017,Wyoming,26.9
+2018,Alabama,16.48
+2018,Alaska,24.48
+2018,Arizona,19.24
+2018,Arkansas,18.38
+2018,California,10.84
+2018,Colorado,21.84
+2018,Connecticut,10.54
+2018,Delaware,11.49
+2018,Florida,15.18
+2018,Georgia,14.55
+2018,Hawaiʻi,11.76
+2018,Idaho,23.95
+2018,Illinois,11.33
+2018,Indiana,15.96
+2018,Iowa,15.5
+2018,Kansas,19.24
+2018,Kentucky,17.45
+2018,Louisiana,15.15
+2018,Maine,18.43
+2018,Maryland,10.16
+2018,Massachusetts,9.95
+2018,Michigan,15.07
+2018,Minnesota,13.11
+2018,Mississippi,13.72
+2018,Missouri,19.5
+2018,Montana,24.88
+2018,Nebraska,13.43
+2018,Nevada,20.88
+2018,New Hampshire,19.31
+2018,New Jersey,8.28
+2018,New Mexico,25.01
+2018,New York,8.29
+2018,North Carolina,13.73
+2018,North Dakota,18.8
+2018,Ohio,15.25
+2018,Oklahoma,20.01
+2018,Oregon,19.05
+2018,Pennsylvania,14.9
+2018,Rhode Island,9.59
+2018,South Carolina,15.47
+2018,South Dakota,19.28
+2018,Tennessee,16.6
+2018,Texas,13.69
+2018,Utah,22.17
+2018,Vermont,18.7
+2018,Virginia,14
+2018,Washington,15.88
+2018,West Virginia,21.14
+2018,Wisconsin,14.85
+2018,Wyoming,24.76
+2019,Alabama,16.4
+2019,Alaska,28.7
+2019,Arizona,19.5
+2019,Arkansas,18.2
+2019,California,11.2
+2019,Colorado,22.8
+2019,Connecticut,12.2
+2019,Delaware,11.4
+2019,Florida,16.1
+2019,Georgia,14.9
+2019,Hawaiʻi,15.8
+2019,Idaho,20.4
+2019,Illinois,11.4
+2019,Indiana,14.4
+2019,Iowa,16.7
+2019,Kansas,18
+2019,Kentucky,16.9
+2019,Louisiana,15.1
+2019,Maine,20.5
+2019,Maryland,10.9
+2019,Massachusetts,9.4
+2019,Michigan,14.7
+2019,Minnesota,14.7
+2019,Mississippi,14.6
+2019,Missouri,18.6
+2019,Montana,27
+2019,Nebraska,16
+2019,Nevada,20.8
+2019,New Hampshire,18.8
+2019,New Jersey,8.6
+2019,New Mexico,24.5
+2019,New York,8.8
+2019,North Carolina,12.9
+2019,North Dakota,17.8
+2019,Ohio,15.5
+2019,Oklahoma,20.6
+2019,Oregon,21.5
+2019,Pennsylvania,14.8
+2019,Rhode Island,11.6
+2019,South Carolina,16.5
+2019,South Dakota,20.6
+2019,Tennessee,17.8
+2019,Texas,13.4
+2019,Utah,20.4
+2019,Vermont,17.6
+2019,Virginia,13.4
+2019,Washington,16.6
+2019,West Virginia,18.4
+2019,Wisconsin,14.5
+2019,Wyoming,29.4
+2020,Alabama,15.8
+2020,Alaska,27.8
+2020,Arizona,19
+2020,Arkansas,19.3
+2020,California,10.5
+2020,Colorado,22.5
+2020,Connecticut,10.2
+2020,Delaware,12.5
+2020,Florida,14.5
+2020,Georgia,13.9
+2020,Hawaiʻi,12.7
+2020,Idaho,22.7
+2020,Illinois,10.6
+2020,Indiana,15.1
+2020,Iowa,17.3
+2020,Kansas,18.1
+2020,Kentucky,17.8
+2020,Louisiana,13.8
+2020,Maine,17.1
+2020,Maryland,9.5
+2020,Massachusetts,8.8
+2020,Michigan,14.3
+2020,Minnesota,13.3
+2020,Mississippi,13.9
+2020,Missouri,18.3
+2020,Montana,27.6
+2020,Nebraska,14.4
+2020,Nevada,19.4
+2020,New Hampshire,17
+2020,New Jersey,7.3
+2020,New Mexico,24.4
+2020,New York,8.2
+2020,North Carolina,13.8
+2020,North Dakota,17.3
+2020,Ohio,13.9
+2020,Oklahoma,21.9
+2020,Oregon,19.6
+2020,Pennsylvania,13
+2020,Rhode Island,8.6
+2020,South Carolina,16.9
+2020,South Dakota,20.9
+2020,Tennessee,17.6
+2020,Texas,13.4
+2020,Utah,19.8
+2020,Vermont,18.2
+2020,Virginia,13.9
+2020,Washington,15.7
+2020,West Virginia,19.8
+2020,Wisconsin,14.7
+2020,Wyoming,31.5
+2021,Alabama,16.4
+2021,Alaska,29.9
+2021,Arizona,20.3
+2021,Arkansas,20.4
+2021,California,10.6
+2021,Colorado,23.8
+2021,Connecticut,11.1
+2021,Delaware,13.6
+2021,Florida,15.3
+2021,Georgia,15.5
+2021,Hawaiʻi,14
+2021,Idaho,20.3
+2021,Illinois,11.5
+2021,Indiana,16.6
+2021,Iowa,17.2
+2021,Kansas,19.1
+2021,Kentucky,18.1
+2021,Louisiana,14.9
+2021,Maine,20.1
+2021,Maryland,10
+2021,Massachusetts,8.6
+2021,Michigan,14.8
+2021,Minnesota,14.1
+2021,Mississippi,16.3
+2021,Missouri,19.1
+2021,Montana,31.6
+2021,Nebraska,14.7
+2021,Nevada,22
+2021,New Hampshire,16.1
+2021,New Jersey,7.4
+2021,New Mexico,25.2
+2021,New York,8.4
+2021,North Carolina,13.7
+2021,North Dakota,20.1
+2021,Ohio,15
+2021,Oklahoma,22
+2021,Oregon,20.9
+2021,Pennsylvania,14.5
+2021,Rhode Island,10.7
+2021,South Carolina,15.4
+2021,South Dakota,22.6
+2021,Tennessee,17.5
+2021,Texas,14.2
+2021,Utah,19.3
+2021,Vermont,21.9
+2021,Virginia,13.7
+2021,Washington,15.9
+2021,West Virginia,21
+2021,Wisconsin,15.4
+2021,Wyoming,32.8
+2022,Alabama,16.6
+2022,Alaska,27.3
+2022,Arizona,21.8
+2022,Arkansas,18
+2022,California,11
+2022,Colorado,22.1
+2022,Connecticut,11
+2022,Delaware,12.8
+2022,Florida,15.5
+2022,Georgia,14.9
+2022,Hawaiʻi,17.1
+2022,Idaho,22.9
+2022,Illinois,12.2
+2022,Indiana,16.9
+2022,Iowa,18.4
+2022,Kansas,20.3
+2022,Kentucky,18.2
+2022,Louisiana,15.8
+2022,Maine,19.3
+2022,Maryland,9.9
+2022,Massachusetts,9
+2022,Michigan,15
+2022,Minnesota,15
+2022,Mississippi,14.2
+2022,Missouri,19.7
+2022,Montana,29.3
+2022,Nebraska,15.5
+2022,Nevada,22
+2022,New Hampshire,17.7
+2022,New Jersey,8.3
+2022,New Mexico,24.8
+2022,New York,9
+2022,North Carolina,15.1
+2022,North Dakota,21.7
+2022,Ohio,15.3
+2022,Oklahoma,21.3
+2022,Oregon,20.8
+2022,Pennsylvania,15.1
+2022,Rhode Island,11.5
+2022,South Carolina,16.1
+2022,South Dakota,21.1
+2022,Tennessee,17.7
+2022,Texas,14.5
+2022,Utah,21.2
+2022,Vermont,19.8
+2022,Virginia,13.9
+2022,Washington,16
+2022,West Virginia,19.9
+2022,Wisconsin,15.7
+2022,Wyoming,26.6
+2023,Alabama,17
+2023,Alaska,28.1
+2023,Arizona,20.3
+2023,Arkansas,20.4
+2023,California,10.8
+2023,Colorado,22.1
+2023,Connecticut,9.8
+2023,Delaware,14
+2023,Florida,16
+2023,Georgia,15.1
+2023,Hawaiʻi,15.5
+2023,Idaho,23.4
+2023,Illinois,12.5
+2023,Indiana,17.3
+2023,Iowa,15.7
+2023,Kansas,19.4
+2023,Kentucky,18
+2023,Louisiana,15.7
+2023,Maine,19.6
+2023,Maryland,9.7
+2023,Massachusetts,9.4
+2023,Michigan,15.2
+2023,Minnesota,14.2
+2023,Mississippi,15.5
+2023,Missouri,18.4
+2023,Montana,27.4
+2023,Nebraska,14.4
+2023,Nevada,21.6
+2023,New Hampshire,15.8
+2023,New Jersey,7.6
+2023,New Mexico,23.1
+2023,New York,8.8
+2023,North Carolina,14.7
+2023,North Dakota,18.1
+2023,Ohio,15.2
+2023,Oklahoma,22
+2023,Oregon,21
+2023,Pennsylvania,15.2
+2023,Rhode Island,10.2
+2023,South Carolina,15.2
+2023,South Dakota,19.7
+2023,Tennessee,17.9
+2023,Texas,14.4
+2023,Utah,20.7
+2023,Vermont,19.3
+2023,Virginia,14.3
+2023,Washington,16.5
+2023,West Virginia,19.7
+2023,Wisconsin,15.6
+2023,Wyoming,26.9
+2024,Alabama,16.4
+2024,Alaska,30.3
+2024,Arizona,20.4
+2024,Arkansas,19.3
+2024,California,10.3
+2024,Colorado,22.3
+2024,Connecticut,10.9
+2024,Delaware,12.1
+2024,Florida,16.1
+2024,Georgia,14.9
+2024,Hawaiʻi,13.9
+2024,Idaho,22.2
+2024,Illinois,11.4
+2024,Indiana,17.1
+2024,Iowa,17.1
+2024,Kansas,17.9
+2024,Kentucky,18.6
+2024,Louisiana,14.3
+2024,Maine,20.4
+2024,Maryland,10.2
+2024,Massachusetts,9.3
+2024,Michigan,14.4
+2024,Minnesota,14.3
+2024,Mississippi,15.3
+2024,Missouri,18.6
+2024,Montana,28.2
+2024,Nebraska,15
+2024,Nevada,21.2
+2024,New Hampshire,17.7
+2024,New Jersey,7.3
+2024,New Mexico,25.2
+2024,New York,8.7
+2024,North Carolina,15
+2024,North Dakota,18.5
+2024,Ohio,15.7
+2024,Oklahoma,21.4
+2024,Oregon,22.2
+2024,Pennsylvania,14.2
+2024,Rhode Island,9.6
+2024,South Carolina,16.8
+2024,South Dakota,21.5
+2024,Tennessee,17.2
+2024,Texas,14.7
+2024,Utah,19.5
+2024,Vermont,16.2
+2024,Virginia,13.7
+2024,Washington,15.6
+2024,West Virginia,17.1
+2024,Wisconsin,15.6
+2024,Wyoming,28.9

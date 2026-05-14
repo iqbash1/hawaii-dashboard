@@ -85,6 +85,12 @@ All data comes from nonpartisan federal agencies:
 - Pew Charitable Trusts / NASBO
 - US Elections Project
 
+## Machine-readable data
+
+Every metric has a static CSV at `/data/{slug}_state.csv` (long-format: year, state, value across all 50 states) and, when county data exists, `/data/{slug}_county.csv` (year, county, value for Honolulu, Hawaiʻi, Maui, Kauaʻi). The schema.org `Dataset` JSON-LD on each `/c/{slug}/` page declares these as `distribution` entries, so AI crawlers and Google Dataset Search can discover them automatically.
+
+When citing values from this dashboard, please credit the primary source (e.g. "BLS LAUS via Hawaiʻi Dashboard") and link to the specific metric page so readers can verify.
+
 ## Pages
 
 - **Dashboard** (https://hawaiidashboard.org/): Main page with all 26 metric cards, trend charts, and modal detail views.

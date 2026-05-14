@@ -1,0 +1,628 @@
+year,state,value
+1998,Alabama,255.23
+1998,Arizona,260.8
+1998,Arkansas,255.73
+1998,California,253.21
+1998,Colorado,263.54
+1998,Connecticut,271.57
+1998,Delaware,255.88
+1998,Florida,253.33
+1998,Georgia,257.07
+1998,Hawaiʻi,249.69
+1998,Kansas,267.79
+1998,Kentucky,262.06
+1998,Louisiana,251.89
+1998,Maine,272.65
+1998,Maryland,262.1
+1998,Massachusetts,268.87
+1998,Minnesota,267.22
+1998,Mississippi,250.58
+1998,Missouri,262.9
+1998,Montana,270.21
+1998,Nevada,256.84
+1998,New Mexico,257.53
+1998,New York,266.31
+1998,North Carolina,263.59
+1998,Oklahoma,265.36
+1998,Oregon,265.81
+1998,Rhode Island,262.33
+1998,South Carolina,254.52
+1998,Tennessee,258.86
+1998,Texas,262.17
+1998,Utah,264.62
+1998,Virginia,266.42
+1998,Washington,264.71
+1998,West Virginia,261.58
+1998,Wisconsin,265.98
+1998,Wyoming,262.12
+2002,Alabama,252.5
+2002,Arizona,256.73
+2002,Arkansas,260.13
+2002,California,250.45
+2002,Connecticut,267.03
+2002,Delaware,267.27
+2002,Florida,261.05
+2002,Georgia,258.01
+2002,Hawaiʻi,251.61
+2002,Idaho,266.5
+2002,Indiana,264.89
+2002,Kansas,269.12
+2002,Kentucky,265.25
+2002,Louisiana,256.27
+2002,Maine,269.82
+2002,Maryland,263.34
+2002,Massachusetts,270.52
+2002,Michigan,264.72
+2002,Mississippi,255.02
+2002,Missouri,267.91
+2002,Montana,270.17
+2002,Nebraska,269.95
+2002,Nevada,251.36
+2002,New Mexico,253.66
+2002,New York,263.95
+2002,North Carolina,265.02
+2002,North Dakota,268.09
+2002,Ohio,268.32
+2002,Oklahoma,262.01
+2002,Oregon,268.14
+2002,Pennsylvania,265.32
+2002,Rhode Island,261.9
+2002,South Carolina,257.64
+2002,Tennessee,260.28
+2002,Texas,262.1
+2002,Utah,263.28
+2002,Vermont,271.83
+2002,Virginia,269.2
+2002,Washington,268.17
+2002,West Virginia,263.69
+2002,Wyoming,264.94
+2003,Alabama,253.17
+2003,Alaska,256.41
+2003,Arizona,255.32
+2003,Arkansas,258
+2003,California,251.01
+2003,Colorado,267.59
+2003,Connecticut,267.22
+2003,Delaware,264.53
+2003,Florida,257.3
+2003,Georgia,257.71
+2003,Hawaiʻi,251.28
+2003,Idaho,264.44
+2003,Illinois,266.41
+2003,Indiana,264.83
+2003,Iowa,267.5
+2003,Kansas,266.01
+2003,Kentucky,266.19
+2003,Louisiana,253.45
+2003,Maine,268.32
+2003,Maryland,261.6
+2003,Massachusetts,272.91
+2003,Michigan,264.38
+2003,Minnesota,267.71
+2003,Mississippi,255.01
+2003,Missouri,267.36
+2003,Montana,269.83
+2003,Nebraska,266.31
+2003,Nevada,252.31
+2003,New Hampshire,270.73
+2003,New Jersey,267.79
+2003,New Mexico,251.6
+2003,New York,265.33
+2003,North Carolina,261.71
+2003,North Dakota,269.73
+2003,Ohio,266.57
+2003,Oklahoma,261.72
+2003,Oregon,264.03
+2003,Pennsylvania,264.27
+2003,Rhode Island,260.88
+2003,South Carolina,258.09
+2003,South Dakota,269.97
+2003,Tennessee,258.11
+2003,Texas,258.78
+2003,Utah,264.3
+2003,Vermont,270.52
+2003,Virginia,268
+2003,Washington,264.49
+2003,West Virginia,259.56
+2003,Wisconsin,266.47
+2003,Wyoming,267
+2005,Alabama,251.98
+2005,Alaska,258.72
+2005,Arizona,254.79
+2005,Arkansas,257.69
+2005,California,250.43
+2005,Colorado,264.76
+2005,Connecticut,264.01
+2005,Delaware,266.01
+2005,Florida,255.78
+2005,Georgia,256.87
+2005,Hawaiʻi,248.51
+2005,Idaho,264.3
+2005,Illinois,263.52
+2005,Indiana,261.01
+2005,Iowa,267
+2005,Kansas,266.83
+2005,Kentucky,263.94
+2005,Louisiana,252.69
+2005,Maine,269.98
+2005,Maryland,260.78
+2005,Massachusetts,273.72
+2005,Michigan,261.14
+2005,Minnesota,268.36
+2005,Mississippi,250.53
+2005,Missouri,264.66
+2005,Montana,269.22
+2005,Nebraska,267.46
+2005,Nevada,252.87
+2005,New Hampshire,269.65
+2005,New Jersey,269.42
+2005,New Mexico,251.03
+2005,New York,265.14
+2005,North Carolina,258.16
+2005,North Dakota,270.24
+2005,Ohio,266.77
+2005,Oklahoma,259.63
+2005,Oregon,263.16
+2005,Pennsylvania,266.82
+2005,Rhode Island,260.97
+2005,South Carolina,257.17
+2005,South Dakota,268.54
+2005,Tennessee,259.07
+2005,Texas,258.19
+2005,Utah,261.87
+2005,Vermont,268.77
+2005,Virginia,267.81
+2005,Washington,264.66
+2005,West Virginia,255.07
+2005,Wisconsin,266.23
+2005,Wyoming,268.12
+2007,Alabama,251.94
+2007,Alaska,258.8
+2007,Arizona,254.83
+2007,Arkansas,257.96
+2007,California,251.29
+2007,Colorado,266.41
+2007,Connecticut,267.06
+2007,Delaware,264.54
+2007,Florida,259.79
+2007,Georgia,258.7
+2007,Hawaiʻi,251.33
+2007,Idaho,264.89
+2007,Illinois,262.83
+2007,Indiana,264.1
+2007,Iowa,267.45
+2007,Kansas,267.41
+2007,Kentucky,261.97
+2007,Louisiana,253.24
+2007,Maine,269.92
+2007,Maryland,265.24
+2007,Massachusetts,273.28
+2007,Michigan,260.32
+2007,Minnesota,268.2
+2007,Mississippi,250.06
+2007,Missouri,263.44
+2007,Montana,270.94
+2007,Nebraska,267.03
+2007,Nevada,252.35
+2007,New Hampshire,269.73
+2007,New Jersey,270.14
+2007,New Mexico,250.75
+2007,New York,263.55
+2007,North Carolina,259.14
+2007,North Dakota,268.02
+2007,Ohio,267.98
+2007,Oklahoma,259.55
+2007,Oregon,265.71
+2007,Pennsylvania,267.67
+2007,Rhode Island,258.32
+2007,South Carolina,257.42
+2007,South Dakota,269.6
+2007,Tennessee,259.16
+2007,Texas,260.81
+2007,Utah,262.23
+2007,Vermont,273.05
+2007,Virginia,266.88
+2007,Washington,264.95
+2007,West Virginia,255
+2007,Wisconsin,264.18
+2007,Wyoming,266.23
+2009,Alabama,254.9
+2009,Alaska,259.45
+2009,Arizona,257.6
+2009,Arkansas,258.05
+2009,California,252.63
+2009,Colorado,265.51
+2009,Connecticut,271.81
+2009,Delaware,265
+2009,Florida,264.36
+2009,Georgia,260.24
+2009,Hawaiʻi,254.74
+2009,Idaho,264.84
+2009,Illinois,264.51
+2009,Indiana,265.69
+2009,Iowa,264.89
+2009,Kansas,266.8
+2009,Kentucky,266.85
+2009,Louisiana,253.33
+2009,Maine,267.71
+2009,Maryland,267.3
+2009,Massachusetts,273.59
+2009,Michigan,261.9
+2009,Minnesota,269.74
+2009,Mississippi,251.31
+2009,Missouri,266.88
+2009,Montana,270.39
+2009,Nebraska,267.07
+2009,Nevada,253.84
+2009,New Hampshire,270.75
+2009,New Jersey,272.8
+2009,New Mexico,254.13
+2009,New York,264.29
+2009,North Carolina,259.53
+2009,North Dakota,269.24
+2009,Ohio,268.68
+2009,Oklahoma,259.5
+2009,Oregon,265.09
+2009,Pennsylvania,270.7
+2009,Rhode Island,259.89
+2009,South Carolina,257.27
+2009,South Dakota,270.06
+2009,Tennessee,260.95
+2009,Texas,260.37
+2009,Utah,265.59
+2009,Vermont,272.31
+2009,Virginia,265.64
+2009,Washington,266.92
+2009,West Virginia,254.8
+2009,Wisconsin,265.81
+2009,Wyoming,268.16
+2011,Alabama,258.42
+2011,Alaska,261.29
+2011,Arizona,260.15
+2011,Arkansas,259.14
+2011,California,254.94
+2011,Colorado,270.64
+2011,Connecticut,274.68
+2011,Delaware,265.84
+2011,Florida,262.12
+2011,Georgia,262.36
+2011,Hawaiʻi,257.19
+2011,Idaho,268.01
+2011,Illinois,265.64
+2011,Indiana,264.73
+2011,Iowa,264.55
+2011,Kansas,267.34
+2011,Kentucky,268.83
+2011,Louisiana,254.69
+2011,Maine,269.87
+2011,Maryland,271.22
+2011,Massachusetts,275.37
+2011,Michigan,265.19
+2011,Minnesota,270.15
+2011,Mississippi,253.83
+2011,Missouri,266.76
+2011,Montana,272.87
+2011,Nebraska,267.7
+2011,Nevada,258.19
+2011,New Hampshire,272.08
+2011,New Jersey,275.18
+2011,New Mexico,255.86
+2011,New York,265.7
+2011,North Carolina,262.93
+2011,North Dakota,268.69
+2011,Ohio,268.28
+2011,Oklahoma,260.12
+2011,Oregon,264.23
+2011,Pennsylvania,267.75
+2011,Rhode Island,265.12
+2011,South Carolina,260.31
+2011,South Dakota,268.94
+2011,Tennessee,259.21
+2011,Texas,261.43
+2011,Utah,267.09
+2011,Vermont,273.84
+2011,Virginia,267.27
+2011,Washington,267.58
+2011,West Virginia,256.11
+2011,Wisconsin,267.17
+2011,Wyoming,269.57
+2013,Alabama,257.43
+2013,Alaska,261.26
+2013,Arizona,260.45
+2013,Arkansas,261.96
+2013,California,261.5
+2013,Colorado,271.01
+2013,Connecticut,274.46
+2013,Delaware,265.98
+2013,Florida,265.83
+2013,Georgia,264.62
+2013,Hawaiʻi,259.96
+2013,Idaho,270.22
+2013,Illinois,266.9
+2013,Indiana,267.27
+2013,Iowa,269
+2013,Kansas,266.89
+2013,Kentucky,269.62
+2013,Louisiana,257.35
+2013,Maine,269.19
+2013,Maryland,273.8
+2013,Massachusetts,277.01
+2013,Michigan,265.94
+2013,Minnesota,271.02
+2013,Mississippi,253.15
+2013,Missouri,267.22
+2013,Montana,271.77
+2013,Nebraska,269.22
+2013,Nevada,261.7
+2013,New Hampshire,274.31
+2013,New Jersey,276.38
+2013,New Mexico,255.87
+2013,New York,266.35
+2013,North Carolina,264.54
+2013,North Dakota,267.78
+2013,Ohio,269.09
+2013,Oklahoma,261.93
+2013,Oregon,268.28
+2013,Pennsylvania,272.09
+2013,Rhode Island,266.68
+2013,South Carolina,261.45
+2013,South Dakota,268.1
+2013,Tennessee,265.36
+2013,Texas,263.68
+2013,Utah,270.04
+2013,Vermont,274.37
+2013,Virginia,267.59
+2013,Washington,272.04
+2013,West Virginia,257.38
+2013,Wisconsin,267.54
+2013,Wyoming,270.97
+2015,Alabama,258.75
+2015,Alaska,260.32
+2015,Arizona,262.77
+2015,Arkansas,258.77
+2015,California,258.99
+2015,Colorado,268.07
+2015,Connecticut,273.05
+2015,Delaware,262.61
+2015,Florida,263.38
+2015,Georgia,262.27
+2015,Hawaiʻi,257.35
+2015,Idaho,268.55
+2015,Illinois,266.81
+2015,Indiana,268.25
+2015,Iowa,268.2
+2015,Kansas,266.77
+2015,Kentucky,267.77
+2015,Louisiana,255.47
+2015,Maine,268.39
+2015,Maryland,267.91
+2015,Massachusetts,274.5
+2015,Michigan,264.5
+2015,Minnesota,270.24
+2015,Mississippi,251.98
+2015,Missouri,266.88
+2015,Montana,269.96
+2015,Nebraska,269.43
+2015,Nevada,259.42
+2015,New Hampshire,274.81
+2015,New Jersey,270.85
+2015,New Mexico,253.23
+2015,New York,263.25
+2015,North Carolina,260.59
+2015,North Dakota,266.96
+2015,Ohio,265.88
+2015,Oklahoma,262.67
+2015,Oregon,267.67
+2015,Pennsylvania,268.75
+2015,Rhode Island,265.05
+2015,South Carolina,260.33
+2015,South Dakota,267.08
+2015,Tennessee,264.77
+2015,Texas,260.66
+2015,Utah,269.43
+2015,Vermont,273.96
+2015,Virginia,266.84
+2015,Washington,267.25
+2015,West Virginia,260.19
+2015,Wisconsin,269.53
+2015,Wyoming,268.8
+2017,Alabama,257.69
+2017,Alaska,257.67
+2017,Arizona,262.96
+2017,Arkansas,259.96
+2017,California,262.52
+2017,Colorado,270.34
+2017,Connecticut,272.54
+2017,Delaware,263.09
+2017,Florida,266.55
+2017,Georgia,266.33
+2017,Hawaiʻi,260.98
+2017,Idaho,269.67
+2017,Illinois,266.93
+2017,Indiana,272.02
+2017,Iowa,267.68
+2017,Kansas,267.49
+2017,Kentucky,265.13
+2017,Louisiana,256.75
+2017,Maine,268.93
+2017,Maryland,267.25
+2017,Massachusetts,277.78
+2017,Michigan,265.47
+2017,Minnesota,268.62
+2017,Mississippi,256.34
+2017,Missouri,266.04
+2017,Montana,267.21
+2017,Nebraska,268.53
+2017,Nevada,259.81
+2017,New Hampshire,274.79
+2017,New Jersey,275.04
+2017,New Mexico,255.58
+2017,New York,264.16
+2017,North Carolina,262.72
+2017,North Dakota,265.08
+2017,Ohio,268.45
+2017,Oklahoma,261.24
+2017,Oregon,266.22
+2017,Pennsylvania,269.55
+2017,Rhode Island,265.77
+2017,South Carolina,259.75
+2017,South Dakota,267.36
+2017,Tennessee,262.05
+2017,Texas,260.34
+2017,Utah,268.75
+2017,Vermont,273.4
+2017,Virginia,267.74
+2017,Washington,271.62
+2017,West Virginia,258.7
+2017,Wisconsin,269.37
+2017,Wyoming,269.02
+2019,Alabama,253.4
+2019,Alaska,252.39
+2019,Arizona,259.48
+2019,Arkansas,258.78
+2019,California,258.83
+2019,Colorado,267.31
+2019,Connecticut,269.72
+2019,Delaware,259.68
+2019,Florida,263.35
+2019,Georgia,262.39
+2019,Hawaiʻi,258.16
+2019,Idaho,266.48
+2019,Illinois,264.7
+2019,Indiana,265.95
+2019,Iowa,262.33
+2019,Kansas,262.82
+2019,Kentucky,262.96
+2019,Louisiana,257.42
+2019,Maine,265.17
+2019,Maryland,264.39
+2019,Massachusetts,273.11
+2019,Michigan,262.58
+2019,Minnesota,263.81
+2019,Mississippi,256.38
+2019,Missouri,263.29
+2019,Montana,264.83
+2019,Nebraska,263.99
+2019,Nevada,258.08
+2019,New Hampshire,267.95
+2019,New Jersey,270.36
+2019,New Mexico,251.7
+2019,New York,261.75
+2019,North Carolina,262.53
+2019,North Dakota,263.23
+2019,Ohio,267.05
+2019,Oklahoma,258.2
+2019,Oregon,263.72
+2019,Pennsylvania,264.18
+2019,Rhode Island,262.15
+2019,South Carolina,258.98
+2019,South Dakota,262.77
+2019,Tennessee,262.46
+2019,Texas,255.74
+2019,Utah,267.42
+2019,Vermont,268.48
+2019,Virginia,261.8
+2019,Washington,266.28
+2019,West Virginia,255.62
+2019,Wisconsin,267.38
+2019,Wyoming,264.64
+2022,Alabama,250.9
+2022,Alaska,252.55
+2022,Arizona,258.53
+2022,Arkansas,255.04
+2022,California,258.79
+2022,Colorado,263.45
+2022,Connecticut,263.81
+2022,Delaware,253.01
+2022,Florida,259.63
+2022,Georgia,259.99
+2022,Hawaiʻi,258.98
+2022,Idaho,263.54
+2022,Illinois,261.89
+2022,Indiana,260.5
+2022,Iowa,259.77
+2022,Kansas,256.18
+2022,Kentucky,258.49
+2022,Louisiana,256.65
+2022,Maine,256.71
+2022,Maryland,259.29
+2022,Massachusetts,268.75
+2022,Michigan,258.51
+2022,Minnesota,260.47
+2022,Mississippi,252.93
+2022,Missouri,257.63
+2022,Montana,261.18
+2022,Nebraska,259.31
+2022,Nevada,258.89
+2022,New Hampshire,263.18
+2022,New Jersey,269.78
+2022,New Mexico,247.8
+2022,New York,261.66
+2022,North Carolina,256.16
+2022,North Dakota,258.08
+2022,Ohio,262
+2022,Oklahoma,251.3
+2022,Oregon,257.05
+2022,Pennsylvania,259.1
+2022,Rhode Island,259.39
+2022,South Carolina,253.87
+2022,South Dakota,261.84
+2022,Tennessee,257.56
+2022,Texas,255.17
+2022,Utah,265.22
+2022,Vermont,263.78
+2022,Virginia,259.55
+2022,Washington,261.54
+2022,West Virginia,249.4
+2022,Wisconsin,262.23
+2022,Wyoming,260.77
+2024,Alabama,249.6
+2024,Alaska,246.45
+2024,Arizona,254.34
+2024,Arkansas,254.77
+2024,California,254.37
+2024,Colorado,264.54
+2024,Connecticut,263.1
+2024,Delaware,249.45
+2024,Florida,252.86
+2024,Georgia,259.33
+2024,Hawaiʻi,257.28
+2024,Idaho,260.73
+2024,Illinois,261.62
+2024,Indiana,261.66
+2024,Iowa,260.7
+2024,Kansas,255.49
+2024,Kentucky,258
+2024,Louisiana,256.53
+2024,Maine,255.04
+2024,Maryland,258.32
+2024,Massachusetts,268.01
+2024,Michigan,255.06
+2024,Minnesota,260.07
+2024,Mississippi,253.47
+2024,Missouri,255.28
+2024,Montana,260.53
+2024,Nebraska,256.13
+2024,Nevada,253.29
+2024,New Hampshire,263.91
+2024,New Jersey,265.96
+2024,New Mexico,245.06
+2024,New York,256.87
+2024,North Carolina,254.9
+2024,North Dakota,257.39
+2024,Ohio,260.42
+2024,Oklahoma,248.79
+2024,Oregon,254.83
+2024,Pennsylvania,259.15
+2024,Rhode Island,257.77
+2024,South Carolina,253.69
+2024,South Dakota,259.89
+2024,Tennessee,258.97
+2024,Texas,252.27
+2024,Utah,261.19
+2024,Vermont,257.28
+2024,Virginia,256.26
+2024,Washington,259.27
+2024,West Virginia,247.36
+2024,Wisconsin,260.09
+2024,Wyoming,259.97
