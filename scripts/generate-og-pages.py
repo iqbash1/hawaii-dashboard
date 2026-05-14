@@ -1124,6 +1124,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="max-image-preview:large, max-snippet:-1">
   <title>{_esc_html(title)}</title>
   <meta name="description" content="{_esc_html(description)}">
   <link rel="canonical" href="{page_url}">
