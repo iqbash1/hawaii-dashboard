@@ -1754,7 +1754,9 @@ body {
         max-height: 95vh;
     }
 
-    /* Actions become a full-width sticky strip so they never float over body text */
+    /* Actions become a full-width sticky strip so they never float over body text.
+       flex-shrink: 0 + min-height keeps iOS Safari from collapsing the strip to
+       zero when the modal's flex column overflows max-height. */
     .modal-actions {
         position: sticky;
         top: 0;
@@ -1768,6 +1770,8 @@ body {
         justify-content: flex-end;
         gap: 0.25rem;
         z-index: 10;
+        flex-shrink: 0;
+        min-height: 44px;
     }
 
     .modal-share-btn .share-label {
