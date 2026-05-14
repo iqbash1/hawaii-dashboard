@@ -738,6 +738,380 @@ def _inline_article(area, metric_name, rows_html, cta_href):
     )
 
 
+# ── Landing-page (/c/{slug}/) HTML Generation ────────────────────
+# Replaces the old auto-redirect /c/ template. Produces a real,
+# indexable landing page per metric with Dataset JSON-LD, headline
+# claim, county + state-trend tables, why-it-matters, cross-links,
+# and a primary CTA back to the interactive SPA.
+
+# Stripped-down English ordinals for the lede rank descriptor.
+_ORDINAL_WORDS = {
+    1: 'lowest', 2: 'second-lowest', 3: 'third-lowest',
+    4: 'fourth-lowest', 5: 'fifth-lowest',
+}
+_ORDINAL_WORDS_HIGH = {
+    1: 'highest', 2: 'second-highest', 3: 'third-highest',
+    4: 'fourth-highest', 5: 'fifth-highest',
+}
+
+
+def _rank_descriptor(rank, total, good_direction):
+    """Return a short human phrase for a rank: 'second-lowest in the nation',
+    'ranked #N of M states', etc. `good_direction` is 'up' or 'down' (from
+    metric.goodDirection); we describe the position regardless of good/bad."""
+    if not rank or rank < 1:
+        return ''
+    # Position-from-bottom for "lowest" framing
+    rank_low = rank
+    rank_high = total - rank + 1
+    if rank_low in _ORDINAL_WORDS and rank_low <= 5:
+        return f'{_ORDINAL_WORDS[rank_low]} in the nation'
+    if rank_high in _ORDINAL_WORDS_HIGH and rank_high <= 5:
+        return f'{_ORDINAL_WORDS_HIGH[rank_high]} in the nation'
+    return f'ranked #{rank} of {total} states'
+
+
+def _format_with_unit(value, unit, decimal_pct):
+    """Like format_value() but ensures rate-style units ('per 100K', 'per 10K')
+    are spoken in the output so descriptions/titles read naturally."""
+    base = format_value(value, unit, decimal_pct)
+    if base == 'N/A':
+        return base
+    if unit == 'per 100K':
+        return f'{base} per 100K'
+    if unit == 'per 10K':
+        return f'{base} per 10K'
+    return base
+
+
+def _trim_meta_desc(text, max_chars=158):
+    """Trim a meta description to the snippet sweet spot (~155 chars) on a
+    word boundary, ending with an ellipsis if cut."""
+    if len(text) <= max_chars:
+        return text
+    cut = text[:max_chars].rsplit(' ', 1)[0]
+    return cut.rstrip('.,;: ') + '…'
+
+
+def _latest_with_value(series):
+    """Return (year_str, value) for the latest year with a non-null numeric
+    value. Skips null/None entries. Returns (None, None) if nothing usable."""
+    if not series:
+        return None, None
+    years = sorted(series.keys(), key=lambda y: int(str(y).split('-')[0]),
+                   reverse=True)
+    for y in years:
+        v = series.get(y)
+        if v is not None and not (isinstance(v, float) and math.isnan(v)):
+            return y, v
+    return None, None
+
+
+def _related_metrics(slug, area, dashboard, limit=3):
+    """Return up to `limit` (slug, metric_name) pairs for other metrics in the
+    same area, for cross-link footer."""
+    out = []
+    for other_slug, other_metric in dashboard.items():
+        if other_slug == slug:
+            continue
+        if other_metric.get('area') != area:
+            continue
+        out.append((other_slug, other_metric.get('metric', other_slug)))
+        if len(out) >= limit:
+            break
+    return out
+
+
+def generate_metric_landing_html(slug, metric, area, rankings, county_data,
+                                 dashboard, output_path):
+    """Build the /c/{slug}/ landing page. Real (non-redirecting) HTML with
+    JSON-LD Dataset schema, headline figure + rank, county + state-trend
+    tables, cross-links, and CTA back to the interactive SPA.
+
+    `county_data` may be None for metrics without county data — the county
+    table is then omitted.
+    """
+    metric_name = metric.get('metric', slug)
+    area_label = area or metric.get('area', '')
+    unit = metric.get('unit', '')
+    dec = is_decimal_pct(metric)
+    good_direction = metric.get('goodDirection', 'up')
+    source_name = metric.get('source', '')
+    source_url = metric.get('sourceUrl', '')
+    why = metric.get('whyItMatters', '') or ''
+
+    hawaii_series = metric.get('hawaii', {}) or {}
+    latest_year, latest_val = _latest_with_value(hawaii_series)
+    formatted = _format_with_unit(latest_val, unit, dec) if latest_val is not None else 'N/A'
+
+    rank_phrase = ''
+    rank_num = None
+    rank_total = None
+    if rankings and rankings.get('hawaiiRank', 0) > 0:
+        rank_num = rankings['hawaiiRank']
+        rank_total = rankings['total']
+        rank_phrase = _rank_descriptor(rank_num, rank_total, good_direction)
+
+    # ── Title and meta description (keyword-targeted) ─────────────
+    # Full <title> includes brand suffix (truncated by Google around ~60 chars).
+    # Social og:title drops the brand because og:site_name already carries it.
+    if formatted != 'N/A' and rank_num:
+        title_core = (f'Hawaii {metric_name}: {formatted} ({latest_year}), '
+                      f'Ranked #{rank_num} of {rank_total} States')
+    elif formatted != 'N/A':
+        title_core = f'Hawaii {metric_name}: {formatted} ({latest_year})'
+    else:
+        title_core = f'Hawaii {metric_name}'
+    title = f'{title_core} | Hawaiʻi Dashboard'
+    social_title = title_core
+
+    desc_lead = ''
+    if formatted != 'N/A':
+        desc_lead = f'Hawaii {metric_name.lower()} was {formatted} in {latest_year}'
+        if rank_phrase:
+            desc_lead += f', {rank_phrase}'
+        desc_lead += '.'
+    desc_tail = ''
+    if county_data and county_data.get('counties'):
+        cn = county_data['counties']
+        desc_tail = (f" County data for {', '.join(cn[:3])}, and {cn[-1]}."
+                     if len(cn) > 3 else f" County data for {', '.join(cn)}.")
+    if not desc_lead and source_name:
+        desc_lead = f'{metric_name} data for Hawaii from {source_name}.'
+    description = _trim_meta_desc(desc_lead + desc_tail, 158)
+
+    page_url = f'{SITE_URL}/c/{slug}/'
+    og_image = f'{SITE_URL}/assets/og/{slug}_county.png' if county_data else f'{SITE_URL}/assets/og/{slug}.png'
+
+    # ── JSON-LD Dataset schema ─────────────────────────────────────
+    temporal_start = min(hawaii_series.keys(), key=lambda y: int(str(y).split('-')[0])) if hawaii_series else ''
+    temporal_end = max(hawaii_series.keys(), key=lambda y: int(str(y).split('-')[0])) if hawaii_series else ''
+    temporal_cov = f'{temporal_start}/{temporal_end}' if temporal_start else ''
+    dataset_json = {
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        'name': f'Hawaii {metric_name}',
+        'description': (f'Annual {metric_name.lower()} for Hawaii'
+                        + (f' state and counties ({", ".join(county_data["counties"])})'
+                           if county_data and county_data.get('counties') else ' state')
+                        + (f', {temporal_cov.replace("/", "–")}.' if temporal_cov else '.')
+                        + (f' Source: {source_name}.' if source_name else '')),
+        'url': page_url,
+        'creator': {'@type': 'Organization', 'name': 'Hawaiʻi Dashboard',
+                    'url': SITE_URL},
+        'isAccessibleForFree': True,
+        'temporalCoverage': temporal_cov or None,
+        'spatialCoverage': {
+            '@type': 'Place', 'name': 'Hawaii',
+            'address': {'@type': 'PostalAddress',
+                        'addressRegion': 'HI', 'addressCountry': 'US'}
+        },
+        'variableMeasured': metric.get('officialName', metric_name),
+        'keywords': ['hawaii', metric_name.lower(),
+                     *([c for c in (county_data or {}).get('counties', [])])],
+    }
+    if source_name:
+        dataset_json['publisher'] = {'@type': 'Organization',
+                                     'name': source_name,
+                                     'url': source_url or SITE_URL}
+    # Drop None values for cleaner JSON
+    dataset_json = {k: v for k, v in dataset_json.items() if v is not None}
+    dataset_ld = json.dumps(dataset_json, ensure_ascii=False, indent=2)
+
+    # Breadcrumb
+    area_anchor = area_label.lower().replace('&', '').replace(' ', '-').strip('-')
+    area_anchor = area_anchor.replace('--', '-')
+    crumb_json = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+            {'@type': 'ListItem', 'position': 1, 'name': 'Dashboard',
+             'item': f'{SITE_URL}/'},
+            {'@type': 'ListItem', 'position': 2, 'name': area_label,
+             'item': f'{SITE_URL}/#{area_anchor}'},
+            {'@type': 'ListItem', 'position': 3, 'name': metric_name,
+             'item': page_url},
+        ]
+    }
+    crumb_ld = json.dumps(crumb_json, ensure_ascii=False, indent=2)
+
+    # ── Body: lede ────────────────────────────────────────────────
+    if formatted != 'N/A':
+        lede_main = f'Hawaii’s {metric_name.lower()} was <strong>{_esc_html(formatted)} in {latest_year}</strong>'
+        if rank_phrase:
+            if 'ranked #' in rank_phrase:
+                # rank_phrase already names the number; don't double-print it
+                lede_main += f', <strong>{_esc_html(rank_phrase)}</strong>.'
+            else:
+                lede_main += (f', the <strong>{_esc_html(rank_phrase)}</strong>'
+                              f' (50-state rank: #{rank_num}).')
+        else:
+            lede_main += '.'
+    else:
+        lede_main = f'{_esc_html(metric_name)} data for Hawaii.'
+
+    # ── Body: county table ────────────────────────────────────────
+    county_html = ''
+    if county_data and county_data.get('counties') and county_data.get('data'):
+        # Pick most recent year that has at least one non-null county value
+        all_years = set()
+        for cd_entry in county_data['data'].values():
+            for y, v in (cd_entry or {}).items():
+                if v is not None:
+                    all_years.add(y)
+        if all_years:
+            year = sorted(all_years, key=lambda y: int(str(y).split('-')[0]),
+                          reverse=True)[0]
+            rows = []
+            for cn in county_data['counties']:
+                v = county_data['data'].get(cn, {}).get(year)
+                v_fmt = format_value(v, unit, dec) if v is not None else '—'
+                rows.append(f'<tr><td>{_esc_html(cn)}</td><td class="num">{_esc_html(v_fmt)}</td></tr>')
+            county_html = (
+                f'\n    <h2>By county ({year})</h2>\n'
+                f'    <table>\n'
+                f'      <thead><tr><th>County</th><th class="num">{_esc_html(metric_name)}</th></tr></thead>\n'
+                f'      <tbody>{"".join(rows)}</tbody>\n'
+                f'    </table>'
+            )
+
+    # ── Body: state trend table (last 6 years with data) ──────────
+    trend_html = ''
+    if hawaii_series:
+        years_sorted = sorted(hawaii_series.keys(),
+                              key=lambda y: int(str(y).split('-')[0]),
+                              reverse=True)
+        years_with_val = [y for y in years_sorted if hawaii_series.get(y) is not None][:6]
+        if years_with_val:
+            rows = []
+            for y in years_with_val:
+                v = hawaii_series[y]
+                rows.append(f'<tr><td>{_esc_html(y)}</td><td class="num">{_esc_html(format_value(v, unit, dec))}</td></tr>')
+            trend_html = (
+                f'\n    <h2>Recent state trend</h2>\n'
+                f'    <table>\n'
+                f'      <thead><tr><th>Year</th><th class="num">Hawaii</th></tr></thead>\n'
+                f'      <tbody>{"".join(rows)}</tbody>\n'
+                f'    </table>'
+            )
+
+    # ── Body: why it matters ──────────────────────────────────────
+    why_html = ''
+    if why:
+        # Strip any inline HTML (links etc.) from the data file for a cleaner
+        # static page — full narrative lives in the SPA modal.
+        import re as _re
+        why_text = _re.sub(r'<[^>]+>', '', why)
+        why_html = f'\n    <h2>Why this matters</h2>\n    <p>{_esc_html(why_text)}</p>'
+
+    # ── Body: cross-links to related metrics in same area ─────────
+    related = _related_metrics(slug, area_label, dashboard, limit=3)
+    related_html = ''
+    if related:
+        items = ''.join(
+            f'<li><a href="/c/{rs}/">Hawaii {_esc_html(rn)}</a></li>'
+            for rs, rn in related
+        )
+        related_html = (
+            f'\n    <h2>Related Hawaii data</h2>\n'
+            f'    <ul class="related">{items}</ul>'
+        )
+
+    # ── Body: source attribution ──────────────────────────────────
+    if source_name:
+        source_link = (f'<a href="{source_url}" rel="noopener">{_esc_html(source_name)}</a>'
+                       if source_url else _esc_html(source_name))
+        source_html = (f'\n    <p class="source">Source: {source_link}.'
+                       + (f' Series covers {temporal_cov.replace("/", "&ndash;")}.'
+                          if temporal_cov else '')
+                       + '</p>')
+    else:
+        source_html = ''
+
+    # ── Assemble ──────────────────────────────────────────────────
+    cta_href = f'/#{slug}' + ('/county' if county_data else '')
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{_esc_html(title)}</title>
+  <meta name="description" content="{_esc_html(description)}">
+  <link rel="canonical" href="{page_url}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{page_url}">
+  <meta property="og:title" content="{_esc_html(social_title)}">
+  <meta property="og:description" content="{_esc_html(description)}">
+  <meta property="og:image" content="{og_image}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Hawaiʻi Dashboard">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{_esc_html(social_title)}">
+  <meta name="twitter:description" content="{_esc_html(description)}">
+  <meta name="twitter:image" content="{og_image}">
+
+  <script type="application/ld+json">
+{dataset_ld}
+  </script>
+  <script type="application/ld+json">
+{crumb_ld}
+  </script>
+
+  <style>
+    *, *::before, *::after {{ box-sizing: border-box; }}
+    html {{ -webkit-text-size-adjust: 100%; }}
+    body {{ margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; color: #1f2933; background: #fafafa; line-height: 1.55; }}
+    .wrap {{ max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }}
+    .crumbs {{ font-size: 0.8125rem; color: #6c7782; margin: 0 0 1rem; }}
+    .crumbs a {{ color: #4c5666; text-decoration: none; }}
+    .crumbs a:hover {{ text-decoration: underline; }}
+    .area-label {{ color: #4c5666; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }}
+    h1 {{ font-size: 2rem; line-height: 1.2; margin: 0.5rem 0 1rem; color: #1f2933; }}
+    .lede {{ font-size: 1.15rem; color: #1f2933; margin: 0 0 1.5rem; }}
+    .lede strong {{ color: #0b4f6c; }}
+    .cta-primary {{ display: inline-block; background: #0b4f6c; color: #fff; padding: 0.75rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 500; margin: 0.5rem 0 2rem; }}
+    .cta-primary:hover {{ background: #093e56; }}
+    h2 {{ font-size: 1.25rem; margin: 2rem 0 0.75rem; color: #1f2933; }}
+    table {{ width: 100%; border-collapse: collapse; margin: 0.75rem 0; background: #fff; border: 1px solid #e6e9ed; border-radius: 6px; overflow: hidden; }}
+    th, td {{ padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid #eef0f3; font-size: 0.95rem; }}
+    th {{ background: #f5f7fa; font-weight: 600; color: #4c5666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }}
+    tr:last-child td {{ border-bottom: 0; }}
+    td.num {{ text-align: right; font-variant-numeric: tabular-nums; }}
+    ul.related {{ padding-left: 1.25rem; margin: 0.5rem 0 0; }}
+    ul.related li {{ margin: 0.25rem 0; }}
+    p {{ margin: 0.75rem 0; }}
+    a {{ color: #0b4f6c; }}
+    .source {{ font-size: 0.8125rem; color: #6c7782; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e6e9ed; }}
+    .source a {{ color: #4c5666; }}
+    @media (max-width: 540px) {{
+      h1 {{ font-size: 1.625rem; }}
+      .lede {{ font-size: 1.05rem; }}
+      .wrap {{ padding: 1.5rem 1rem 2.5rem; }}
+    }}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <p class="crumbs"><a href="/">Hawaiʻi Dashboard</a> &rsaquo; {_esc_html(area_label)}</p>
+    <p class="area-label">{_esc_html(area_label)}</p>
+    <h1>Hawaii {_esc_html(metric_name)}</h1>
+
+    <p class="lede">{lede_main}</p>
+
+    <a class="cta-primary" href="{cta_href}">View interactive chart &rarr;</a>{county_html}{trend_html}{why_html}{related_html}
+
+    <p style="margin-top:1.5rem;"><a href="{cta_href}">Open the full interactive chart &rarr;</a> for the historical series, US-state rankings, and rank history.</p>{source_html}
+  </main>
+</body>
+</html>"""
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
 def generate_redirect_html(slug, metric, area, rankings, output_path,
                            view='detail', county_data=None, rank_history=None,
                            variant_segment=None, image_suffix=None):
@@ -1547,9 +1921,12 @@ def generate_for_slug(slug, metric, area, state_data, county_data_all,
     if cd:
         generate_county_og_image(slug, metric, area, cd,
                                  os.path.join(ASSETS_OG, f'{slug}_county.png'))
-        generate_redirect_html(slug, metric, area, rankings,
-                               os.path.join(REDIRECT_DIR_C, slug, 'index.html'),
-                               view='county', county_data=cd)
+    # /c/{slug}/ landing page is produced for every metric (with or without
+    # county data) so each metric has a single indexable canonical page.
+    generate_metric_landing_html(
+        slug, metric, area, rankings, cd, dashboard,
+        os.path.join(REDIRECT_DIR_C, slug, 'index.html'),
+    )
 
     rh = compute_rank_history(slug, dashboard, state_data)
     if rh:
