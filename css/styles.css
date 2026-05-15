@@ -2227,21 +2227,6 @@ body {
     margin: 0;
     max-width: 520px;
 }
-/* Tier sentence below the answer text. Single line that anchors the claim
-   in Hawaiʻi's overall standing for that metric. Color-coded by tier so a
-   quick scan signals good/typical/bad without re-reading. Skipped on V6
-   (trend) and V8 (county) variants where state-tier framing does not fit. */
-.qotd-answer-tier {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin: 0.5rem 0 0;
-    max-width: 520px;
-    color: var(--text-muted);
-}
-.qotd-answer-tier strong { font-weight: 700; }
-.qotd-answer-tier.rank-good strong { color: var(--positive); }
-.qotd-answer-tier.rank-mid  strong { color: var(--neutral); }
-.qotd-answer-tier.rank-bad  strong { color: var(--negative); }
 .qotd-chart {
     margin: 0;
     width: 100%;

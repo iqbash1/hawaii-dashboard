@@ -238,26 +238,6 @@ const QOTD = {
     },
 
     /**
-     * Build the single tier sentence shown beneath the answer on the proof
-     * view: "That puts Hawaiʻi in the Top tier nationally (#5 of 50)."
-     * Variant-aware: V6 (5-year change) and V8 (county) skip — those claims
-     * are not about Hawaiʻi's state-level standing, and a tier sentence
-     * there would be a non-sequitur. Returns an empty string when the
-     * sentence does not apply or when rankings are unavailable.
-     * @private
-     */
-    _tierSentenceHtml(q) {
-        if (!q || q.variant === 'V6' || q.variant === 'V8') return '';
-        if (typeof App === 'undefined' || typeof App.getStateRankings !== 'function') return '';
-        if (typeof Utils === 'undefined' || typeof Utils.rankTierLabel !== 'function') return '';
-        const rankings = App.getStateRankings(q.metric);
-        if (!rankings || !rankings.hawaiiRank) return '';
-        const cls = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
-        const tierLabel = Utils.rankTierLabel(rankings.hawaiiRank, rankings.total);
-        return `<p class="qotd-answer-tier ${cls}">That puts Hawaiʻi in the <strong>${tierLabel}</strong> nationally (#${rankings.hawaiiRank} of ${rankings.total}).</p>`;
-    },
-
-    /**
      * Wire an IntersectionObserver that fires qotd_chart_viewed once when
      * the embedded proof image first becomes visible.
      * @private
@@ -367,7 +347,6 @@ const QOTD = {
                     </div>
                     <p class="qotd-answer-reveal">Answer: <strong>${verdict}</strong></p>
                     <p class="qotd-answer-text">${this._escape(q.answer)}</p>
-                    ${this._tierSentenceHtml(q)}
                     <figure class="qotd-chart" data-qotd-chart>
                         <div class="qotd-chart-canvas-wrap"><canvas class="qotd-chart-canvas" aria-label="Chart showing ${this._escape(q.metricLabel)} data"></canvas></div>
                     </figure>

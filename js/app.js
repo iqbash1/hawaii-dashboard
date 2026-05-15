@@ -707,7 +707,9 @@ const App = {
                     // readers don't have to know which. "Top tier · #1 of 50" reads cleanly
                     // for both metrics where high is good and metrics where low is good.
                     const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
-                    const tierLabel = Utils.rankTierLabel(rankings.hawaiiRank, rankings.total);
+                    const tierLabel = rankClass === 'rank-good' ? 'Top tier'
+                        : rankClass === 'rank-mid' ? 'Middle tier'
+                        : 'Bottom tier';
                     rankHtml = `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel}</span> · #${rankings.hawaiiRank} of ${rankings.total}</span>`;
                 }
             }
@@ -787,34 +789,27 @@ const App = {
         const change = recentAvg - priorAvg;
         const pctChange = (change / Math.abs(priorAvg)) * 100;
         const isImproving = metricData.goodDirection === 'up' ? change > 0 : change < 0;
-        // Flat band at \u00b15% relative change matches the QOTD V6 threshold for a
-        // "meaningful" 5-year move. Below that, year-to-year noise dominates, and
-        // calling it Improving/Worsening overstates the signal.
-        const isFlat = Math.abs(pctChange) < 5;
+        const isFlat = Math.abs(pctChange) < 0.5;
 
         const absPct = Math.abs(pctChange);
         const pctText = absPct > 100 ? `${absPct.toFixed(0)}%` : `${absPct.toFixed(1)}%`;
-        // Tier-style verdict mirrors the rank tier on the other comp block:
-        // categorical label first, magnitude only in the tooltip. Lets a resident
-        // read the card in one glance without mentally inverting "down = good"
+        // Verb-led phrasing \u2014 directional words land more cleanly than \u2191/\u2193 for
+        // first-time readers, who otherwise have to mentally invert "down = good"
         // for metrics where lower is better.
-        let tierLabel;
-        if (isFlat) tierLabel = 'Flat';
-        else if (isImproving) tierLabel = 'Improving';
-        else tierLabel = 'Worsening';
+        let pctLabel;
+        if (isFlat) pctLabel = 'held steady';
+        else if (isImproving) pctLabel = `improved ${pctText}`;
+        else pctLabel = `worsened ${pctText}`;
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
         // Compact labels: start year full, end year 2-digit - e.g. "2020-24 vs 2017-21"
         const priorLabel = Compute.formatYearRange(prior[0], prior[prior.length - 1]);
         const recentLabel = Compute.formatYearRange(recent[0], recent[recent.length - 1]);
-        const magnitudeText = isFlat
-            ? `Change in the 3-year rolling average: ${recentLabel} window vs ${priorLabel} window (${pctText}, within \u00b15% Flat band)`
-            : `Change in the 3-year rolling average: ${recentLabel} window vs ${priorLabel} window (${isImproving ? 'improved' : 'worsened'} ${pctText})`;
 
         return `
-            <div class="card-comp ${cls}" title="${magnitudeText}">
+            <div class="card-comp ${cls}" title="Change in the 3-year rolling average: ${recentLabel} window compared with the ${priorLabel} window">
                 <div class="comp-label">${recentLabel} vs ${priorLabel}</div>
-                <div class="comp-verdict">${tierLabel}</div>
+                <div class="comp-verdict">${pctLabel}</div>
             </div>
         `;
     },

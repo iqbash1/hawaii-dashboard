@@ -1342,9 +1342,7 @@ const Modal = {
 
         const change   = recentAvg - priorAvg;
         const pctChange = (change / Math.abs(priorAvg)) * 100;
-        // Match the card's ±5% flat band so the Bottom Line paragraph and the
-        // card tile never disagree about whether the 5-year move was real.
-        const isFlat    = Math.abs(pctChange) < 5;
+        const isFlat    = Math.abs(pctChange) < 0.5;
         const isImproving = m.goodDirection === 'up' ? change > 0 : change < 0;
 
         const word    = isFlat ? 'held flat' : (isImproving ? 'improved' : 'worsened');
@@ -1382,7 +1380,6 @@ const Modal = {
         const fmtValue  = ChartUtils.formatValue(latestHi.value, m.unit, isDecimal);
         const period    = rankings.year;
         const rank      = rankings.hawaiiRank;
-        const tierLabel = Utils.rankTierLabel(rank, rankings.total);
 
         // Fill intro template
         let intro = tpl.intro
@@ -1404,11 +1401,7 @@ const Modal = {
 
         const trend = Modal.computeTrendPhrase(slug);
 
-        // Tier-first framing matches the card and the QOTD reveal so the
-        // copy a grant writer pastes leads with the categorical verdict and
-        // backs it with the value, trend, and comparator. Funders read the
-        // tier as evidence; the number is the supporting fact.
-        let brief = `Bottom line: Hawaiʻi is in the ${tierLabel} nationally (#${rank} of ${rankings.total}). ${intro}.`;
+        let brief = `Bottom line: ${intro}, ranking #${rank} nationally.`;
         if (trend) brief += ` It has ${trend},`;
         brief += ` and is ${vsAvg} the US median.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;

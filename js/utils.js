@@ -28,20 +28,6 @@ const Utils = {
         return 'rank-bad';
     },
 
-    /* ── rankTierLabel(rank, tot) ──
-     * Returns the human-facing tier label ("Top tier" / "Middle tier" /
-     * "Bottom tier") for a given rank. Single source of truth for the
-     * tier-label vocabulary used on cards, in the modal copy brief, and on
-     * the QOTD proof view. Mirrors rankColorClass() exactly so the label
-     * and the CSS class can never drift.
-     */
-    rankTierLabel(rank, tot) {
-        const cls = this.rankColorClass(rank, tot);
-        if (cls === 'rank-good') return 'Top tier';
-        if (cls === 'rank-mid') return 'Middle tier';
-        return 'Bottom tier';
-    },
-
     /* ── rankMoveHtml(r) ──
      * Returns an HTML <span> showing the rank movement for a metric row.
      * Positive move = rank number fell (e.g. #10→#6 = +4, better for Hawaiʻi).
