@@ -707,9 +707,7 @@ const App = {
                     // readers don't have to know which. "Top tier · #1 of 50" reads cleanly
                     // for both metrics where high is good and metrics where low is good.
                     const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
-                    const tierLabel = rankClass === 'rank-good' ? 'Top tier'
-                        : rankClass === 'rank-mid' ? 'Middle tier'
-                        : 'Bottom tier';
+                    const tierLabel = Utils.rankTierLabel(rankings.hawaiiRank, rankings.total);
                     rankHtml = `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel}</span> · #${rankings.hawaiiRank} of ${rankings.total}</span>`;
                 }
             }
@@ -730,17 +728,40 @@ const App = {
         `;
     },
 
+    /** Tier composition for a policy area: how many of its metrics put Hawaiʻi
+     *  in the top/middle/bottom third of all 50 states. Drives the inline pip
+     *  counts on each area chip. Skips metrics with no rankings (e.g. metrics
+     *  that lack 50-state data in the current STATE_DATA snapshot). */
+    computeAreaTierComposition(areaGroup) {
+        let top = 0, mid = 0, bot = 0;
+        areaGroup.metrics.forEach(slug => {
+            const rankings = this.getStateRankings(slug);
+            if (!rankings || !rankings.hawaiiRank) return;
+            const cls = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
+            if (cls === 'rank-good') top++;
+            else if (cls === 'rank-mid') mid++;
+            else bot++;
+        });
+        return { top, mid, bot };
+    },
+
     /** Render the policy-area chip nav above the grid. Each chip links to its
-     *  section heading via the stable id assigned in renderCards(). */
+     *  section heading via the stable id assigned in renderCards(). Chips also
+     *  carry a tier-composition strip (e.g. "3 · 1 · 2" color-coded) so the
+     *  resident sees at a glance how Hawaiʻi performs across the area's
+     *  metrics before clicking in. */
     renderAreaChips() {
         const host = document.getElementById('area-chips');
         if (!host) return;
         host.innerHTML = this.AREA_ORDER.map(areaGroup => {
             const id = 'area-' + areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
             const icon = AREA_ICONS[areaGroup.area] || '';
+            const { top, mid, bot } = this.computeAreaTierComposition(areaGroup);
+            const tierHtml = `<span class="area-chip-tiers" aria-label="${top} top tier, ${mid} middle tier, ${bot} bottom tier"><span class="tier-count rank-good">${top}</span><span class="tier-sep">·</span><span class="tier-count rank-mid">${mid}</span><span class="tier-sep">·</span><span class="tier-count rank-bad">${bot}</span></span>`;
             return `<a href="#${id}" class="area-chip" data-area-id="${id}">
                 <span class="area-chip-icon" aria-hidden="true">${icon}</span>
                 <span class="area-chip-label">${areaGroup.area}</span>
+                ${tierHtml}
             </a>`;
         }).join('');
         // Smooth scroll instead of the default jump; account for the sticky nav.
