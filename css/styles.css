@@ -518,33 +518,11 @@ body {
     height: 14px;
 }
 
-/* Tier composition pips on each area chip: tiny color-coded numbers showing
-   how many of the area's metrics put Hawaiʻi in each tier. Lets a resident
-   pick an area by where Hawaiʻi stands, not just by topic interest. */
-.area-chip-tiers {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.18rem;
-    margin-left: 0.45rem;
-    font-size: var(--text-xs);
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-}
-.area-chip-tiers .tier-count { min-width: 1ch; text-align: center; }
-.area-chip-tiers .tier-count.rank-good { color: var(--positive); }
-.area-chip-tiers .tier-count.rank-mid  { color: var(--neutral); }
-.area-chip-tiers .tier-count.rank-bad  { color: var(--negative); }
-.area-chip-tiers .tier-sep { color: var(--text-muted); opacity: 0.45; font-weight: 400; }
-
 /* On narrow widths, drop the icons to keep the chip row from stacking 5
    tall. The text alone is enough to navigate. */
 @media (max-width: 540px) {
     .area-chip-icon { display: none; }
     .area-chip { padding: 0.5rem 0.75rem; }
-    /* Hide the tier pips on very narrow screens — the chip is already tight
-       on the label, and the home page still surfaces tier on each card. */
-    .area-chip-tiers { display: none; }
 }
 
 /* --- Area section headings --- */
