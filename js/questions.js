@@ -347,7 +347,7 @@ const QOTD_QUESTIONS = [
   {
     "id": "q060",
     "slug": "poor-road-conditions-have-gone-down-in-hawaii-in-the-last-five-years",
-    "claim": "Poor road conditions have gone down in Hawaiʻi in the last five years.",
+    "claim": "Hawaiʻi has fewer roads in poor condition than it did five years ago.",
     "correct": true,
     "answer": "Hawaiʻi's share of poor-condition roads went from 24.3% to 21.6% between 2018 and 2023 (-11.0%).",
     "chartUrl": "/t/road_poor_pct/",
