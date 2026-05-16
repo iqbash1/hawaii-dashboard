@@ -375,6 +375,7 @@ const Modal = {
         const consolidatedEl = document.getElementById('modal-consolidated');
         consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
         consolidatedEl.style.display = '';
+        Modal._wireDeeperToggle();
 
         // Source definition bar - shown below the tab bar, visible on all tabs
         const officialEl = document.getElementById('modal-official-name');
@@ -1096,6 +1097,7 @@ const Modal = {
         const consolidatedEl = document.getElementById('modal-consolidated');
         if (consolidatedEl) {
             consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
+            Modal._wireDeeperToggle();
         }
 
         // Re-render whichever tab is currently visible
@@ -1263,31 +1265,75 @@ const Modal = {
             return `<div class="cn-item"><div class="cn-state ${cls}">${x.state}</div><p class="cn-text">${x.text}</p>${src}</div>`;
         };
 
-        let h = '';
-        h += Modal._section('How to read the chart', m.howToRead, true, 'modal-how-toggle');
-        h += Modal._section('Why it matters',       m.whyItMatters);
-        h += Modal._section('National standing',    narr && narr.summary);
-        h += Modal._section('County breakdown',     m.countyNarrative);
-        h += Modal._section('Potential drivers',    m.potentialDrivers);
+        // "How to read the chart" stays visible (it's already a <details>
+        // accordion and helps users orient to the chart above). The rest of
+        // the analysis (Why it matters, National standing, County breakdown,
+        // Potential drivers, Lessons, Key levers, Data note) is wrapped in a
+        // single collapse \u2014 most users came for the chart and the brief, not
+        // the deep narrative.
+        let outer = Modal._section('How to read the chart', m.howToRead, true, 'modal-how-toggle');
+
+        let deep = '';
+        deep += Modal._section('Why it matters',       m.whyItMatters);
+        deep += Modal._section('National standing',    narr && narr.summary);
+        deep += Modal._section('County breakdown',     m.countyNarrative);
+        deep += Modal._section('Potential drivers',    m.potentialDrivers);
 
         // Lessons from other states; compound section (benchmarks + caution + explore)
         if (narr && (narr.benchmarks?.length || narr.caution || narr.explore?.length)) {
-            h += `<div class="cn-section"><h3 class="cn-heading">Lessons from other states</h3>`;
-            (narr.benchmarks || []).forEach(b => { h += linkedItem(b, 'cn-state--learn'); });
-            if (narr.caution) h += linkedItem(narr.caution, 'cn-state--caution');
+            deep += `<div class="cn-section"><h3 class="cn-heading">Lessons from other states</h3>`;
+            (narr.benchmarks || []).forEach(b => { deep += linkedItem(b, 'cn-state--learn'); });
+            if (narr.caution) deep += linkedItem(narr.caution, 'cn-state--caution');
             if (narr.explore && narr.explore.length) {
-                h += `<div class="cn-item">`;
-                narr.explore.forEach(pt => { h += `<p class="cn-text">${pt}</p>`; });
-                h += `</div>`;
+                deep += `<div class="cn-item">`;
+                narr.explore.forEach(pt => { deep += `<p class="cn-text">${pt}</p>`; });
+                deep += `</div>`;
             }
-            h += `</div>`;
+            deep += `</div>`;
         }
 
-        h += Modal._section('Key levers', m.policyLevers);
+        deep += Modal._section('Key levers', m.policyLevers);
         if (m.dataNote) {
-            h += `<div class="cn-section cn-data-note"><p class="cn-text">\u26A0 ${m.dataNote}</p></div>`;
+            deep += `<div class="cn-section cn-data-note"><p class="cn-text">\u26A0 ${m.dataNote}</p></div>`;
         }
-        return h;
+
+        if (!deep) return outer;
+
+        outer += `
+            <button type="button" class="modal-deeper-toggle" aria-expanded="false" aria-controls="modal-deeper-wrap">
+                <span class="modal-deeper-toggle-label">Read the deeper analysis</span>
+                <span class="modal-deeper-toggle-chev" aria-hidden="true">\u25B8</span>
+            </button>
+            <div class="modal-deeper-wrap" id="modal-deeper-wrap" hidden>${deep}</div>
+        `;
+        return outer;
+    },
+
+    /**
+     * Wire the "Read the deeper analysis" toggle. Called once after
+     * `_buildConsolidatedNarrative` writes the modal narrative. The toggle
+     * is rendered collapsed by default; opening it expands every metric's
+     * deeper narrative (Why / National standing / Drivers / Lessons / etc.)
+     * inside the same modal scroll.
+     */
+    _wireDeeperToggle() {
+        const btn = document.querySelector('.modal-deeper-toggle');
+        const wrap = document.getElementById('modal-deeper-wrap');
+        if (!btn || !wrap) return;
+        btn.addEventListener('click', () => {
+            const open = wrap.hasAttribute('hidden');
+            if (open) {
+                wrap.removeAttribute('hidden');
+                btn.setAttribute('aria-expanded', 'true');
+                btn.classList.add('is-open');
+                btn.querySelector('.modal-deeper-toggle-label').textContent = 'Hide the deeper analysis';
+            } else {
+                wrap.setAttribute('hidden', '');
+                btn.setAttribute('aria-expanded', 'false');
+                btn.classList.remove('is-open');
+                btn.querySelector('.modal-deeper-toggle-label').textContent = 'Read the deeper analysis';
+            }
+        });
     },
 
     // ── Copy-brief helpers ─────────────────────────────────────────────

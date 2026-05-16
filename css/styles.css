@@ -184,27 +184,6 @@ body {
     margin-top: 0.25rem;
 }
 
-.capability-strip {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.4rem 0.55rem;
-    margin-top: 1rem;
-}
-.capability-strip span,
-.capability-strip a {
-    font-size: var(--text-base);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.04em;
-    color: var(--text-muted);
-    text-transform: uppercase;
-}
-.cap-sep {
-    color: var(--border);
-    font-variant: normal;
-    text-transform: none;
-}
 /* --- Question dropdown --- */
 .question-search-wrap {
     position: relative;
@@ -391,15 +370,6 @@ body {
     flex-wrap: wrap;
 }
 
-.explore-label {
-    font-size: var(--text-sm);
-    color: var(--text-muted);
-    font-weight: 500;
-    letter-spacing: 0.01em;
-}
-
-
-
 /* Hide non-matching cards and area headings when a bundle is active */
 .bundle-active .card {
     display: none;
@@ -533,6 +503,27 @@ body {
     gap: 0.5rem;
     padding: 0.25rem 0;
     margin-top: 1.75rem;
+}
+
+/* First section heading inherits the chart-key (Hawaiʻi solid / US dashed),
+   right-aligned with margin-left:auto. Single legend for the whole grid;
+   subsequent section headings have no key. */
+.area-section-key {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    column-gap: 1rem;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+}
+.area-section-key .chart-key-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 .area-section-heading:first-child {
@@ -686,32 +677,8 @@ body {
     letter-spacing: 0.01em;
 }
 
-/* Global chart key: single row above the dashboard grid that explains
-   the line treatments used by every card chart below. SVG strokes match
-   the chart's actual line treatment (HAWAII_BLUE 2px solid · #999 1.5px
-   dashed) so the key reads as a true legend, not a generic icon. */
-.chart-key {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: 1rem;
-    row-gap: 0.3rem;
-    font-size: 12px;
-    line-height: 1;
-    color: var(--text-muted);
-    margin: 0.25rem auto 1.5rem;
-    padding: 0 1rem;
-}
-
-.chart-key-label {
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    font-size: 10px;
-    font-weight: 600;
-    opacity: 0.7;
-}
-
+/* Chart-key elements: used inside .area-section-key (first section heading)
+   to label the Hawaiʻi / US line treatments shared by every card chart. */
 .chart-key-item {
     display: inline-flex;
     align-items: center;
@@ -1412,6 +1379,49 @@ body {
 }
 .cn-section:last-child {
     margin-bottom: 0;
+}
+
+/* "Read the deeper analysis" toggle: collapses the narrative sections
+   (Why / National standing / County breakdown / Drivers / Lessons / Key
+   levers / Data note) behind a single button. Most modal opens are
+   chart-and-brief reads; the deeper analysis is opt-in. The "How to read
+   the chart" details accordion stays visible because it helps orient to
+   the chart that just rendered above. */
+.modal-deeper-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    margin-top: 0.5rem;
+    background: #fff;
+    border: 1px solid var(--hawaii-blue);
+    color: var(--hawaii-blue);
+    border-radius: 999px;
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+.modal-deeper-toggle:hover {
+    background: var(--hawaii-blue-light);
+}
+.modal-deeper-toggle:focus-visible {
+    outline: 2px solid var(--hawaii-blue);
+    outline-offset: 2px;
+}
+.modal-deeper-toggle-chev {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+.modal-deeper-toggle.is-open .modal-deeper-toggle-chev {
+    transform: rotate(90deg);
+}
+.modal-deeper-wrap {
+    margin-top: 1.5rem;
+}
+.modal-deeper-wrap[hidden] {
+    display: none;
 }
 .cn-heading {
     font-size: var(--text-base);
@@ -2380,6 +2390,63 @@ body {
     font-size: 1rem;
     min-height: 44px;
 }
+
+/* Unanswered banner state: thin horizontal strip with eyebrow · claim ·
+   True / False · close. Replaces the centered card that previously
+   dominated the home-page hero. Once answered, qotd-teaser--banner is
+   removed and the host reverts to the proof-card styling above. */
+.qotd-teaser--banner {
+    max-width: none;
+    margin: 0 0 1rem;
+    padding: 0.6rem 1.25rem;
+    background: var(--hawaii-blue-light);
+    border: none;
+    border-top: 1px solid var(--hawaii-blue);
+    border-bottom: 1px solid var(--hawaii-blue);
+    border-radius: 0;
+    box-shadow: none;
+    text-align: left;
+}
+.qotd-teaser-inner--banner {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+.qotd-teaser-inner--banner .qotd-teaser-eyebrow {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+}
+.qotd-teaser-inner--banner .qotd-teaser-claim {
+    flex: 1 1 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.45;
+    max-width: none;
+}
+.qotd-teaser-inner--banner .qotd-teaser-buttons {
+    flex-shrink: 0;
+    margin-top: 0;
+    gap: 0.5rem;
+}
+.qotd-teaser-inner--banner .qotd-btn--inline {
+    min-width: 80px;
+    min-height: 36px;
+    padding: 0.35rem 1rem;
+    font-size: 0.9rem;
+}
+.qotd-teaser--banner .qotd-teaser-close {
+    position: static;
+    width: 28px;
+    height: 28px;
+    border-color: transparent;
+    background: transparent;
+    flex-shrink: 0;
+}
+
 @media (max-width: 600px) {
     .qotd-teaser {
         padding: 1.25rem 1rem;
@@ -2392,5 +2459,28 @@ body {
     .qotd-teaser-buttons {
         flex-direction: column;
         gap: 0.6rem;
+    }
+    .qotd-teaser--banner {
+        padding: 0.75rem 1rem;
+    }
+    .qotd-teaser-inner--banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .qotd-teaser-inner--banner .qotd-teaser-claim {
+        font-size: 1rem;
+    }
+    .qotd-teaser-inner--banner .qotd-teaser-buttons {
+        flex-direction: row;
+        width: 100%;
+    }
+    .qotd-teaser-inner--banner .qotd-btn--inline {
+        flex: 1;
+    }
+    .qotd-teaser--banner .qotd-teaser-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
     }
 }

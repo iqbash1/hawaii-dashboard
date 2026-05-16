@@ -141,15 +141,6 @@
             <p class="header-subtitle">
                 <span class="header-subtitle-em">See Hawai&#x02BB;i more clearly: where we stand, how we&#x2019;re changing, and how we compare with other states. Data, not opinion.</span>
             </p>
-            <div class="capability-strip">
-                <span>5 policy areas</span>
-                <span class="cap-sep">&middot;</span>
-                <span>26 metrics</span>
-                <span class="cap-sep">&middot;</span>
-                <span>50-state comparison</span>
-                <span class="cap-sep">&middot;</span>
-                <span>County breakdown (14 metrics)</span>
-            </div>
         </div>
     </header>
 
@@ -158,9 +149,11 @@
          reader sees after the header. -->
     <section class="qotd-teaser" id="qotd-teaser" aria-label="Question of the day" style="display:none;"></section>
 
-    <!-- Explore by question -->
+    <!-- Filter or jump-to controls. Two dropdowns: questions filter the
+         grid (bundle behavior), metrics open the modal directly. The
+         placeholders ("I have a question…" / "Jump to metric…") explain
+         each control's purpose, so no separate "Explore by" label. -->
     <section class="bundle-section" id="bundle-section">
-        <span class="explore-label" aria-hidden="true">Explore by</span>
         <!-- Question dropdown (primary) -->
         <div class="question-search-wrap" id="question-search-wrap">
             <button id="question-search-trigger" class="dropdown-trigger question-search-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="I have a question">
@@ -185,22 +178,6 @@
          that section of the dashboard grid. Populated by app.js from
          App.AREA_ORDER so it stays in sync with the sections below. -->
     <nav class="area-chips" id="area-chips" aria-label="Jump to policy area"></nav>
-
-    <!-- Chart key: single global legend that explains the line styles used
-         in every card chart below. Replaces the per-card legend that
-         previously repeated this signal on each card; the line treatments
-         are identical across the grid. -->
-    <div class="chart-key" aria-hidden="true">
-        <span class="chart-key-label">Chart key</span>
-        <span class="chart-key-item">
-            <svg class="chart-key-stroke" width="20" height="6" viewBox="0 0 20 6" aria-hidden="true"><line x1="0" y1="3" x2="20" y2="3" stroke="#0D7C8F" stroke-width="2"/></svg>
-            <span>Hawaiʻi</span>
-        </span>
-        <span class="chart-key-item">
-            <svg class="chart-key-stroke" width="20" height="6" viewBox="0 0 20 6" aria-hidden="true"><line x1="0" y1="3" x2="20" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
-            <span>US</span>
-        </span>
-    </div>
 
     <!-- Grid of cards -->
     <main class="dashboard-grid" id="dashboard-grid">
@@ -403,7 +380,7 @@
     <script src="js/export.js?v=20260515a"></script>
     <script src="js/modal.js?v=20260515a"></script>
     <script src="js/questions.js?v=20260515a"></script>
-    <script src="js/qotd.js?v=20260515a"></script>
+    <script src="js/qotd.js?v=20260515b"></script>
     <script src="js/app.js?v=20260515a"></script>
 </body>
 </html>

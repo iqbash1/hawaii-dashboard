@@ -976,15 +976,25 @@ const App = {
         this.sparklineCharts.forEach(c => c && c.destroy());
         this.sparklineCharts = [];
 
-        // One card per metric, ordered by area, with section headings
-        this.AREA_ORDER.forEach(areaGroup => {
+        // One card per metric, ordered by area, with section headings. The
+        // chart-key legend (Hawaiʻi solid / US dashed) is appended to the
+        // FIRST section heading only, replacing the standalone .chart-key
+        // strip above the grid. Same number of legends as before (1), now
+        // positioned next to the first section header instead of as its own
+        // centered row.
+        const CHART_KEY_HTML = `<span class="area-section-key" aria-hidden="true">
+            <span class="chart-key-item"><svg class="chart-key-stroke" width="20" height="6" viewBox="0 0 20 6"><line x1="0" y1="3" x2="20" y2="3" stroke="#0D7C8F" stroke-width="2"/></svg><span>Hawaiʻi</span></span>
+            <span class="chart-key-item"><svg class="chart-key-stroke" width="20" height="6" viewBox="0 0 20 6"><line x1="0" y1="3" x2="20" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg><span>US</span></span>
+        </span>`;
+        this.AREA_ORDER.forEach((areaGroup, idx) => {
             // Section heading for this area
             const section = document.createElement('div');
             section.className = 'area-section-heading';
             // Stable id so the chip nav and any deep link can scroll to a
             // section without depending on the area name in URLs.
             section.id = 'area-' + areaGroup.area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-            section.innerHTML = `<span class="area-section-icon">${AREA_ICONS[areaGroup.area] || ''}</span><span class="area-section-label">${areaGroup.area}</span>`;
+            const keyHtml = idx === 0 ? CHART_KEY_HTML : '';
+            section.innerHTML = `<span class="area-section-icon">${AREA_ICONS[areaGroup.area] || ''}</span><span class="area-section-label">${areaGroup.area}</span>${keyHtml}`;
             grid.appendChild(section);
 
             areaGroup.metrics.forEach(slug => {
@@ -1019,9 +1029,9 @@ const App = {
                 const sourceText = effective.source ? `<span class="card-source">${effective.source}</span>` : '';
                 const footerHtml = (sourceText || countyLink)
                     ? `<div class="card-footer">${sourceText}${countyLink}</div>` : '';
-                // Per-card chart legend lives once at the page level (.chart-key
-                // in index.html) since line treatments are identical across all
-                // 26 cards. Removed from the card template to reduce repetition.
+                // Per-card chart legend lives once on the first section heading
+                // (.area-section-key) since line treatments are identical across
+                // all 26 cards. Removed from the card template to reduce repetition.
                 card.innerHTML = `
                     <div class="card-metric">${effective.metric}</div>
                     <div class="card-hero">

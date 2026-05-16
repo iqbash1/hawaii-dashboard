@@ -360,17 +360,24 @@ const QOTD = {
             this._renderLiveChart(host.querySelector('[data-qotd-chart]'), q);
             this._observeChartView(q.id);
         } else {
+            host.classList.add('qotd-teaser--banner');
             host.innerHTML = `
-                <div class="qotd-teaser-inner">
-                    ${closeBtn}
-                    <p class="qotd-teaser-eyebrow">Do you know Hawaiʻi?</p>
+                <div class="qotd-teaser-inner qotd-teaser-inner--banner">
+                    <p class="qotd-teaser-eyebrow">Daily quiz</p>
                     <p class="qotd-teaser-claim">${this._escape(q.claim)}</p>
                     <div class="qotd-teaser-buttons" role="group" aria-label="Answer the daily claim">
                         <button class="qotd-btn qotd-btn--inline" type="button" data-answer="true">True</button>
                         <button class="qotd-btn qotd-btn--inline" type="button" data-answer="false">False</button>
                     </div>
+                    ${closeBtn}
                 </div>
             `;
+        }
+        // Banner class only applies to the unanswered state. When the user
+        // answers, renderTeaser() rebuilds the host innerHTML and we drop the
+        // modifier so the proof view gets its full card styling.
+        if (this.hasAnswered(q.id)) {
+            host.classList.remove('qotd-teaser--banner');
         }
 
         host.querySelectorAll('[data-answer]').forEach(btn => {
