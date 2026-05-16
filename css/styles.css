@@ -2468,7 +2468,7 @@ body {
     letter-spacing: 0.08em;
 }
 .qotd-teaser-inner--banner .qotd-teaser-claim {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     font-size: 0.95rem;
     font-weight: 500;
     line-height: 1.45;
@@ -2492,6 +2492,7 @@ body {
     border-color: transparent;
     background: transparent;
     flex-shrink: 0;
+    margin-left: auto;
 }
 
 @media (max-width: 600px) {

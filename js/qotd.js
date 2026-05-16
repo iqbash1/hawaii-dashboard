@@ -363,7 +363,7 @@ const QOTD = {
             host.classList.add('qotd-teaser--banner');
             host.innerHTML = `
                 <div class="qotd-teaser-inner qotd-teaser-inner--banner">
-                    <p class="qotd-teaser-eyebrow">Daily quiz</p>
+                    <p class="qotd-teaser-eyebrow">Do you know Hawaiʻi?</p>
                     <p class="qotd-teaser-claim">${this._escape(q.claim)}</p>
                     <div class="qotd-teaser-buttons" role="group" aria-label="Answer the daily claim">
                         <button class="qotd-btn qotd-btn--inline" type="button" data-answer="true">True</button>
