@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Fix 3 — Home pre-tile zone (before / after)</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body { padding: 1.5rem 2rem; background: var(--bg); }
+    .wrap { max-width: 1240px; margin: 0 auto; }
+    .crumb { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .crumb a { color: var(--hawaii-blue); text-decoration: none; }
+    .page-h { font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .page-sub { color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.55; }
+
+    .stage {
+      background: #fff; border-radius: var(--radius); padding: 0;
+      margin-bottom: 1.5rem; overflow: hidden;
+    }
+    .stage-now { border: 1px dashed var(--border); }
+    .stage-after { border: 1px solid var(--hawaii-blue); }
+    .stage-label {
+      font-family: var(--font-heading); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 0.75rem 1.5rem; border-bottom: 1px solid var(--border);
+    }
+    .stage-now .stage-label { color: #888; }
+    .stage-after .stage-label { color: var(--hawaii-blue); }
+    .stage-desc { font-size: 0.85rem; color: var(--text-muted); padding: 0.5rem 1.5rem 0; line-height: 1.5; }
+
+    .mock-header { padding: 1.5rem 0; background: var(--bg); border-radius: var(--radius); margin-top: 0.5rem; }
+    .mock-header h1 { font-family: var(--font-heading); font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 0.4rem; }
+    .mock-sub { text-align: center; color: var(--text-muted); max-width: 600px; margin: 0 auto 0.75rem; font-size: 0.95rem; line-height: 1.5; }
+    .mock-stats { text-align: center; font-size: 0.75rem; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+    .mock-stats span:not(:last-child)::after { content: " · "; margin: 0 0.4rem; }
+
+    /* QOTD mock */
+    .mock-qotd {
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem 1.5rem; max-width: 720px; margin: 1rem auto 1rem;
+      position: relative;
+    }
+    .mock-qotd-h { text-align: center; font-family: var(--font-heading); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; color: var(--hawaii-blue); margin-bottom: 0.5rem; }
+    .mock-qotd-q { text-align: center; font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.35; }
+    .mock-qotd-actions { display: flex; gap: 0.75rem; justify-content: center; }
+    .mock-qotd-btn { padding: 0.45rem 1.5rem; border-radius: 999px; border: 1px solid var(--hawaii-blue); color: var(--hawaii-blue); background: #fff; font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; }
+    .mock-qotd-x { position: absolute; top: 0.6rem; right: 0.6rem; width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.8rem; }
+
+    /* Compact QOTD banner (after) */
+    .mock-qotd-banner {
+      background: var(--hawaii-blue-light);
+      border-top: 1px solid var(--hawaii-blue);
+      border-bottom: 1px solid var(--hawaii-blue);
+      padding: 0.6rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      font-size: 0.88rem;
+    }
+    .mock-qotd-banner .lab { font-family: var(--font-heading); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hawaii-blue); }
+    .mock-qotd-banner .q { flex: 1; color: var(--text); }
+    .mock-qotd-banner .answer { display: inline-flex; gap: 0.5rem; }
+    .mock-qotd-banner .answer button { padding: 0.25rem 0.9rem; border-radius: 999px; border: 1px solid var(--hawaii-blue); background: #fff; color: var(--hawaii-blue); font-size: 0.8rem; }
+    .mock-qotd-banner .x { color: var(--text-muted); cursor: pointer; }
+
+    /* Explore-by row */
+    .mock-explore-row {
+      max-width: 900px; margin: 1rem auto; padding: 0 1.5rem;
+      display: grid; grid-template-columns: auto auto auto;
+      align-items: center; gap: 0.75rem;
+      justify-content: center;
+    }
+    .mock-explore-label { font-size: 0.92rem; color: var(--text-muted); }
+    .mock-dropdown {
+      padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 4px; background: #fff;
+      font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; min-width: 200px;
+    }
+    .mock-dropdown .chev { color: var(--text-muted); }
+
+    /* Pills row */
+    .mock-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; max-width: 800px; margin: 0 auto 1rem; padding: 0 1.5rem; }
+    .mock-pill { padding: 0.4rem 0.9rem; border: 1px solid var(--border); border-radius: 999px; background: #fff; font-size: 0.85rem; color: var(--text); }
+
+    /* Chart key */
+    .mock-chart-key { display: flex; justify-content: center; gap: 1.5rem; padding: 0.5rem; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .mock-chart-key .lab { text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; font-size: 0.7rem; }
+    .mock-chart-key svg { display: inline-block; vertical-align: middle; margin-right: 0.3rem; }
+
+    /* First section header */
+    .mock-section-h {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0 1.5rem; margin-top: 1rem; margin-bottom: 0.5rem;
+      font-family: var(--font-heading); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .mock-section-h.with-key { justify-content: space-between; }
+    .mock-section-h .left { display: flex; align-items: center; gap: 0.5rem; }
+    .mock-section-h .right { display: flex; align-items: center; gap: 0.75rem; font-size: 0.7rem; font-weight: 400; letter-spacing: normal; text-transform: none; }
+    .mock-section-h .right svg { vertical-align: middle; margin-right: 0.25rem; }
+
+    .mock-tiles { padding: 0 1.5rem 1.5rem; }
+    .mock-tile-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 0.5rem; }
+    .mock-tile {
+      background: #fff; border-radius: var(--radius); padding: 1rem;
+      border: 1px solid var(--border);
+    }
+    .mock-tile .name { font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .mock-tile .val { font-family: var(--font-heading); font-size: 1.35rem; font-weight: 700; }
+    .mock-tile .unit { font-size: 0.75rem; color: var(--text-muted); margin-left: 0.4rem; }
+
+    /* Element count badges (counts as overlays) */
+    .count-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.2rem 0.55rem; border-radius: 999px;
+      background: rgba(192, 57, 43, 0.1); color: #C0392B;
+      font-family: var(--font-heading); font-size: 0.7rem; font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    .stage-after .count-badge { background: rgba(5, 150, 105, 0.1); color: #059669; }
+    .count-row { padding: 0.6rem 1.5rem; background: #fafafa; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+    .count-row strong { color: var(--text); }
+
+    .footer-note { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin: 2rem auto; max-width: 700px; line-height: 1.55; }
+    .pick-row { display: flex; gap: 0.5rem; align-items: center; justify-content: center; margin: 1.5rem 0; flex-wrap: wrap; }
+    .pick-btn { display: inline-block; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 999px; background: #fff; color: var(--text); font-size: 0.85rem; text-decoration: none; }
+    .pick-btn:hover { border-color: var(--hawaii-blue); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="crumb"><a href="./">← All fixes</a></div>
+    <h1 class="page-h">Fix 3 — Home pre-tile zone</h1>
+    <p class="page-sub">
+      Between the H1 and the first tile sit <strong>7 distinct UI elements</strong>: stats strip · QOTD card · "Explore by" label · question dropdown · metric dropdown · 5 category pills · chart key. After-option consolidates to 2 rows + a thin QOTD banner.
+    </p>
+
+    <!-- BEFORE -->
+    <div class="stage stage-now">
+      <div class="stage-label">Now — 7 UI elements before the first tile</div>
+      <div class="stage-desc">Approximate height: ~720px on desktop (1440 viewport) before the first tile renders.</div>
+      <div class="mock-header">
+        <h1>Hawaiʻi Dashboard</h1>
+        <p class="mock-sub">See Hawaiʻi more clearly: where we stand, how we're changing, and how we compare with other states. Data, not opinion.</p>
+        <div class="mock-stats">
+          <span>5 policy areas</span>
+          <span>26 metrics</span>
+          <span>50-state comparison</span>
+          <span>County breakdown (14 metrics)</span>
+        </div>
+      </div>
+      <div class="mock-qotd">
+        <div class="mock-qotd-x">×</div>
+        <div class="mock-qotd-h">DO YOU KNOW HAWAIʻI?</div>
+        <div class="mock-qotd-q">Hawaiʻi has fewer roads in poor condition than it did five years ago.</div>
+        <div class="mock-qotd-actions">
+          <button class="mock-qotd-btn">True</button>
+          <button class="mock-qotd-btn">False</button>
+        </div>
+      </div>
+      <div class="mock-explore-row">
+        <span class="mock-explore-label">Explore by</span>
+        <span class="mock-dropdown">I have a question… <span class="chev">▾</span></span>
+        <span class="mock-dropdown">Jump to metric… <span class="chev">▾</span></span>
+      </div>
+      <div class="mock-pills">
+        <span class="mock-pill">🛡 Safety &amp; Health</span>
+        <span class="mock-pill">🏠 Housing &amp; Cost of Living</span>
+        <span class="mock-pill">📈 Economy &amp; Workforce</span>
+        <span class="mock-pill">🎓 Education</span>
+        <span class="mock-pill">🏛 Infrastructure, Resilience &amp; Trust</span>
+      </div>
+      <div class="mock-chart-key">
+        <span class="lab">Chart key</span>
+        <span><svg width="20" height="6"><line x1="0" y1="3" x2="20" y2="3" stroke="#0D7C8F" stroke-width="2"/></svg>Hawaiʻi</span>
+        <span><svg width="20" height="6"><line x1="0" y1="3" x2="20" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg>US</span>
+      </div>
+      <div class="mock-section-h"><span class="left">🛡 Safety &amp; Health</span></div>
+      <div class="mock-tiles">
+        <div class="mock-tile-row">
+          <div class="mock-tile"><div class="name">Violent Crime Rate</div><div><span class="val">231</span><span class="unit">per 100K (2024)</span></div></div>
+          <div class="mock-tile"><div class="name">Property Crime Rate</div><div><span class="val">2,053</span><span class="unit">per 100K (2024)</span></div></div>
+          <div class="mock-tile"><div class="name">Primary Care Physicians</div><div><span class="val">88</span><span class="unit">per 100K (2023)</span></div></div>
+        </div>
+      </div>
+      <div class="count-row">
+        <span><strong>7</strong> UI elements before first tile <span class="count-badge">heavy</span></span>
+        <span>Pre-tile vertical space: <strong>~720px</strong></span>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="stage stage-after">
+      <div class="stage-label">After — 4 elements; QOTD as a thin banner, dropdowns merged</div>
+      <div class="stage-desc">Stats strip dropped (the tile grid below speaks for itself). The two dropdowns merge into one "Filter or jump to…" trigger. Pills sit next to it on one row. QOTD compresses into a 56-px-tall banner with the question + True/False inline. Chart key moves to the first section heading row.</div>
+      <div class="mock-header">
+        <h1>Hawaiʻi Dashboard</h1>
+        <p class="mock-sub">See Hawaiʻi more clearly: where we stand, how we're changing, and how we compare with other states. Data, not opinion.</p>
+      </div>
+      <div class="mock-qotd-banner">
+        <span class="lab">Daily quiz</span>
+        <span class="q">Hawaiʻi has fewer roads in poor condition than it did five years ago.</span>
+        <span class="answer">
+          <button>True</button>
+          <button>False</button>
+        </span>
+        <span class="x">×</span>
+      </div>
+      <div class="mock-explore-row" style="grid-template-columns: auto auto; gap: 0.5rem;">
+        <span class="mock-dropdown">Filter or jump to… <span class="chev">▾</span></span>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+          <span class="mock-pill" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🛡 Safety</span>
+          <span class="mock-pill" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🏠 Housing</span>
+          <span class="mock-pill" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">📈 Economy</span>
+          <span class="mock-pill" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🎓 Education</span>
+          <span class="mock-pill" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">🏛 Infrastructure</span>
+        </div>
+      </div>
+      <div class="mock-section-h with-key">
+        <span class="left">🛡 Safety &amp; Health</span>
+        <span class="right">
+          <span><svg width="20" height="6"><line x1="0" y1="3" x2="20" y2="3" stroke="#0D7C8F" stroke-width="2"/></svg>Hawaiʻi</span>
+          <span><svg width="20" height="6"><line x1="0" y1="3" x2="20" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg>US</span>
+        </span>
+      </div>
+      <div class="mock-tiles">
+        <div class="mock-tile-row">
+          <div class="mock-tile"><div class="name">Violent Crime Rate</div><div><span class="val">231</span><span class="unit">per 100K (2024)</span></div></div>
+          <div class="mock-tile"><div class="name">Property Crime Rate</div><div><span class="val">2,053</span><span class="unit">per 100K (2024)</span></div></div>
+          <div class="mock-tile"><div class="name">Primary Care Physicians</div><div><span class="val">88</span><span class="unit">per 100K (2023)</span></div></div>
+        </div>
+      </div>
+      <div class="count-row">
+        <span><strong>4</strong> UI elements before first tile <span class="count-badge">light</span></span>
+        <span>Pre-tile vertical space: <strong>~360px</strong> <em>(–50%)</em></span>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <strong>Decisions made</strong>: (a) QOTD changes from a full card to a banner — still answerable but doesn't dominate. (b) The "5 policy areas · 26 metrics · 50-state · county" stats strip is dropped (the tile grid below is the proof). (c) "Explore by" label removed because the dropdown placeholder ("Filter or jump to…") already explains itself. (d) Chart key moves into each section heading as a right-aligned quiet legend.
+      <br><br>
+      <em>Trade-off</em>: the home page no longer has a "marketing"-style numbers strip. If that's a deliberate trust signal, we can keep the strip and only consolidate the explore/QOTD/chart-key rows.
+    </div>
+    <div class="pick-row">
+      <a class="pick-btn" href="./fix-2-modal-collapse.html">← Fix 2</a>
+      <a class="pick-btn" href="./">All fixes</a>
+    </div>
+  </div>
+</body>
+</html>

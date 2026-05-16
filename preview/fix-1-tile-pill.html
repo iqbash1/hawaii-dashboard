@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Fix 1 — Tile direction pill (before / after)</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body { padding: 1.5rem 2rem; background: var(--bg); }
+    .wrap { max-width: 1240px; margin: 0 auto; }
+    .crumb { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .crumb a { color: var(--hawaii-blue); text-decoration: none; }
+    .page-h { font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .page-sub { color: var(--text-muted); margin-bottom: 2rem; line-height: 1.55; }
+    .page-sub code { background: #eef; padding: 1px 5px; border-radius: 3px; }
+
+    .section {
+      margin-bottom: 2rem;
+      padding: 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .section.is-now { border-style: dashed; }
+    .section.is-after { border-color: var(--hawaii-blue); }
+    .section-h {
+      font-family: var(--font-heading); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.25rem;
+    }
+    .section.is-now .section-h { color: #888; }
+    .section.is-after .section-h { color: var(--hawaii-blue); }
+    .section-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
+
+    .tile-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    }
+    @media (max-width: 900px) { .tile-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .tile-grid { grid-template-columns: 1fr; } }
+
+    /* Mock sparkline */
+    .mock-spark {
+      height: 56px; width: 100%; background:
+        linear-gradient(180deg, rgba(13,124,143,0.08) 0%, rgba(13,124,143,0.0) 60%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 56' preserveAspectRatio='none'><polyline points='0,30 30,28 60,32 90,24 120,28 150,22 180,18 210,20 240,16' fill='none' stroke='%230D7C8F' stroke-width='2'/><polyline points='0,38 30,36 60,38 90,34 120,36 150,34 180,30 210,32 240,30' fill='none' stroke='%23999' stroke-width='1.5' stroke-dasharray='3,3'/></svg>") center/100% 100% no-repeat;
+      border-radius: 4px;
+    }
+    .mock-spark.neg {
+      background:
+        linear-gradient(180deg, rgba(192,57,43,0.12) 0%, rgba(192,57,43,0.0) 60%),
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 56' preserveAspectRatio='none'><polyline points='0,42 30,40 60,36 90,28 120,30 150,20 180,18 210,12 240,10' fill='none' stroke='%23C0392B' stroke-width='2'/><polyline points='0,38 30,36 60,38 90,34 120,36 150,34 180,30 210,32 240,30' fill='none' stroke='%23999' stroke-width='1.5' stroke-dasharray='3,3'/></svg>") center/100% 100% no-repeat;
+    }
+
+    /* After-B: inline next to year (no chip) */
+    .card-direction--inline {
+      display: inline-block;
+      margin-left: 0.25rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
+    .card-direction--inline strong { color: var(--text); font-weight: 600; }
+
+    /* After-C: compact chip */
+    .card-direction.compact {
+      font-size: 9px;
+      padding: 1px 6px;
+      margin-bottom: 0.45rem;
+    }
+
+    .footer-note { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin: 2rem auto; max-width: 700px; line-height: 1.55; }
+    .pick-row { display: flex; gap: 0.5rem; align-items: center; justify-content: center; margin: 1.5rem 0; flex-wrap: wrap; }
+    .pick-btn { display: inline-block; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 999px; background: #fff; color: var(--text); font-size: 0.85rem; text-decoration: none; }
+    .pick-btn:hover { border-color: var(--hawaii-blue); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="crumb"><a href="./">← All fixes</a></div>
+    <h1 class="page-h">Fix 1 — Tile direction pill</h1>
+    <p class="page-sub">
+      Every tile carries a <code>lower is better</code> / <code>higher is better</code> pill between the value and the chart.
+      The "improved 4.3%" verdict at the bottom already encodes good-direction with green / red color, and the sparkline fill matches.
+      The pill is the 4th encoder of the same information. Three after-options below — all preserve the verb-led "improved / worsened" wording (the team's existing decision).
+    </p>
+
+    <!-- BEFORE -->
+    <div class="section is-now">
+      <div class="section-h">Now — pill always shown</div>
+      <div class="section-desc">Three real metrics: improved-trend (Violent Crime), worsened-but-still-good-tier (Primary Care Physicians), worsened-and-bad-tier (Renter Cost Burden).</div>
+      <div class="tile-grid">
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Violent Crime Rate</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">231</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2024)</span>
+          </div>
+          <div class="card-direction">lower is better</div>
+          <div class="card-sparkline"><div class="mock-spark"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 328</div>
+              <div class="comp-verdict">Top tier · #12 of 50</div>
+            </div>
+            <div class="card-comp positive">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">improved 4.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Primary Care Physicians (civilian)</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">88</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2023)</span>
+          </div>
+          <div class="card-direction">higher is better</div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 79</div>
+              <div class="comp-verdict">Top tier · #8 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-23 vs 2017-19</div>
+              <div class="comp-verdict">worsened 5.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Renter Housing Cost Burden</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">55.0%</span>
+            <span class="card-unit">pay 30%+ of income</span>
+            <span class="card-year">(2024)</span>
+          </div>
+          <div class="card-direction">lower is better</div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp negative">
+              <div class="comp-label">US: 49.4%</div>
+              <div class="comp-verdict">Bottom tier · #47 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">worsened 4.2%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER A -->
+    <div class="section is-after">
+      <div class="section-h">Option A — Drop the pill entirely</div>
+      <div class="section-desc">Verdict color + sparkline fill carry the meaning. First-time readers learn the convention from the verb ("improved" = good). Most minimal.</div>
+      <div class="tile-grid">
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Violent Crime Rate</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">231</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2024)</span>
+          </div>
+          <div class="card-sparkline"><div class="mock-spark"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 328</div>
+              <div class="comp-verdict">Top tier · #12 of 50</div>
+            </div>
+            <div class="card-comp positive">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">improved 4.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Primary Care Physicians (civilian)</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">88</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2023)</span>
+          </div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 79</div>
+              <div class="comp-verdict">Top tier · #8 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-23 vs 2017-19</div>
+              <div class="comp-verdict">worsened 5.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Renter Housing Cost Burden</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">55.0%</span>
+            <span class="card-unit">pay 30%+ of income</span>
+            <span class="card-year">(2024)</span>
+          </div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp negative">
+              <div class="comp-label">US: 49.4%</div>
+              <div class="comp-verdict">Bottom tier · #47 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">worsened 4.2%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER B -->
+    <div class="section is-after">
+      <div class="section-h">Option B — Inline arrow next to the year</div>
+      <div class="section-desc">Reads "per 100K residents (2024) <strong>↓ better</strong>" inline at the end of the unit line. Keeps the cue for first-time readers, kills the standalone chip.</div>
+      <div class="tile-grid">
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Violent Crime Rate</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">231</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2024) <span class="card-direction--inline"><strong>↓ better</strong></span></span>
+          </div>
+          <div class="card-sparkline"><div class="mock-spark"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 328</div>
+              <div class="comp-verdict">Top tier · #12 of 50</div>
+            </div>
+            <div class="card-comp positive">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">improved 4.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Primary Care Physicians (civilian)</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">88</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2023) <span class="card-direction--inline"><strong>↑ better</strong></span></span>
+          </div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 79</div>
+              <div class="comp-verdict">Top tier · #8 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-23 vs 2017-19</div>
+              <div class="comp-verdict">worsened 5.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Renter Housing Cost Burden</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">55.0%</span>
+            <span class="card-unit">pay 30%+ of income</span>
+            <span class="card-year">(2024) <span class="card-direction--inline"><strong>↓ better</strong></span></span>
+          </div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp negative">
+              <div class="comp-label">US: 49.4%</div>
+              <div class="comp-verdict">Bottom tier · #47 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">worsened 4.2%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER C -->
+    <div class="section is-after">
+      <div class="section-h">Option C — Compact 2-char chip</div>
+      <div class="section-desc">"↓ better" or "↑ better" replaces "lower is better" / "higher is better". Same visual position, ~70% smaller surface.</div>
+      <div class="tile-grid">
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Violent Crime Rate</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">231</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2024)</span>
+          </div>
+          <div class="card-direction compact">↓ better</div>
+          <div class="card-sparkline"><div class="mock-spark"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 328</div>
+              <div class="comp-verdict">Top tier · #12 of 50</div>
+            </div>
+            <div class="card-comp positive">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">improved 4.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Primary Care Physicians (civilian)</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">88</span>
+            <span class="card-unit">per 100K residents</span>
+            <span class="card-year">(2023)</span>
+          </div>
+          <div class="card-direction compact">↑ better</div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp positive">
+              <div class="comp-label">US: 79</div>
+              <div class="comp-verdict">Top tier · #8 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-23 vs 2017-19</div>
+              <div class="comp-verdict">worsened 5.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="cursor: default;">
+          <div class="card-metric">Renter Housing Cost Burden</div>
+          <div class="card-hero">
+            <span class="card-hawaii-value">55.0%</span>
+            <span class="card-unit">pay 30%+ of income</span>
+            <span class="card-year">(2024)</span>
+          </div>
+          <div class="card-direction compact">↓ better</div>
+          <div class="card-sparkline"><div class="mock-spark neg"></div></div>
+          <div class="card-comparisons">
+            <div class="card-comp negative">
+              <div class="comp-label">US: 49.4%</div>
+              <div class="comp-verdict">Bottom tier · #47 of 50</div>
+            </div>
+            <div class="card-comp negative">
+              <div class="comp-label">2022-24 vs 2017-19</div>
+              <div class="comp-verdict">worsened 4.2%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <strong>My recommendation</strong>: Option C — keeps the explicit cue for new visitors but ~70% smaller. Option A is most minimal but loses the affordance. Option B works on desktop but the inline glyph can fight the year for attention on narrow tiles / mobile.
+    </div>
+    <div class="pick-row">
+      <a class="pick-btn" href="./">← All fixes</a>
+      <a class="pick-btn" href="./fix-2-modal-collapse.html">Next: Fix 2 →</a>
+    </div>
+  </div>
+</body>
+</html>
