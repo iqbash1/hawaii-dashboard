@@ -759,26 +759,30 @@ const ChartUtils = {
         const xMid = niceRound((xStart + xEnd) / 2, roundStep);
         const xTicks = [xStart, xMid, xEnd];
 
-        // Background gradient anchored to median position
-        // Find which bar index is closest to the median value
-        const medianIdx = distStats
-            ? values.reduce((best, v, i) => Math.abs(v - distStats.median) < Math.abs(values[best] - distStats.median) ? i : best, 0)
-            : Math.floor(n / 2);
+        // Stepped tier-band backdrop replaces the previous green→red gradient
+        // so the rankings chart speaks the same Top/Middle/Bottom tier
+        // vocabulary the cards and rank-history view use. Thresholds match
+        // Utils.rankColorClass exactly (pct ≤ 0.33 / ≤ 0.67 / else). For 50
+        // states that gives Top: indices 0–15 (ranks 1–16), Middle: 16–32
+        // (ranks 17–33), Bottom: 33–49 (ranks 34–50). Bars are pre-sorted
+        // best→worst so band order matches visual order.
+        const topTierCount = Math.floor(n * 0.33);
+        const midTierEnd  = Math.floor(n * 0.67);
         const rowBgPlugin = {
             id: 'rowBackground',
             beforeDatasetsDraw(chart) {
                 const { ctx, chartArea } = chart;
                 const { top, bottom, left, right } = chartArea;
-                const medFrac = (medianIdx + 0.5) / n;
+                const height = bottom - top;
+                const yTopMid = top + height * (topTierCount / n);
+                const yMidBot = top + height * (midTierEnd / n);
                 ctx.save();
-                const grad = ctx.createLinearGradient(0, top, 0, bottom);
-                grad.addColorStop(0, 'rgba(34,197,94,0.45)');
-                grad.addColorStop(Math.max(0, medFrac - 0.08), 'rgba(34,197,94,0.08)');
-                grad.addColorStop(medFrac, 'rgba(255,255,255,0.0)');
-                grad.addColorStop(Math.min(1, medFrac + 0.08), 'rgba(239,68,68,0.08)');
-                grad.addColorStop(1, 'rgba(239,68,68,0.45)');
-                ctx.fillStyle = grad;
-                ctx.fillRect(left, top, right - left, bottom - top);
+                ctx.fillStyle = 'rgba(5, 150, 105, 0.10)';
+                ctx.fillRect(left, top, right - left, yTopMid - top);
+                ctx.fillStyle = 'rgba(192, 138, 26, 0.06)';
+                ctx.fillRect(left, yTopMid, right - left, yMidBot - yTopMid);
+                ctx.fillStyle = 'rgba(192, 57, 43, 0.10)';
+                ctx.fillRect(left, yMidBot, right - left, bottom - yMidBot);
                 ctx.restore();
             }
         };
@@ -794,50 +798,62 @@ const ChartUtils = {
                 const topEdge = chartArea.top - dotStripHeight + 5;
                 ctx.save();
 
-                // Distribution lines: run from dot strip through entire chart
+                // Median reference line only. Q1/Q3 quartile lines and the
+                // "Top Ranked (25%)" / "Bottom Ranked (25%)" zone fills are
+                // gone — the tier-band backdrop (rowBgPlugin) now carries the
+                // best/worst framing in the dashboard's own Top/Middle/Bottom
+                // tier vocabulary, so quartile language would compete.
                 if (distStats) {
-                    const q1x = xScale.getPixelForValue(distStats.q1);
-                    const q3x = xScale.getPixelForValue(distStats.q3);
-                    const isGoodDown = goodDirection === 'down';
-
-                    // Top band extends to the chart edge on the "best" side;
-                    // bottom band extends to the chart edge on the "worst" side.
-                    const topZoneLeft = isGoodDown ? chartArea.left : q3x;
-                    const topZoneRight = isGoodDown ? q1x : chartArea.right;
-                    const botZoneLeft = isGoodDown ? q3x : chartArea.left;
-                    const botZoneRight = isGoodDown ? chartArea.right : q1x;
-
-                    ctx.fillStyle = 'rgba(5, 150, 105, 0.07)';
-                    ctx.fillRect(topZoneLeft, topEdge, topZoneRight - topZoneLeft, chartArea.bottom - topEdge);
-                    ctx.fillStyle = 'rgba(192, 57, 43, 0.06)';
-                    ctx.fillRect(botZoneLeft, topEdge, botZoneRight - botZoneLeft, chartArea.bottom - topEdge);
-
                     ctx.font = '500 11px Inter, sans-serif';
                     ctx.fillStyle = '#7A8A9A';
                     ctx.textAlign = 'center';
-                    const lines = [
-                        { val: distStats.q1, dash: [4, 4], alpha: 0.2, width: 1 },
-                        { val: distStats.median, dash: [6, 3], alpha: 0.3, width: 1.5, label: 'US' },
-                        { val: distStats.q3, dash: [4, 4], alpha: 0.2, width: 1 },
-                    ];
-                    lines.forEach(line => {
-                        const x = xScale.getPixelForValue(line.val);
-                        if (x >= chartArea.left && x <= chartArea.right) {
-                            ctx.beginPath();
-                            ctx.setLineDash(line.dash);
-                            ctx.strokeStyle = `rgba(13, 124, 143, ${line.alpha})`;
-                            ctx.lineWidth = line.width;
-                            ctx.moveTo(x, topEdge + 14);
-                            ctx.lineTo(x, chartArea.bottom);
-                            ctx.stroke();
-                            ctx.setLineDash([]);
-                            if (line.label) ctx.fillText(line.label, x, topEdge + 20);
-                            ctx.fillText(distStats.fmt(line.val), x, chartArea.bottom + 14);
-                        }
-                    });
+                    const medX = xScale.getPixelForValue(distStats.median);
+                    if (medX >= chartArea.left && medX <= chartArea.right) {
+                        ctx.beginPath();
+                        ctx.setLineDash([6, 3]);
+                        ctx.strokeStyle = 'rgba(13, 124, 143, 0.3)';
+                        ctx.lineWidth = 1.5;
+                        ctx.moveTo(medX, topEdge + 14);
+                        ctx.lineTo(medX, chartArea.bottom);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                        ctx.fillText('US', medX, topEdge + 20);
+                        ctx.fillText(distStats.fmt(distStats.median), medX, chartArea.bottom + 14);
+                    }
+                }
 
-                    ctx.fillText('Top Ranked (25%)', (topZoneLeft + topZoneRight) / 2, topEdge + 20);
-                    ctx.fillText('Bottom Ranked (25%)', (botZoneLeft + botZoneRight) / 2, topEdge + 20);
+                // Tier-band labels at the left edge of each band, just inside
+                // chartArea. Drawn after the bars with a translucent white
+                // pill so they read cleanly over both Hawaiʻi (teal) and the
+                // other-state gray bars. Matches the Top/Middle/Bottom
+                // labels on the rank-history chart so the two views speak
+                // the same vocabulary.
+                const chartH = chartArea.bottom - chartArea.top;
+                const tierBandLabels = [
+                    { topFrac: 0,                   label: 'Top tier',    color: 'rgba(5,150,105,0.95)' },
+                    { topFrac: topTierCount / n,    label: 'Middle tier', color: 'rgba(192,138,26,0.95)' },
+                    { topFrac: midTierEnd / n,      label: 'Bottom tier', color: 'rgba(192,57,43,0.95)' },
+                ];
+                ctx.font = 'italic 700 9px Inter, sans-serif';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                for (const tb of tierBandLabels) {
+                    const y = chartArea.top + chartH * tb.topFrac + 9;
+                    const textWidth = ctx.measureText(tb.label).width;
+                    const pillX = chartArea.left + 3;
+                    const pillY = y - 7;
+                    const pillW = textWidth + 10;
+                    const pillH = 14;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+                    if (typeof ctx.roundRect === 'function') {
+                        ctx.beginPath();
+                        ctx.roundRect(pillX, pillY, pillW, pillH, 3);
+                        ctx.fill();
+                    } else {
+                        ctx.fillRect(pillX, pillY, pillW, pillH);
+                    }
+                    ctx.fillStyle = tb.color;
+                    ctx.fillText(tb.label, pillX + 5, y);
                 }
 
                 // Dot strip dots
