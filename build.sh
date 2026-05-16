@@ -33,6 +33,9 @@ cp -r rh dist/
 cp -r c dist/
 cp -r q dist/
 cp -r data dist/
+# Internal preview pages. Marked noindex,nofollow at the page level and
+# Disallowed in robots.txt so they don't enter search.
+if [ -d preview ]; then cp -r preview dist/; fi
 
 # Replace all ?v=... cache-bust strings with the git short SHA.
 # Source files keep their manual versions; only dist/ gets the SHA.
