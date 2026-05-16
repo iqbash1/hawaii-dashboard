@@ -92,10 +92,9 @@ hawaii-dashboard/
 ├── twenty-five-year-change/
 │   └── index.html          # Change Summary (25-year view)
 ├── scripts/
-│   ├── generate-og-pages.py    # Generates ALL metric OG images + redirect pages (PIL-based)
+│   ├── generate-og-pages.py    # Generates ALL metric OG images + redirect pages + QOTD OG cards (PIL-based)
 │   ├── generate-og-image.py    # Generates the homepage fallback OG image
 │   ├── generate-og-change-summary.py # Generates the Change Summary OG image
-│   ├── generate-qotd-og.py     # Regenerates QOTD OG cards from the question bank
 │   ├── generate-qotd-redirects.js  # Regenerates static q/{id}/ redirect pages
 │   ├── generate-og-off-the-charts.py # Regenerates the Off the Charts archive OG card
 │   ├── generate-og-off-the-charts-posts.py # Regenerates per-post Off the Charts OG cards
@@ -784,7 +783,7 @@ Daily "Do you know Hawaiʻi?" true/false claim. White card teaser at the top of 
 | `js/routing.js` | Handles `/q/{id}/` path and `?from_q={id}` query as track-and-redirect to `/`. |
 | `q/{id}/index.html` | 48 pre-generated redirect pages with OG meta. |
 | `assets/og/q/{slug}.png` | 48 pre-generated 1200×630 OG cards (claim + True/False pills). |
-| `scripts/generate-qotd-og.py` | OG-image generator. Reads `js/questions.js` and writes every PNG. Re-run when claims change. |
+| `scripts/generate-og-pages.py` (`generate_qotd_assets`) | OG-image generator. Reads `js/questions.js` and writes every QOTD PNG as part of the main OG build. Re-run via `npm run og` when claims change. |
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `tests/qotd.test.js` | 19 unit tests (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL). |
 
@@ -833,7 +832,7 @@ All events keyed by `id` and routed through `App._trackEvent`:
 
 1. Edit `js/questions.js` (append or modify the entry).
 2. Verify it passes all 8 criteria and the locked threshold for its variant.
-3. `python3 scripts/generate-qotd-og.py` to regenerate the OG PNG.
+3. `npm run og` to regenerate the OG PNG (QOTD cards are built inside `generate-og-pages.py`).
 4. `node scripts/generate-qotd-redirects.js` to regenerate `q/{id}/index.html`.
 5. `node --test tests/qotd.test.js` to confirm bank-shape tests pass.
 6. `build.sh` already copies `q/` into `dist/`; no build script change needed.

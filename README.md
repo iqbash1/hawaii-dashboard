@@ -65,7 +65,6 @@ tests/
   smoke.spec.js         End-to-end smoke tests (Playwright)
 scripts/
   verify-live-site.sh   Post-deploy verification (50 checks, run with --no-wait)
-  generate-qotd-og.py   Regenerates QOTD OG cards from the question bank
   generate-qotd-redirects.js  Regenerates static q/{id}/ redirect pages
   generate-og-off-the-charts-posts.py  Regenerates per-post OTC OG cards
 ```
