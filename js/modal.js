@@ -828,14 +828,12 @@ const Modal = {
         document.getElementById('rankings-rank').innerHTML =
             `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best performing state</span>`;
 
-        // Compute distribution stats (shared between dot strip and rankings chart).
-        // Uses the unified Compute.quantile definition (linear interpolation,
-        // NumPy/R type-7) so Q1/Median/Q3 match the medianSeries stored in data.js.
+        // Median + formatter for the rankings chart's reference line.
+        // (Q1/Q3 are no longer needed since the rankings chart replaced the
+        // quartile zones with Top/Middle/Bottom tier-band row backgrounds.)
         const vals = stateValues.map((s) => s.value);
         const distStats = {
-            q1: Compute.quantile(vals, 0.25),
             median: Compute.quantile(vals, 0.5),
-            q3: Compute.quantile(vals, 0.75),
             fmt: (v) => ChartUtils.formatValue(v, metricData.unit, false),
         };
 
@@ -1347,8 +1345,12 @@ const Modal = {
 
         const word    = isFlat ? 'held flat' : (isImproving ? 'improved' : 'worsened');
         const pctPart = isFlat ? '' : ` ${Math.abs(pctChange) > 100 ? Math.abs(pctChange).toFixed(0) : Math.abs(pctChange).toFixed(1)}%`;
+        // When the pandemic years were filtered out, flag the methodology in
+        // the phrase itself so a pasted brief carries the caveat. Documented
+        // in about/index.html > How We Compare.
+        const covidNote = excluded ? ' (2020–21 excluded)' : '';
 
-        return `${word}${pctPart} over the last five years`;
+        return `${word}${pctPart} over the last five years${covidNote}`;
     },
 
     /**

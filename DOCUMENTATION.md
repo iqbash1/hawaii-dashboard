@@ -448,9 +448,9 @@ Each of the 26 metrics gets its own card displaying:
 4. **Sparkline chart** - Hawaiʻi (solid teal line) vs. Other State Median (gray dashed line)
 5. **Two comparison sections:**
    - **vs Other States** - "Better" (green) or "Worse" (red) with the median, plus a meta row showing:
-     - **Rank #X of 50**: plain colored text (no link affordance), tier-colored via `Utils.rankColorClass(rank, total)`: same kernel the Summary page National Ranking table uses (top third → `--positive`, middle third → `--neutral`, bottom third → `--negative`).
+     - **Tier · Rank**: reads as `Top tier · #14 of 50` (or `Middle tier` / `Bottom tier`). Tier word from `Utils.rankTierLabel(rank, total)`, tier color from `Utils.rankColorClass(rank, total)`: top third → `--positive` (green), middle third → `--neutral` (gold), bottom third → `--negative` (red). Same convention drives the modal Rank chart's tier bands, the Rank History chart's y-axis bands, the modal Copy brief lead sentence, and the OG share-image badge.
      - **By county**: small muted teal link, only present for the 14 metrics with `COUNTY_DATA`. Clicking opens the modal directly on the County tab.
-   - **vs Prior Year** - percentage change with "Improving" or "Worsening" label
+   - **vs prior window** - compares two 3-year rolling-average windows (e.g. `2022-24 vs 2019-21`). Verdict reads "improved X.X% / worsened X.X% / held steady" with positive/neutral/negative coloring. **2020 and 2021 are excluded from both windows** when present in the data; the year-range label reflects the actual years used, and the tooltip appends "2020-21 excluded as COVID distortion" when that exclusion fires. Same convention drives the modal Bottom Line trend phrase (`Modal.computeTrendPhrase`).
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum). Each card has `id="{slug}"` so direct links (`/#slug`) scroll to the card and open its modal.
 
@@ -661,7 +661,8 @@ Shared pure functions used by the Change Summary page and unit tests. Dual-expor
 | Method/Property | Description |
 |----------------|-------------|
 | `RANK_SHIFT` | Minimum rank-position move (2 spots) to show an up/down arrow in the rank table |
-| `rankColorClass(rank, tot)` | Returns CSS class `rank-good`, `rank-mid`, or `rank-bad` based on which third of `tot` the `rank` falls in |
+| `rankColorClass(rank, tot)` | Returns CSS class `rank-good`, `rank-mid`, or `rank-bad` based on which third of `tot` the `rank` falls in. Top third → `rank-good` (pct ≤ 0.33), middle → `rank-mid` (pct ≤ 0.67), else → `rank-bad`. |
+| `rankTierLabel(rank, tot)` | Returns the human-facing tier label (`"Top tier"` / `"Middle tier"` / `"Bottom tier"`) for the same thresholds as `rankColorClass`. Single source of truth for the tier vocabulary used on cards, rank chart, rank-history chart, modal Copy brief, and OG share badges. |
 | `rankMoveHtml(r)` | Returns an HTML `<span>` showing the rank movement for a metric row over the active span (up arrow, down arrow, FLAT, or dash) |
 | `statusLabel(status, standing)` | Returns the display string for a metric's status chip, combining trend direction (improving/worsening/little-change) with national ranking context (outpacing/behind/in step) |
 | `pl(count, singular, plural)` | Simple pluralization helper; auto-appends "s" if no explicit plural given |
@@ -677,8 +678,8 @@ Chart rendering utilities.
 |--------|-------------|
 | `createSparkline(canvas, data, goodDirection)` | Mini line chart for cards |
 | `createDetailChart(canvas, data, govBoxes)` | Full detail chart with governor overlay; uses `tension: 0.3` Bezier smoothing |
-| `createRankingsChart(canvas, stateValues, goodDirection, unit, distStats)` | Horizontal bar chart with dot strip, quartile shading, median line, and crosshair hover. `distStats` = `{ q1, median, q3, fmt }` pre-computed by `showRankings()` |
-| `createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare, initialCompare)` | Rank trend line chart with quartile zones, reference lines, and click-to-compare state interaction; `tension: 0` (no smoothing); `initialCompare` pre-selects a comparison state on load |
+| `createRankingsChart(canvas, stateValues, goodDirection, unit, distStats)` | Horizontal bar chart with dot strip, Top/Middle/Bottom tier-band row backgrounds, median line, tier-name labels in the right-margin gutter, and crosshair hover. `distStats` = `{ median, fmt }` pre-computed by `showRankings()`. Tier boundaries match `Utils.rankColorClass` exactly (pct ≤ 0.33 / ≤ 0.67 / else). |
+| `createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, onCompare, initialCompare)` | Rank trend line chart with Top/Middle/Bottom tier-band y-axis backgrounds, dashed boundary lines at ranks 16.5 and 33.5, italic tier-name labels at the left edge of each band, and click-to-compare state interaction; `tension: 0` (no smoothing); `initialCompare` pre-selects a comparison state on load |
 | `formatValue(value, unit, isDecimalPct)` | Full precision value formatting |
 | `formatCardValue(value, unit, isDecimalPct)` | Compact card display formatting |
 | `isDecimalPctMetric(metricData)` | Detects decimal-stored percentage metrics |

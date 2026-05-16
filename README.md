@@ -107,7 +107,7 @@ Single command rebuilds, per metric:
 - `/c/{slug}/index.html`: full landing page with Dataset + BreadcrumbList JSON-LD, headline figure, national rank, county and state-trend tables, source attribution, cross-links, CTA
 - `/t/{slug}/`, `/r/{slug}/`, `/rh/{slug}/` redirect pages with OG tags and `canonical` → `/c/{slug}/` (consolidates ranking authority to one URL per metric)
 - `/data/{slug}_state.csv` (always) and `/data/{slug}_county.csv` (when county data exists)
-- QOTD OG cards + redirect pages
+- QOTD OG cards (redirect HTML is written by `scripts/generate-qotd-redirects.js`, not this script)
 
 Requires `Pillow` (`pip3 install Pillow`).
 

@@ -189,9 +189,7 @@ const QOTD = {
                 const stateValues = rankings.stateValues;
                 const vals = stateValues.map((s) => s.value);
                 const distStats = {
-                    q1: Compute.quantile(vals, 0.25),
                     median: Compute.quantile(vals, 0.5),
-                    q3: Compute.quantile(vals, 0.75),
                     fmt: (v) => ChartUtils.formatValue(v, metricData.unit, false),
                 };
                 ChartUtils.createRankingsChart(canvas, stateValues, metricData.goodDirection, metricData.unit, distStats);

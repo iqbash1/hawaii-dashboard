@@ -9,6 +9,11 @@ For each metric, creates:
   - /r/{slug}/index.html                      (rankings redirect page)
   - /rh/{slug}/{state-slug}/index.html        (rank-history comparison redirect pages)
 
+For QOTD, this script emits ONLY the OG PNGs (assets/og/q/{slug}.png).
+The QOTD redirect HTML pages live at q/{id}/ and are written by
+scripts/generate-qotd-redirects.js (the slug-based q/{slug}/ redirect
+pattern was dropped May 2026; only q/{id}/ is canonical).
+
 For metrics with a thresholdVariants block in DASHBOARD_DATA (e.g.
 renter_cost_burden_pct severe, food_insecurity_rate verylow,
 road_poor_pct notgood, unsheltered_homeless_rate total), the script
@@ -43,7 +48,9 @@ REDIRECT_DIR_T  = os.path.join(BASE_DIR, 't')    # /t/{slug}/  trend pages
 REDIRECT_DIR_R  = os.path.join(BASE_DIR, 'r')    # /r/{slug}/  rankings pages
 REDIRECT_DIR_C  = os.path.join(BASE_DIR, 'c')    # /c/{slug}/  county pages
 REDIRECT_DIR_RH = os.path.join(BASE_DIR, 'rh')   # /rh/{slug}/ rank-history pages
-REDIRECT_DIR_Q  = os.path.join(BASE_DIR, 'q')    # /q/{slug}/  question-of-the-day pages
+# QOTD: only OG PNGs are written here (assets/og/q/{slug}.png). The QOTD
+# redirect HTML lives at q/{id}/ and is written by
+# scripts/generate-qotd-redirects.js, not by this script.
 DATA_DIR        = os.path.join(BASE_DIR, 'data') # /data/{slug}_state.csv etc.
 SITE_URL = 'https://hawaiidashboard.org'
 
@@ -2344,99 +2351,25 @@ def generate_qotd_og_image(question, output_path):
     im.save(output_path, 'PNG', optimize=True)
 
 
-def generate_qotd_redirect_html(question, output_path):
-    """Emit a static redirect page for /q/{slug}/ with OG meta tags.
-
-    Redirects to the SPA via hash route /#q/{slug}. The SPA's routing
-    handles the hash and opens the QOTD modal. Social unfurls read
-    the static meta tags without running JS.
-    """
-    slug = question['slug']
-    claim = question['claim']
-    answer_text = question.get('answer', '') or ''
-    is_true = question.get('correct', None)
-    chart_url = question.get('chartUrl', '/')
-    title = "Do you know Hawai\u02BBi?"
-    description = claim
-    image_url = f"{SITE_URL}/assets/og/q/{slug}.png"
-    page_url = f"{SITE_URL}/q/{slug}/"
-    redirect_target = f"/#q/{slug}"
-    refresh_target = f"{SITE_URL}/#q/{slug}"
-
-    # Escape minimal HTML-attribute-breaking characters.
-    def esc_attr(s):
-        return s.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
-
-    verdict = 'True' if is_true is True else ('False' if is_true is False else '')
-    answer_block = ''
-    if verdict or answer_text:
-        parts = []
-        if verdict:
-            parts.append(f'<strong>{verdict}.</strong>')
-        if answer_text:
-            parts.append(_esc_html(answer_text))
-        answer_block = f'<p>{" ".join(parts)}</p>'
-
-    inline_block = (
-        f'\n  <article style="max-width:640px;margin:2rem auto;padding:0 1rem;'
-        f'font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',sans-serif;'
-        f'color:#333;line-height:1.55;">\n'
-        f'    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;'
-        f'letter-spacing:0.05em;margin:0;">Do you know Hawai\u02BBi?</p>\n'
-        f'    <p style="margin:0.25rem 0 1rem;font-size:1.25rem;font-weight:600;">'
-        f'{_esc_html(claim)}</p>\n'
-        f'    {answer_block}\n'
-        f'    <p style="margin-top:1.5rem;"><a href="{chart_url}">'
-        f'See the data &rarr;</a></p>\n'
-        f'  </article>'
-    )
-
-    html = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>{esc_attr(title)}</title>
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="{page_url}">
-  <meta property="og:title" content="{esc_attr(title)}">
-  <meta property="og:description" content="{esc_attr(description)}">
-  <meta property="og:image" content="{image_url}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:site_name" content="Hawai\u02BBi Dashboard">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{esc_attr(title)}">
-  <meta name="twitter:description" content="{esc_attr(description)}">
-  <meta name="twitter:image" content="{image_url}">
-  <meta name="description" content="{esc_attr(description)}">
-  <link rel="canonical" href="{page_url}">
-  <script>window.location.replace('{redirect_target}');</script>
-  <meta http-equiv="refresh" content="0;url={refresh_target}">
-</head>
-<body>
-  <p>Redirecting to <a href="{refresh_target}">{esc_attr(title)}</a>&hellip;</p>{inline_block}
-</body>
-</html>"""
-
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(html)
-
 
 def generate_qotd_assets():
-    """Emit one OG PNG and one redirect page per QOTD question."""
+    """Emit one OG PNG per QOTD question.
+
+    The OG PNG filename keeps using the slug because the id-based redirect
+    pages (written by scripts/generate-qotd-redirects.js) reference it that
+    way. The slug-based /q/{slug}/ HTML redirect pages this script used to
+    emit were dropped May 2026: only /q/{id}/ is the canonical URL.
+    """
     questions = load_qotd_questions()
     if not questions:
         print("No QOTD questions found; skipping QOTD asset generation.")
         return 0
-    print(f"\nQOTD: generating {len(questions)} cards + redirects")
+    print(f"\nQOTD: generating {len(questions)} OG cards")
     for q in questions:
         slug = q['slug']
         img_path = os.path.join(ASSETS_OG_QOTD, f"{slug}.png")
-        html_path = os.path.join(REDIRECT_DIR_Q, slug, 'index.html')
         generate_qotd_og_image(q, img_path)
-        generate_qotd_redirect_html(q, html_path)
-        print(f"  {q['id']}: /q/{slug}/")
+        print(f"  {q['id']}: /assets/og/q/{slug}.png")
     return len(questions)
 
 
@@ -2477,7 +2410,7 @@ def main():
     if not args.slug:
         generate_qotd_assets()
 
-    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/  RankHistory: {REDIRECT_DIR_RH}/  QOTD: {REDIRECT_DIR_Q}/")
+    print(f"\nDone. Images: {ASSETS_OG}/  Trend: {REDIRECT_DIR_T}/  Rankings: {REDIRECT_DIR_R}/  County: {REDIRECT_DIR_C}/  RankHistory: {REDIRECT_DIR_RH}/  QOTD OG: {ASSETS_OG_QOTD}/")
 
 
 if __name__ == '__main__':

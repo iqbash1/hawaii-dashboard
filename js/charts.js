@@ -4,9 +4,11 @@
 // createSparkline()          - mini card charts with gap-scaled fill
 // createDetailChart()        - full modal chart with governor overlays
 // createCountyChart()        - multi-line county comparison chart
-// createRankingsChart()      - horizontal bar chart for all 50 states
-// createRankHistoryChart()   - rank-over-time line chart with quartile
-//                              zones, reference lines, and click-to-compare
+// createRankingsChart()      - horizontal bar chart for all 50 states with
+//                              Top/Middle/Bottom tier-band row backgrounds
+// createRankHistoryChart()   - rank-over-time line chart with Top/Middle/
+//                              Bottom tier-band y-axis backgrounds and
+//                              click-to-compare state interaction
 // formatValue()              - unit-aware number formatting
 // formatCardValue()          - compact formatting for card display
 // ============================================================
@@ -1065,9 +1067,10 @@ const ChartUtils = {
 
     /**
      * Create a rank-over-time line chart showing Hawaiʻi's national standing.
-     * Features quartile zone backgrounds, governor overlays, interactive state
-     * comparison (click right-edge labels to pin, hover for ghost preview).
-     * Returns chart with _clearComparison() and _setComparison(state) methods.
+     * Features Top/Middle/Bottom tier-band backgrounds, governor overlays, and
+     * interactive state comparison (click right-edge labels to pin, hover for
+     * ghost preview). Returns chart with _clearComparison() and
+     * _setComparison(state) methods.
      * @param {HTMLCanvasElement} canvas - Target canvas element
      * @param {Object} rankHistory - Pre-computed data from computeRankHistory()
      * @param {Object} metricData - Metric metadata: { unit }
