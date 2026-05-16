@@ -1037,57 +1037,33 @@ body {
     font-weight: 600;
 }
 
-/* Match the .modal-deeper-toggle pill style so the two expandable
-   controls inside the modal (How to read the chart · Read the deeper
-   analysis) look identical when collapsed. */
+/* Minimal disclosure pattern shared by both expandable controls in the
+   modal — "How to read the chart" and "Read the deeper analysis". Both
+   use <details><summary> with uppercase-tracked text + a teal "+" / "−"
+   prefix. No pill, no chevron — keeps the chart and deeper-analysis as
+   the visual focus, not the toggle itself. */
 .modal-how-toggle summary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1rem;
-    margin-top: 0.5rem;
-    background: #fff;
-    border: 1px solid var(--hawaii-blue);
-    color: var(--hawaii-blue);
-    border-radius: 999px;
-    font-family: var(--font-heading);
     font-size: var(--text-base);
-    font-weight: 600;
-    text-transform: none;
-    letter-spacing: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
     cursor: pointer;
     list-style: none;
-    transition: background var(--transition);
-}
-.modal-how-toggle summary:hover {
-    background: var(--hawaii-blue-light);
-}
-.modal-how-toggle summary:focus-visible {
-    outline: 2px solid var(--hawaii-blue);
-    outline-offset: 2px;
 }
 
-.modal-how-toggle summary::after {
-    content: "\25B8"; /* ▸ */
-    display: inline-block;
-    transition: transform 0.2s ease;
+.modal-how-toggle summary::before {
+    content: "+ ";
+    color: var(--hawaii-blue);
 }
 
-.modal-how-toggle[open] summary::after {
-    transform: rotate(90deg);
+.modal-how-toggle[open] summary::before {
+    content: "\2212  "; /* − (minus) */
+    color: var(--hawaii-blue);
 }
 
 .modal-how-toggle summary::-webkit-details-marker {
     display: none;
-}
-
-/* Expanded content sits below the pill with the same spacing as the
-   deeper-analysis wrap. */
-.modal-how-toggle[open] {
-    padding-bottom: 0.5rem;
-}
-.modal-how-toggle[open] > *:not(summary) {
-    margin-top: 1rem;
 }
 
 .modal-source {
@@ -1410,47 +1386,12 @@ body {
     margin-bottom: 0;
 }
 
-/* "Read the deeper analysis" toggle: collapses the narrative sections
+/* "Read the deeper analysis" disclosure: collapses the narrative sections
    (Why / National standing / County breakdown / Drivers / Lessons / Key
-   levers / Data note) behind a single button. Most modal opens are
-   chart-and-brief reads; the deeper analysis is opt-in. The "How to read
-   the chart" details accordion stays visible because it helps orient to
-   the chart that just rendered above. */
-.modal-deeper-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1rem;
-    margin-top: 0.5rem;
-    background: #fff;
-    border: 1px solid var(--hawaii-blue);
-    color: var(--hawaii-blue);
-    border-radius: 999px;
-    font-family: var(--font-heading);
-    font-size: var(--text-base);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background var(--transition);
-}
-.modal-deeper-toggle:hover {
-    background: var(--hawaii-blue-light);
-}
-.modal-deeper-toggle:focus-visible {
-    outline: 2px solid var(--hawaii-blue);
-    outline-offset: 2px;
-}
-.modal-deeper-toggle-chev {
-    display: inline-block;
-    transition: transform 0.2s ease;
-}
-.modal-deeper-toggle.is-open .modal-deeper-toggle-chev {
-    transform: rotate(90deg);
-}
-.modal-deeper-wrap {
-    margin-top: 1.5rem;
-}
-.modal-deeper-wrap[hidden] {
-    display: none;
+   levers / Data note) behind a single <details> using the same minimal
+   pattern as "How to read the chart" — both share .modal-how-toggle. */
+.modal-deeper-toggle[open] > *:not(summary) {
+    margin-top: 1rem;
 }
 .cn-heading {
     font-size: var(--text-base);

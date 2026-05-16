@@ -375,7 +375,6 @@ const Modal = {
         const consolidatedEl = document.getElementById('modal-consolidated');
         consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
         consolidatedEl.style.display = '';
-        Modal._wireDeeperToggle();
 
         // Source definition bar - shown below the tab bar, visible on all tabs
         const officialEl = document.getElementById('modal-official-name');
@@ -1097,7 +1096,6 @@ const Modal = {
         const consolidatedEl = document.getElementById('modal-consolidated');
         if (consolidatedEl) {
             consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
-            Modal._wireDeeperToggle();
         }
 
         // Re-render whichever tab is currently visible
@@ -1299,41 +1297,17 @@ const Modal = {
 
         if (!deep) return outer;
 
+        // Native <details>/<summary> for the deeper-analysis disclosure \u2014
+        // matches the "How to read the chart" pattern above so both
+        // expandable controls in the modal share one minimal style. No
+        // custom JS toggle needed; the browser handles open/close.
         outer += `
-            <button type="button" class="modal-deeper-toggle" aria-expanded="false" aria-controls="modal-deeper-wrap">
-                <span class="modal-deeper-toggle-label">Read the deeper analysis</span>
-                <span class="modal-deeper-toggle-chev" aria-hidden="true">\u25B8</span>
-            </button>
-            <div class="modal-deeper-wrap" id="modal-deeper-wrap" hidden>${deep}</div>
+            <details class="cn-section modal-how-toggle modal-deeper-toggle">
+                <summary>Read the deeper analysis</summary>
+                ${deep}
+            </details>
         `;
         return outer;
-    },
-
-    /**
-     * Wire the "Read the deeper analysis" toggle. Called once after
-     * `_buildConsolidatedNarrative` writes the modal narrative. The toggle
-     * is rendered collapsed by default; opening it expands every metric's
-     * deeper narrative (Why / National standing / Drivers / Lessons / etc.)
-     * inside the same modal scroll.
-     */
-    _wireDeeperToggle() {
-        const btn = document.querySelector('.modal-deeper-toggle');
-        const wrap = document.getElementById('modal-deeper-wrap');
-        if (!btn || !wrap) return;
-        btn.addEventListener('click', () => {
-            const open = wrap.hasAttribute('hidden');
-            if (open) {
-                wrap.removeAttribute('hidden');
-                btn.setAttribute('aria-expanded', 'true');
-                btn.classList.add('is-open');
-                btn.querySelector('.modal-deeper-toggle-label').textContent = 'Hide the deeper analysis';
-            } else {
-                wrap.setAttribute('hidden', '');
-                btn.setAttribute('aria-expanded', 'false');
-                btn.classList.remove('is-open');
-                btn.querySelector('.modal-deeper-toggle-label').textContent = 'Read the deeper analysis';
-            }
-        });
     },
 
     // ── Copy-brief helpers ─────────────────────────────────────────────
