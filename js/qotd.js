@@ -334,6 +334,11 @@ const QOTD = {
             const ans = this.getAnswer(q.id);
             const verdict = q.correct ? 'True' : 'False';
             const gotItRight = ans.correct;
+            const metricData = (typeof App !== 'undefined' && App.getActiveMetricData) ? App.getActiveMetricData(q.metric) : null;
+            const whyItMatters = metricData && metricData.whyItMatters ? metricData.whyItMatters : '';
+            const whyBlock = whyItMatters
+                ? `<p class="qotd-why-it-matters"><span class="qotd-metric-label">Why it matters:</span> ${this._escape(whyItMatters)}</p>`
+                : '';
             host.innerHTML = `
                 <div class="qotd-teaser-inner qotd-teaser-inner--proof">
                     ${closeBtn}
@@ -345,6 +350,7 @@ const QOTD = {
                     </div>
                     <p class="qotd-answer-reveal">Answer: <strong>${verdict}</strong></p>
                     <p class="qotd-answer-text"><span class="qotd-metric-label">${this._escape(q.metricLabel)}:</span> ${this._escape(q.answer)}</p>
+                    ${whyBlock}
                     <figure class="qotd-chart" data-qotd-chart>
                         <div class="qotd-chart-canvas-wrap"><canvas class="qotd-chart-canvas" aria-label="Chart showing ${this._escape(q.metricLabel)} data"></canvas></div>
                     </figure>

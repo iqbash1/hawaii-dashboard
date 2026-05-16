@@ -2293,6 +2293,15 @@ body {
     color: var(--text, #222);
     margin: 0;
     max-width: 520px;
+    text-align: left;
+}
+.qotd-why-it-matters {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--text, #222);
+    margin: 0;
+    max-width: 520px;
+    text-align: left;
 }
 .qotd-chart {
     margin: 0;
