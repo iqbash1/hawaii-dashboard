@@ -93,8 +93,8 @@ def state_to_slug(name):
 BG         = (245, 245, 245)    # #F5F5F5  --bg  page background
 CARD_BG    = (255, 255, 255)    # #FFFFFF  --card-bg
 TEAL       = (13, 124, 143)     # #0D7C8F  --hawaii-blue
-POSITIVE   = (5, 150, 105)      # #059669  --positive  "Better"
-NEGATIVE   = (192, 57, 43)      # #C0392B  --negative  "Worse"
+POSITIVE   = (6, 95, 70)        # #065F46  --positive  "Better" (AAA contrast)
+NEGATIVE   = (153, 27, 27)      # #991B1B  --negative  "Worse"  (AAA contrast)
 NEUTRAL    = (192, 138, 26)     # #C08A1A  --neutral   middle tier
 TEXT_PRI   = (51, 51, 51)       # #333333  --text  primary
 TEXT_SEC   = (102, 102, 102)    # #666666  secondary

@@ -48,9 +48,12 @@
     --text-xl: 1.1rem;
     --text-2xl: 1.35rem;
     --avg-gray-light: #F3F4F6;
-    --positive: #059669;
+    /* Darker on-text colors for 65+ readability — contrast vs. white
+       moves from AA-borderline to AAA. The lighter -bg tints keep the
+       same hues so chart fills and pill backgrounds still read soft. */
+    --positive: #065F46;
     --positive-bg: rgba(5, 150, 105, 0.10);
-    --negative: #C0392B;
+    --negative: #991B1B;
     --negative-bg: rgba(192, 57, 43, 0.10);
     --neutral: #c08a1a;
     --neutral-bg: #fef9e7;
