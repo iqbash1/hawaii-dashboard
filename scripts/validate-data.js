@@ -796,12 +796,16 @@ if (STATE_DATA) {
     }
 
     // Patterns that imply a current-state rank claim in narrative prose.
-    // Historical phrasings ("has ranked #N to #M", "ranked #N in 2010") are
-    // not flagged here; only assertions about today/now/latest year.
+    // Pattern 4 catches past-tense "ranked #N in YYYY" where YYYY is the
+    // latest data year (acgr-style: the year reads as historical but is
+    // actually the freshest data point, so it carries a current claim).
+    // Historical phrasings about non-latest years ("ranked #29 in 2011")
+    // are not flagged here.
     const CURRENT_RANK_PATTERNS = [
         /\b(?:now|currently|today)\s+ranks?\s+(?:at\s+)?#(\d{1,2})/i,
         /\branks?\s+#(\d{1,2})\s+in\s+(20\d{2})/i,
         /\bis\s+(?:now\s+|currently\s+)?#(\d{1,2})\b/i,
+        /\branked\s+#(\d{1,2})\s+in\s+(20\d{2})/i,
     ];
 
     for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
@@ -836,19 +840,26 @@ if (STATE_DATA) {
         // Verify any current-rank claim in summary matches the computed rank.
         // Catches the silent-drift class where data refreshes but the narrative
         // doesn't (property_crime_rate "#36" vs computed #40, May 2026).
+        // For past-tense + year forms ("ranked #N in YYYY"), only flag when
+        // YYYY is the latest data year -- legitimate historical references to
+        // older years stay clean.
         if (rhn.summary) {
-            const claims = [];
-            for (const re of CURRENT_RANK_PATTERNS) {
-                const m = rhn.summary.match(re);
-                if (m) claims.push(+m[1]);
-            }
-            if (claims.length > 0) {
-                const computed = computeCurrentHawaiiRank(slug, metric.goodDirection);
-                if (computed) {
-                    for (const claimed of claims) {
-                        if (claimed !== computed.rank) {
-                            error(`[${slug}] rankHistoryNarrative.summary claims current rank #${claimed} but STATE_DATA computes #${computed.rank} of ${computed.total} (${computed.year}). Drop the current rank from summary (rule: no current values) or update it.`);
-                        }
+            const computed = computeCurrentHawaiiRank(slug, metric.goodDirection);
+            if (computed) {
+                const latestYear = computed.year;
+                const claims = [];
+                for (const re of CURRENT_RANK_PATTERNS) {
+                    const m = rhn.summary.match(re);
+                    if (!m) continue;
+                    const claimedRank = +m[1];
+                    const claimedYear = m[2];
+                    // For year-bearing past-tense matches, gate on latest year.
+                    if (re.source.startsWith('\\branked') && claimedYear !== latestYear) continue;
+                    claims.push(claimedRank);
+                }
+                for (const claimed of claims) {
+                    if (claimed !== computed.rank) {
+                        error(`[${slug}] rankHistoryNarrative.summary claims current rank #${claimed} but STATE_DATA computes #${computed.rank} of ${computed.total} (${computed.year}). Drop the current rank from summary (rule: no current values) or update it.`);
                     }
                 }
             }

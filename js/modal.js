@@ -1295,7 +1295,7 @@ const Modal = {
         //     default reading.
         let outer = Modal._section('How to read the chart', m.howToRead, true, 'modal-how-toggle');
         outer += Modal._section('Why it matters',    m.whyItMatters);
-        outer += Modal._section('National standing', narr && narr.summary);
+        outer += Modal._section('Status', narr && narr.summary);
 
         let deep = '';
         deep += Modal._section('County breakdown',     m.countyNarrative);
