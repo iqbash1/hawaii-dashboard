@@ -169,7 +169,7 @@ const Modal = {
         const subtitleEl = document.getElementById('trend-subtitle');
         if (!subtitleEl) return;
         const hiYears = Object.keys(metricData.hawaii).sort();
-        const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+        const dirHint = metricData.goodDirection === 'up' ? '↑ better' : '↓ better';
         const isRange = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         const compLabel = (comparator && comparator.label) ? comparator.label : 'US';
         subtitleEl.innerHTML = isRange
@@ -355,7 +355,7 @@ const Modal = {
         }
 
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
-        const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+        const dirHint = metricData.goodDirection === 'up' ? '↑ better' : '↓ better';
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
             ? `Hawai\u02BBi vs. US \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
             : `Hawai\u02BBi vs. US \u00B7 ${dirHint}`;
@@ -1015,7 +1015,7 @@ const Modal = {
         document.getElementById('modal-county').style.display = 'block';
 
         const isSmoothed = countyData.smoothCounty === true;
-        const countyDirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+        const countyDirHint = metricData.goodDirection === 'up' ? '↑ better' : '↓ better';
         document.getElementById('county-subtitle').textContent =
             `County breakdown${isSmoothed ? ' \u00B7 3-year rolling avg' : ''} \u00B7 ${countyDirHint}`;
 
@@ -1150,7 +1150,7 @@ const Modal = {
         if (sd && sd.data) {
             const rankings = App.getStateRankings(slug);
             if (rankings && rankings.stateValues.length > 0) {
-                const dirLabel = effective.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+                const dirLabel = effective.goodDirection === 'up' ? '↑ better' : '↓ better';
                 const otherStates = rankings.stateValues.filter(sv => !isHI(sv.state));
                 html += '<thead><tr class="section-header"><td colspan="3">'
                     + 'Other States (' + rankings.year + ') - ' + dirLabel
