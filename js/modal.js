@@ -1380,6 +1380,7 @@ const Modal = {
         const fmtValue  = ChartUtils.formatValue(latestHi.value, m.unit, isDecimal);
         const period    = rankings.year;
         const rank      = rankings.hawaiiRank;
+        const tierLabel = Utils.rankTierLabel(rank, rankings.total);
 
         // Fill intro template
         let intro = tpl.intro
@@ -1401,7 +1402,10 @@ const Modal = {
 
         const trend = Modal.computeTrendPhrase(slug);
 
-        let brief = `Bottom line: ${intro}, ranking #${rank} nationally.`;
+        // Tier-first framing: the categorical verdict leads, the metric
+        // value follows. A grant writer or board reader scans the tier
+        // before the number; the number is the supporting evidence.
+        let brief = `Bottom line: Hawaiʻi is in the ${tierLabel} nationally (#${rank} of ${rankings.total}). ${intro}.`;
         if (trend) brief += ` It has ${trend},`;
         brief += ` and is ${vsAvg} the US median.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;
