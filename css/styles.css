@@ -90,6 +90,40 @@ a:hover {
     display: none;
 }
 
+/* Hamburger toggle: hidden on desktop, replaces the row of inline
+   .top-nav-links on narrow viewports (≤480px). Sits as the first
+   child of .top-nav so the menu opens beneath it. */
+.top-nav-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+}
+.top-nav-toggle-bar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.top-nav-toggle[aria-expanded="true"] .top-nav-toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.top-nav-toggle[aria-expanded="true"] .top-nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+}
+.top-nav-toggle[aria-expanded="true"] .top-nav-toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
 .top-nav-link {
     font-family: var(--font-heading);
     font-size: var(--text-base);
@@ -1851,6 +1885,36 @@ body {
     .card-comparisons {
         grid-template-columns: 1fr;
         gap: 0.5rem;
+    }
+
+    /* Hamburger nav: collapse the 5 link row into a top-right button.
+       Tap reveals a vertical list below. Avoids the "Off the Charts"
+       label wrapping to 2-3 lines on ≤480px. */
+    .top-nav {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        padding: 0.5rem 0.75rem;
+        position: relative;
+    }
+    .top-nav-toggle {
+        display: flex;
+    }
+    .top-nav-link {
+        display: none;
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+        border-radius: 0;
+    }
+    .top-nav:has(.top-nav-toggle[aria-expanded="true"]) .top-nav-link {
+        display: block;
+    }
+    /* When the menu opens, links push the page content down. Add a thin
+       divider above the first link for visual separation from the bar. */
+    .top-nav:has(.top-nav-toggle[aria-expanded="true"]) .top-nav-link:first-of-type {
+        border-top: 1px solid var(--border);
+        margin-top: 0.4rem;
+        padding-top: 0.75rem;
     }
 }
 

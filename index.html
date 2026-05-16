@@ -126,6 +126,11 @@
 <body>
     <a href="#dashboard-grid" class="skip-link">Skip to dashboard</a>
     <nav class="top-nav">
+        <button type="button" class="top-nav-toggle" aria-expanded="false" aria-label="Open menu" onclick="const t=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',t);this.setAttribute('aria-label',t?'Close menu':'Open menu');">
+            <span class="top-nav-toggle-bar" aria-hidden="true"></span>
+            <span class="top-nav-toggle-bar" aria-hidden="true"></span>
+            <span class="top-nav-toggle-bar" aria-hidden="true"></span>
+        </button>
         <a href="/" class="top-nav-link active">Dashboard</a>
         <a href="/five-year-change/" class="top-nav-link">Summary</a>
         <a href="/off-the-charts/" class="top-nav-link">Off the Charts</a>

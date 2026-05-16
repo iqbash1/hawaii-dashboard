@@ -62,6 +62,35 @@ const Modal = {
             .replace('Keep in mind:', '<strong>Keep in mind:</strong>');
     },
 
+    /**
+     * Return just the first sentence of a brief — used on Rank and
+     * Rank-history tabs where the full multi-sentence brief repeats
+     * content already shown on the Trend tab. The first sentence names
+     * the tier and rank, which is what those tabs are about.
+     */
+    _briefFirstSentence(text) {
+        const m = text.match(/^[^.!?]+[.!?]/);
+        return m ? m[0] : text;
+    },
+
+    /**
+     * Render the bottom-line brief into the given element, picking the
+     * full text on the Trend tab and the first sentence elsewhere.
+     * Used by openModal, switchTab, and _refreshActiveMetric so the
+     * brief stays in sync with the visible tab.
+     */
+    _renderBrief(el, slug) {
+        const briefText = Modal.computeBrief(slug);
+        if (!briefText) {
+            el.style.display = 'none';
+            return;
+        }
+        const isDetail = (Modal._activeTab === 'detail' || !Modal._activeTab);
+        const text = isDetail ? briefText : Modal._briefFirstSentence(briefText);
+        el.innerHTML = Modal._formatBriefText(text);
+        el.style.display = '';
+    },
+
     // ----------------------------------------------------------------
     // Shared compare-with dropdown (Trend + Rank history tabs)
     // ----------------------------------------------------------------
@@ -359,15 +388,9 @@ const Modal = {
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
             ? `Hawai\u02BBi vs. US \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
             : `Hawai\u02BBi vs. US \u00B7 ${dirHint}`;
-        // Render the dynamic "Bottom line" brief
-        const briefEl = document.getElementById('modal-brief');
-        const briefText = Modal.computeBrief(slug);
-        if (briefText) {
-            briefEl.innerHTML = Modal._formatBriefText(briefText);
-            briefEl.style.display = '';
-        } else {
-            briefEl.style.display = 'none';
-        }
+        // Render the dynamic "Bottom line" brief. _renderBrief picks the
+        // full text on Trend and the first sentence on Rank tabs.
+        Modal._renderBrief(document.getElementById('modal-brief'), slug);
 
         // Consolidated narrative \u2014 every metric uses this path. The data
         // fields whyItMatters / howToRead / potentialDrivers / policyLevers
@@ -724,6 +747,10 @@ const Modal = {
         App._trackEvent('tab_viewed', { slug, tab });
         Modal._activeTab = tab;
         Modal._updateCompareBar(tab);
+        // Re-render the brief — full text on Trend, first sentence on
+        // Rank/Rank-history/County. Same single-source content; only the
+        // truncation level changes per tab.
+        Modal._renderBrief(document.getElementById('modal-brief'), slug);
 
         const tabDetail = document.getElementById('tab-detail');
         const tabRankings = document.getElementById('tab-rankings');
@@ -1082,15 +1109,8 @@ const Modal = {
             officialEl.textContent = metricData.officialName;
         }
 
-        // Update brief
-        const briefEl = document.getElementById('modal-brief');
-        const briefText = Modal.computeBrief(slug);
-        if (briefText) {
-            briefEl.innerHTML = Modal._formatBriefText(briefText);
-            briefEl.style.display = '';
-        } else {
-            briefEl.style.display = 'none';
-        }
+        // Update brief (full on Trend, first sentence on Rank tabs).
+        Modal._renderBrief(document.getElementById('modal-brief'), slug);
 
         // Update consolidated narrative
         const consolidatedEl = document.getElementById('modal-consolidated');

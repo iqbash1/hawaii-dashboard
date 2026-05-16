@@ -831,7 +831,10 @@ const App = {
         else pctLabel = `worsened ${pctText}`;
 
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
-        // Compact labels: start year full, end year 2-digit - e.g. "2020-24 vs 2017-21"
+        // Compact label: only the prior window is shown. The recent window
+        // is implicit (the current value above the chart) so dropping it
+        // halves the metadata noise — "VS. 2017-19" reads as "vs. 5 years
+        // ago" without spelling out both windows.
         const priorLabel = Compute.formatYearRange(prior[0], prior[prior.length - 1]);
         const recentLabel = Compute.formatYearRange(recent[0], recent[recent.length - 1]);
         const tooltipBase = `Change in the rolling-window average: ${recentLabel} window compared with the ${priorLabel} window`;
@@ -839,7 +842,7 @@ const App = {
 
         return `
             <div class="card-comp ${cls}" title="${tooltip}">
-                <div class="comp-label">${recentLabel} vs ${priorLabel}</div>
+                <div class="comp-label">vs. ${priorLabel}</div>
                 <div class="comp-verdict">${pctLabel}</div>
             </div>
         `;
