@@ -1145,26 +1145,29 @@ const ChartUtils = {
         // Governor bands plugin (same as Trend tab)
         const governorPlugin = ChartUtils._buildGovernorPlugin(govBoxes || [], 0);
 
-        // Background gradient: green (best/top) → transparent (median) → red (worst/bottom)
-        const quartilePlugin = {
-            id: 'rankHistoryQuartiles',
+        // Stepped tier bands replace the previous smooth quartile gradient so
+        // the rank-history chart speaks the same Top/Middle/Bottom tier
+        // vocabulary the cards use. Thresholds match Utils.rankColorClass
+        // exactly (pct ≤ 0.33 → Top, ≤ 0.67 → Middle, else → Bottom).
+        // For a 50-state pool that gives Top: 1–16, Middle: 17–33, Bottom:
+        // 34–50, so boundary lines sit at 16.5 and 33.5.
+        const tierBandsPlugin = {
+            id: 'rankHistoryTierBands',
             beforeDraw(chart) {
                 const { ctx: c, chartArea: { left, right, top, bottom } } = chart;
                 const yScale = chart.scales.y;
-                // Fraction of chart height where rank 25.5 (median) sits
-                const medY = yScale.getPixelForValue(25.5);
-                const medFrac = Math.max(0, Math.min(1, (medY - top) / (bottom - top)));
+                const yTopMid = yScale.getPixelForValue(16.5);
+                const yMidBot = yScale.getPixelForValue(33.5);
                 c.save();
-                const grad = c.createLinearGradient(0, top, 0, bottom);
-                // Symmetric around median: equal fade zones above and below
-                grad.addColorStop(0, 'rgba(34,197,94,0.45)');
-                grad.addColorStop(Math.max(0, medFrac - 0.12), 'rgba(34,197,94,0.08)');
-                grad.addColorStop(Math.max(0, medFrac - 0.05), 'rgba(255,255,255,0.0)');
-                grad.addColorStop(Math.min(1, medFrac + 0.05), 'rgba(255,255,255,0.0)');
-                grad.addColorStop(Math.min(1, medFrac + 0.12), 'rgba(239,68,68,0.08)');
-                grad.addColorStop(1, 'rgba(239,68,68,0.45)');
-                c.fillStyle = grad;
-                c.fillRect(left, top, right - left, bottom - top);
+                // Top tier (ranks 1–16)
+                c.fillStyle = 'rgba(5, 150, 105, 0.10)';
+                c.fillRect(left, top, right - left, yTopMid - top);
+                // Middle tier (ranks 17–33), subtle so the line still reads cleanly
+                c.fillStyle = 'rgba(192, 138, 26, 0.06)';
+                c.fillRect(left, yTopMid, right - left, yMidBot - yTopMid);
+                // Bottom tier (ranks 34–50)
+                c.fillStyle = 'rgba(192, 57, 43, 0.10)';
+                c.fillRect(left, yMidBot, right - left, bottom - yMidBot);
                 c.restore();
             }
         };
@@ -1189,30 +1192,39 @@ const ChartUtils = {
                     c.stroke();
                 }
 
-                // Q1 / Median / Q3 reference lines (skip if outside visible range)
-                const refs = [
-                    { rank: 12.5, label: 'Top Ranked (25%)',    color: 'rgba(5,150,105,0.55)',   lw: 1.2 },
-                    { rank: 25.5, label: 'Median',             color: 'rgba(100,100,100,0.55)', lw: 1.5 },
-                    { rank: 37.5, label: 'Bottom Ranked (25%)', color: 'rgba(192,57,43,0.55)',  lw: 1.2 },
-                ];
-                for (const ref of refs) {
-                    if (ref.rank < yScale.min || ref.rank > yScale.max) continue;
-                    const y = yScale.getPixelForValue(ref.rank);
+                // Tier boundary lines at the band edges (16.5 = top↔middle,
+                // 33.5 = middle↔bottom). Matches Utils.rankColorClass.
+                const boundaries = [16.5, 33.5];
+                for (const b of boundaries) {
+                    if (b < yScale.min || b > yScale.max) continue;
+                    const y = yScale.getPixelForValue(b);
                     c.save();
-                    c.strokeStyle = ref.color;
-                    c.lineWidth = ref.lw;
-                    c.setLineDash([5, 4]);
+                    c.strokeStyle = 'rgba(0,0,0,0.12)';
+                    c.lineWidth = 1;
+                    c.setLineDash([4, 4]);
                     c.beginPath();
                     c.moveTo(left, y);
                     c.lineTo(right, y);
                     c.stroke();
-                    c.setLineDash([]);
-                    // Label at left edge, above the line
-                    c.fillStyle = ref.color;
+                    c.restore();
+                }
+                // Tier name labels at the left edge of each band, centered
+                // vertically in their band. Same italic 9px treatment as the
+                // old quartile labels; new vocabulary.
+                const tierLabels = [
+                    { rank: 8.5,  label: 'Top tier',    color: 'rgba(5,150,105,0.75)' },
+                    { rank: 25,   label: 'Middle tier', color: 'rgba(192,138,26,0.75)' },
+                    { rank: 42,   label: 'Bottom tier', color: 'rgba(192,57,43,0.75)' },
+                ];
+                for (const t of tierLabels) {
+                    if (t.rank < yScale.min || t.rank > yScale.max) continue;
+                    const y = yScale.getPixelForValue(t.rank);
+                    c.save();
+                    c.fillStyle = t.color;
                     c.font = 'italic 600 9px Inter, sans-serif';
                     c.textAlign = 'left';
-                    c.textBaseline = 'bottom';
-                    c.fillText(ref.label, left + 3, y - 2);
+                    c.textBaseline = 'middle';
+                    c.fillText(t.label, left + 3, y);
                     c.restore();
                 }
             }
@@ -1379,7 +1391,7 @@ const ChartUtils = {
                     }
                 }
             },
-            plugins: [governorPlugin, quartilePlugin, gridlinesPlugin, overlayPlugin, stateLabelsPlugin]
+            plugins: [governorPlugin, tierBandsPlugin, gridlinesPlugin, overlayPlugin, stateLabelsPlugin]
         });
 
         // --- Click interaction: detect state label clicks on right side ---

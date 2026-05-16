@@ -88,6 +88,7 @@ CARD_BG    = (255, 255, 255)    # #FFFFFF  --card-bg
 TEAL       = (13, 124, 143)     # #0D7C8F  --hawaii-blue
 POSITIVE   = (5, 150, 105)      # #059669  --positive  "Better"
 NEGATIVE   = (192, 57, 43)      # #C0392B  --negative  "Worse"
+NEUTRAL    = (192, 138, 26)     # #C08A1A  --neutral   middle tier
 TEXT_PRI   = (51, 51, 51)       # #333333  --text  primary
 TEXT_SEC   = (102, 102, 102)    # #666666  secondary
 TEXT_TER   = (153, 153, 153)    # #999999  tertiary / labels
@@ -399,6 +400,33 @@ def generate_og_image(slug, metric, area, rankings, output_path):
     # Branding
     d.text((70, 40), "Hawai\u02BBi Dashboard", fill=TEXT_SEC, font=font(20))
 
+    # Tier badge in the top-right corner. Same Top/Middle/Bottom tier
+    # vocabulary the rest of the dashboard uses. Travels in every share
+    # preview so the framing carries beyond the page itself.
+    if rankings and rankings.get('hawaiiRank', 0) > 0:
+        pct = rankings['hawaiiRank'] / rankings['total']
+        if pct <= 0.33:
+            tier_label, tier_color = 'Top tier', POSITIVE
+        elif pct <= 0.67:
+            tier_label, tier_color = 'Middle tier', NEUTRAL
+        else:
+            tier_label, tier_color = 'Bottom tier', NEGATIVE
+        badge_text = f"{tier_label} \u00B7 #{rankings['hawaiiRank']} of {rankings['total']}"
+        f_badge = font(16)
+        bb = d.textbbox((0, 0), badge_text, font=f_badge)
+        text_w = bb[2] - bb[0]
+        text_h = bb[3] - bb[1]
+        pad_x, pad_y = 16, 10
+        badge_w = text_w + 2 * pad_x
+        badge_h = text_h + 2 * pad_y + 4
+        badge_x = W - 70 - badge_w
+        badge_y = 28
+        d.rounded_rectangle(
+            [badge_x, badge_y, badge_x + badge_w, badge_y + badge_h],
+            radius=6, fill=tier_color
+        )
+        d.text((badge_x + pad_x, badge_y + pad_y), badge_text, fill=(255, 255, 255), font=f_badge)
+
     # Area label + metric name
     d.text((70, 100), area.upper(), fill=TEAL, font=font(15))
     metric_name = metric.get('metric', slug)
@@ -437,13 +465,42 @@ def generate_og_image(slug, metric, area, rankings, output_path):
                 pts.append((px, py))
             return pts
 
-        if len(avg_vals) >= 2:
-            avg_pts = to_px(avg_vals)
+        hi_pts = to_px(vals)
+        avg_pts = to_px(avg_vals) if len(avg_vals) >= 2 else []
+
+        # Area shading between Hawaiʻi and median lines, matching the on-site
+        # detail chart (charts.js createDetailChart at line ~264). Green if
+        # Hawaiʻi is on the good side of the median; red if worse. Alpha
+        # scales with the relative gap so a tight race reads as a soft band
+        # and a blowout reads as a strong color.
+        if avg_pts and len(hi_pts) >= 2 and latest_val is not None and latest_avg is not None:
+            is_better = (latest_val >= latest_avg) if good_dir == 'up' else (latest_val <= latest_avg)
+            mid = (abs(latest_val) + abs(latest_avg)) / 2 or 1
+            gap = abs(latest_val - latest_avg) / mid
+            alpha = min(0.55, 0.25 + gap * 0.65)
+            alpha_int = int(alpha * 255)
+            fill_rgba = (POSITIVE if is_better else NEGATIVE) + (alpha_int,)
+
+            # Polygon: Hawaiʻi forward, then median reversed (PIL closes automatically)
+            poly = hi_pts + avg_pts[::-1]
+
+            # PIL's ImageDraw.polygon does not alpha-blend on RGB images, so we
+            # build a transparent RGBA overlay and alpha_composite it onto the
+            # base. The drawer (`d`) is rebound to the new image so subsequent
+            # draws land on the composited result.
+            overlay = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+            od = ImageDraw.Draw(overlay)
+            od.polygon(poly, fill=fill_rgba)
+            im = Image.alpha_composite(im.convert('RGBA'), overlay)
+            d = ImageDraw.Draw(im)
+
+        # Median dashed line (on top of the polygon)
+        if len(avg_pts) >= 2:
             for i in range(len(avg_pts) - 1):
                 if i % 2 == 0:
                     d.line([avg_pts[i], avg_pts[i + 1]], fill=SPARK_GRAY, width=2)
 
-        hi_pts = to_px(vals)
+        # Hawaiʻi line on top
         if len(hi_pts) >= 2:
             d.line(hi_pts, fill=TEAL, width=3)
 
@@ -478,6 +535,10 @@ def generate_og_image(slug, metric, area, rankings, output_path):
     d.text((70, H - 34), "hawaiidashboard.org", fill=TEXT_SEC, font=font(16))
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    # `im` may be RGBA after the area-shade alpha_composite. Always flatten to
+    # RGB before save so the PNG stays in the same color mode as before.
+    if im.mode != 'RGB':
+        im = im.convert('RGB')
     im.save(output_path, 'PNG', optimize=True)
 
 
