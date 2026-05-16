@@ -1037,28 +1037,57 @@ body {
     font-weight: 600;
 }
 
+/* Match the .modal-deeper-toggle pill style so the two expandable
+   controls inside the modal (How to read the chart · Read the deeper
+   analysis) look identical when collapsed. */
 .modal-how-toggle summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    margin-top: 0.5rem;
+    background: #fff;
+    border: 1px solid var(--hawaii-blue);
+    color: var(--hawaii-blue);
+    border-radius: 999px;
+    font-family: var(--font-heading);
     font-size: var(--text-base);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
     cursor: pointer;
     list-style: none;
+    transition: background var(--transition);
+}
+.modal-how-toggle summary:hover {
+    background: var(--hawaii-blue-light);
+}
+.modal-how-toggle summary:focus-visible {
+    outline: 2px solid var(--hawaii-blue);
+    outline-offset: 2px;
 }
 
-.modal-how-toggle summary::before {
-    content: "+ ";
-    color: var(--hawaii-blue);
+.modal-how-toggle summary::after {
+    content: "\25B8"; /* ▸ */
+    display: inline-block;
+    transition: transform 0.2s ease;
 }
 
-.modal-how-toggle[open] summary::before {
-    content: "\2212  ";
-    color: var(--hawaii-blue);
+.modal-how-toggle[open] summary::after {
+    transform: rotate(90deg);
 }
 
 .modal-how-toggle summary::-webkit-details-marker {
     display: none;
+}
+
+/* Expanded content sits below the pill with the same spacing as the
+   deeper-analysis wrap. */
+.modal-how-toggle[open] {
+    padding-bottom: 0.5rem;
+}
+.modal-how-toggle[open] > *:not(summary) {
+    margin-top: 1rem;
 }
 
 .modal-source {
