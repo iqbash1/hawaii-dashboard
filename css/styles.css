@@ -626,7 +626,7 @@ body {
 .comp-rank {
     font-family: var(--font-heading);
     font-size: var(--text-base);
-    font-weight: 700;
+    font-weight: 500;
     color: var(--text-muted);
     display: inline-block;
 }
@@ -784,17 +784,16 @@ body {
 
 .comp-label {
     font-size: var(--text-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
     color: var(--text-muted);
     margin-bottom: 0.15rem;
-    font-weight: 600;
+    font-weight: 500;
     white-space: nowrap;
 }
 
 .comp-verdict {
     font-size: var(--text-base);
-    font-weight: 700;
+    font-weight: 500;
     font-family: var(--font-heading);
 }
 
