@@ -632,9 +632,12 @@ body {
 }
 
 /* 3-tier rank colors: mirrors Summary page National Ranking table.
-   Top third → green, middle third → grey, bottom third → red. */
+   Top third → green (good), bottom third → red (bad), middle third →
+   muted grey (no signal — neutral isn't worth shouting about). The
+   muted grey reads as informational metadata rather than competing
+   with the green/red extremes. */
 .comp-rank.rank-good { color: var(--positive); }
-.comp-rank.rank-mid  { color: var(--neutral); }
+.comp-rank.rank-mid  { color: var(--text-muted); }
 .comp-rank.rank-bad  { color: var(--negative); }
 
 /* Tier prefix sits inside the rank verdict and stays slightly less bold
@@ -813,7 +816,7 @@ body {
 }
 
 .card-comp.neutral .comp-verdict {
-    color: var(--neutral);
+    color: var(--text-muted);
 }
 
 /* --- Modal --- */
