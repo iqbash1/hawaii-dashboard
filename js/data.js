@@ -1367,7 +1367,7 @@ const DASHBOARD_DATA = {
     }
   },
   "renter_cost_burden_pct": {
-    "area": "Housing & Cost of Living",
+    "area": "Affordability",
     "metric": "Renter Housing Cost Burden",
     "officialName": "Share of renter households paying 30% or more of income on gross rent, the federal affordability threshold.",
     "sourceCategory": "federal",
@@ -1506,7 +1506,7 @@ const DASHBOARD_DATA = {
     }
   },
   "home_price_to_income": {
-    "area": "Housing & Cost of Living",
+    "area": "Affordability",
     "metric": "Home Price-to-Income Ratio",
     "officialName": "Median home value divided by median household income; a higher ratio means homes cost more relative to what residents earn.",
     "sourceCategory": "federal",
@@ -1591,7 +1591,7 @@ const DASHBOARD_DATA = {
     }
   },
   "unsheltered_homeless_rate": {
-    "area": "Housing & Cost of Living",
+    "area": "Affordability",
     "metric": "Homelessness",
     "officialName": "One-night count of people sleeping outdoors, in vehicles, or in places not meant for habitation, per 10,000 residents.",
     "sourceCategory": "federal",
@@ -1714,7 +1714,7 @@ const DASHBOARD_DATA = {
     }
   },
   "road_poor_pct": {
-    "area": "Infrastructure, Resilience & Trust",
+    "area": "Infrastructure & Trust",
     "metric": "Roads in Poor Condition",
     "officialName": "Share of public road miles rated poor based on ride quality measured by the International Roughness Index.",
     "sourceCategory": "federal",
@@ -1838,7 +1838,7 @@ const DASHBOARD_DATA = {
     }
   },
   "broadband_subscription_pct": {
-    "area": "Infrastructure, Resilience & Trust",
+    "area": "Infrastructure & Trust",
     "metric": "Households with Broadband",
     "officialName": "Share of households with a fixed broadband internet subscription, including cable, fiber, DSL, or fixed wireless.",
     "sourceCategory": "federal",
@@ -1909,7 +1909,7 @@ const DASHBOARD_DATA = {
     }
   },
   "residential_price_cpkwh": {
-    "area": "Housing & Cost of Living",
+    "area": "Affordability",
     "metric": "Residential Electricity Price",
     "officialName": "Average retail electricity price paid by residential customers, in cents per kilowatt-hour.",
     "sourceCategory": "federal",
@@ -2070,7 +2070,7 @@ const DASHBOARD_DATA = {
     }
   },
   "renewables_share_gen": {
-    "area": "Infrastructure, Resilience & Trust",
+    "area": "Infrastructure & Trust",
     "metric": "Electricity from Renewables",
     "officialName": "Share of in-state electricity generation from renewable sources, including wind, solar, hydro, geothermal, and biomass.",
     "sourceCategory": "federal",
@@ -2168,7 +2168,7 @@ const DASHBOARD_DATA = {
     }
   },
   "food_insecurity_rate": {
-    "area": "Housing & Cost of Living",
+    "area": "Affordability",
     "metric": "Food Insecurity Rate",
     "officialName": "3-year average share of households uncertain of having enough food due to lack of money or other resources.",
     "sourceCategory": "federal",
@@ -2301,7 +2301,7 @@ const DASHBOARD_DATA = {
     }
   },
   "rainy_day_fund_pct": {
-    "area": "Infrastructure, Resilience & Trust",
+    "area": "Infrastructure & Trust",
     "metric": "Rainy Day Fund",
     "officialName": "State rainy-day savings balance as a percent of annual general fund spending, as self-reported by states to NASBO.",
     "sourceCategory": "state-assoc",
@@ -2399,7 +2399,7 @@ const DASHBOARD_DATA = {
     }
   },
   "voter_participation_rate": {
-    "area": "Infrastructure, Resilience & Trust",
+    "area": "Infrastructure & Trust",
     "metric": "Voter Participation Rate",
     "officialName": "Share of eligible voters (citizens age 18+, excluding those barred from voting) who cast a ballot in the general election.",
     "sourceCategory": "academic",
@@ -2501,7 +2501,7 @@ const DASHBOARD_DATA = {
     }
   },
   "net_domestic_migration_rate": {
-    "area": "Infrastructure, Resilience & Trust",
+    "area": "Infrastructure & Trust",
     "metric": "Net Migration",
     "officialName": "Net inflow of U.S. residents moving from other states, per 10,000 residents; positive means more arrivals than departures.",
     "sourceCategory": "federal",

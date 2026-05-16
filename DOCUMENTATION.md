@@ -166,11 +166,11 @@ hawaii-dashboard/
 | 3 | Safety & Health | Primary Care Physicians (civilian) | per 100K | Up | HRSA AHRF |
 | 4 | Safety & Health | Uninsured Rate | % | Down | Census ACS / KFF |
 | 5 | Safety & Health | Suicide Rate | per 100K | Down | CDC NCHS |
-| 6 | Housing & Cost of Living | Renters Paying 30%+ for Housing | % | Down | Census ACS |
-| 7 | Housing & Cost of Living | Home Price to Income Ratio | x | Down | Census ACS |
-| 8 | Housing & Cost of Living | Homelessness | per 10K | Down | HUD PIT Count |
-| 9 | Housing & Cost of Living | Residential Electricity Price | c/kWh | Down | EIA |
-| 10 | Housing & Cost of Living | Food Insecurity Rate | % | Down | USDA ERS |
+| 6 | Affordability | Renters Paying 30%+ for Housing | % | Down | Census ACS |
+| 7 | Affordability | Home Price to Income Ratio | x | Down | Census ACS |
+| 8 | Affordability | Homelessness | per 10K | Down | HUD PIT Count |
+| 9 | Affordability | Residential Electricity Price | c/kWh | Down | EIA |
+| 10 | Affordability | Food Insecurity Rate | % | Down | USDA ERS |
 | 11 | Economy & Workforce | Unemployment Rate | % | Down | BLS LAUS |
 | 12 | Economy & Workforce | Labor Force Participation Rate | % | Up | BLS LAUS |
 | 13 | Economy & Workforce | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
@@ -181,12 +181,12 @@ hawaii-dashboard/
 | 18 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
 | 19 | Education | High School Graduation Rate | % | Up | NCES |
 | 20 | Education | Adults with Bachelor's Degree+ | % | Up | Census ACS |
-| 21 | Infrastructure, Resilience & Trust | Roads in Poor Condition | % | Down | FHWA |
-| 22 | Infrastructure, Resilience & Trust | Households with Broadband | % | Up | Census ACS |
-| 23 | Infrastructure, Resilience & Trust | Electricity from Renewables | % | Up | EIA |
-| 24 | Infrastructure, Resilience & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Infrastructure, Resilience & Trust | Voter Participation Rate | % | Up | US Elections Project |
-| 26 | Infrastructure, Resilience & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
+| 21 | Infrastructure & Trust | Roads in Poor Condition | % | Down | FHWA |
+| 22 | Infrastructure & Trust | Households with Broadband | % | Up | Census ACS |
+| 23 | Infrastructure & Trust | Electricity from Renewables | % | Up | EIA |
+| 24 | Infrastructure & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 25 | Infrastructure & Trust | Voter Participation Rate | % | Up | US Elections Project |
+| 26 | Infrastructure & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 

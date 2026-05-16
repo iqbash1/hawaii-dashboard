@@ -41,7 +41,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/home_price_to_income/",
     "metric": "home_price_to_income",
     "metricLabel": "Home Price-to-Income Ratio",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V1"
   },
   {
@@ -65,7 +65,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/residential_price_cpkwh/",
     "metric": "residential_price_cpkwh",
     "metricLabel": "Residential Electricity Price",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V1"
   },
   {
@@ -77,7 +77,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/renewables_share_gen/",
     "metric": "renewables_share_gen",
     "metricLabel": "Electricity from Renewables",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V1"
   },
   {
@@ -89,7 +89,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/road_poor_pct/",
     "metric": "road_poor_pct",
     "metricLabel": "Roads in Poor Condition",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V1"
   },
   {
@@ -101,7 +101,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/voter_participation_rate/",
     "metric": "voter_participation_rate",
     "metricLabel": "Voter Participation Rate",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V2"
   },
   {
@@ -113,7 +113,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
     "metricLabel": "Homelessness",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V1"
   },
   {
@@ -125,7 +125,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/food_insecurity_rate/",
     "metric": "food_insecurity_rate",
     "metricLabel": "Food Insecurity Rate",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V2"
   },
   {
@@ -149,7 +149,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/renter_cost_burden_pct/",
     "metric": "renter_cost_burden_pct",
     "metricLabel": "Renter Housing Cost Burden",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V1"
   },
   {
@@ -161,7 +161,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/home_price_to_income/",
     "metric": "home_price_to_income",
     "metricLabel": "Home Price-to-Income Ratio",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V4"
   },
   {
@@ -209,7 +209,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/residential_price_cpkwh/",
     "metric": "residential_price_cpkwh",
     "metricLabel": "Residential Electricity Price",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V4"
   },
   {
@@ -221,7 +221,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/road_poor_pct/",
     "metric": "road_poor_pct",
     "metricLabel": "Roads in Poor Condition",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V4"
   },
   {
@@ -233,7 +233,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/voter_participation_rate/",
     "metric": "voter_participation_rate",
     "metricLabel": "Voter Participation Rate",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V5"
   },
   {
@@ -245,7 +245,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
     "metricLabel": "Homelessness",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V4"
   },
   {
@@ -269,7 +269,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/renter_cost_burden_pct/",
     "metric": "renter_cost_burden_pct",
     "metricLabel": "Renter Housing Cost Burden",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V1"
   },
   {
@@ -281,7 +281,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/home_price_to_income/",
     "metric": "home_price_to_income",
     "metricLabel": "Home Price-to-Income Ratio",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V6"
   },
   {
@@ -329,7 +329,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/residential_price_cpkwh/",
     "metric": "residential_price_cpkwh",
     "metricLabel": "Residential Electricity Price",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V6"
   },
   {
@@ -341,7 +341,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/renewables_share_gen/",
     "metric": "renewables_share_gen",
     "metricLabel": "Electricity from Renewables",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V6"
   },
   {
@@ -353,7 +353,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/road_poor_pct/",
     "metric": "road_poor_pct",
     "metricLabel": "Roads in Poor Condition",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V6"
   },
   {
@@ -365,7 +365,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/r/net_domestic_migration_rate/",
     "metric": "net_domestic_migration_rate",
     "metricLabel": "Net Migration",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V1"
   },
   {
@@ -377,7 +377,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/voter_participation_rate/",
     "metric": "voter_participation_rate",
     "metricLabel": "Voter Participation Rate",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V6"
   },
   {
@@ -389,7 +389,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
     "metricLabel": "Homelessness",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V6"
   },
   {
@@ -401,7 +401,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/food_insecurity_rate/",
     "metric": "food_insecurity_rate",
     "metricLabel": "Food Insecurity Rate",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V6"
   },
   {
@@ -437,7 +437,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/c/home_price_to_income/",
     "metric": "home_price_to_income",
     "metricLabel": "Home Price-to-Income Ratio",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V8"
   },
   {
@@ -449,7 +449,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/t/broadband_subscription_pct/",
     "metric": "broadband_subscription_pct",
     "metricLabel": "Households with Broadband",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V6"
   },
   {
@@ -509,7 +509,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/rh/residential_price_cpkwh/ca/",
     "metric": "residential_price_cpkwh",
     "metricLabel": "Residential Electricity Price",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V7"
   },
   {
@@ -521,7 +521,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/rh/renewables_share_gen/fl/",
     "metric": "renewables_share_gen",
     "metricLabel": "Electricity from Renewables",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V7"
   },
   {
@@ -533,7 +533,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/rh/road_poor_pct/ca/",
     "metric": "road_poor_pct",
     "metricLabel": "Roads in Poor Condition",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V7"
   },
   {
@@ -545,7 +545,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/c/net_domestic_migration_rate/",
     "metric": "net_domestic_migration_rate",
     "metricLabel": "Net Migration",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V8"
   },
   {
@@ -557,7 +557,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/rh/voter_participation_rate/ca/",
     "metric": "voter_participation_rate",
     "metricLabel": "Voter Participation Rate",
-    "topic": "Infrastructure, Resilience & Trust",
+    "topic": "Infrastructure & Trust",
     "variant": "V7"
   },
   {
@@ -569,7 +569,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/c/unsheltered_homeless_rate/",
     "metric": "unsheltered_homeless_rate",
     "metricLabel": "Homelessness",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V8"
   },
   {
@@ -581,7 +581,7 @@ const QOTD_QUESTIONS = [
     "chartUrl": "/rh/food_insecurity_rate/tx/",
     "metric": "food_insecurity_rate",
     "metricLabel": "Food Insecurity Rate",
-    "topic": "Housing & Cost of Living",
+    "topic": "Affordability",
     "variant": "V7"
   },
   {

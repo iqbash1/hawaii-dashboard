@@ -19,7 +19,7 @@ The Hawai ªi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai 
 4. Uninsured Rate: % without health insurance (Census ACS)
 5. Suicide Rate: per 100K residents (CDC WONDER)
 
-### Housing & Cost of Living
+### Affordability
 6. Renter Housing Cost Burden: % of renters cost-burdened, with 30%+ and 50%+ threshold views (Census ACS)
 7. Home Price-to-Income Ratio: median home value / median household income (Census ACS)
 8. Homelessness: per 10K residents, with unsheltered-only and total (sheltered + unsheltered) threshold views (HUD PIT Count)
@@ -40,7 +40,7 @@ The Hawai ªi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai 
 19. High School Graduation Rate (ACGR): % of cohort graduating on time (NCES)
 20. Adults with Bachelor's Degree+: % age 25+ (Census ACS)
 
-### Infrastructure, Resilience & Trust
+### Infrastructure & Trust
 21. Roads in Poor Condition: % of road miles, with poor-only and poor-and-mediocre threshold views (FHWA)
 22. Households with Broadband: % of households (Census ACS)
 23. Electricity from Renewables: % of total generation (EIA)

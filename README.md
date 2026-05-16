@@ -116,10 +116,10 @@ Requires `Pillow` (`pip3 install Pillow`).
 | Area | Metrics | County |
 |------|---------|--------|
 | Safety & Health | Violent Crime, Property Crime, PCP Access, Uninsured, Suicide | Partial |
-| Housing & Cost of Living | Renter Cost Burden, Home Price-to-Income, Homelessness, Electricity Price, Food Insecurity | Partial |
+| Affordability | Renter Cost Burden, Home Price-to-Income, Homelessness, Electricity Price, Food Insecurity | Partial |
 | Economy & Workforce | Unemployment, Labor Force Participation, Labor Productivity, Per Capita Income, Business Entry, Net Employer Formation | Partial |
 | Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
-| Infra, Resilience & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
+| Infrastructure & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
 
 ## Design principles
 
