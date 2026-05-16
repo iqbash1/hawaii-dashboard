@@ -773,11 +773,36 @@ const App = {
     /** Build "vs Prior Year" comparison HTML for a card */
     buildVsYearHtml(metricData) {
         // Handles both plain year keys ("2022") and rolling-average range keys ("2022-2024").
-        const sortedKeys = Object.keys(metricData.hawaii).sort((a, b) => this.keyEnd(a) - this.keyEnd(b));
+        //
+        // 2020 and 2021 are excluded from both windows when present in the data.
+        // The COVID collapse and snapback distort normal-times comparisons
+        // (unemployment spiked to 11.6% in 2020, labor-force participation
+        // collapsed, business formation swung) and produce nonsense verdicts
+        // like "worsened 224%" when one of the windows straddles those years.
+        // Same exclusion convention as Modal.computeTrendPhrase, so the card
+        // verdict and the modal Bottom Line phrase always agree.
+        const TREND_EXCLUDE_YEARS = new Set(['2020', '2021']);
+        const isPandemicYear = (k) => !String(k).includes('-') && TREND_EXCLUDE_YEARS.has(String(k));
+        const allKeys = Object.keys(metricData.hawaii);
+        const excluded = allKeys.some(isPandemicYear);
+
+        const sortedKeys = allKeys
+            .filter(k => !isPandemicYear(k))
+            .sort((a, b) => this.keyEnd(a) - this.keyEnd(b));
         if (sortedKeys.length < 4) return '';
-        const recent = sortedKeys.slice(-3);
-        const prior = sortedKeys.slice(-6, -3);
-        if (prior.length < 2) return '';
+
+        // When pandemic years are filtered out, pin each window to its side:
+        // recent = post-2021 (up to 3 most recent), prior = pre-2020 (up to 3
+        // most recent of the remaining). When no exclusion happened, use the
+        // original adjacent-window logic (last 3 vs prior 3).
+        const recent = excluded
+            ? sortedKeys.filter(k => this.keyEnd(k) > 2021).slice(-3)
+            : sortedKeys.slice(-3);
+        const prior = excluded
+            ? sortedKeys.filter(k => this.keyEnd(k) < 2020).slice(-3)
+            : sortedKeys.slice(-6, -3);
+        if (prior.length < 2 || recent.length < 1) return '';
+
         const avg = (keys) => {
             const vals = keys.map(k => metricData.hawaii[k]).filter(v => v != null);
             return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
@@ -805,9 +830,11 @@ const App = {
         // Compact labels: start year full, end year 2-digit - e.g. "2020-24 vs 2017-21"
         const priorLabel = Compute.formatYearRange(prior[0], prior[prior.length - 1]);
         const recentLabel = Compute.formatYearRange(recent[0], recent[recent.length - 1]);
+        const tooltipBase = `Change in the rolling-window average: ${recentLabel} window compared with the ${priorLabel} window`;
+        const tooltip = excluded ? `${tooltipBase}. 2020-21 excluded as COVID distortion.` : tooltipBase;
 
         return `
-            <div class="card-comp ${cls}" title="Change in the 3-year rolling average: ${recentLabel} window compared with the ${priorLabel} window">
+            <div class="card-comp ${cls}" title="${tooltip}">
                 <div class="comp-label">${recentLabel} vs ${priorLabel}</div>
                 <div class="comp-verdict">${pctLabel}</div>
             </div>
