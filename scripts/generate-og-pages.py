@@ -2320,32 +2320,47 @@ def wrap_text(text, font_obj, max_width, draw):
 def generate_qotd_og_image(question, output_path):
     """Generate a 1200x630 OG card for a daily question.
 
-    The card shows the claim with "True or false?" prompt but NEVER the
-    answer -- share previews should invite the guess, not give it away.
+    Card contents: the claim + TRUE/FALSE pills. The og:title ("Do you
+    know Hawaiʻi?") and the URL chrome are already supplied by the
+    unfurling client (iMessage, LinkedIn, etc.), so they're intentionally
+    NOT drawn here -- duplicating them inside the image makes the preview
+    look noisy.
     """
     W, H = 1200, 630
     im = Image.new('RGB', (W, H), BG)
     d = ImageDraw.Draw(im)
 
-    # Top strip: eyebrow
-    d.text((80, 80), "DO YOU KNOW HAWAIʻI?", fill=TEAL, font=font(24))
-
-    # Claim: wrapped, centered vertically in the middle band
+    # Claim: wrapped, vertically centered in the upper band so the
+    # TRUE/FALSE pills have room to breathe below.
     f_claim = font(56)
     claim_lines = wrap_text(question['claim'], f_claim, W - 160, d)
-    # Stack lines so the block is vertically centered around y=315
     line_h = 70
     block_h = len(claim_lines) * line_h
-    y = 315 - block_h // 2
+    y = 250 - block_h // 2
     for line in claim_lines:
         bbox = d.textbbox((0, 0), line, font=f_claim)
         line_w = bbox[2] - bbox[0]
         d.text(((W - line_w) // 2, y), line, fill=TEXT_PRI, font=f_claim)
         y += line_h
 
-    # Footer strip
-    d.rectangle([(0, H - 70), (W, H)], fill=FOOTER_BG)
-    d.text((80, H - 48), "hawaiidashboard.org", fill=TEAL, font=font(22))
+    # TRUE (filled teal) / FALSE (outlined teal) pills -- the quiz signal.
+    btn_w, btn_h, gap = 240, 88, 40
+    pill_y = 430
+    cx = W // 2
+    f_btn = font(44)
+    pills = [
+        (cx - btn_w - gap // 2, 'TRUE',  TEAL,     (255, 255, 255)),
+        (cx + gap // 2,         'FALSE', CARD_BG,  TEAL),
+    ]
+    for px, label, fill, text_color in pills:
+        d.rounded_rectangle([px, pill_y, px + btn_w, pill_y + btn_h],
+                            radius=btn_h // 2, fill=fill,
+                            outline=TEAL, width=3)
+        bbox = d.textbbox((0, 0), label, font=f_btn)
+        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        d.text((px + (btn_w - tw) // 2,
+                pill_y + (btn_h - th) // 2 - bbox[1]),
+               label, fill=text_color, font=f_btn)
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     im.save(output_path, 'PNG', optimize=True)
