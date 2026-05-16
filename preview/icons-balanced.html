@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Category icons — balanced</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body { padding: 2rem; background: var(--bg); }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    h1 { font-family: var(--font-heading); font-size: 1.4rem; margin-bottom: 0.25rem; }
+    .sub { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.92rem; line-height: 1.5; }
+
+    .stage { background: #fff; border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--border); }
+    .stage.now { border-style: dashed; }
+    .stage.after { border-color: var(--hawaii-blue); }
+    .stage-h { font-family: var(--font-heading); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem; }
+    .stage.now .stage-h { color: #888; }
+    .stage.after .stage-h { color: var(--hawaii-blue); }
+
+    .row {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
+    }
+    .cell {
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      padding: 1rem 0.5rem; background: var(--bg); border-radius: 6px;
+    }
+    .cell .icon-72 { width: 72px; height: 72px; }
+    .cell .icon-24 { width: 24px; height: 24px; }
+    .cell .icon-18 { width: 18px; height: 18px; }
+    .cell .label { font-family: var(--font-heading); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); text-align: center; }
+    .cell .bbox { font-size: 0.7rem; color: #999; font-family: monospace; }
+
+    .heading-mock {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
+      margin-top: 1rem;
+    }
+    .heading-mock .h {
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 0.75rem; background: var(--bg); border-radius: 4px;
+      font-family: var(--font-heading); font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .heading-mock .h svg { width: 18px; height: 18px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Category icons — balanced</h1>
+    <p class="sub">Top row: current icons (varied bbox sizes 11–22 wide, 12–20 tall). Bottom row: redesigned to fill a more uniform ~16–18 box centered at (12, 12). Same lucide line-icon style throughout.</p>
+
+    <!-- NOW -->
+    <div class="stage now">
+      <div class="stage-h">Now — bounding boxes vary</div>
+      <div class="row">
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span class="label">Safety</span>
+          <span class="bbox">16×20</span>
+        </div>
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="label">Afford.</span>
+          <span class="bbox">11×20</span>
+        </div>
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="label">Economy</span>
+          <span class="bbox">22×12</span>
+        </div>
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>
+          <span class="label">Education</span>
+          <span class="bbox">20×15</span>
+        </div>
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>
+          <span class="label">Infra.</span>
+          <span class="bbox">22×14</span>
+        </div>
+      </div>
+      <div class="heading-mock">
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Safety</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Afford.</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Economy</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>Education</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>Infra.</span>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="stage after">
+      <div class="stage-h">After — normalized to ~16–18 inscribed</div>
+      <div class="row">
+        <!-- Shield: 14×17, slightly tighter than current 16×20 -->
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s7-3.2 7-7.5V6l-7-2.7-7 2.7v6.5c0 4.3 7 7.5 7 7.5z"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s7-3.2 7-7.5V6l-7-2.7-7 2.7v6.5c0 4.3 7 7.5 7 7.5z"/></svg>
+          <span class="label">Safety</span>
+          <span class="bbox">14×17</span>
+        </div>
+        <!-- $ sign: 11×18, slightly tighter vertical extent -->
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="3" y2="21"/><path d="M17 6H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="3" y2="21"/><path d="M17 6H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/></svg>
+          <span class="label">Afford.</span>
+          <span class="bbox">11×18</span>
+        </div>
+        <!-- Economy: chart-line (replaces trending-up arrow) — 18×18 squareish -->
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          <span class="label">Economy</span>
+          <span class="bbox">18×18</span>
+        </div>
+        <!-- Education: refined grad cap — 18×12 -->
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11v4"/><path d="M3 11l9-4 9 4-9 4z"/><path d="M7 13v4c0 1.5 2.5 2.5 5 2.5s5-1 5-2.5v-4"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11v4"/><path d="M3 11l9-4 9 4-9 4z"/><path d="M7 13v4c0 1.5 2.5 2.5 5 2.5s5-1 5-2.5v-4"/></svg>
+          <span class="label">Education</span>
+          <span class="bbox">18×12</span>
+        </div>
+        <!-- Infra: building with 3 columns, narrowed — 18×13 -->
+        <div class="cell">
+          <svg class="icon-72" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="4" rx="0.5"/><line x1="7" y1="10" x2="7" y2="19"/><line x1="12" y1="10" x2="12" y2="19"/><line x1="17" y1="10" x2="17" y2="19"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          <svg class="icon-24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="4" rx="0.5"/><line x1="7" y1="10" x2="7" y2="19"/><line x1="12" y1="10" x2="12" y2="19"/><line x1="17" y1="10" x2="17" y2="19"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+          <span class="label">Infra.</span>
+          <span class="bbox">18×13</span>
+        </div>
+      </div>
+      <div class="heading-mock">
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s7-3.2 7-7.5V6l-7-2.7-7 2.7v6.5c0 4.3 7 7.5 7 7.5z"/></svg>Safety</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="3" y2="21"/><path d="M17 6H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/></svg>Afford.</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>Economy</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11v4"/><path d="M3 11l9-4 9 4-9 4z"/><path d="M7 13v4c0 1.5 2.5 2.5 5 2.5s5-1 5-2.5v-4"/></svg>Education</span>
+        <span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="4" rx="0.5"/><line x1="7" y1="10" x2="7" y2="19"/><line x1="12" y1="10" x2="12" y2="19"/><line x1="17" y1="10" x2="17" y2="19"/><line x1="4" y1="19" x2="20" y2="19"/></svg>Infra.</span>
+      </div>
+    </div>
+
+    <p class="sub" style="margin-top: 2rem;">
+      <strong>What changed</strong>:
+      <br>• Safety shield: shrunk vertical from 20 to 17 — less stretched.
+      <br>• $ sign: shorter vertical (3–21 instead of 2–22) so it sits inside the same height-band as others.
+      <br>• Economy: replaced trending-up arrow with a chart-line (axes + rising step). The arrow was naturally short-and-wide; chart-line is square and reads more "economy" than "growth metric."
+      <br>• Education grad cap: trimmed horizontal extent and lowered slightly.
+      <br>• Infrastructure: rectangle narrowed (3–21 instead of 1–23), added center column for visual density.
+    </p>
+  </div>
+</body>
+</html>

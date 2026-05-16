@@ -21,12 +21,16 @@ const STATE_ABBREVS = { // eslint-disable-line no-unused-vars
     'Hawai\u02BBi':'HI','Hawaii':'HI',
 };
 
+// Category icons sized to fill roughly the same 16–18-unit inscribed
+// area within the 24x24 viewBox so they all read at the same visual
+// weight in the row of section headings on the home page. The $ is the
+// narrowest (glyph-bound) but matches the others on vertical extent.
 const AREA_ICONS = {
-    'Safety & Health': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-    'Affordability': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
-    'Economy & Workforce': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
-    'Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>',
-    'Infrastructure & Trust': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="4" rx="1"/><line x1="6" y1="10" x2="6" y2="20"/><line x1="18" y1="10" x2="18" y2="20"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
+    'Safety & Health': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s7-3.2 7-7.5V6l-7-2.7-7 2.7v6.5c0 4.3 7 7.5 7 7.5z"/></svg>',
+    'Affordability': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="3" y2="21"/><path d="M17 6H9.5a3 3 0 0 0 0 6h5a3 3 0 0 1 0 6H6"/></svg>',
+    'Economy & Workforce': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
+    'Education': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11v4"/><path d="M3 11l9-4 9 4-9 4z"/><path d="M7 13v4c0 1.5 2.5 2.5 5 2.5s5-1 5-2.5v-4"/></svg>',
+    'Infrastructure & Trust': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D7C8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="4" rx="0.5"/><line x1="7" y1="10" x2="7" y2="19"/><line x1="12" y1="10" x2="12" y2="19"/><line x1="17" y1="10" x2="17" y2="19"/><line x1="4" y1="19" x2="20" y2="19"/></svg>',
 };
 
 // Per-metric templates for the "Copy brief" feature.
