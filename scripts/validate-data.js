@@ -757,6 +757,53 @@ if (STATE_DATA) {
 
     const VALID_MODES = ['protect', 'learn'];
 
+    // Compute Hawaiʻi's current rank from STATE_DATA so we can verify any
+    // explicit current-rank claim in rhn.summary against reality. Mirrors
+    // App.getStateRankings() + App._findRankingYear() (js/app.js).
+    function computeCurrentHawaiiRank(slug, goodDirection) {
+        if (!STATE_DATA || !STATE_DATA[slug] || !STATE_DATA[slug].data) return null;
+        const data = STATE_DATA[slug].data;
+        const keys = Object.keys(data);
+        const isPCPStyle = keys.length > 0 && keys.every(k => /^\d{1,2}$/.test(k));
+        let year, values;
+        if (isPCPStyle) {
+            const yearCounts = {};
+            Object.values(data).forEach(entry => {
+                Object.keys(entry).forEach(k => {
+                    if (k !== 'name' && entry[k] != null) yearCounts[k] = (yearCounts[k] || 0) + 1;
+                });
+            });
+            const yrs = Object.keys(yearCounts).sort();
+            year = yrs.slice().reverse().find(y => yearCounts[y] >= 25) || yrs.pop();
+            if (!year) return null;
+            values = Object.values(data)
+                .filter(rec => rec[year] != null)
+                .map(rec => ({ state: rec.name, value: +rec[year] }));
+        } else {
+            const yrs = keys.filter(k => /^\d{4}/.test(k)).sort();
+            year = yrs.slice().reverse().find(y =>
+                Object.values(data[y]).filter(v => v != null).length >= 25
+            ) || yrs[0];
+            if (!year || !data[year]) return null;
+            values = Object.entries(data[year])
+                .filter(([, v]) => v != null)
+                .map(([state, v]) => ({ state, value: +v }));
+        }
+        values.sort((a, b) => goodDirection === 'up' ? b.value - a.value : a.value - b.value);
+        const hi = values.findIndex(s => s.state === 'Hawaii' || s.state === 'Hawaiʻi');
+        if (hi < 0) return null;
+        return { rank: hi + 1, total: values.length, year };
+    }
+
+    // Patterns that imply a current-state rank claim in narrative prose.
+    // Historical phrasings ("has ranked #N to #M", "ranked #N in 2010") are
+    // not flagged here; only assertions about today/now/latest year.
+    const CURRENT_RANK_PATTERNS = [
+        /\b(?:now|currently|today)\s+ranks?\s+(?:at\s+)?#(\d{1,2})/i,
+        /\branks?\s+#(\d{1,2})\s+in\s+(20\d{2})/i,
+        /\bis\s+(?:now\s+|currently\s+)?#(\d{1,2})\b/i,
+    ];
+
     for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
         const rhn = metric.rankHistoryNarrative;
         if (!rhn) {
@@ -784,6 +831,27 @@ if (STATE_DATA) {
         }
         if (!rhn.caution || !rhn.caution.state || !rhn.caution.text) {
             warn(`[${slug}] rankHistoryNarrative.caution is missing or incomplete`);
+        }
+
+        // Verify any current-rank claim in summary matches the computed rank.
+        // Catches the silent-drift class where data refreshes but the narrative
+        // doesn't (property_crime_rate "#36" vs computed #40, May 2026).
+        if (rhn.summary) {
+            const claims = [];
+            for (const re of CURRENT_RANK_PATTERNS) {
+                const m = rhn.summary.match(re);
+                if (m) claims.push(+m[1]);
+            }
+            if (claims.length > 0) {
+                const computed = computeCurrentHawaiiRank(slug, metric.goodDirection);
+                if (computed) {
+                    for (const claimed of claims) {
+                        if (claimed !== computed.rank) {
+                            error(`[${slug}] rankHistoryNarrative.summary claims current rank #${claimed} but STATE_DATA computes #${computed.rank} of ${computed.total} (${computed.year}). Drop the current rank from summary (rule: no current values) or update it.`);
+                        }
+                    }
+                }
+            }
         }
     }
     info(`Checked rankHistoryNarrative structure for ${Object.keys(DASHBOARD_DATA).length} metrics`);
