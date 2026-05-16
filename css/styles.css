@@ -91,8 +91,8 @@ a:hover {
 }
 
 /* Hamburger toggle: hidden on desktop, replaces the row of inline
-   .top-nav-links on narrow viewports (≤480px). Sits as the first
-   child of .top-nav so the menu opens beneath it. */
+   .top-nav-link siblings on narrow viewports (≤480px). Sits as the
+   first child of .top-nav so the menu opens beneath it. */
 .top-nav-toggle {
     display: none;
     background: transparent;

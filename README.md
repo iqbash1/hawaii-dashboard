@@ -136,7 +136,7 @@ The home grid is the core, but the site has four supporting surfaces:
 - **Change Summary** (`/five-year-change/` and 6 sibling year-span views): sortable scoreboard of what improved, what declined, and what stayed stuck, by area and metric. Shared logic via `js/fyc.js`; same shell renders 1/3/5/10/15/20/25-year spans.
 - **About** (`/about/`): mission, methodology, comparator rules, metric registry. Source ledger for every claim on the site.
 - **FAQ** (`/faq/`): 11 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
-- **Question of the Day** (white card teaser on the home page; `/q/{id}/` shareable URL per question): 48-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
+- **Question of the Day** (thin banner teaser on the home page that expands to a proof card after the reader answers; `/q/{id}/` shareable URL per question): 48-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
 - **Off the Charts** (`/off-the-charts/`): short-form blog at 175–200 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
 
 ## Local development

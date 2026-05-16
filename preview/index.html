@@ -4,48 +4,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex,nofollow">
-  <title>Minimalism fixes — before / after</title>
+  <title>Design previews — Hawaiʻi Dashboard</title>
   <link rel="stylesheet" href="../css/styles.css">
   <style>
     body { padding: 2rem; background: var(--bg); }
     .wrap { max-width: 900px; margin: 0 auto; }
     .wrap h1 { font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 0.25rem; }
-    .wrap > p { color: var(--text-muted); margin-bottom: 2rem; }
+    .wrap > p { color: var(--text-muted); margin-bottom: 2rem; line-height: 1.55; }
     .fix-card {
       background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
-      padding: 1.5rem; margin-bottom: 1rem;
+      padding: 1.25rem 1.5rem; margin-bottom: 0.75rem;
     }
-    .fix-card h2 { font-size: 1.15rem; margin-bottom: 0.5rem; }
-    .fix-card p { color: var(--text-muted); margin-bottom: 1rem; line-height: 1.55; }
+    .fix-card h2 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .fix-card p { color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.55; font-size: 0.92rem; }
     .fix-card a { color: var(--hawaii-blue); font-weight: 600; text-decoration: none; }
     .fix-card a:hover { text-decoration: underline; }
-    .note { background: #FFF8E1; border-left: 3px solid #c08a1a; padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.9rem; color: #555; margin-top: 0.75rem; }
+    .meta { display: inline-block; font-family: var(--font-heading); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-right: 0.5rem; }
+    .meta.shipped { color: var(--positive); }
+    .note { background: #FFF8E1; border-left: 3px solid #c08a1a; padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.88rem; color: #555; margin-top: 1.5rem; line-height: 1.55; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Minimalism fixes — before / after</h1>
-    <p>Three contained UI changes from the audit. Each preview shows the current state next to one or more candidate after-states so you can pick.</p>
+    <h1>Design previews</h1>
+    <p>Reference artifacts from the May 2026 minimalism audit. Each page mocks a UI change side-by-side with the live state at decision time so the choice was visible before shipping. Kept in-repo as design history; all noindex.</p>
 
     <div class="fix-card">
-      <h2>Fix 1 — Tile direction pill</h2>
-      <p>The "lower is better" / "higher is better" pill repeats on all 26 tiles. The verb-led "improved 4.3%" already encodes direction with green / red color. Three after-options.</p>
+      <h2><span class="meta shipped">Shipped · Option C</span>Fix 1 — Tile direction pill</h2>
+      <p>Three after-options for the per-tile "lower is better" / "higher is better" pill. Ships as the compact two-char chip (<code>↓ better</code> / <code>↑ better</code>) at ~36px wide.</p>
       <a href="./fix-1-tile-pill.html">Open preview →</a>
     </div>
 
     <div class="fix-card">
-      <h2>Fix 2 — Modal deeper-analysis sections</h2>
-      <p>The metric modal opens with ~7 supporting sections expanded by default. Most users came for the chart and Bottom line. After-state collapses the deeper sections behind a single toggle.</p>
+      <h2><span class="meta shipped">Shipped · &lt;details&gt; pattern</span>Fix 2 — Modal deeper-analysis</h2>
+      <p>Originally proposed as a chevron pill; user pushed back as non-minimal. Final ship uses the existing "+ HOW TO READ THE CHART" disclosure pattern for the deeper analysis too. Preview here is the pre-decision pill mockup.</p>
       <a href="./fix-2-modal-collapse.html">Open preview →</a>
     </div>
 
     <div class="fix-card">
-      <h2>Fix 3 — Home pre-tile zone</h2>
-      <p>Between the H1 and the first tile sit seven UI elements (stats strip, QOTD, "Explore by" label, 2 dropdowns, 5 pills, chart key). After-state consolidates to two rows.</p>
+      <h2><span class="meta shipped">Shipped · banner + label-drop</span>Fix 3 — Home pre-tile zone</h2>
+      <p>Drops the stats strip, moves the chart key into the first section heading row, converts the QOTD card to a thin banner (only in the unanswered state), and removes the "Explore by" label since the dropdown placeholders self-explain. The "merge the two dropdowns" full version was deferred.</p>
       <a href="./fix-3-home-prelude.html">Open preview →</a>
     </div>
 
-    <div class="note">Preview pages are scoped to <code>/preview/</code> and excluded from sitemap / search (noindex). They do not touch live UI code. Once you pick a direction I'll apply the change to production files.</div>
+    <div class="fix-card">
+      <h2><span class="meta shipped">Shipped · bare $</span>Affordability category icon</h2>
+      <p>Three candidate glyphs for the new "Affordability" category icon (renamed from "Housing &amp; Cost of Living"). Ships as a bare lucide-style <code>$</code> with no surrounding circle.</p>
+      <a href="./affordability-icon.html">Open preview →</a>
+    </div>
+
+    <div class="fix-card">
+      <h2><span class="meta shipped">Shipped · normalized + heightened</span>Category icons — balanced</h2>
+      <p>All 5 category icons resized to fill the same ~16–18 vertical extent. Trending-up arrow swapped for a chart-line (square); building gets a triangular pediment; grad cap gets a taller diamond. Before/after at 24, 48, and 72px.</p>
+      <a href="./icons-balanced.html">Open preview →</a>
+    </div>
+
+    <div class="note">
+      <strong>Convention</strong>: preview pages live under <code>/preview/</code>, carry <code>&lt;meta name="robots" content="noindex,nofollow"&gt;</code>, and don't touch production CSS/JS. They use the site's own <code>css/styles.css</code> so any production restyling reaches them automatically. Past decisions are preserved as reference; iteration after ship happens directly in <code>js/</code> and <code>css/</code>, not here.
+    </div>
   </div>
 </body>
 </html>

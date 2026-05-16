@@ -450,7 +450,7 @@ Each of the 26 metrics gets its own card displaying:
    - **vs Other States** - "Better" (green) or "Worse" (red) with the median, plus a meta row showing:
      - **Tier · Rank**: reads as `Top tier · #14 of 50` (or `Middle tier` / `Bottom tier`). Tier word from `Utils.rankTierLabel(rank, total)`, tier color from `Utils.rankColorClass(rank, total)`: top third → `--positive` (green), middle third → `--neutral` (gold), bottom third → `--negative` (red). Same convention drives the modal Rank chart's tier bands, the Rank History chart's y-axis bands, the modal Copy brief lead sentence, and the OG share-image badge.
      - **By county**: small muted teal link, only present for the 14 metrics with `COUNTY_DATA`. Clicking opens the modal directly on the County tab.
-   - **vs prior window** - compares two 3-year rolling-average windows (e.g. `2022-24 vs 2019-21`). Verdict reads "improved X.X% / worsened X.X% / held steady" with positive/neutral/negative coloring. **2020 and 2021 are excluded from both windows** when present in the data; the year-range label reflects the actual years used, and the tooltip appends "2020-21 excluded as COVID distortion" when that exclusion fires. Same convention drives the modal Bottom Line trend phrase (`Modal.computeTrendPhrase`).
+   - **vs prior window** - compares two 3-year rolling-average windows. The displayed label shows the prior window only (e.g. `vs. 2017-19`); the recent window is implicit because the current value above the chart is already labeled with its latest year. Verdict reads "improved X.X% / worsened X.X% / held steady" with positive/neutral/negative coloring. **2020 and 2021 are excluded from both windows** when present in the data; the prior-window label reflects the actual years used, and the tooltip appends "2020-21 excluded as COVID distortion" when that exclusion fires. Same convention drives the modal Bottom Line trend phrase (`Modal.computeTrendPhrase`).
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum). Each card has `id="{slug}"` so direct links (`/#slug`) scroll to the card and open its modal.
 
@@ -471,8 +471,8 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the 50-state median; the shared dropdown swaps in any of the 49 other states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
-3. **Consolidated narrative block** - why it matters, how to read, potential drivers, policy levers, county narrative, caveats (see `_buildConsolidatedNarrative`)
-4. **Source link + Download .xlsx + Share button** - three controls in the modal header: source URL, XLSX download, and a single share button that copies the active-tab permalink (includes any picked state + threshold)
+3. **Two minimalist disclosures** - "+ HOW TO READ THE CHART" (chart orientation) and "+ READ THE DEEPER ANALYSIS" (Why it matters, National standing, County breakdown, Potential drivers, Lessons, Key levers, Data note). Both are `<details><summary>` elements styled with uppercase tracked text + teal `+/−` prefix; both share `.modal-how-toggle` so they read as a pair. The deeper-analysis disclosure keeps the modal short for the typical chart-and-brief read. See `_buildConsolidatedNarrative`.
+4. **Source link + Download .xlsx + Share button** - three controls in the modal footer: source URL, XLSX download, and a single share button that copies the active-tab permalink (includes any picked state + threshold)
 
 **Rank tab:**
 1. **Value distribution dot strip** - all 50 states shown as dots above the bar chart
@@ -621,8 +621,10 @@ All modal rendering: open/close, tab switching, chart creation, rankings, rank h
 | `showRankHistory(slug)` | Renders rank-over-time chart with state comparison dropdown |
 | `showCounty(slug)` | Renders county comparison chart |
 | `computeBrief(slug)` | Builds the dynamic "Bottom line" paragraph from BRIEF_TEMPLATES |
+| `_briefFirstSentence(text)` | Returns just the first sentence of a brief (everything up to the first `. ! ?`). Used on Rank and Rank-history tabs where the full multi-sentence brief repeats Trend-tab content. |
+| `_renderBrief(el, slug)` | Renders the brief into `#modal-brief`, full text on Trend and first-sentence-only on other tabs. Wired into `openModal`, `_refreshActiveMetric`, and `switchTab` so the brief stays in sync with the visible tab. |
 | `computeTrendPhrase(slug)` | Compares a pre-pandemic vs post-pandemic 3-year window and returns `"improved/worsened X% over the last five years"` (or `"held flat over the last five years"` for sub-0.5% changes). 2020 and 2021 are filtered out of the data pool so the COVID shock doesn't distort normal-times comparisons; the precise windows and exclusion convention are documented in the About page methodology note rather than the phrase itself. |
-| `_buildConsolidatedNarrative(m)` | Renders 7 narrative sections: Why, National standing, County, Drivers, Lessons, Policy levers, Data note |
+| `_buildConsolidatedNarrative(m)` | Renders 7 narrative sections wrapped in two `<details>` disclosures: How-to-read (`m.howToRead` alone) and Read-the-deeper-analysis (Why, National standing, County, Drivers, Lessons, Policy levers, Data note). Both use `.modal-how-toggle` for matched minimal styling. |
 | `renderBundleNav(slug)` | Shows Prev/Next nav inside modal when a bundle is active |
 
 ### `Export` (export.js)
