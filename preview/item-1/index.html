@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Item 1 preview — 5-year change tier · Hawaiʻi Dashboard</title>
+<style>
+:root {
+    --bg: #F5F5F5;
+    --card-bg: #FFFFFF;
+    --text: #333333;
+    --text-secondary: #555555;
+    --text-muted: #555555;
+    --text-vintage: #626D76;
+    --hawaii-blue: #0D7C8F;
+    --hawaii-blue-light: #EEF8FA;
+    --positive: #059669;
+    --positive-bg: rgba(5, 150, 105, 0.10);
+    --negative: #C0392B;
+    --negative-bg: rgba(192, 57, 43, 0.10);
+    --neutral: #c08a1a;
+    --neutral-bg: #fef9e7;
+    --border: #EAEAEA;
+    --radius: 8px;
+    --radius-sm: 6px;
+    --text-2xs: 0.7rem;
+    --text-xs: 0.75rem;
+    --text-sm: 0.82rem;
+    --text-base: 0.88rem;
+    --text-md: 0.95rem;
+    --text-lg: 1.0rem;
+    --text-xl: 1.1rem;
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+.page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.page-header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 2rem; }
+.page-eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-vintage); margin: 0 0 0.4rem; font-weight: 600; }
+.page-title { margin: 0 0 0.4rem; font-size: 1.5rem; font-weight: 700; }
+.page-sub { margin: 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.55; max-width: 720px; }
+.page-sub code { background: #fff; padding: 1px 5px; border: 1px solid var(--border); border-radius: 3px; font-size: 0.85em; }
+
+.what-changes {
+    background: var(--hawaii-blue-light);
+    border-left: 3px solid var(--hawaii-blue);
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+.what-changes h2 { margin: 0 0 0.5rem; font-size: 1rem; }
+.what-changes ul { margin: 0; padding-left: 1.25rem; }
+.what-changes li { margin: 0.15rem 0; }
+
+.cmp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+.col-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-vintage);
+    margin-bottom: 0.5rem;
+}
+.col-head-tag {
+    background: var(--text-vintage);
+    color: white;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+.col-head.after .col-head-tag { background: var(--hawaii-blue); }
+
+/* Card replica */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.card-title {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+    color: var(--text);
+}
+.card-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+.card-value {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+}
+.card-year {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+.card-spark {
+    height: 50px;
+    margin: 0.4rem 0 0.5rem;
+}
+.card-comparisons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+}
+.card-comp {
+    text-align: center;
+    padding: 0.4rem 0.25rem;
+    border-radius: var(--radius-sm);
+}
+.comp-label {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.comp-verdict {
+    font-size: var(--text-base);
+    font-weight: 700;
+    font-family: var(--font-heading);
+}
+.card-comp.positive .comp-verdict { color: var(--positive); }
+.card-comp.negative .comp-verdict { color: var(--negative); }
+.card-comp.neutral  .comp-verdict { color: var(--neutral); }
+.comp-rank {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--text-muted);
+    display: inline-block;
+}
+.comp-rank.rank-good { color: var(--positive); }
+.comp-rank.rank-mid  { color: var(--neutral); }
+.comp-rank.rank-bad  { color: var(--negative); }
+.comp-rank-tier { font-weight: 500; }
+
+.case-head {
+    margin: 1.75rem 0 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+}
+.case-note {
+    margin: 0 0 0.75rem;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+.case-note .pill {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin: 0 0.15rem;
+}
+.case-note .pill.improving { background: var(--positive-bg); color: var(--positive); }
+.case-note .pill.flat      { background: #f0eee5; color: var(--neutral); }
+.case-note .pill.worsening { background: var(--negative-bg); color: var(--negative); }
+
+/* Sparkline (decorative) */
+.spark { width: 100%; height: 100%; display: block; }
+
+.footer-note {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text-vintage);
+}
+.footer-note code { background: #fff; padding: 1px 5px; border: 1px solid var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="page-header">
+    <p class="page-eyebrow">Preview · Item 1 (5-year change tier on cards)</p>
+    <h1 class="page-title">Card vsYear verdict: tier word vs. verb + percent</h1>
+    <p class="page-sub">The lower-left comparison block on each home-page card. Today it reads <code>improved 5.2%</code> / <code>worsened 2.1%</code> / <code>held steady</code>. After: a single categorical word — <code>Improving</code> / <code>Flat</code> / <code>Worsening</code> — drawn from the same direction-aware logic as the rank-tier block on the right, with a ±5% Flat band. The magnitude moves to the tooltip.</p>
+</header>
+
+<div class="what-changes">
+    <h2>What changes</h2>
+    <ul>
+        <li><strong>Verdict text</strong>: <code>improved 5.2%</code> → <code>Improving</code> &nbsp; · &nbsp; <code>worsened 2.1%</code> → <code>Worsening</code> (or <code>Flat</code> if &lt;5%) &nbsp; · &nbsp; <code>held steady</code> → <code>Flat</code></li>
+        <li><strong>Flat band</strong>: widens from ±0.5% to ±5%. Anything below the new threshold reads <code>Flat</code> instead of "improved 1.8%" or "worsened 2.4%".</li>
+        <li><strong>Tooltip</strong>: gains the magnitude (e.g., <em>"2020-24 window vs 2017-21 window (improved 12.4%)"</em>) so the number stays accessible to anyone who hovers.</li>
+        <li><strong>What does NOT change</strong>: the year-range label (<code>2020-24 vs 2017-21</code>), the green/grey/red color, the 3-year-rolling-window mechanic, or the rank-tier block on the right.</li>
+    </ul>
+</div>
+
+<!-- ========================================
+     Case 1: Big improvement (Improving)
+     ======================================== -->
+<h3 class="case-head">Case 1 · Renewables Share — strong improvement (well past ±5%)</h3>
+<p class="case-note">Hawaiʻi's renewable share went from 15.9% to 22.1% over the latest 5-year span (+38.9% relative). Both Before and After classify this as positive; the After version just labels it as <span class="pill improving">Improving</span> instead of the percent.</p>
+<div class="cmp-row">
+    <div>
+        <div class="col-head"><span class="col-head-tag">Before</span>Today on production</div>
+        <div class="card">
+            <h4 class="card-title">Electricity from Renewables</h4>
+            <div class="card-value-row"><span class="card-value">22.1%</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,35 30,33 60,30 90,28 120,25 150,22 180,18 210,15 240,12 270,9 300,8" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp positive" title="Change in the 3-year rolling average: 2022-24 window compared with the 2019-21 window">
+                    <div class="comp-label">2022-24 vs 2019-21</div>
+                    <div class="comp-verdict">improved 38.9%</div>
+                </div>
+                <div class="card-comp positive">
+                    <div class="comp-label">US: 23.4%</div>
+                    <span class="comp-rank rank-good"><span class="comp-rank-tier">Middle tier</span> · #22 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="col-head after"><span class="col-head-tag">After</span>Item 1 proposal</div>
+        <div class="card">
+            <h4 class="card-title">Electricity from Renewables</h4>
+            <div class="card-value-row"><span class="card-value">22.1%</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,35 30,33 60,30 90,28 120,25 150,22 180,18 210,15 240,12 270,9 300,8" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp positive" title="Change in the 3-year rolling average: 2022-24 window vs 2019-21 window (improved 38.9%)">
+                    <div class="comp-label">2022-24 vs 2019-21</div>
+                    <div class="comp-verdict">Improving</div>
+                </div>
+                <div class="card-comp positive">
+                    <div class="comp-label">US: 23.4%</div>
+                    <span class="comp-rank rank-good"><span class="comp-rank-tier">Middle tier</span> · #22 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================
+     Case 2: Slow growth — reclassifies to Flat under new ±5%
+     ======================================== -->
+<h3 class="case-head">Case 2 · Adults with Bachelor's Degree+ — slow but real (reclassifies to <span style="color: var(--neutral);">Flat</span>)</h3>
+<p class="case-note">A 3.2% relative move in 5 years (37.0% → 38.2%). Under the current ±0.5% Flat band this reads as positive. Under the new ±5% band, it lands in the <span class="pill flat">Flat</span> band — honest to the noise floor of a slow-moving structural metric. This is the most consequential reclassification across the dashboard.</p>
+<div class="cmp-row">
+    <div>
+        <div class="col-head"><span class="col-head-tag">Before</span>Today on production</div>
+        <div class="card">
+            <h4 class="card-title">Adults with Bachelor's Degree+</h4>
+            <div class="card-value-row"><span class="card-value">38.2%</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,28 30,27 60,27 90,26 120,25 150,25 180,24 210,23 240,23 270,22 300,21" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp positive" title="Change in the 3-year rolling average: 2022-24 window compared with the 2019-21 window">
+                    <div class="comp-label">2022-24 vs 2019-21</div>
+                    <div class="comp-verdict">improved 3.2%</div>
+                </div>
+                <div class="card-comp positive">
+                    <div class="comp-label">US: 35.6%</div>
+                    <span class="comp-rank rank-mid"><span class="comp-rank-tier">Middle tier</span> · #17 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="col-head after"><span class="col-head-tag">After</span>Item 1 proposal</div>
+        <div class="card">
+            <h4 class="card-title">Adults with Bachelor's Degree+</h4>
+            <div class="card-value-row"><span class="card-value">38.2%</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,28 30,27 60,27 90,26 120,25 150,25 180,24 210,23 240,23 270,22 300,21" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp neutral" title="Change in the 3-year rolling average: 2022-24 window vs 2019-21 window (3.2%, within ±5% Flat band)">
+                    <div class="comp-label">2022-24 vs 2019-21</div>
+                    <div class="comp-verdict">Flat</div>
+                </div>
+                <div class="card-comp positive">
+                    <div class="comp-label">US: 35.6%</div>
+                    <span class="comp-rank rank-mid"><span class="comp-rank-tier">Middle tier</span> · #17 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================
+     Case 3: Worsening
+     ======================================== -->
+<h3 class="case-head">Case 3 · Home Price-to-Income — getting less affordable (Worsening)</h3>
+<p class="case-note">The ratio climbed from 7.4× to 8.7× over five years — an 18% relative worsening. Far past ±5%, so both Before and After classify it as bad; the After version just labels it <span class="pill worsening">Worsening</span>.</p>
+<div class="cmp-row">
+    <div>
+        <div class="col-head"><span class="col-head-tag">Before</span>Today on production</div>
+        <div class="card">
+            <h4 class="card-title">Home Price-to-Income Ratio</h4>
+            <div class="card-value-row"><span class="card-value">8.7×</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,30 30,29 60,27 90,24 120,21 150,18 180,15 210,12 240,10 270,8 300,7" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp negative" title="Change in the 3-year rolling average: 2022-24 window compared with the 2019-21 window">
+                    <div class="comp-label">2022-24 vs 2019-21</div>
+                    <div class="comp-verdict">worsened 18.0%</div>
+                </div>
+                <div class="card-comp negative">
+                    <div class="comp-label">US: 4.2×</div>
+                    <span class="comp-rank rank-bad"><span class="comp-rank-tier">Bottom tier</span> · #50 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="col-head after"><span class="col-head-tag">After</span>Item 1 proposal</div>
+        <div class="card">
+            <h4 class="card-title">Home Price-to-Income Ratio</h4>
+            <div class="card-value-row"><span class="card-value">8.7×</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,30 30,29 60,27 90,24 120,21 150,18 180,15 210,12 240,10 270,8 300,7" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp negative" title="Change in the 3-year rolling average: 2022-24 window vs 2019-21 window (worsened 18.0%)">
+                    <div class="comp-label">2022-24 vs 2019-21</div>
+                    <div class="comp-verdict">Worsening</div>
+                </div>
+                <div class="card-comp negative">
+                    <div class="comp-label">US: 4.2×</div>
+                    <span class="comp-rank rank-bad"><span class="comp-rank-tier">Bottom tier</span> · #50 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================
+     Case 4: Small worsening — reclassifies to Flat
+     ======================================== -->
+<h3 class="case-head">Case 4 · Voter Participation Rate — small move that reclassifies to <span style="color: var(--neutral);">Flat</span></h3>
+<p class="case-note">A 2.1% relative dip. The current dashboard reads this as "worsened 2.1%" (negative styling, red verdict). Under the new ±5% Flat band, it lands as <span class="pill flat">Flat</span>, honestly reflecting that the move is within the year-to-year noise of a small denominator.</p>
+<div class="cmp-row">
+    <div>
+        <div class="col-head"><span class="col-head-tag">Before</span>Today on production</div>
+        <div class="card">
+            <h4 class="card-title">Voter Participation Rate</h4>
+            <div class="card-value-row"><span class="card-value">54.3%</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,22 30,21 60,23 90,24 120,22 150,23 180,24 210,23 240,25 270,24 300,25" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp negative" title="Change in the 3-year rolling average: 2020-24 window compared with the 2017-21 window">
+                    <div class="comp-label">2020-24 vs 2017-21</div>
+                    <div class="comp-verdict">worsened 2.1%</div>
+                </div>
+                <div class="card-comp negative">
+                    <div class="comp-label">US: 65.6%</div>
+                    <span class="comp-rank rank-bad"><span class="comp-rank-tier">Bottom tier</span> · #48 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="col-head after"><span class="col-head-tag">After</span>Item 1 proposal</div>
+        <div class="card">
+            <h4 class="card-title">Voter Participation Rate</h4>
+            <div class="card-value-row"><span class="card-value">54.3%</span><span class="card-year">2024</span></div>
+            <div class="card-spark"><svg class="spark" viewBox="0 0 300 50" preserveAspectRatio="none"><polyline points="0,22 30,21 60,23 90,24 120,22 150,23 180,24 210,23 240,25 270,24 300,25" fill="none" stroke="#0D7C8F" stroke-width="2"/></svg></div>
+            <div class="card-comparisons">
+                <div class="card-comp neutral" title="Change in the 3-year rolling average: 2020-24 window vs 2017-21 window (2.1%, within ±5% Flat band)">
+                    <div class="comp-label">2020-24 vs 2017-21</div>
+                    <div class="comp-verdict">Flat</div>
+                </div>
+                <div class="card-comp negative">
+                    <div class="comp-label">US: 65.6%</div>
+                    <span class="comp-rank rank-bad"><span class="comp-rank-tier">Bottom tier</span> · #48 of 50</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="footer-note">
+Hover any card on the After side to see the tooltip text (the magnitude lives there now). · Numbers are illustrative; the live version reads from <code>STATE_DATA</code>. · Page is <code>noindex,nofollow</code> and Disallowed in <code>robots.txt</code>.
+</p>
+
+</div>
+</body>
+</html>
