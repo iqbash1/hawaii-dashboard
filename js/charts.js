@@ -822,38 +822,23 @@ const ChartUtils = {
                     }
                 }
 
-                // Tier-band labels at the left edge of each band, just inside
-                // chartArea. Drawn after the bars with a translucent white
-                // pill so they read cleanly over both Hawaiʻi (teal) and the
-                // other-state gray bars. Matches the Top/Middle/Bottom
-                // labels on the rank-history chart so the two views speak
-                // the same vocabulary.
+                // Tier-band labels sit in the right margin outside chartArea
+                // (created via layout.padding.right). This keeps them off the
+                // bars, off the state codes on the left, and off the dot
+                // strip up top. Centered vertically in each band.
                 const chartH = chartArea.bottom - chartArea.top;
                 const tierBandLabels = [
-                    { topFrac: 0,                   label: 'Top tier',    color: 'rgba(5,150,105,0.95)' },
-                    { topFrac: topTierCount / n,    label: 'Middle tier', color: 'rgba(192,138,26,0.95)' },
-                    { topFrac: midTierEnd / n,      label: 'Bottom tier', color: 'rgba(192,57,43,0.95)' },
+                    { centerFrac: (topTierCount / 2) / n,                 label: 'Top tier',    color: 'rgba(5,150,105,0.85)' },
+                    { centerFrac: (topTierCount + midTierEnd) / (2 * n),  label: 'Middle tier', color: 'rgba(192,138,26,0.85)' },
+                    { centerFrac: (midTierEnd + n) / (2 * n),             label: 'Bottom tier', color: 'rgba(192,57,43,0.85)' },
                 ];
-                ctx.font = 'italic 700 9px Inter, sans-serif';
+                ctx.font = '600 11px Inter, sans-serif';
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
                 for (const tb of tierBandLabels) {
-                    const y = chartArea.top + chartH * tb.topFrac + 9;
-                    const textWidth = ctx.measureText(tb.label).width;
-                    const pillX = chartArea.left + 3;
-                    const pillY = y - 7;
-                    const pillW = textWidth + 10;
-                    const pillH = 14;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
-                    if (typeof ctx.roundRect === 'function') {
-                        ctx.beginPath();
-                        ctx.roundRect(pillX, pillY, pillW, pillH, 3);
-                        ctx.fill();
-                    } else {
-                        ctx.fillRect(pillX, pillY, pillW, pillH);
-                    }
+                    const y = chartArea.top + chartH * tb.centerFrac;
                     ctx.fillStyle = tb.color;
-                    ctx.fillText(tb.label, pillX + 5, y);
+                    ctx.fillText(tb.label, chartArea.right + 8, y);
                 }
 
                 // Dot strip dots
@@ -1001,7 +986,7 @@ const ChartUtils = {
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: { right: 20, top: dotStripHeight, bottom: 20 } },
+                layout: { padding: { right: 95, top: dotStripHeight, bottom: 20 } },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
