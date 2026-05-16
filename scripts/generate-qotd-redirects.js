@@ -17,7 +17,7 @@ const path = require('path');
 const BASE = path.join(__dirname, '..');
 const QDIR = path.join(BASE, 'q');
 const SITE = 'https://hawaiidashboard.org';
-const OG_TITLE = 'Do you know Hawaiʻi?';
+const OG_TITLE = 'You know Hawaiʻi?';
 
 const questions = require(path.join(BASE, 'js', 'questions.js'));
 
@@ -46,7 +46,7 @@ function renderRedirect(q) {
     const answerBlock = answerBits.length ? `<p>${answerBits.join(' ')}</p>` : '';
     const inlineBlock = `
   <article style="max-width:640px;margin:2rem auto;padding:0 1rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#333;line-height:1.55;">
-    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;letter-spacing:0.05em;margin:0;">Do you know Hawaiʻi?</p>
+    <p style="color:#888;font-size:0.875rem;text-transform:uppercase;letter-spacing:0.05em;margin:0;">You know Hawaiʻi?</p>
     <p style="margin:0.25rem 0 1rem;font-size:1.25rem;font-weight:600;">${escapeHtml(q.claim)}</p>
     ${answerBlock}
     <p style="margin-top:1.5rem;"><a href="${chartUrl}">See the data &rarr;</a></p>
@@ -56,7 +56,7 @@ function renderRedirect(q) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Do you know Hawaiʻi?</title>
+  <title>You know Hawaiʻi?</title>
   <meta property="og:type" content="website">
   <meta property="og:url" content="${shareUrl}">
   <meta property="og:title" content="${OG_TITLE}">
@@ -73,7 +73,7 @@ function renderRedirect(q) {
   <meta http-equiv="refresh" content="0;url=${targetAbs}">
 </head>
 <body>
-  <p>Redirecting to <a href="${targetAbs}">Do you know Hawaiʻi?</a>&hellip;</p>${inlineBlock}
+  <p>Redirecting to <a href="${targetAbs}">You know Hawaiʻi?</a>&hellip;</p>${inlineBlock}
 </body>
 </html>
 `;

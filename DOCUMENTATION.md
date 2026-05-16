@@ -767,11 +767,11 @@ state-data.js is the canonical store. data.js is derived. To update a year cell:
 
 ## Question of the Day (QOTD)
 
-Daily "Do you know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict + 1-sentence answer + live Chart.js canvas pulled from `chartUrl`). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 48 questions in the bank; rotation wraps.
+Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict + 1-sentence answer + live Chart.js canvas pulled from `chartUrl`). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 48 questions in the bank; rotation wraps.
 
 ### URL pattern
 
-- `/q/{id}/` is a static redirect page (one per question). Carries OG meta (`og:title = "Do you know Hawaiʻi?"`, `og:image = /assets/og/q/{slug}.png`, no `og:description`) and meta-refreshes to `/?from_q={id}`.
+- `/q/{id}/` is a static redirect page (one per question). Carries OG meta (`og:title = "You know Hawaiʻi?"`, `og:image = /assets/og/q/{slug}.png`, no `og:description`) and meta-refreshes to `/?from_q={id}`.
 - The `?from_q={id}` query is consumed by `js/routing.js` (fires `qotd_shared_url_landed`) and stripped, so shared URLs land on `/` and show today's question (which may differ from the shared question's original day). Tradeoff is intentional: the URL is share-tracking, not deep-linking.
 
 ### File map
