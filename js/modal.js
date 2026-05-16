@@ -1283,17 +1283,21 @@ const Modal = {
             return `<div class="cn-item"><div class="cn-state ${cls}">${x.state}</div><p class="cn-text">${x.text}</p>${src}</div>`;
         };
 
-        // "How to read the chart" stays visible (it's already a <details>
-        // accordion and helps users orient to the chart above). The rest of
-        // the analysis (Why it matters, National standing, County breakdown,
-        // Potential drivers, Lessons, Key levers, Data note) is wrapped in a
-        // single collapse \u2014 most users came for the chart and the brief, not
-        // the deep narrative.
+        // Layout:
+        //   - "How to read the chart" sits as a minimal <details> at the top.
+        //   - "Why it matters" and "National standing" render inline (always
+        //     visible) \u2014 they answer the two questions every reader has about
+        //     a chart they just saw: "is this important?" and "where does HI
+        //     fall?". Cheap to read, no reason to hide.
+        //   - Everything else (County breakdown, Potential drivers, Lessons,
+        //     Key levers, Data note) is collapsed behind "+ Deeper analysis"
+        //     since it's analysis depth most readers will opt into, not
+        //     default reading.
         let outer = Modal._section('How to read the chart', m.howToRead, true, 'modal-how-toggle');
+        outer += Modal._section('Why it matters',    m.whyItMatters);
+        outer += Modal._section('National standing', narr && narr.summary);
 
         let deep = '';
-        deep += Modal._section('Why it matters',       m.whyItMatters);
-        deep += Modal._section('National standing',    narr && narr.summary);
         deep += Modal._section('County breakdown',     m.countyNarrative);
         deep += Modal._section('Potential drivers',    m.potentialDrivers);
 
@@ -1323,7 +1327,7 @@ const Modal = {
         // custom JS toggle needed; the browser handles open/close.
         outer += `
             <details class="cn-section modal-how-toggle modal-deeper-toggle">
-                <summary>Read the deeper analysis</summary>
+                <summary>Deeper analysis</summary>
                 ${deep}
             </details>
         `;

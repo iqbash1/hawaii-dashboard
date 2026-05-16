@@ -471,7 +471,12 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 **Trend tab:**
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the 50-state median; the shared dropdown swaps in any of the 49 other states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
-3. **Two minimalist disclosures** - "+ HOW TO READ THE CHART" (chart orientation) and "+ READ THE DEEPER ANALYSIS" (Why it matters, National standing, County breakdown, Potential drivers, Lessons, Key levers, Data note). Both are `<details><summary>` elements styled with uppercase tracked text + teal `+/−` prefix; both share `.modal-how-toggle` so they read as a pair. The deeper-analysis disclosure keeps the modal short for the typical chart-and-brief read. See `_buildConsolidatedNarrative`.
+3. **Layered narrative** - The brief above the chart answers "where does Hawaiʻi stand?". Below the chart:
+   - **+ HOW TO READ THE CHART** — minimal `<details>` disclosure for chart orientation.
+   - **Why it matters** — always visible, one-paragraph rationale (`m.whyItMatters`).
+   - **National standing** — always visible, one-paragraph context on the rank trajectory (`narr.summary` from `rankHistoryNarrative`).
+   - **+ DEEPER ANALYSIS** — minimal `<details>` disclosure with the rest: County breakdown, Potential drivers, Lessons from other states, Key levers, Data note. Most readers won't open this; the ones who do get the full picture.
+   Both disclosures use `.modal-how-toggle` with the uppercase-tracked text + teal `+/−` prefix, so they look like one consistent pattern. See `_buildConsolidatedNarrative`.
 4. **Source link + Download .xlsx + Share button** - three controls in the modal footer: source URL, XLSX download, and a single share button that copies the active-tab permalink (includes any picked state + threshold)
 
 **Rank tab:**
@@ -624,7 +629,7 @@ All modal rendering: open/close, tab switching, chart creation, rankings, rank h
 | `_briefFirstSentence(text)` | Returns just the first sentence of a brief (everything up to the first `. ! ?`). Used on Rank and Rank-history tabs where the full multi-sentence brief repeats Trend-tab content. |
 | `_renderBrief(el, slug)` | Renders the brief into `#modal-brief`, full text on Trend and first-sentence-only on other tabs. Wired into `openModal`, `_refreshActiveMetric`, and `switchTab` so the brief stays in sync with the visible tab. |
 | `computeTrendPhrase(slug)` | Compares a pre-pandemic vs post-pandemic 3-year window and returns `"improved/worsened X% over the last five years"` (or `"held flat over the last five years"` for sub-0.5% changes). 2020 and 2021 are filtered out of the data pool so the COVID shock doesn't distort normal-times comparisons; the precise windows and exclusion convention are documented in the About page methodology note rather than the phrase itself. |
-| `_buildConsolidatedNarrative(m)` | Renders 7 narrative sections wrapped in two `<details>` disclosures: How-to-read (`m.howToRead` alone) and Read-the-deeper-analysis (Why, National standing, County, Drivers, Lessons, Policy levers, Data note). Both use `.modal-how-toggle` for matched minimal styling. |
+| `_buildConsolidatedNarrative(m)` | Three-tier narrative layout: `+ HOW TO READ THE CHART` as a minimal `<details>`, then `Why it matters` + `National standing` inline (always visible), then `+ DEEPER ANALYSIS` as a `<details>` containing County breakdown, Potential drivers, Lessons, Key levers, and Data note. Both disclosures share `.modal-how-toggle` styling. |
 | `renderBundleNav(slug)` | Shows Prev/Next nav inside modal when a bundle is active |
 
 ### `Export` (export.js)
