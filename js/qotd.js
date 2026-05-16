@@ -344,10 +344,7 @@ const QOTD = {
                         <span class="qotd-verdict-text">${gotItRight ? 'You got it!' : 'Not quite.'}</span>
                     </div>
                     <p class="qotd-answer-reveal">Answer: <strong>${verdict}</strong></p>
-                    <div class="qotd-answer-block">
-                        <span class="qotd-metric-label">${this._escape(q.metricLabel)}</span>
-                        <p class="qotd-answer-text">${this._escape(q.answer)}</p>
-                    </div>
+                    <p class="qotd-answer-text"><span class="qotd-metric-label">${this._escape(q.metricLabel)}:</span> ${this._escape(q.answer)}</p>
                     <figure class="qotd-chart" data-qotd-chart>
                         <div class="qotd-chart-canvas-wrap"><canvas class="qotd-chart-canvas" aria-label="Chart showing ${this._escape(q.metricLabel)} data"></canvas></div>
                     </figure>

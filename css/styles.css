@@ -2277,28 +2277,15 @@ body {
 .qotd-answer-reveal strong {
     font-weight: 700;
 }
-/* Wraps the metric-label pill + answer sentence so the pill sits tight
-   above the sentence (0.4rem) instead of inheriting the parent's 1rem
-   flex gap. */
-.qotd-answer-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    max-width: 560px;
-}
+/* Inline metric-label prefix on the answer sentence ("NET MIGRATION: In 2024…").
+   Names the metric without adding a separate visual element. */
 .qotd-metric-label {
-    display: inline-block;
     font-family: var(--font-heading);
-    font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
     text-transform: uppercase;
+    letter-spacing: 0.06em;
     color: var(--text-muted);
-    padding: 0.25rem 0.65rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--avg-gray-light);
+    font-size: 0.85em;
 }
 .qotd-answer-text {
     font-size: 1rem;
