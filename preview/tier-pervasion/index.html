@@ -382,129 +382,9 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); f
 
 <header class="page-header">
     <p class="page-eyebrow">Preview · Tier pervasion</p>
-    <h1 class="page-title">Items 3, 4, 6, 9 mockups</h1>
-    <p class="page-sub">Four surfaces where the Top/Middle/Bottom tier framing could extend next. Each is rendered with production-matching styling and real metric data where possible. Decide each independently. Page is <code>noindex</code> and won't surface in search. Live versions, once approved, would replace mocked elements with real-time computations from <code>STATE_DATA</code>.</p>
+    <h1 class="page-title">Items 6 and 9 mockups</h1>
+    <p class="page-sub">Two surfaces where the Top/Middle/Bottom tier framing could extend. Items 3 (rankings tier bands) and 4 (hero composition strip) were declined and removed from this preview. Page is <code>noindex</code> and won't surface in search.</p>
 </header>
-
-<!-- ============================================================
-     Mockup 3: Rankings page tier bands
-     ============================================================ -->
-<section class="mock">
-    <header class="mock-head">
-        <span class="mock-num">3</span>
-        <h2 class="mock-title">Rankings page with tier bands</h2>
-        <p class="mock-caption"><strong>Where:</strong> <code>/r/{metric}/</code> page (clicked from the modal "By national rank" link). <strong>Today:</strong> a flat sortable 50-state list. <strong>After:</strong> three visually grouped tiers with section headers, color-coded so a resident scrolling sees their tier as a unit instead of a long list.</p>
-    </header>
-    <div class="mock-frame">
-        <div class="r-page">
-            <h3 class="r-page-title">Hawaiʻi Violent Crime Rate · National Ranking</h3>
-            <p class="r-page-sub">2023, violent crimes per 100,000 residents · lower is better</p>
-
-            <div class="r-tier r-tier--good">
-                <div class="r-tier-head">
-                    <span class="label">▲ Top tier</span>
-                    <span class="count">17 states · ranks 1–17</span>
-                </div>
-                <div class="r-row"><span class="r-num">1</span><span class="r-name">Maine</span><span class="r-val">104.2</span></div>
-                <div class="r-row"><span class="r-num">2</span><span class="r-name">New Hampshire</span><span class="r-val">117.3</span></div>
-                <div class="r-row"><span class="r-num">3</span><span class="r-name">Connecticut</span><span class="r-val">154.0</span></div>
-                <div class="r-row"><span class="r-num">4</span><span class="r-name">Rhode Island</span><span class="r-val">169.0</span></div>
-                <div class="r-row r-row--ellipsis">↓ 9 more states</div>
-                <div class="r-row r-row--hawaii"><span class="r-num">14</span><span class="r-name">Hawaiʻi</span><span class="r-val">244.4</span></div>
-                <div class="r-row"><span class="r-num">15</span><span class="r-name">Minnesota</span><span class="r-val">264.4</span></div>
-                <div class="r-row"><span class="r-num">16</span><span class="r-name">Pennsylvania</span><span class="r-val">278.1</span></div>
-                <div class="r-row"><span class="r-num">17</span><span class="r-name">Iowa</span><span class="r-val">279.8</span></div>
-            </div>
-
-            <div class="r-tier r-tier--mid">
-                <div class="r-tier-head">
-                    <span class="label">● Middle tier</span>
-                    <span class="count">16 states · ranks 18–33</span>
-                </div>
-                <div class="r-row"><span class="r-num">18</span><span class="r-name">North Dakota</span><span class="r-val">282.4</span></div>
-                <div class="r-row"><span class="r-num">19</span><span class="r-name">West Virginia</span><span class="r-val">282.6</span></div>
-                <div class="r-row"><span class="r-num">20</span><span class="r-name">Florida</span><span class="r-val">286.7</span></div>
-                <div class="r-row r-row--ellipsis">↓ 11 more states</div>
-                <div class="r-row"><span class="r-num">32</span><span class="r-name">New York</span><span class="r-val">400.6</span></div>
-                <div class="r-row"><span class="r-num">33</span><span class="r-name">Alabama</span><span class="r-val">404.7</span></div>
-            </div>
-
-            <div class="r-tier r-tier--bad">
-                <div class="r-tier-head">
-                    <span class="label">▼ Bottom tier</span>
-                    <span class="count">17 states · ranks 34–50</span>
-                </div>
-                <div class="r-row"><span class="r-num">34</span><span class="r-name">Texas</span><span class="r-val">416.0</span></div>
-                <div class="r-row"><span class="r-num">35</span><span class="r-name">Oklahoma</span><span class="r-val">423.0</span></div>
-                <div class="r-row r-row--ellipsis">↓ 12 more states</div>
-                <div class="r-row"><span class="r-num">48</span><span class="r-name">Tennessee</span><span class="r-val">646.1</span></div>
-                <div class="r-row"><span class="r-num">49</span><span class="r-name">Alaska</span><span class="r-val">739.7</span></div>
-                <div class="r-row"><span class="r-num">50</span><span class="r-name">New Mexico</span><span class="r-val">795.2</span></div>
-            </div>
-        </div>
-    </div>
-    <p class="decision"><strong>Approve?</strong> Real numbers from <code>STATE_DATA</code>. Hawaiʻi row stays highlighted as it is today. Sortable behavior preserved (clicking a column re-sorts within the tier bands or collapses them).</p>
-</section>
-
-<!-- ============================================================
-     Mockup 4: Hero composition strip
-     ============================================================ -->
-<section class="mock">
-    <header class="mock-head">
-        <span class="mock-num">4</span>
-        <h2 class="mock-title">Hero composition strip</h2>
-        <p class="mock-caption"><strong>Where:</strong> top of the home page, above the area-chip row. <strong>Purpose:</strong> a one-glance state of Hawaiʻi across all 26 metrics. (Numbers below are placeholders; live version computes from <code>STATE_DATA</code>.)</p>
-    </header>
-
-    <div class="mock-frame">
-        <p class="variant-label">Variant A · inline counts (compact)</p>
-        <div class="hero-mock hero-mock--v1">
-            <span class="hero-mock-label">Hawaiʻi today across 26 metrics:</span>
-            <span class="hero-mock-counts">
-                <span class="num rank-good">12</span><span class="name">Top tier</span>
-                <span class="sep">·</span>
-                <span class="num rank-mid">8</span><span class="name">Middle</span>
-                <span class="sep">·</span>
-                <span class="num rank-bad">6</span><span class="name">Bottom</span>
-            </span>
-        </div>
-
-        <p class="variant-label">Variant B · segmented bar (visual)</p>
-        <div class="hero-mock">
-            <div class="hero-mock-bar-label">Hawaiʻi today across 26 metrics</div>
-            <div class="hero-mock-bar-track">
-                <div class="hero-mock-bar-seg rank-good" style="flex: 12;">12</div>
-                <div class="hero-mock-bar-seg rank-mid"  style="flex: 8;">8</div>
-                <div class="hero-mock-bar-seg rank-bad"  style="flex: 6;">6</div>
-            </div>
-            <div class="hero-mock-bar-key">
-                <span><span class="swatch" style="background: var(--positive);"></span>Top tier</span>
-                <span><span class="swatch" style="background: var(--neutral);"></span>Middle</span>
-                <span><span class="swatch" style="background: var(--negative);"></span>Bottom</span>
-            </div>
-        </div>
-
-        <p class="variant-label">Variant C · combined (counts + bar)</p>
-        <div class="hero-mock">
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap: wrap; gap: 0.75rem;">
-                <span class="hero-mock-label">Hawaiʻi today across 26 metrics</span>
-                <span class="hero-mock-counts">
-                    <span class="num rank-good">12</span><span class="name">Top</span>
-                    <span class="sep">·</span>
-                    <span class="num rank-mid">8</span><span class="name">Middle</span>
-                    <span class="sep">·</span>
-                    <span class="num rank-bad">6</span><span class="name">Bottom</span>
-                </span>
-            </div>
-            <div class="hero-mock-bar-track" style="margin-top: 0.5rem;">
-                <div class="hero-mock-bar-seg rank-good" style="flex: 12;"></div>
-                <div class="hero-mock-bar-seg rank-mid"  style="flex: 8;"></div>
-                <div class="hero-mock-bar-seg rank-bad"  style="flex: 6;"></div>
-            </div>
-        </div>
-    </div>
-    <p class="decision"><strong>Pick a variant.</strong> All three are clickable: a tap on the green segment scrolls to (or filters to) the 12 Top tier metrics, etc.</p>
-</section>
 
 <!-- ============================================================
      Mockup 6: Rank history y-axis tier bands
@@ -526,17 +406,12 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); f
                 <rect x="60" y="240" width="660" height="113" fill="rgba(192, 57, 43, 0.10)"/>
 
                 <!-- Tier labels (right edge) -->
-                <text x="715" y="80"  text-anchor="end" font-size="11" fill="#059669" font-weight="700">Top tier</text>
-                <text x="715" y="93"  text-anchor="end" font-size="10" fill="#059669" opacity="0.7">ranks 1–17</text>
-                <text x="715" y="190" text-anchor="end" font-size="11" fill="#c08a1a" font-weight="700">Middle tier</text>
-                <text x="715" y="203" text-anchor="end" font-size="10" fill="#c08a1a" opacity="0.7">ranks 18–33</text>
-                <text x="715" y="300" text-anchor="end" font-size="11" fill="#C0392B" font-weight="700">Bottom tier</text>
-                <text x="715" y="313" text-anchor="end" font-size="10" fill="#C0392B" opacity="0.7">ranks 34–50</text>
+                <text x="715" y="83"  text-anchor="end" font-size="11" fill="#059669" font-weight="700">Top tier</text>
+                <text x="715" y="193" text-anchor="end" font-size="11" fill="#c08a1a" font-weight="700">Middle tier</text>
+                <text x="715" y="303" text-anchor="end" font-size="11" fill="#C0392B" font-weight="700">Bottom tier</text>
 
                 <!-- Y-axis labels (left edge) -->
                 <text x="55" y="25"  text-anchor="end" font-size="10" fill="#888">1</text>
-                <text x="55" y="138" text-anchor="end" font-size="10" fill="#888">17</text>
-                <text x="55" y="245" text-anchor="end" font-size="10" fill="#888">33</text>
                 <text x="55" y="356" text-anchor="end" font-size="10" fill="#888">50</text>
 
                 <!-- X-axis (years) -->
@@ -561,15 +436,11 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); f
                 <!-- Hawaii line endpoint dot + label -->
                 <circle cx="720" cy="93" r="4" fill="#0D7C8F"/>
                 <text x="710" y="80" text-anchor="end" font-size="11" fill="#0D7C8F" font-weight="700">Hawaiʻi #14</text>
-
-                <!-- Boundary crossing markers (where line crosses a tier boundary) -->
-                <line x1="350" y1="133" x2="350" y2="138" stroke="#c08a1a" stroke-width="1.5"/>
-                <text x="350" y="128" text-anchor="middle" font-size="10" fill="#c08a1a" font-weight="600">↑ entered Top tier ~2015</text>
             </svg>
-            <p class="rh-mock-note">Synthetic line for layout purposes. Live version uses <code>App.computeRankHistory(slug)</code> output as today. Bands derive from <code>Utils.rankColorClass</code> thresholds (1–17, 18–33, 34–50).</p>
+            <p class="rh-mock-note">Synthetic line for layout purposes. Live version uses <code>App.computeRankHistory(slug)</code> output as today. Bands derive from <code>Utils.rankColorClass</code> thresholds.</p>
         </div>
     </div>
-    <p class="decision"><strong>Approve?</strong> Bands replace the current plain-white background. Annotation for tier crossings is optional (can defer).</p>
+    <p class="decision"><strong>Approve?</strong> Bands replace the current plain-white background. Tier labels only on the right edge; no rank-range sublabels and no boundary-crossing annotations.</p>
 </section>
 
 <!-- ============================================================
@@ -597,8 +468,13 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); f
                         <div class="og-mock-card">
                             <div class="og-mock-value">244.4<span class="og-mock-year">2023</span></div>
                             <svg class="og-mock-spark" viewBox="0 0 520 50" preserveAspectRatio="none">
-                                <polyline points="0,15 60,18 120,12 180,22 240,28 300,32 360,30 420,35 480,28 520,30" fill="none" stroke="#0D7C8F" stroke-width="2"/>
+                                <!-- Area fill between Hawaiʻi and median lines. For violent crime
+                                     (goodDirection=down), Hawaiʻi sits on the good side of the
+                                     median, so the band is green. Matches Chart.js detailGood
+                                     alpha 0.30 from createDetailChart(). -->
+                                <path d="M 0,30 L 60,32 L 120,28 L 180,30 L 240,32 L 300,30 L 360,28 L 420,26 L 480,24 L 520,22 L 520,30 L 480,28 L 420,35 L 360,30 L 300,32 L 240,28 L 180,22 L 120,12 L 60,18 L 0,15 Z" fill="rgba(5, 150, 105, 0.28)" stroke="none"/>
                                 <polyline points="0,30 60,32 120,28 180,30 240,32 300,30 360,28 420,26 480,24 520,22" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+                                <polyline points="0,15 60,18 120,12 180,22 240,28 300,32 360,30 420,35 480,28 520,30" fill="none" stroke="#0D7C8F" stroke-width="2"/>
                             </svg>
                         </div>
                         <div class="og-mock-foot">
@@ -622,8 +498,12 @@ html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); f
                         <div class="og-mock-card">
                             <div class="og-mock-value">9.1<span class="og-mock-year">2023</span></div>
                             <svg class="og-mock-spark" viewBox="0 0 520 50" preserveAspectRatio="none">
-                                <polyline points="0,35 60,33 120,30 180,28 240,22 300,18 360,14 420,10 480,8 520,6" fill="none" stroke="#0D7C8F" stroke-width="2"/>
+                                <!-- For home price-to-income (goodDirection=down), Hawaiʻi sits
+                                     well above the median (more unaffordable), so the band is red.
+                                     Wider gap → higher alpha (Chart.js scales 0.25–0.55). -->
+                                <path d="M 0,38 L 60,37 L 120,36 L 180,34 L 240,32 L 300,30 L 360,30 L 420,28 L 480,28 L 520,26 L 520,6 L 480,8 L 420,10 L 360,14 L 300,18 L 240,22 L 180,28 L 120,30 L 60,33 L 0,35 Z" fill="rgba(192, 57, 43, 0.45)" stroke="none"/>
                                 <polyline points="0,38 60,37 120,36 180,34 240,32 300,30 360,30 420,28 480,28 520,26" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+                                <polyline points="0,35 60,33 120,30 180,28 240,22 300,18 360,14 420,10 480,8 520,6" fill="none" stroke="#0D7C8F" stroke-width="2"/>
                             </svg>
                         </div>
                         <div class="og-mock-foot">
