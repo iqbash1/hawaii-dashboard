@@ -777,11 +777,11 @@ const ChartUtils = {
                 const yTopMid = top + height * (topTierCount / n);
                 const yMidBot = top + height * (midTierEnd / n);
                 ctx.save();
-                ctx.fillStyle = 'rgba(5, 150, 105, 0.10)';
+                ctx.fillStyle = 'rgba(5, 150, 105, 0.18)';
                 ctx.fillRect(left, top, right - left, yTopMid - top);
-                ctx.fillStyle = 'rgba(192, 138, 26, 0.06)';
+                ctx.fillStyle = 'rgba(192, 138, 26, 0.13)';
                 ctx.fillRect(left, yTopMid, right - left, yMidBot - yTopMid);
-                ctx.fillStyle = 'rgba(192, 57, 43, 0.10)';
+                ctx.fillStyle = 'rgba(192, 57, 43, 0.18)';
                 ctx.fillRect(left, yMidBot, right - left, bottom - yMidBot);
                 ctx.restore();
             }
@@ -1161,13 +1161,13 @@ const ChartUtils = {
                 const yMidBot = yScale.getPixelForValue(33.5);
                 c.save();
                 // Top tier (ranks 1–16)
-                c.fillStyle = 'rgba(5, 150, 105, 0.10)';
+                c.fillStyle = 'rgba(5, 150, 105, 0.18)';
                 c.fillRect(left, top, right - left, yTopMid - top);
                 // Middle tier (ranks 17–33), subtle so the line still reads cleanly
-                c.fillStyle = 'rgba(192, 138, 26, 0.06)';
+                c.fillStyle = 'rgba(192, 138, 26, 0.13)';
                 c.fillRect(left, yTopMid, right - left, yMidBot - yTopMid);
                 // Bottom tier (ranks 34–50)
-                c.fillStyle = 'rgba(192, 57, 43, 0.10)';
+                c.fillStyle = 'rgba(192, 57, 43, 0.18)';
                 c.fillRect(left, yMidBot, right - left, bottom - yMidBot);
                 c.restore();
             }
