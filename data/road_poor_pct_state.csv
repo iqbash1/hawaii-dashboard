@@ -1,4 +1,354 @@
 year,state,value
+2000,Alabama,0.0044
+2000,Alaska,0.0431
+2000,Arizona,0.0215
+2000,Arkansas,0.1054
+2000,California,0.259
+2000,Colorado,0.0565
+2000,Connecticut,0.1535
+2000,Delaware,0.0911
+2000,Florida,0.0169
+2000,Georgia,0.0006
+2000,Hawaiʻi,0.1111
+2000,Idaho,0.0297
+2000,Illinois,0.098
+2000,Indiana,0.0534
+2000,Iowa,0.1382
+2000,Kansas,0.0118
+2000,Kentucky,0.0252
+2000,Louisiana,0.1773
+2000,Maine,0.0371
+2000,Maryland,0.0889
+2000,Massachusetts,0.3005
+2000,Michigan,0.1509
+2000,Minnesota,0.013
+2000,Mississippi,0.0492
+2000,Missouri,0.2095
+2000,Montana,0.0314
+2000,Nebraska,0.1027
+2000,Nevada,0.0304
+2000,New Hampshire,0.0769
+2000,New Jersey,0.3208
+2000,New Mexico,0.1364
+2000,New York,0.1676
+2000,North Carolina,0.1026
+2000,North Dakota,0.0154
+2000,Ohio,0.0452
+2000,Oklahoma,0.1029
+2000,Oregon,0.0651
+2000,Pennsylvania,0.1116
+2000,Rhode Island,0.1309
+2000,South Carolina,0.0399
+2000,South Dakota,0.1324
+2000,Tennessee,0.0371
+2000,Texas,0.0703
+2000,Utah,0.0213
+2000,Vermont,0.143
+2000,Virginia,0.0623
+2000,Washington,0.0244
+2000,West Virginia,0.0785
+2000,Wisconsin,0.1078
+2000,Wyoming,0.0177
+2001,Alabama,0.0056
+2001,Alaska,0.0932
+2001,Arizona,0.0348
+2001,Arkansas,0.1075
+2001,California,0.2613
+2001,Colorado,0.0832
+2001,Connecticut,0.17
+2001,Delaware,0.0875
+2001,Florida,0.0176
+2001,Georgia,0.0009
+2001,Hawaiʻi,0.1991
+2001,Idaho,0.0279
+2001,Illinois,0.069
+2001,Indiana,0.0423
+2001,Iowa,0.1227
+2001,Kansas,0.0246
+2001,Kentucky,0.0173
+2001,Louisiana,0.1644
+2001,Maine,0.0276
+2001,Maryland,0.1053
+2001,Massachusetts,0.3026
+2001,Michigan,0.2026
+2001,Minnesota,0.0204
+2001,Mississippi,0.0502
+2001,Missouri,0.2449
+2001,Montana,0.0256
+2001,Nebraska,0.1043
+2001,Nevada,0.0108
+2001,New Hampshire,0.0477
+2001,New Jersey,0.2031
+2001,New Mexico,0.0622
+2001,New York,0.1649
+2001,North Carolina,0.102
+2001,North Dakota,0.0146
+2001,Ohio,0.0469
+2001,Oklahoma,0.1191
+2001,Oregon,0.0381
+2001,Pennsylvania,0.106
+2001,Rhode Island,0.181
+2001,South Carolina,0.0288
+2001,South Dakota,0.1394
+2001,Tennessee,0.0334
+2001,Texas,0.0641
+2001,Utah,0.0621
+2001,Vermont,0.1042
+2001,Virginia,0.049
+2001,Washington,0.0391
+2001,West Virginia,0.0728
+2001,Wisconsin,0.0903
+2001,Wyoming,0.0052
+2002,Alabama,0.0054
+2002,Alaska,0.0344
+2002,Arizona,0.0212
+2002,Arkansas,0.09
+2002,California,0.2635
+2002,Colorado,0.1057
+2002,Connecticut,0.1518
+2002,Delaware,0.0751
+2002,Florida,0.0147
+2002,Georgia,0.003
+2002,Hawaiʻi,0.1832
+2002,Idaho,0.0241
+2002,Illinois,0.0702
+2002,Indiana,0.0675
+2002,Iowa,0.1402
+2002,Kansas,0.0207
+2002,Kentucky,0.0146
+2002,Louisiana,0.1814
+2002,Maine,0.0251
+2002,Maryland,0.0968
+2002,Massachusetts,0.3593
+2002,Michigan,0.1545
+2002,Minnesota,0.0093
+2002,Mississippi,0.0394
+2002,Missouri,0.1326
+2002,Montana,0.0258
+2002,Nebraska,0.0968
+2002,Nevada,0.0112
+2002,New Hampshire,0.0393
+2002,New Jersey,0.2138
+2002,New Mexico,0.0831
+2002,New York,0.1645
+2002,North Carolina,0.1068
+2002,North Dakota,0.0086
+2002,Ohio,0.0466
+2002,Oklahoma,0.0966
+2002,Oregon,0.0441
+2002,Pennsylvania,0.1108
+2002,Rhode Island,0.1799
+2002,South Carolina,0.0383
+2002,South Dakota,0.1009
+2002,Tennessee,0.0412
+2002,Texas,0.0651
+2002,Utah,0.0326
+2002,Vermont,0.113
+2002,Virginia,0.0579
+2002,Washington,0.036
+2002,West Virginia,0.0731
+2002,Wisconsin,0.0894
+2002,Wyoming,0.005
+2003,Alabama,0.0025
+2003,Alaska,0.0286
+2003,Arizona,0.0195
+2003,Arkansas,0.1102
+2003,California,0.2759
+2003,Colorado,0.134
+2003,Connecticut,0.1939
+2003,Delaware,0.0724
+2003,Florida,0.0117
+2003,Georgia,0.0026
+2003,Hawaiʻi,0.1306
+2003,Idaho,0.0234
+2003,Illinois,0.0943
+2003,Indiana,0.0751
+2003,Iowa,0.1333
+2003,Kansas,0.0127
+2003,Kentucky,0.0131
+2003,Louisiana,0.1954
+2003,Maine,0.1046
+2003,Maryland,0.125
+2003,Massachusetts,0.3286
+2003,Michigan,0.1233
+2003,Minnesota,0.0264
+2003,Mississippi,0.031
+2003,Missouri,0.1326
+2003,Montana,0.0421
+2003,Nebraska,0.0975
+2003,Nevada,0.0071
+2003,New Hampshire,0.0826
+2003,New Jersey,0.2328
+2003,New Mexico,0.071
+2003,New York,0.1635
+2003,North Carolina,0.1025
+2003,North Dakota,0.0086
+2003,Ohio,0.0546
+2003,Oklahoma,0.11
+2003,Oregon,0.0586
+2003,Pennsylvania,0.1123
+2003,Rhode Island,0.1776
+2003,South Carolina,0.0265
+2003,South Dakota,0.1238
+2003,Tennessee,0.0332
+2003,Texas,0.0668
+2003,Utah,0.0147
+2003,Vermont,0.1096
+2003,Virginia,0.0516
+2003,Washington,0.0478
+2003,West Virginia,0.0408
+2003,Wisconsin,0.0845
+2003,Wyoming,0.0052
+2004,Alabama,0.0478
+2004,Alaska,0.1492
+2004,Arizona,0.0182
+2004,Arkansas,0.0845
+2004,California,0.2064
+2004,Colorado,0.1547
+2004,Connecticut,0.1562
+2004,Delaware,0.0683
+2004,Florida,0.0105
+2004,Georgia,0.0022
+2004,Hawaiʻi,0.1104
+2004,Idaho,0.0202
+2004,Illinois,0.1272
+2004,Indiana,0.0751
+2004,Iowa,0.1366
+2004,Kansas,0.0126
+2004,Kentucky,0.0136
+2004,Louisiana,0.1539
+2004,Maine,0.0859
+2004,Maryland,0.1733
+2004,Massachusetts,0.2629
+2004,Michigan,0.1091
+2004,Minnesota,0.0393
+2004,Mississippi,0.1032
+2004,Missouri,0.1867
+2004,Montana,0.0304
+2004,Nebraska,0.1004
+2004,Nevada,0.0071
+2004,New Hampshire,0.0826
+2004,New Jersey,0.2436
+2004,New Mexico,0.0645
+2004,New York,0.1881
+2004,North Carolina,0.0955
+2004,North Dakota,0.0733
+2004,Ohio,0.0853
+2004,Oklahoma,0.1056
+2004,Oregon,0.0375
+2004,Pennsylvania,0.105
+2004,Rhode Island,0.3498
+2004,South Carolina,0.0272
+2004,South Dakota,0.1835
+2004,Tennessee,0.0241
+2004,Texas,0.0568
+2004,Utah,0.0153
+2004,Vermont,0.087
+2004,Virginia,0.0513
+2004,Washington,0.0773
+2004,West Virginia,0.0364
+2004,Wisconsin,0.0882
+2004,Wyoming,0.021
+2005,Alabama,0.0432
+2005,Alaska,0.1751
+2005,Arizona,0.0417
+2005,Arkansas,0.0795
+2005,California,0.2012
+2005,Colorado,0.0626
+2005,Connecticut,0.1549
+2005,Delaware,0.0639
+2005,Florida,0.0117
+2005,Georgia,0.0008
+2005,Hawaiʻi,0.1832
+2005,Idaho,0.0206
+2005,Illinois,0.1153
+2005,Indiana,0.0751
+2005,Iowa,0.1352
+2005,Kansas,0.0307
+2005,Kentucky,0.0118
+2005,Louisiana,0.1451
+2005,Maine,0.1063
+2005,Maryland,0.1612
+2005,Massachusetts,0.2704
+2005,Michigan,0.1022
+2005,Minnesota,0.017
+2005,Mississippi,0.1133
+2005,Missouri,0.0813
+2005,Montana,0.0188
+2005,Nebraska,0.1043
+2005,Nevada,0.0068
+2005,New Hampshire,0.0485
+2005,New Jersey,0.3014
+2005,New Mexico,0.0644
+2005,New York,0.1881
+2005,North Carolina,0.0969
+2005,North Dakota,0.0307
+2005,Ohio,0.0607
+2005,Oklahoma,0.1086
+2005,Oregon,0.0482
+2005,Pennsylvania,0.1012
+2005,Rhode Island,0.344
+2005,South Carolina,0.0273
+2005,South Dakota,0.1797
+2005,Tennessee,0.031
+2005,Texas,0.0667
+2005,Utah,0.0129
+2005,Vermont,0.1107
+2005,Virginia,0.0553
+2005,Washington,0.087
+2005,West Virginia,0.0393
+2005,Wisconsin,0.0892
+2005,Wyoming,0.0231
+2006,Alabama,0.0217
+2006,Alaska,0.1999
+2006,Arizona,0.0424
+2006,Arkansas,0.0526
+2006,California,0.2089
+2006,Colorado,0.0963
+2006,Connecticut,0.1459
+2006,Delaware,0.058
+2006,Florida,0.0128
+2006,Georgia,0.0008
+2006,Hawaiʻi,0.2152
+2006,Idaho,0.0248
+2006,Illinois,0.1133
+2006,Indiana,0.0753
+2006,Iowa,0.1323
+2006,Kansas,0.0279
+2006,Kentucky,0.0162
+2006,Louisiana,0.1618
+2006,Maine,0.0988
+2006,Maryland,0.1429
+2006,Massachusetts,0.0309
+2006,Michigan,0.1308
+2006,Minnesota,0.0184
+2006,Mississippi,0.1768
+2006,Missouri,0.0703
+2006,Montana,0.0175
+2006,Nebraska,0.0558
+2006,Nevada,0.0064
+2006,New Hampshire,0.1121
+2006,New Jersey,0.3142
+2006,New Mexico,0.0678
+2006,New York,0.1599
+2006,North Carolina,0.0905
+2006,North Dakota,0.0307
+2006,Ohio,0.0564
+2006,Oklahoma,0.1184
+2006,Oregon,0.0372
+2006,Pennsylvania,0.1055
+2006,Rhode Island,0.3407
+2006,South Carolina,0.024
+2006,South Dakota,0.1398
+2006,Tennessee,0.0314
+2006,Texas,0.0571
+2006,Utah,0.0536
+2006,Vermont,0.1253
+2006,Virginia,0.0551
+2006,Washington,0.1166
+2006,West Virginia,0.0419
+2006,Wisconsin,0.0818
+2006,Wyoming,0.0417
 2007,Alabama,0.0071
 2007,Alaska,0.1795
 2007,Arizona,0.0491

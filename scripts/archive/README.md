@@ -53,6 +53,7 @@ itself; the archive is excluded from the scan.
 
 ### Drift reconciliation (archived May 2026)
 - `reconcile-drift-2026-05.js` — one-shot front-end that called `build-state-data.js` fetchers for the three "drift-detected" metrics (road_poor_pct, net_domestic_migration_rate, voter_participation_rate) and merged any missing years into state-data.js. Net change: added road_poor_pct 2024 (HI = 0.1537, rank #47/50). The other two were already in sync; memory's "drift detected" status was stale from a prior cycle.
+- `reconcile-road-poor-historical-2026-05.js` — extends road_poor_pct historical coverage from 2007-2024 to 2000-2024 by re-fetching FHWA HM-64 (Socrata 26bt-cq5y) and year-level merging the seven new years (2000-2006) into state-data.js. 50 states per year confirmed; HI rank trajectory #36 (2000) -> #45-#48 by 2006. Companion narrative + validator + fyc-exclusion changes shipped in the prior commit. 2010 and 2021 absent from source (gaps preserved).
 
 ### Audit / value-edit utilities (archived May 2026)
 - `audit_state_data.py` — original Python audit script that walked state-data.js for typos, year-over-year spikes, rank checks, and incomplete-coverage flags. Superseded by `scripts/validate-data.js` Sections 1-18, which run the same checks in JS and are wired into the build/CI pipeline.

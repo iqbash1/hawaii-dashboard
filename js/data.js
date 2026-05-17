@@ -1745,6 +1745,13 @@ const DASHBOARD_DATA = {
     "dataNote": "Values 2000-2006 come from earlier FHWA Highway Statistics Table HM-64 vintages, when state Departments of Transportation were still transitioning to standardized International Roughness Index (IRI) reporting protocols. Year-over-year swings in this period (e.g., Hawaiʻi 2000-2001, 2004-2005) reflect methodology and coverage changes rather than actual road-condition changes. The 2007+ series uses the consolidated reporting standard and is the appropriate window for trend analysis; earlier years are kept for long-run context. 2010 and 2021 are absent from the FHWA source.",
     "useConsolidated": true,
     "hawaii": {
+      "2000": 0.1111,
+      "2001": 0.1991,
+      "2002": 0.1832,
+      "2003": 0.1306,
+      "2004": 0.1104,
+      "2005": 0.1832,
+      "2006": 0.2152,
       "2007": 0.2102,
       "2008": 0.2241,
       "2009": 0.2019,
@@ -1763,6 +1770,13 @@ const DASHBOARD_DATA = {
       "2024": 0.1537
     },
     "medianSeries": {
+      "2000": 0.0736,
+      "2001": 0.0665,
+      "2002": 0.0688,
+      "2003": 0.0738,
+      "2004": 0.0849,
+      "2005": 0.0773,
+      "2006": 0.0691,
       "2007": 0.0666,
       "2008": 0.0649,
       "2009": 0.0737,
