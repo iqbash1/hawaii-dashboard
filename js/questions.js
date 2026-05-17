@@ -369,18 +369,6 @@ const QOTD_QUESTIONS = [
       "variant": "V1"
   },
   {
-      "id": "q071",
-      "slug": "voter-participation-has-gone-up-in-hawaii-in-the-last-five-years",
-      "claim": "Voter turnout in Hawaiʻi has dropped since the last presidential election.",
-      "correct": true,
-      "answer": "Hawaiʻi's voter turnout went from 55.4% to 50.3% between 2020 and 2024 (-9.2%).",
-      "chartUrl": "/t/voter_participation_rate/",
-      "metric": "voter_participation_rate",
-      "metricLabel": "Voter Participation Rate",
-      "topic": "Infrastructure & Trust",
-      "variant": "V6"
-  },
-  {
       "id": "q079",
       "slug": "unsheltered-homelessness-has-gone-down-in-hawaii-in-the-last-five-years",
       "claim": "Unsheltered homelessness has gone down in Hawaiʻi in the last five years.",
