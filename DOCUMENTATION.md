@@ -785,6 +785,10 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `assets/og/q/{slug}.png` | 48 pre-generated 1200×630 OG cards (claim + True/False pills). |
 | `scripts/generate-og-pages.py` (`generate_qotd_assets`) | OG-image generator. Reads `js/questions.js` and writes every QOTD PNG as part of the main OG build. Re-run via `npm run og` when claims change. |
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
+| `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
+| `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
+| `scripts/validate-all.sh` | Aggregates validate-data + audit + sync-check into one CI gate (`npm run validate`). |
+| `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 19 unit tests (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL). |
 
 ### Template variants (V1–V8)
