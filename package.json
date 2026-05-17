@@ -30,6 +30,7 @@
     "update-monthly": "node scripts/update-monthly.js",
     "update-metric-counts": "node scripts/update-metric-counts.js",
     "update-metric-counts:check": "node scripts/update-metric-counts.js --check",
+    "check-source-due": "node scripts/check-source-due.js",
     "audit-metric": "node scripts/audit-metric.js"
   },
   "devDependencies": {

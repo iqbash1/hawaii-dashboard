@@ -1,0 +1,154 @@
+name: Source release reminder
+
+# Weekly check of upcoming federal-source release windows. Maintains a
+# single rolling issue labeled `source-due-soon` listing every metric
+# whose canonical source is expected to publish new data within 7 days.
+# Rolls forward each week:
+#   - When releases come due, the issue body lists them.
+#   - When all known releases pass (or the next batch is more than 7 days
+#     out), the issue auto-closes with a "no upcoming releases" comment.
+#
+# Lead time can be overridden via workflow_dispatch input.
+#
+# Schedule: Tuesdays 04:00 UTC (after Monday's cron-heartbeat). Reads
+# `nextUpdate` from data.js; recognized values are 3-letter month
+# abbreviations. "Biennial" and "Monthly" are skipped (would need
+# year tracking; reminders aren't useful for monthly cadences).
+
+on:
+  schedule:
+    - cron: '0 4 * * 2'
+  workflow_dispatch:
+    inputs:
+      lead_days:
+        description: 'Lead time in days (default 7)'
+        required: false
+        default: '7'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: source-release-reminder
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Compute due-soon list
+        id: check
+        run: |
+          LEAD="${{ github.event.inputs.lead_days || '7' }}"
+          node scripts/check-source-due.js --lead="$LEAD" --json > /tmp/due.json
+          DUE_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/due.json','utf8')).dueSoon.length)")
+          echo "due_count=$DUE_COUNT" >> "$GITHUB_OUTPUT"
+          echo "lead_days=$LEAD" >> "$GITHUB_OUTPUT"
+          # Also dump human-readable to logs
+          node scripts/check-source-due.js --lead="$LEAD"
+
+      - name: Maintain rolling source-due-soon issue
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('/tmp/due.json', 'utf8'));
+            const dueCount = report.dueSoon.length;
+            const leadDays = '${{ steps.check.outputs.lead_days }}';
+
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'source-due-soon',
+              per_page: 5,
+            });
+            const existing = open.data[0] || null;
+
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const today = new Date().toISOString().slice(0, 10);
+
+            if (dueCount === 0) {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  body: `No source releases due in the next ${leadDays} days as of ${today}. Closing.\n\nRun: ${runUrl}`,
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  state: 'closed',
+                });
+              }
+              return;
+            }
+
+            const rows = report.dueSoon.map(d =>
+              `| \`${d.slug}\` | ${d.metric} | ${d.releaseISO} (${d.daysUntil}d) | ${d.source} |`
+            ).join('\n');
+
+            const body = [
+              `${dueCount} federal source release${dueCount === 1 ? '' : 's'} expected within the next ${leadDays} days.`,
+              '',
+              `**Last check:** ${runUrl} (${today})`,
+              '',
+              '| Metric | Name | Expected release | Source |',
+              '|--------|------|------------------|--------|',
+              rows,
+              '',
+              '---',
+              '',
+              '**Action checklist (per metric):**',
+              '1. Wait for the actual release (the date above is the first-of-month projection from `nextUpdate`, not a confirmed publication).',
+              '2. Once released, the monthly cron picks it up automatically if the metric has a federal-API fetcher in `scripts/build-state-data.js`.',
+              '3. For manual-refresh metrics (FBI UCR, CDC WONDER, NCES acgr, HRSA pcp), follow `scripts/REFRESH-PLAYBOOK.md`.',
+              '',
+              'This issue auto-closes when no releases are due within the next ' + leadDays + ' days.',
+            ].join('\n');
+
+            if (existing) {
+              const prevList = (existing.body || '').match(/\| `[^`]+`[^\n]+/g)?.sort().join('\n') || '';
+              const newList = body.match(/\| `[^`]+`[^\n]+/g)?.sort().join('\n') || '';
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+              if (prevList !== newList) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  body: `Due-soon list changed on ${today}. Run: ${runUrl}`,
+                });
+              }
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `${dueCount} federal source release${dueCount === 1 ? '' : 's'} expected within ${leadDays} days`,
+                body,
+                labels: ['source-due-soon'],
+              });
+            }
+
+      - name: Ensure source-due-soon label exists
+        if: always()
+        run: |
+          gh label create source-due-soon \
+            --description "Rolling reminder: federal source release window approaching" \
+            --color "0e8a16" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
