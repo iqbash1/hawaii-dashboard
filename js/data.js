@@ -1395,6 +1395,29 @@ const DASHBOARD_DATA = {
     "howToRead": "Both lines should fall. At the 30%+ threshold (the default view), Hawaiʻi has ranked last or near-last for two decades and the gap with the median has widened. The 50%+ view isolates the most severely burdened renters; the pattern is similar but values are roughly half.",
     "potentialDrivers": "Renters bear the sharpest edge of Hawaiʻi’s affordability crisis. Homeowners who bought before the price surge have locked-in costs; renters face each increase in real time. The state's <a href=\"https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/\" target=\"_blank\" rel=\"noopener\">2024 Housing Planning Study</a> found Hawaiʻi needs 64,490 more units by 2027 but only 13,471 were in the pipeline, while 35,884 existing units sit vacant as seasonal or vacation homes unavailable to local renters. Renter households earned $24.37/hr on average in 2023 against a two-bedroom housing wage of $41.83 per a <a href=\"https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf\" target=\"_blank\" rel=\"noopener\">DBEDT affordability analysis</a>, a supply shortfall and income gap that together keep Hawaiʻi ranked among the bottom five states at both the 30%+ and 50%+ thresholds.",
     "countyNarrative": "At the 30%+ threshold, cost burden is elevated in all four counties, with none better than the median of 49% as of 2023. Kauaʻi saw the sharpest increase over the decade, rising from 43% in 2013 to 58% in 2023, and Maui from 47% to 55%, both likely tied to the conversion of long-term rentals to vacation units on the neighbor islands. Honolulu (57%) stayed roughly flat, while Hawaiʻi County was the only county to improve, falling from 60% in 2013 to 56% in 2023. At the 50%+ severe level, Honolulu and Hawaiʻi County carry the highest severe burden (29-30% in 2023), while Kauaʻi's severe share (19%) is notably lower than its overall 30%+ burden would suggest.",
+    "externalCitations": [
+      {
+        "id": "housing_shortage_2024",
+        "label": "64,490 more units",
+        "source": "DBEDT 2024 Housing Planning Study",
+        "sourceUrl": "https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/",
+        "lastVerified": "2026-05-17"
+      },
+      {
+        "id": "housing_wage_2023",
+        "label": "$41.83",
+        "source": "DBEDT Housing Affordability Analysis, Feb 2024",
+        "sourceUrl": "https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf",
+        "lastVerified": "2026-05-17"
+      },
+      {
+        "id": "renter_income_2023",
+        "label": "$24.37",
+        "source": "DBEDT Housing Affordability Analysis, Feb 2024",
+        "sourceUrl": "https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf",
+        "lastVerified": "2026-05-17"
+      }
+    ],
     "useConsolidated": true,
     "hawaii": {
       "2005": 0.5004,
@@ -1527,6 +1550,15 @@ const DASHBOARD_DATA = {
     "howToRead": "Hawaiʻi has been consistently worse than the median throughout, with no sustained narrowing of the gap.",
     "potentialDrivers": "This single metric cascades into renter burden, homelessness, and out-migration. Hawaiʻi single-family homes sold at nearly twice the national price-to-income ratio in 2024, driven by limited inventory, demand for second and vacation homes, and high construction and land costs, per a <a href=\"https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf\" target=\"_blank\" rel=\"noopener\">DBEDT affordability analysis</a>. The state still needs 64,490 more units by 2027 but only 13,471 are in the pipeline (per the <a href=\"https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/\" target=\"_blank\" rel=\"noopener\">2024 Housing Planning Study</a>), and <a href=\"https://uhero.hawaii.edu/wp-content/uploads/2025/05/HawaiiHousingFactbook2025_Main.pdf\" target=\"_blank\" rel=\"noopener\">UHERO's 2025 Housing Factbook</a> found that regulatory barriers continue to slow construction while prices outpace income growth.",
     "countyNarrative": "Maui County has seen the most severe affordability deterioration, with median home prices surpassing $1 million after 2022 as pandemic-era in-migration, second-home demand, and post-wildfire displacement compressed an already scarce inventory. Honolulu has the highest volume of transactions and a ratio well below Maui's, which has risen sharply and now leads all four counties by a wide margin. Hawaiʻi County is the most affordable of the four, though prices have risen sharply since 2020. Kauaʻi's small, vacation-dominated market keeps the price-to-income ratio for full-time residents well above what local wages can support.",
+    "externalCitations": [
+      {
+        "id": "housing_shortage_2024",
+        "label": "64,490 more units",
+        "source": "DBEDT 2024 Housing Planning Study",
+        "sourceUrl": "https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/",
+        "lastVerified": "2026-05-17"
+      }
+    ],
     "useConsolidated": true,
     "hawaii": {
       "2005": 7.81,
@@ -2555,6 +2587,22 @@ const DASHBOARD_DATA = {
     "howToRead": "Hawaiʻi briefly had net inflow in 2003 but has been negative for most of the past two decades. The outflow peaked around 2022 and has since improved, though it remains well below zero.",
     "potentialDrivers": "This is the one metric you cannot spin. When thousands more leave than arrive each year, it reflects the cumulative weight of every other indicator on this dashboard. <a href=\"https://uhero.hawaii.edu/are-people-leaving-hawai%CA%BBi-because-of-high-prices-or-low-incomes/\">UHERO's 2026 analysis</a> found Hawaiʻi is both \"priced out\" and \"left behind\": high prices push residents toward cheaper mainland markets while slow income growth and limited industry diversity pull them away regardless of price. <a href=\"https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area\">BEA reported in early 2026</a> that Hawaiʻi had the nation's second-highest regional price level, and <a href=\"https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/\">HHFDC found</a> a household needs $41.83 per hour to afford the average two-bedroom rent while the typical family earns $24.37. One important caveat: a <a href=\"https://uhero.hawaii.edu/who-is-moving-in-and-out-understanding-migration-trends-in-hawaii/\">separate UHERO study on migration flows</a> found that in-migration from abroad and return migration offset some domestic losses, so this metric alone understates overall population dynamics and does not capture international arrivals.",
     "countyNarrative": "The domestic migration loss is concentrated on Oʻahu: DBEDT's 2024 county population estimates show Honolulu County averaged a net domestic out-migration of roughly 6,400 residents per year from 2020 to 2024, reflecting the combination of high housing costs and limited industry diversity in the state's most densely settled county. Hawaiʻi County (Big Island) is the only county with consistent net domestic in-migration, averaging roughly 2,200 new domestic arrivals per year over the same period, as lower home prices attract residents priced out of Honolulu. Maui County's migration dynamics shifted significantly after the August 2023 wildfires, with fire-related displacement adding to underlying cost pressures. Kauaʻi County's small population makes annual migration figures volatile, but high costs relative to local wages create similar outmigration pressure.",
+    "externalCitations": [
+      {
+        "id": "housing_wage_2023",
+        "label": "$41.83",
+        "source": "DBEDT Housing Affordability Analysis, Feb 2024",
+        "sourceUrl": "https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf",
+        "lastVerified": "2026-05-17"
+      },
+      {
+        "id": "renter_income_2023",
+        "label": "$24.37",
+        "source": "DBEDT Housing Affordability Analysis, Feb 2024",
+        "sourceUrl": "https://dbedt.hawaii.gov/economic/files/2024/02/Housing-Affordability-February-2024.pdf",
+        "lastVerified": "2026-05-17"
+      }
+    ],
     "useConsolidated": true,
     "dataNote": "Census population estimates; does not capture international migration.",
     "hawaii": {

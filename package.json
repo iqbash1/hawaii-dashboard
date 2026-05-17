@@ -31,6 +31,7 @@
     "update-metric-counts": "node scripts/update-metric-counts.js",
     "update-metric-counts:check": "node scripts/update-metric-counts.js --check",
     "check-source-due": "node scripts/check-source-due.js",
+    "audit-citations": "node scripts/audit-external-citations.js",
     "audit-metric": "node scripts/audit-metric.js"
   },
   "devDependencies": {
