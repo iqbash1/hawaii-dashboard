@@ -261,7 +261,7 @@ const QOTD = {
 
     /**
      * Share flow: copy the question URL to clipboard and flash "Copied!" on
-     * the button. Matches the dashboard's modal-share-btn pattern so the
+     * the button. Matches the dashboard's .share-btn pattern so the
      * share affordance behaves the same everywhere.
      */
     _handleShare(id, btnEl) {

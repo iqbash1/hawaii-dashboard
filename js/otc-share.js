@@ -1,7 +1,7 @@
 // Off the Charts: Share button.
-// Matches the dashboard's modal-share-btn / qotd-share-btn pattern: copies
-// the canonical URL to clipboard, then flashes "Copied!" on the button for
-// 2 seconds. Looks for any .share-btn[data-share-url] on the page.
+// Matches the dashboard's .share-btn / .qotd-share-btn pattern: copies the
+// canonical URL to clipboard, then flashes "Copied!" on the button for 2
+// seconds. Looks for any .share-btn[data-share-url] on the page.
 (function () {
     'use strict';
 

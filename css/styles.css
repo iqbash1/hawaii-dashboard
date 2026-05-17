@@ -54,6 +54,7 @@
     --neutral: #c08a1a;
     --neutral-bg: #fef9e7;
     --border: #EAEAEA;
+    --surface-subtle: #f5f6f8;
     --radius: 8px;
     --radius-sm: 6px;
     --radius-pill: 999px;
@@ -427,7 +428,7 @@ body {
     gap: 0.5rem;
     padding: 0.5rem 1.5rem;
     background: var(--hawaii-blue-light);
-    border-bottom: 1px solid rgba(13,124,143,0.2);
+    border-bottom: 1px solid color-mix(in srgb, var(--hawaii-blue) 20%, transparent);
     font-size: var(--text-base);
 }
 
@@ -450,7 +451,7 @@ body {
 
 .bundle-nav-btn {
     background: none;
-    border: 1px solid rgba(13,124,143,0.3);
+    border: 1px solid color-mix(in srgb, var(--hawaii-blue) 30%, transparent);
     border-radius: var(--radius-sm);
     color: var(--hawaii-blue);
     font-size: var(--text-sm);
@@ -874,38 +875,6 @@ body {
     z-index: 10;
 }
 
-.modal-share-btn {
-    height: 36px;
-    padding: 0 0.85rem;
-    gap: 0.4rem;
-    border: 1px solid var(--hawaii-blue);
-    background: var(--hawaii-blue);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: var(--text-base);
-    font-weight: 500;
-    font-family: inherit;
-    transition: all var(--transition);
-}
-
-.modal-share-btn svg { stroke: #fff; }
-
-.modal-share-btn:hover {
-    background: var(--hawaii-blue-dark);
-    border-color: var(--hawaii-blue-dark);
-    color: #fff;
-}
-
-.modal-share-btn.copied {
-    background: var(--positive);
-    border-color: var(--positive);
-    color: #fff;
-}
-
 .modal-close {
     width: 36px;
     height: 36px;
@@ -1037,7 +1006,7 @@ body {
 
 .modal-tab:hover {
     color: var(--text);
-    border-bottom-color: rgba(13, 124, 143, 0.3);
+    border-bottom-color: color-mix(in srgb, var(--hawaii-blue) 30%, transparent);
 }
 
 .modal-tab:focus-visible {
@@ -1235,7 +1204,7 @@ body {
 .table-toggle {
     color: var(--hawaii-blue);
     text-decoration: none;
-    border: 1px solid rgba(13,124,143,0.35);
+    border: 1px solid color-mix(in srgb, var(--hawaii-blue) 35%, transparent);
     padding: 0.3rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: var(--text-sm);
@@ -1270,10 +1239,10 @@ body {
 
 .data-table td {
     padding: 0.35rem 0.8rem;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--surface-subtle);
 }
 
-.data-table tr:hover td { background: #f9f9f9; }
+.data-table tr:hover td { background: var(--surface-subtle); }
 
 
 .data-table .section-header td {
@@ -1767,11 +1736,11 @@ body {
         min-height: 44px;
     }
 
-    .modal-share-btn .share-label {
+    .share-btn .share-label {
         display: none;
     }
 
-    .modal-share-btn {
+    .share-btn {
         padding: 0 0.5rem;
     }
 
@@ -2209,7 +2178,8 @@ body {
     color: #fff;
     outline: none;
 }
-/* Share button: visually identical to .modal-share-btn so the share affordance reads the same everywhere on the dashboard. .share-btn is the generic alias; .qotd-share-btn is kept for the QOTD-specific markup. */
+/* Share button: one filled-action shape used by the metric modal, Off the
+   Charts posts (.share-btn) and the QOTD popup (.qotd-share-btn). */
 .qotd-share-btn,
 .share-btn {
     height: 36px;
@@ -2223,7 +2193,7 @@ body {
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     font-weight: 500;
     font-family: inherit;
     transition: background 0.15s, border-color 0.15s;

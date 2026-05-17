@@ -13,8 +13,8 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .registry-wrap { margin-top: 0.5rem; }
 .registry-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); }
 .registry-table thead th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
-.registry-table tbody td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #f0f0f0; color: var(--text-muted); }
-.registry-table tbody tr:hover td { background: #f9f9f9; }
+.registry-table tbody td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--surface-subtle); color: var(--text-muted); }
+.registry-table tbody tr:hover td { background: var(--surface-subtle); }
 .registry-table .metric-name { font-weight: 500; color: var(--text); }
 .registry-table .area-cell { white-space: nowrap; }
 .registry-table .direction-cell { font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
@@ -27,7 +27,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 
 .gov-table { border-collapse: collapse; font-size: var(--text-sm); margin-top: 0.5rem; width: 100%; }
 .gov-table th { text-align: left; padding: 0.35rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; }
-.gov-table td { padding: 0.3rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-muted); vertical-align: top; }
+.gov-table td { padding: 0.3rem 0.75rem; border-bottom: 1px solid var(--surface-subtle); color: var(--text-muted); vertical-align: top; }
 .gov-table .party-d { color: #2563EB !important; font-weight: 600; }
 .gov-table .party-r { color: #C0392B !important; font-weight: 600; }
 .gov-table .gov-notes { font-size: var(--text-sm); color: var(--text-muted); line-height: 1.5; }
@@ -39,9 +39,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 /* Who is this for table */
 .audience-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); margin-top: 0.5rem; }
 .audience-table th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.03em; }
-.audience-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #f0f0f0; color: var(--text-muted); vertical-align: top; line-height: 1.55; }
+.audience-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--surface-subtle); color: var(--text-muted); vertical-align: top; line-height: 1.55; }
 .audience-table tbody tr:last-child td { border-bottom: none; }
-.audience-table tbody tr:hover td { background: #f9f9f9; }
+.audience-table tbody tr:hover td { background: var(--surface-subtle); }
 .audience-role { font-weight: 600; color: var(--text); white-space: nowrap; width: 18%; }
 .audience-table a { color: var(--hawaii-blue); text-decoration: none; }
 .audience-table a:hover { text-decoration: underline; }
