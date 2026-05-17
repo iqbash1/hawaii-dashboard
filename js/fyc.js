@@ -70,12 +70,6 @@
         return { yearKey: last[0], year: parseYear(last[0]), value: last[1] };
     }
 
-    function isDecimalPct(m) {
-        if (m.unit !== '%') return false;
-        const vals = [...Object.values(m.hawaii), ...Object.values(m.medianSeries)].filter(v => v !== null && v !== 0);
-        return vals.length > 0 && vals.every(v => Math.abs(v) <= 1);
-    }
-
     function fmtChange(absChange, unit, isDec) {
         const sign = absChange > 0 ? '+' : '';
         if (isDec) return sign + (absChange * 100).toFixed(1) + '%';
@@ -170,7 +164,7 @@
         const sd = typeof STATE_DATA !== 'undefined' && STATE_DATA[slug];
         if (!sd || !sd.data) return null;
         const m = DASHBOARD_DATA[slug];
-        const isDec = isDecimalPct(m);
+        const isDec = ChartUtils.isDecimalPctMetric(m);
 
         const firstKey = Object.keys(sd.data)[0];
         const isPCP = sd.data[firstKey] && typeof sd.data[firstKey].name === 'string';
@@ -261,7 +255,7 @@
         const m = DASHBOARD_DATA[slug];
         if (!m) return null;
         if (SPAN_EXCLUSIONS[SPAN_YEARS]?.has(slug)) return null;
-        const isDec = isDecimalPct(m);
+        const isDec = ChartUtils.isDecimalPctMetric(m);
         const latest = getLatest(m.hawaii);
         if (!latest) return null;
         const base = getVal(m.hawaii, latest.year - SPAN_YEARS);

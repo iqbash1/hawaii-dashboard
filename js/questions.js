@@ -1,7 +1,7 @@
 // ============================================================
 // Hawaiʻi Dashboard - Question of the Day bank
 //
-// 48 questions, rotated deterministically by day index
+// 47 questions, rotated deterministically by day index
 // starting from QOTD_DAY_ZERO (see js/qotd.js).
 //
 // Fields:
