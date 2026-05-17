@@ -25,27 +25,57 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const BASE = path.join(__dirname, '..');
 const DATA_PATH = path.join(BASE, 'js', 'data.js');
 
-// Domains that return 403 to bots but work in browsers
-// Domains that return 403/406/429 to automated requests but work in browsers
+// Domains that block automated requests but work in browsers. For these,
+// the audit treats 403/406/429/405 and connect-timeout (status 0) as
+// expected-not-broken. Verify each entry returns content in a real browser
+// before adding; the allowlist is the gentlest possible relief valve for
+// false positives, not a way to hide real outages.
 const EXPECTED_BLOCK = [
+    // Federal stats / data agencies
     'www.bls.gov',
     'data.census.gov',
     'www.census.gov',
     'nces.ed.gov',
+    'bhw.hrsa.gov',
+    'www.huduser.gov',
+    'www.fcc.gov',
+    'fred.stlouisfed.org',
+    // Academic / publisher portals
     'papers.ssrn.com',
     'www.journals.uchicago.edu',
     'journals.sagepub.com',
     'www.sciencedirect.com',
-    'bhw.hrsa.gov',
     'direct.mit.edu',
     'www.elibrary.imf.org',
+    // Think tanks / research orgs
     'laborcenter.berkeley.edu',
     'www.mckinsey.com',
     'excelined.org',
-    'www.infrastructure.gov.au',
     'www.kff.org',
     'kff.org',
+    'www.epi.org',
+    'www.kansascityfed.org',
+    'www.cbpp.org',
+    'cnee.colostate.edu',
+    'educationrecoveryscorecard.org',
+    'www.campbellcollaboration.org',
+    // Industry research / CRE data
+    'www.cbre.com',
+    // Hawaii / state agencies that block bots
+    'www.hawaiitourismauthority.org',
+    // Foreign government PDFs
+    'www.infrastructure.gov.au',
 ];
+
+// Statuses to treat as "expected block" rather than broken, when the
+// domain is in EXPECTED_BLOCK above. 403/406/429 are classic anti-bot
+// responses; 405 (Method Not Allowed) appears for some JS-rendered
+// portals; 422 (Unprocessable Entity) is used by a few sites (e.g.
+// educationrecoveryscorecard) to reject non-browser requests; 0 is
+// the audit-link library's signal for connect timeout / socket reset /
+// TLS handshake refusal, which most anti-bot edges do (rather than
+// returning a status code) to avoid leaking signal.
+const EXPECTED_BLOCK_STATUSES = new Set([403, 406, 429, 405, 422, 0]);
 
 function loadData() {
     const src = fs.readFileSync(DATA_PATH, 'utf8');
@@ -163,7 +193,7 @@ async function main() {
             const domain = new URL(r.url).hostname;
             if (r.ok || (r.status >= 200 && r.status < 400)) {
                 ok++;
-            } else if ([403, 406, 429].includes(r.status) && EXPECTED_BLOCK.includes(domain)) {
+            } else if (EXPECTED_BLOCK_STATUSES.has(r.status) && EXPECTED_BLOCK.includes(domain)) {
                 expected403++;
                 process.stdout.write('.');
             } else {
