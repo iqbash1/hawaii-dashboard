@@ -112,7 +112,13 @@ const METRIC_RULES = {
     home_price_to_income:       { min: 2.0,   max: 15.0,   maxYoYPct: 0.25, format: 'ratio' },
     // Homeless PIT counts: methodology changes and small populations cause big swings
     unsheltered_homeless_rate:  { min: 1,     max: 100,    maxYoYPct: 1.00, format: 'rate' },
-    road_poor_pct:              { min: 0.01,  max: 0.50,   maxYoYPct: 0.40, format: 'decimal_pct' },
+    // road_poor: 2000-2006 series uses pre-standardization state IRI methodologies;
+    // 2000->2001 (+79%) and 2004->2005 (+66%) are vintage-transition artifacts,
+    // not real road-condition swings. The exemption is narrow and dated so it
+    // doesn't silence the YoY check generally — additional spikes beyond these
+    // exact transitions still warn.
+    road_poor_pct:              { min: 0.01,  max: 0.50,   maxYoYPct: 0.40, format: 'decimal_pct',
+                                  noisyYoYTransitions: [[2000, 2001], [2004, 2005]] },
     // Broadband: pre-2016 data stripped (Census variable change); 2016+ values are 0.70-0.96
     broadband_subscription_pct: { min: 0.50,  max: 1.0,    maxYoYPct: 0.15, format: 'decimal_pct' },
     // 1970 national avg was 2.3¢/kWh; min=2 for pre-oil-crisis prices; maxYoY=0.60 for 1979-81 oil shock (+50% real)
@@ -188,7 +194,7 @@ const SOURCE_COVERAGE = {
     estabs_entry_rate:          { expectedStart: 1978, source: 'BLS BDM/BED',         note: 'Establishment births since 1978' },
     net_employer_formation:     { expectedStart: 1978, source: 'BLS BDM/BED',         note: 'Net firm formation since 1978' },
     labor_productivity:         { expectedStart: 2007, source: 'BLS State LP',        note: 'Experimental state series from 2007' },
-    road_poor_pct:              { expectedStart: 2007, source: 'FHWA HPMS',           note: 'Pavement condition standardized 2007' },
+    road_poor_pct:              { expectedStart: 2000, source: 'FHWA HM-64',          note: 'IRI-based pavement roughness. 2000-2006 uses earlier state IRI vintages with larger YoY swings (methodology not fully standardized); 2007+ is the consolidated series.' },
     naep_math_8:                { expectedStart: 1990, source: 'NCES NAEP',           note: '8th-grade math biennial from 1990; current scale 2003' },
     naep_reading_8:             { expectedStart: 1998, source: 'NCES NAEP',           note: '8th-grade state-level reading from 1998 (state-grade-8 reading not assessed pre-1998); current scale 2003' },
     unsheltered_homeless_rate:  { expectedStart: 2007, source: 'HUD AHAR/PIT',        note: 'Annual PIT counts from 2007' },
@@ -323,9 +329,16 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
             // unemployment swing of ~6.4x: to avoid false positives. Other
             // formats can have valid large swings (recession on counts,
             // etc.), so the rule applies only to decimal_pct.
+            // Per-metric exemption for known noisy YoY transitions (e.g., pre-
+            // standardization vintages with measurement-methodology shifts).
+            // Keyed by [prevYear, currYear] pairs in noisyYoYTransitions.
+            const yPrev = parseInt(years[i-1], 10);
+            const yCurr = parseInt(years[i], 10);
+            const exempt = Array.isArray(rules.noisyYoYTransitions) &&
+                rules.noisyYoYTransitions.some(([a, b]) => a === yPrev && b === yCurr);
             if (rules.format === 'decimal_pct' && changePct > 10.0) {
                 error(`${slug} ${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}): likely inverted or corrupted source`);
-            } else if (changePct > rules.maxYoYPct) {
+            } else if (changePct > rules.maxYoYPct && !exempt) {
                 warn(`${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
             }
         }

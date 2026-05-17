@@ -239,10 +239,28 @@
         };
     }
 
+    /* ── Per-metric per-span exclusion list ──
+     * Some metrics have data going back far enough to qualify for a longer-span
+     * change view, but the base year is methodologically noisy enough that the
+     * computed change misleads. We hide those (span, slug) pairs.
+     *
+     * road_poor_pct on 20-year: base year 2004 sits inside the FHWA pre-2007
+     * IRI-standardization window. State YoY swings in that window (HI 2000-2001
+     * +79%, 2004-2005 +66%) are vintage-transition artifacts rather than real
+     * road-condition changes. A 2024-vs-2004 delta would frame those artifacts
+     * as a long-run trend; the 15-year and 25-year views are unaffected
+     * (15yr base = 2009, post-standardization; 25yr base = 1999, before
+     * dataset starts).
+     */
+    const SPAN_EXCLUSIONS = {
+        20: new Set(['road_poor_pct']),
+    };
+
     /* ── Compute change for a metric over SPAN_YEARS ── */
     function computeChange(slug) {
         const m = DASHBOARD_DATA[slug];
         if (!m) return null;
+        if (SPAN_EXCLUSIONS[SPAN_YEARS]?.has(slug)) return null;
         const isDec = isDecimalPct(m);
         const latest = getLatest(m.hawaii);
         if (!latest) return null;
