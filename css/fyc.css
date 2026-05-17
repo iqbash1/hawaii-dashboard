@@ -121,11 +121,18 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 /* National standing table */
 .fyc-rank-breakdown { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); margin-bottom: 1.5rem; overflow: hidden; }
 .fyc-rank-header { display: flex; align-items: center; gap: 0.65rem; padding: 0.28rem 1rem; border-bottom: 1px solid var(--border); background: var(--surface-subtle); }
-.fyc-rank-hdr-rank { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 100px; flex-shrink: 0; text-align: left; }
-.fyc-rank-hdr-name { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); flex: 1; min-width: 0; text-align: left; }
-.fyc-rank-hdr-cat  { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 170px; flex-shrink: 0; }
-.fyc-rank-hdr-move { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 95px; text-align: left; flex-shrink: 0; }
-.fyc-rank-hdr-val  { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); width: 190px; text-align: right; flex-shrink: 0; }
+/* Rank-table column header cells. Shared typography here, per-column
+   sizing and alignment below. */
+.fyc-rank-hdr-rank,
+.fyc-rank-hdr-name,
+.fyc-rank-hdr-cat,
+.fyc-rank-hdr-move,
+.fyc-rank-hdr-val { font-size: var(--text-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
+.fyc-rank-hdr-rank { width: 100px; flex-shrink: 0; text-align: left; }
+.fyc-rank-hdr-name { flex: 1; min-width: 0; text-align: left; }
+.fyc-rank-hdr-cat  { width: 170px; flex-shrink: 0; }
+.fyc-rank-hdr-move { width: 95px; text-align: left; flex-shrink: 0; }
+.fyc-rank-hdr-val  { width: 190px; text-align: right; flex-shrink: 0; }
 .fyc-rank-hdr-sortable { cursor: pointer; white-space: nowrap; color: var(--text-muted); border-radius: 3px; transition: background 0.1s, color 0.1s; }
 .fyc-rank-hdr-sortable:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 .fyc-rank-hdr-sortable.active { color: var(--text); }

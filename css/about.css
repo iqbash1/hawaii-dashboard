@@ -9,6 +9,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .methods-section p, .methods-section li { font-size: var(--text-lg); color: var(--text-muted); line-height: 1.6; }
 .methods-section ol li::marker { font-weight: 700; }
 .methods-section p + p { margin-top: 0.4rem; }
+.methods-section .criteria-list { padding-left: 1.25rem; margin-top: 0.5rem; }
+.methods-section .criteria-list > li { padding: 0.3rem 0; }
+.methods-section .note-row { margin-top: 0.75rem; }
 
 .registry-wrap { margin-top: 0.5rem; }
 .registry-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); }

@@ -584,6 +584,7 @@ A custom Chart.js plugin renders governor names and dashed term boundaries on al
 | `--surface-subtle` | `#f5f6f8` | Pale hairline dividers, table-row stripes, header strips |
 | `--radius-pill` | `999px` | Pill / capsule shape |
 | `--shadow-card` | `0 4px 14px rgba(0,0,0,0.09)` | Resting / hover card shadow |
+| `--shadow-soft` | `0 2px 8px rgba(0,0,0,0.04)` | Subtle ambient shadow (e.g., QOTD teaser) |
 | `--shadow-pop` | `0 2px 8px rgba(13,124,143,0.12)` | Brand-tinted accent shadow |
 | `--shadow-focus` | `0 0 0 2px rgba(13,124,143,0.15)` | Focus ring |
 
