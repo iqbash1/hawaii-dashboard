@@ -28,6 +28,8 @@
     "audit-links": "node scripts/audit-links.js",
     "update-years": "node scripts/update-narrative-years.js",
     "update-monthly": "node scripts/update-monthly.js",
+    "update-metric-counts": "node scripts/update-metric-counts.js",
+    "update-metric-counts:check": "node scripts/update-metric-counts.js --check",
     "audit-metric": "node scripts/audit-metric.js"
   },
   "devDependencies": {

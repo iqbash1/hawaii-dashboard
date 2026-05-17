@@ -1,0 +1,151 @@
+name: Audit external links
+
+# Weekly liveness check of every external URL in data.js
+# (sourceUrl, potentialDrivers, policyLevers, rankHistoryNarrative).
+#
+# ~200 URLs. Some federal/journal/think-tank hosts return 403 to bots
+# but work in browsers; the script's EXPECTED_BLOCK list filters them.
+#
+# Output behaviour: maintains a single rolling issue labeled `link-rot`.
+# - No broken links → existing rolling issue (if any) is closed with a
+#   comment ("all links healthy as of <run>").
+# - Broken links → opens the issue if none exists, or edits the body to
+#   the latest list + drops a comment when the list changes.
+#
+# Schedule: Sundays 02:00 UTC (Saturday 16:00 HST).
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: audit-links
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Run audit-links
+        id: links
+        run: |
+          set +e
+          set -o pipefail
+          node scripts/audit-links.js 2>&1 | tee /tmp/audit-links.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          # Extract broken section (between '--- BROKEN LINKS ---' and EOF)
+          awk '/--- BROKEN LINKS ---/{flag=1; next} flag' /tmp/audit-links.txt > /tmp/audit-links-broken.txt || true
+          echo "broken_count=$(grep -c '^  \[' /tmp/audit-links-broken.txt || echo 0)" >> "$GITHUB_OUTPUT"
+          exit 0  # Don't fail the step; we handle below
+
+      - name: Maintain rolling link-rot issue
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const brokenCount = parseInt('${{ steps.links.outputs.broken_count }}', 10) || 0;
+            const exitCode = parseInt('${{ steps.links.outputs.exit_code }}', 10);
+
+            // Find existing open issue with the rolling label.
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'link-rot',
+              per_page: 5,
+            });
+            const existing = open.data[0] || null;
+
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const today = new Date().toISOString().slice(0, 10);
+
+            if (brokenCount === 0) {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  body: `All external links healthy as of ${today}. Closing.\n\nRun: ${runUrl}`,
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  state: 'closed',
+                });
+              }
+              return;
+            }
+
+            const brokenList = fs.readFileSync('/tmp/audit-links-broken.txt', 'utf8').trim();
+            const body = [
+              `Weekly link audit detected **${brokenCount} broken external links** in \`js/data.js\`.`,
+              '',
+              `**Last run:** ${runUrl} (${today})`,
+              '',
+              'Broken list (auto-updated; latest run replaces this section):',
+              '',
+              '```',
+              brokenList,
+              '```',
+              '',
+              '---',
+              '',
+              '**Triage:**',
+              '- 404 / 410 → find replacement URL or remove the citation',
+              '- 403 → if the host is browser-friendly but bot-hostile, add the domain to `EXPECTED_BLOCK` in `scripts/audit-links.js`',
+              '- Timeout → re-run the workflow; if persistent, treat as 404',
+              '',
+              'This issue auto-closes when the next weekly run finds 0 broken links.',
+            ].join('\n');
+
+            if (existing) {
+              // Only comment when the broken list changed since last update.
+              const stripped = existing.body || '';
+              const prevBlock = stripped.match(/```\n([\s\S]*?)\n```/);
+              const prevList = prevBlock ? prevBlock[1].trim() : '';
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+              if (prevList !== brokenList) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  body: `Broken-link list changed on ${today}. Run: ${runUrl}`,
+                });
+              }
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Link rot: ${brokenCount} broken external links in data.js`,
+                body,
+                labels: ['link-rot'],
+              });
+            }
+
+      - name: Ensure link-rot label exists
+        if: always()
+        run: |
+          gh label create link-rot \
+            --description "Rolling audit-links report; auto-closes when 0 broken links remain" \
+            --color "fbca04" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

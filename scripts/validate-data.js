@@ -1674,7 +1674,26 @@ async function runFreshFetch() {
         try {
             result = await fetcher();
         } catch (e) {
-            info(`[${slug}] fetcher threw: ${e.message}; skipping`);
+            // Promote cert / TLS / DNS errors to a WARN so the silent-skip
+            // class doesn't hide a real failure. Generic API errors stay
+            // INFO (rate limits, transient 5xx — known noisy in CI).
+            // Logged in the May 2026 audit as a validator bug.
+            const msg = String(e.message || '');
+            const isCertOrDns = (
+                msg.includes('UNABLE_TO_VERIFY') ||
+                msg.includes('SELF_SIGNED') ||
+                msg.includes('CERT_') ||
+                msg.includes('ENOTFOUND') ||
+                msg.includes('EAI_AGAIN') ||
+                msg.includes('unable to verify') ||
+                msg.includes('self-signed') ||
+                msg.includes('self signed')
+            );
+            if (isCertOrDns) {
+                warn(`[fresh-fetch:${slug}] fetcher failed with cert/DNS error: ${msg.slice(0, 200)}; skipping`);
+            } else {
+                info(`[${slug}] fetcher threw: ${msg}; skipping`);
+            }
             skippedMetrics++;
             continue;
         }

@@ -1107,6 +1107,10 @@ def phase10():
 # -----------------------------------------------------------------------
 
 def main():
+    # --gate: exit 1 if any P0 or P1 finding is present, else exit 0.
+    # P2 is housekeeping (footer dates, sitemap lag) and never blocks.
+    gate_mode = "--gate" in sys.argv
+
     data, state_data, questions = load_dashboard_data()
     print(f"Loaded {len(data)} metrics from data.js, {len(state_data)} from state-data.js, {len(questions)} QOTDs", file=sys.stderr)
     phase2(data)
@@ -1142,6 +1146,12 @@ def main():
             print(f"\n### {sev} ({len(entries)})")
             for page, msg in entries:
                 print(f"  {page}: {msg}")
+
+    if gate_mode and (total_p0 + total_p1) > 0:
+        print(f"\n✗ audit-internal gate: {total_p0} P0 + {total_p1} P1 findings (P2={total_p2}, informational).")
+        sys.exit(1)
+    if gate_mode:
+        print(f"\n✓ audit-internal gate: 0 P0/P1 findings (P2={total_p2}, informational).")
 
 
 if __name__ == "__main__":

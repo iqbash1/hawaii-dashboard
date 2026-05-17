@@ -1,0 +1,146 @@
+name: Cron heartbeat
+
+# Watches the monthly data-refresh workflow. If no successful run within
+# the last 32 days, opens (or updates) a rolling `cron-stale` issue so
+# silent cron failures don't go unnoticed.
+#
+# Background: in April 2026 the refresh cron failed silently for an
+# entire month due to a snapshot filename mismatch + swallowed exit code
+# (see commits d590e4b3 / f22ea9b3). Nothing alerted because the workflow
+# "passed" in GitHub's view. This heartbeat is the dead-man's switch.
+#
+# Schedule: Mondays 03:00 UTC. Cheap, runs in ~10s.
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  issues: write
+
+concurrency:
+  group: cron-heartbeat
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check last refresh-data success age
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Most-recent successful refresh-data run; ISO8601 timestamp.
+          LAST=$(gh run list \
+            --workflow=refresh-data.yml \
+            --status=success \
+            --limit=1 \
+            --json createdAt \
+            --jq '.[0].createdAt // empty')
+          if [ -z "$LAST" ]; then
+            echo "No successful refresh-data run on record"
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+            echo "age_days=999" >> "$GITHUB_OUTPUT"
+            echo "last_run=never" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          NOW=$(date -u +%s)
+          LAST_TS=$(date -u -d "$LAST" +%s)
+          AGE=$(( (NOW - LAST_TS) / 86400 ))
+          echo "Last successful run: $LAST ($AGE days ago)"
+          echo "last_run=$LAST" >> "$GITHUB_OUTPUT"
+          echo "age_days=$AGE" >> "$GITHUB_OUTPUT"
+          # Cron is monthly (23rd); 32 days = one missed run.
+          if [ "$AGE" -gt 32 ]; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Maintain rolling cron-stale issue
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const stale = '${{ steps.check.outputs.stale }}' === 'true';
+            const ageDays = parseInt('${{ steps.check.outputs.age_days }}', 10);
+            const lastRun = '${{ steps.check.outputs.last_run }}';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/refresh-data.yml`;
+            const today = new Date().toISOString().slice(0, 10);
+
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'cron-stale',
+              per_page: 5,
+            });
+            const existing = open.data[0] || null;
+
+            if (!stale) {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  body: `Heartbeat OK as of ${today}. Last successful refresh: ${lastRun} (${ageDays} days ago). Closing.`,
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  state: 'closed',
+                });
+              }
+              return;
+            }
+
+            const body = [
+              `The monthly data-refresh cron has not had a successful run in **${ageDays} days**.`,
+              '',
+              `**Last successful run:** ${lastRun === 'never' ? 'none on record' : lastRun}`,
+              `**Workflow:** ${runUrl}`,
+              '',
+              'Likely causes:',
+              '- The cron silently failed (April 2026 precedent: see commits d590e4b3 / f22ea9b3).',
+              '- A federal API changed shape and the fetcher errored before producing data.',
+              '- The GH Actions runner could not reach a source (TLS chain change, rate limit).',
+              '',
+              'Investigate:',
+              '1. Open the workflow page and inspect the latest run logs.',
+              '2. If the latest run failed at the `Validate data integrity` step, the data fetched but failed checks — see the issue opened by the workflow itself.',
+              '3. Manual recovery: `gh workflow run refresh-data.yml` to trigger a fresh run.',
+              '',
+              'This issue auto-closes when the next heartbeat finds a successful run within the last 32 days.',
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Cron stale: monthly refresh-data has not succeeded in ${ageDays} days`,
+                body,
+                labels: ['cron-stale'],
+              });
+            }
+
+      - name: Ensure cron-stale label exists
+        if: always()
+        run: |
+          gh label create cron-stale \
+            --description "Rolling heartbeat: monthly refresh-data cron has not succeeded recently" \
+            --color "d93f0b" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
