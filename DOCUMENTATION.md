@@ -70,7 +70,7 @@ hawaii-dashboard/
 ├── rh/                     # Rank history redirect pages for OG sharing
 │   ├── {slug}/index.html
 │   └── {slug}/{code}/index.html   # Per-comparison redirect pages (49 per metric)
-├── q/                      # Question of the Day redirect pages (48 questions)
+├── q/                      # Question of the Day redirect pages (47 questions)
 │   └── {id}/index.html             # Meta-refresh to /?from_q={id}; carries OG meta for the claim card
 ├── off-the-charts/         # Short-form blog (SEO-first, per-post canonical URLs)
 │   ├── index.html                   # Archive index
@@ -810,7 +810,7 @@ See `scripts/REFRESH-PLAYBOOK.md` for the full canonical sequence.
 
 ## Question of the Day (QOTD)
 
-Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict + 1-sentence answer + live Chart.js canvas pulled from `chartUrl`). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 48 questions in the bank; rotation wraps.
+Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict + 1-sentence answer + live Chart.js canvas pulled from `chartUrl`). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 47 questions in the bank; rotation wraps.
 
 ### URL pattern
 
@@ -821,7 +821,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 
 | File | Role |
 |------|------|
-| `js/questions.js` | The 48-question bank. Each entry: `{id, slug, claim, correct, answer, chartUrl, metric, metricLabel, topic, variant}`. `id` is the URL identity and primary key. `slug` is retained only for OG-image filename lookup. |
+| `js/questions.js` | The 47-question bank. Each entry: `{id, slug, claim, correct, answer, chartUrl, metric, metricLabel, topic, variant}`. `id` is the URL identity and primary key. `slug` is retained only for OG-image filename lookup. |
 | `js/qotd.js` | Controller. Public surface: `today()`, `getById(id)`, `renderTeaser()`, `submitAnswer(id, picked)`, `recordAnswer(id, ...)`, `hasAnswered(id)`, `getAnswer(id)`, `shareUrl(id)`, `dismissToday()` / `isDismissedToday()`, `trackSharedUrlLanding(id)`, `init()`. No modal; proof view renders inline in the same card. |
 | `js/routing.js` | Handles `/q/{id}/` path and `?from_q={id}` query as track-and-redirect to `/`. |
 | `q/{id}/index.html` | 48 pre-generated redirect pages with OG meta. |
@@ -832,7 +832,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
 | `scripts/validate-all.sh` | Aggregates the 6 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, and generate-fyc-pages. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
-| `tests/qotd.test.js` | 58 unit tests (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, medianSeries invariants). |
+| `tests/qotd.test.js` | 58 unit tests across 9 suites (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, V1/V2 gap threshold, medianSeries invariant). |
 
 ### Template variants (V1–V8)
 
