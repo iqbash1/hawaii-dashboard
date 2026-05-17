@@ -214,7 +214,7 @@ test.describe('Bottom Line brief', () => {
         await expect(brief).toBeVisible();
         const text = await brief.textContent();
         expect(text).toContain('Bottom line:');
-        expect(text).toContain('ranking #');
+        expect(text).toMatch(/#\d+ of 50/);
         expect(text).toContain('Keep in mind:');
     });
 
