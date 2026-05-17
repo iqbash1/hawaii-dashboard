@@ -51,6 +51,9 @@ itself; the archive is excluded from the scan.
 - `fetch-severe-burden.js` — prints Census ACS B25070 50%+ severe renter cost burden as JSON for hand-paste into state-data / county-data / data.js threshold variants. Superseded by build-state-data's thresholdVariants flow for state-level (`renter_cost_burden_pct/50`); kept here for county-level severe burden re-derivation.
 - `fetch-verylow-food-insecurity.js` — prints USDA ERS very-low food security as JSON for hand-paste into the same variant slots. Superseded by build-state-data's `food_insecurity_rate` fetcher for state-level; kept for county-level very-low re-derivation.
 
+### Drift reconciliation (archived May 2026)
+- `reconcile-drift-2026-05.js` — one-shot front-end that called `build-state-data.js` fetchers for the three "drift-detected" metrics (road_poor_pct, net_domestic_migration_rate, voter_participation_rate) and merged any missing years into state-data.js. Net change: added road_poor_pct 2024 (HI = 0.1537, rank #47/50). The other two were already in sync; memory's "drift detected" status was stale from a prior cycle.
+
 ### Audit / value-edit utilities (archived May 2026)
 - `audit_state_data.py` — original Python audit script that walked state-data.js for typos, year-over-year spikes, rank checks, and incomplete-coverage flags. Superseded by `scripts/validate-data.js` Sections 1-18, which run the same checks in JS and are wired into the build/CI pipeline.
 - `update_metric_year.py` — safely overwrote a single `state-data.js[metric][data][year]` cell from a values.json file, with a confirmation prompt before writing. Useful for one-off value patches when API revisions hit a specific year. Kept for re-runnability if a similar surgical edit is needed; not part of the routine pipeline.
