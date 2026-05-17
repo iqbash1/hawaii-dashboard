@@ -33,7 +33,8 @@
     "audit-metric": "node scripts/audit-metric.js"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "eslint": "^10.4.0",
+    "globals": "^17.6.0",
     "xlsx": "^0.18.5"
   }
 }
