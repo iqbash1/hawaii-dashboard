@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>QOTD answer — metric label preview</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body { padding: 1.5rem 2rem; background: var(--bg); }
+    .wrap { max-width: 1240px; margin: 0 auto; }
+    .crumb { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .crumb a { color: var(--hawaii-blue); text-decoration: none; }
+    .page-h { font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .page-sub { color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.55; max-width: 760px; }
+
+    .question-block { margin: 2.5rem 0; }
+    .question-block > h2 {
+      font-family: var(--font-heading); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem;
+    }
+    .question-block > h2 .meta { color: var(--hawaii-blue); margin-left: 0.5rem; font-weight: 600; }
+
+    .compare-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .stage-label {
+      font-family: var(--font-heading); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #888; margin-bottom: 0.5rem;
+    }
+    .stage-label.after { color: var(--hawaii-blue); }
+
+    .card-host {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem 1.75rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); text-align: center;
+    }
+    .card-host.dashed { border-style: dashed; }
+    .card-host > * + * { margin-top: 0.85rem; }
+
+    /* Faux proof-view internals (mirrors qotd-teaser-inner--proof) */
+    .qotd-teaser-eyebrow-faux {
+      margin: 0; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--hawaii-blue, #0D7C8F); font-weight: 600;
+    }
+    .qotd-claim-faux {
+      font-size: 1.35rem; line-height: 1.35; font-weight: 600; color: var(--text, #222);
+      margin: 0; max-width: 600px; margin-left: auto; margin-right: auto;
+    }
+    .qotd-verdict-faux {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 0.95rem; border-radius: 999px;
+      background: #FCEBEA; color: #8B1F1A; font-weight: 600; font-size: 0.95rem;
+    }
+    .qotd-answer-reveal-faux { font-size: 1rem; color: var(--text); margin: 0; }
+    .qotd-answer-text-faux { font-size: 0.95rem; line-height: 1.55; color: var(--text); max-width: 560px; margin-left: auto; margin-right: auto; }
+
+    /* The metric-label option */
+    .qotd-metric-label {
+      display: inline-block;
+      font-family: var(--font-heading);
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--avg-gray-light);
+      margin-bottom: 0.35rem;
+    }
+
+    .commentary {
+      background: #FFF8E1; border-left: 3px solid #c08a1a; padding: 0.85rem 1rem;
+      border-radius: 4px; font-size: 0.88rem; color: #555; margin-top: 1rem; line-height: 1.55;
+      max-width: 760px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="crumb"><a href="./">← All previews</a></div>
+    <h1 class="page-h">QOTD answer — does a metric label fix the missing context?</h1>
+    <p class="page-sub">
+      The current answer reveal drops a bare number ("In 2024, Hawaiʻi was -64.6 per 10K versus the median of 6.2 per 10K") with no metric name, no unit translation, no direction.
+      Testing whether prepending the metric as a small pill above the answer is enough — across three different unit shapes (signed rate, ¢/kWh, ratio).
+      A third panel rewrites the sentence so the metric is the subject, for comparison.
+    </p>
+
+    <!-- ============================================================ -->
+    <!-- CASE 1 — Net migration (signed, per 10K) — the trigger case -->
+    <!-- ============================================================ -->
+    <div class="question-block">
+      <h2>Case 1 — Net migration <span class="meta">V1 · signed · per 10K</span></h2>
+      <div class="compare-grid">
+
+        <div>
+          <div class="stage-label">Now</div>
+          <div class="card-host dashed">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">More people move to Hawaiʻi than leave.</h2>
+            <span class="qotd-verdict-faux">✗ Not quite.</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>False</strong></p>
+            <p class="qotd-answer-text-faux">In 2024, Hawaiʻi was -64.6 per 10K versus the median of 6.2 per 10K.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-label after">With metric label</div>
+          <div class="card-host">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">More people move to Hawaiʻi than leave.</h2>
+            <span class="qotd-verdict-faux">✗ Not quite.</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>False</strong></p>
+            <div>
+              <span class="qotd-metric-label">Net Migration</span>
+              <p class="qotd-answer-text-faux">In 2024, Hawaiʻi was -64.6 per 10K versus the median of 6.2 per 10K.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-label after">Rewritten (metric as subject)</div>
+          <div class="card-host">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">More people move to Hawaiʻi than leave.</h2>
+            <span class="qotd-verdict-faux">✗ Not quite.</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>False</strong></p>
+            <p class="qotd-answer-text-faux">In 2024, Hawaiʻi lost about 65 residents per 10,000 to other states, while most states gained residents.</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="commentary">
+        <strong>Read:</strong> the label tells you what metric it is, but "-64.6 per 10K" still reads as jargon and the negative sign reads as a typo. The rewrite folds metric + unit + direction into one readable sentence.
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- CASE 2 — Electricity price (¢/kWh) — unit jargon -->
+    <!-- ============================================================ -->
+    <div class="question-block">
+      <h2>Case 2 — Residential electricity price <span class="meta">V1 · ¢/kWh</span></h2>
+      <div class="compare-grid">
+
+        <div>
+          <div class="stage-label">Now</div>
+          <div class="card-host dashed">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">Hawaiʻi has higher electricity prices than most states.</h2>
+            <span class="qotd-verdict-faux" style="background:#E6F4EA;color:#1F6B3E;">✓ You got it!</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>True</strong></p>
+            <p class="qotd-answer-text-faux">In 2025, Hawaiʻi was 40.6¢ versus the median of 15.3¢.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-label after">With metric label</div>
+          <div class="card-host">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">Hawaiʻi has higher electricity prices than most states.</h2>
+            <span class="qotd-verdict-faux" style="background:#E6F4EA;color:#1F6B3E;">✓ You got it!</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>True</strong></p>
+            <div>
+              <span class="qotd-metric-label">Residential Electricity Price</span>
+              <p class="qotd-answer-text-faux">In 2025, Hawaiʻi was 40.6¢ versus the median of 15.3¢.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-label after">Rewritten (metric as subject)</div>
+          <div class="card-host">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">Hawaiʻi has higher electricity prices than most states.</h2>
+            <span class="qotd-verdict-faux" style="background:#E6F4EA;color:#1F6B3E;">✓ You got it!</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>True</strong></p>
+            <p class="qotd-answer-text-faux">In 2025, Hawaiʻi residents paid 40.6¢ per kWh of electricity — about 2.7× the 15.3¢ most states pay.</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="commentary">
+        <strong>Read:</strong> the label here is mostly redundant — "electricity prices" already lives in the claim. "40.6¢" still floats without "/kWh"; the rewrite restores the unit and the 2.7× ratio gives the size of the gap.
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- CASE 3 — Home price-to-income (8.7x) — ratio jargon -->
+    <!-- ============================================================ -->
+    <div class="question-block">
+      <h2>Case 3 — Home price-to-income ratio <span class="meta">V1 · ratio · 8.7x</span></h2>
+      <div class="compare-grid">
+
+        <div>
+          <div class="stage-label">Now</div>
+          <div class="card-host dashed">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">Hawaiʻi homes cost a bigger share of income than most states.</h2>
+            <span class="qotd-verdict-faux" style="background:#E6F4EA;color:#1F6B3E;">✓ You got it!</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>True</strong></p>
+            <p class="qotd-answer-text-faux">In 2024, Hawaiʻi was 8.7x versus the median of 4.2x.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-label after">With metric label</div>
+          <div class="card-host">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">Hawaiʻi homes cost a bigger share of income than most states.</h2>
+            <span class="qotd-verdict-faux" style="background:#E6F4EA;color:#1F6B3E;">✓ You got it!</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>True</strong></p>
+            <div>
+              <span class="qotd-metric-label">Home Price-to-Income Ratio</span>
+              <p class="qotd-answer-text-faux">In 2024, Hawaiʻi was 8.7x versus the median of 4.2x.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-label after">Rewritten (metric as subject)</div>
+          <div class="card-host">
+            <p class="qotd-teaser-eyebrow-faux">Do you know Hawaiʻi?</p>
+            <h2 class="qotd-claim-faux">Hawaiʻi homes cost a bigger share of income than most states.</h2>
+            <span class="qotd-verdict-faux" style="background:#E6F4EA;color:#1F6B3E;">✓ You got it!</span>
+            <p class="qotd-answer-reveal-faux">Answer: <strong>True</strong></p>
+            <p class="qotd-answer-text-faux">In 2024, the typical Hawaiʻi home cost 8.7 years of the typical household's income, versus 4.2 years in most states.</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="commentary">
+        <strong>Read:</strong> the label names the metric but "8.7x" still requires the reader to remember the formula. The rewrite reframes "x" as "years of income" — same math, immediate meaning.
+      </div>
+    </div>
+
+    <div class="commentary" style="background:#EAF2F9;border-left-color:var(--hawaii-blue);max-width:none;">
+      <strong>Verdict to discuss:</strong> a metric label is a useful safety net for the few answers where the claim doesn't already name the metric — but it doesn't fix unit jargon, signed values, or "median" framing.
+      For the 25 V1/V2 answers, rewriting the sentence with the metric as subject does both jobs in one move.
+    </div>
+
+  </div>
+</body>
+</html>

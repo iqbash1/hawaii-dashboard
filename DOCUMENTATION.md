@@ -106,6 +106,10 @@ hawaii-dashboard/
 │   ├── update-monthly.js       # Fetches latest BLS/EIA monthly data for 4 metrics
 │   ├── audit-metric.js         # Comprehensive per-metric audit (10 checks)
 │   ├── audit-links.js          # HTTP link checker for all URLs in data.js
+│   ├── audit-narrative-numbers.js  # Scans every numeric claim in narratives against data; --gate exits 1 on mismatch
+│   ├── sync-qotd-answers.js    # Regenerates QOTD answer fields from live data; --check exits 1 on drift
+│   ├── validate-all.sh         # Aggregates validate-data + audit + sync-check into one CI gate (npm run validate)
+│   ├── REFRESH-PLAYBOOK.md     # Canonical sequence after any data refresh
 │   └── validate-data.js        # Validates data integrity before CI commit
 ├── methods/                # Static methodology page
 │   └── index.html
@@ -115,8 +119,7 @@ hawaii-dashboard/
 │   ├── smoke.spec.js           # Critical-path E2E smoke tests (Playwright)
 │   ├── utils.test.js           # Unit tests for js/utils.js (Node.js built-in test runner)
 │   ├── compute.test.js         # Unit tests for js/compute.js
-│   ├── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
-│   └── smoke.spec.js           # End-to-end smoke tests (Playwright)
+│   └── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
 ├── .github/
 │   └── workflows/
 │       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs
@@ -746,9 +749,12 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 state-data.js is the canonical store. data.js is derived. To update a year cell:
 1. Edit `js/state-data.js` directly (or re-run `scripts/build-state-data.js` with the right env vars to fetch fresh).
 2. Run `node scripts/recompute-data.js` so the change propagates to `data.js` HI series and `medianSeries`.
-3. Run `npm run validate:fresh` to confirm 0 drift against canonical source.
-4. Run `python3 scripts/generate-og-pages.py --slug {affected-slug}` to refresh OG images and `/t/ /r/ /rh/` redirect stubs.
-5. Commit and push.
+3. Run `npm run sync-qotd` so any QOTD answer that cites this metric regenerates against the new values.
+4. Run `npm run validate` (which chains validate-data + audit + sync-check) to confirm 0 drift.
+5. Run `python3 scripts/generate-og-pages.py --slug {affected-slug}` to refresh OG images and `/t/ /r/ /rh/` redirect stubs.
+6. Commit and push.
+
+See `scripts/REFRESH-PLAYBOOK.md` for the full canonical sequence.
 
 ### Adding a new metric
 
@@ -760,8 +766,9 @@ state-data.js is the canonical store. data.js is derived. To update a year cell:
 6. If county data is available, add to `js/county-data.js` and add a `countyNarrative` field on the metric object.
 7. Add `potentialDrivers` (HTML string with hyperlinked citations) and set `useConsolidated: true` on the metric object.
 8. Run `node scripts/recompute-data.js` to populate HI series + medianSeries.
-9. Run `python3 scripts/generate-og-pages.py --slug {new-slug}` for OG assets.
-10. Commit and push.
+9. Run `npm run validate` (chains data + narrative-audit + qotd-sync checks).
+10. Run `python3 scripts/generate-og-pages.py --slug {new-slug}` for OG assets.
+11. Commit and push.
 
 ---
 
@@ -789,7 +796,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
 | `scripts/validate-all.sh` | Aggregates validate-data + audit + sync-check into one CI gate (`npm run validate`). |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
-| `tests/qotd.test.js` | 19 unit tests (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL). |
+| `tests/qotd.test.js` | 58 unit tests (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, medianSeries invariants). |
 
 ### Template variants (V1–V8)
 
