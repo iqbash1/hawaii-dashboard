@@ -82,6 +82,15 @@ jobs:
       - name: Refresh latestMonthly values (BLS + EIA)
         run: node scripts/update-monthly.js
 
+      # ----- Refresh stale narrative year stamps in data.js -----
+      # When data advances (e.g., 2023 → 2024), narrative fields like
+      # whyItMatters / howToRead may still cite the old year. This script
+      # finds simple forward-looking patterns ("in 2023", "(2023)", etc.)
+      # and bumps them. Historical references are deliberately untouched.
+      # Any changes show up in the auto-generated PR diff for review.
+      - name: Refresh stale narrative year stamps
+        run: node scripts/update-narrative-years.js --apply
+
       # ----- Update derived files -----
       - name: Update about/index.html year ranges
         run: node scripts/update-about-years.js
@@ -100,22 +109,24 @@ jobs:
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
           exit 0  # don't fail the step; we handle it below
 
-      # ----- Fresh-fetch comparison (inform-only for v1) -----
-      # Re-fetches each ACS metric's latest year directly from Census and
-      # compares to data.js. Catches the class of bug that introduced
-      # renter_cost_burden_pct 2024 = 0.5059 in March 2026 (hand-pasted
-      # value drifting from the canonical fetch result). Inform-only:
-      # writes results to the PR body but does not block merge.
-      - name: Fresh-fetch comparison (inform-only)
+      # ----- Fresh-fetch drift check (BLOCKING since 2026-05-17) -----
+      # Re-fetches each auto-audited metric's latest HI year directly from
+      # the canonical federal source and compares to state-data.js.
+      # Catches the bug class that introduced renter_cost_burden_pct 2024
+      # = 0.5059 in March 2026 (hand-pasted value drifting from the
+      # canonical fetch result). Now BLOCKING: ERROR-grade drift adds to
+      # the combined error count, opens an issue, and blocks PR creation.
+      # Cert/DNS/transient API failures still emit WARN (not ERROR) so
+      # they do not block the monthly run.
+      - name: Fresh-fetch drift check
         id: validate_fresh
-        continue-on-error: true
         run: |
           set +e
           set -o pipefail
           node scripts/validate-data.js --fresh-fetch 2>&1 | tee /tmp/validation-fresh.txt
           EXIT_CODE=$?
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
-          exit 0
+          exit 0  # don't fail the step; the combined error-count step below decides
 
       # ----- Check what changed -----
       - name: Detect changes
@@ -150,35 +161,79 @@ jobs:
       # handling: errors mean the data itself is suspect (open an issue,
       # halt), while warnings are mostly advisory (e.g. narrative staleness,
       # source-overdue notices) and should not block a PR.
+      #
+      # Combines errors from BOTH the main validator pass (data structure)
+      # AND the fresh-fetch drift check (federal-source delta). Either
+      # source of ERROR-grade findings will block PR creation and open
+      # a labeled issue.
       - name: Count errors vs warnings in validator output
         id: errors
         run: |
           # awk is used (not `grep -c || echo 0`) because grep -c on no
           # matches still prints "0" AND exits 1, so `|| echo 0` writes a
           # second line — corrupting $GITHUB_OUTPUT with "Invalid format '0'".
+          ERR_MAIN=0; WARN_MAIN=0; ERR_FRESH=0; WARN_FRESH=0
           if [ -f /tmp/validation-output.txt ]; then
-            ERR=$(awk '/ERROR:/ {c++} END {print c+0}' /tmp/validation-output.txt)
-            WARN=$(awk '/WARN:/ {c++} END {print c+0}' /tmp/validation-output.txt)
-          else
-            ERR=0; WARN=0
+            ERR_MAIN=$(awk '/ERROR:/ {c++} END {print c+0}' /tmp/validation-output.txt)
+            WARN_MAIN=$(awk '/WARN:/ {c++} END {print c+0}' /tmp/validation-output.txt)
           fi
+          if [ -f /tmp/validation-fresh.txt ]; then
+            ERR_FRESH=$(awk '/ERROR:/ {c++} END {print c+0}' /tmp/validation-fresh.txt)
+            WARN_FRESH=$(awk '/WARN:/ {c++} END {print c+0}' /tmp/validation-fresh.txt)
+          fi
+          ERR=$((ERR_MAIN + ERR_FRESH))
+          WARN=$((WARN_MAIN + WARN_FRESH))
           echo "error_count=$ERR" >> "$GITHUB_OUTPUT"
           echo "warning_count=$WARN" >> "$GITHUB_OUTPUT"
+          echo "error_count_main=$ERR_MAIN" >> "$GITHUB_OUTPUT"
+          echo "error_count_fresh=$ERR_FRESH" >> "$GITHUB_OUTPUT"
+          echo "Main validator: $ERR_MAIN errors, $WARN_MAIN warnings"
+          echo "Fresh-fetch:    $ERR_FRESH errors, $WARN_FRESH warnings"
 
       # ----- If validation surfaced ERRORS, open an issue (block the PR) -----
+      # Combines errors from both the main validator pass and the
+      # fresh-fetch drift check so the user has both buckets surfaced in
+      # one issue.
       - name: Open issue on validation errors
         if: steps.errors.outputs.error_count != '0'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const output = fs.readFileSync('/tmp/validation-output.txt', 'utf8');
-            const errorLines = output.split('\n').filter(l => l.includes('ERROR:'));
+            const main = fs.existsSync('/tmp/validation-output.txt')
+              ? fs.readFileSync('/tmp/validation-output.txt', 'utf8') : '';
+            const fresh = fs.existsSync('/tmp/validation-fresh.txt')
+              ? fs.readFileSync('/tmp/validation-fresh.txt', 'utf8') : '';
+            const mainErrors  = main.split('\n').filter(l => l.includes('ERROR:'));
+            const freshErrors = fresh.split('\n').filter(l => l.includes('ERROR:'));
+            const errMain  = '${{ steps.errors.outputs.error_count_main }}';
+            const errFresh = '${{ steps.errors.outputs.error_count_fresh }}';
+
+            const sections = [];
+            if (mainErrors.length > 0) {
+              sections.push(
+                `### Main validator errors (${errMain})\n\n` +
+                '```\n' + mainErrors.join('\n') + '\n```'
+              );
+            }
+            if (freshErrors.length > 0) {
+              sections.push(
+                `### Fresh-fetch drift errors (${errFresh})\n\n` +
+                '```\n' + freshErrors.join('\n') + '\n```\n\n' +
+                '_Drift means state-data.js disagrees with the canonical federal source ' +
+                'beyond tolerance (0.5% relative or 0.0001 absolute). Either a source ' +
+                'published a revised vintage (accept + update state-data) or a fetcher ' +
+                'parsing issue introduced bad values (investigate)._'
+              );
+            }
+
+            const fullOutput = (main + '\n\n=== FRESH FETCH ===\n\n' + fresh).slice(0, 10000);
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Data refresh failed validation - ${new Date().toISOString().slice(0, 10)}`,
-              body: `## Validation Errors\n\nThe monthly data refresh fetched new data but it failed validation checks.\n\n\`\`\`\n${errorLines.join('\n')}\n\`\`\`\n\n<details><summary>Full validation output</summary>\n\n\`\`\`\n${output.slice(0, 10000)}\n\`\`\`\n</details>\n\nPlease investigate before manually re-running the workflow.`,
+              body: `## Validation Errors\n\nThe monthly data refresh fetched new data but it failed validation checks.\n\n${sections.join('\n\n')}\n\n<details><summary>Full validator output</summary>\n\n\`\`\`\n${fullOutput}\n\`\`\`\n</details>\n\nPlease investigate before manually re-running the workflow.`,
               labels: ['data-quality']
             });
 
