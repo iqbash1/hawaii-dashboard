@@ -488,3 +488,9 @@ if (process.argv.includes('--verbose')) {
         console.log(`    reason: ${f.note}`);
     }
 }
+
+// --gate: exit non-zero on any MISMATCH. Used by `npm run validate`.
+if (process.argv.includes('--gate') && byVerdict.MISMATCH.length > 0) {
+    console.error(`\n✗ ${byVerdict.MISMATCH.length} narrative claim(s) disagree with the underlying data. Fix or run \`npm run sync-qotd\` if QOTD.`);
+    process.exit(1);
+}
