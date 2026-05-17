@@ -29,6 +29,7 @@ on:
       - 'css/**.css'
       - 'data/**.csv'
       - 'scripts/build-state-data.js'
+  workflow_dispatch:
 
 jobs:
   notify:
