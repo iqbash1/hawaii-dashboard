@@ -91,9 +91,17 @@ node scripts/recompute-data.js
 node scripts/validate-data.js
 ```
 
-Two GitHub Actions workflows automate the cycle:
-- `.github/workflows/refresh-data.yml`: monthly full refresh, opens a PR if data changed.
+Eight GitHub Actions workflows + Dependabot automate the cycle:
+- `.github/workflows/refresh-data.yml`: monthly full refresh on the 23rd, opens a PR if data changed; blocks PR on fresh-fetch drift errors.
 - `.github/workflows/data-audit.yml`: twice-daily drift audit (1 PM + 6 PM HST) that re-fetches every wired metric and compares against state-data at strict tolerance (0.5% relative / 0.0001 absolute). Failure opens a `data-drift` issue.
+- `.github/workflows/audit-links.yml`: weekly external-URL liveness check (~200 URLs); rolling `link-rot` issue.
+- `.github/workflows/cron-heartbeat.yml`: weekly dead-man switch on the monthly cron; rolling `cron-stale` issue if no successful run in 32 days.
+- `.github/workflows/source-release-reminder.yml`: weekly 7-day-ahead reminder for source release windows; rolling `source-due-soon` issue.
+- `.github/workflows/tests.yml`: per-push build + lint + Playwright + live-site canary.
+- `.github/workflows/rotate-backup.yml`, `timestamp.yml`: backup tag rotation and footer-timestamp upkeep.
+- `.github/dependabot.yml`: weekly grouped PRs for npm + GitHub Actions updates.
+
+Per-commit gates (`npm run validate` chains 5 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), and metric-count consistency.
 
 ## OG images, landing pages, and static CSVs
 

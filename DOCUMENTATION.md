@@ -107,12 +107,14 @@ hawaii-dashboard/
 │   ├── audit-metric.js         # Comprehensive per-metric audit (10 checks)
 │   ├── audit-links.js          # HTTP link checker for all URLs in data.js
 │   ├── audit-narrative-numbers.js  # Scans every numeric claim in narratives against data; --gate exits 1 on mismatch
+│   ├── audit-internal.py       # 10-phase site audit (data/stub/OTC/QOTD/JSON-LD/sitemap/style); --gate exits 1 on P0/P1
+│   ├── audit-external-citations.js # Verifies hardcoded external numbers (UHERO/DBEDT figures) for staleness + cross-metric coupling
 │   ├── sync-qotd-answers.js    # Regenerates QOTD answer fields from live data; --check exits 1 on drift
-│   ├── validate-all.sh         # Aggregates validate-data + audit + sync-check into one CI gate (npm run validate)
+│   ├── update-metric-counts.js # Keeps "N metrics" counts in HTML/tests/docs in sync with DASHBOARD_DATA + COUNTY_DATA
+│   ├── check-source-due.js     # Reports metrics whose source release window is within N days
+│   ├── validate-all.sh         # Aggregates the 5 validate gates into one CI command (npm run validate)
 │   ├── REFRESH-PLAYBOOK.md     # Canonical sequence after any data refresh
 │   └── validate-data.js        # Validates data integrity before CI commit
-├── methods/                # Static methodology page
-│   └── index.html
 ├── tests/
 │   ├── package.json            # Playwright + http-server dependencies
 │   ├── playwright.config.js    # Test runner config (port 8765, Chromium)
@@ -121,9 +123,13 @@ hawaii-dashboard/
 │   ├── compute.test.js         # Unit tests for js/compute.js
 │   └── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
 ├── .github/
+│   ├── dependabot.yml          # Weekly npm + actions dep PRs (grouped)
 │   └── workflows/
-│       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs
+│       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs (23rd, 7:17 UTC)
 │       ├── data-audit.yml      # Twice-daily fresh-fetch audit (state-data vs canonical source)
+│       ├── audit-links.yml     # Weekly external-URL liveness check; rolling link-rot issue
+│       ├── cron-heartbeat.yml  # Weekly dead-man switch on refresh-data; rolling cron-stale issue
+│       ├── source-release-reminder.yml # Weekly 7-day-ahead reminder for source release windows
 │       ├── tests.yml           # Smoke tests on every push/PR to main
 │       ├── rotate-backup.yml   # Off-site git mirror backup
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
@@ -715,7 +721,7 @@ Source files keep manual `?v=YYYYMMDDxx` strings for local dev readability, but 
 
 ### Linting
 
-ESLint runs in CI before smoke tests. Configuration: `.eslintrc.json` (browser globals for all modules, no-undef, no-unused-vars, eqeqeq). Scripts: `npm run lint` (check) / `npm run lint:fix` (auto-fix).
+ESLint runs in CI before smoke tests. Configuration: `eslint.config.js` (flat config, ESLint v9+; browser globals via the `globals` package; rules: no-undef, no-unused-vars, eqeqeq). Scripts: `npm run lint` (check) / `npm run lint:fix` (auto-fix).
 
 ### Footer Timestamp
 
@@ -729,13 +735,19 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 
 ### Automated (monthly refresh)
 
-`.github/workflows/refresh-data.yml` runs on the first of each month:
-1. Fetches fresh data from BLS, BEA, Census, EIA, CDC, FBI CDE, USDA, FHWA, HRSA (26 of 26 metrics covered as of Forever-clean parts 1-8)
-2. Runs `recompute-data.js` to derive `data.js` from `state-data.js` (HI series + 50-state medianSeries)
-3. Runs `update-about-years.js` to update year ranges in `about/index.html`
-4. Runs `generate-og-pages.py` to regenerate OG images
-5. Validates data integrity
-6. Opens a pull request for human review before merge
+`.github/workflows/refresh-data.yml` runs on the 23rd of each month (7:17 UTC). The 23rd is chosen so the BLS state LAUS release (typically the 3rd Friday, 17th–22nd) is reliably out before the cron fires.
+
+1. Snapshots current data files for later diffing
+2. Runs `build-state-data.js` (50-state federal-API fetcher)
+3. Runs `build-county-data.js` (4-county aggregator)
+4. Runs `recompute-data.js` to derive `data.js` from `state-data.js` (HI series + 50-state medianSeries)
+5. Runs `update-monthly.js` to refresh the 4 metrics with monthly callouts (UR, LFP, electricity price, renewables share)
+6. Runs `update-narrative-years.js --apply` so stale "in YYYY" stamps in narratives auto-bump
+7. Runs `update-about-years.js` for the Metric Registry year ranges
+8. Runs `generate-og-pages.py` to regenerate OG images + stub pages
+9. Validates data integrity (`--strict`)
+10. **Blocking** fresh-fetch drift check: re-fetches each auto-audited metric's latest HI year directly from the canonical federal source and exits non-zero if any drift exceeds tolerance (0.5% relative / 0.0001 absolute)
+11. Opens a pull request for human review before merge (or opens a `data-quality` issue if validation surfaced errors)
 
 ### Automated (twice-daily drift audit)
 
@@ -743,6 +755,23 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 - For every wired federal-API metric, re-fetches the current canonical-source values for all Hawaiʻi years and compares against `state-data.js`. Strict tolerance: 0.5% relative or 0.0001 absolute.
 - Failure opens a `data-drift` issue automatically; the workflow's `--audit-only` mode keeps unrelated structural warnings from triggering false drift alerts.
 - Two crime metrics carry an explicit `frozen.through: 2019` boundary in `SOURCE_COVERAGE`: pre-2020 values are static historical artifacts (FBI ceased UCR annual reports after 2019); 2020+ is live via FBI CDE / NIBRS.
+
+### Automated (weekly self-healing checks)
+
+Three weekly workflows surface drift via rolling labeled issues. Each maintains a single open issue; subsequent runs edit the body and auto-close when the condition clears.
+
+- **`audit-links.yml`** (Sundays 02:00 UTC): liveness check of ~200 external URLs cited in `data.js` (sourceUrl, potentialDrivers, policyLevers, rankHistoryNarrative). Bot-blocked domains live in `EXPECTED_BLOCK` in `scripts/audit-links.js`. Failure opens a rolling `link-rot` issue.
+- **`cron-heartbeat.yml`** (Mondays 03:00 UTC): dead-man switch on the monthly refresh-data cron. If no successful run within 32 days, opens a rolling `cron-stale` issue. Catches the April 2026 silent-failure class.
+- **`source-release-reminder.yml`** (Tuesdays 04:00 UTC): reads each metric's `nextUpdate` field (3-letter month abbreviation = annual release) and surfaces metrics whose release window is within 7 days. Opens a rolling `source-due-soon` issue.
+
+### Per-commit gates (`npm run validate`)
+
+Five gates run in sequence; any error fails the command:
+1. `validate-data.js` — data structure, ranges, YoY spikes, parity, writer allowlist (Sections 1–14)
+2. `audit-narrative-numbers.js --gate` — rank/value claims in `rankHistoryNarrative`
+3. `sync-qotd-answers.js --check` — QOTD answer drift (refuses V6 truth-flips)
+4. `audit-internal.py --gate` — 10-phase site audit (P0+P1 findings block; P2 informational)
+5. `update-metric-counts.js --check` — hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
 
 ### Manual (one-off value update)
 
@@ -794,7 +823,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
 | `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
-| `scripts/validate-all.sh` | Aggregates validate-data + audit + sync-check into one CI gate (`npm run validate`). |
+| `scripts/validate-all.sh` | Aggregates the 5 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, and update-metric-counts. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 58 unit tests (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, medianSeries invariants). |
 

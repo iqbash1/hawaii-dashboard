@@ -29,7 +29,7 @@ npm run recompute        # or the per-metric fetcher
 npm run sync-qotd        # writes new js/questions.js + q/{id}/index.html
 
 # 3. Validate everything
-npm run validate         # runs all three gates; fails fast on drift
+npm run validate         # runs all five gates; fails fast on drift
 
 # 4. Commit
 git add ...
@@ -48,15 +48,17 @@ question's direction changed because the latest year advanced):
 The sync script refuses to write changes when this happens — the bank's
 truth values cannot ship a silent flip.
 
-## The three gates in `npm run validate`
+## The five gates in `npm run validate`
 
 | # | Gate | What it catches |
 |---|------|-----------------|
-| 1 | `validate-data.js` | Data structure: shape, coverage, parity, freshness, source allowlist. Existing gate, unchanged. |
+| 1 | `validate-data.js` | Data structure: shape, coverage, parity, freshness, source allowlist. |
 | 2 | `audit-narrative-numbers.js --gate` | Quantitative claims in any narrative field that disagree with the computed value. Patterns: rank, latest-year HI value, vs-median, vs-state, V4/V5 ranked value, V6 from-to. |
 | 3 | `sync-qotd-answers.js --check` | QOTD answer drift. Re-renders each canonical-shape answer and exits 1 if any would change. |
+| 4 | `audit-internal.py --gate` | 10-phase site audit (data self-consistency, stub pages, OTC posts, QOTD claims, JSON-LD, sitemap, editorial style). P0+P1 findings fail; P2 informational. |
+| 5 | `update-metric-counts.js --check` | Hardcoded "N metrics" counts in HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`. |
 
-All three always run, so every problem surfaces in a single report.
+All five always run, so every problem surfaces in a single report.
 
 ## When NOT to run sync-qotd
 
