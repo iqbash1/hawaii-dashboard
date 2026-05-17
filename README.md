@@ -66,6 +66,7 @@ tests/
 scripts/
   verify-live-site.sh   Post-deploy verification (50 checks, run with --no-wait)
   generate-qotd-redirects.js  Regenerates static q/{id}/ redirect pages
+  generate-fyc-pages.js  Regenerates the 7 Change Summary HTMLs from one template
   generate-og-off-the-charts-posts.py  Regenerates per-post OTC OG cards
 ```
 
@@ -101,7 +102,7 @@ Eight GitHub Actions workflows + Dependabot automate the cycle:
 - `.github/workflows/rotate-backup.yml`, `timestamp.yml`: backup tag rotation and footer-timestamp upkeep.
 - `.github/dependabot.yml`: weekly grouped PRs for npm + GitHub Actions updates.
 
-Per-commit gates (`npm run validate` chains 5 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), and metric-count consistency.
+Per-commit gates (`npm run validate` chains 6 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), metric-count consistency, and Change-Summary-template drift.
 
 ## OG images, landing pages, and static CSVs
 

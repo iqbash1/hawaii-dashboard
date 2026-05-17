@@ -111,8 +111,9 @@ hawaii-dashboard/
 │   ├── audit-external-citations.js # Verifies hardcoded external numbers (UHERO/DBEDT figures) for staleness + cross-metric coupling
 │   ├── sync-qotd-answers.js    # Regenerates QOTD answer fields from live data; --check exits 1 on drift
 │   ├── update-metric-counts.js # Keeps "N metrics" counts in HTML/tests/docs in sync with DASHBOARD_DATA + COUNTY_DATA
+│   ├── generate-fyc-pages.js   # Generates the 7 Change Summary HTMLs from one template; --check exits 1 on drift
 │   ├── check-source-due.js     # Reports metrics whose source release window is within N days
-│   ├── validate-all.sh         # Aggregates the 5 validate gates into one CI command (npm run validate)
+│   ├── validate-all.sh         # Aggregates the 6 validate gates into one CI command (npm run validate)
 │   ├── REFRESH-PLAYBOOK.md     # Canonical sequence after any data refresh
 │   └── validate-data.js        # Validates data integrity before CI commit
 ├── tests/
@@ -576,11 +577,15 @@ A custom Chart.js plugin renders governor names and dashed term boundaries on al
 | `--neutral` | `#c08a1a` | "Little change" / amber |
 | `--neutral-bg` | `#fef9e7` | Background for neutral chips |
 | `--text` | `#333333` | Primary body text |
-| `--text-secondary` | `#555555` | Secondary body text |
-| `--text-muted` | `#555555` | Labels, metadata |
+| `--text-muted` | `#555555` | Secondary text, labels, metadata |
 | `--bg` | `#F5F5F5` | Page background |
 | `--card-bg` | `#FFFFFF` | Card/modal background |
 | `--border` | `#EAEAEA` | All borders, dividers |
+| `--surface-subtle` | `#f5f6f8` | Pale hairline dividers, table-row stripes, header strips |
+| `--radius-pill` | `999px` | Pill / capsule shape |
+| `--shadow-card` | `0 4px 14px rgba(0,0,0,0.09)` | Resting / hover card shadow |
+| `--shadow-pop` | `0 2px 8px rgba(13,124,143,0.12)` | Brand-tinted accent shadow |
+| `--shadow-focus` | `0 0 0 2px rgba(13,124,143,0.15)` | Focus ring |
 
 ### Typography
 
@@ -766,12 +771,13 @@ Three weekly workflows surface drift via rolling labeled issues. Each maintains 
 
 ### Per-commit gates (`npm run validate`)
 
-Five gates run in sequence; any error fails the command:
+Six gates run in sequence; any error fails the command:
 1. `validate-data.js` — data structure, ranges, YoY spikes, parity, writer allowlist (Sections 1–14)
 2. `audit-narrative-numbers.js --gate` — rank/value claims in `rankHistoryNarrative`
 3. `sync-qotd-answers.js --check` — QOTD answer drift (refuses V6 truth-flips)
 4. `audit-internal.py --gate` — 10-phase site audit (P0+P1 findings block; P2 informational)
 5. `update-metric-counts.js --check` — hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
+6. `generate-fyc-pages.js --check` — the 7 Change Summary HTMLs must byte-match the single-source generator; hand-edits fail until `npm run generate-fyc` runs
 
 ### Manual (one-off value update)
 
@@ -823,7 +829,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
 | `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
-| `scripts/validate-all.sh` | Aggregates the 5 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, and update-metric-counts. |
+| `scripts/validate-all.sh` | Aggregates the 6 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, and generate-fyc-pages. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 58 unit tests (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, medianSeries invariants). |
 

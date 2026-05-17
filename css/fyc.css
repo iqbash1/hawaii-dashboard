@@ -13,7 +13,7 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .fyc-span-trigger:focus-visible { outline: 2px solid var(--hawaii-blue); outline-offset: 3px; border-radius: 2px; }
 .fyc-span-caret { transition: transform 0.15s; flex-shrink: 0; align-self: center; }
 .fyc-span-trigger[aria-expanded="true"] .fyc-span-caret { transform: rotate(180deg); }
-.fyc-span-menu { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); margin: 0; padding: 0.3rem 0; list-style: none; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09); min-width: 130px; z-index: 200; text-align: left; }
+.fyc-span-menu { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); margin: 0; padding: 0.3rem 0; list-style: none; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card); min-width: 130px; z-index: 200; text-align: left; }
 .fyc-span-option { display: block; padding: 0.5rem 1.1rem; font-size: var(--text-base); font-weight: 500; font-family: var(--font); color: var(--text); text-decoration: none; white-space: nowrap; }
 .fyc-span-option:hover { background: var(--hawaii-blue-light); color: var(--hawaii-blue); }
 .fyc-span-option.active { font-weight: 700; background: var(--bg); }
