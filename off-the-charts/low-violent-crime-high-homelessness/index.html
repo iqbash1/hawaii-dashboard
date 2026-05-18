@@ -80,14 +80,12 @@
         .otc-post p { line-height: 1.65; margin: 0 0 1rem; }
         .otc-post a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
         .otc-actions { margin: 0 0 1.75rem; }
-        .otc-table-wrap { overflow-x: auto; margin: 1.5rem 0 0.25rem; }
-        .otc-table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
-        .otc-table th, .otc-table td { padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        .otc-table th.otc-num, .otc-table td.otc-num { text-align: center; }
+        .otc-table-wrap { margin: 1.5rem 0 0.25rem; }
+        .otc-table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+        .otc-table th, .otc-table td { padding: 0.55rem 0.85rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
         .otc-table th { font-weight: 600; background: #f9fafb; color: #555; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
-        /* Highlight the Hawaiʻi column (2nd column) in brand red. */
-        .otc-table td:nth-child(2), .otc-table th:nth-child(2) { color: #d03135; font-weight: 600; }
-        .otc-table tr.otc-total td { border-top: 2px solid #d1d5db; font-weight: 600; }
+        .otc-table tr.otc-highlight td { color: #d03135; font-weight: 600; }
+        .otc-table .otc-callout { color: #888; font-size: 0.85rem; }
         .otc-table-note { font-size: 0.78rem; color: #888; margin: 0 0 1.25rem; }
         .otc-back { max-width: 720px; margin: 2rem auto 0; padding: 0 1rem; }
         .otc-back a { color: #888; font-size: 0.9rem; text-decoration: none; }
@@ -130,37 +128,20 @@
             <table class="otc-table">
                 <thead>
                     <tr>
-                        <th>Year</th>
-                        <th class="otc-num">Hawai&#x02BB;i</th>
-                        <th class="otc-num">Oregon</th>
-                        <th class="otc-num">Washington</th>
-                        <th class="otc-num">Idaho</th>
-                        <th class="otc-num">California</th>
+                        <th>State</th>
+                        <th>Years meeting both criteria (of 17)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>2007</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2008</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2009</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2010</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2011</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2012</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2013</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2014</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2015</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2016</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2017</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2018</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2019</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2020</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2022</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2023</td><td class="otc-num">&#x2713;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr><td>2024</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td><td class="otc-num">&ndash;</td><td class="otc-num">&#x2713;</td><td class="otc-num">&ndash;</td></tr>
-                    <tr class="otc-total"><td>Total</td><td class="otc-num">17/17</td><td class="otc-num">16/17</td><td class="otc-num">14/17</td><td class="otc-num">9/17</td><td class="otc-num">0/17</td></tr>
+                    <tr class="otc-highlight"><td>Hawai&#x02BB;i</td><td>17 / 17 &#x2713;</td></tr>
+                    <tr><td>Oregon</td><td>16 / 17</td></tr>
+                    <tr><td>Washington</td><td>14 / 17</td></tr>
+                    <tr><td>Idaho</td><td>9 / 17</td></tr>
+                    <tr><td>California</td><td>0 / 17 &nbsp;<span class="otc-callout">&larr; top-tier homelessness, never safer than median</span></td></tr>
                 </tbody>
             </table>
         </div>
-        <p class="otc-table-note">Years a state held both top-tier unsheltered homelessness and safer-than-median violent crime. 2021 omitted: HUD skipped its annual count.</p>
+        <p class="otc-table-note">Both criteria = top-tier unsheltered homelessness AND safer-than-median violent crime in the same year. Window: 2007&ndash;2024 (17 HUD Point-in-Time counts; 2021 omitted because HUD skipped its count that year).</p>
 
         <p>Even in years when Hawai&#x02BB;i briefly dropped from the top tier on violent-crime safety (in 2015, 2016, and 2019), it never crossed below the national median. Hawai&#x02BB;i&rsquo;s <a href="/t/unsheltered_homeless_rate/">unsheltered rate</a> rose 10% since 2007; its <a href="/t/violent_crime_rate/">violent crime</a> fell 17%. <a href="/t/unsheltered_homeless_rate/or/">Oregon&rsquo;s homelessness rose 34%</a>, but its <a href="/t/violent_crime_rate/or/">violent crime climbed 16%</a>. The same regional pressure produced opposite outcomes on safety.</p>
 
