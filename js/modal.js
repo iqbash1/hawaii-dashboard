@@ -513,46 +513,79 @@ const Modal = {
             Export.downloadData(slug);
             App._trackEvent('data_exported', { slug, format: 'xlsx' });
         };
-        // Share helpers
+        // Share helpers — three-tier flow: native share sheet, clipboard
+        // with pre-composed payload, then execCommand fallback. Tracks
+        // metric_shared with method = 'native' | 'clipboard' | 'fallback'.
+        const getActiveTab = () => {
+            const el = document.querySelector('.modal-tab.active');
+            return el ? el.id.replace('tab-', '') : 'detail';
+        };
         const getShareUrl = () => {
-            const activeTab = document.querySelector('.modal-tab.active');
-            const tab = activeTab ? activeTab.id.replace('tab-', '') : 'detail';
-            return 'https://hawaiidashboard.org' + Modal._buildTabUrl(tab, slug);
+            return 'https://hawaiidashboard.org' + Modal._buildTabUrl(getActiveTab(), slug);
         };
-        const copyToClipboard = (text) => {
-            const execFallback = () => {
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.cssText = 'position:fixed;opacity:0';
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-            };
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                return navigator.clipboard.writeText(text).catch(execFallback);
-            }
-            execFallback();
-            return Promise.resolve();
+        const getComposedText = (url) => {
+            const name = metricData.metric || slug;
+            return `Hawaiʻi Dashboard: ${name}\n\n${url}`;
         };
-        // Header share button (copy link)
-        const copyShare = (feedbackEl) => {
-            copyToClipboard(getShareUrl());
-            feedbackEl.classList.add('copied');
-            feedbackEl.title = 'Copied!';
-            const label = feedbackEl.querySelector('.share-label');
+        const flashCopied = (btn) => {
+            btn.classList.add('copied');
+            btn.title = 'Copied!';
+            const label = btn.querySelector('.share-label');
             if (label) label.textContent = 'Copied!';
             setTimeout(() => {
-                feedbackEl.classList.remove('copied');
-                feedbackEl.title = 'Copy link';
+                btn.classList.remove('copied');
+                btn.title = 'Copy link';
                 if (label) label.textContent = 'Share';
             }, 2000);
         };
+        const execFallbackCopy = (text) => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;opacity:0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) { /* ignored */ }
+            document.body.removeChild(ta);
+        };
+        const trackShare = (method) => {
+            App._trackEvent('metric_shared', { slug, tab: getActiveTab(), method });
+        };
+        const clipboardFlow = (btn, url) => {
+            const text = getComposedText(url);
+            let doCopy;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                doCopy = navigator.clipboard.writeText(text).then(
+                    () => trackShare('clipboard'),
+                    () => { execFallbackCopy(text); trackShare('fallback'); }
+                );
+            } else {
+                execFallbackCopy(text);
+                trackShare('fallback');
+                doCopy = Promise.resolve();
+            }
+            doCopy.finally(() => flashCopied(btn));
+        };
         document.getElementById('modal-share-btn').onclick = (e) => {
             e.preventDefault();
-            copyShare(document.getElementById('modal-share-btn'));
-            const activeTab = document.querySelector('.modal-tab.active');
-            App._trackEvent('metric_shared', { slug, tab: activeTab?.id?.replace('tab-', '') || 'detail' });
+            const btn = document.getElementById('modal-share-btn');
+            const url = getShareUrl();
+            // Native share sheet (mobile + supporting desktops)
+            if (typeof navigator.share === 'function') {
+                navigator.share({
+                    title: 'Hawaiʻi Dashboard',
+                    text: metricData.metric || slug,
+                    url: url,
+                }).then(
+                    () => trackShare('native'),
+                    (err) => {
+                        if (err && err.name === 'AbortError') return;
+                        clipboardFlow(btn, url);
+                    }
+                );
+                return;
+            }
+            // Clipboard fallback
+            clipboardFlow(btn, url);
         };
 
         document.getElementById('print-link').onclick = (e) => {
