@@ -1026,8 +1026,8 @@ const App = {
                 // Directional context: disambiguates whether the line going up is good
                 // or bad, without making the reader infer it from the green/red fill.
                 const directionLabel = effective.goodDirection === 'up'
-                    ? '↑ better'
-                    : effective.goodDirection === 'down' ? '↓ better' : '';
+                    ? 'higher is better'
+                    : effective.goodDirection === 'down' ? 'lower is better' : '';
                 const directionHtml = directionLabel
                     ? `<div class="card-direction">${directionLabel}</div>` : '';
                 // Source attribution: small line at the bottom, paired with the

@@ -198,7 +198,7 @@ const Modal = {
         const subtitleEl = document.getElementById('trend-subtitle');
         if (!subtitleEl) return;
         const hiYears = Object.keys(metricData.hawaii).sort();
-        const dirHint = metricData.goodDirection === 'up' ? '↑ better' : '↓ better';
+        const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         const isRange = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
         const compLabel = (comparator && comparator.label) ? comparator.label : 'US';
         subtitleEl.innerHTML = isRange
@@ -384,7 +384,7 @@ const Modal = {
         }
 
         const isRangeKeyMetric = hiYears.length > 0 && /^\d{4}-\d{4}$/.test(hiYears[0]);
-        const dirHint = metricData.goodDirection === 'up' ? '↑ better' : '↓ better';
+        const dirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('trend-subtitle').innerHTML = isRangeKeyMetric
             ? `Hawai\u02BBi vs. US \u00B7 <strong>3-yr rolling avg</strong> \u00B7 ${dirHint}`
             : `Hawai\u02BBi vs. US \u00B7 ${dirHint}`;
@@ -847,7 +847,8 @@ const Modal = {
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'block';
 
-        document.getElementById('rankings-subtitle').textContent = '';
+        const rankingsDirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
+        document.getElementById('rankings-subtitle').textContent = rankingsDirHint;
         const latestDetailYear = App.getLatestValue(metricData.hawaii, ZERO_IS_VALID.has(slug)).year;
         const yearNote = (year !== latestDetailYear)
             ? ` \u00B7 ${year} (latest year with full state coverage)`
@@ -926,8 +927,9 @@ const Modal = {
         document.getElementById('modal-rank-history').style.display = 'block';
 
         const yearRange = App.parseYearLabel(String(rankHistory.years[0])) + '-' + App.keyEnd(rankHistory.years[rankHistory.years.length - 1]);
+        const rhDirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('rank-history-subtitle').textContent =
-            `Rank history \u00B7 ${yearRange}`;
+            `Rank history \u00B7 ${yearRange} \u00B7 ${rhDirHint}`;
         document.getElementById('rank-history-rank').textContent = '';
 
         // Initial comparison state: the shared Modal._compareState (seeded by
@@ -1041,7 +1043,7 @@ const Modal = {
         document.getElementById('modal-county').style.display = 'block';
 
         const isSmoothed = countyData.smoothCounty === true;
-        const countyDirHint = metricData.goodDirection === 'up' ? '↑ better' : '↓ better';
+        const countyDirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('county-subtitle').textContent =
             `County breakdown${isSmoothed ? ' \u00B7 3-year rolling avg' : ''} \u00B7 ${countyDirHint}`;
 
@@ -1168,7 +1170,7 @@ const Modal = {
         if (sd && sd.data) {
             const rankings = App.getStateRankings(slug);
             if (rankings && rankings.stateValues.length > 0) {
-                const dirLabel = effective.goodDirection === 'up' ? '↑ better' : '↓ better';
+                const dirLabel = effective.goodDirection === 'up' ? 'higher is better' : 'lower is better';
                 const otherStates = rankings.stateValues.filter(sv => !isHI(sv.state));
                 html += '<thead><tr class="section-header"><td colspan="3">'
                     + 'Other States (' + rankings.year + ') - ' + dirLabel
