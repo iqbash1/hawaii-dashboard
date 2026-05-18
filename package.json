@@ -22,6 +22,8 @@
     "audit-narratives": "node scripts/audit-narrative-numbers.js",
     "sync-qotd": "node scripts/sync-qotd-answers.js",
     "sync-qotd:check": "node scripts/sync-qotd-answers.js --check",
+    "sync-otc-meta": "node scripts/sync-otc-meta.js",
+    "sync-otc-meta:check": "node scripts/sync-otc-meta.js --check",
     "generate-fyc": "node scripts/generate-fyc-pages.js",
     "generate-fyc:check": "node scripts/generate-fyc-pages.js --check",
     "recompute": "node scripts/recompute-data.js",
