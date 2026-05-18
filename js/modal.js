@@ -927,9 +927,8 @@ const Modal = {
         document.getElementById('modal-rank-history').style.display = 'block';
 
         const yearRange = App.parseYearLabel(String(rankHistory.years[0])) + '-' + App.keyEnd(rankHistory.years[rankHistory.years.length - 1]);
-        const rhDirHint = metricData.goodDirection === 'up' ? 'higher is better' : 'lower is better';
         document.getElementById('rank-history-subtitle').textContent =
-            `Rank history \u00B7 ${yearRange} \u00B7 ${rhDirHint}`;
+            `Rank history \u00B7 ${yearRange}`;
         document.getElementById('rank-history-rank').textContent = '';
 
         // Initial comparison state: the shared Modal._compareState (seeded by
