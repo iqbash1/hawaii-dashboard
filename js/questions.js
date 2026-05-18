@@ -383,7 +383,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q083",
       "slug": "food-insecurity-has-gone-down-in-hawaii-in-the-last-five-years",
-      "claim": "Food insecurity has gone down in Hawaiʻi in the last five years.",
+      "claim": "Hawaiʻi has less food insecurity than it did five years ago.",
       "correct": false,
       "answer": "Hawaiʻi's food insecurity rate went from 8.0% to 10.8% between the 2016-2018 and 2022-2024 windows (+36.1%).",
       "chartUrl": "/t/food_insecurity_rate/",
