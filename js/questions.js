@@ -457,7 +457,7 @@ const QOTD_QUESTIONS = [
       "slug": "violent-crime-has-gone-down-in-hawaii-in-the-last-five-years",
       "claim": "Violent crime has gone down in Hawaiʻi in the last five years.",
       "correct": true,
-      "answer": "Hawaiʻi's violent crime rate went from 285.5 to 217.7 per 100K between 2019 and 2024 (-23.8%).",
+      "answer": "Hawaiʻi's violent crime rate went from 285.5 to 230.5 per 100K between 2019 and 2024 (-19.3%).",
       "chartUrl": "/t/violent_crime_rate/",
       "metric": "violent_crime_rate",
       "metricLabel": "Violent Crime Rate",
