@@ -31,9 +31,9 @@ SLATE    = (56, 75, 91)
 POSTS = [
     {
         "slug": "low-violent-crime-high-homelessness",
-        "title": "Ten years of low violent crime with high homelessness.",
+        "title": "Seventeen years of low violent crime with high homelessness.",
         "date":  "17 May 2026",
-        # Outlier line: Hawaiʻi alone in the corner for the full decade.
+        # Outlier line: Hawaiʻi alone in the corner for the full HUD-count window.
         "outlier": "high",
     },
     {
