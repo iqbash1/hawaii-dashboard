@@ -28,7 +28,7 @@
             var h = window.location.hash;
             if (!h) return;
             var slug = h.slice(1).split(/[?&]/)[0];
-            var allowed = { 'expensive-states': 1, 'renewables-prices': 1, 'reading-without-raising': 1, 'productivity-vs-unemployment': 1 };
+            var allowed = { 'expensive-states': 1, 'renewables-prices': 1, 'reading-without-raising': 1, 'productivity-vs-unemployment': 1, 'low-violent-crime-high-homelessness': 1 };
             if (allowed[slug]) {
                 window.location.replace('/off-the-charts/' + slug + '/');
             }
@@ -49,6 +49,13 @@
         "url": "https://hawaiidashboard.org"
       },
       "blogPost": [
+        {
+          "@type": "BlogPosting",
+          "headline": "Ten years of low violent crime with high homelessness.",
+          "url": "https://hawaiidashboard.org/off-the-charts/low-violent-crime-high-homelessness/",
+          "datePublished": "2026-05-17",
+          "image": "https://hawaiidashboard.org/assets/og/off-the-charts/low-violent-crime-high-homelessness.png"
+        },
         {
           "@type": "BlogPosting",
           "headline": "One of America's tightest labor markets, with the weakest productivity growth.",
@@ -138,6 +145,13 @@
 
     <section class="otc-archive">
 
+        <article class="otc-archive-item" id="low-violent-crime-high-homelessness">
+            <p class="otc-archive-date">17 May 2026</p>
+            <h2><a href="/off-the-charts/low-violent-crime-high-homelessness/">Ten years of low violent crime with high homelessness.</a></h2>
+            <p class="otc-dek">Every year of the past decade, Hawai&#x02BB;i has ranked top-10 nationally for unsheltered homelessness while remaining in the safer half of the country on violent crime. No other state has matched that combination every year. Oregon came closest at 9 of 10 years; Washington at 7.</p>
+            <p class="otc-read-more"><a href="/off-the-charts/low-violent-crime-high-homelessness/">Read post &rarr;</a></p>
+        </article>
+
         <article class="otc-archive-item" id="productivity-vs-unemployment">
             <p class="otc-archive-date">12 May 2026</p>
             <h2><a href="/off-the-charts/productivity-vs-unemployment/">One of America&rsquo;s tightest labor markets, with the weakest productivity growth.</a></h2>
@@ -169,7 +183,7 @@
     </section>
 
     <footer class="footer">
-        <p class="footer-updated">Last reviewed: 11 May 2026</p>
+        <p class="footer-updated">Last reviewed: 17 May 2026</p>
         <p class="footer-attribution">Developed by <a href="https://guild.consulting/" target="_blank" rel="noopener">GUILD Consulting</a> for Hawai&#x02BB;i residents.</p>
     </footer>
 

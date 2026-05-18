@@ -40,7 +40,7 @@ cp -r data dist/
 SHA=$(git rev-parse --short HEAD)
 # CI runs Linux sed (no -i extension needed); local macOS needs -i ''
 # Using perl for cross-platform compatibility
-perl -pi -e "s/\\?v=[^\"]*\"/\\?v=${SHA}\"/g" dist/index.html dist/about/index.html dist/faq/index.html dist/one-year-change/index.html dist/three-year-change/index.html dist/five-year-change/index.html dist/ten-year-change/index.html dist/fifteen-year-change/index.html dist/twenty-year-change/index.html dist/twenty-five-year-change/index.html dist/off-the-charts/index.html dist/off-the-charts/reading-without-raising/index.html dist/off-the-charts/expensive-states/index.html dist/off-the-charts/renewables-prices/index.html dist/off-the-charts/productivity-vs-unemployment/index.html
+perl -pi -e "s/\\?v=[^\"]*\"/\\?v=${SHA}\"/g" dist/index.html dist/about/index.html dist/faq/index.html dist/one-year-change/index.html dist/three-year-change/index.html dist/five-year-change/index.html dist/ten-year-change/index.html dist/fifteen-year-change/index.html dist/twenty-year-change/index.html dist/twenty-five-year-change/index.html dist/off-the-charts/index.html dist/off-the-charts/reading-without-raising/index.html dist/off-the-charts/expensive-states/index.html dist/off-the-charts/renewables-prices/index.html dist/off-the-charts/productivity-vs-unemployment/index.html dist/off-the-charts/low-violent-crime-high-homelessness/index.html
 echo "Cache-bust: ?v=${SHA}"
 
 # Rewrite <lastmod> in dist/sitemap.xml from each file's last git-commit date.

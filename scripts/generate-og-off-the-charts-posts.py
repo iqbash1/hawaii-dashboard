@@ -30,6 +30,13 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "low-violent-crime-high-homelessness",
+        "title": "Ten years of low violent crime with high homelessness.",
+        "date":  "17 May 2026",
+        # Outlier line: Hawaiʻi alone in the corner for the full decade.
+        "outlier": "high",
+    },
+    {
         "slug": "productivity-vs-unemployment",
         "title": "One of America's tightest labor markets, with the weakest productivity growth.",
         "date":  "12 May 2026",
