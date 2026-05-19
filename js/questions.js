@@ -394,8 +394,8 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q099",
-      "slug": "more-hawaii-adults-have-college-degrees-than-five-years-ago",
-      "claim": "More Hawaiʻi adults have college degrees than five years ago.",
+      "slug": "more-hawaii-residents-have-college-degrees-than-five-years-ago",
+      "claim": "More Hawaiʻi residents have college degrees than five years ago.",
       "correct": true,
       "answer": "Hawaiʻi's share of adults with a bachelor's degree went from 33.6% to 37.8% between 2019 and 2024 (+12.3%).",
       "chartUrl": "/t/ba_or_higher_pct/",
