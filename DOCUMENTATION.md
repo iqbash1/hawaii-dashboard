@@ -43,8 +43,8 @@ hawaii-dashboard/
 │   ├── bundles.js          # Bundle config: resident-voice questions with metric lists
 │   ├── fyc.js              # Change Summary page logic (span-aware; shared by all 7 year-span shells)
 │   ├── qotd.js             # Question of the Day controller (teaser render, answer state, share)
-│   ├── questions.js        # QOTD question bank (48 entries, 8 template variants)
-│   ├── otc-share.js        # Off the Charts share-button handler (clipboard copy)
+│   ├── questions.js        # QOTD question bank (47 entries, 8 template variants)
+│   ├── otc-share.js        # Off the Charts share-button handler (Web Share API → clipboard w/ pre-composed payload → execCommand fallback)
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers)
 ├── assets/
 │   ├── og-image.png        # Generic OG image (fallback for homepage + about)
@@ -113,7 +113,8 @@ hawaii-dashboard/
 │   ├── update-metric-counts.js # Keeps "N metrics" counts in HTML/tests/docs in sync with DASHBOARD_DATA + COUNTY_DATA
 │   ├── generate-fyc-pages.js   # Generates the 7 Change Summary HTMLs from one template; --check exits 1 on drift
 │   ├── check-source-due.js     # Reports metrics whose source release window is within N days
-│   ├── validate-all.sh         # Aggregates the 6 validate gates into one CI command (npm run validate)
+│   ├── sync-otc-meta.js        # Keeps the four description fields (meta, og, twitter, JSON-LD) in sync across each OTC post; --check is the 7th validate gate
+│   ├── validate-all.sh         # Aggregates the 7 validate gates into one CI command (npm run validate)
 │   ├── REFRESH-PLAYBOOK.md     # Canonical sequence after any data refresh
 │   └── validate-data.js        # Validates data integrity before CI commit
 ├── tests/
@@ -486,7 +487,7 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
    - **National standing** — always visible, one-paragraph context on the rank trajectory (`narr.summary` from `rankHistoryNarrative`).
    - **+ DEEPER ANALYSIS** — minimal `<details>` disclosure with the rest: County breakdown, Potential drivers, Lessons from other states, Key levers, Data note. Most readers won't open this; the ones who do get the full picture.
    Both disclosures use `.modal-how-toggle` with the uppercase-tracked text + teal `+/−` prefix, so they look like one consistent pattern. See `_buildConsolidatedNarrative`.
-4. **Source link + Download .xlsx + Share button** - three controls in the modal footer: source URL, XLSX download, and a single share button that copies the active-tab permalink (includes any picked state + threshold)
+4. **Source link + Download .xlsx + Share button** - three controls in the modal footer: source URL, XLSX download, and a Share button. The share button uses the same three-tier flow as Off the Charts and QOTD: native share sheet (`navigator.share`) on mobile / supporting desktops with title + metric name + active-tab permalink; clipboard fallback copies `Hawaiʻi Dashboard: {metric}\n\n{url}`; execCommand fallback for old browsers. Active-tab permalink includes any picked state + threshold.
 
 **Rank tab:**
 1. **Value distribution dot strip** - all 50 states shown as dots above the bar chart
@@ -830,7 +831,8 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
 | `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
-| `scripts/validate-all.sh` | Aggregates the 6 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, and generate-fyc-pages. |
+| `scripts/sync-otc-meta.js` | **Off the Charts meta-tag sync.** For each post, propagates `<meta name="description">` (canonical) to og:description, twitter:description, and JSON-LD description, with the correct encoding per location (entities in HTML attrs, literal Unicode in JSON-LD). `--check` mode is the 7th `npm run validate` gate. Body lead is intentionally NOT synced (lede may be hooky while meta is SEO-optimised). |
+| `scripts/validate-all.sh` | Aggregates the 7 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, generate-fyc-pages, and sync-otc-meta. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 58 unit tests across 9 suites (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, V1/V2 gap threshold, medianSeries invariant). |
 
@@ -870,7 +872,7 @@ All events keyed by `id` and routed through `App._trackEvent`:
 - `qotd_teaser_viewed` (on every render)
 - `qotd_answered` (on submit)
 - `qotd_chart_viewed` (once when the proof chart scrolls into view)
-- `qotd_share_clicked` (on share button click)
+- `qotd_share_clicked` (after a successful share; params: `id`, `method` = `'native' | 'clipboard' | 'fallback'`; dismissed native share sheet does not fire)
 - `qotd_shared_url_landed` (on `/q/{id}/` or `?from_q={id}` landings)
 - `qotd_dismissed` (on close)
 - `qotd_return_next_day` (once per new-calendar-day visit)
@@ -909,7 +911,7 @@ The site-header banner on per-post pages is a styled `<p>`, not `<h1>`, so the p
 |------|------|
 | `off-the-charts/index.html` | Archive index. Inline `<style>` for `.otc-archive-*` classes. |
 | `off-the-charts/{slug}/index.html` | Full post page. Inline `<style>` for `.otc-post-*`, `.otc-table`, `.otc-bullets`, `.otc-actions`, `.otc-back`. |
-| `js/otc-share.js` | Clipboard-copy share-button handler. Looks for any `.share-btn[data-share-url]` (generic). |
+| `js/otc-share.js` | Share-button handler. Three-tier: `navigator.share()` → clipboard with pre-composed `title \n\n lede \n\n url` → execCommand fallback. Reads `<title>` (suffix-stripped) + `<meta name="description">` from the DOM. Fires GA4 `share_clicked` with `{ surface: 'otc', slug, method }`. AbortError on dismissed share sheet is a non-event. Looks for any `.share-btn[data-share-url]`. |
 | `scripts/generate-og-off-the-charts.py` | Archive index OG card. |
 | `scripts/generate-og-off-the-charts-posts.py` | Per-post OG cards keyed on slug. Re-run after adding or renaming a post. |
 | `assets/og/off-the-charts.png` | Archive OG card. |

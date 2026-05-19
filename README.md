@@ -25,8 +25,8 @@ js/
   fyc.js                Change Summary page logic (span-aware; shared by all 7 shells)
   bundles.js            Bundle config: resident-voice question bundles with metric lists
   qotd.js               Question of the Day controller (teaser render, answer state, share)
-  questions.js          QOTD question bank (48 entries, 8 template variants)
-  otc-share.js          Off the Charts share-button handler (clipboard copy)
+  questions.js          QOTD question bank (47 entries, 8 template variants)
+  otc-share.js          Off the Charts share-button handler (Web Share API → clipboard with pre-composed payload → execCommand fallback; fires GA4 `share_clicked` with method)
   data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)
   county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauaʻi
@@ -102,7 +102,7 @@ Eight GitHub Actions workflows + Dependabot automate the cycle:
 - `.github/workflows/rotate-backup.yml`, `timestamp.yml`: backup tag rotation and footer-timestamp upkeep.
 - `.github/dependabot.yml`: weekly grouped PRs for npm + GitHub Actions updates.
 
-Per-commit gates (`npm run validate` chains 6 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), metric-count consistency, and Change-Summary-template drift.
+Per-commit gates (`npm run validate` chains 7 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), metric-count consistency, Change-Summary-template drift, and Off the Charts meta-description sync.
 
 ## OG images, landing pages, and static CSVs
 
