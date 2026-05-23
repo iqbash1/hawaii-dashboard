@@ -179,7 +179,22 @@ const QOTD = {
                 const hiYears = Object.keys(metricData.hawaii).sort();
                 const govBoxes = App.getGovernorBoxes(hiYears);
                 const allowZero = typeof ZERO_IS_VALID !== 'undefined' && ZERO_IS_VALID.has(slug);
-                ChartUtils.createDetailChart(canvas, metricData, govBoxes, allowZero);
+                // Optional state comparator: /t/{metric}/{state-slug}/ swaps the
+                // 50-state median for that state's time series, so V7 cross-state
+                // claims read as "Hawaiʻi vs California" instead of "vs US median".
+                let comparator;
+                const compareMatch = q.chartUrl.match(/^\/t\/[^/]+\/([^/]+)\/?$/);
+                if (compareMatch && typeof Router !== 'undefined') {
+                    const stateName = Router.slugToState(compareMatch[1]);
+                    const sd = App.getActiveStateData(slug);
+                    if (stateName && sd && sd.data) {
+                        const timeSeries = Compute.getStateTimeSeries(sd.data, stateName);
+                        if (timeSeries && Object.keys(timeSeries).length > 0) {
+                            comparator = { label: stateName, timeSeries };
+                        }
+                    }
+                }
+                ChartUtils.createDetailChart(canvas, metricData, govBoxes, allowZero, comparator);
                 return;
             }
             if (view === 'r') {
