@@ -1,7 +1,7 @@
 // ============================================================
 // Hawaiʻi Dashboard - Question of the Day bank
 //
-// 55 questions, rotated deterministically by day index
+// 54 questions, rotated deterministically by day index
 // starting from QOTD_DAY_ZERO (see js/qotd.js).
 //
 // Fields:
@@ -655,18 +655,6 @@ const QOTD_QUESTIONS = [
       "metricLabel": "Net Migration",
       "topic": "Infrastructure & Trust",
       "variant": "V5"
-  },
-  {
-      "id": "q064",
-      "slug": "hawaii-loses-bigger-share-of-residents-to-mainland-than-oregon",
-      "claim": "Hawaiʻi is losing a bigger share of its residents to the mainland than Oregon.",
-      "correct": true,
-      "answer": "In 2024, Hawaiʻi was -64.6 per 10K versus Oregon at -2.7 per 10K.",
-      "chartUrl": "/t/net_domestic_migration_rate/or/",
-      "metric": "net_domestic_migration_rate",
-      "metricLabel": "Net Migration",
-      "topic": "Infrastructure & Trust",
-      "variant": "V7"
   },
   {
       "id": "q073",

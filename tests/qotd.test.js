@@ -22,7 +22,7 @@ const QOTD = require('../js/qotd.js');
 
 describe('QOTD_QUESTIONS bank', () => {
     it('has 47 questions', () => {
-        assert.equal(QOTD_QUESTIONS.length, 55);
+        assert.equal(QOTD_QUESTIONS.length, 54);
     });
 
     it('every question has required fields', () => {

@@ -43,7 +43,7 @@ hawaii-dashboard/
 │   ├── bundles.js          # Bundle config: resident-voice questions with metric lists
 │   ├── fyc.js              # Change Summary page logic (span-aware; shared by all 7 year-span shells)
 │   ├── qotd.js             # Question of the Day controller (teaser render, answer state, share)
-│   ├── questions.js        # QOTD question bank (55 entries, 8 template variants)
+│   ├── questions.js        # QOTD question bank (54 entries, 8 template variants)
 │   ├── otc-share.js        # Off the Charts share-button handler (Web Share API → clipboard w/ pre-composed payload → execCommand fallback)
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers)
 ├── assets/
@@ -70,7 +70,7 @@ hawaii-dashboard/
 ├── rh/                     # Rank history redirect pages for OG sharing
 │   ├── {slug}/index.html
 │   └── {slug}/{code}/index.html   # Per-comparison redirect pages (49 per metric)
-├── q/                      # Question of the Day redirect pages (55 questions)
+├── q/                      # Question of the Day redirect pages (54 questions)
 │   └── {id}/index.html             # Meta-refresh to /?from_q={id}; carries OG meta for the claim card
 ├── off-the-charts/         # Short-form blog (SEO-first, per-post canonical URLs)
 │   ├── index.html                   # Archive index
@@ -811,7 +811,7 @@ See `scripts/REFRESH-PLAYBOOK.md` for the full canonical sequence.
 
 ## Question of the Day (QOTD)
 
-Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict + 1-sentence answer + live Chart.js canvas pulled from `chartUrl`). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 55 questions in the bank; rotation wraps.
+Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict + 1-sentence answer + live Chart.js canvas pulled from `chartUrl`). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 54 questions in the bank; rotation wraps.
 
 ### URL pattern
 
