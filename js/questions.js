@@ -59,7 +59,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q050",
       "slug": "hawaii-has-higher-electricity-prices-than-the-rest-of-the-country",
-      "claim": "Hawaiʻi has higher residential electricity prices than in the rest of the country.",
+      "claim": "Hawaiʻi has higher residential electricity prices than the rest of the country.",
       "correct": true,
       "answer": "In 2025, Hawaiʻi was 40.6¢ versus the median of 15.3¢.",
       "chartUrl": "/r/residential_price_cpkwh/",
@@ -238,8 +238,8 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q078",
-      "slug": "hawaii-is-among-the-states-with-the-highest-unsheltered-homelessness",
-      "claim": "Hawaiʻi is among the states with the highest unsheltered homelessness.",
+      "slug": "hawaii-is-among-the-states-with-the-highest-unsheltered-homelessness-rates",
+      "claim": "Hawaiʻi is among the states with the highest unsheltered homelessness rates.",
       "correct": true,
       "answer": "Hawaiʻi has the #3 highest value among 50 states in 2024 (28.2 per 10K).",
       "chartUrl": "/r/unsheltered_homeless_rate/",
@@ -299,7 +299,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q037",
       "slug": "hawaii-is-in-the-top-10-states-for-low-violent-crime",
-      "claim": "Hawaiʻi is among the top ranked states for low violent crime.",
+      "claim": "Hawaiʻi is among the top-ranked states for low violent crime.",
       "correct": true,
       "answer": "Hawaiʻi ranks #12 of 50 in 2024, in the top quartile.",
       "chartUrl": "/r/violent_crime_rate/",
@@ -310,8 +310,8 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q047",
-      "slug": "hawaii-has-more-primary-care-doctors-than-the-rest-of-the-country",
-      "claim": "Hawaiʻi has more primary care doctors as a % of residents than in most states.",
+      "slug": "hawaii-has-more-primary-care-doctors-per-resident-than-most-states",
+      "claim": "Hawaiʻi has more primary care doctors per resident than most states.",
       "correct": true,
       "answer": "In 2023, Hawaiʻi was 88.1 per 100K versus the median of 78.7 per 100K.",
       "chartUrl": "/r/pcp_per_100k/",
@@ -383,7 +383,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q083",
       "slug": "food-insecurity-has-gone-down-in-hawaii-in-the-last-five-years",
-      "claim": "Hawaiʻi has less food insecurity than it did five years ago.",
+      "claim": "Food insecurity has gone down in Hawaiʻi in the last five years.",
       "correct": false,
       "answer": "Hawaiʻi's food insecurity rate went from 8.0% to 10.8% between the 2016-2018 and 2022-2024 windows (+36.1%).",
       "chartUrl": "/t/food_insecurity_rate/",
@@ -478,8 +478,8 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q048",
-      "slug": "hawaii-is-in-the-top-10-states-for-primary-care-doctors",
-      "claim": "Hawaiʻi is in the top 10 states for primary care doctors.",
+      "slug": "hawaii-is-in-the-top-10-states-for-primary-care-doctors-per-resident",
+      "claim": "Hawaiʻi is in the top 10 states for primary care doctors per resident.",
       "correct": true,
       "answer": "Hawaiʻi ranks #8 of 50 in 2023.",
       "chartUrl": "/r/pcp_per_100k/",
@@ -550,8 +550,8 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q080",
-      "slug": "of-all-counties-honolulu-has-the-highest-unsheltered-homelessness",
-      "claim": "Of all counties, Honolulu has the highest unsheltered homelessness.",
+      "slug": "of-all-hawaii-counties-honolulu-has-the-highest-unsheltered-homelessness-rate",
+      "claim": "Of all Hawaiʻi counties, Honolulu has the highest unsheltered homelessness rate.",
       "correct": false,
       "answer": "In 2024, the county with the highest value was Kauaʻi at 63.0 per 10K.",
       "chartUrl": "/c/unsheltered_homeless_rate/",
@@ -562,8 +562,8 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q084",
-      "slug": "hawaii-has-lower-food-insecurity-than-texas",
-      "claim": "Hawaiʻi has lower food insecurity than Texas.",
+      "slug": "hawaii-has-lower-food-insecurity-rate-than-texas",
+      "claim": "Hawaiʻi has a lower food insecurity rate than Texas.",
       "correct": true,
       "answer": "In 2022-2024, Hawaiʻi was 10.8% versus Texas at 17.5%.",
       "chartUrl": "/t/food_insecurity_rate/tx/",
