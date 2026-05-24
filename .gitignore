@@ -7,5 +7,6 @@ tests/playwright-report/
 .claude/
 .wrangler/
 .analytics/
+drafts/
 __pycache__/
 scripts/__pycache__/
