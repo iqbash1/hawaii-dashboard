@@ -25,7 +25,7 @@ js/
   fyc.js                Change Summary page logic (span-aware; shared by all 7 shells)
   bundles.js            Bundle config: resident-voice question bundles with metric lists
   qotd.js               Question of the Day controller (teaser render, answer state, share)
-  questions.js          QOTD question bank (47 entries, 8 template variants)
+  questions.js          QOTD question bank (55 entries, 8 template variants)
   otc-share.js          Off the Charts share-button handler (Web Share API → clipboard with pre-composed payload → execCommand fallback; fires GA4 `share_clicked` with method)
   data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)

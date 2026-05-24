@@ -1,7 +1,7 @@
 // ============================================================
 // Hawaiʻi Dashboard - Question of the Day bank
 //
-// 47 questions, rotated deterministically by day index
+// 55 questions, rotated deterministically by day index
 // starting from QOTD_DAY_ZERO (see js/qotd.js).
 //
 // Fields:
@@ -583,6 +583,102 @@ const QOTD_QUESTIONS = [
       "metricLabel": "Adults with Bachelor's Degree+",
       "topic": "Education",
       "variant": "V8"
+  },
+  {
+      "id": "q007",
+      "slug": "hawaii-uninsured-rate-has-fallen-in-the-last-five-years",
+      "claim": "Hawaiʻi's uninsured rate has fallen in the last five years.",
+      "correct": true,
+      "answer": "Hawaiʻi's uninsured rate went from 4.2% to 3.5% between 2019 and 2024 (-16.7%).",
+      "chartUrl": "/t/uninsured_rate/",
+      "metric": "uninsured_rate",
+      "metricLabel": "Uninsured Rate",
+      "topic": "Safety & Health",
+      "variant": "V6"
+  },
+  {
+      "id": "q008",
+      "slug": "only-one-state-has-higher-health-insurance-coverage-than-hawaii",
+      "claim": "Only one state covers a bigger share of residents with health insurance than Hawaiʻi.",
+      "correct": true,
+      "answer": "Hawaiʻi has the #2 lowest value among 50 states in 2024 (3.5%).",
+      "chartUrl": "/r/uninsured_rate/",
+      "metric": "uninsured_rate",
+      "metricLabel": "Uninsured Rate",
+      "topic": "Safety & Health",
+      "variant": "V5"
+  },
+  {
+      "id": "q013",
+      "slug": "hawaii-among-states-with-most-cost-burdened-renters",
+      "claim": "Few states have a bigger share of cost-burdened renters than Hawaiʻi.",
+      "correct": true,
+      "answer": "Hawaiʻi has the #4 highest value among 50 states in 2024 (55.0%).",
+      "chartUrl": "/r/renter_cost_burden_pct/",
+      "metric": "renter_cost_burden_pct",
+      "metricLabel": "Renter Housing Cost Burden",
+      "topic": "Affordability",
+      "variant": "V4"
+  },
+  {
+      "id": "q021",
+      "slug": "only-one-state-has-lower-unemployment-than-hawaii",
+      "claim": "Only one state has lower unemployment than Hawaiʻi.",
+      "correct": true,
+      "answer": "Hawaiʻi has the #2 lowest value among 50 states in 2025 (2.3%).",
+      "chartUrl": "/r/unemployment_rate/",
+      "metric": "unemployment_rate",
+      "metricLabel": "Unemployment Rate",
+      "topic": "Economy & Workforce",
+      "variant": "V5"
+  },
+  {
+      "id": "q022",
+      "slug": "of-all-hawaii-counties-maui-has-the-highest-unemployment",
+      "claim": "Of all Hawaiʻi counties, Maui has the highest unemployment.",
+      "correct": true,
+      "answer": "In 2025, the county with the highest value was Maui at 4.3%.",
+      "chartUrl": "/c/unemployment_rate/",
+      "metric": "unemployment_rate",
+      "metricLabel": "Unemployment Rate",
+      "topic": "Economy & Workforce",
+      "variant": "V8"
+  },
+  {
+      "id": "q063",
+      "slug": "hawaii-loses-bigger-share-of-residents-to-mainland-than-any-other-state",
+      "claim": "Hawaiʻi loses a bigger share of its residents to the mainland than any other state.",
+      "correct": true,
+      "answer": "In 2024, Hawaiʻi had a net loss of 64.6 residents per 10,000 to the mainland, the largest of any state.",
+      "chartUrl": "/r/net_domestic_migration_rate/",
+      "metric": "net_domestic_migration_rate",
+      "metricLabel": "Net Migration",
+      "topic": "Infrastructure & Trust",
+      "variant": "V5"
+  },
+  {
+      "id": "q064",
+      "slug": "hawaii-loses-bigger-share-of-residents-to-mainland-than-oregon",
+      "claim": "Hawaiʻi is losing a bigger share of its residents to the mainland than Oregon.",
+      "correct": true,
+      "answer": "In 2024, Hawaiʻi was -64.6 per 10K versus Oregon at -2.7 per 10K.",
+      "chartUrl": "/t/net_domestic_migration_rate/or/",
+      "metric": "net_domestic_migration_rate",
+      "metricLabel": "Net Migration",
+      "topic": "Infrastructure & Trust",
+      "variant": "V7"
+  },
+  {
+      "id": "q073",
+      "slug": "voter-turnout-has-gone-down-in-hawaii-in-the-last-five-years",
+      "claim": "Voter turnout has gone down in Hawaiʻi in the last five years.",
+      "correct": true,
+      "answer": "Hawaiʻi's voter participation rate went from 55.4% to 50.3% between 2020 and 2024 (-9.2%).",
+      "chartUrl": "/t/voter_participation_rate/",
+      "metric": "voter_participation_rate",
+      "metricLabel": "Voter Participation Rate",
+      "topic": "Infrastructure & Trust",
+      "variant": "V6"
   }
 ];
 

@@ -62,7 +62,7 @@ All five always run, so every problem surfaces in a single report.
 
 ## When NOT to run sync-qotd
 
-Custom-phrased answers (about 17 of 47 questions) — the ones with
+Custom-phrased answers (about 18 of 55 questions) — the ones with
 descriptive wording like _"3.5% of Hawaiʻi residents lacked health
 insurance"_ — are detected via a canonical regex per variant and **left
 alone** by sync. Their drift risk is covered by the audit gate instead.
