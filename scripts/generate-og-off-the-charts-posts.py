@@ -30,14 +30,6 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
-        "slug": "safe-from-violence-not-theft",
-        "title": "Safe from violence, not from your trunk.",
-        "date":  "24 May 2026",
-        # The outlier line conveys: HI sits in a split position — safer than peers
-        # on violent crime, more exposed on property crime, the widest gap in the country.
-        "outlier": "high",
-    },
-    {
         "slug": "low-violent-crime-high-homelessness",
         "title": "Seventeen years of low violent crime with high homelessness.",
         "date":  "17 May 2026",
