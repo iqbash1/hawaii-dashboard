@@ -113,11 +113,11 @@ const QOTD = {
      * /five-year-change/ which is a page-level chart, not a single canvas).
      */
     chartOgImage(chartUrl) {
-        const m = chartUrl.match(/^\/(r|rh|c|t)\/([^/]+)/);
+        const m = chartUrl.match(/^\/(r|c|t)\/([^/]+)/);
         if (!m) return '/assets/og-image.png';
         const view = m[1];
         const slug = m[2];
-        const suffix = view === 'r' ? '_rankings' : view === 'c' ? '_county' : view === 'rh' ? '_rank_history' : '';
+        const suffix = view === 'r' ? '_rankings' : view === 'c' ? '_county' : '';
         return `/assets/og/${slug}${suffix}.png`;
     },
 
@@ -166,7 +166,7 @@ const QOTD = {
         const canvas = fig.querySelector('.qotd-chart-canvas');
         if (!canvas) return;
         try {
-            const m = q.chartUrl.match(/^\/(t|r|c|rh)\//);
+            const m = q.chartUrl.match(/^\/(t|r|c)\//);
             if (!m) return this._fallbackOgImage(fig, q);
             const view = m[1];
             const slug = q.metric;
@@ -218,20 +218,6 @@ const QOTD = {
                 const govBoxes = App.getGovernorBoxes(hiYears);
                 const colors = { 'Honolulu': '#2563EB', 'Hawaiʻi': '#C0392B', 'Maui': '#059669', 'Kauaʻi': '#c08a1a' };
                 ChartUtils.createCountyChart(canvas, countyData, metricData, govBoxes, colors, metricData);
-                return;
-            }
-            if (view === 'rh' && App.computeRankHistory) {
-                const metricData = App.getActiveMetricData(slug);
-                if (!metricData) return this._fallbackOgImage(fig, q);
-                const rankHistory = App.computeRankHistory(slug);
-                if (!rankHistory) return this._fallbackOgImage(fig, q);
-                const hiYears = Object.keys(metricData.hawaii || {}).sort();
-                const govBoxes = App.getGovernorBoxes(hiYears);
-                const compareMatch = q.chartUrl.match(/^\/rh\/[^/]+\/([^/]+)\/?$/);
-                const initialCompare = (compareMatch && typeof Router !== 'undefined')
-                    ? Router.slugToState(compareMatch[1])
-                    : null;
-                ChartUtils.createRankHistoryChart(canvas, rankHistory, metricData, govBoxes, () => {}, initialCompare);
                 return;
             }
             return this._fallbackOgImage(fig, q);

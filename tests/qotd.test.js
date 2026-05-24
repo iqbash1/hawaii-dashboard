@@ -46,7 +46,7 @@ describe('QOTD_QUESTIONS bank', () => {
     });
 
     it('chartUrls match a valid view pattern', () => {
-        const valid = /^\/(t|r|rh|c|five-year-change)\//;
+        const valid = /^\/(t|r|c|five-year-change)\//;
         for (const q of QOTD_QUESTIONS) {
             assert.match(q.chartUrl, valid, `bad chartUrl on ${q.id}: ${q.chartUrl}`);
         }

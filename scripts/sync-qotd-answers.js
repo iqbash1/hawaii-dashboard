@@ -21,7 +21,7 @@
  *   V4/V5 (highest/lowest) -- canonical "Hawaiʻi has the #N {highest|lowest} value among T states in {y} (X)."
  *   V6    (5-year change)  -- preserves original year window from the
  *                              existing answer; only refreshes values.
- *   V7    (vs named state) -- comparator state parsed from chartUrl /t/{slug}/{code}/ (or legacy /rh/).
+ *   V7    (vs named state) -- comparator state parsed from chartUrl /t/{slug}/{code}/.
  *   V8    (county leader)  -- county parsed from claim ("Of all counties, X has the…").
  *
  * Custom-phrased answers that don't match the canonical regex are LEFT
@@ -177,7 +177,7 @@ function fmt(value, metric) {
     }
 }
 
-// Map state-code from chartUrl segment (/t/ or /rh/ with state code) to canonical state name.
+// Map state-code from chartUrl segment (/t/{slug}/{code}/) to canonical state name.
 const STATE_CODES = {
     al: 'Alabama', ak: 'Alaska', az: 'Arizona', ar: 'Arkansas', ca: 'California',
     co: 'Colorado', ct: 'Connecticut', de: 'Delaware', fl: 'Florida', ga: 'Georgia',
@@ -262,9 +262,8 @@ function renderFiveYearChange(q, metric) {
 }
 
 function renderHiVsState(q, metric) {
-    // Pull state code from chartUrl: /t/{slug}/{code}/ (trend with state comparator)
-    // or legacy /rh/{slug}/{code}/ (rank-history comparator).
-    const m = (q.chartUrl || '').match(/^\/(?:t|rh)\/[^/]+\/([a-z]{2})\/?$/i);
+    // Pull state code from chartUrl: /t/{slug}/{code}/ (trend with state comparator).
+    const m = (q.chartUrl || '').match(/^\/t\/[^/]+\/([a-z]{2})\/?$/i);
     if (!m) return null;
     const stateName = STATE_CODES[m[1].toLowerCase()];
     if (!stateName) return null;
