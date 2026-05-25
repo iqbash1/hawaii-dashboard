@@ -31,7 +31,7 @@ SLATE    = (56, 75, 91)
 POSTS = [
     {
         "slug": "rainy-day-fund-rule",
-        "title": "Hawaiʻi’s rainy day fund is strong, now it needs guardrails.",
+        "title": "Hawaiʻi has the rainy day fund, finally.",
         "date":  "25 May 2026",
         # Outlier line: the fund's recent climb from near-zero to above the GFOA floor.
         "outlier": "high",
