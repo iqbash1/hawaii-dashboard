@@ -10,3 +10,5 @@ tests/playwright-report/
 drafts/
 __pycache__/
 scripts/__pycache__/
+.env
+.env.*
