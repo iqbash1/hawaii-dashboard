@@ -1043,9 +1043,13 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 // that join HI's long history to peer states render the peer line
 // truncated when this asymmetry exists.
 //
-// Output: warnings only (these gaps are pre-existing systemic
-// debt, not new errors). To make CI block on coverage gaps once
-// backfills are run, change warn() to error() below.
+// Output:
+//   - ERROR if a SOURCE_COVERAGE slug is entirely absent from
+//     state-data.js (floor check; added May 2026 third pass after the
+//     county-side 2026-05-23 silent-drop regression). Always blocks,
+//     not just in strict mode.
+//   - WARN for source-depth gaps and HI-vs-states asymmetry (these
+//     are pre-existing systemic debt, not regressions).
 // ============================================================
 {
     console.log('\n--- Section 12: Source coverage audit ---');
@@ -1064,12 +1068,20 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
             const m = String(key).match(/^(\d{4})/);
             return m ? parseInt(m[1], 10) : NaN;
         }
-        let gaps = 0, asymmetric = 0, structural = 0, ok = 0;
+        let gaps = 0, asymmetric = 0, structural = 0, ok = 0, missingFloor = 0;
         for (const slug of slugs) {
             const expected = SOURCE_COVERAGE[slug];
             const sdMetric = STATE_DATA[slug];
             if (!sdMetric || !sdMetric.data) {
-                warn(`[${slug}] no state-data.js entry; expected source: ${expected.source}`);
+                // Floor check: SOURCE_COVERAGE declares this slug is expected
+                // in state-data.js. Total absence = a fetcher silently dropped
+                // it AND the year-level merge couldn't preserve it (empty
+                // existing file). Mirrors Section 15's county-floor behavior
+                // post 2026-05-23 Census-HTML incident. Was warn() pre-May
+                // 2026 third-pass hardening; escalated to error() so default
+                // mode catches it (not just strict-mode CI).
+                error(`[${slug}] no state-data.js entry; expected source: ${expected.source}. Re-run scripts/build-state-data.js; investigate which fetcher dropped.`);
+                missingFloor++;
                 continue;
             }
             // FIPS-first: read year coverage from HI (FIPS '15') bucket. The
@@ -1079,7 +1091,10 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
                 : sdMetric.data;
             const sdYears = Object.keys(yearSource).map(parseStartYear).filter(y => !isNaN(y) && y >= 1900).sort((a, b) => a - b);
             if (sdYears.length === 0) {
-                warn(`[${slug}] state-data.js has no parseable years; expected source: ${expected.source}`);
+                // Same logic as above: slug present but data block has no
+                // parseable years means the metric is functionally absent.
+                error(`[${slug}] state-data.js has no parseable years; expected source: ${expected.source}`);
+                missingFloor++;
                 continue;
             }
             const sdStart = sdYears[0];
@@ -1122,7 +1137,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
                 ok++;
             }
         }
-        console.log(`  Summary: ${ok} aligned, ${structural} at structural floor, ${gaps} with source-depth gaps, ${asymmetric} with HI-vs-states asymmetry`);
+        console.log(`  Summary: ${ok} aligned, ${structural} at structural floor, ${gaps} with source-depth gaps, ${asymmetric} with HI-vs-states asymmetry${missingFloor > 0 ? `, ${missingFloor} MISSING from state-data.js` : ''}`);
 
         // Also flag any metric in state-data.js that lacks a SOURCE_COVERAGE entry
         for (const slug of Object.keys(STATE_DATA)) {

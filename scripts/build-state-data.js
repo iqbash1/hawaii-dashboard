@@ -40,6 +40,63 @@ const KEYS = {
     FRED: 'aa88134401976fc554083c7bb3b50ed4',
 };
 
+// ---- Expected output metrics ----
+// Every monthly cron MUST end with all of these slugs in js/state-data.js
+// (whether from a fresh fetch or preserved via the year-level merge).
+// If any are missing at end of run, main() exits non-zero WITHOUT writing
+// so the existing state-data.js stays intact and the workflow opens an
+// issue instead of committing a truncated file.
+//
+// Update this list (and validate-data.js SOURCE_COVERAGE in Section 12)
+// when adding or removing a state metric.
+//
+// Keep in sync with SOURCE_COVERAGE in scripts/validate-data.js. They cover
+// the same 26 slugs but live in two files because each file needs the list
+// independently (build-state-data exits without writing; validate-data
+// errors on a missing entry post-write).
+//
+// Mirror of the May 2026 county-side hardening (commit 74ab4924) after the
+// 2026-05-23 Census-API-returns-HTML incident dropped 9 of 11 county metrics
+// silently. On state-side, the year-level merge in main() softens the
+// blow (a single-run fetcher drop preserves the prior file's data), but
+// this floor check catches the catastrophic case (empty existing file +
+// failed fetch) and the warning summary below surfaces the slow-rot case
+// (fetcher drops repeatedly while merge masks the symptom).
+const EXPECTED_METRICS = [
+    'acgr',
+    'ba_or_higher_pct',
+    'broadband_subscription_pct',
+    'estabs_entry_rate',
+    'food_insecurity_rate',
+    'home_price_to_income',
+    'labor_force_participation',
+    'labor_productivity',
+    'naep_math_8',
+    'naep_reading_8',
+    'net_domestic_migration_rate',
+    'net_employer_formation',
+    'pcp_per_100k',
+    'property_crime_rate',
+    'rainy_day_fund_pct',
+    'real_per_capita_income',
+    'renewables_share_gen',
+    'renter_cost_burden_pct',
+    'residential_price_cpkwh',
+    'road_poor_pct',
+    'suicide_rate',
+    'unemployment_rate',
+    'uninsured_rate',
+    'unsheltered_homeless_rate',
+    'violent_crime_rate',
+    'voter_participation_rate',
+];
+
+// Metrics where main() does NOT run a fresh fetcher; they stay current via
+// the year-level merge preserving the existing state-data.js entry. A
+// missing entry from `results` for these is expected and not a fetcher
+// failure. See the pcp_per_100k comment in main() for the shape rationale.
+const PRESERVE_ONLY_METRICS = new Set(['pcp_per_100k']);
+
 // ---- FIPS → State Name ----
 const FIPS_TO_STATE = {
     '01': 'Alabama', '02': 'Alaska', '04': 'Arizona', '05': 'Arkansas',
@@ -144,6 +201,16 @@ async function fetchJSON(url, retries = 3) {
                 continue;
             }
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            // Detect HTML / maintenance pages served with 200 OK before
+            // res.json() throws a generic "Unexpected token <" SyntaxError
+            // that the per-fetcher try/catch swallows as a silent null.
+            // Census api.census.gov did exactly this on 2026-05-23, dropping
+            // 9 of 11 county metrics. Mirrors build-county-data.js fetchJSON.
+            const ct = (res.headers.get('content-type') || '').toLowerCase();
+            if (ct.includes('text/html') || ct.includes('text/plain')) {
+                const peek = (await res.text()).slice(0, 80).replace(/\s+/g, ' ');
+                throw new Error(`Non-JSON response (content-type: ${ct}). Body starts: "${peek}"`);
+            }
             return res.json();
         } catch (err) {
             if (attempt === retries) throw err;
@@ -2417,6 +2484,24 @@ async function main() {
         }
     }
 
+    // Floor check: every metric in EXPECTED_METRICS must be present in the
+    // merged output. If any are missing, the existing state-data.js entry
+    // for that slug was absent AND today's fetch returned null. Exit
+    // non-zero WITHOUT writing so the on-disk file stays intact; the
+    // GitHub Actions workflow will open an issue instead of a PR with a
+    // truncated file. Mirrors build-county-data.js's pre-write check after
+    // the 2026-05-23 Census-HTML incident.
+    const missingExpected = EXPECTED_METRICS.filter(m => !sortedMerged[m]);
+    if (missingExpected.length > 0) {
+        console.error(`\nERROR: ${missingExpected.length} of ${EXPECTED_METRICS.length} expected metrics absent from merged output:`);
+        for (const m of missingExpected) console.error(`  - ${m}`);
+        console.error(`\nProduced: ${Object.keys(sortedMerged).join(', ') || '(none)'}`);
+        console.error(`\nNot writing js/state-data.js. The on-disk file is unchanged.`);
+        console.error(`Likely cause: existing state-data.js was missing these metrics AND today's fresh fetch failed for them (federal APIs returning HTML/5xx).`);
+        console.error(`Re-run after confirming Census ACS, BEA, EIA, BLS, BDS, and other federal endpoints respond with JSON.`);
+        process.exit(1);
+    }
+
     const timestamp = new Date().toISOString();
     const output = `// ============================================================
 // Hawai\u02BBi Dashboard - All-State Time Series Data
@@ -2443,6 +2528,21 @@ const STATE_DATA = ${JSON.stringify(sortedMerged, null, 2)};
     for (const [slug, metric] of Object.entries(results)) {
         const years = Object.keys(metric.data).sort();
         console.log(`  ${slug}: ${years[0]}-${years[years.length - 1]} (${years.length} years) [fetched]`);
+    }
+
+    // Fresh-fetch failure visibility: distinguish "fetcher dropped, merge
+    // preserved" (silent slow-rot risk) from "intentional preserve-only"
+    // (pcp_per_100k). Surfaces the Census-outage scenario even when the
+    // floor check passes because the merge masked it. Does NOT fail the
+    // run: a single-day outage is recoverable; the warning shows up in
+    // logs and any persistent failure shows up in the audit-vs-source
+    // drift check (validate-data.js Section 16 + daily cron).
+    const expectedToFetch = EXPECTED_METRICS.filter(m => !PRESERVE_ONLY_METRICS.has(m));
+    const fetchFailed = expectedToFetch.filter(m => !results[m]);
+    if (fetchFailed.length > 0) {
+        console.warn(`\nWARNING: ${fetchFailed.length} of ${expectedToFetch.length} fetcher(s) returned no data this run (preserved from existing state-data.js via year-level merge):`);
+        for (const m of fetchFailed) console.warn(`  - ${m}`);
+        console.warn(`If this persists across runs, the listed metrics will stop receiving fresh years even though the output file still contains them.`);
     }
 }
 
