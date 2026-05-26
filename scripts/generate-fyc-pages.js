@@ -128,7 +128,7 @@ ${renderSpanMenu(years)}
     <script src="../js/fyc.js?v=20260515a"></script>
 
     <footer class="footer">
-        <p class="footer-updated">Last reviewed: 11 May 2026</p>
+        <p class="footer-updated">Last reviewed: 26 May 2026</p>
         <p class="footer-attribution">Developed by <a href="https://guild.consulting/" target="_blank" rel="noopener">GUILD Consulting</a> for Hawai&#x02BB;i residents.</p>
     </footer>
 </body>
