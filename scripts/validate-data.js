@@ -1349,6 +1349,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 // Section 15: County-data parity (always-on)
 // Closes the third-file governance hole noted in the May 2026
 // dashboard-clean session. Catches:
+//   - regressions where the build script silently drops metrics (floor check)
 //   - county metrics referencing slugs that don't exist in state-data
 //   - missing counties (every metric should have all 4)
 //   - county year coverage stale relative to state-data Hawaiʻi
@@ -1360,6 +1361,32 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
     const EXPECTED_COUNTY_SET = ['Honolulu', 'Hawaiʻi', 'Maui', 'Kauaʻi'];
     const HONOLULU_LAG_TOLERANCE = 1; // county data may legitimately lag state by 1 year
     const COUNTY_LAG_WARN = 2;        // 2y+ lag is worth flagging
+
+    // Floor check: every slug here MUST appear in COUNTY_DATA. If one is
+    // missing, build-county-data.js dropped a metric silently (e.g. May 23
+    // 2026 cron: Census API returned HTML; 9 of 11 metrics dropped, parity
+    // gate logged "2 aligned" and the truncated PR was opened anyway).
+    // Keep in sync with EXPECTED_METRICS in scripts/build-county-data.js.
+    const EXPECTED_COUNTY_METRICS = [
+        'unemployment_rate',
+        'ba_or_higher_pct',
+        'broadband_subscription_pct',
+        'renter_cost_burden_pct',
+        'uninsured_rate',
+        'home_price_to_income',
+        'labor_force_participation',
+        'real_per_capita_income',
+        'net_domestic_migration_rate',
+        'estabs_entry_rate',
+        'net_employer_formation',
+    ];
+    const presentSlugs = new Set(Object.keys(COUNTY_DATA));
+    const missingFloor = EXPECTED_COUNTY_METRICS.filter(s => !presentSlugs.has(s));
+    if (missingFloor.length > 0) {
+        error(`[county-floor] county-data.js missing ${missingFloor.length} of ${EXPECTED_COUNTY_METRICS.length} expected metrics: ${missingFloor.join(', ')}. Re-run scripts/build-county-data.js; if it still fails, investigate which fetcher dropped.`);
+    } else {
+        console.log(`  OK: floor check (${EXPECTED_COUNTY_METRICS.length} expected metrics present)`);
+    }
 
     let okMetrics = 0;
     let warningMetrics = 0;

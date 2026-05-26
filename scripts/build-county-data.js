@@ -49,6 +49,26 @@ const BLS_TIME_WINDOWS = [
 // Minimum monthly data points required to compute annual average
 const MIN_MONTHLY_DATA_POINTS = 10;
 
+// ---- Expected output metrics ----
+// Every monthly cron MUST produce all of these slugs in js/county-data.js.
+// If any are missing at end of run, main() exits non-zero so the workflow
+// opens an issue instead of opening a PR with a silently-truncated file.
+// Update this list (and validate-data.js Section 15 EXPECTED_COUNTY_METRICS)
+// when adding or removing a county metric.
+const EXPECTED_METRICS = [
+    'unemployment_rate',
+    'ba_or_higher_pct',
+    'broadband_subscription_pct',
+    'renter_cost_burden_pct',
+    'uninsured_rate',
+    'home_price_to_income',
+    'labor_force_participation',
+    'real_per_capita_income',
+    'net_domestic_migration_rate',
+    'estabs_entry_rate',
+    'net_employer_formation',
+];
+
 // ---- API Keys ----
 const KEYS = {
     BEA: 'C51F8C25-E865-4DCC-B502-13BAFEB7D8AD',
@@ -62,6 +82,15 @@ const ACS_YEARS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023];
 async function fetchJSON(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    // Detect HTML responses (API outage / maintenance / gateway error page
+    // served with 200 OK) before .json() throws a generic "Unexpected token <".
+    // Census api.census.gov did exactly this on 2026-05-23, dropping 9 of 11
+    // county metrics silently.
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+    if (ct.includes('text/html') || ct.includes('text/plain')) {
+        const peek = (await res.text()).slice(0, 80).replace(/\s+/g, ' ');
+        throw new Error(`Non-JSON response (content-type: ${ct}). Body starts: "${peek}"`);
+    }
     return res.json();
 }
 
@@ -547,6 +576,23 @@ async function main() {
     if (bds.net) {
         const metric = buildMetric(bds.net, 2000);
         if (metric) results['net_employer_formation'] = metric;
+    }
+
+    // Floor check: every metric in EXPECTED_METRICS must be present.
+    // If any are missing, a fetcher silently dropped its metric (most commonly
+    // because the source returned HTML / a 5xx page that the try/catch
+    // swallowed). Exit non-zero WITHOUT writing so the existing county-data.js
+    // stays intact; the GitHub Actions workflow will open an issue instead of
+    // a PR with a truncated file.
+    const missingExpected = EXPECTED_METRICS.filter(m => !results[m]);
+    if (missingExpected.length > 0) {
+        console.error(`\nERROR: ${missingExpected.length} of ${EXPECTED_METRICS.length} expected metrics missing from results:`);
+        for (const m of missingExpected) console.error(`  - ${m}`);
+        console.error(`\nProduced: ${Object.keys(results).join(', ') || '(none)'}`);
+        console.error(`\nNot writing js/county-data.js. The on-disk file is unchanged.`);
+        console.error(`Likely cause: one or more federal APIs returned HTML/5xx during fetch.`);
+        console.error(`Re-run after confirming Census ACS, PEP, BDS, BEA, and BLS LAUS endpoints respond with JSON.`);
+        process.exit(1);
     }
 
     // Write output
