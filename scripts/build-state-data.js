@@ -11,18 +11,28 @@
 //   { source, calculation, rawVariables,
 //     data: { "2013": { "Alabama": val, ... }, ... } }
 //
-// Metrics covered (8 of 26):
-//   Census ACS: ba_or_higher_pct, broadband_subscription_pct,
-//               renter_cost_burden_pct, uninsured_rate
-//   BLS:        unemployment_rate
-//   BEA:        real_per_capita_income
-//   EIA:        residential_price_cpkwh, renewables_share_gen
-// The other 18 metrics in state-data.js come from one-time backfill
-// scripts (see scripts/backfill-*) for sources without a stable API.
+// Metrics covered (25 of 26, all live-fetched via main(); the 26th
+// (pcp_per_100k) is preserve-only via the year-level merge because of
+// its FIPS-first storage shape — see comment in main()):
+//   Census ACS:  ba_or_higher_pct, broadband_subscription_pct,
+//                renter_cost_burden_pct, uninsured_rate, home_price_to_income
+//   BLS:         unemployment_rate, labor_force_participation,
+//                estabs_entry_rate, net_employer_formation
+//   BEA:         real_per_capita_income
+//   EIA:         residential_price_cpkwh, renewables_share_gen
+//   FRED:        labor_productivity
+//   FBI CDE:     violent_crime_rate, property_crime_rate
+//   CDC WONDER:  suicide_rate
+//   NCES:        acgr, naep_math_8, naep_reading_8
+//   USDA ERS:    food_insecurity_rate
+//   NASBO/Pew:   rainy_day_fund_pct
+//   FHWA:        road_poor_pct
+//   HUD/Census:  unsheltered_homeless_rate, net_domestic_migration_rate
+//   UF Lab:      voter_participation_rate
 //
 // Data integrity rule (May 2026 audit lesson):
 //   This script is the ONLY sanctioned writer of state-data.js values
-//   for the 8 federal-API metrics above. Do NOT hand-paste fresh
+//   for every metric in EXPECTED_METRICS. Do NOT hand-paste fresh
 //   numbers in. If you need a year this script doesn't currently
 //   produce, fix the script (e.g., extend ACS_YEARS) and re-run.
 //   Run `npm run validate:fresh` (or `node scripts/validate-data.js
@@ -2355,14 +2365,17 @@ async function main() {
         results[slug].data = dropHiMissingYears(results[slug].data, slug);
     }
 
-    // MERGE with existing state-data.js \u2014 this script only fetches the 9
-    // federal-API metrics, but state-data.js also holds 18 metrics that
-    // come from one-time backfill scripts (FBI crime, NCES ACGR, NAEP,
-    // HUD homelessness, Census migration, USDA food insecurity, NASBO
-    // rainy-day fund, FHWA roads, etc.). A full overwrite would silently
-    // wipe those \u2014 which is exactly what happened in the May 2026 refresh,
+    // MERGE with existing state-data.js \u2014 this script live-fetches 25 of
+    // 26 metrics (all in EXPECTED_METRICS except pcp_per_100k, which is in
+    // PRESERVE_ONLY_METRICS). The merge preserves the previous file's
+    // data for any metric that returns null this run, so a single transient
+    // fetcher failure doesn't wipe a metric. A full overwrite would silently
+    // wipe metrics \u2014 which is exactly what happened in the May 2026 refresh,
     // dropping state-data.js from 26 metrics to 9 and breaking the Rank
-    // tab on every metric without a federal-API fetcher in this file.
+    // tab on every affected metric. The EXPECTED_METRICS floor check after
+    // merge (introduced 2026-05-26, see commit f786e42f) catches the
+    // catastrophic case where merge can't recover (empty existing file +
+    // failed fetch) and refuses to write.
     const outPath = path.join(__dirname, '..', 'js', 'state-data.js');
     let existing = {};
     if (fs.existsSync(outPath)) {

@@ -773,13 +773,14 @@ Three weekly workflows surface drift via rolling labeled issues. Each maintains 
 
 ### Per-commit gates (`npm run validate`)
 
-Six gates run in sequence; any error fails the command:
-1. `validate-data.js` — data structure, ranges, YoY spikes, parity, writer allowlist (Sections 1–14)
+Seven gates run in sequence; any error fails the command:
+1. `validate-data.js` — data structure, ranges, YoY spikes, parity, writer allowlist, county-data and state-data floor checks, latestMonthly staleness + seasonal-envelope sanity (Sections 1–15, 17). Optional opt-in modes: `--fresh-fetch` (Section 16) re-fetches every wired metric from the canonical source; `--probe-floor` (Section 18) probes for years available beyond what's stored.
 2. `audit-narrative-numbers.js --gate` — rank/value claims in `rankHistoryNarrative`
 3. `sync-qotd-answers.js --check` — QOTD answer drift (refuses V6 truth-flips)
 4. `audit-internal.py --gate` — 10-phase site audit (P0+P1 findings block; P2 informational)
 5. `update-metric-counts.js --check` — hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
 6. `generate-fyc-pages.js --check` — the 7 Change Summary HTMLs must byte-match the single-source generator; hand-edits fail until `npm run generate-fyc` runs
+7. `sync-otc-meta.js --check` — Off the Charts post `<meta>` tags + JSON-LD must match the post body; drift fails until `npm run sync-otc-meta` runs
 
 ### Manual (one-off value update)
 
