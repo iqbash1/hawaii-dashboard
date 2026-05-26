@@ -85,25 +85,35 @@ async function fetchEIA() {
     await sleep(500); // rate limit
 
     // Renewables share
-    const renUrl = `https://api.eia.gov/v2/electricity/electric-power-operational-data/data/?api_key=${KEYS.EIA}&frequency=monthly&data[0]=generation&facets[sectorid][]=99&facets[location][]=HI&sort[0][column]=period&sort[0][direction]=desc&length=24`;
+    //
+    // Filter fueltypeid to just ALL + REN so the response is exactly two rows
+    // per period. The previous query had no fueltype filter and trusted
+    // `length=24` to cover 24 months; EIA returns ~24 fuel-type rows per
+    // SINGLE month (one row per generation subtype: ALL, AOR, BIO, DFO, DPV,
+    // FOS, GEO, HYC, MLG, MSB, NGO, OB2, OBW, OOG, ORW, OTH, PEL, PET, REN,
+    // RFO, SPV, SUN, TPV, TSN), so the response was truncated to just the
+    // latest month AND dropped WND alphabetically — silently underreporting
+    // the renewable share by 5–8 percentage points (e.g., Mar 2026 computed
+    // as 12.7% vs. correct 18.3%). Using REN (EIA's renewables aggregation)
+    // directly is also cleaner: one number for renewable generation, no
+    // chance of missing a subtype.
+    const renUrl = `https://api.eia.gov/v2/electricity/electric-power-operational-data/data/?api_key=${KEYS.EIA}&frequency=monthly&data[0]=generation&facets[sectorid][]=99&facets[location][]=HI&facets[fueltypeid][]=ALL&facets[fueltypeid][]=REN&sort[0][column]=period&sort[0][direction]=desc&length=48`;
     const renJson = await (await fetch(renUrl)).json();
     const rows = renJson.response.data;
 
-    // Group by period, sum renewables
+    // Group by period
     const byPeriod = {};
-    const renewableTypes = ['SUN', 'WND', 'HYC', 'GEO', 'BIO', 'WAS'];
     for (const r of rows) {
-        if (!byPeriod[r.period]) byPeriod[r.period] = { total: 0, renewable: 0 };
-        const gen = parseFloat(r.generation || 0);
-        if (r.fueltypeid === 'ALL') byPeriod[r.period].total = gen;
-        else if (renewableTypes.includes(r.fueltypeid)) byPeriod[r.period].renewable += gen;
+        if (!byPeriod[r.period]) byPeriod[r.period] = {};
+        byPeriod[r.period][r.fueltypeid] = parseFloat(r.generation || 0);
     }
 
-    // Find latest period with valid data
+    // Find latest period with both ALL and REN reported
     const periods = Object.keys(byPeriod).sort().reverse();
     for (const p of periods) {
-        if (byPeriod[p].total > 0) {
-            const share = (byPeriod[p].renewable / byPeriod[p].total) * 100;
+        const b = byPeriod[p];
+        if (b.ALL > 0 && b.REN !== undefined) {
+            const share = (b.REN / b.ALL) * 100;
             const [ry, rm] = p.split('-');
             results.renewables_share_gen = {
                 value: Math.round(share * 10) / 10,
