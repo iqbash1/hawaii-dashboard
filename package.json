@@ -16,7 +16,7 @@
     "validate": "bash scripts/validate-all.sh",
     "validate:data": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict",
-    "validate:fresh": "node scripts/validate-data.js --fresh-fetch",
+    "validate:fresh": "node --env-file-if-exists=.env scripts/validate-data.js --fresh-fetch",
     "audit:drift": "node scripts/validate-data.js --audit-only --probe-floor",
     "audit": "python3 scripts/audit-internal.py",
     "audit-narratives": "node scripts/audit-narrative-numbers.js",
