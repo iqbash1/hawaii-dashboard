@@ -1035,6 +1035,90 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
     }
 }
 
+// ── 11b. latestMonthly seasonal envelope check ────────────────────
+//
+// Cross-axis consistency: a monthly ticker should sit inside a plausible
+// envelope around the most-recent annual headline. The annual fetcher and
+// monthly fetcher live in different scripts, hit different EIA/BLS endpoints,
+// and use different aggregation logic — so a bug in the monthly fetcher
+// produces a value that disagrees with what the (independent, validated)
+// annual baseline implies. Catches the class of bug where the script runs
+// cleanly, produces a number inside loose absolute bounds, but is silently
+// wrong by 5-8 percentage points.
+//
+// Background: introduced 2026-05-26 after `update-monthly.js`'s renewables
+// fetcher silently truncated the EIA response and dropped wind generation,
+// reporting Mar 2026 at 12.7% when the correct value (from REN aggregation)
+// was 18.3%. The 2025 annual was 22.05%, and the historical monthly range
+// was 16.8-27.1% — so a 30% envelope would have flagged the 12.7% value
+// immediately. The pre-existing range check `BOUNDS = { renewables_share_gen:
+// { min: 1, max: 80 } }` in update-monthly.js was wide enough to catch a
+// unit error but not a structural under-count.
+//
+// Envelope calibration: relative deviation works for series with non-zero
+// floors (renewables share, electricity price, unemployment rate); absolute
+// deviation works for tight bands (labor force participation).
+//   - unemployment_rate: maxRelDev 0.40 → 2.5% annual ⇒ envelope [1.5, 3.5]
+//   - labor_force_participation: maxAbsDev 3pp → 60.7% annual ⇒ [57.7, 63.7]
+//   - residential_price_cpkwh: maxRelDev 0.30 → 40.6 annual ⇒ [28.4, 52.8]
+//   - renewables_share_gen: maxRelDev 0.30 → 22.05 annual ⇒ [15.4, 28.7]
+//     (HI historical monthly range 16.8-27.1 sits inside this; the buggy
+//     12.7 sits outside.)
+//
+// Tolerances are intentionally generous so legitimate seasonal swings pass
+// and structural bugs fail. Tighten only after a real-world false alarm.
+// ============================================================
+const LATEST_MONTHLY_ENVELOPE = {
+    unemployment_rate:         { scaleMul: 100, maxRelDev: 0.40 },
+    labor_force_participation: { scaleMul: 1,   maxAbsDev: 3    },
+    residential_price_cpkwh:   { scaleMul: 1,   maxRelDev: 0.30 },
+    renewables_share_gen:      { scaleMul: 100, maxRelDev: 0.30 },
+};
+
+console.log('\n--- 11b. latestMonthly seasonal envelope ---');
+for (const [slug, env] of Object.entries(LATEST_MONTHLY_ENVELOPE)) {
+    const m = DASHBOARD_DATA[slug];
+    if (!m || !m.latestMonthly) {
+        warn(`[${slug}] envelope check skipped: no latestMonthly`);
+        continue;
+    }
+    if (!m.hawaii || Object.keys(m.hawaii).length === 0) {
+        warn(`[${slug}] envelope check skipped: no hawaii annual series`);
+        continue;
+    }
+    const years = Object.keys(m.hawaii).filter(y => m.hawaii[y] !== null && m.hawaii[y] !== undefined).sort();
+    if (years.length === 0) {
+        warn(`[${slug}] envelope check skipped: hawaii series has no non-null values`);
+        continue;
+    }
+    const latestYear = years[years.length - 1];
+    const annualScaled = m.hawaii[latestYear] * env.scaleMul;
+    const monthly = m.latestMonthly.value;
+    let pass, envelope, dev;
+    if (env.maxRelDev !== undefined) {
+        dev = Math.abs(monthly - annualScaled) / annualScaled;
+        pass = dev <= env.maxRelDev;
+        const lo = (annualScaled * (1 - env.maxRelDev)).toFixed(2);
+        const hi = (annualScaled * (1 + env.maxRelDev)).toFixed(2);
+        envelope = `[${lo}, ${hi}] (±${(env.maxRelDev * 100).toFixed(0)}%)`;
+    } else if (env.maxAbsDev !== undefined) {
+        dev = Math.abs(monthly - annualScaled);
+        pass = dev <= env.maxAbsDev;
+        const lo = (annualScaled - env.maxAbsDev).toFixed(2);
+        const hi = (annualScaled + env.maxAbsDev).toFixed(2);
+        envelope = `[${lo}, ${hi}] (±${env.maxAbsDev}pp)`;
+    } else {
+        warn(`[${slug}] envelope check misconfigured: neither maxRelDev nor maxAbsDev set`);
+        continue;
+    }
+    const devStr = env.maxRelDev !== undefined ? `${(dev * 100).toFixed(1)}%` : `${dev.toFixed(2)}pp`;
+    if (!pass) {
+        error(`[${slug}] latestMonthly ${monthly} (${m.latestMonthly.period}) outside envelope ${envelope} from ${latestYear} annual ${annualScaled.toFixed(2)} — dev ${devStr}. Likely a fetcher bug; re-run npm run update-monthly and compare against the source's authoritative aggregation.`);
+    } else {
+        console.log(`  OK [${slug}] latestMonthly ${monthly} in envelope ${envelope} from ${latestYear} annual ${annualScaled.toFixed(2)} (dev ${devStr})`);
+    }
+}
+
 // ============================================================
 // Phase 12: Source-coverage audit. For each metric, check whether
 // state-data.js (50-state series) covers as many years as the
