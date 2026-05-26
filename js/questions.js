@@ -479,7 +479,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q048",
       "slug": "hawaii-is-in-the-top-10-states-for-primary-care-doctors-per-resident",
-      "claim": "Hawaiʻi is in the top 10 states for primary care doctors per resident.",
+      "claim": "Hawaiʻi ranks among the top 10 states for primary care doctors as a share of population.",
       "correct": true,
       "answer": "Hawaiʻi ranks #8 of 50 in 2023.",
       "chartUrl": "/r/pcp_per_100k/",
