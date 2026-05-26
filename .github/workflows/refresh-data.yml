@@ -56,17 +56,86 @@ jobs:
           cp about/index.html /tmp/about-before.html
 
       # ----- Fetch fresh data from federal APIs -----
+      # Both build scripts: set +e + pipefail + tee so we can capture the real
+      # exit code (without pipefail, $? returns tee's exit, always 0) AND the
+      # full stderr/stdout for the issue body. The on-disk file is only
+      # overwritten on exit 0; on exit 1 (EXPECTED_METRICS floor check failure)
+      # the existing js/state-data.js or js/county-data.js stays intact.
       - name: Fetch state-level data
-        run: node scripts/build-state-data.js
+        id: fetch_state
+        run: |
+          set +e
+          set -o pipefail
+          node scripts/build-state-data.js 2>&1 | tee /tmp/build-state-output.txt
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
         env:
           # Required for FHWA (road quality) API which serves a self-signed cert in CI environments
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
       - name: Fetch county-level data
-        run: node scripts/build-county-data.js
+        id: fetch_county
+        run: |
+          set +e
+          set -o pipefail
+          node scripts/build-county-data.js 2>&1 | tee /tmp/build-county-output.txt
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          exit 0
         env:
           # Same as above - FHWA and some Census endpoints require this in GitHub Actions
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      # ----- If either build script failed (e.g., a federal API returned HTML
+      #       like the 2026-05-23 Census outage), open a labeled issue with the
+      #       captured output and halt the workflow. Stops the run before
+      #       recompute/validate/PR-creation, so no truncated artifacts ship.
+      - name: Open issue on build-script failure
+        if: steps.fetch_state.outputs.exit_code != '0' || steps.fetch_county.outputs.exit_code != '0'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const stateExit  = '${{ steps.fetch_state.outputs.exit_code }}';
+            const countyExit = '${{ steps.fetch_county.outputs.exit_code }}';
+            const stateOut  = fs.existsSync('/tmp/build-state-output.txt')
+              ? fs.readFileSync('/tmp/build-state-output.txt',  'utf8').slice(-4000) : '(no output captured)';
+            const countyOut = fs.existsSync('/tmp/build-county-output.txt')
+              ? fs.readFileSync('/tmp/build-county-output.txt', 'utf8').slice(-4000) : '(no output captured)';
+            const failing = [];
+            if (stateExit  !== '0') failing.push(`build-state-data.js (exit ${stateExit})`);
+            if (countyExit !== '0') failing.push(`build-county-data.js (exit ${countyExit})`);
+            const body = [
+              '## Build script failure',
+              '',
+              `Failed: ${failing.join(', ')}`,
+              '',
+              'Most common cause: a federal API returned a non-JSON response (HTML maintenance page, 5xx, gateway error). The build script\'s EXPECTED_METRICS floor check caught the resulting partial output and exited without writing, so `js/state-data.js` and `js/county-data.js` are unchanged from the last-good cron.',
+              '',
+              '### Recovery',
+              '1. Check the source APIs are responding with JSON: Census ACS, BLS LAUS, BEA, EIA, FRED, FHWA.',
+              '2. Re-run this workflow manually from the Actions tab.',
+              '3. If the same failure recurs, identify which fetcher is dropping (the floor-check message lists every missing slug) and investigate that specific API.',
+              '',
+              '### state build output (last 4KB)',
+              '```',
+              stateOut,
+              '```',
+              '',
+              '### county build output (last 4KB)',
+              '```',
+              countyOut,
+              '```',
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              title: `Data refresh build failed - ${new Date().toISOString().slice(0, 10)}`,
+              body,
+              labels: ['data-quality'],
+            });
+            core.setFailed(`Build scripts failed: ${failing.join(', ')}`);
 
       # ----- Recompute derived values -----
       - name: Recompute data.js from state-data.js

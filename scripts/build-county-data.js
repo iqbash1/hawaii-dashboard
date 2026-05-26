@@ -75,9 +75,24 @@ const KEYS = {
     FRED: 'aa88134401976fc554083c7bb3b50ed4',
 };
 
-// Census ACS 1-year: 2013-2023 (2020 was NOT released due to COVID)
-// All 4 Hawaii counties are 65K+ so they get 1-year estimates
-const ACS_YEARS = [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023];
+// Census ACS 1-year: 2013 → currentYear, minus 2020 (suppressed for COVID).
+// All 4 Hawaii counties are 65K+ so they get 1-year estimates.
+// Auto-rolls each year so the array doesn't need a manual bump in September
+// when Census releases the new 1-year vintage. Each fetcher's try/catch
+// silently skips unpublished years (in-progress year before September),
+// and the EXPECTED_METRICS floor check at end of main() catches the
+// API-outage case (every year fails → metric absent → exit 1, don't write).
+// Pre-2013 is excluded because Hawaiʻi-county ACS 1-year coverage is too
+// thin (Kauaʻi was under the 65K cutoff for several years pre-2013).
+const ACS_YEARS = (() => {
+    const years = [];
+    const currentYear = new Date().getFullYear();
+    const SKIP = new Set([2020]);
+    for (let y = 2013; y <= currentYear; y++) {
+        if (!SKIP.has(y)) years.push(y);
+    }
+    return years;
+})();
 
 async function fetchJSON(url) {
     const res = await fetch(url);
