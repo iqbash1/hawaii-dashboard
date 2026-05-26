@@ -822,11 +822,11 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 
 | File | Role |
 |------|------|
-| `js/questions.js` | The 47-question bank. Each entry: `{id, slug, claim, correct, answer, chartUrl, metric, metricLabel, topic, variant}`. `id` is the URL identity and primary key. `slug` is retained only for OG-image filename lookup. |
+| `js/questions.js` | The 54-question bank. Each entry: `{id, slug, claim, correct, answer, chartUrl, metric, metricLabel, topic, variant}`. `id` is the URL identity and primary key. `slug` is retained only for OG-image filename lookup. |
 | `js/qotd.js` | Controller. Public surface: `today()`, `getById(id)`, `renderTeaser()`, `submitAnswer(id, picked)`, `recordAnswer(id, ...)`, `hasAnswered(id)`, `getAnswer(id)`, `shareUrl(id)`, `dismissToday()` / `isDismissedToday()`, `trackSharedUrlLanding(id)`, `init()`. No modal; proof view renders inline in the same card. |
 | `js/routing.js` | Handles `/q/{id}/` path and `?from_q={id}` query as track-and-redirect to `/`. |
-| `q/{id}/index.html` | 48 pre-generated redirect pages with OG meta. |
-| `assets/og/q/{slug}.png` | 48 pre-generated 1200×630 OG cards (claim + True/False pills). |
+| `q/{id}/index.html` | 54 pre-generated redirect pages with OG meta. |
+| `assets/og/q/{slug}.png` | 54 pre-generated 1200×630 OG cards (claim + True/False pills). |
 | `scripts/generate-og-pages.py` (`generate_qotd_assets`) | OG-image generator. Reads `js/questions.js` and writes every QOTD PNG as part of the main OG build. Re-run via `npm run og` when claims change. |
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
