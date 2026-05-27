@@ -7,7 +7,7 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
-    "test:unit": "node --test utils.test.js"
+    "test:unit": "node --test utils.test.js compute.test.js qotd.test.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

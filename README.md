@@ -64,7 +64,7 @@ tests/
   qotd.test.js          QOTD bank validators (claim/answer/medianSeries invariants)
   smoke.spec.js         End-to-end smoke tests (Playwright)
 scripts/
-  verify-live-site.sh   Post-deploy verification (50 checks, run with --no-wait)
+  verify-live-site.sh   Post-deploy verification across deploy state, cache headers, page structure, JS integrity (run with --no-wait)
   generate-qotd-redirects.js  Regenerates static q/{id}/ redirect pages
   generate-fyc-pages.js  Regenerates the 7 Change Summary HTMLs from one template
   generate-og-off-the-charts-posts.py  Regenerates per-post OTC OG cards
