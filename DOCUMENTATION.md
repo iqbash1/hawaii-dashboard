@@ -889,7 +889,7 @@ All events keyed by `id` and routed through `App._trackEvent`:
 
 ## Off the Charts (blog)
 
-Short-form blog at `/off-the-charts/`. Each post stitches 3+ unique metric views from the dashboard to surprise a Hawaiʻi business / policymaker audience. Target 175–200 words; max 4 hyperlinks per post (preference 2–3 dashboard URLs + 1–2 external sources). Voice is informal and declarative.
+Short-form blog at `/off-the-charts/`. Each post stitches 3+ unique metric views from the dashboard to land a Hawaiʻi business / policymaker insight of one of three types (surprising / clarifying / myth-correcting). Target 175–220 words in the published version (drafts run up to 300 before the user trims during review); max 4 hyperlinks per published post (preference 2–3 dashboard URLs + 1–2 external sources). Voice is informal, declarative, diagnostic, never advocacy.
 
 ### Architecture (SEO-first as of May 2026)
 

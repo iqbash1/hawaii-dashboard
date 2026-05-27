@@ -146,7 +146,7 @@ The home grid is the core, but the site has four supporting surfaces:
 - **About** (`/about/`): mission, methodology, comparator rules, metric registry. Source ledger for every claim on the site.
 - **FAQ** (`/faq/`): 14 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
 - **Question of the Day** (thin banner teaser on the home page that expands to a proof card after the reader answers; `/q/{id}/` shareable URL per question): 54-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
-- **Off the Charts** (`/off-the-charts/`): short-form blog at 175–200 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
+- **Off the Charts** (`/off-the-charts/`): short-form blog at 175–220 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
 
 ## Local development
 
