@@ -30,6 +30,7 @@
     "og": "python3 scripts/generate-og-pages.py",
     "serve": "python3 -m http.server 8080",
     "audit-links": "node scripts/audit-links.js",
+    "check-links": "node scripts/check-broken-links.js",
     "update-years": "node scripts/update-narrative-years.js",
     "update-monthly": "node scripts/update-monthly.js",
     "update-metric-counts": "node scripts/update-metric-counts.js",
