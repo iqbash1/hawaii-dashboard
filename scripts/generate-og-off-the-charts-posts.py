@@ -30,6 +30,13 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "florida-rent-burden",
+        "title": "Florida has Hawaiʻi beat on rent burden.",
+        "date":  "27 May 2026",
+        # Outlier line: Florida pulls ahead of Hawaiʻi at the rent-burden top end.
+        "outlier": "high",
+    },
+    {
         "slug": "rainy-day-fund-rule",
         "title": "Hawaiʻi has the rainy day fund, finally.",
         "date":  "25 May 2026",
