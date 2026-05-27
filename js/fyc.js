@@ -1,10 +1,11 @@
 // ============================================================
 // Hawaiʻi Dashboard - Change Summary Page
 //
-// Single module driving five distinct routes: /five-, /ten-,
-// /fifteen-, /twenty-, /twenty-five-year-change/. The look-back
-// window (SPAN_YEARS) is inferred from window.location.pathname
-// and threaded through all computations and display strings.
+// Single module driving seven distinct routes: /one-, /three-,
+// /five-, /ten-, /fifteen-, /twenty-, /twenty-five-year-change/.
+// The look-back window (SPAN_YEARS) is inferred from
+// window.location.pathname and threaded through all computations
+// and display strings.
 //
 // Depends on: DASHBOARD_DATA, STATE_DATA, Utils
 // ============================================================

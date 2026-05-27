@@ -94,9 +94,9 @@ When citing values from this dashboard, please credit the primary source (e.g. "
 ## Pages
 
 - **Dashboard** (https://hawaiidashboard.org/): Main page with all 26 metric cards, trend charts, and modal detail views.
-- **Change Summary** (https://hawaiidashboard.org/five-year-change/): How each metric changed over the selected look-back window, with rank changes and county trends. A dropdown in the page heading switches between 5-, 10-, 15-, 20-, and 25-year views (distinct URLs: /five-, /ten-, /fifteen-, /twenty-, /twenty-five-year-change/). Longer windows include only metrics whose data covers the full window.
+- **Change Summary** (https://hawaiidashboard.org/five-year-change/): How each metric changed over the selected look-back window, with rank changes and county trends. A dropdown in the page heading switches between 1-, 3-, 5-, 10-, 15-, 20-, and 25-year views (distinct URLs: /one-, /three-, /five-, /ten-, /fifteen-, /twenty-, /twenty-five-year-change/). Longer windows include only metrics whose data covers the full window.
 - **About** (https://hawaiidashboard.org/about/): Methodology, selection criteria, metric registry, data sources, governor terms.
-- **FAQ** (https://hawaiidashboard.org/faq/): 11 frequently asked questions about the dashboard's approach, methodology, and use.
+- **FAQ** (https://hawaiidashboard.org/faq/): 14 frequently asked questions about the dashboard's approach, methodology, and use.
 
 ## URL structure
 

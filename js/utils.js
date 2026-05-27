@@ -1,9 +1,8 @@
 // ============================================================
 // Hawaiʻi Dashboard - Shared Utilities
 //
-// Pure functions used by the Change Summary page (5-year + 10-year) and tests.
+// Pure functions used by the Change Summary pages (1/3/5/10/15/20/25-year spans) and tests.
 // Dual-export: browser global `Utils`, Node.js require().
-// Build: 2026-04-01
 // ============================================================
 
 const Utils = {

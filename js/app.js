@@ -4,7 +4,6 @@
 // Renders metric cards, manages the detail modal, handles
 // URL routing, and manages data export. Data is updated
 // annually from federal sources via the automated pipeline.
-// Build: 2026-04-04
 // ============================================================
 
 const STATE_ABBREVS = { // eslint-disable-line no-unused-vars
@@ -259,14 +258,11 @@ const App = {
         { name: 'Green', party: 'D', start: 2022, end: 2027 },
     ],
 
-    // Define the areas and their metrics (order matters for display)
-    // Order follows a resident's "should I stay or leave?" calculus:
-    // 1. What does daily life cost me?
-    // 2. Can I earn enough and build something here?
-    // 3. Is my family safe, healthy, and well-educated?
-    // 4. Does the infrastructure and environment work?
-    // 5. Is the government competent with my tax dollars?
-    // 6. The verdict: are people actually staying?
+    // Define the areas and their metrics (order matters for display).
+    // 5 policy areas grouped around a resident's lived experience:
+    // Safety & Health, Affordability, Economy & Workforce, Education,
+    // Infrastructure & Trust. Net domestic migration sits last under
+    // Infrastructure & Trust as the "are people staying?" capstone.
     AREA_ORDER: [
         { area: 'Safety & Health', metrics: ['violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
         { area: 'Affordability', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate', 'residential_price_cpkwh', 'food_insecurity_rate'] },

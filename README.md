@@ -31,7 +31,7 @@ js/
   state-data.js         Per-state data for all 50 states (used for rankings)
   county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauaʻi
 about/index.html             About page (metric registry, comparator rules)
-faq/index.html               FAQ page (11 Q&A, feedback form)
+faq/index.html               FAQ page (14 Q&A, feedback form)
 off-the-charts/              Short-form blog (archive + per-post canonical pages)
   index.html                 Archive index
   {slug}/index.html          Full canonical post page (Article + BreadcrumbList JSON-LD)
@@ -92,12 +92,13 @@ node scripts/recompute-data.js
 node scripts/validate-data.js
 ```
 
-Eight GitHub Actions workflows + Dependabot automate the cycle:
+Nine GitHub Actions workflows + Dependabot automate the cycle:
 - `.github/workflows/refresh-data.yml`: monthly full refresh on the 23rd, opens a PR if data changed; blocks PR on fresh-fetch drift errors.
 - `.github/workflows/data-audit.yml`: twice-daily drift audit (1 PM + 6 PM HST) that re-fetches every wired metric and compares against state-data at strict tolerance (0.5% relative / 0.0001 absolute). Failure opens a `data-drift` issue.
 - `.github/workflows/audit-links.yml`: weekly external-URL liveness check (~200 URLs); rolling `link-rot` issue.
 - `.github/workflows/cron-heartbeat.yml`: weekly dead-man switch on the monthly cron; rolling `cron-stale` issue if no successful run in 32 days.
 - `.github/workflows/source-release-reminder.yml`: weekly 7-day-ahead reminder for source release windows; rolling `source-due-soon` issue.
+- `.github/workflows/notify-state-dashboards.yml`: per-PR pingback for state-dashboard partners when state-data.js changes.
 - `.github/workflows/tests.yml`: per-push build + lint + Playwright + live-site canary.
 - `.github/workflows/rotate-backup.yml`, `timestamp.yml`: backup tag rotation and footer-timestamp upkeep.
 - `.github/dependabot.yml`: weekly grouped PRs for npm + GitHub Actions updates.
@@ -143,7 +144,7 @@ The home grid is the core, but the site has four supporting surfaces:
 
 - **Change Summary** (`/five-year-change/` and 6 sibling year-span views): sortable scoreboard of what improved, what declined, and what stayed stuck, by area and metric. Shared logic via `js/fyc.js`; same shell renders 1/3/5/10/15/20/25-year spans.
 - **About** (`/about/`): mission, methodology, comparator rules, metric registry. Source ledger for every claim on the site.
-- **FAQ** (`/faq/`): 11 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
+- **FAQ** (`/faq/`): 14 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
 - **Question of the Day** (thin banner teaser on the home page that expands to a proof card after the reader answers; `/q/{id}/` shareable URL per question): 54-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
 - **Off the Charts** (`/off-the-charts/`): short-form blog at 175–200 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
 
