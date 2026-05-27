@@ -33,16 +33,16 @@ jobs:
       - name: Run fresh-fetch audit
         id: audit
         env:
-          # api.data.gov umbrella key — covers FBI Crime Data Explorer,
+          # api.data.gov umbrella key, covers FBI Crime Data Explorer,
           # NCES Digest, NREL, USDA, and other federal APIs routed through
           # api.usa.gov / api.data.gov gateways. Single key, instant signup.
           API_DATA_GOV_KEY: ${{ secrets.API_DATA_GOV_KEY }}
           # BLS public API is 25 requests/day no-key. The free key raises
-          # to 500/day — enough headroom for two daily audits + monthly
+          # to 500/day, enough headroom for two daily audits + monthly
           # build-state-data.js runs. BLS issues keys separately (Labor not
           # on api.data.gov). Set in repo Settings → Secrets when ready.
           BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
-          # FRED (St Louis Fed) — wraps BLS State Labor Productivity in a
+          # FRED (St Louis Fed), wraps BLS State Labor Productivity in a
           # cleaner JSON API. Single key, free, instant signup.
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           # CDC WONDER (HHS) is also separately registered.

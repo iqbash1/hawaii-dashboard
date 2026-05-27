@@ -122,6 +122,6 @@ The Trend and Rank history tabs share a single "Compare with" dropdown. Picking 
 - Nonpartisan: no political agenda; data presented without editorial interpretation
 - Free and open: no paywall, no login, no ads
 - Static site hosted on Cloudflare Pages
-- Updated annually (some metrics show latest monthly figures between annual updates); a twice-daily automated drift audit re-fetches every wired federal-API metric and opens a `data-drift` issue if any Hawaiʻi year-cell diverges from the canonical source by more than 0.5% (or 0.0001 absolute) — so the data you see is always traceable to the original federal source within tight tolerance
+- Updated annually (some metrics show latest monthly figures between annual updates); a twice-daily automated drift audit re-fetches every wired federal-API metric and opens a `data-drift` issue if any Hawaiʻi year-cell diverges from the canonical source by more than 0.5% (or 0.0001 absolute), so the data you see is always traceable to the original federal source within tight tolerance
 - Designed for readability by residents aged 60+
 - All claims in "Potential drivers" and "Key levers" are sourced to peer-reviewed studies or federal reports

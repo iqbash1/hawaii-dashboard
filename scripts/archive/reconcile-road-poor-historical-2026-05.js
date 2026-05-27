@@ -8,7 +8,7 @@
  * Year-level merge preserves all existing 2007-2024 values.
  *
  * Companion to commit "road_poor_pct: narrative + validator + fyc config
- * for 2000-2024 extension" — that commit already wired the dataNote, the
+ * for 2000-2024 extension", that commit already wired the dataNote, the
  * rankHistoryNarrative.summary rewrite, the 20-year FYC exclusion, and the
  * per-metric YoY noisy-transition exemption.
  *

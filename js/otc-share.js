@@ -1,13 +1,13 @@
 // Off the Charts: Share button.
 //
 // Three-tier share flow:
-//   1. navigator.share() — native share sheet on iOS / Android / supporting
+//   1. navigator.share(), native share sheet on iOS / Android / supporting
 //      desktops. Hands the OS the post title + lede + url so any installed
 //      app (Messages, Mail, Slack, LinkedIn, X, AirDrop, ...) can receive it.
-//   2. navigator.clipboard.writeText() — copy a pre-composed "title \n\n lede
+//   2. navigator.clipboard.writeText(), copy a pre-composed "title \n\n lede
 //      \n\n url" payload to clipboard so the link arrives with context on
 //      platforms that don't auto-unfurl (SMS, Slack DMs).
-//   3. document.execCommand('copy') — last-resort fallback for old browsers.
+//   3. document.execCommand('copy'), last-resort fallback for old browsers.
 //
 // Fires GA4 event `share_clicked` with { surface: 'otc', slug, method }
 // where method is 'native' | 'clipboard' | 'fallback'. AbortError from a
@@ -116,7 +116,7 @@
                     trackShare(slug, 'native');
                 }).catch(function (err) {
                     // AbortError = user dismissed the sheet. Treat as a
-                    // non-event (no tracking, no fallback) — a curious tap
+                    // non-event (no tracking, no fallback), a curious tap
                     // should not look like a share.
                     if (err && err.name === 'AbortError') return;
                     // Any other failure: fall back to clipboard.

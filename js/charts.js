@@ -802,7 +802,7 @@ const ChartUtils = {
 
                 // Median reference line only. Q1/Q3 quartile lines and the
                 // "Top Ranked (25%)" / "Bottom Ranked (25%)" zone fills are
-                // gone — the tier-band backdrop (rowBgPlugin) now carries the
+                // gone, the tier-band backdrop (rowBgPlugin) now carries the
                 // best/worst framing in the dashboard's own Top/Middle/Bottom
                 // tier vocabulary, so quartile language would compete.
                 if (distStats) {

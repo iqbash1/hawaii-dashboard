@@ -63,7 +63,7 @@ const Modal = {
     },
 
     /**
-     * Return just the first sentence of a brief — used on Rank and
+     * Return just the first sentence of a brief, used on Rank and
      * Rank-history tabs where the full multi-sentence brief repeats
      * content already shown on the Trend tab. The first sentence names
      * the tier and rank, which is what those tabs are about.
@@ -513,7 +513,7 @@ const Modal = {
             Export.downloadData(slug);
             App._trackEvent('data_exported', { slug, format: 'xlsx' });
         };
-        // Share helpers — three-tier flow: native share sheet, clipboard
+        // Share helpers, three-tier flow: native share sheet, clipboard
         // with pre-composed payload, then execCommand fallback. Tracks
         // metric_shared with method = 'native' | 'clipboard' | 'fallback'.
         const getActiveTab = () => {
@@ -780,7 +780,7 @@ const Modal = {
         App._trackEvent('tab_viewed', { slug, tab });
         Modal._activeTab = tab;
         Modal._updateCompareBar(tab);
-        // Re-render the brief — full text on Trend, first sentence on
+        // Re-render the brief, full text on Trend, first sentence on
         // Rank/Rank-history/County. Same single-source content; only the
         // truncation level changes per tab.
         Modal._renderBrief(document.getElementById('modal-brief'), slug);

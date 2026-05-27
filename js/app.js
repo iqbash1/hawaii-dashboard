@@ -829,7 +829,7 @@ const App = {
         const cls = isFlat ? 'neutral' : (isImproving ? 'positive' : 'negative');
         // Compact label: only the prior window is shown. The recent window
         // is implicit (the current value above the chart) so dropping it
-        // halves the metadata noise — "VS. 2017-19" reads as "vs. 5 years
+        // halves the metadata noise, "VS. 2017-19" reads as "vs. 5 years
         // ago" without spelling out both windows.
         const priorLabel = Compute.formatYearRange(prior[0], prior[prior.length - 1]);
         const recentLabel = Compute.formatYearRange(recent[0], recent[recent.length - 1]);

@@ -113,7 +113,7 @@ jobs:
               '',
               'Investigate:',
               '1. Open the workflow page and inspect the latest run logs.',
-              '2. If the latest run failed at the `Validate data integrity` step, the data fetched but failed checks — see the issue opened by the workflow itself.',
+              '2. If the latest run failed at the `Validate data integrity` step, the data fetched but failed checks, see the issue opened by the workflow itself.',
               '3. Manual recovery: `gh workflow run refresh-data.yml` to trigger a fresh run.',
               '',
               'This issue auto-closes when the next heartbeat finds a successful run within the last 32 days.',

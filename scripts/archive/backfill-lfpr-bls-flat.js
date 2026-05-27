@@ -78,7 +78,7 @@ function parseLfpr() {
         const parts = l.split('\t').map(p => p.trim());
         if (parts.length < 4) continue;
         const series = parts[0];
-        // LAUST{FIPS}0000000000008 — 8 = LFPR
+        // LAUST{FIPS}0000000000008, 8 = LFPR
         if (!/0000000000008$/.test(series)) continue;
         if (parts[2] !== 'M13') continue; // annual average only
         const fips = series.substring(5, 7);

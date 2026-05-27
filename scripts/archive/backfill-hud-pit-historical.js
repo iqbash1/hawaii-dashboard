@@ -13,7 +13,7 @@
 //   rate = (Unsheltered Homeless / Population) * 10,000
 //
 // Why this works back to 2007:
-//   The first national PIT count was 2007 — that's the structural floor for
+//   The first national PIT count was 2007, that's the structural floor for
 //   this metric. HUD's by-state workbook has yearly sheets ('2007', '2008',
 //   ...) with a column titled "Unsheltered Homeless" that we read by name
 //   (the column position drifts across years as new fields are added).

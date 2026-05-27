@@ -92,7 +92,7 @@ async function fetchEIA() {
     // SINGLE month (one row per generation subtype: ALL, AOR, BIO, DFO, DPV,
     // FOS, GEO, HYC, MLG, MSB, NGO, OB2, OBW, OOG, ORW, OTH, PEL, PET, REN,
     // RFO, SPV, SUN, TPV, TSN), so the response was truncated to just the
-    // latest month AND dropped WND alphabetically — silently underreporting
+    // latest month AND dropped WND alphabetically, silently underreporting
     // the renewable share by 5–8 percentage points (e.g., Mar 2026 computed
     // as 12.7% vs. correct 18.3%). Using REN (EIA's renewables aggregation)
     // directly is also cleaner: one number for renewable generation, no

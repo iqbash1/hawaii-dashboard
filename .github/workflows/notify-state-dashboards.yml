@@ -14,7 +14,7 @@
 # near-real-time.
 #
 # Required HD repo secret:
-#   SD_DISPATCH_TOKEN — fine-grained PAT scoped to iqbash1/state-dashboards
+#   SD_DISPATCH_TOKEN, fine-grained PAT scoped to iqbash1/state-dashboards
 #                        with Contents: write (required by the
 #                        repository_dispatch API).
 

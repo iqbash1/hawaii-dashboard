@@ -115,7 +115,7 @@ const METRIC_RULES = {
     // road_poor: 2000-2006 series uses pre-standardization state IRI methodologies;
     // 2000->2001 (+79%) and 2004->2005 (+66%) are vintage-transition artifacts,
     // not real road-condition swings. The exemption is narrow and dated so it
-    // doesn't silence the YoY check generally — additional spikes beyond these
+    // doesn't silence the YoY check generally, additional spikes beyond these
     // exact transitions still warn.
     road_poor_pct:              { min: 0.01,  max: 0.50,   maxYoYPct: 0.40, format: 'decimal_pct',
                                   noisyYoYTransitions: [[2000, 2001], [2004, 2005]] },
@@ -1040,7 +1040,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 // Cross-axis consistency: a monthly ticker should sit inside a plausible
 // envelope around the most-recent annual headline. The annual fetcher and
 // monthly fetcher live in different scripts, hit different EIA/BLS endpoints,
-// and use different aggregation logic — so a bug in the monthly fetcher
+// and use different aggregation logic, so a bug in the monthly fetcher
 // produces a value that disagrees with what the (independent, validated)
 // annual baseline implies. Catches the class of bug where the script runs
 // cleanly, produces a number inside loose absolute bounds, but is silently
@@ -1050,7 +1050,7 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 // fetcher silently truncated the EIA response and dropped wind generation,
 // reporting Mar 2026 at 12.7% when the correct value (from REN aggregation)
 // was 18.3%. The 2025 annual was 22.05%, and the historical monthly range
-// was 16.8-27.1% — so a 30% envelope would have flagged the 12.7% value
+// was 16.8-27.1%, so a 30% envelope would have flagged the 12.7% value
 // immediately. The pre-existing range check `BOUNDS = { renewables_share_gen:
 // { min: 1, max: 80 } }` in update-monthly.js was wide enough to catch a
 // unit error but not a structural under-count.
@@ -1113,7 +1113,7 @@ for (const [slug, env] of Object.entries(LATEST_MONTHLY_ENVELOPE)) {
     }
     const devStr = env.maxRelDev !== undefined ? `${(dev * 100).toFixed(1)}%` : `${dev.toFixed(2)}pp`;
     if (!pass) {
-        error(`[${slug}] latestMonthly ${monthly} (${m.latestMonthly.period}) outside envelope ${envelope} from ${latestYear} annual ${annualScaled.toFixed(2)} — dev ${devStr}. Likely a fetcher bug; re-run npm run update-monthly and compare against the source's authoritative aggregation.`);
+        error(`[${slug}] latestMonthly ${monthly} (${m.latestMonthly.period}) outside envelope ${envelope} from ${latestYear} annual ${annualScaled.toFixed(2)}, dev ${devStr}. Likely a fetcher bug; re-run npm run update-monthly and compare against the source's authoritative aggregation.`);
     } else {
         console.log(`  OK [${slug}] latestMonthly ${monthly} in envelope ${envelope} from ${latestYear} annual ${annualScaled.toFixed(2)} (dev ${devStr})`);
     }
@@ -1815,7 +1815,7 @@ async function runFreshFetch() {
         } catch (e) {
             // Promote cert / TLS / DNS errors to a WARN so the silent-skip
             // class doesn't hide a real failure. Generic API errors stay
-            // INFO (rate limits, transient 5xx — known noisy in CI).
+            // INFO (rate limits, transient 5xx, known noisy in CI).
             // Logged in the May 2026 audit as a validator bug.
             const msg = String(e.message || '');
             const isCertOrDns = (

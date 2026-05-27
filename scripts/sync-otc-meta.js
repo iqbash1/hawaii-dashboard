@@ -38,7 +38,7 @@ const ENTITY_DECODE = {
   '&ldquo;':  '“',
   '&rdquo;':  '”',
   '&ndash;':  '–',
-  '&mdash;':  '—',
+  '&mdash;':  ', ',
   '&hellip;': '…',
   '&amp;':    '&',
 };

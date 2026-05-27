@@ -2,7 +2,7 @@
 """Generate Open Graph preview image for /off-the-charts/ (1200x630).
 
 Light-background card with multiple trend lines along the bottom and one
-dramatic outlier line shooting upward — echoes the "off the charts" idea
+dramatic outlier line shooting upward, echoes the "off the charts" idea
 without showing real data.
 
 Run: python3 scripts/generate-og-off-the-charts.py
@@ -16,14 +16,14 @@ import math
 W, H = 1200, 630
 OUT = os.path.join(os.path.dirname(__file__), '..', 'assets', 'og', 'off-the-charts.png')
 
-# Palette — kept close to dashboard but on a light field for distinction
+# Palette, kept close to dashboard but on a light field for distinction
 BG       = (255, 255, 255)
 INK      = (45, 55, 72)        # near-black for title
 MUTED    = (130, 140, 152)     # subtitle / metadata
 TREND    = (180, 190, 200)     # baseline trend lines
 TREND_2  = (160, 170, 182)
-ACCENT   = (208, 49, 53)       # the dashboard's red — used for the outlier
-SLATE    = (56, 75, 91)        # the dashboard's slate — used for accent bar
+ACCENT   = (208, 49, 53)       # the dashboard's red, used for the outlier
+SLATE    = (56, 75, 91)        # the dashboard's slate, used for accent bar
 
 
 def font(size, weight='regular'):
@@ -86,7 +86,7 @@ def draw_trend(x_start, x_end, baseline_y, amp, color, width, n=40):
     draw.line(pts, fill=color, width=width)
 
 
-# Five baseline trends — clustered near the lower band, variations on a theme
+# Five baseline trends, clustered near the lower band, variations on a theme
 for i, baseline_offset in enumerate([0, 18, 36, 54, 72]):
     color = TREND if i % 2 == 0 else TREND_2
     draw_trend(
@@ -98,7 +98,7 @@ for i, baseline_offset in enumerate([0, 18, 36, 54, 72]):
         width=3,
     )
 
-# The outlier — starts in the cluster, then breaks dramatically upward in the
+# The outlier, starts in the cluster, then breaks dramatically upward in the
 # right half. This is the "off the charts" beat.
 def draw_outlier():
     pts = []

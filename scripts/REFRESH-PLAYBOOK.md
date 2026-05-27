@@ -7,7 +7,7 @@ downstream narrative in lockstep with it.
 Designed to prevent the bug class that produced two May 2026 incidents:
 
 1. **property_crime_rate** `rankHistoryNarrative.summary` claimed `#36`
-   while STATE_DATA computed `#40` — a "narrative-sync" pass refreshed
+   while STATE_DATA computed `#40`, a "narrative-sync" pass refreshed
    `potentialDrivers` but missed the adjacent summary field.
 2. **unemployment_rate** four QOTD answers cited `2.9% / #7 / +17.5% /
    "vs California at 5.3%"` based on 2024 BLS values; the data had been
@@ -45,7 +45,7 @@ question's direction changed because the latest year advanced):
   `correct` field in `js/questions.js`
 - Or retire the question
 
-The sync script refuses to write changes when this happens — the bank's
+The sync script refuses to write changes when this happens, the bank's
 truth values cannot ship a silent flip.
 
 ## The seven gates in `npm run validate`
@@ -64,9 +64,9 @@ All seven always run, so every problem surfaces in a single report.
 
 ## When NOT to run sync-qotd
 
-Custom-phrased answers (about 18 of 54 questions) — the ones with
+Custom-phrased answers (about 18 of 54 questions), the ones with
 descriptive wording like _"3.5% of Hawaiʻi residents lacked health
-insurance"_ — are detected via a canonical regex per variant and **left
+insurance"_, are detected via a canonical regex per variant and **left
 alone** by sync. Their drift risk is covered by the audit gate instead.
 
 If you want to add a question whose answer should NOT auto-regenerate

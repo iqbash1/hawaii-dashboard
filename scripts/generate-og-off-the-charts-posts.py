@@ -19,7 +19,7 @@ import math
 W, H = 1200, 630
 OUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'assets', 'og', 'off-the-charts')
 
-# Palette — same as the shared card
+# Palette, same as the shared card
 BG       = (255, 255, 255)
 INK      = (45, 55, 72)
 MUTED    = (130, 140, 152)
@@ -109,7 +109,7 @@ def wrap_lines(text, fnt, max_width, draw):
                 lines.append(' '.join(cur))
                 cur = [w]
             else:
-                # Word longer than max_width — let it overflow rather than crash
+                # Word longer than max_width, let it overflow rather than crash
                 lines.append(w)
                 cur = []
     if cur:
@@ -177,7 +177,7 @@ def render_post(post):
     sep_x = pad_x + eyebrow_w + 14
     draw.text((sep_x, 60), "·  " + post["date"], fill=MUTED, font=date_font)
 
-    # Post title — auto-fit to 3 lines max
+    # Post title, auto-fit to 3 lines max
     title_max_width = W - pad_x * 2
     size, title_font, lines = fit_title(post["title"], draw, title_max_width, max_lines=3)
     line_height = int(size * 1.18)
@@ -207,7 +207,7 @@ def render_post(post):
         )
     draw_outlier(draw, chart_left, chart_w, chart_top, chart_bottom)
 
-    # Footer attribution — slug-specific so the URL on the card matches
+    # Footer attribution, slug-specific so the URL on the card matches
     foot_font = font(20)
     foot = f"hawaiidashboard.org/off-the-charts/{post['slug']}"
     foot_w = draw.textlength(foot, font=foot_font)

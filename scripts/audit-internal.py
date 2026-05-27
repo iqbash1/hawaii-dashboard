@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Hawaiʻi Dashboard internal-consistency audit (v2 — extended).
+Hawaiʻi Dashboard internal-consistency audit (v2, extended).
 """
 import json
 import subprocess
@@ -52,14 +52,14 @@ def latest_year_value(series):
 def html_decode(s):
     return (s.replace("&#x02BB;", "ʻ").replace("&rsquo;", "’")
             .replace("&ldquo;", "“").replace("&rdquo;", "”")
-            .replace("&mdash;", "—").replace("&amp;", "&")
+            .replace("&mdash;", ", ").replace("&amp;", "&")
             .replace("&hellip;", "…").replace("&times;", "×")
             .replace("&middot;", "·").replace("&nbsp;", " ")
             .strip())
 
 
 # -----------------------------------------------------------------------
-# Phase 2 — data.js self-consistency
+# Phase 2, data.js self-consistency
 # -----------------------------------------------------------------------
 
 def phase2(data):
@@ -90,7 +90,7 @@ def phase2(data):
                 f"latestMonthly missing value or period: {lm}")
         # Numeric range plausibility for known-bounded metrics. Skip:
         # - "level" indexes (labor_productivity is 100 = 2017 baseline)
-        # - net_* metrics (entry-exit, in-out — can be negative)
+        # - net_* metrics (entry-exit, in-out, can be negative)
         unit = md.get("unit", "")
         is_net = metric.startswith("net_")
         is_index = "level" in md.get("unitLabel", "").lower()
@@ -108,7 +108,7 @@ def phase2(data):
 
 
 # -----------------------------------------------------------------------
-# Phase 3 — Trend / Rank stub pages vs data.js
+# Phase 3, Trend / Rank stub pages vs data.js
 # -----------------------------------------------------------------------
 
 # Match: <strong>Current:</strong> 21.3% (2025)   OR   $52K (2024)   OR   8.7&times; (2024)   OR   42.9¢ (2025)   OR   -64.6 (2024)
@@ -258,7 +258,7 @@ def phase3(data, state_data):
 
 
 # -----------------------------------------------------------------------
-# Phase 4 — Off the Charts post numerical claims vs data.js
+# Phase 4, Off the Charts post numerical claims vs data.js
 # -----------------------------------------------------------------------
 
 def phase4(data, state_data):
@@ -288,7 +288,7 @@ def phase4(data, state_data):
         if abs(v - claim) > 0.06:
             add("phase4", "P0", "expensive-states",
                 f"table shows {st}={claim} but data has {v}")
-    # Top 4 most unaffordable order. The post shows the top 4 only — #5
+    # Top 4 most unaffordable order. The post shows the top 4 only, #5
     # historically sat at a near-tie (Massachusetts and Oregon were 0.05
     # apart on home_price_to_income in 2024), and picking one over the
     # other was editorially indefensible. The top-4 are stable across
@@ -394,7 +394,7 @@ def phase4(data, state_data):
 
 
 # -----------------------------------------------------------------------
-# Phase 5 — QOTD vs data.js
+# Phase 5, QOTD vs data.js
 # -----------------------------------------------------------------------
 
 def phase5(data, state_data, questions):
@@ -415,7 +415,7 @@ def phase5(data, state_data, questions):
         The HI value is the first number after the year reference. The
         comparator value (median or peer state) is the first number after
         the 'versus' / 'vs.' / 'than' pivot. Threshold numbers embedded in
-        the answer body (e.g., 'spent over 30% of income') are skipped —
+        the answer body (e.g., 'spent over 30% of income') are skipped
         only numbers in the post-pivot tail count as the comparator."""
         # Year range first (e.g., "In 2022-2024, ...")
         ym = re.search(r"\bIn\s+([0-9]{4}-[0-9]{4})\b", ans)
@@ -483,7 +483,7 @@ def phase5(data, state_data, questions):
         if re.search(r"\b(Maui|Oʻahu|Kauaʻi|Honolulu|Hawaiʻi County)\b", answer):
             continue
 
-        # Skip rank-only and over-time variants (V3, V4, V5, V8) — they have a
+        # Skip rank-only and over-time variants (V3, V4, V5, V8), they have a
         # different answer template that doesn't compare HI to median directly.
         # We still verify that the metric exists and the page is built.
         if re.search(r"\bof 50\b|moved from", answer):
@@ -588,7 +588,7 @@ def phase5(data, state_data, questions):
         non_qid_pages = all_pages - qid_pages
         if non_qid_pages:
             add("phase5", "P2", "q/",
-                f"{len(non_qid_pages)} non-qNNN page(s) under /q/ — slug-based redirect pattern was dropped May 2026: {sorted(non_qid_pages)[:5]}")
+                f"{len(non_qid_pages)} non-qNNN page(s) under /q/, slug-based redirect pattern was dropped May 2026: {sorted(non_qid_pages)[:5]}")
         orphan_qids = qid_pages - active_ids
         if orphan_qids:
             add("phase5", "P2", "q/",
@@ -598,7 +598,7 @@ def phase5(data, state_data, questions):
             if not (qdir / qid).exists():
                 add("phase5", "P1", f"q[{qid}]",
                     f"questions.js declares id={qid} but /q/{qid}/ does not exist")
-    # questions.js comment says "57 questions" — verify
+    # questions.js comment says "57 questions", verify
     qjs = (ROOT / "js/questions.js").read_text(errors="ignore")
     m = re.search(r"(\d+)\s+questions", qjs)
     if m:
@@ -609,7 +609,7 @@ def phase5(data, state_data, questions):
 
 
 # -----------------------------------------------------------------------
-# Phase 6 — Cross-page consistency for the same metric
+# Phase 6, Cross-page consistency for the same metric
 # -----------------------------------------------------------------------
 
 OG_DESC_RE = re.compile(
@@ -624,7 +624,7 @@ def phase6(data, state_data):
     - For each /t/{metric}/ and /r/{metric}/ stub: the OG description's 'Hawaiʻi is at X (year). Ranked #N of 50.' should match the body's <strong>Current:</strong> + <strong>Rank:</strong>.
     - The /t/ stub and /r/ stub for the same metric should report the same year and rank.
     """
-    # 6a — DASHBOARD_DATA vs STATE_DATA latest-year drift
+    # 6a, DASHBOARD_DATA vs STATE_DATA latest-year drift
     for metric, md in data.items():
         if metric not in state_data:
             add("phase6", "P1", f"data sources",
@@ -654,14 +654,14 @@ def phase6(data, state_data):
         s_latest = sorted(s_keys, key=lambda k: int(k.split("-")[-1]))[-1]
         if d_latest != s_latest:
             add("phase6", "P1", "data sources",
-                f"{metric}: data.js latest={d_latest} but state-data.js latest={s_latest} — /r/ stubs may show stale year")
+                f"{metric}: data.js latest={d_latest} but state-data.js latest={s_latest}, /r/ stubs may show stale year")
     # extra metrics in state-data not in data.js
     for metric in state_data:
         if metric not in data:
             add("phase6", "P2", "data sources",
                 f"{metric}: in state-data.js but not in data.js (unused)")
 
-    # 6b — OG description matches body
+    # 6b, OG description matches body
     for metric in data:
         for kind in ("t", "r"):
             p = ROOT / f"{kind}/{metric}/index.html"
@@ -702,7 +702,7 @@ def phase6(data, state_data):
             except Exception:
                 pass
 
-    # 6d — /t/{metric}/{state}/ stubs (vs-state comparison pages) should report
+    # 6d, /t/{metric}/{state}/ stubs (vs-state comparison pages) should report
     # the same Hawaiʻi rank as the metric-level /t/{metric}/ stub.
     STATE_RANK_RE = re.compile(
         r"\(\s*#([0-9]+)\s+of\s+\d+\s*\)\s*compared with[^()]*\(([0-9]{4}(?:-[0-9]{4})?)\)",
@@ -750,7 +750,7 @@ def phase6(data, state_data):
             if r_year != ref_year:
                 add("phase6", "P1", f"t/{metric}/{sub.name}/",
                     f"state-comparison stub year {r_year}, but metric-level page year {ref_year}")
-            # Avoid spamming if 50 are wrong — break after collecting first few divergent
+            # Avoid spamming if 50 are wrong, break after collecting first few divergent
         # Also check rh/ stubs
         rhdir = ROOT / f"rh/{metric}"
         if rhdir.exists():
@@ -774,7 +774,7 @@ def phase6(data, state_data):
                     add("phase6", "P1", f"rh/{metric}/{sub.name}/",
                         f"rank-history stub year {r_year}, but metric-level page year {ref_year}")
 
-    # 6c — /t/ vs /r/ same metric should agree on year + rank
+    # 6c, /t/ vs /r/ same metric should agree on year + rank
     # /r/ stub OG description format: "Hawaiʻi ranks #N of 50 states in METRIC. VALUE (YEAR)."
     R_OG_RE = re.compile(
         r"Hawai\w+i ranks\s+#([0-9]+)\s+of\s+\d+\s+states[^.]*\.\s*(\S[^()]*?)\s*\(([0-9]{4}(?:-[0-9]{4})?)\)\.?",
@@ -820,7 +820,7 @@ def phase6(data, state_data):
 
 
 # -----------------------------------------------------------------------
-# Phase 7 — Structured data + meta vs visible content (improved)
+# Phase 7, Structured data + meta vs visible content (improved)
 # -----------------------------------------------------------------------
 
 CANONICAL_RE = re.compile(r'<link\s+rel="canonical"\s+href="([^"]*)"', re.IGNORECASE)
@@ -902,7 +902,7 @@ def phase7():
 
 
 # -----------------------------------------------------------------------
-# Phase 8 — Sitemap + build artifacts
+# Phase 8, Sitemap + build artifacts
 # -----------------------------------------------------------------------
 
 def phase8():
@@ -924,7 +924,7 @@ def phase8():
 
 
 # -----------------------------------------------------------------------
-# Phase 9 — Style consistency
+# Phase 9, Style consistency
 # -----------------------------------------------------------------------
 
 def phase9():
@@ -951,14 +951,15 @@ def phase9():
         body = re.sub(r"<script.*?</script>", "", text, flags=re.DOTALL)
         body = re.sub(r"<style.*?</style>", "", body, flags=re.DOTALL)
         body = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
-        em_count = body.count("—")
-        # Find context for em-dashes
+        em_dash = chr(0x2014)
+        em_count = body.count(em_dash)
+        # Find context for em-dashes (use unicode escape so this file stays em-dash-free)
         if em_count:
             contexts = []
-            for m in re.finditer(r".{0,40}—.{0,40}", body):
+            for m in re.finditer(rf".{{0,40}}{em_dash}.{{0,40}}", body):
                 contexts.append(m.group(0).strip().replace("\n", " ")[:80])
             add("phase9", "P1", rel,
-                f"{em_count} em-dash (—). Context sample: {contexts[:2]}")
+                f"{em_count} em-dash (U+2014). Context sample: {contexts[:2]}")
         mdash_entity = body.count("&mdash;")
         if mdash_entity:
             ctx = []
@@ -990,7 +991,7 @@ def phase9():
         if not p.exists():
             continue
         if "GET tax" in p.read_text():
-            add("phase9", "P1", rel, "'GET tax' (redundant — should be 'GET')")
+            add("phase9", "P1", rel, "'GET tax' (redundant, should be 'GET')")
     # OTC post hyperlink count
     for rel in ["off-the-charts/expensive-states/index.html",
                 "off-the-charts/renewables-prices/index.html"]:
@@ -1011,7 +1012,7 @@ def phase9():
 
 
 # -----------------------------------------------------------------------
-# Phase 10 — Stale-content scan
+# Phase 10, Stale-content scan
 # -----------------------------------------------------------------------
 
 def phase10():
@@ -1066,7 +1067,7 @@ def phase10():
     # Sitemap lastmod vs git. build.sh rewrites <lastmod> in dist/sitemap.xml at
     # deploy time from each file's last git-commit date, so the served sitemap
     # is always fresh. The source sitemap.xml is human-editable and will
-    # routinely lag by 1-N commits as new commits touch referenced files —
+    # routinely lag by 1-N commits as new commits touch referenced files
     # that's normal and not actionable. Only flag drift that is structurally
     # stale (>7 days) so the audit catches genuinely-forgotten updates without
     # firing on every commit.
@@ -1131,7 +1132,7 @@ def main():
             if sev == "P0": total_p0 += 1
             elif sev == "P1": total_p1 += 1
             else: total_p2 += 1
-    print(f"\n# Audit summary — P0: {total_p0}  P1: {total_p1}  P2: {total_p2}\n")
+    print(f"\n# Audit summary, P0: {total_p0}  P1: {total_p1}  P2: {total_p2}\n")
 
     for phase in sorted(findings.keys()):
         items = findings[phase]

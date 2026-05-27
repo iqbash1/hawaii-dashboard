@@ -261,7 +261,7 @@ const QOTD = {
     },
 
     /**
-     * Share flow: three-tier — native share sheet, clipboard with
+     * Share flow: three-tier, native share sheet, clipboard with
      * pre-composed payload, then execCommand fallback.
      *
      * Pre-composed payload pairs the brand teaser + claim + url so the

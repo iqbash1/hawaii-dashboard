@@ -893,8 +893,8 @@ def generate_metric_csv(slug, state_entry, county_entry):
     os.makedirs(DATA_DIR, exist_ok=True)
 
     # State CSV. STATE_DATA shape can be either:
-    #   { 'data': { year: { stateName: value, ... }, ... } } — common shape
-    #   { 'data': { fipsCode: { 'name': 'Hawaiʻi', '2023': v, ... } } } — pcp_per_100k
+    #   { 'data': { year: { stateName: value, ... }, ... } }, common shape
+    #   { 'data': { fipsCode: { 'name': 'Hawaiʻi', '2023': v, ... } } }, pcp_per_100k
     if state_entry and state_entry.get('data'):
         data = state_entry['data']
         rows = [['year', 'state', 'value']]
@@ -965,7 +965,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
     JSON-LD Dataset schema, headline figure + rank, county + state-trend
     tables, cross-links, and CTA back to the interactive SPA.
 
-    `county_data` may be None for metrics without county data — the county
+    `county_data` may be None for metrics without county data, the county
     table is then omitted.
     """
     metric_name = metric.get('metric', slug)
@@ -1059,14 +1059,14 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
         distributions.append({
             '@type': 'DataDownload',
             'encodingFormat': 'text/csv',
-            'name': f'{metric_name} — state series',
+            'name': f'{metric_name}, state series',
             'contentUrl': f'{SITE_URL}/data/{slug}_state.csv',
         })
     if county_data and county_data.get('data'):
         distributions.append({
             '@type': 'DataDownload',
             'encodingFormat': 'text/csv',
-            'name': f'{metric_name} — county series',
+            'name': f'{metric_name}, county series',
             'contentUrl': f'{SITE_URL}/data/{slug}_county.csv',
         })
     if distributions:
@@ -1122,7 +1122,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
             rows = []
             for cn in county_data['counties']:
                 v = county_data['data'].get(cn, {}).get(year)
-                v_fmt = format_value(v, unit, dec) if v is not None else '—'
+                v_fmt = format_value(v, unit, dec) if v is not None else ', '
                 rows.append(f'<tr><td>{_esc_html(cn)}</td><td class="num">{_esc_html(v_fmt)}</td></tr>')
             county_html = (
                 f'\n    <h2>By county ({year})</h2>\n'
@@ -1156,7 +1156,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
     why_html = ''
     if why:
         # Strip any inline HTML (links etc.) from the data file for a cleaner
-        # static page — full narrative lives in the SPA modal.
+        # static page, full narrative lives in the SPA modal.
         import re as _re
         why_text = _re.sub(r'<[^>]+>', '', why)
         why_html = f'\n    <h2>Why this matters</h2>\n    <p>{_esc_html(why_text)}</p>'

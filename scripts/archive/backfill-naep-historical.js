@@ -7,9 +7,9 @@
 //   https://www.nationsreportcard.gov/Dataservice/GetAdhocData.aspx
 //
 // What this adds:
-//   naep_math_8:    1990, 1992, 1996, 2000  (sample R2 — accommodations not
+//   naep_math_8:    1990, 1992, 1996, 2000  (sample R2, accommodations not
 //                   permitted; the only sample available pre-2002)
-//   naep_reading_8: 1998 (R2), 2002 (R3)   — state-level grade-8 reading
+//   naep_reading_8: 1998 (R2), 2002 (R3)  , state-level grade-8 reading
 //                   was first assessed in 1998
 //
 // Why R2 for pre-2002:

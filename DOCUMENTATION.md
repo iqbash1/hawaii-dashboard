@@ -255,8 +255,8 @@ This single script reads `js/data.js`, `js/state-data.js`, and `js/county-data.j
 - 26 trend OG cards (`assets/og/{slug}.png`)
 - 26 rankings OG cards (`assets/og/{slug}_rankings.png`)
 - 26 rank history OG cards (`assets/og/{slug}_rank_history.png`)
-- 1,274 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`) — one per metric per state (26 × 49)
-- 11 county OG cards (`assets/og/{slug}_county.png`) — for metrics with county data
+- 1,274 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`), one per metric per state (26 × 49)
+- 11 county OG cards (`assets/og/{slug}_county.png`), for metrics with county data
 - 26 trend comparison cards per metric per state (`assets/og/{slug}_t_{code}.png`)
 - All `/c/{slug}/index.html` landing pages (full content, Dataset JSON-LD with `distribution`, headline figure, county and state-trend tables, source attribution, cross-links, CTA)
 - All redirect pages in `t/`, `r/`, `rh/` (with canonical-link to `/c/{slug}/`, no longer self-canonical)
@@ -479,10 +479,10 @@ All narrative content lives in a single `#modal-consolidated` scrollable div dir
 1. **Line chart** (Chart.js) - Hawaiʻi (solid teal) vs. the selected comparator (gray dashed). Comparator defaults to the 50-state median; the shared dropdown swaps in any of the 49 other states. Trend line uses Bezier smoothing for readability; dots mark actual data values. A note below the chart discloses this.
 2. **Governor term labels** - positioned adaptively with dashed vertical boundary lines
 3. **Layered narrative** - The brief above the chart answers "where does Hawaiʻi stand?". Below the chart:
-   - **+ HOW TO READ THE CHART** — minimal `<details>` disclosure for chart orientation.
-   - **Why it matters** — always visible, one-paragraph rationale (`m.whyItMatters`).
-   - **National standing** — always visible, one-paragraph context on the rank trajectory (`narr.summary` from `rankHistoryNarrative`).
-   - **+ DEEPER ANALYSIS** — minimal `<details>` disclosure with the rest: County breakdown, Potential drivers, Lessons from other states, Key levers, Data note. Most readers won't open this; the ones who do get the full picture.
+   - **+ HOW TO READ THE CHART**, minimal `<details>` disclosure for chart orientation.
+   - **Why it matters**, always visible, one-paragraph rationale (`m.whyItMatters`).
+   - **National standing**, always visible, one-paragraph context on the rank trajectory (`narr.summary` from `rankHistoryNarrative`).
+   - **+ DEEPER ANALYSIS**, minimal `<details>` disclosure with the rest: County breakdown, Potential drivers, Lessons from other states, Key levers, Data note. Most readers won't open this; the ones who do get the full picture.
    Both disclosures use `.modal-how-toggle` with the uppercase-tracked text + teal `+/−` prefix, so they look like one consistent pattern. See `_buildConsolidatedNarrative`.
 4. **Source link + Download .xlsx + Share button** - three controls in the modal footer: source URL, XLSX download, and a Share button. The share button uses the same three-tier flow as Off the Charts and QOTD: native share sheet (`navigator.share`) on mobile / supporting desktops with title + metric name + active-tab permalink; clipboard fallback copies `Hawaiʻi Dashboard: {metric}\n\n{url}`; execCommand fallback for old browsers. Active-tab permalink includes any picked state + threshold.
 
@@ -771,13 +771,13 @@ Three weekly workflows surface drift via rolling labeled issues. Each maintains 
 ### Per-commit gates (`npm run validate`)
 
 Seven gates run in sequence; any error fails the command:
-1. `validate-data.js` — data structure, ranges, YoY spikes, parity, writer allowlist, county-data and state-data floor checks, latestMonthly staleness + seasonal-envelope sanity (Sections 1–15, 17). Optional opt-in modes: `--fresh-fetch` (Section 16) re-fetches every wired metric from the canonical source; `--probe-floor` (Section 18) probes for years available beyond what's stored.
-2. `audit-narrative-numbers.js --gate` — rank/value claims in `rankHistoryNarrative`
-3. `sync-qotd-answers.js --check` — QOTD answer drift (refuses V6 truth-flips)
-4. `audit-internal.py --gate` — 10-phase site audit (P0+P1 findings block; P2 informational)
-5. `update-metric-counts.js --check` — hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
-6. `generate-fyc-pages.js --check` — the 7 Change Summary HTMLs must byte-match the single-source generator; hand-edits fail until `npm run generate-fyc` runs
-7. `sync-otc-meta.js --check` — Off the Charts post `<meta>` tags + JSON-LD must match the post body; drift fails until `npm run sync-otc-meta` runs
+1. `validate-data.js`, data structure, ranges, YoY spikes, parity, writer allowlist, county-data and state-data floor checks, latestMonthly staleness + seasonal-envelope sanity (Sections 1–15, 17). Optional opt-in modes: `--fresh-fetch` (Section 16) re-fetches every wired metric from the canonical source; `--probe-floor` (Section 18) probes for years available beyond what's stored.
+2. `audit-narrative-numbers.js --gate`, rank/value claims in `rankHistoryNarrative`
+3. `sync-qotd-answers.js --check`, QOTD answer drift (refuses V6 truth-flips)
+4. `audit-internal.py --gate`, 10-phase site audit (P0+P1 findings block; P2 informational)
+5. `update-metric-counts.js --check`, hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
+6. `generate-fyc-pages.js --check`, the 7 Change Summary HTMLs must byte-match the single-source generator; hand-edits fail until `npm run generate-fyc` runs
+7. `sync-otc-meta.js --check`, Off the Charts post `<meta>` tags + JSON-LD must match the post body; drift fails until `npm run sync-otc-meta` runs
 
 ### Manual (one-off value update)
 
@@ -1038,8 +1038,8 @@ Tests run automatically on every push to `main` and on all pull requests via `.g
 Every indexable page has:
 - Keyword-front-loaded `<title>` (e.g. `"Hawaii Unemployment Rate: 2.3% (2025), Ranked #2 of 50 States | Hawaiʻi Dashboard"` on `/c/unemployment_rate/`)
 - `<meta name="description">` trimmed to the ~155-char SERP snippet sweet spot
-- `<link rel="canonical">` — either self-canonical (`/c/`, `/`, `/about/`, `/faq/`, `/off-the-charts/`, change summaries, OtC posts) or canonical-link to `/c/{slug}/` (`/t/`, `/r/`, `/rh/` share pages, including per-state comparison variants)
-- `<meta name="robots" content="max-image-preview:large, max-snippet:-1">` — opt in to larger SERP image previews and full-length snippets
+- `<link rel="canonical">`, either self-canonical (`/c/`, `/`, `/about/`, `/faq/`, `/off-the-charts/`, change summaries, OtC posts) or canonical-link to `/c/{slug}/` (`/t/`, `/r/`, `/rh/` share pages, including per-state comparison variants)
+- `<meta name="robots" content="max-image-preview:large, max-snippet:-1">`, opt in to larger SERP image previews and full-length snippets
 - Open Graph tags (og:type, og:url, og:title, og:description, og:image, og:site_name) plus 1200×630 OG image
 - Twitter Card tags (summary_large_image)
 - BreadcrumbList JSON-LD with the page's position in the hierarchy
@@ -1048,7 +1048,7 @@ Every indexable page has:
 
 | Surface | JSON-LD types |
 |---|---|
-| Home (`/`) | Organization + WebSite + BreadcrumbList + ItemList (enumerates all 26 metric pages with their human-readable names — transfers topical authority to each `/c/`) |
+| Home (`/`) | Organization + WebSite + BreadcrumbList + ItemList (enumerates all 26 metric pages with their human-readable names, transfers topical authority to each `/c/`) |
 | `/c/{slug}/` (26 pages) | Dataset (with `temporalCoverage`, `spatialCoverage`, `variableMeasured`, `publisher`, and `distribution` referencing `/data/{slug}_state.csv` + `/data/{slug}_county.csv` when applicable) + BreadcrumbList |
 | `/about/` | AboutPage + BreadcrumbList |
 | `/faq/` | FAQPage (all 14 Q&A pairs) + BreadcrumbList |
@@ -1061,13 +1061,13 @@ Every indexable page has:
 
 ### Site-level SEO infrastructure
 
-- `robots.txt` — allows all crawlers, explicitly permits AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, etc.)
-- `sitemap.xml` — 43 URLs (home, 7 change-summary year-spans, About, FAQ, Off the Charts archive, 6 OtC posts, 26 `/c/` metric pages) with inline `<image:image>` entries for each URL's OG image (image-sitemap extension namespace). Priority hints; `<lastmod>` auto-rewritten at build time from each file's git history.
-- `_headers` — Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML.
+- `robots.txt`, allows all crawlers, explicitly permits AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, etc.)
+- `sitemap.xml`, 43 URLs (home, 7 change-summary year-spans, About, FAQ, Off the Charts archive, 6 OtC posts, 26 `/c/` metric pages) with inline `<image:image>` entries for each URL's OG image (image-sitemap extension namespace). Priority hints; `<lastmod>` auto-rewritten at build time from each file's git history.
+- `_headers`, Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML.
 
 ### AI chat engine optimization
 
-- `llms.txt` — plain-text site summary (~150 lines) describing the dashboard, all 26 metrics, methodology, data sources, URL structure, and the `/data/{slug}_*.csv` endpoints. Follows the [Anthropic / Answer.AI llms.txt convention](https://llmstxt.org/) for AI system context.
+- `llms.txt`, plain-text site summary (~150 lines) describing the dashboard, all 26 metrics, methodology, data sources, URL structure, and the `/data/{slug}_*.csv` endpoints. Follows the [Anthropic / Answer.AI llms.txt convention](https://llmstxt.org/) for AI system context.
 - `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, OAI-SearchBot, and other AI crawlers.
 - All pages have semantic HTML with descriptive headings.
 - FAQ page has FAQPage JSON-LD schema enabling Google rich results; metric landing pages have Dataset JSON-LD for Google Dataset Search.

@@ -43,7 +43,7 @@
     }
     window.__hdInternal = isInternal;
 
-    // Microsoft Clarity (session recording) — skip entirely for internal traffic.
+    // Microsoft Clarity (session recording), skip entirely for internal traffic.
     if (!isInternal) {
         (function (c, l, a, r, i, t, y) {
             c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
@@ -52,7 +52,7 @@
         })(window, document, 'clarity', 'script', 'w5pye8kkrb');
     }
 
-    // Google Analytics 4 — always loaded; internal traffic gets tagged
+    // Google Analytics 4, always loaded; internal traffic gets tagged
     // so the GA4 Data Filter excludes it from reports.
     const gaScript = document.createElement('script');
     gaScript.async = true;

@@ -240,7 +240,7 @@ jobs:
         run: |
           # awk is used (not `grep -c || echo 0`) because grep -c on no
           # matches still prints "0" AND exits 1, so `|| echo 0` writes a
-          # second line — corrupting $GITHUB_OUTPUT with "Invalid format '0'".
+          # second line, corrupting $GITHUB_OUTPUT with "Invalid format '0'".
           ERR_MAIN=0; WARN_MAIN=0; ERR_FRESH=0; WARN_FRESH=0
           if [ -f /tmp/validation-output.txt ]; then
             ERR_MAIN=$(awk '/ERROR:/ {c++} END {print c+0}' /tmp/validation-output.txt)

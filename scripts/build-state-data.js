@@ -13,7 +13,7 @@
 //
 // Metrics covered (25 of 26, all live-fetched via main(); the 26th
 // (pcp_per_100k) is preserve-only via the year-level merge because of
-// its FIPS-first storage shape — see comment in main()):
+// its FIPS-first storage shape, see comment in main()):
 //   Census ACS:  ba_or_higher_pct, broadband_subscription_pct,
 //                renter_cost_burden_pct, uninsured_rate, home_price_to_income
 //   BLS:         unemployment_rate, labor_force_participation,
@@ -1221,7 +1221,7 @@ async function fetchFoodInsecurity() {
             const pct = r[2];
             if (typeof periodRaw !== 'string' || typeof ab !== 'string') continue;
             // ERS uses em-dash (–, U+2013) between years; state-data uses hyphen-minus.
-            const periodKey = periodRaw.replace(/–|—/g, '-').trim();
+            const periodKey = periodRaw.replace(/[\u2013\u2014]/g, '-').trim();
             if (!/^\d{4}-\d{4}$/.test(periodKey)) continue;
             const stateName = NAEP_ABBR_TO_STATE[ab];
             if (!stateName || !knownStates.has(stateName)) continue;
