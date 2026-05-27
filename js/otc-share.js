@@ -1,17 +1,11 @@
-// Off the Charts: Share button.
+// Off the Charts: Share button binding.
 //
-// Three-tier share flow:
-//   1. navigator.share(), native share sheet on iOS / Android / supporting
-//      desktops. Hands the OS the post title + lede + url so any installed
-//      app (Messages, Mail, Slack, LinkedIn, X, AirDrop, ...) can receive it.
-//   2. navigator.clipboard.writeText(), copy a pre-composed "title \n\n lede
-//      \n\n url" payload to clipboard so the link arrives with context on
-//      platforms that don't auto-unfurl (SMS, Slack DMs).
-//   3. document.execCommand('copy'), last-resort fallback for old browsers.
-//
-// Fires GA4 event `share_clicked` with { surface: 'otc', slug, method }
-// where method is 'native' | 'clipboard' | 'fallback'. AbortError from a
-// dismissed share sheet is treated as a non-event.
+// Wires the standard .share-btn[data-share-url] elements on per-post pages
+// into the unified share menu (js/share-menu.js). Mobile gets the OS share
+// sheet via navigator.share(); desktop gets the in-page popover with
+// LinkedIn / Email / X / Bluesky / Copy link. Fires GA4 event
+// `share_clicked` with { surface: 'otc', slug, method } so we can compare
+// which channel actually drives shares.
 
 (function () {
     'use strict';
@@ -52,81 +46,18 @@
         }
     }
 
-    function buildCopyText(title, lede, url) {
-        var parts = [];
-        if (title) parts.push(title);
-        if (lede) parts.push(lede);
-        parts.push(url);
-        return parts.join('\n\n');
-    }
-
-    function execFallback(text) {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.cssText = 'position:fixed;opacity:0';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); } catch (e) { /* ignored */ }
-        document.body.removeChild(ta);
-    }
-
-    function flashLabel(btn, message, addCopiedClass) {
-        var label = btn.querySelector('span');
-        var original = label ? label.textContent : null;
-        if (addCopiedClass) btn.classList.add('copied');
-        if (label) label.textContent = message;
-        setTimeout(function () {
-            if (addCopiedClass) btn.classList.remove('copied');
-            if (label && original !== null) label.textContent = original;
-        }, 2000);
-    }
-
-    function copyAndFlash(btn, slug, title, lede, url) {
-        var text = buildCopyText(title, lede, url);
-        var doCopy;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            doCopy = navigator.clipboard.writeText(text).then(function () {
-                trackShare(slug, 'clipboard');
-            }, function () {
-                execFallback(text);
-                trackShare(slug, 'fallback');
-            });
-        } else {
-            execFallback(text);
-            trackShare(slug, 'fallback');
-            doCopy = Promise.resolve();
-        }
-        doCopy.finally(function () { flashLabel(btn, 'Copied!', true); });
-    }
-
     function bind(btn) {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            if (!window.ShareMenu) return; // module not loaded yet
             var url = btn.getAttribute('data-share-url') || window.location.href;
             var slug = getPostSlug(url);
-            var title = getPostTitle();
-            var lede = getPostLede();
-
-            // Native share sheet (mobile + supporting desktops)
-            if (typeof navigator.share === 'function') {
-                navigator.share({
-                    title: title,
-                    text: lede,
-                    url: url,
-                }).then(function () {
-                    trackShare(slug, 'native');
-                }).catch(function (err) {
-                    // AbortError = user dismissed the sheet. Treat as a
-                    // non-event (no tracking, no fallback), a curious tap
-                    // should not look like a share.
-                    if (err && err.name === 'AbortError') return;
-                    // Any other failure: fall back to clipboard.
-                    copyAndFlash(btn, slug, title, lede, url);
-                });
-                return;
-            }
-
-            // Clipboard fallback
-            copyAndFlash(btn, slug, title, lede, url);
+            window.ShareMenu.open(btn, {
+                url: url,
+                title: getPostTitle(),
+                lede: getPostLede(),
+                track: function (method) { trackShare(slug, method); },
+            });
         });
     }
 

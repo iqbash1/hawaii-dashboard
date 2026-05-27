@@ -2218,6 +2218,68 @@ body {
     border-color: var(--positive);
     color: #fff;
 }
+
+/* Share menu popover: shown on desktop when user clicks .share-btn /
+   .qotd-share-btn. Mobile (hover:none, pointer:coarse) still opens the
+   native share sheet via navigator.share(). Driven by js/share-menu.js. */
+.share-menu {
+    position: absolute;
+    z-index: 1000;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 0.35rem 0;
+    font-family: inherit;
+    font-size: var(--text-base);
+    color: var(--text);
+}
+.share-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text);
+    font-family: inherit;
+    font-size: var(--text-base);
+    font-weight: 500;
+    transition: background 0.12s, color 0.12s;
+}
+.share-menu-item:hover,
+.share-menu-item:focus-visible {
+    background: var(--hawaii-blue-light);
+    color: var(--hawaii-blue);
+    outline: none;
+}
+.share-menu-item.copied {
+    background: var(--positive-bg);
+    color: var(--positive);
+}
+.share-menu-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: currentColor;
+}
+.share-menu-label {
+    flex: 1;
+}
+@media (max-width: 480px) {
+    /* Mobile fallback (e.g. desktop browser with mobile-emulation, or a
+       device where navigator.share is missing): make the menu take full
+       width so options stay tappable. */
+    .share-menu {
+        min-width: 0;
+        width: calc(100vw - 16px);
+        max-width: 320px;
+    }
+}
 .qotd-verdict {
     display: inline-flex;
     align-items: center;

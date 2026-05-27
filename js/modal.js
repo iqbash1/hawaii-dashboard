@@ -513,9 +513,11 @@ const Modal = {
             Export.downloadData(slug);
             App._trackEvent('data_exported', { slug, format: 'xlsx' });
         };
-        // Share helpers, three-tier flow: native share sheet, clipboard
-        // with pre-composed payload, then execCommand fallback. Tracks
-        // metric_shared with method = 'native' | 'clipboard' | 'fallback'.
+        // Share: delegated to window.ShareMenu (js/share-menu.js) so the
+        // chart-modal share gets the same unified experience as Off the
+        // Charts posts and QOTD. Mobile keeps the OS share sheet; desktop
+        // gets the in-page popover (LinkedIn / Email / X / Bluesky / Copy
+        // link). All channels report metric_shared with method.
         const getActiveTab = () => {
             const el = document.querySelector('.modal-tab.active');
             return el ? el.id.replace('tab-', '') : 'detail';
@@ -523,69 +525,26 @@ const Modal = {
         const getShareUrl = () => {
             return 'https://hawaiidashboard.org' + Modal._buildTabUrl(getActiveTab(), slug);
         };
-        const getComposedText = (url) => {
-            const name = metricData.metric || slug;
-            return `Hawaiʻi Dashboard: ${name}\n\n${url}`;
-        };
-        const flashCopied = (btn) => {
-            btn.classList.add('copied');
-            btn.title = 'Copied!';
-            const label = btn.querySelector('.share-label');
-            if (label) label.textContent = 'Copied!';
-            setTimeout(() => {
-                btn.classList.remove('copied');
-                btn.title = 'Copy link';
-                if (label) label.textContent = 'Share';
-            }, 2000);
-        };
-        const execFallbackCopy = (text) => {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.cssText = 'position:fixed;opacity:0';
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); } catch (e) { /* ignored */ }
-            document.body.removeChild(ta);
-        };
         const trackShare = (method) => {
             App._trackEvent('metric_shared', { slug, tab: getActiveTab(), method });
-        };
-        const clipboardFlow = (btn, url) => {
-            const text = getComposedText(url);
-            let doCopy;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                doCopy = navigator.clipboard.writeText(text).then(
-                    () => trackShare('clipboard'),
-                    () => { execFallbackCopy(text); trackShare('fallback'); }
-                );
-            } else {
-                execFallbackCopy(text);
-                trackShare('fallback');
-                doCopy = Promise.resolve();
-            }
-            doCopy.finally(() => flashCopied(btn));
         };
         document.getElementById('modal-share-btn').onclick = (e) => {
             e.preventDefault();
             const btn = document.getElementById('modal-share-btn');
             const url = getShareUrl();
-            // Native share sheet (mobile + supporting desktops)
-            if (typeof navigator.share === 'function') {
-                navigator.share({
-                    title: 'Hawaiʻi Dashboard',
-                    text: metricData.metric || slug,
+            const name = metricData.metric || slug;
+            if (window.ShareMenu) {
+                window.ShareMenu.open(btn, {
                     url: url,
-                }).then(
-                    () => trackShare('native'),
-                    (err) => {
-                        if (err && err.name === 'AbortError') return;
-                        clipboardFlow(btn, url);
-                    }
-                );
-                return;
+                    title: `Hawaiʻi Dashboard: ${name}`,
+                    lede: name,
+                    track: trackShare,
+                });
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                // Fallback if share-menu.js failed to load.
+                navigator.clipboard.writeText(`Hawaiʻi Dashboard: ${name}\n\n${url}`)
+                    .then(() => trackShare('clipboard'), () => trackShare('fallback'));
             }
-            // Clipboard fallback
-            clipboardFlow(btn, url);
         };
 
         document.getElementById('print-link').onclick = (e) => {

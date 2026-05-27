@@ -261,26 +261,19 @@ const QOTD = {
     },
 
     /**
-     * Share flow: three-tier, native share sheet, clipboard with
-     * pre-composed payload, then execCommand fallback.
-     *
-     * Pre-composed payload pairs the brand teaser + claim + url so the
-     * share lands with context on platforms that don't auto-unfurl
-     * (SMS, Slack DMs, email). Tracks `qotd_share_clicked` with the
-     * resolved method ('native' | 'clipboard' | 'fallback'). AbortError
-     * from a dismissed native share sheet is a non-event.
+     * Share flow: delegated to window.ShareMenu (js/share-menu.js) so QOTD
+     * gets the same unified experience as Off the Charts posts and the chart
+     * modal. Mobile keeps the OS share sheet (Messages / Mail / Slack /
+     * LinkedIn / AirDrop). Desktop gets the in-page popover with LinkedIn /
+     * Email / X / Bluesky / Copy link, all method-tracked.
      */
     _handleShare(id, btnEl) {
         const url = this.shareUrl(id);
         const q = this.getById(id);
         const claim = q ? q.claim : '';
         const teaser = this.SHARE_TEXT;
-        // For native share's text field (URL is passed separately).
-        const shareText = claim ? `${teaser}\n\n${claim}` : teaser;
-        // For clipboard (URL appended so the paste includes everything).
-        const composedText = claim
-            ? `${teaser}\n\n${claim}\n\n${url}`
-            : `${teaser}\n\n${url}`;
+        // 1-line lede for clipboard payload + X intent.
+        const lede = claim ? `${teaser} ${claim}` : teaser;
 
         const track = (method) => {
             if (typeof App !== 'undefined' && App._trackEvent) {
@@ -288,50 +281,29 @@ const QOTD = {
             }
         };
 
-        const execFallback = () => {
-            const ta = document.createElement('textarea');
-            ta.value = composedText;
-            ta.style.cssText = 'position:fixed;opacity:0';
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); } catch (e) { /* ignored */ }
-            document.body.removeChild(ta);
-        };
-
-        const clipboardFlow = () => {
-            let doCopy;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                doCopy = navigator.clipboard.writeText(composedText).then(
-                    () => track('clipboard'),
-                    () => { execFallback(); track('fallback'); }
-                );
-            } else {
-                execFallback();
-                track('fallback');
-                doCopy = Promise.resolve();
-            }
-            doCopy.finally(() => this._flashCopied(btnEl));
-        };
-
-        // Native share sheet (mobile + supporting desktops). On iOS this is
-        // the Messages / Mail / Slack / LinkedIn / AirDrop sheet in one tap.
-        if (typeof navigator.share === 'function') {
-            navigator.share({
-                title: 'You know Hawaiʻi?',
-                text: shareText,
+        if (window.ShareMenu) {
+            window.ShareMenu.open(btnEl, {
                 url: url,
-            }).then(
-                () => track('native'),
-                (err) => {
-                    if (err && err.name === 'AbortError') return;
-                    clipboardFlow();
-                }
-            );
+                title: 'You know Hawaiʻi?',
+                lede: lede,
+                track: track,
+            });
             return;
         }
 
-        // Clipboard fallback
-        clipboardFlow();
+        // Fallback if share-menu.js failed to load: just copy to clipboard.
+        const composedText = claim
+            ? `${teaser}\n\n${claim}\n\n${url}`
+            : `${teaser}\n\n${url}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(composedText).then(
+                () => track('clipboard'),
+                () => track('fallback')
+            ).finally(() => this._flashCopied(btnEl));
+        } else {
+            track('fallback');
+            this._flashCopied(btnEl);
+        }
     },
 
     /**
