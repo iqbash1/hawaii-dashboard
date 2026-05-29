@@ -503,7 +503,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q057",
       "slug": "hawaii-gets-more-renewable-electricity-than-florida",
-      "claim": "Hawaiʻi gets more of its electricity from renewables than Florida.",
+      "claim": "Hawaiʻi gets a larger share of its electricity from renewables than Florida does.",
       "correct": true,
       "answer": "In 2025, Hawaiʻi was 22.1% versus Florida at 10.6%.",
       "chartUrl": "/t/renewables_share_gen/fl/",
