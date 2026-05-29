@@ -93,11 +93,20 @@
   </url>
   <url>
     <loc>https://hawaiidashboard.org/off-the-charts/</loc>
-    <lastmod>2026-05-27</lastmod>
+    <lastmod>2026-05-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
       <image:loc>https://hawaiidashboard.org/assets/og/off-the-charts.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/safe-state-theft-problem/</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://hawaiidashboard.org/assets/og/off-the-charts/safe-state-theft-problem.png</image:loc>
     </image:image>
   </url>
   <url>

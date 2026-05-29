@@ -30,6 +30,13 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "safe-state-theft-problem",
+        "title": "A safe state with a theft problem.",
+        "date":  "29 May 2026",
+        # Outlier line: Hawaiʻi alone elevated on property crime among the safe-from-violence states.
+        "outlier": "high",
+    },
+    {
         "slug": "florida-rent-burden",
         "title": "Florida has Hawaiʻi beat on rent burden.",
         "date":  "27 May 2026",
