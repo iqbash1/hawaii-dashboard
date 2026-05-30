@@ -527,7 +527,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q065",
       "slug": "of-all-counties-honolulu-is-losing-the-fewest-residents",
-      "claim": "Of all counties, Honolulu is losing the fewest residents to immigration.",
+      "claim": "Of all counties, Honolulu is losing the fewest residents to migration.",
       "correct": false,
       "answer": "In 2024, Hawaiʻi County was the only county gaining residents at +29.9 per 10K; Honolulu lost 69.1 per 10K.",
       "chartUrl": "/c/net_domestic_migration_rate/",
