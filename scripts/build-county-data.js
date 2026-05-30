@@ -111,6 +111,28 @@ async function fetchJSON(url) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// Minimal RFC-4180 CSV row parser (handles quoted fields). Mirrors the helper
+// in build-state-data.js; kept inline here because the two scripts have no
+// shared utility module.
+function parseCsvRow(line) {
+    const cells = [];
+    let cur = '';
+    let inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') {
+            inQuote = !inQuote;
+        } else if (c === ',' && !inQuote) {
+            cells.push(cur);
+            cur = '';
+        } else {
+            cur += c;
+        }
+    }
+    cells.push(cur);
+    return cells;
+}
+
 /** Parse Census ACS county response into { countyName: value } */
 function parseCensusCounty(json, computeFn) {
     const headers = json[0];
@@ -397,12 +419,21 @@ async function fetchPerCapitaIncome() {
 // Census PEP Fetcher (Net Domestic Migration Rate)
 // ===========================================================
 
+// Two source endpoints because Census deprecated the PEP components API after
+// vintage 2019. For 2011-2019 we use the 2019 vintage components API
+// (PERIOD_CODE 2..10 → calendar 2011..2019). For 2021-2024 we read the
+// CO-EST2024-ALLDATA bulk CSV (RDOMESTICMIG{year} columns). 2020 is not
+// published (decennial base year gap). Mirrors the state-level fetcher in
+// build-state-data.js — keep the two in sync when Census ships a new vintage.
+const PEP_2024_COEST_URL = 'https://www2.census.gov/programs-surveys/popest/datasets'
+    + '/2020-2024/counties/totals/co-est2024-alldata.csv';
+
 async function fetchNetDomesticMigration() {
     console.log('Fetching: Net domestic migration rate (Census PEP)...');
     const byCounty = {};
     COUNTY_ORDER.forEach(c => { byCounty[c] = {}; });
 
-    // PEP 2019 vintage: components endpoint uses PERIOD_CODE (not DATE_CODE)
+    // 1) 2019 vintage components API for 2011-2019
     // PERIOD_CODE 2=2011, 3=2012, ..., 10=2019 (fiscal year periods)
     // Population from charagegroups uses DATE_CODE: year = 2008 + dateCode
     try {
@@ -441,11 +472,51 @@ async function fetchNetDomesticMigration() {
             await sleep(200);
         }
     } catch (err) {
-        console.log(`  Error: ${err.message}`);
+        console.log(`  WARN 2019 vintage fetch failed: ${err.message}`);
+    }
+
+    // 2) 2024 vintage CO-EST CSV for 2021-2024 (no 2020 rate per Census methodology)
+    // Rate columns RDOMESTICMIG{year} are per 1,000 mid-year residents; we
+    // multiply by 10 to match the dashboard's per-10,000 unit.
+    try {
+        const r = await fetch(PEP_2024_COEST_URL, {
+            headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const text = await r.text();
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        const head = parseCsvRow(lines[0]);
+        const sumlevIdx = head.indexOf('SUMLEV');
+        const stateIdx = head.indexOf('STATE');
+        const countyIdx = head.indexOf('COUNTY');
+        const rateIdxByYear = {};
+        for (const yr of ['2021', '2022', '2023', '2024']) {
+            rateIdxByYear[yr] = head.indexOf(`RDOMESTICMIG${yr}`);
+        }
+        if (sumlevIdx < 0 || stateIdx < 0 || countyIdx < 0 || Object.values(rateIdxByYear).some(i => i < 0)) {
+            throw new Error('headers missing in CO-EST CSV');
+        }
+        let pts = 0;
+        for (const line of lines.slice(1)) {
+            const cells = parseCsvRow(line);
+            if (cells[sumlevIdx] !== '050') continue; // 050 = county row; skip state aggregate
+            if (cells[stateIdx] !== '15') continue;   // Hawaii only
+            const countyName = COUNTY_FIPS[cells[countyIdx]];
+            if (!countyName) continue;                // skip Kalawao (005)
+            for (const [yr, ri] of Object.entries(rateIdxByYear)) {
+                const rate = parseFloat(cells[ri]);
+                if (!isFinite(rate)) continue;
+                byCounty[countyName][yr] = parseFloat((rate * 10).toFixed(1));
+                pts++;
+            }
+        }
+        console.log(`  2024 vintage CO-EST CSV (2021-2024): ${pts} county-year cells`);
+    } catch (err) {
+        console.log(`  WARN 2024 vintage fetch failed: ${err.message}`);
     }
 
     const totalPoints = Object.values(byCounty).reduce((s, d) => s + Object.keys(d).length, 0);
-    console.log(` -> ${totalPoints} data points`);
+    console.log(`  -> ${totalPoints} data points`);
     return totalPoints > 0 ? byCounty : null;
 }
 
