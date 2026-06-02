@@ -551,7 +551,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q080",
       "slug": "of-all-hawaii-counties-honolulu-has-the-highest-unsheltered-homelessness-rate",
-      "claim": "Of all Hawaiʻi counties, Honolulu has the highest unsheltered homelessness rate.",
+      "claim": "Among Hawaiʻi counties, Honolulu has the highest unsheltered homelessness rate.",
       "correct": false,
       "answer": "In 2024, the county with the highest value was Kauaʻi at 63.0 per 10K.",
       "chartUrl": "/c/unsheltered_homeless_rate/",
