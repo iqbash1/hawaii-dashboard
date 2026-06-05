@@ -599,7 +599,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q008",
       "slug": "only-one-state-has-higher-health-insurance-coverage-than-hawaii",
-      "claim": "Only one state covers a bigger share of residents with health insurance than Hawaiʻi.",
+      "claim": "Only one other state covers a bigger share of residents with health insurance than Hawaiʻi.",
       "correct": true,
       "answer": "Hawaiʻi has the #2 lowest value among 50 states in 2024 (3.5%).",
       "chartUrl": "/r/uninsured_rate/",
