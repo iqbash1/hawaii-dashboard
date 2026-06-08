@@ -4,6 +4,14 @@ name: Data audit
 # year-cell against the source-of-truth and fail if any drifts beyond
 # 0.5% relative or 0.0001 absolute.
 #
+# Output behaviour: maintains a SINGLE rolling issue labeled `data-drift`
+# (same pattern as audit-links.yml / cron-heartbeat.yml).
+#   - 0 drift  → existing rolling issue (if any) is closed with a comment.
+#   - drift    → opens the issue if none exists, or edits the body to the
+#                latest drift cells + comments when the cell list changes.
+# This replaces the prior behaviour of opening a brand-new issue on every
+# run, which produced duplicate issues #33-#39 for a single revision.
+#
 # Schedule (Hawaiʻi Standard Time, UTC-10):
 #   1 PM HST = 23:00 UTC same day
 #   6 PM HST = 04:00 UTC next day
@@ -15,6 +23,14 @@ on:
     - cron: '0 23 * * *'  # 1 PM HST
     - cron: '0 4 * * *'   # 6 PM HST
   workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: data-audit
+  cancel-in-progress: true
 
 jobs:
   audit:
@@ -47,40 +63,114 @@ jobs:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           # CDC WONDER (HHS) is also separately registered.
           CDC_WONDER_KEY: ${{ secrets.CDC_WONDER_KEY }}
+          # Census API (api.census.gov) began requiring a key ~2026-06-07.
+          # Without it the 8 ACS metrics can't be fetched or audited.
+          # Register free at https://api.census.gov/data/key_signup.html
+          # and add the CENSUS_API_KEY secret.
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
         # --audit-only mode: exit reflects ONLY Section 16 drift, so
         # unrelated warnings (e.g. county data lag) don't trigger a
-        # data-drift issue creation.
-        run: npm run audit:drift
+        # data-drift issue. We capture the exit code instead of letting it
+        # fail the job, then maintain the rolling issue below.
+        run: |
+          set +e
+          set -o pipefail
+          npm run audit:drift 2>&1 | tee /tmp/audit-drift.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          # Extract the drift detail: everything from Section 16 onward,
+          # keeping the ERROR lines, the "Drift samples" cells, and RESULT.
+          awk '/Section 16:/{flag=1} flag' /tmp/audit-drift.txt \
+            | grep -E 'ERROR:|Drift samples:|stored=|RESULT:|drifted' \
+            > /tmp/audit-drift-detail.txt || true
+          exit 0  # Don't fail the step; the rolling-issue step handles state.
 
-      - name: Open issue on drift
-        if: failure()
+      - name: Maintain rolling data-drift issue
         uses: actions/github-script@v9
         with:
           script: |
-            const now = new Date();
-            const dateStr = now.toISOString().slice(0, 16).replace('T', ' ');
-            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `Data drift detected · ${dateStr} UTC`,
-              body: [
-                `The scheduled fresh-fetch audit detected drift between state-data.js and the canonical federal source.`,
-                ``,
-                `**Failed run:** ${runUrl}`,
-                ``,
-                `**Likely causes (most to least common):**`,
-                `- A federal source published a revised vintage (BLS LAUS revisions are typical in February).`,
-                `- A hand-paste introduced a value that differs from the fetcher result.`,
-                `- A fetcher's parsing logic broke after a source format change.`,
-                ``,
-                `**Investigate:**`,
-                `1. Check the workflow logs for the specific (metric, year) drift cells under Section 16.`,
-                `2. Re-fetch via \`NODE_TLS_REJECT_UNAUTHORIZED=0 node scripts/build-state-data.js\` locally.`,
-                `3. Compare the new state-data.js against this commit.`,
-                `4. If the drift is a legitimate source revision, accept the new vintage and update state-data.js + narratives if any historical claims are affected.`,
-                ``,
-                `Closing this issue without action is fine if the next scheduled run is green.`,
-              ].join('\n'),
-              labels: ['data-drift']
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const exitCode = parseInt('${{ steps.audit.outputs.exit_code }}', 10);
+            const drift = Number.isNaN(exitCode) ? true : exitCode !== 0;
+
+            // Find the existing open rolling issue (if any).
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'data-drift', per_page: 5,
             });
+            const existing = open.data[0] || null;
+
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`;
+            const today = new Date().toISOString().slice(0, 10);
+
+            // No drift → close any open rolling issue and stop.
+            if (!drift) {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: existing.number,
+                  body: `Fresh-fetch audit clean as of ${today}: 0 drift. Closing.\n\nRun: ${runUrl}`,
+                });
+                await github.rest.issues.update({
+                  owner, repo, issue_number: existing.number, state: 'closed',
+                });
+              }
+              return;
+            }
+
+            // Drift → create or update the single rolling issue.
+            let detail = '';
+            try { detail = fs.readFileSync('/tmp/audit-drift-detail.txt', 'utf8').trim(); } catch (e) {}
+            if (!detail) detail = '(see workflow logs, Section 16, for the specific drift cells)';
+
+            const body = [
+              `The scheduled fresh-fetch audit detected drift between state-data.js and the canonical federal source.`,
+              ``,
+              `**Last run:** ${runUrl} (${today})`,
+              ``,
+              'Drift cells (auto-updated; latest run replaces this section):',
+              ``,
+              '```',
+              detail,
+              '```',
+              ``,
+              '---',
+              ``,
+              '**Investigate:**',
+              '1. Confirm the (metric, year) cells above against the canonical source.',
+              '2. Re-fetch via `NODE_TLS_REJECT_UNAUTHORIZED=0 node scripts/build-state-data.js` (or a scoped per-metric fetch).',
+              '3. If it is a legitimate source revision, accept the new vintage, `npm run recompute`, update any narrative rank/value claims, and `npm run validate`.',
+              ``,
+              'This issue auto-closes when the next scheduled run finds 0 drift.',
+            ].join('\n');
+
+            if (existing) {
+              // Only comment when the drift cells changed since last update.
+              const prevBlock = (existing.body || '').match(/```\n([\s\S]*?)\n```/);
+              const prevDetail = prevBlock ? prevBlock[1].trim() : '';
+              await github.rest.issues.update({
+                owner, repo, issue_number: existing.number, body,
+              });
+              if (prevDetail !== detail) {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: existing.number,
+                  body: `Drift cells changed on ${today}. Run: ${runUrl}`,
+                });
+              }
+            } else {
+              await github.rest.issues.create({
+                owner, repo,
+                title: `Data drift detected`,
+                body,
+                labels: ['data-drift'],
+              });
+            }
+
+      - name: Ensure data-drift label exists
+        if: always()
+        run: |
+          gh label create data-drift \
+            --description "Rolling fresh-fetch drift report; auto-closes when 0 drift remain" \
+            --color "d93f0b" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
