@@ -1,504 +1,504 @@
 year,state,value
-2007,Alabama,87.013
-2007,Alaska,90.946
-2007,Arizona,93.263
-2007,Arkansas,90.919
-2007,California,81.447
-2007,Colorado,83.179
-2007,Connecticut,98.007
-2007,Delaware,96.955
-2007,Florida,90.311
-2007,Georgia,85.639
-2007,Hawaiʻi,90.069
-2007,Idaho,85.209
-2007,Illinois,90.907
-2007,Indiana,91.437
-2007,Iowa,90.941
-2007,Kansas,81.841
-2007,Kentucky,87.002
-2007,Louisiana,100.537
-2007,Maine,93.371
-2007,Maryland,82.6
-2007,Massachusetts,87.074
-2007,Michigan,93.169
-2007,Minnesota,88.291
-2007,Mississippi,91.099
-2007,Missouri,88.01
-2007,Montana,82.939
-2007,Nebraska,83.586
-2007,Nevada,91.734
-2007,New Hampshire,87.534
-2007,New Jersey,92.665
-2007,New Mexico,87.685
-2007,New York,87.833
-2007,North Carolina,90.107
-2007,North Dakota,66.016
-2007,Ohio,89.538
-2007,Oklahoma,80.799
-2007,Oregon,81.693
-2007,Pennsylvania,84.779
-2007,Rhode Island,89.728
-2007,South Carolina,87.358
+2007,Alabama,86.979
+2007,Alaska,90.928
+2007,Arizona,93.269
+2007,Arkansas,90.481
+2007,California,81.451
+2007,Colorado,83.185
+2007,Connecticut,98.014
+2007,Delaware,96.964
+2007,Florida,90.315
+2007,Georgia,85.619
+2007,Hawaiʻi,90.076
+2007,Idaho,85.127
+2007,Illinois,90.913
+2007,Indiana,91.44
+2007,Iowa,90.949
+2007,Kansas,81.847
+2007,Kentucky,86.993
+2007,Louisiana,100.51
+2007,Maine,93.28
+2007,Maryland,82.59
+2007,Massachusetts,87.081
+2007,Michigan,93.189
+2007,Minnesota,88.541
+2007,Mississippi,91.058
+2007,Missouri,88.016
+2007,Montana,82.87
+2007,Nebraska,83.593
+2007,Nevada,91.742
+2007,New Hampshire,87.535
+2007,New Jersey,92.635
+2007,New Mexico,87.691
+2007,New York,87.837
+2007,North Carolina,90.104
+2007,North Dakota,66.019
+2007,Ohio,89.548
+2007,Oklahoma,80.807
+2007,Oregon,81.592
+2007,Pennsylvania,84.784
+2007,Rhode Island,89.736
+2007,South Carolina,87.324
 2007,South Dakota,84.82
-2007,Tennessee,86.137
-2007,Texas,85.981
-2007,Utah,85.735
-2007,Vermont,82.87
-2007,Virginia,86.751
-2007,Washington,79.562
-2007,West Virginia,84.309
-2007,Wisconsin,93.747
-2007,Wyoming,99.429
-2008,Alabama,90.25
-2008,Alaska,90.974
-2008,Arizona,94.274
-2008,Arkansas,90.312
-2008,California,84.595
-2008,Colorado,83.574
-2008,Connecticut,98.699
-2008,Delaware,95.401
-2008,Florida,90.83
-2008,Georgia,85.348
-2008,Hawaiʻi,89.594
-2008,Idaho,92.494
-2008,Illinois,90.757
-2008,Indiana,93.982
-2008,Iowa,89.99
-2008,Kansas,82.634
-2008,Kentucky,88.682
-2008,Louisiana,100.744
-2008,Maine,93.243
-2008,Maryland,84.527
-2008,Massachusetts,88.088
-2008,Michigan,91.175
-2008,Minnesota,90.302
-2008,Mississippi,94.851
-2008,Missouri,92.873
-2008,Montana,90.321
-2008,Nebraska,80.981
-2008,Nevada,89.851
-2008,New Hampshire,89.295
-2008,New Jersey,95.917
-2008,New Mexico,85.992
-2008,New York,85.127
-2008,North Carolina,95.912
-2008,North Dakota,69.73
-2008,Ohio,89.753
-2008,Oklahoma,82.181
-2008,Oregon,86.665
-2008,Pennsylvania,87.138
-2008,Rhode Island,87.703
-2008,South Carolina,86.779
-2008,South Dakota,86.955
-2008,Tennessee,87.823
-2008,Texas,84.572
-2008,Utah,86.344
-2008,Vermont,85.343
-2008,Virginia,89.21
-2008,Washington,81.488
-2008,West Virginia,86.387
-2008,Wisconsin,91.863
-2008,Wyoming,99.787
-2009,Alabama,95.26
-2009,Alaska,104.546
-2009,Arizona,92.071
-2009,Arkansas,92.911
-2009,California,87.674
-2009,Colorado,88.576
-2009,Connecticut,100.477
-2009,Delaware,110.443
-2009,Florida,91.237
-2009,Georgia,88.106
-2009,Hawaiʻi,92.126
-2009,Idaho,97.589
-2009,Illinois,93.708
-2009,Indiana,93.291
-2009,Iowa,91.107
-2009,Kansas,83.197
-2009,Kentucky,91.413
-2009,Louisiana,105.041
-2009,Maine,96.631
-2009,Maryland,87.445
-2009,Massachusetts,91.4
-2009,Michigan,91.579
-2009,Minnesota,93.456
-2009,Mississippi,95.209
-2009,Missouri,96.891
-2009,Montana,95.788
-2009,Nebraska,84.725
-2009,Nevada,94.052
-2009,New Hampshire,92.908
-2009,New Jersey,96.051
-2009,New Mexico,94.787
-2009,New York,93.114
-2009,North Carolina,99.16
-2009,North Dakota,74.275
-2009,Ohio,91.978
-2009,Oklahoma,85.068
-2009,Oregon,90.764
-2009,Pennsylvania,89.195
-2009,Rhode Island,93.292
-2009,South Carolina,90.532
-2009,South Dakota,89.203
-2009,Tennessee,90.458
-2009,Texas,89.683
-2009,Utah,87.179
-2009,Vermont,88.41
-2009,Virginia,94.749
-2009,Washington,83.245
-2009,West Virginia,91.43
-2009,Wisconsin,95.199
-2009,Wyoming,104.803
-2010,Alabama,98.739
-2010,Alaska,98.782
-2010,Arizona,94.102
-2010,Arkansas,97.166
-2010,California,90.411
-2010,Colorado,90.581
-2010,Connecticut,101.491
-2010,Delaware,112.083
+2007,Tennessee,86.088
+2007,Texas,85.983
+2007,Utah,85.741
+2007,Vermont,82.882
+2007,Virginia,86.871
+2007,Washington,79.518
+2007,West Virginia,84.289
+2007,Wisconsin,93.751
+2007,Wyoming,99.431
+2008,Alabama,90.223
+2008,Alaska,90.975
+2008,Arizona,94.281
+2008,Arkansas,89.927
+2008,California,84.599
+2008,Colorado,83.581
+2008,Connecticut,98.708
+2008,Delaware,95.411
+2008,Florida,90.835
+2008,Georgia,85.337
+2008,Hawaiʻi,89.602
+2008,Idaho,92.446
+2008,Illinois,90.764
+2008,Indiana,93.988
+2008,Iowa,89.999
+2008,Kansas,82.641
+2008,Kentucky,88.676
+2008,Louisiana,100.715
+2008,Maine,93.167
+2008,Maryland,84.519
+2008,Massachusetts,88.096
+2008,Michigan,91.197
+2008,Minnesota,90.312
+2008,Mississippi,94.827
+2008,Missouri,92.882
+2008,Montana,90.274
+2008,Nebraska,80.989
+2008,Nevada,89.859
+2008,New Hampshire,89.298
+2008,New Jersey,95.925
+2008,New Mexico,85.998
+2008,New York,85.132
+2008,North Carolina,95.915
+2008,North Dakota,69.734
+2008,Ohio,89.764
+2008,Oklahoma,82.19
+2008,Oregon,86.574
+2008,Pennsylvania,87.144
+2008,Rhode Island,87.711
+2008,South Carolina,86.76
+2008,South Dakota,86.959
+2008,Tennessee,87.776
+2008,Texas,84.575
+2008,Utah,86.351
+2008,Vermont,85.355
+2008,Virginia,89.335
+2008,Washington,81.458
+2008,West Virginia,86.384
+2008,Wisconsin,91.869
+2008,Wyoming,99.797
+2009,Alabama,95.211
+2009,Alaska,104.522
+2009,Arizona,92.056
+2009,Arkansas,92.565
+2009,California,87.66
+2009,Colorado,88.56
+2009,Connecticut,100.461
+2009,Delaware,110.427
+2009,Florida,91.218
+2009,Georgia,88.075
+2009,Hawaiʻi,92.111
+2009,Idaho,97.558
+2009,Illinois,93.692
+2009,Indiana,93.275
+2009,Iowa,91.093
+2009,Kansas,83.184
+2009,Kentucky,91.386
+2009,Louisiana,104.998
+2009,Maine,96.538
+2009,Maryland,87.421
+2009,Massachusetts,91.385
+2009,Michigan,91.577
+2009,Minnesota,93.438
+2009,Mississippi,95.177
+2009,Missouri,96.876
+2009,Montana,95.766
+2009,Nebraska,84.713
+2009,Nevada,94.037
+2009,New Hampshire,92.887
+2009,New Jersey,96.035
+2009,New Mexico,94.77
+2009,New York,93.097
+2009,North Carolina,99.138
+2009,North Dakota,74.263
+2009,Ohio,91.966
+2009,Oklahoma,85.056
+2009,Oregon,90.694
+2009,Pennsylvania,89.18
+2009,Rhode Island,93.277
+2009,South Carolina,90.486
+2009,South Dakota,89.187
+2009,Tennessee,90.384
+2009,Texas,89.899
+2009,Utah,87.164
+2009,Vermont,88.397
+2009,Virginia,94.86
+2009,Washington,83.215
+2009,West Virginia,91.423
+2009,Wisconsin,95.183
+2009,Wyoming,104.789
+2010,Alabama,98.701
+2010,Alaska,98.763
+2010,Arizona,94.107
+2010,Arkansas,96.877
+2010,California,90.416
+2010,Colorado,90.585
+2010,Connecticut,101.497
+2010,Delaware,112.091
 2010,Florida,92.905
-2010,Georgia,91.753
-2010,Hawaiʻi,94.877
-2010,Idaho,101.126
-2010,Illinois,95.572
-2010,Indiana,99.48
-2010,Iowa,92.877
-2010,Kansas,86.818
-2010,Kentucky,96.967
-2010,Louisiana,110.433
-2010,Maine,98.386
-2010,Maryland,95.434
-2010,Massachusetts,95.748
-2010,Michigan,96.945
-2010,Minnesota,97.081
-2010,Mississippi,96.569
-2010,Missouri,100.103
-2010,Montana,94.112
-2010,Nebraska,87.498
-2010,Nevada,101.626
-2010,New Hampshire,94.776
-2010,New Jersey,98.846
-2010,New Mexico,98.07
-2010,New York,96.703
-2010,North Carolina,100.934
-2010,North Dakota,77.758
-2010,Ohio,93.414
-2010,Oklahoma,84.591
-2010,Oregon,92.44
-2010,Pennsylvania,92.268
-2010,Rhode Island,97.264
-2010,South Carolina,94.263
-2010,South Dakota,90.42
-2010,Tennessee,94.048
-2010,Texas,91.054
-2010,Utah,91.727
-2010,Vermont,94.099
-2010,Virginia,96.033
-2010,Washington,88.381
-2010,West Virginia,92.645
-2010,Wisconsin,98.263
-2010,Wyoming,101.303
-2011,Alabama,99.815
-2011,Alaska,93.357
-2011,Arizona,97.692
-2011,Arkansas,97.217
-2011,California,90.737
-2011,Colorado,89.864
-2011,Connecticut,96.433
-2011,Delaware,112.768
-2011,Florida,93.202
-2011,Georgia,93.161
-2011,Hawaiʻi,94.979
-2011,Idaho,98.625
-2011,Illinois,96.325
-2011,Indiana,97.995
-2011,Iowa,92.869
-2011,Kansas,87.589
+2010,Georgia,91.737
+2010,Hawaiʻi,94.882
+2010,Idaho,101.098
+2010,Illinois,95.577
+2010,Indiana,99.485
+2010,Iowa,92.884
+2010,Kansas,86.823
+2010,Kentucky,96.968
+2010,Louisiana,110.404
+2010,Maine,98.297
+2010,Maryland,95.429
+2010,Massachusetts,95.754
+2010,Michigan,96.962
+2010,Minnesota,97.086
+2010,Mississippi,96.54
+2010,Missouri,100.109
+2010,Montana,94.098
+2010,Nebraska,87.504
+2010,Nevada,101.632
+2010,New Hampshire,94.773
+2010,New Jersey,98.852
+2010,New Mexico,98.076
+2010,New York,96.707
+2010,North Carolina,100.932
+2010,North Dakota,77.763
+2010,Ohio,93.422
+2010,Oklahoma,84.597
+2010,Oregon,92.402
+2010,Pennsylvania,92.271
+2010,Rhode Island,97.27
+2010,South Carolina,94.233
+2010,South Dakota,90.425
+2010,Tennessee,93.992
+2010,Texas,91.055
+2010,Utah,91.73
+2010,Vermont,94.1
+2010,Virginia,96.166
+2010,Washington,88.366
+2010,West Virginia,92.665
+2010,Wisconsin,98.267
+2010,Wyoming,101.314
+2011,Alabama,99.782
+2011,Alaska,93.333
+2011,Arizona,97.696
+2011,Arkansas,96.951
+2011,California,90.739
+2011,Colorado,89.868
+2011,Connecticut,96.438
+2011,Delaware,112.775
+2011,Florida,93.2
+2011,Georgia,93.15
+2011,Hawaiʻi,94.983
+2011,Idaho,98.595
+2011,Illinois,96.329
+2011,Indiana,98
+2011,Iowa,92.875
+2011,Kansas,87.593
 2011,Kentucky,98.744
-2011,Louisiana,104.888
-2011,Maine,97.814
-2011,Maryland,94.006
-2011,Massachusetts,96.886
-2011,Michigan,96.6
-2011,Minnesota,96.949
-2011,Mississippi,98.164
-2011,Missouri,96.282
-2011,Montana,95.989
-2011,Nebraska,90.778
-2011,Nevada,101.86
+2011,Louisiana,104.869
+2011,Maine,97.732
+2011,Maryland,94
+2011,Massachusetts,96.891
+2011,Michigan,96.617
+2011,Minnesota,96.952
+2011,Mississippi,98.143
+2011,Missouri,96.285
+2011,Montana,95.981
+2011,Nebraska,90.783
+2011,Nevada,101.865
 2011,New Hampshire,94.729
-2011,New Jersey,97.849
-2011,New Mexico,95.582
-2011,New York,95.041
+2011,New Jersey,97.853
+2011,New Mexico,95.585
+2011,New York,95.045
 2011,North Carolina,98.895
-2011,North Dakota,80.871
-2011,Ohio,94.759
-2011,Oklahoma,88.323
-2011,Oregon,93.682
-2011,Pennsylvania,92.867
-2011,Rhode Island,99.032
-2011,South Carolina,96.305
-2011,South Dakota,93.411
-2011,Tennessee,94.755
-2011,Texas,90.493
-2011,Utah,95.121
-2011,Vermont,94.885
-2011,Virginia,96.09
-2011,Washington,88.385
-2011,West Virginia,93.866
-2011,Wisconsin,98.702
-2011,Wyoming,98.341
-2012,Alabama,97.459
-2012,Alaska,100.122
-2012,Arizona,99.199
-2012,Arkansas,98.321
-2012,California,91.698
-2012,Colorado,89.3
-2012,Connecticut,94.82
-2012,Delaware,110.571
-2012,Florida,93.835
-2012,Georgia,91.549
-2012,Hawaiʻi,92.003
-2012,Idaho,96.932
-2012,Illinois,97.544
-2012,Indiana,98.275
-2012,Iowa,95.025
-2012,Kansas,87.809
-2012,Kentucky,100.736
-2012,Louisiana,102.229
-2012,Maine,96.279
-2012,Maryland,94.784
-2012,Massachusetts,98.503
-2012,Michigan,96.84
-2012,Minnesota,96.543
-2012,Mississippi,100.352
-2012,Missouri,97.529
-2012,Montana,95.055
-2012,Nebraska,91.403
-2012,Nevada,101.367
+2011,North Dakota,80.874
+2011,Ohio,94.764
+2011,Oklahoma,88.329
+2011,Oregon,93.625
+2011,Pennsylvania,92.87
+2011,Rhode Island,99.037
+2011,South Carolina,96.279
+2011,South Dakota,93.414
+2011,Tennessee,94.698
+2011,Texas,90.496
+2011,Utah,95.124
+2011,Vermont,94.887
+2011,Virginia,96.224
+2011,Washington,88.368
+2011,West Virginia,93.902
+2011,Wisconsin,98.704
+2011,Wyoming,98.35
+2012,Alabama,97.434
+2012,Alaska,100.109
+2012,Arizona,99.205
+2012,Arkansas,97.83
+2012,California,91.702
+2012,Colorado,89.305
+2012,Connecticut,94.826
+2012,Delaware,110.577
+2012,Florida,93.836
+2012,Georgia,91.548
+2012,Hawaiʻi,92.008
+2012,Idaho,96.913
+2012,Illinois,97.549
+2012,Indiana,98.281
+2012,Iowa,95.031
+2012,Kansas,87.814
+2012,Kentucky,100.739
+2012,Louisiana,102.217
+2012,Maine,96.211
+2012,Maryland,94.783
+2012,Massachusetts,98.509
+2012,Michigan,96.858
+2012,Minnesota,96.548
+2012,Mississippi,100.336
+2012,Missouri,97.535
+2012,Montana,95.045
+2012,Nebraska,91.409
+2012,Nevada,101.373
 2012,New Hampshire,94.577
-2012,New Jersey,99.197
-2012,New Mexico,96.705
-2012,New York,98.135
-2012,North Carolina,97.19
-2012,North Dakota,89.019
-2012,Ohio,92.919
-2012,Oklahoma,90.711
-2012,Oregon,93.165
-2012,Pennsylvania,94.975
-2012,Rhode Island,99.282
-2012,South Carolina,95.174
-2012,South Dakota,94.56
-2012,Tennessee,97.52
-2012,Texas,92.3
-2012,Utah,93.817
-2012,Vermont,94.374
-2012,Virginia,95.725
-2012,Washington,89.858
-2012,West Virginia,92.678
-2012,Wisconsin,99.358
-2012,Wyoming,94.135
-2013,Alabama,97.511
-2013,Alaska,94.545
-2013,Arizona,97.837
-2013,Arkansas,101.599
-2013,California,92.319
-2013,Colorado,91.705
-2013,Connecticut,94.558
-2013,Delaware,106.19
+2012,New Jersey,99.202
+2012,New Mexico,96.708
+2012,New York,98.139
+2012,North Carolina,97.193
+2012,North Dakota,89.024
+2012,Ohio,92.926
+2012,Oklahoma,90.718
+2012,Oregon,93.103
+2012,Pennsylvania,94.978
+2012,Rhode Island,99.287
+2012,South Carolina,95.154
+2012,South Dakota,94.566
+2012,Tennessee,97.462
+2012,Texas,92.305
+2012,Utah,93.821
+2012,Vermont,94.372
+2012,Virginia,95.858
+2012,Washington,89.845
+2012,West Virginia,92.705
+2012,Wisconsin,99.36
+2012,Wyoming,94.169
+2013,Alabama,97.483
+2013,Alaska,94.532
+2013,Arizona,97.84
+2013,Arkansas,101.401
+2013,California,92.321
+2013,Colorado,91.708
+2013,Connecticut,94.562
+2013,Delaware,106.193
 2013,Florida,93.626
-2013,Georgia,93.651
-2013,Hawaiʻi,94.96
-2013,Idaho,100.619
-2013,Illinois,97.346
-2013,Indiana,98.921
-2013,Iowa,93.227
-2013,Kansas,87.495
-2013,Kentucky,102.939
-2013,Louisiana,98.743
-2013,Maine,95.199
-2013,Maryland,95.19
-2013,Massachusetts,98.341
-2013,Michigan,97.59
-2013,Minnesota,98.479
-2013,Mississippi,98.672
-2013,Missouri,98.237
-2013,Montana,96.473
-2013,Nebraska,90.311
-2013,Nevada,102.525
-2013,New Hampshire,94.723
-2013,New Jersey,101.635
-2013,New Mexico,94.763
-2013,New York,96.455
-2013,North Carolina,98.779
-2013,North Dakota,91.557
-2013,Ohio,94.758
-2013,Oklahoma,92.359
-2013,Oregon,93.909
+2013,Georgia,93.642
+2013,Hawaiʻi,94.962
+2013,Idaho,100.581
+2013,Illinois,97.349
+2013,Indiana,98.925
+2013,Iowa,93.23
+2013,Kansas,87.497
+2013,Kentucky,102.94
+2013,Louisiana,98.73
+2013,Maine,95.139
+2013,Maryland,95.187
+2013,Massachusetts,98.344
+2013,Michigan,97.606
+2013,Minnesota,98.483
+2013,Mississippi,98.655
+2013,Missouri,98.242
+2013,Montana,96.463
+2013,Nebraska,90.316
+2013,Nevada,102.529
+2013,New Hampshire,94.722
+2013,New Jersey,101.638
+2013,New Mexico,94.766
+2013,New York,96.457
+2013,North Carolina,98.78
+2013,North Dakota,91.56
+2013,Ohio,94.763
+2013,Oklahoma,92.365
+2013,Oregon,93.824
 2013,Pennsylvania,96.647
-2013,Rhode Island,98.997
-2013,South Carolina,95.298
-2013,South Dakota,93.131
-2013,Tennessee,98.123
-2013,Texas,95.343
-2013,Utah,93.951
-2013,Vermont,92.385
-2013,Virginia,98.517
-2013,Washington,93.587
-2013,West Virginia,92.553
-2013,Wisconsin,99.094
-2013,Wyoming,94.019
-2014,Alabama,98.561
-2014,Alaska,94.761
-2014,Arizona,98.972
-2014,Arkansas,102.57
-2014,California,93.38
-2014,Colorado,93.914
-2014,Connecticut,94.004
-2014,Delaware,113.058
-2014,Florida,93.769
-2014,Georgia,94.301
-2014,Hawaiʻi,92.882
-2014,Idaho,101.646
-2014,Illinois,98.837
-2014,Indiana,100.709
-2014,Iowa,97.289
-2014,Kansas,90.787
-2014,Kentucky,101.531
-2014,Louisiana,99.128
-2014,Maine,98.077
-2014,Maryland,96.461
-2014,Massachusetts,98.027
-2014,Michigan,98.324
-2014,Minnesota,99.532
-2014,Mississippi,98.758
-2014,Missouri,98.736
-2014,Montana,98.205
-2014,Nebraska,95.855
-2014,Nevada,99.555
-2014,New Hampshire,97.057
-2014,New Jersey,100.282
-2014,New Mexico,99.461
-2014,New York,97.779
-2014,North Carolina,100.062
-2014,North Dakota,99.408
-2014,Ohio,98.25
-2014,Oklahoma,96.802
-2014,Oregon,93.929
-2014,Pennsylvania,97.416
-2014,Rhode Island,98.375
-2014,South Carolina,97.929
-2014,South Dakota,96.312
-2014,Tennessee,97.173
-2014,Texas,94.559
-2014,Utah,94.887
-2014,Vermont,96.364
-2014,Virginia,97.058
-2014,Washington,95.655
-2014,West Virginia,94.804
-2014,Wisconsin,100.284
-2014,Wyoming,92.208
-2015,Alabama,98.931
-2015,Alaska,96.387
-2015,Arizona,97.753
-2015,Arkansas,101.927
-2015,California,95.907
-2015,Colorado,97.872
-2015,Connecticut,97.344
-2015,Delaware,114.973
-2015,Florida,95.968
-2015,Georgia,96.469
-2015,Hawaiʻi,96.448
-2015,Idaho,99.323
-2015,Illinois,99.998
-2015,Indiana,97.601
-2015,Iowa,100.832
-2015,Kansas,93.695
-2015,Kentucky,98.953
-2015,Louisiana,99.087
-2015,Maine,95.601
+2013,Rhode Island,99
+2013,South Carolina,95.282
+2013,South Dakota,93.136
+2013,Tennessee,98.071
+2013,Texas,95.345
+2013,Utah,93.953
+2013,Vermont,92.383
+2013,Virginia,98.65
+2013,Washington,93.566
+2013,West Virginia,92.581
+2013,Wisconsin,99.097
+2013,Wyoming,94.029
+2014,Alabama,98.511
+2014,Alaska,94.725
+2014,Arizona,98.953
+2014,Arkansas,102.1
+2014,California,93.362
+2014,Colorado,93.897
+2014,Connecticut,93.988
+2014,Delaware,113.038
+2014,Florida,93.75
+2014,Georgia,94.28
+2014,Hawaiʻi,92.865
+2014,Idaho,101.599
+2014,Illinois,98.819
+2014,Indiana,100.692
+2014,Iowa,97.272
+2014,Kansas,90.771
+2014,Kentucky,101.512
+2014,Louisiana,99.097
+2014,Maine,97.99
+2014,Maryland,96.438
+2014,Massachusetts,98.01
+2014,Michigan,98.317
+2014,Minnesota,99.515
+2014,Mississippi,98.724
+2014,Missouri,98.72
+2014,Montana,98.178
+2014,Nebraska,95.839
+2014,Nevada,99.538
+2014,New Hampshire,97.03
+2014,New Jersey,100.264
+2014,New Mexico,99.443
+2014,New York,97.761
+2014,North Carolina,100.04
+2014,North Dakota,99.39
+2014,Ohio,98.232
+2014,Oklahoma,96.787
+2014,Oregon,93.83
+2014,Pennsylvania,97.397
+2014,Rhode Island,98.358
+2014,South Carolina,97.892
+2014,South Dakota,96.296
+2014,Tennessee,97.112
+2014,Texas,94.78
+2014,Utah,94.869
+2014,Vermont,96.34
+2014,Virginia,97.165
+2014,Washington,95.616
+2014,West Virginia,94.802
+2014,Wisconsin,100.267
+2014,Wyoming,92.196
+2015,Alabama,98.907
+2015,Alaska,96.376
+2015,Arizona,97.755
+2015,Arkansas,101.767
+2015,California,95.908
+2015,Colorado,97.874
+2015,Connecticut,97.346
+2015,Delaware,114.975
+2015,Florida,95.969
+2015,Georgia,96.467
+2015,Hawaiʻi,96.45
+2015,Idaho,99.298
+2015,Illinois,100
+2015,Indiana,97.603
+2015,Iowa,100.836
+2015,Kansas,93.697
+2015,Kentucky,98.955
+2015,Louisiana,99.075
+2015,Maine,95.557
 2015,Maryland,97.584
-2015,Massachusetts,101.023
-2015,Michigan,98.366
-2015,Minnesota,99.598
-2015,Mississippi,98.663
-2015,Missouri,99.136
-2015,Montana,100.529
-2015,Nebraska,98.535
-2015,Nevada,99.174
-2015,New Hampshire,98.659
-2015,New Jersey,100.836
-2015,New Mexico,102.136
-2015,New York,97.247
-2015,North Carolina,99.906
-2015,North Dakota,100.077
-2015,Ohio,97.611
-2015,Oklahoma,102.898
-2015,Oregon,95.75
-2015,Pennsylvania,98.234
-2015,Rhode Island,99.324
-2015,South Carolina,97.179
-2015,South Dakota,97.702
-2015,Tennessee,99.769
-2015,Texas,98.236
-2015,Utah,97.065
-2015,Vermont,96.078
-2015,Virginia,98.346
-2015,Washington,96.357
-2015,West Virginia,95.712
-2015,Wisconsin,102.06
-2015,Wyoming,100.755
-2016,Alabama,99.204
-2016,Alaska,98.517
-2016,Arizona,99.553
-2016,Arkansas,102.022
-2016,California,96.697
-2016,Colorado,98.33
-2016,Connecticut,95.768
-2016,Delaware,104.899
-2016,Florida,97.052
-2016,Georgia,98.466
-2016,Hawaiʻi,98.714
-2016,Idaho,101.679
-2016,Illinois,100.18
-2016,Indiana,98.973
-2016,Iowa,100.887
-2016,Kansas,99.42
-2016,Kentucky,99.027
-2016,Louisiana,100.249
-2016,Maine,96.419
+2015,Massachusetts,101.026
+2015,Michigan,98.371
+2015,Minnesota,99.599
+2015,Mississippi,98.65
+2015,Missouri,99.14
+2015,Montana,100.517
+2015,Nebraska,98.539
+2015,Nevada,99.176
+2015,New Hampshire,98.654
+2015,New Jersey,100.838
+2015,New Mexico,102.137
+2015,New York,97.249
+2015,North Carolina,99.905
+2015,North Dakota,100.08
+2015,Ohio,97.614
+2015,Oklahoma,102.902
+2015,Oregon,95.684
+2015,Pennsylvania,98.236
+2015,Rhode Island,99.327
+2015,South Carolina,97.167
+2015,South Dakota,97.705
+2015,Tennessee,99.739
+2015,Texas,98.238
+2015,Utah,97.067
+2015,Vermont,96.069
+2015,Virginia,98.446
+2015,Washington,96.343
+2015,West Virginia,95.722
+2015,Wisconsin,102.062
+2015,Wyoming,100.761
+2016,Alabama,99.188
+2016,Alaska,98.503
+2016,Arizona,99.556
+2016,Arkansas,101.882
+2016,California,96.7
+2016,Colorado,98.333
+2016,Connecticut,95.771
+2016,Delaware,104.901
+2016,Florida,97.054
+2016,Georgia,98.463
+2016,Hawaiʻi,98.717
+2016,Idaho,101.661
+2016,Illinois,100.183
+2016,Indiana,98.975
+2016,Iowa,100.891
+2016,Kansas,99.422
+2016,Kentucky,99.028
+2016,Louisiana,100.24
+2016,Maine,96.407
 2016,Maryland,100.745
-2016,Massachusetts,100.44
-2016,Michigan,98.879
-2016,Minnesota,99.863
-2016,Mississippi,100.469
-2016,Missouri,99.853
-2016,Montana,96.238
-2016,Nebraska,99.901
-2016,Nevada,99.298
-2016,New Hampshire,99.696
-2016,New Jersey,100.045
-2016,New Mexico,102.677
-2016,New York,98.63
-2016,North Carolina,99.734
-2016,North Dakota,97.152
-2016,Ohio,98.51
-2016,Oklahoma,100.368
-2016,Oregon,97.023
-2016,Pennsylvania,99.835
-2016,Rhode Island,101.961
-2016,South Carolina,99.253
-2016,South Dakota,97.582
-2016,Tennessee,98.22
-2016,Texas,98.218
-2016,Utah,97.882
-2016,Vermont,96.903
-2016,Virginia,98.591
-2016,Washington,96.733
-2016,West Virginia,97.014
-2016,Wisconsin,101.739
-2016,Wyoming,102.433
+2016,Massachusetts,100.443
+2016,Michigan,98.883
+2016,Minnesota,99.866
+2016,Mississippi,100.451
+2016,Missouri,99.856
+2016,Montana,96.237
+2016,Nebraska,99.904
+2016,Nevada,99.301
+2016,New Hampshire,99.694
+2016,New Jersey,100.048
+2016,New Mexico,102.678
+2016,New York,98.632
+2016,North Carolina,99.733
+2016,North Dakota,97.155
+2016,Ohio,98.513
+2016,Oklahoma,100.371
+2016,Oregon,96.974
+2016,Pennsylvania,99.836
+2016,Rhode Island,101.963
+2016,South Carolina,99.247
+2016,South Dakota,97.584
+2016,Tennessee,98.202
+2016,Texas,98.22
+2016,Utah,97.883
+2016,Vermont,96.898
+2016,Virginia,98.638
+2016,Washington,96.727
+2016,West Virginia,97.016
+2016,Wisconsin,101.74
+2016,Wyoming,102.437
 2017,Alabama,100
 2017,Alaska,100
 2017,Arizona,100
@@ -549,353 +549,403 @@ year,state,value
 2017,West Virginia,100
 2017,Wisconsin,100
 2017,Wyoming,100
-2018,Alabama,101.089
-2018,Alaska,95.549
-2018,Arizona,101.492
-2018,Arkansas,100.729
-2018,California,102.16
-2018,Colorado,100.977
+2018,Alabama,101.097
+2018,Alaska,95.553
+2018,Arizona,101.49
+2018,Arkansas,100.84
+2018,California,102.158
+2018,Colorado,100.976
 2018,Connecticut,98.548
-2018,Delaware,100.323
-2018,Florida,99.066
-2018,Georgia,101.683
-2018,Hawaiʻi,102.896
-2018,Idaho,103.486
-2018,Illinois,101.663
+2018,Delaware,100.324
+2018,Florida,99.067
+2018,Georgia,101.681
+2018,Hawaiʻi,102.895
+2018,Idaho,103.489
+2018,Illinois,101.662
 2018,Indiana,102.863
-2018,Iowa,101.434
-2018,Kansas,101.837
-2018,Kentucky,101.236
-2018,Louisiana,100.371
-2018,Maine,102.609
-2018,Maryland,98.7
+2018,Iowa,101.432
+2018,Kansas,101.836
+2018,Kentucky,101.229
+2018,Louisiana,100.372
+2018,Maine,102.607
+2018,Maryland,98.695
 2018,Massachusetts,103.524
-2018,Michigan,101.03
-2018,Minnesota,103.06
-2018,Mississippi,99.951
-2018,Missouri,99.507
+2018,Michigan,101.032
+2018,Minnesota,103.062
+2018,Mississippi,99.952
+2018,Missouri,99.505
 2018,Montana,98.994
 2018,Nebraska,101.947
-2018,Nevada,100.46
-2018,New Hampshire,102.256
+2018,Nevada,100.459
+2018,New Hampshire,102.255
 2018,New Jersey,102.272
-2018,New Mexico,102.137
+2018,New Mexico,102.135
 2018,New York,101.444
-2018,North Carolina,100.928
-2018,North Dakota,101.96
+2018,North Carolina,100.93
+2018,North Dakota,101.959
 2018,Ohio,99.776
-2018,Oklahoma,98.807
+2018,Oklahoma,98.806
 2018,Oregon,101.863
-2018,Pennsylvania,98.404
-2018,Rhode Island,98.458
-2018,South Carolina,100.763
-2018,South Dakota,100.03
-2018,Tennessee,100.916
+2018,Pennsylvania,98.407
+2018,Rhode Island,98.457
+2018,South Carolina,100.76
+2018,South Dakota,100.032
+2018,Tennessee,100.929
 2018,Texas,102.039
-2018,Utah,103.211
-2018,Vermont,101.802
-2018,Virginia,100.978
-2018,Washington,105.706
-2018,West Virginia,101.546
+2018,Utah,103.218
+2018,Vermont,101.793
+2018,Virginia,100.934
+2018,Washington,105.707
+2018,West Virginia,101.56
 2018,Wisconsin,103.057
-2018,Wyoming,97.99
-2019,Alabama,102.858
-2019,Alaska,92.734
-2019,Arizona,103.741
-2019,Arkansas,101.595
-2019,California,107.346
-2019,Colorado,106.299
-2019,Connecticut,100.217
-2019,Delaware,105.977
-2019,Florida,102.042
-2019,Georgia,104.023
-2019,Hawaiʻi,103.744
-2019,Idaho,106.691
-2019,Illinois,103.693
-2019,Indiana,101.88
-2019,Iowa,101.65
-2019,Kansas,100.536
-2019,Kentucky,104.031
-2019,Louisiana,100.274
-2019,Maine,106.514
-2019,Maryland,99.681
-2019,Massachusetts,105.886
-2019,Michigan,101.937
-2019,Minnesota,103.653
-2019,Mississippi,98.852
-2019,Missouri,100.972
-2019,Montana,99.903
-2019,Nebraska,104.33
-2019,Nevada,99.88
-2019,New Hampshire,103.739
-2019,New Jersey,103.041
-2019,New Mexico,107.506
-2019,New York,104.171
+2018,Wyoming,97.989
+2019,Alabama,102.857
+2019,Alaska,92.723
+2019,Arizona,103.734
+2019,Arkansas,102.345
+2019,California,107.339
+2019,Colorado,106.292
+2019,Connecticut,100.21
+2019,Delaware,105.972
+2019,Florida,102.037
+2019,Georgia,104.021
+2019,Hawaiʻi,103.735
+2019,Idaho,106.702
+2019,Illinois,103.686
+2019,Indiana,101.873
+2019,Iowa,101.642
+2019,Kansas,100.529
+2019,Kentucky,104.023
+2019,Louisiana,100.269
+2019,Maine,106.511
+2019,Maryland,99.674
+2019,Massachusetts,105.876
+2019,Michigan,101.925
+2019,Minnesota,103.65
+2019,Mississippi,98.843
+2019,Missouri,100.964
+2019,Montana,99.898
+2019,Nebraska,104.323
+2019,Nevada,99.873
+2019,New Hampshire,103.731
+2019,New Jersey,103.034
+2019,New Mexico,107.498
+2019,New York,104.164
 2019,North Carolina,100.24
-2019,North Dakota,104.097
-2019,Ohio,102.766
-2019,Oklahoma,101.293
-2019,Oregon,103.032
-2019,Pennsylvania,98.69
-2019,Rhode Island,100.773
+2019,North Dakota,104.09
+2019,Ohio,102.758
+2019,Oklahoma,101.286
+2019,Oregon,103.042
+2019,Pennsylvania,98.689
+2019,Rhode Island,100.766
 2019,South Carolina,102.353
-2019,South Dakota,99.408
-2019,Tennessee,102.426
-2019,Texas,102.185
-2019,Utah,107.486
-2019,Vermont,98.887
-2019,Virginia,105.165
-2019,Washington,109.622
-2019,West Virginia,101.585
-2019,Wisconsin,106.075
-2019,Wyoming,97.335
-2020,Alabama,105.759
-2020,Alaska,100.626
-2020,Arizona,108.137
-2020,Arkansas,106.672
-2020,California,116.136
-2020,Colorado,112.237
-2020,Connecticut,100.415
-2020,Delaware,113.618
-2020,Florida,106.799
-2020,Georgia,107.919
-2020,Hawaiʻi,107.703
-2020,Idaho,108.421
-2020,Illinois,104.266
-2020,Indiana,104.037
-2020,Iowa,107.883
-2020,Kansas,106.053
-2020,Kentucky,106.222
-2020,Louisiana,102.401
-2020,Maine,116.626
-2020,Maryland,103.973
-2020,Massachusetts,116.019
-2020,Michigan,109.551
-2020,Minnesota,106.339
-2020,Mississippi,104.187
-2020,Missouri,105.498
-2020,Montana,104.563
-2020,Nebraska,108.611
-2020,Nevada,105.406
-2020,New Hampshire,109.682
-2020,New Jersey,109.785
-2020,New Mexico,112.343
-2020,New York,113.476
-2020,North Carolina,104.617
-2020,North Dakota,106.204
-2020,Ohio,106.246
-2020,Oklahoma,102.135
-2020,Oregon,112.259
-2020,Pennsylvania,103.367
-2020,Rhode Island,107.038
-2020,South Carolina,107.272
-2020,South Dakota,100.163
-2020,Tennessee,106.548
-2020,Texas,105.964
-2020,Utah,113.677
-2020,Vermont,104.919
-2020,Virginia,110.617
-2020,Washington,116.274
-2020,West Virginia,106.777
-2020,Wisconsin,109.163
-2020,Wyoming,100.092
-2021,Alabama,108.004
-2021,Alaska,99.832
-2021,Arizona,113.601
-2021,Arkansas,108.652
-2021,California,119.636
-2021,Colorado,113.949
-2021,Connecticut,100.188
-2021,Delaware,109.821
-2021,Florida,108.89
-2021,Georgia,107.389
-2021,Hawaiʻi,107.763
-2021,Idaho,111.046
-2021,Illinois,107.329
-2021,Indiana,106.878
-2021,Iowa,112.547
-2021,Kansas,106.689
-2021,Kentucky,107.315
-2021,Louisiana,104.741
-2021,Maine,116.651
-2021,Maryland,106.827
-2021,Massachusetts,118.172
-2021,Michigan,110.121
-2021,Minnesota,108.242
-2021,Mississippi,107.446
-2021,Missouri,109.089
-2021,Montana,106.876
-2021,Nebraska,112.702
-2021,Nevada,106.986
-2021,New Hampshire,116.297
-2021,New Jersey,109.912
-2021,New Mexico,113.375
-2021,New York,114.38
-2021,North Carolina,105.539
-2021,North Dakota,106.89
-2021,Ohio,109.858
-2021,Oklahoma,100.23
-2021,Oregon,114.987
-2021,Pennsylvania,104.614
-2021,Rhode Island,103.674
-2021,South Carolina,106.663
-2021,South Dakota,102.233
-2021,Tennessee,111.52
-2021,Texas,106.545
-2021,Utah,117.511
-2021,Vermont,109.118
-2021,Virginia,114.788
-2021,Washington,122.73
-2021,West Virginia,103.508
-2021,Wisconsin,108.144
-2021,Wyoming,99.845
-2022,Alabama,107.119
-2022,Alaska,94.203
-2022,Arizona,110.973
-2022,Arkansas,107.483
-2022,California,115.27
-2022,Colorado,113.28
-2022,Connecticut,101.793
-2022,Delaware,108.283
-2022,Florida,110.534
-2022,Georgia,106.683
-2022,Hawaiʻi,104.966
-2022,Idaho,113.403
-2022,Illinois,107.692
-2022,Indiana,108.083
-2022,Iowa,110.518
-2022,Kansas,107.458
-2022,Kentucky,108.083
-2022,Louisiana,99.153
-2022,Maine,114.335
-2022,Maryland,106.691
-2022,Massachusetts,115.291
-2022,Michigan,106.815
-2022,Minnesota,110.335
-2022,Mississippi,102.504
-2022,Missouri,107.055
-2022,Montana,104.519
-2022,Nebraska,120.617
-2022,Nevada,100.844
-2022,New Hampshire,112.32
-2022,New Jersey,108.351
-2022,New Mexico,110.484
-2022,New York,110.38
-2022,North Carolina,104.334
-2022,North Dakota,99.589
-2022,Ohio,107.045
-2022,Oklahoma,99.123
-2022,Oregon,111.421
-2022,Pennsylvania,103.135
-2022,Rhode Island,103.312
-2022,South Carolina,104.42
-2022,South Dakota,100.797
-2022,Tennessee,109.992
-2022,Texas,103.922
-2022,Utah,116.022
-2022,Vermont,109.001
-2022,Virginia,115.446
-2022,Washington,119.778
-2022,West Virginia,101.846
-2022,Wisconsin,108.224
-2022,Wyoming,97.975
-2023,Alabama,110.598
-2023,Alaska,103.457
-2023,Arizona,110.456
-2023,Arkansas,108.162
-2023,California,118.203
-2023,Colorado,117.516
-2023,Connecticut,104.097
-2023,Delaware,106.282
-2023,Florida,112.835
-2023,Georgia,107.521
-2023,Hawaiʻi,102.353
-2023,Idaho,113.329
-2023,Illinois,108.143
-2023,Indiana,110.998
-2023,Iowa,106.927
-2023,Kansas,110.476
-2023,Kentucky,106.674
-2023,Louisiana,103.349
-2023,Maine,117.743
-2023,Maryland,109.453
-2023,Massachusetts,116.141
-2023,Michigan,108.447
-2023,Minnesota,109.682
-2023,Mississippi,106.734
-2023,Missouri,110.916
-2023,Montana,105.174
-2023,Nebraska,122.221
-2023,Nevada,102
-2023,New Hampshire,113.552
-2023,New Jersey,109.889
-2023,New Mexico,116.228
-2023,New York,109.605
-2023,North Carolina,107.226
-2023,North Dakota,105.041
-2023,Ohio,108.937
-2023,Oklahoma,104.136
-2023,Oregon,112.965
-2023,Pennsylvania,104.893
-2023,Rhode Island,102.497
-2023,South Carolina,104.954
-2023,South Dakota,100.501
-2023,Tennessee,111.258
-2023,Texas,109.487
-2023,Utah,118.618
-2023,Vermont,109.877
-2023,Virginia,115.377
-2023,Washington,125.945
-2023,West Virginia,107.796
-2023,Wisconsin,109.199
-2023,Wyoming,104.786
-2024,Alabama,110.607
-2024,Alaska,105.226
-2024,Arizona,111.701
-2024,Arkansas,111.991
-2024,California,122.845
-2024,Colorado,119.583
-2024,Connecticut,105.877
-2024,Delaware,109.259
-2024,Florida,113.931
-2024,Georgia,109.935
-2024,Hawaiʻi,105.226
-2024,Idaho,114.305
-2024,Illinois,111.351
-2024,Indiana,117.951
-2024,Iowa,110.746
-2024,Kansas,112.065
-2024,Kentucky,108.294
-2024,Louisiana,105.192
-2024,Maine,122.612
-2024,Maryland,109.712
-2024,Massachusetts,120.351
-2024,Michigan,112.335
-2024,Minnesota,113.559
-2024,Mississippi,107.7
-2024,Missouri,114.055
-2024,Montana,106.763
-2024,Nebraska,121.826
-2024,Nevada,103.848
-2024,New Hampshire,118.437
-2024,New Jersey,111.932
-2024,New Mexico,119.506
-2024,New York,112.816
-2024,North Carolina,111.243
-2024,North Dakota,105.993
-2024,Ohio,111.077
-2024,Oklahoma,105.799
-2024,Oregon,114.431
-2024,Pennsylvania,106.248
-2024,Rhode Island,107.664
-2024,South Carolina,108.866
-2024,South Dakota,102.413
-2024,Tennessee,113.338
-2024,Texas,111.943
-2024,Utah,122.3
-2024,Vermont,110.384
-2024,Virginia,118.862
-2024,Washington,131.948
-2024,West Virginia,111.611
-2024,Wisconsin,111.945
-2024,Wyoming,104.991
+2019,South Dakota,99.402
+2019,Tennessee,102.447
+2019,Texas,102.178
+2019,Utah,107.479
+2019,Vermont,98.867
+2019,Virginia,105.118
+2019,Washington,109.624
+2019,West Virginia,101.589
+2019,Wisconsin,106.068
+2019,Wyoming,97.331
+2020,Alabama,106.172
+2020,Alaska,102.095
+2020,Arizona,108.739
+2020,Arkansas,108.251
+2020,California,115.953
+2020,Colorado,112.308
+2020,Connecticut,100.836
+2020,Delaware,114.008
+2020,Florida,107.074
+2020,Georgia,107.526
+2020,Hawaiʻi,107.352
+2020,Idaho,108.273
+2020,Illinois,104.291
+2020,Indiana,104.07
+2020,Iowa,108.477
+2020,Kansas,104.836
+2020,Kentucky,106.518
+2020,Louisiana,100.476
+2020,Maine,117.078
+2020,Maryland,104.142
+2020,Massachusetts,116.14
+2020,Michigan,109.69
+2020,Minnesota,106.418
+2020,Mississippi,105.278
+2020,Missouri,105.732
+2020,Montana,104.69
+2020,Nebraska,108.56
+2020,Nevada,105.247
+2020,New Hampshire,110.486
+2020,New Jersey,110.043
+2020,New Mexico,112.71
+2020,New York,114.293
+2020,North Carolina,104.506
+2020,North Dakota,107.929
+2020,Ohio,106.327
+2020,Oklahoma,102.119
+2020,Oregon,111.66
+2020,Pennsylvania,103.634
+2020,Rhode Island,106.735
+2020,South Carolina,107.122
+2020,South Dakota,101.449
+2020,Tennessee,106.611
+2020,Texas,106.586
+2020,Utah,114.076
+2020,Vermont,105.56
+2020,Virginia,110.576
+2020,Washington,115.742
+2020,West Virginia,107.092
+2020,Wisconsin,109.682
+2020,Wyoming,101.262
+2021,Alabama,108.054
+2021,Alaska,100.625
+2021,Arizona,114.144
+2021,Arkansas,111.031
+2021,California,119.457
+2021,Colorado,113.89
+2021,Connecticut,100.564
+2021,Delaware,110.755
+2021,Florida,109.086
+2021,Georgia,107.482
+2021,Hawaiʻi,107.972
+2021,Idaho,110.854
+2021,Illinois,107.449
+2021,Indiana,106.774
+2021,Iowa,113.483
+2021,Kansas,104.671
+2021,Kentucky,107.452
+2021,Louisiana,107.212
+2021,Maine,117.01
+2021,Maryland,106.942
+2021,Massachusetts,118.494
+2021,Michigan,109.635
+2021,Minnesota,108.205
+2021,Mississippi,107.68
+2021,Missouri,109.002
+2021,Montana,106.806
+2021,Nebraska,112.911
+2021,Nevada,107.036
+2021,New Hampshire,116.751
+2021,New Jersey,109.674
+2021,New Mexico,114.09
+2021,New York,115.469
+2021,North Carolina,105.25
+2021,North Dakota,108.924
+2021,Ohio,110.053
+2021,Oklahoma,100.857
+2021,Oregon,115.182
+2021,Pennsylvania,104.695
+2021,Rhode Island,103.248
+2021,South Carolina,106.692
+2021,South Dakota,103.276
+2021,Tennessee,112.016
+2021,Texas,108.313
+2021,Utah,118.048
+2021,Vermont,108.383
+2021,Virginia,114.618
+2021,Washington,121.736
+2021,West Virginia,104.214
+2021,Wisconsin,108.101
+2021,Wyoming,100.036
+2022,Alabama,107.896
+2022,Alaska,93.67
+2022,Arizona,112.234
+2022,Arkansas,108.893
+2022,California,113.574
+2022,Colorado,114.563
+2022,Connecticut,101.926
+2022,Delaware,115.116
+2022,Florida,111.055
+2022,Georgia,107.632
+2022,Hawaiʻi,105.831
+2022,Idaho,113.17
+2022,Illinois,107.217
+2022,Indiana,106.304
+2022,Iowa,111.115
+2022,Kansas,107.953
+2022,Kentucky,108.762
+2022,Louisiana,100.916
+2022,Maine,114.304
+2022,Maryland,105.345
+2022,Massachusetts,115.148
+2022,Michigan,106.211
+2022,Minnesota,110.546
+2022,Mississippi,101.98
+2022,Missouri,106.421
+2022,Montana,105.97
+2022,Nebraska,121.034
+2022,Nevada,103.375
+2022,New Hampshire,113.004
+2022,New Jersey,108.123
+2022,New Mexico,111.859
+2022,New York,111.591
+2022,North Carolina,104.504
+2022,North Dakota,101.668
+2022,Ohio,106.814
+2022,Oklahoma,99.207
+2022,Oregon,110.596
+2022,Pennsylvania,102.873
+2022,Rhode Island,102.472
+2022,South Carolina,106.005
+2022,South Dakota,100.401
+2022,Tennessee,110.093
+2022,Texas,105.668
+2022,Utah,116.391
+2022,Vermont,109.547
+2022,Virginia,114.85
+2022,Washington,119.686
+2022,West Virginia,102.762
+2022,Wisconsin,109.046
+2022,Wyoming,97.45
+2023,Alabama,111.806
+2023,Alaska,103.392
+2023,Arizona,113.11
+2023,Arkansas,109.095
+2023,California,116.418
+2023,Colorado,118.989
+2023,Connecticut,103.339
+2023,Delaware,113.071
+2023,Florida,114.143
+2023,Georgia,107.649
+2023,Hawaiʻi,104.2
+2023,Idaho,112.132
+2023,Illinois,108.237
+2023,Indiana,109.815
+2023,Iowa,107.045
+2023,Kansas,108.594
+2023,Kentucky,108.348
+2023,Louisiana,103.661
+2023,Maine,119.767
+2023,Maryland,108.962
+2023,Massachusetts,116.252
+2023,Michigan,108.862
+2023,Minnesota,109.832
+2023,Mississippi,106.897
+2023,Missouri,110.271
+2023,Montana,108.743
+2023,Nebraska,125.018
+2023,Nevada,105.828
+2023,New Hampshire,114.715
+2023,New Jersey,109.953
+2023,New Mexico,122.362
+2023,New York,109.946
+2023,North Carolina,108.395
+2023,North Dakota,107.734
+2023,Ohio,108.815
+2023,Oklahoma,103.716
+2023,Oregon,110.952
+2023,Pennsylvania,103.858
+2023,Rhode Island,101.431
+2023,South Carolina,107.219
+2023,South Dakota,100.719
+2023,Tennessee,113.186
+2023,Texas,112.563
+2023,Utah,119.746
+2023,Vermont,110.668
+2023,Virginia,115.772
+2023,Washington,125.04
+2023,West Virginia,108.002
+2023,Wisconsin,110.815
+2023,Wyoming,104.355
+2024,Alabama,111.992
+2024,Alaska,108.152
+2024,Arizona,115.984
+2024,Arkansas,113.339
+2024,California,120.884
+2024,Colorado,121.59
+2024,Connecticut,103.798
+2024,Delaware,116.943
+2024,Florida,114.636
+2024,Georgia,109.102
+2024,Hawaiʻi,108.637
+2024,Idaho,115.036
+2024,Illinois,111.839
+2024,Indiana,115.637
+2024,Iowa,111.748
+2024,Kansas,109.44
+2024,Kentucky,109.527
+2024,Louisiana,105.663
+2024,Maine,124.515
+2024,Maryland,110.06
+2024,Massachusetts,119.961
+2024,Michigan,112.509
+2024,Minnesota,114.921
+2024,Mississippi,109.289
+2024,Missouri,112.916
+2024,Montana,112.725
+2024,Nebraska,124.92
+2024,Nevada,108.253
+2024,New Hampshire,117.473
+2024,New Jersey,112.312
+2024,New Mexico,131.239
+2024,New York,113.417
+2024,North Carolina,111.929
+2024,North Dakota,109.91
+2024,Ohio,110.441
+2024,Oklahoma,105.307
+2024,Oregon,113.869
+2024,Pennsylvania,104.933
+2024,Rhode Island,105.638
+2024,South Carolina,111.328
+2024,South Dakota,102.368
+2024,Tennessee,115.801
+2024,Texas,115.726
+2024,Utah,122.885
+2024,Vermont,112.43
+2024,Virginia,118.679
+2024,Washington,133.768
+2024,West Virginia,111.817
+2024,Wisconsin,113.293
+2024,Wyoming,102.643
+2025,Alabama,113.705
+2025,Alaska,105.688
+2025,Arizona,121.091
+2025,Arkansas,115.365
+2025,California,125.919
+2025,Colorado,125.531
+2025,Connecticut,106.935
+2025,Delaware,120.492
+2025,Florida,115.899
+2025,Georgia,109.492
+2025,Hawaiʻi,111.152
+2025,Idaho,112.176
+2025,Illinois,112.813
+2025,Indiana,116.921
+2025,Iowa,114.44
+2025,Kansas,109.496
+2025,Kentucky,112.553
+2025,Louisiana,108.979
+2025,Maine,125.671
+2025,Maryland,111.512
+2025,Massachusetts,124.407
+2025,Michigan,113.201
+2025,Minnesota,118.989
+2025,Mississippi,107.901
+2025,Missouri,113.925
+2025,Montana,116.1
+2025,Nebraska,124.595
+2025,Nevada,107.904
+2025,New Hampshire,121.644
+2025,New Jersey,112.778
+2025,New Mexico,132.658
+2025,New York,116.275
+2025,North Carolina,113.799
+2025,North Dakota,110.372
+2025,Ohio,112.468
+2025,Oklahoma,104.879
+2025,Oregon,118.097
+2025,Pennsylvania,105.028
+2025,Rhode Island,106.771
+2025,South Carolina,114.659
+2025,South Dakota,105.084
+2025,Tennessee,118.954
+2025,Texas,116.399
+2025,Utah,124.89
+2025,Vermont,116.217
+2025,Virginia,120.806
+2025,Washington,134.826
+2025,West Virginia,111.361
+2025,Wisconsin,114.966
+2025,Wyoming,101.931
