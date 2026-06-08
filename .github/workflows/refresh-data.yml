@@ -73,6 +73,8 @@ jobs:
         env:
           # Required for FHWA (road quality) API which serves a self-signed cert in CI environments
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
+          # api.census.gov requires an API key as of ~2026-06-07 (8 ACS metrics).
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
 
       - name: Fetch county-level data
         id: fetch_county
@@ -86,6 +88,8 @@ jobs:
         env:
           # Same as above - FHWA and some Census endpoints require this in GitHub Actions
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
+          # api.census.gov requires an API key as of ~2026-06-07 (county ACS).
+          CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
 
       # ----- If either build script failed (e.g., a federal API returned HTML
       #       like the 2026-05-23 Census outage), open a labeled issue with the

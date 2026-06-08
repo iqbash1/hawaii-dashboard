@@ -75,6 +75,24 @@ const KEYS = {
     FRED: 'aa88134401976fc554083c7bb3b50ed4',
 };
 
+// ---- Census API key shim ----
+// api.census.gov began requiring an API key (~2026-06-07); keyless requests
+// now return an HTML "Missing Key" page (the 2026-06-07 county-build break).
+// Transparently append the key to any api.census.gov request. Key comes from
+// CENSUS_API_KEY (.env locally, repo secret in CI); never hardcoded. With no
+// key set, URLs are unchanged (keyless), preserving prior behaviour.
+const CENSUS_API_KEY = process.env.CENSUS_API_KEY || '';
+if (CENSUS_API_KEY && typeof globalThis.fetch === 'function' && !globalThis.__censusKeyShim) {
+    const _origFetch = globalThis.fetch.bind(globalThis);
+    globalThis.fetch = (input, init) => {
+        if (typeof input === 'string' && input.includes('api.census.gov') && !/[?&]key=/.test(input)) {
+            input += (input.includes('?') ? '&' : '?') + 'key=' + CENSUS_API_KEY;
+        }
+        return _origFetch(input, init);
+    };
+    globalThis.__censusKeyShim = true;
+}
+
 // Census ACS 1-year: 2013 → currentYear, minus 2020 (suppressed for COVID).
 // All 4 Hawaii counties are 65K+ so they get 1-year estimates.
 // Auto-rolls each year so the array doesn't need a manual bump in September

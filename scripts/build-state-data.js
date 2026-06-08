@@ -50,6 +50,26 @@ const KEYS = {
     FRED: 'aa88134401976fc554083c7bb3b50ed4',
 };
 
+// ---- Census API key shim ----
+// api.census.gov began requiring an API key (~2026-06-07); keyless requests
+// now return an HTML "Missing Key" page. Rather than thread the key through
+// every call site, transparently append it to any api.census.gov request.
+// The key comes from the CENSUS_API_KEY env var (.env locally, repo secret in
+// CI) and is never hardcoded. With no key set, URLs are unchanged (keyless),
+// preserving prior behaviour. Also covers the exported fetchers when
+// validate-data.js requires this module for its Section 16 fresh-fetch audit.
+const CENSUS_API_KEY = process.env.CENSUS_API_KEY || '';
+if (CENSUS_API_KEY && typeof globalThis.fetch === 'function' && !globalThis.__censusKeyShim) {
+    const _origFetch = globalThis.fetch.bind(globalThis);
+    globalThis.fetch = (input, init) => {
+        if (typeof input === 'string' && input.includes('api.census.gov') && !/[?&]key=/.test(input)) {
+            input += (input.includes('?') ? '&' : '?') + 'key=' + CENSUS_API_KEY;
+        }
+        return _origFetch(input, init);
+    };
+    globalThis.__censusKeyShim = true;
+}
+
 // ---- Expected output metrics ----
 // Every monthly cron MUST end with all of these slugs in js/state-data.js
 // (whether from a fresh fetch or preserved via the year-level merge).
