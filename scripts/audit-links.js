@@ -65,6 +65,18 @@ const EXPECTED_BLOCK = [
     'www.hawaiitourismauthority.org',
     // Foreign government PDFs
     'www.infrastructure.gov.au',
+    // Benchmark/caution source hosts that 403/timeout to automated clients but
+    // render fine in a browser. Confirmed live 2026-06-07 during a full link
+    // audit, after the extractor above was widened to check bare source.url
+    // fields (these had been silently skipped before, so never surfaced).
+    'www.urban.org',
+    'www.healthaffairs.org',
+    'www.doe.virginia.gov',
+    'www.wpri.com',
+    'www.hks.harvard.edu',
+    // sourceUrl host that times out to Node but is live in a browser (confirmed
+    // 2026-06-07); was a standing false positive before this allowlist entry.
+    'www.nasbo.org',
 ];
 
 // Statuses to treat as "expected block" rather than broken, when the
@@ -111,8 +123,11 @@ function extractUrls(data) {
                 const url = m.slice(6, -1);
                 if (url.startsWith('http')) results.push({ slug, field, url });
             });
-            // Plain URL fields (sourceUrl)
-            if (field === 'sourceUrl' && content.startsWith('http')) {
+            // Bare-URL fields carry the URL directly, not wrapped in an href:
+            // sourceUrl, plus benchmark[].source.url and caution.source.url.
+            // Capture any field whose content is itself a URL. (Narrative
+            // fields start with prose, so they fall through to hrefMatches.)
+            if (content.startsWith('http')) {
                 results.push({ slug, field, url: content });
             }
         }
