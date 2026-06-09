@@ -47,6 +47,10 @@ const EXPECTED_BLOCK = [
     'www.sciencedirect.com',
     'direct.mit.edu',
     'www.elibrary.imf.org',
+    // Columbia/Teachers College CCRC (ba_or_higher_pct "Tracking Transfer" cite):
+    // intermittent connect-timeout (status 0) to Node, returns 200 in ~1.4s in a
+    // browser and via curl on retry. Confirmed live 2026-06-08.
+    'ccrc.tc.columbia.edu',
     // Think tanks / research orgs
     'laborcenter.berkeley.edu',
     'www.mckinsey.com',
