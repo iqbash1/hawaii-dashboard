@@ -8,9 +8,9 @@ Data: All metrics use nonpartisan federal sources reported the same way for all 
 
 ## What this site does
 
-The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawaiʻi to the other 49 states over time. Each metric shows a trend chart (Hawaiʻi vs. the 50-state median), a 50-state ranking, rank history over time, and county breakdowns where data exists. The dashboard is updated annually; some metrics also show a latest monthly figure from federal sources.
+The Hawaiʻi Dashboard tracks 27 metrics across 5 policy areas, comparing Hawaiʻi to the other 49 states over time. Each metric shows a trend chart (Hawaiʻi vs. the 50-state median), a 50-state ranking, rank history over time, and county breakdowns where data exists. The dashboard is updated annually; some metrics also show a latest monthly figure from federal sources.
 
-## 5 Policy Areas and 26 Metrics
+## 5 Policy Areas and 27 Metrics
 
 ### Safety & Health
 1. Violent Crime Rate: per 100K residents (FBI Crime Data Explorer)
@@ -54,7 +54,7 @@ The Hawaiʻi Dashboard tracks 26 metrics across 5 policy areas, comparing Hawai�
 - **Rankings**: All 50 states ranked. #1 = best performance (direction depends on metric).
 - **Income adjustment**: Per Capita Income uses BEA SARPI (State Annual Real Personal Income) in constant 2017 dollars, adjusting for both inflation and regional price differences.
 - **Comparator states**: Each metric includes "Lessons from other states" with states chosen for sharing a specific structural condition with Hawaiʻi, not overall similarity.
-- **County data**: 11 of 26 metrics have county-level breakdowns for Honolulu, Hawaiʻi (Big Island), Maui, and Kauaʻi.
+- **County data**: 11 of 27 metrics have county-level breakdowns for Honolulu, Hawaiʻi (Big Island), Maui, and Kauaʻi.
 
 ## Selection criteria for metrics
 
@@ -93,7 +93,7 @@ When citing values from this dashboard, please credit the primary source (e.g. "
 
 ## Pages
 
-- **Dashboard** (https://hawaiidashboard.org/): Main page with all 26 metric cards, trend charts, and modal detail views.
+- **Dashboard** (https://hawaiidashboard.org/): Main page with all 27 metric cards, trend charts, and modal detail views.
 - **Change Summary** (https://hawaiidashboard.org/five-year-change/): How each metric changed over the selected look-back window, with rank changes and county trends. A dropdown in the page heading switches between 1-, 3-, 5-, 10-, 15-, 20-, and 25-year views (distinct URLs: /one-, /three-, /five-, /ten-, /fifteen-, /twenty-, /twenty-five-year-change/). Longer windows include only metrics whose data covers the full window.
 - **About** (https://hawaiidashboard.org/about/): Methodology, selection criteria, metric registry, data sources, governor terms.
 - **FAQ** (https://hawaiidashboard.org/faq/): 14 frequently asked questions about the dashboard's approach, methodology, and use.

@@ -1,0 +1,901 @@
+year,state,value
+2006,Alabama,47.2
+2006,Alaska,41.7
+2006,Arizona,45.4
+2006,Arkansas,46
+2006,California,46.6
+2006,Colorado,45
+2006,Connecticut,48
+2006,Delaware,43.4
+2006,Florida,46.7
+2006,Georgia,46.1
+2006,Hawaiʻi,43.8
+2006,Idaho,42.1
+2006,Illinois,46.2
+2006,Indiana,43.2
+2006,Iowa,42.4
+2006,Kansas,44.1
+2006,Kentucky,46
+2006,Louisiana,47.5
+2006,Maine,42.8
+2006,Maryland,43.3
+2006,Massachusetts,46.1
+2006,Michigan,44.4
+2006,Minnesota,43
+2006,Mississippi,47.1
+2006,Missouri,44.9
+2006,Montana,42.6
+2006,Nebraska,43
+2006,Nevada,43.4
+2006,New Hampshire,41.7
+2006,New Jersey,45.8
+2006,New Mexico,45.7
+2006,New York,49.5
+2006,North Carolina,45.8
+2006,North Dakota,43.4
+2006,Ohio,44.9
+2006,Oklahoma,46
+2006,Oregon,44.4
+2006,Pennsylvania,45.5
+2006,Rhode Island,44.2
+2006,South Carolina,46.2
+2006,South Dakota,43.9
+2006,Tennessee,46.8
+2006,Texas,47.4
+2006,Utah,41
+2006,Vermont,42
+2006,Virginia,45.6
+2006,Washington,44.3
+2006,West Virginia,44.7
+2006,Wisconsin,42.4
+2006,Wyoming,41.3
+2007,Alabama,47.1
+2007,Alaska,40.9
+2007,Arizona,44.8
+2007,Arkansas,46.2
+2007,California,46.9
+2007,Colorado,45.2
+2007,Connecticut,48.1
+2007,Delaware,43.5
+2007,Florida,46.9
+2007,Georgia,46.4
+2007,Hawaiʻi,42.2
+2007,Idaho,43.6
+2007,Illinois,46.6
+2007,Indiana,42.9
+2007,Iowa,42.6
+2007,Kansas,44.4
+2007,Kentucky,46.5
+2007,Louisiana,47.8
+2007,Maine,44
+2007,Maryland,44.2
+2007,Massachusetts,46.7
+2007,Michigan,44.8
+2007,Minnesota,43.6
+2007,Mississippi,48
+2007,Missouri,45
+2007,Montana,44.3
+2007,Nebraska,42.9
+2007,Nevada,43.7
+2007,New Hampshire,41.7
+2007,New Jersey,46.4
+2007,New Mexico,45.9
+2007,New York,50
+2007,North Carolina,46.5
+2007,North Dakota,44
+2007,Ohio,44.8
+2007,Oklahoma,46.3
+2007,Oregon,44.2
+2007,Pennsylvania,46
+2007,Rhode Island,45.7
+2007,South Carolina,45.9
+2007,South Dakota,42.3
+2007,Tennessee,47.1
+2007,Texas,47.3
+2007,Utah,40.9
+2007,Vermont,42.8
+2007,Virginia,45.6
+2007,Washington,44.4
+2007,West Virginia,45.4
+2007,Wisconsin,42.8
+2007,Wyoming,43.7
+2008,Alabama,46.7
+2008,Alaska,40.3
+2008,Arizona,45.3
+2008,Arkansas,45.9
+2008,California,47.3
+2008,Colorado,45.7
+2008,Connecticut,48.6
+2008,Delaware,44.7
+2008,Florida,47.1
+2008,Georgia,46.7
+2008,Hawaiʻi,42.8
+2008,Idaho,41.9
+2008,Illinois,46.7
+2008,Indiana,43.7
+2008,Iowa,42.8
+2008,Kansas,44.2
+2008,Kentucky,46.7
+2008,Louisiana,47.7
+2008,Maine,43.6
+2008,Maryland,43.8
+2008,Massachusetts,47.1
+2008,Michigan,45.1
+2008,Minnesota,44.5
+2008,Mississippi,47.8
+2008,Missouri,44.8
+2008,Montana,44.9
+2008,Nebraska,42.7
+2008,Nevada,43.1
+2008,New Hampshire,41.9
+2008,New Jersey,46.2
+2008,New Mexico,46
+2008,New York,50.3
+2008,North Carolina,46.3
+2008,North Dakota,45.1
+2008,Ohio,45
+2008,Oklahoma,45.8
+2008,Oregon,44.7
+2008,Pennsylvania,45.7
+2008,Rhode Island,46
+2008,South Carolina,46.4
+2008,South Dakota,44.6
+2008,Tennessee,47.1
+2008,Texas,47.4
+2008,Utah,41.1
+2008,Vermont,43.4
+2008,Virginia,46
+2008,Washington,44.2
+2008,West Virginia,45.3
+2008,Wisconsin,42.6
+2008,Wyoming,44.1
+2009,Alabama,47.1
+2009,Alaska,40.2
+2009,Arizona,45.1
+2009,Arkansas,46.1
+2009,California,46.7
+2009,Colorado,45.3
+2009,Connecticut,48
+2009,Delaware,43.4
+2009,Florida,46.9
+2009,Georgia,46.9
+2009,Hawaiʻi,42.5
+2009,Idaho,42.1
+2009,Illinois,46.9
+2009,Indiana,43.4
+2009,Iowa,43.1
+2009,Kansas,44.4
+2009,Kentucky,46.4
+2009,Louisiana,47.3
+2009,Maine,43.2
+2009,Maryland,44.8
+2009,Massachusetts,46.8
+2009,Michigan,45.3
+2009,Minnesota,43.9
+2009,Mississippi,47
+2009,Missouri,45
+2009,Montana,43.1
+2009,Nebraska,44
+2009,Nevada,43.3
+2009,New Hampshire,43.1
+2009,New Jersey,46.5
+2009,New Mexico,45.3
+2009,New York,50.2
+2009,North Carolina,46.4
+2009,North Dakota,45
+2009,Ohio,45.3
+2009,Oklahoma,46
+2009,Oregon,44.3
+2009,Pennsylvania,46
+2009,Rhode Island,45.7
+2009,South Carolina,46.2
+2009,South Dakota,45.2
+2009,Tennessee,46.7
+2009,Texas,47.4
+2009,Utah,41.4
+2009,Vermont,42.8
+2009,Virginia,45.6
+2009,Washington,43.9
+2009,West Virginia,46.3
+2009,Wisconsin,43.2
+2009,Wyoming,41.5
+2010,Alabama,47.2
+2010,Alaska,42.2
+2010,Arizona,45.5
+2010,Arkansas,45.8
+2010,California,47.1
+2010,Colorado,45.7
+2010,Connecticut,48.6
+2010,Delaware,44
+2010,Florida,47.4
+2010,Georgia,46.8
+2010,Hawaiʻi,43.3
+2010,Idaho,43.3
+2010,Illinois,46.5
+2010,Indiana,44
+2010,Iowa,42.7
+2010,Kansas,44.5
+2010,Kentucky,46.6
+2010,Louisiana,47.5
+2010,Maine,43.7
+2010,Maryland,44.3
+2010,Massachusetts,47.5
+2010,Michigan,45.1
+2010,Minnesota,44
+2010,Mississippi,46.8
+2010,Missouri,45.5
+2010,Montana,43.5
+2010,Nebraska,43.2
+2010,Nevada,44.8
+2010,New Hampshire,42.5
+2010,New Jersey,46.4
+2010,New Mexico,46.4
+2010,New York,49.9
+2010,North Carolina,46.4
+2010,North Dakota,43.3
+2010,Ohio,45.2
+2010,Oklahoma,45.4
+2010,Oregon,44.9
+2010,Pennsylvania,46.1
+2010,Rhode Island,46.7
+2010,South Carolina,46.1
+2010,South Dakota,44.2
+2010,Tennessee,46.8
+2010,Texas,46.9
+2010,Utah,41.9
+2010,Vermont,44.4
+2010,Virginia,45.9
+2010,Washington,44.1
+2010,West Virginia,45.1
+2010,Wisconsin,43
+2010,Wyoming,42.3
+2011,Alabama,47.35
+2011,Alaska,40.99
+2011,Arizona,46
+2011,Arkansas,46.84
+2011,California,48.12
+2011,Colorado,45.88
+2011,Connecticut,48.59
+2011,Delaware,44.04
+2011,Florida,48.11
+2011,Georgia,47.7
+2011,Hawaiʻi,43.01
+2011,Idaho,43.2
+2011,Illinois,47.18
+2011,Indiana,44.61
+2011,Iowa,43.4
+2011,Kansas,44.42
+2011,Kentucky,47.09
+2011,Louisiana,48.36
+2011,Maine,45.09
+2011,Maryland,44.66
+2011,Massachusetts,47.71
+2011,Michigan,46.12
+2011,Minnesota,44.36
+2011,Mississippi,47.35
+2011,Missouri,46.11
+2011,Montana,43.51
+2011,Nebraska,44.67
+2011,Nevada,45.26
+2011,New Hampshire,43.47
+2011,New Jersey,46.94
+2011,New Mexico,48.21
+2011,New York,50.33
+2011,North Carolina,47.16
+2011,North Dakota,44.48
+2011,Ohio,45.94
+2011,Oklahoma,46.13
+2011,Oregon,45.86
+2011,Pennsylvania,46.11
+2011,Rhode Island,46.74
+2011,South Carolina,46.48
+2011,South Dakota,43.24
+2011,Tennessee,47.56
+2011,Texas,47.71
+2011,Utah,42.49
+2011,Vermont,43.08
+2011,Virginia,46.32
+2011,Washington,44.49
+2011,West Virginia,47.21
+2011,Wisconsin,43.7
+2011,Wyoming,40.81
+2012,Alabama,47.26
+2012,Alaska,42.32
+2012,Arizona,46.08
+2012,Arkansas,46.32
+2012,California,48.22
+2012,Colorado,45.79
+2012,Connecticut,49.15
+2012,Delaware,43.56
+2012,Florida,48.28
+2012,Georgia,48.09
+2012,Hawaiʻi,42.57
+2012,Idaho,43.02
+2012,Illinois,47.16
+2012,Indiana,44.17
+2012,Iowa,43.28
+2012,Kansas,44.96
+2012,Kentucky,46.67
+2012,Louisiana,48.59
+2012,Maine,44.5
+2012,Maryland,44.73
+2012,Massachusetts,48.13
+2012,Michigan,46.24
+2012,Minnesota,44.41
+2012,Mississippi,48.7
+2012,Missouri,46.08
+2012,Montana,45.02
+2012,Nebraska,43.39
+2012,Nevada,45.16
+2012,New Hampshire,42.98
+2012,New Jersey,47.18
+2012,New Mexico,47.13
+2012,New York,50.09
+2012,North Carolina,46.91
+2012,North Dakota,45.97
+2012,Ohio,46.15
+2012,Oklahoma,46.43
+2012,Oregon,45.65
+2012,Pennsylvania,46.42
+2012,Rhode Island,46.47
+2012,South Carolina,46.84
+2012,South Dakota,43.35
+2012,Tennessee,47.32
+2012,Texas,47.67
+2012,Utah,42.44
+2012,Vermont,43.92
+2012,Virginia,46.61
+2012,Washington,44.98
+2012,West Virginia,46.38
+2012,Wisconsin,44.01
+2012,Wyoming,41.66
+2013,Alabama,47.52
+2013,Alaska,40.83
+2013,Arizona,46.81
+2013,Arkansas,46.85
+2013,California,49.03
+2013,Colorado,46.14
+2013,Connecticut,49.94
+2013,Delaware,45.13
+2013,Florida,48.43
+2013,Georgia,48.37
+2013,Hawaiʻi,44
+2013,Idaho,43.76
+2013,Illinois,48.24
+2013,Indiana,45.54
+2013,Iowa,44.29
+2013,Kansas,45.89
+2013,Kentucky,47.21
+2013,Louisiana,49.14
+2013,Maine,45.32
+2013,Maryland,45.55
+2013,Massachusetts,48.37
+2013,Michigan,46.41
+2013,Minnesota,44.62
+2013,Mississippi,47.91
+2013,Missouri,46.05
+2013,Montana,46.2
+2013,Nebraska,44.45
+2013,Nevada,45.43
+2013,New Hampshire,43.87
+2013,New Jersey,48
+2013,New Mexico,47.59
+2013,New York,50.98
+2013,North Carolina,47.65
+2013,North Dakota,45.5
+2013,Ohio,46.52
+2013,Oklahoma,46.19
+2013,Oregon,46
+2013,Pennsylvania,46.96
+2013,Rhode Island,47.69
+2013,South Carolina,46.65
+2013,South Dakota,44.27
+2013,Tennessee,47.83
+2013,Texas,48.07
+2013,Utah,42.59
+2013,Vermont,45.37
+2013,Virginia,46.72
+2013,Washington,45.72
+2013,West Virginia,46.47
+2013,Wisconsin,44.46
+2013,Wyoming,41.83
+2014,Alabama,47.58
+2014,Alaska,41.75
+2014,Arizona,46.76
+2014,Arkansas,47.14
+2014,California,48.9
+2014,Colorado,45.84
+2014,Connecticut,50.05
+2014,Delaware,44.94
+2014,Florida,48.34
+2014,Georgia,48.01
+2014,Hawaiʻi,43.25
+2014,Idaho,45.41
+2014,Illinois,47.65
+2014,Indiana,44.55
+2014,Iowa,44.33
+2014,Kansas,45.97
+2014,Kentucky,47.04
+2014,Louisiana,49.02
+2014,Maine,45.93
+2014,Maryland,44.91
+2014,Massachusetts,48.63
+2014,Michigan,45.98
+2014,Minnesota,45.39
+2014,Mississippi,47.6
+2014,Missouri,46.28
+2014,Montana,45.44
+2014,Nebraska,43.52
+2014,Nevada,44.27
+2014,New Hampshire,44.1
+2014,New Jersey,47.57
+2014,New Mexico,47.7
+2014,New York,51.11
+2014,North Carolina,47.48
+2014,North Dakota,46.64
+2014,Ohio,46.37
+2014,Oklahoma,46.6
+2014,Oregon,46.24
+2014,Pennsylvania,46.86
+2014,Rhode Island,48.27
+2014,South Carolina,46.87
+2014,South Dakota,44.68
+2014,Tennessee,48.11
+2014,Texas,48.27
+2014,Utah,42.83
+2014,Vermont,44.06
+2014,Virginia,46.58
+2014,Washington,45.42
+2014,West Virginia,45.46
+2014,Wisconsin,43.97
+2014,Wyoming,42.7
+2015,Alabama,48.11
+2015,Alaska,43.22
+2015,Arizona,47.02
+2015,Arkansas,47.73
+2015,California,48.76
+2015,Colorado,45.8
+2015,Connecticut,49.16
+2015,Delaware,45.23
+2015,Florida,48.72
+2015,Georgia,48.01
+2015,Hawaiʻi,43.46
+2015,Idaho,45.25
+2015,Illinois,48.17
+2015,Indiana,45.19
+2015,Iowa,43.93
+2015,Kansas,45.96
+2015,Kentucky,47.81
+2015,Louisiana,49.09
+2015,Maine,45.23
+2015,Maryland,45.24
+2015,Massachusetts,48.48
+2015,Michigan,46.67
+2015,Minnesota,44.92
+2015,Mississippi,47.59
+2015,Missouri,46.34
+2015,Montana,46.23
+2015,Nebraska,44.73
+2015,Nevada,45.48
+2015,New Hampshire,43.47
+2015,New Jersey,48.32
+2015,New Mexico,47.95
+2015,New York,51.38
+2015,North Carolina,47.76
+2015,North Dakota,46.64
+2015,Ohio,46.37
+2015,Oklahoma,47.02
+2015,Oregon,46.22
+2015,Pennsylvania,46.85
+2015,Rhode Island,47.32
+2015,South Carolina,46.98
+2015,South Dakota,44.36
+2015,Tennessee,47.89
+2015,Texas,48.23
+2015,Utah,42.52
+2015,Vermont,44.52
+2015,Virginia,46.81
+2015,Washington,45.61
+2015,West Virginia,45.81
+2015,Wisconsin,44.1
+2015,Wyoming,43.74
+2016,Alabama,48.47
+2016,Alaska,40.81
+2016,Arizona,47.13
+2016,Arkansas,47.19
+2016,California,48.99
+2016,Colorado,45.86
+2016,Connecticut,49.45
+2016,Delaware,45.22
+2016,Florida,48.52
+2016,Georgia,48.13
+2016,Hawaiʻi,44.2
+2016,Idaho,45.03
+2016,Illinois,48.1
+2016,Indiana,45.27
+2016,Iowa,44.51
+2016,Kansas,45.5
+2016,Kentucky,48.13
+2016,Louisiana,49.9
+2016,Maine,45.19
+2016,Maryland,44.99
+2016,Massachusetts,47.86
+2016,Michigan,46.95
+2016,Minnesota,44.96
+2016,Mississippi,48.28
+2016,Missouri,46.46
+2016,Montana,46.67
+2016,Nebraska,44.77
+2016,Nevada,45.77
+2016,New Hampshire,43.04
+2016,New Jersey,48.13
+2016,New Mexico,47.69
+2016,New York,51.29
+2016,North Carolina,47.8
+2016,North Dakota,45.33
+2016,Ohio,46.8
+2016,Oklahoma,46.45
+2016,Oregon,45.83
+2016,Pennsylvania,46.89
+2016,Rhode Island,47.81
+2016,South Carolina,47.35
+2016,South Dakota,44.95
+2016,Tennessee,47.9
+2016,Texas,48
+2016,Utah,42.63
+2016,Vermont,45.39
+2016,Virginia,47.05
+2016,Washington,45.91
+2016,West Virginia,47.11
+2016,Wisconsin,44.98
+2016,Wyoming,43.6
+2017,Alabama,47.68
+2017,Alaska,42.41
+2017,Arizona,46.68
+2017,Arkansas,47.25
+2017,California,48.66
+2017,Colorado,45.53
+2017,Connecticut,49.43
+2017,Delaware,48.11
+2017,Florida,48.59
+2017,Georgia,48.3
+2017,Hawaiʻi,44.55
+2017,Idaho,44.78
+2017,Illinois,48.18
+2017,Indiana,44.97
+2017,Iowa,43.81
+2017,Kansas,45.39
+2017,Kentucky,47.84
+2017,Louisiana,49.35
+2017,Maine,45.26
+2017,Maryland,45.3
+2017,Massachusetts,48.51
+2017,Michigan,46.71
+2017,Minnesota,45.16
+2017,Mississippi,47.9
+2017,Missouri,46.18
+2017,Montana,45.39
+2017,Nebraska,43.91
+2017,Nevada,46.06
+2017,New Hampshire,43.86
+2017,New Jersey,47.94
+2017,New Mexico,47.76
+2017,New York,51.57
+2017,North Carolina,47.63
+2017,North Dakota,45.46
+2017,Ohio,46.42
+2017,Oklahoma,46.58
+2017,Oregon,45.93
+2017,Pennsylvania,47.77
+2017,Rhode Island,47.22
+2017,South Carolina,47.95
+2017,South Dakota,44.88
+2017,Tennessee,48.22
+2017,Texas,47.81
+2017,Utah,42.25
+2017,Vermont,45.25
+2017,Virginia,46.74
+2017,Washington,45.61
+2017,West Virginia,46.86
+2017,Wisconsin,44.67
+2017,Wyoming,43.26
+2018,Alabama,48.59
+2018,Alaska,43.22
+2018,Arizona,46.13
+2018,Arkansas,48.45
+2018,California,49.12
+2018,Colorado,45.61
+2018,Connecticut,50.14
+2018,Delaware,45.87
+2018,Florida,48.87
+2018,Georgia,48.22
+2018,Hawaiʻi,44.5
+2018,Idaho,44.54
+2018,Illinois,48.52
+2018,Indiana,45.11
+2018,Iowa,44.13
+2018,Kansas,46.33
+2018,Kentucky,47.87
+2018,Louisiana,49.36
+2018,Maine,45.16
+2018,Maryland,45.43
+2018,Massachusetts,48.75
+2018,Michigan,46.79
+2018,Minnesota,45.36
+2018,Mississippi,48.28
+2018,Missouri,46.57
+2018,Montana,45.35
+2018,Nebraska,44.88
+2018,Nevada,46.9
+2018,New Hampshire,45.3
+2018,New Jersey,48.36
+2018,New Mexico,48.91
+2018,New York,51.3
+2018,North Carolina,47.82
+2018,North Dakota,44.27
+2018,Ohio,46.67
+2018,Oklahoma,46.87
+2018,Oregon,45.82
+2018,Pennsylvania,47.47
+2018,Rhode Island,47
+2018,South Carolina,47.62
+2018,South Dakota,44.45
+2018,Tennessee,47.78
+2018,Texas,48.22
+2018,Utah,42.69
+2018,Vermont,44.73
+2018,Virginia,47.54
+2018,Washington,45.74
+2018,West Virginia,47.42
+2018,Wisconsin,44.83
+2018,Wyoming,45.55
+2019,Alabama,47.41
+2019,Alaska,43.76
+2019,Arizona,45.91
+2019,Arkansas,47.5
+2019,California,48.66
+2019,Colorado,45.48
+2019,Connecticut,50.24
+2019,Delaware,45.09
+2019,Florida,48.08
+2019,Georgia,47.95
+2019,Hawaiʻi,43.97
+2019,Idaho,43.37
+2019,Illinois,48
+2019,Indiana,45.84
+2019,Iowa,44.22
+2019,Kansas,45
+2019,Kentucky,47.64
+2019,Louisiana,49.78
+2019,Maine,44.9
+2019,Maryland,45.58
+2019,Massachusetts,48.03
+2019,Michigan,46.34
+2019,Minnesota,44.34
+2019,Mississippi,48.96
+2019,Missouri,46.33
+2019,Montana,45.97
+2019,Nebraska,44
+2019,Nevada,47.1
+2019,New Hampshire,44.06
+2019,New Jersey,47.82
+2019,New Mexico,47.68
+2019,New York,51.49
+2019,North Carolina,47.43
+2019,North Dakota,45.58
+2019,Ohio,46.51
+2019,Oklahoma,47.39
+2019,Oregon,45
+2019,Pennsylvania,47.45
+2019,Rhode Island,46.28
+2019,South Carolina,47.47
+2019,South Dakota,43.6
+2019,Tennessee,47.49
+2019,Texas,47.53
+2019,Utah,42.68
+2019,Vermont,44.71
+2019,Virginia,46.9
+2019,Washington,45.77
+2019,West Virginia,46.44
+2019,Wisconsin,43.91
+2019,Wyoming,43.45
+2021,Alabama,48.23
+2021,Alaska,43.92
+2021,Arizona,46.29
+2021,Arkansas,47.51
+2021,California,49.24
+2021,Colorado,46.04
+2021,Connecticut,49.85
+2021,Delaware,45.47
+2021,Florida,48.69
+2021,Georgia,47.87
+2021,Hawaiʻi,45.52
+2021,Idaho,45.77
+2021,Illinois,48.24
+2021,Indiana,44.8
+2021,Iowa,44.89
+2021,Kansas,45.99
+2021,Kentucky,47.57
+2021,Louisiana,49.88
+2021,Maine,46.63
+2021,Maryland,46.31
+2021,Massachusetts,48.93
+2021,Michigan,46.59
+2021,Minnesota,44.93
+2021,Mississippi,48.08
+2021,Missouri,47.06
+2021,Montana,46.93
+2021,Nebraska,45.6
+2021,Nevada,47.26
+2021,New Hampshire,43.48
+2021,New Jersey,48.53
+2021,New Mexico,48.61
+2021,New York,51.4
+2021,North Carolina,48.01
+2021,North Dakota,45.31
+2021,Ohio,46.87
+2021,Oklahoma,46.18
+2021,Oregon,46.11
+2021,Pennsylvania,47.2
+2021,Rhode Island,46.8
+2021,South Carolina,47.6
+2021,South Dakota,45.22
+2021,Tennessee,48.21
+2021,Texas,47.84
+2021,Utah,44.49
+2021,Vermont,45.27
+2021,Virginia,47.24
+2021,Washington,47.04
+2021,West Virginia,48.58
+2021,Wisconsin,44.64
+2021,Wyoming,46.38
+2022,Alabama,48.51
+2022,Alaska,42.78
+2022,Arizona,46.65
+2022,Arkansas,47.99
+2022,California,49.53
+2022,Colorado,45.66
+2022,Connecticut,50.08
+2022,Delaware,44.07
+2022,Florida,49.02
+2022,Georgia,47.36
+2022,Hawaiʻi,45.74
+2022,Idaho,44.34
+2022,Illinois,48.37
+2022,Indiana,45.61
+2022,Iowa,45.14
+2022,Kansas,46.32
+2022,Kentucky,48.45
+2022,Louisiana,49.15
+2022,Maine,46.01
+2022,Maryland,45.89
+2022,Massachusetts,49.76
+2022,Michigan,46.85
+2022,Minnesota,45.6
+2022,Mississippi,48.06
+2022,Missouri,46.87
+2022,Montana,46.52
+2022,Nebraska,46.1
+2022,Nevada,46.85
+2022,New Hampshire,44.66
+2022,New Jersey,48.15
+2022,New Mexico,47.96
+2022,New York,52.08
+2022,North Carolina,47.68
+2022,North Dakota,46.78
+2022,Ohio,46.91
+2022,Oklahoma,47.43
+2022,Oregon,46.79
+2022,Pennsylvania,47.78
+2022,Rhode Island,46.4
+2022,South Carolina,47.57
+2022,South Dakota,44.87
+2022,Tennessee,46.94
+2022,Texas,47.96
+2022,Utah,42.64
+2022,Vermont,44.52
+2022,Virginia,47.55
+2022,Washington,47.42
+2022,West Virginia,48.04
+2022,Wisconsin,45.1
+2022,Wyoming,44.37
+2023,Alabama,47.71
+2023,Alaska,44.92
+2023,Arizona,46.5
+2023,Arkansas,47.4
+2023,California,48.7
+2023,Colorado,45.75
+2023,Connecticut,49.54
+2023,Delaware,45.57
+2023,Florida,48.29
+2023,Georgia,47.87
+2023,Hawaiʻi,45.12
+2023,Idaho,44.04
+2023,Illinois,48.1
+2023,Indiana,45.36
+2023,Iowa,44.64
+2023,Kansas,45.18
+2023,Kentucky,47.59
+2023,Louisiana,49.67
+2023,Maine,45.09
+2023,Maryland,45.61
+2023,Massachusetts,48.79
+2023,Michigan,46.58
+2023,Minnesota,45.41
+2023,Mississippi,48.43
+2023,Missouri,46.08
+2023,Montana,46.01
+2023,Nebraska,46.34
+2023,Nevada,46.32
+2023,New Hampshire,44.46
+2023,New Jersey,47.94
+2023,New Mexico,47.71
+2023,New York,51.57
+2023,North Carolina,47.32
+2023,North Dakota,44.51
+2023,Ohio,46.95
+2023,Oklahoma,47.37
+2023,Oregon,46.36
+2023,Pennsylvania,47.74
+2023,Rhode Island,46.61
+2023,South Carolina,47.15
+2023,South Dakota,46.2
+2023,Tennessee,47.6
+2023,Texas,47.9
+2023,Utah,42.25
+2023,Vermont,45.49
+2023,Virginia,47.23
+2023,Washington,47.03
+2023,West Virginia,46.79
+2023,Wisconsin,44.79
+2023,Wyoming,44.55
+2024,Alabama,47.45
+2024,Alaska,43.95
+2024,Arizona,46.23
+2024,Arkansas,47.21
+2024,California,48.52
+2024,Colorado,46.11
+2024,Connecticut,49.89
+2024,Delaware,44.78
+2024,Florida,47.99
+2024,Georgia,47.3
+2024,Hawaiʻi,45.42
+2024,Idaho,43.45
+2024,Illinois,48.02
+2024,Indiana,45.23
+2024,Iowa,43.57
+2024,Kansas,45.57
+2024,Kentucky,47.11
+2024,Louisiana,49.22
+2024,Maine,45.66
+2024,Maryland,45.59
+2024,Massachusetts,48.2
+2024,Michigan,46.79
+2024,Minnesota,45.21
+2024,Mississippi,47.66
+2024,Missouri,46.34
+2024,Montana,45.81
+2024,Nebraska,44.58
+2024,Nevada,46.53
+2024,New Hampshire,44.78
+2024,New Jersey,47.14
+2024,New Mexico,47.22
+2024,New York,51.86
+2024,North Carolina,47.82
+2024,North Dakota,45.7
+2024,Ohio,46.31
+2024,Oklahoma,46.96
+2024,Oregon,45.57
+2024,Pennsylvania,47.47
+2024,Rhode Island,47.17
+2024,South Carolina,46.62
+2024,South Dakota,44.33
+2024,Tennessee,47.47
+2024,Texas,47.92
+2024,Utah,42.22
+2024,Vermont,45.51
+2024,Virginia,46.91
+2024,Washington,47.25
+2024,West Virginia,46.68
+2024,Wisconsin,44.19
+2024,Wyoming,46.09

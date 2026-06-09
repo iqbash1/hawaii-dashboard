@@ -83,9 +83,10 @@ const RECOMPUTE_METRICS = [
     'naep_reading_8',
     'labor_force_participation',
     'suicide_rate',
+    'gini_index',
 ];
 
-// No metrics excluded - all 26 derive from state-data.js
+// No metrics excluded - all 27 derive from state-data.js
 const SKIP_METRICS = [];
 
 // ==========================================================

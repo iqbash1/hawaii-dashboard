@@ -24,10 +24,10 @@ test.describe('Homepage', () => {
         expect(jsErrors, `JS errors on page load: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 
-    test('renders 26 metric cards', async ({ page }) => {
+    test('renders 27 metric cards', async ({ page }) => {
         await page.goto('/');
         const cards = await page.locator('.card[data-metric]').all();
-        expect(cards.length).toBe(26);
+        expect(cards.length).toBe(27);
     });
 
     test('each card shows a value and sparkline canvas', async ({ page }) => {
@@ -119,7 +119,7 @@ test.describe('5-year comparison badges', () => {
         await page.waitForSelector('[data-metric]', { timeout: 10_000 });
 
         const cards = await page.locator('[data-metric]').all();
-        expect(cards.length, 'all 26 metric cards should render').toBe(26);
+        expect(cards.length, 'all 27 metric cards should render').toBe(27);
         expect(jsErrors, `JS errors during renderCards: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 });
@@ -248,7 +248,7 @@ test.describe('Jump to metric dropdown', () => {
 
         // Should have metric items
         const items = dropdown.locator('.metric-search-item');
-        expect(await items.count()).toBe(26);
+        expect(await items.count()).toBe(27);
     });
 
     test('selecting a metric opens its modal', async ({ page }) => {
@@ -334,7 +334,7 @@ test.describe('Change Summary: 10-year view', () => {
         expect(jsErrors, `JS errors: ${jsErrors.join('; ')}`).toHaveLength(0);
     });
 
-    test('excludes broadband (25 rows, no broadband in rank table)', async ({ page }) => {
+    test('excludes broadband (26 rows, no broadband in rank table)', async ({ page }) => {
         await page.goto('/ten-year-change/');
         await page.waitForSelector('.fyc-row', { state: 'attached' });
 
@@ -345,10 +345,10 @@ test.describe('Change Summary: 10-year view', () => {
         expect(broadbandRows).toBe(0);
 
         const rows = await page.locator('.fyc-row').all();
-        expect(rows.length).toBe(25);
+        expect(rows.length).toBe(26);
 
         const rankRows = await page.locator('.fyc-rank-item').count();
-        expect(rankRows).toBe(25);
+        expect(rankRows).toBe(26);
     });
 });
 
@@ -357,9 +357,11 @@ test.describe('Change Summary: longer-window views (15/20/25)', () => {
     // year past the window threshold. After the 2026-05 source-floor backfills:
     //   15y gained unsheltered_homeless_rate (now 2007+, gap >= 15)
     //   25y gained naep_math_8 (now 1990+, gap >= 25)
+    //   2026-06: gini_index added (2006+); appears in 10y (+1) and 15y (+1),
+    //            excluded from 20y/25y (no pre-2006 data).
     // Update these values whenever a metric crosses an inclusion threshold.
     const EXPECTED = [
-        { path: '/fifteen-year-change/',   label: '15 years', rows: 22 },
+        { path: '/fifteen-year-change/',   label: '15 years', rows: 23 },
         { path: '/twenty-year-change/',    label: '20 years', rows: 14 },
         { path: '/twenty-five-year-change/', label: '25 years', rows: 11 },
     ];

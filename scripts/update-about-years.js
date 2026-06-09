@@ -54,6 +54,7 @@ const NAME_TO_SLUG = {
     'New Business Entry Rate':                              'estabs_entry_rate',
     'Net Employer Business Formation':                      'net_employer_formation',
     'Labor Productivity':                                   'labor_productivity',
+    'Income Inequality':                                    'gini_index',
 };
 
 // Extract a 4-digit year number from a key like "2006", "2006-2008", etc.

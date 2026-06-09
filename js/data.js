@@ -3060,5 +3060,87 @@ const DASHBOARD_DATA = {
         }
       }
     }
+  },
+  "gini_index": {
+    "area": "Economy & Workforce",
+    "metric": "Income Inequality",
+    "officialName": "How evenly household income is spread, measured by the Gini index on a 0-to-100 scale. 0 would mean every household earns exactly the same; 100 would mean a single household earns everything. A higher number means a wider gap between the top and bottom earners.",
+    "sourceCategory": "federal",
+    "unit": "Gini index",
+    "unitLabel": "on the 0-to-100 inequality scale",
+    "goodDirection": "down",
+    "source": "Census ACS",
+    "sourceUrl": "https://data.census.gov/table?q=B19083",
+    "whyItMatters": "This shows how far apart the highest and lowest earners are. A wide gap can leave many families struggling even when the overall economy looks healthy. Put another way, Hawaiʻi's top fifth of households earn about 15 times what the bottom fifth earn.",
+    "howToRead": "0 would mean every household earns the same; 100 would mean one household earns everything. Most states fall between about 42 and 52. Hawaiʻi has stayed more equal than most states every year.",
+    "potentialDrivers": "Hawaiʻi's income gap is narrower than most states for structural reasons. The state has long had one of the highest rates of union membership in the country, and collective bargaining tends to compress the distance between higher- and lower-paid workers, per <a href=\"https://www.bls.gov/news.release/union2.htm\" target=\"_blank\" rel=\"noopener\">BLS union membership data</a>. Its wage floor is among the higher state minimums and is scheduled to reach $18 an hour by 2028, per the <a href=\"https://labor.hawaii.gov/wsd/minimum-wage/\" target=\"_blank\" rel=\"noopener\">Hawaiʻi Department of Labor</a>. And the economy leans on tourism, government, and services rather than the finance and technology sectors that concentrate very high incomes in states like New York and Connecticut, per <a href=\"https://dbedt.hawaii.gov/economic/\" target=\"_blank\" rel=\"noopener\">DBEDT</a>. The caution is that a narrow gap is not the same as broad comfort: Hawaiʻi's high cost of living means many middle households still feel stretched, so a relatively equal spread can coexist with widespread financial strain.",
+    "useConsolidated": true,
+    "hawaii": {
+      "2006": 43.8,
+      "2007": 42.2,
+      "2008": 42.8,
+      "2009": 42.5,
+      "2010": 43.3,
+      "2011": 43.01,
+      "2012": 42.57,
+      "2013": 44,
+      "2014": 43.25,
+      "2015": 43.46,
+      "2016": 44.2,
+      "2017": 44.55,
+      "2018": 44.5,
+      "2019": 43.97,
+      "2021": 45.52,
+      "2022": 45.74,
+      "2023": 45.12,
+      "2024": 45.42
+    },
+    "medianSeries": {
+      "2006": 44.8,
+      "2007": 44.9,
+      "2008": 45.2,
+      "2009": 45.3,
+      "2010": 45.3,
+      "2011": 46.055,
+      "2012": 46.115,
+      "2013": 46.305,
+      "2014": 46.325,
+      "2015": 46.505,
+      "2016": 46.735,
+      "2017": 46.63,
+      "2018": 46.73,
+      "2019": 46.335,
+      "2021": 46.9,
+      "2022": 46.86,
+      "2023": 46.595,
+      "2024": 46.575
+    },
+    "policyLevers": "<ul class='cn-focus-list'><li><strong>Wage floor and worker bargaining</strong> · A higher minimum wage and broader union coverage both lift pay at the bottom and narrow the gap; Hawaiʻi's minimum wage is set to reach $18 an hour by 2028 <a href=\"https://labor.hawaii.gov/wsd/minimum-wage/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>, and union membership in Hawaiʻi is among the highest in the nation <a href=\"https://www.bls.gov/news.release/union2.htm\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Tax credits and transfers</strong> · Refundable credits such as the Earned Income Tax Credit raise after-tax incomes at the bottom without lowering them at the top, a direct way to narrow the after-tax gap <a href=\"https://www.cbpp.org/research/federal-tax/the-earned-income-tax-credit\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi made its state EITC refundable starting in tax year 2023 <a href=\"https://files.hawaii.gov/tax/stats/stats/act107_2017/act107_earnedincome_txcredit_2024.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Pathways to higher-wage work</strong> · Postsecondary access and sector-based training persistently raise participant earnings, and diversifying beyond tourism adds the mid- and high-wage jobs a service economy lacks <a href=\"https://www.mdrc.org/work/publications/sector-strategies-workforce-development\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
+    "nextUpdate": "Sep",
+    "rankHistoryNarrative": {
+      "summary": "Hawaiʻi has ranked among the more equal states the whole series, moving from #18 in 2006 to #12 in 2024. Its own gap widened modestly over that span, but inequality climbed faster in most other states, so Hawaiʻi's relative standing improved.",
+      "mode": "learn",
+      "benchmarks": [
+        {
+          "state": "Utah",
+          "text": "Utah is the most equal state by this measure. Its narrow gap reflects a young population, high marriage and dual-earner rates, and an economy without a large cluster of very high earners, rather than any single policy. Like Hawaiʻi, it shows how much demographics and industry mix shape the gap, not just tax and wage rules.",
+          "source": {
+            "label": "Gini Index of Income Inequality, Table B19083 - U.S. Census Bureau",
+            "url": "https://data.census.gov/table?q=B19083"
+          }
+        }
+      ],
+      "explore": [
+        "Utah stays equal largely through its demographics and industry mix; New York shows the opposite force, where a heavy concentration of finance and corporate income lifts the very top far faster than the middle. Hawaiʻi sits closer to Utah's end, helped by high union coverage and a rising wage floor, but its high cost of living means a narrow gap still leaves many households stretched."
+      ],
+      "caution": {
+        "state": "New York",
+        "text": "New York has the widest gap of any state. A large share of the nation's finance and corporate income concentrates there, lifting the very top far faster than the middle or bottom. The lesson for Hawaiʻi is that a booming high-wage sector can widen the gap even while average income rises, so growth on its own does not guarantee a narrower spread.",
+        "source": {
+          "label": "Gini Index of Income Inequality, Table B19083 - U.S. Census Bureau",
+          "url": "https://data.census.gov/table?q=B19083"
+        }
+      }
+    }
   }
 };

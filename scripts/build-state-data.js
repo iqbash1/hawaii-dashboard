@@ -98,6 +98,7 @@ const EXPECTED_METRICS = [
     'broadband_subscription_pct',
     'estabs_entry_rate',
     'food_insecurity_rate',
+    'gini_index',
     'home_price_to_income',
     'labor_force_participation',
     'labor_productivity',
@@ -465,6 +466,43 @@ async function fetchUninsured() {
         source: 'Census ACS 1-Year, Subject Table S2701',
         calculation: 'Percent of civilian noninstitutionalized population without health insurance (divided by 100)',
         rawVariables: 'S2701_C05_001E / 100',
+        data,
+    } : null;
+}
+
+async function fetchGini() {
+    console.log('Fetching: Income inequality / Gini index (Census ACS B19083)...');
+    const data = {};
+    // B19083 (Gini index of household income) is published in ACS 1-year from
+    // 2006 onward. We store it ×100 on the 0-100 "Gini index" scale the World
+    // Bank uses (0 = perfect equality, 100 = one household holds all income),
+    // so the dashboard hero reads 45.4 rather than a 0.454 coefficient; the
+    // stored scale and every narrative number stay 1:1. Ranking is unaffected
+    // (×100 is monotonic). 2020 1-year is suppressed (ACS_YEARS skips it).
+    const giniYears = ACS_YEARS.filter(y => y >= 2006);
+
+    for (const year of giniYears) {
+        try {
+            const url = `https://api.census.gov/data/${year}/acs/acs1?get=NAME,B19083_001E&for=state:*`;
+            const json = await fetchJSON(url);
+            const states = parseCensusResponse(json, (row) => {
+                const g = parseFloat(row['B19083_001E']);
+                // Census returns 0-1; sentinel errors come back negative.
+                return (g >= 0 && g <= 1) ? parseFloat((g * 100).toFixed(2)) : null;
+            });
+            if (Object.keys(states).length > 0) {
+                data[year.toString()] = states;
+                process.stdout.write(` ${year}`);
+            }
+        } catch (err) { /* skip year */ }
+        await sleep(250);
+    }
+
+    console.log(` -> ${Object.keys(data).length} years`);
+    return Object.keys(data).length > 0 ? {
+        source: 'Census ACS 1-Year, Table B19083',
+        calculation: 'Gini index of household income inequality, rescaled ×100 to the 0-100 World Bank index convention (0 = perfect equality, 100 = maximal inequality)',
+        rawVariables: 'B19083_001E × 100',
         data,
     } : null;
 }
@@ -2320,6 +2358,7 @@ async function main() {
         ['broadband_subscription_pct', fetchBroadband],
         ['renter_cost_burden_pct', fetchRenterCostBurden],
         ['uninsured_rate', fetchUninsured],
+        ['gini_index', fetchGini],
         ['unemployment_rate', fetchUnemployment],
         ['labor_force_participation', fetchLaborForceParticipation],
         ['real_per_capita_income', fetchRealPerCapitaIncome],
@@ -2354,9 +2393,20 @@ async function main() {
         // merge step (year-first → FIPS-first conversion).
     ];
 
+    // Scoped refresh: ONLY_METRICS=slug1,slug2 limits this run to those
+    // fetchers; every other metric is preserved verbatim by the year-level
+    // merge below. Lets a single metric be re-fetched (or first-added)
+    // without re-pulling all 25 and pile of incidental upstream revisions
+    // into one commit. No env var = full build (the daily refresh path).
+    const ONLY = (process.env.ONLY_METRICS || '').split(',').map(s => s.trim()).filter(Boolean);
+    const activeFetchers = ONLY.length ? fetchers.filter(([s]) => ONLY.includes(s)) : fetchers;
+    if (ONLY.length) {
+        console.log(`ONLY_METRICS=${ONLY.join(',')} — fetching ${activeFetchers.length} metric(s); the rest are preserved via the year-level merge.\n`);
+    }
+
     // Census ACS sequentially (rate limit friendly, many calls)
-    const censusSlugs = ['ba_or_higher_pct', 'broadband_subscription_pct', 'renter_cost_burden_pct', 'uninsured_rate', 'home_price_to_income'];
-    for (const [slug, fn] of fetchers.filter(([s]) => censusSlugs.includes(s))) {
+    const censusSlugs = ['ba_or_higher_pct', 'broadband_subscription_pct', 'renter_cost_burden_pct', 'uninsured_rate', 'home_price_to_income', 'gini_index'];
+    for (const [slug, fn] of activeFetchers.filter(([s]) => censusSlugs.includes(s))) {
         try {
             const result = await fn();
             if (result && Object.keys(result.data).length > 0) results[slug] = result;
@@ -2367,7 +2417,7 @@ async function main() {
 
     // Others in parallel
     const otherResults = await Promise.allSettled(
-        fetchers.filter(([s]) => !censusSlugs.includes(s)).map(async ([slug, fn]) => {
+        activeFetchers.filter(([s]) => !censusSlugs.includes(s)).map(async ([slug, fn]) => {
             const result = await fn();
             return [slug, result];
         })
@@ -2588,6 +2638,7 @@ module.exports = {
         broadband_subscription_pct: fetchBroadband,
         renter_cost_burden_pct: fetchRenterCostBurden,
         uninsured_rate: fetchUninsured,
+        gini_index: fetchGini,
         unemployment_rate: fetchUnemployment,
         labor_force_participation: fetchLaborForceParticipation,
         real_per_capita_income: fetchRealPerCapitaIncome,

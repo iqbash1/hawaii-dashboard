@@ -135,6 +135,10 @@ const METRIC_RULES = {
     estabs_entry_rate:          { min: 4,     max: 25,     maxYoYPct: 0.75, format: 'whole_pct' },
     net_employer_formation:     { min: -10,   max: 15,     maxYoYPct: Infinity, format: 'whole_pct' },
     labor_productivity:         { min: 70,    max: 150,    maxYoYPct: 0.10, format: 'index' },
+    // Gini index ×100 (0-100 scale). State values run ~40-52; max observed 1-year
+    // (well, 2019->2021 across the suppressed 2020) swing is 6.7% (Wyoming, small
+    // sample). 0.12 catches scale/variable errors (a missing ×100 reads as -99%).
+    gini_index:                 { min: 35,    max: 60,     maxYoYPct: 0.12, format: 'index' },
 };
 
 // ---- Source coverage targets per metric (Section 12) ----
@@ -182,6 +186,7 @@ const SOURCE_COVERAGE = {
     residential_price_cpkwh:    { expectedStart: 1970, source: 'EIA Form 826/861',    note: 'State retail electricity prices from 1970' },
     renewables_share_gen:       { expectedStart: 2001, source: 'EIA electric-power',  note: 'EIA v2 electric-power API has annual state generation from 2001; pre-2001 requires SEDS aggregation' },
     ba_or_higher_pct:           { expectedStart: 2008, source: 'Census ACS B15003',   note: 'B15003 detailed-attainment table available from 2008. data.js HI series carries 2005-2007 from an earlier ACS methodology (B15002) for HI continuity; not extended to peer states.', acceptedHiAsymmetry: true },
+    gini_index:                 { expectedStart: 2006, source: 'Census ACS B19083',   note: 'B19083 (Gini index of household income) published in ACS 1-year from 2006; stored ×100 on the 0-100 World Bank index scale. 2020 1-year suppressed for COVID.' },
     renter_cost_burden_pct:     { expectedStart: 2005, source: 'Census ACS B25070',   note: 'B25070 with all-state coverage from 2005 (1-year ACS skipped 2020 for COVID). Floor lowered from 2008 to 2005 in May 2026 after audit confirmed Census API returns valid B25070 for all 50 states from 2005; the prior 2008 floor was a stale default inherited from B15003 (which legitimately starts at 2008).', verifiedFloorAt: '2026-05-10' },
     uninsured_rate:             { expectedStart: 2010, skipYears: [2013, 2014], source: 'Census ACS DP03', note: 'DP03_0099PE used 2010-2012 (S2701 variable semantics flipped 2014->2015); 2013-14 deliberately skipped in state-data; data.js HI has those years from KFF/equivalent' },
     broadband_subscription_pct: { expectedStart: 2016, source: 'Census ACS B28002',   note: 'Census changed B28002 variable definition in 2016; pre-2016 values measure a different (narrower) broadband concept and are deliberately excluded. Confirmed by direct probe May 2026: HI B28002_004E shifted from ~10-13% (2013-2015) to ~83-93% (2016+), a ~70pp jump indicating different concept.', verifiedFloorAt: '2026-05-10', verifiedFloorReason: 'B28002_004E variable redefined at 2016 (probe: 2013-2015 measure narrow concept, 2016+ measure broadband-as-defined)' },

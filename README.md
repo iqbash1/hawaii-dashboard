@@ -1,6 +1,6 @@
 # Hawaiʻi Dashboard
 
-A statewide scorecard of outcomes and the conditions that shape them, tracking 26 key measures across 5 areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
+A statewide scorecard of outcomes and the conditions that shape them, tracking 27 key measures across 5 areas. Built for Hawaiʻi residents and policymakers using consistent federal data sources.
 
 **Live site**: [hawaiidashboard.org](https://hawaiidashboard.org)
 
@@ -46,7 +46,7 @@ t/{slug}/index.html          Detail view redirect pages (canonical→/c/, OG tag
 r/{slug}/index.html          Rankings view redirect pages (canonical→/c/, OG tags)
 c/{slug}/index.html          Metric landing page: full content, Dataset JSON-LD,
                              headline figure, rank, county + trend tables, CTA. One
-                             per metric (all 26). Indexable; self-canonical.
+                             per metric (all 27). Indexable; self-canonical.
 rh/{slug}/index.html         Rank history redirect pages (canonical→/c/, OG tags)
 rh/{slug}/{code}/index.html  Rank history comparison redirect pages (49 per metric)
 q/{id}/index.html            QOTD question redirect pages (one per question; meta-refresh to /?from_q={id})
@@ -135,7 +135,7 @@ Requires `Pillow` (`pip3 install Pillow`).
 - **Outcomes, not activity**: Measures what happened to residents, not what government spent
 - **Federal sources only**: All data from nonpartisan federal agencies, reported identically for all 50 states
 - **Two comparisons per metric**: Over time (trend) and against other states (ranking)
-- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 26 cards, up to 4 tabs per metric
+- **Minimalist UI**: No dashboards-of-dashboards, no filters, no configuration. 27 cards, up to 4 tabs per metric
 - **Governor overlay**: Alternating bands show which governor was in office during each period
 
 ## Beyond the grid
@@ -193,7 +193,7 @@ Cloudflare Web Analytics (pageviews/CWV), Microsoft Clarity (session recordings,
 - `rankHistoryNarrative.summary` uses numeric rank ranges ("#5 to #21"): never percentile phrases like "top quarter".
 - `potentialDrivers` field uses HTML strings (supports `<a>` links); rendered via `innerHTML`. All other narrative fields use plain text except `countyNarrative`.
 - `countyNarrative` field supports HTML (rendered via template literal in `_buildConsolidatedNarrative`); appears as the "County breakdown" section in the consolidated layout. Omit when no meaningful county variation exists for that metric.
-- `useConsolidated: true` flag switches the modal from split-tab narrative to a single-scroll consolidated layout. Set on all 26 metrics.
+- `useConsolidated: true` flag switches the modal from split-tab narrative to a single-scroll consolidated layout. Set on all 27 metrics.
 
 ## Shared helpers
 

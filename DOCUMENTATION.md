@@ -2,7 +2,7 @@
 
 ## Overview
 
-A public-facing web dashboard tracking Hawaiʻi state outcomes across **26 metrics** and **5 areas**. Each metric compares Hawaiʻi to the median of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
+A public-facing web dashboard tracking Hawaiʻi state outcomes across **27 metrics** and **5 areas**. Each metric compares Hawaiʻi to the median of all other U.S. states, with trend data going back to the earliest reliable year and governor term overlays.
 
 **Live site:** [hawaiidashboard.org](https://hawaiidashboard.org)
 **Source code:** [github.com/iqbash1/hawaii-dashboard](https://github.com/iqbash1/hawaii-dashboard)

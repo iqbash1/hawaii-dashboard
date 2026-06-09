@@ -120,6 +120,10 @@ const BRIEF_TEMPLATES = { // eslint-disable-line no-unused-vars
         intro: "Hawai\u02BBi's real per capita income is {{value}} in constant 2017 dollars ({{period}})",
         caveat: "this is an average, not the income of a typical household."
     },
+    gini_index: {
+        intro: "Hawai\u02BBi's income inequality is {{value}} on the 0-to-100 Gini index ({{period}})",
+        caveat: "a single index can't show whether the gap is the top pulling away or the bottom falling behind."
+    },
     estabs_entry_rate: {
         intro: "Hawai\u02BBi's new business entry rate is {{value}} ({{period}})",
         scaleTemplate: ", or {{scale}}",
@@ -266,7 +270,7 @@ const App = {
     AREA_ORDER: [
         { area: 'Safety & Health', metrics: ['violent_crime_rate', 'property_crime_rate', 'pcp_per_100k', 'uninsured_rate', 'suicide_rate'] },
         { area: 'Affordability', metrics: ['renter_cost_burden_pct', 'home_price_to_income', 'unsheltered_homeless_rate', 'residential_price_cpkwh', 'food_insecurity_rate'] },
-        { area: 'Economy & Workforce', metrics: ['unemployment_rate', 'labor_force_participation', 'labor_productivity', 'real_per_capita_income', 'estabs_entry_rate', 'net_employer_formation'] },
+        { area: 'Economy & Workforce', metrics: ['unemployment_rate', 'labor_force_participation', 'labor_productivity', 'real_per_capita_income', 'gini_index', 'estabs_entry_rate', 'net_employer_formation'] },
         { area: 'Education', metrics: ['naep_math_8', 'naep_reading_8', 'acgr', 'ba_or_higher_pct'] },
         { area: 'Infrastructure & Trust', metrics: ['road_poor_pct', 'broadband_subscription_pct', 'renewables_share_gen', 'rainy_day_fund_pct', 'voter_participation_rate', 'net_domestic_migration_rate'] },
     ],
