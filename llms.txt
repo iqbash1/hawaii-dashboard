@@ -31,22 +31,23 @@ The Hawai ªi Dashboard tracks 27 metrics across 5 policy areas, comparing Hawai 
 12. Labor Force Participation Rate: % of working-age population (BLS LAUS)
 13. Labor Productivity Index: output per hour, 2017=100 (BLS)
 14. Per Capita Income (real): inflation-adjusted, constant 2017 dollars (BEA SARPI)
-15. Establishment Entry Rate: new businesses as % of total (Census BDS)
-16. Net Employer Formation: new minus closed businesses as % of total (Census BDS)
+15. Income Inequality: Gini index of household income on a 0-to-100 scale (Census ACS)
+16. Establishment Entry Rate: new businesses as % of total (Census BDS)
+17. Net Employer Formation: new minus closed businesses as % of total (Census BDS)
 
 ### Education
-17. NAEP Math Score (8th grade): scale score (NCES NAEP)
-18. NAEP Reading Score (8th grade): scale score (NCES NAEP)
-19. High School Graduation Rate (ACGR): % of cohort graduating on time (NCES)
-20. Adults with Bachelor's Degree+: % age 25+ (Census ACS)
+18. NAEP Math Score (8th grade): scale score (NCES NAEP)
+19. NAEP Reading Score (8th grade): scale score (NCES NAEP)
+20. High School Graduation Rate (ACGR): % of cohort graduating on time (NCES)
+21. Adults with Bachelor's Degree+: % age 25+ (Census ACS)
 
 ### Infrastructure & Trust
-21. Roads in Poor Condition: % of road miles, with poor-only and poor-and-mediocre threshold views (FHWA)
-22. Households with Broadband: % of households (Census ACS)
-23. Electricity from Renewables: % of total generation (EIA)
-24. Rainy Day Fund Balance: % of general fund expenditures (Pew / NASBO)
-25. Voter Participation Rate: % of eligible voters (VEP) in general election (US Elections Project)
-26. Net Domestic Migration Rate: per 10K residents (Census PEP)
+22. Roads in Poor Condition: % of road miles, with poor-only and poor-and-mediocre threshold views (FHWA)
+23. Households with Broadband: % of households (Census ACS)
+24. Electricity from Renewables: % of total generation (EIA)
+25. Rainy Day Fund Balance: % of general fund expenditures (Pew / NASBO)
+26. Voter Participation Rate: % of eligible voters (VEP) in general election (US Elections Project)
+27. Net Domestic Migration Rate: per 10K residents (Census PEP)
 
 ## Methodology
 

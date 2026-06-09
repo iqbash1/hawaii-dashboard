@@ -120,13 +120,13 @@ Single command rebuilds, per metric:
 
 Requires `Pillow` (`pip3 install Pillow`).
 
-## Metrics (26)
+## Metrics (27)
 
 | Area | Metrics | County |
 |------|---------|--------|
 | Safety & Health | Violent Crime, Property Crime, PCP Access, Uninsured, Suicide | Partial |
 | Affordability | Renter Cost Burden, Home Price-to-Income, Homelessness, Electricity Price, Food Insecurity | Partial |
-| Economy & Workforce | Unemployment, Labor Force Participation, Labor Productivity, Per Capita Income, Business Entry, Net Employer Formation | Partial |
+| Economy & Workforce | Unemployment, Labor Force Participation, Labor Productivity, Per Capita Income, Income Inequality, Business Entry, Net Employer Formation | Partial |
 | Education | NAEP Math 8, NAEP Reading 8, HS Graduation, Bachelor's+ | Partial |
 | Infrastructure & Trust | Road Quality, Broadband, Renewables, Rainy Day Fund, Voter Participation, Net Migration | Partial |
 

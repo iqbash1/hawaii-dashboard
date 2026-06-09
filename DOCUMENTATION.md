@@ -141,7 +141,7 @@ hawaii-dashboard/
 ├── sitemap.xml             # Site sitemap (43 URLs with inline <image:image> entries; build.sh rewrites lastmod in dist/)
 ├── llms.txt                # Plain-text site summary for AI chat engines (Anthropic/Answer.AI llms.txt convention)
 ├── _headers                # Cloudflare response headers: HSTS, CSP, Referrer-Policy, Permissions-Policy, per-route cache rules
-├── data/                   # Static per-metric CSV exports (37 files: 26 state + 11 county) referenced by Dataset.distribution
+├── data/                   # Static per-metric CSV exports (38 files: 27 state + 11 county) referenced by Dataset.distribution
 └── DOCUMENTATION.md
 ```
 
@@ -167,7 +167,7 @@ hawaii-dashboard/
 
 ---
 
-## The 26 Metrics
+## The 27 Metrics
 
 | # | Area | Metric | Unit | Good Direction | Source |
 |---|------|--------|------|----------------|--------|
@@ -185,18 +185,19 @@ hawaii-dashboard/
 | 12 | Economy & Workforce | Labor Force Participation Rate | % | Up | BLS LAUS |
 | 13 | Economy & Workforce | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
 | 14 | Economy & Workforce | Per Capita Income (real) | $ | Up | BEA SARPI |
-| 15 | Economy & Workforce | New Business Entry Rate | % | Up | Census BDS |
-| 16 | Economy & Workforce | Net Employer Business Formation | % | Up | Census BFS |
-| 17 | Education | NAEP 8th Grade Math | score | Up | NAEP |
-| 18 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
-| 19 | Education | High School Graduation Rate | % | Up | NCES |
-| 20 | Education | Adults with Bachelor's Degree+ | % | Up | Census ACS |
-| 21 | Infrastructure & Trust | Roads in Poor Condition | % | Down | FHWA |
-| 22 | Infrastructure & Trust | Households with Broadband | % | Up | Census ACS |
-| 23 | Infrastructure & Trust | Electricity from Renewables | % | Up | EIA |
-| 24 | Infrastructure & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
-| 25 | Infrastructure & Trust | Voter Participation Rate | % | Up | US Elections Project |
-| 26 | Infrastructure & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
+| 15 | Economy & Workforce | Income Inequality (Gini Index) | Index (0-100) | Down | Census ACS |
+| 16 | Economy & Workforce | New Business Entry Rate | % | Up | Census BDS |
+| 17 | Economy & Workforce | Net Employer Business Formation | % | Up | Census BFS |
+| 18 | Education | NAEP 8th Grade Math | score | Up | NAEP |
+| 19 | Education | NAEP 8th Grade Reading | score | Up | NAEP |
+| 20 | Education | High School Graduation Rate | % | Up | NCES |
+| 21 | Education | Adults with Bachelor's Degree+ | % | Up | Census ACS |
+| 22 | Infrastructure & Trust | Roads in Poor Condition | % | Down | FHWA |
+| 23 | Infrastructure & Trust | Households with Broadband | % | Up | Census ACS |
+| 24 | Infrastructure & Trust | Electricity from Renewables | % | Up | EIA |
+| 25 | Infrastructure & Trust | Rainy Day Fund (% of General Fund) | % | Up | NASBO |
+| 26 | Infrastructure & Trust | Voter Participation Rate | % | Up | US Elections Project |
+| 27 | Infrastructure & Trust | Net Domestic Migration | per 10K | Up | Census PEP |
 
 All data is **non-partisan, publicly available, and reported the same way for all 50 states**.
 
@@ -228,7 +229,7 @@ Disambiguation: when two segments follow the slug, the second is tried as a 2-le
 
 - **`/t/`** = **t**rend share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
 - **`/r/`** = **r**ankings share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
-- **`/c/`** = **c**anonical metric landing page. Real indexable content (no redirect): keyword-rich title, Dataset + BreadcrumbList JSON-LD with `distribution` referencing `/data/{slug}_*.csv`, headline figure with national rank, county and state-trend tables, cross-links to related metrics, source attribution, CTA back to the SPA. One per metric (26 total). All other view types (`/t/`, `/r/`, `/rh/`) consolidate authority here via canonical-link.
+- **`/c/`** = **c**anonical metric landing page. Real indexable content (no redirect): keyword-rich title, Dataset + BreadcrumbList JSON-LD with `distribution` referencing `/data/{slug}_*.csv`, headline figure with national rank, county and state-trend tables, cross-links to related metrics, source attribution, CTA back to the SPA. One per metric (27 total). All other view types (`/t/`, `/r/`, `/rh/`) consolidate authority here via canonical-link.
 - **`/rh/`** = **r**ank **h**istory share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
 
 ### Canonical consolidation
@@ -252,12 +253,12 @@ python3 scripts/generate-og-pages.py
 ```
 
 This single script reads `js/data.js`, `js/state-data.js`, and `js/county-data.js` and produces:
-- 26 trend OG cards (`assets/og/{slug}.png`)
-- 26 rankings OG cards (`assets/og/{slug}_rankings.png`)
-- 26 rank history OG cards (`assets/og/{slug}_rank_history.png`)
-- 1,274 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`), one per metric per state (26 × 49)
+- 27 trend OG cards (`assets/og/{slug}.png`)
+- 27 rankings OG cards (`assets/og/{slug}_rankings.png`)
+- 27 rank history OG cards (`assets/og/{slug}_rank_history.png`)
+- 1,323 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`), one per metric per state (27 × 49)
 - 11 county OG cards (`assets/og/{slug}_county.png`), for metrics with county data
-- 26 trend comparison cards per metric per state (`assets/og/{slug}_t_{code}.png`)
+- 27 trend comparison cards per metric per state (`assets/og/{slug}_t_{code}.png`)
 - All `/c/{slug}/index.html` landing pages (full content, Dataset JSON-LD with `distribution`, headline figure, county and state-trend tables, source attribution, cross-links, CTA)
 - All redirect pages in `t/`, `r/`, `rh/` (with canonical-link to `/c/{slug}/`, no longer self-canonical)
 - All static CSVs in `/data/` (`{slug}_state.csv` per metric, `{slug}_county.csv` for the 11 metrics with county data)
@@ -270,7 +271,7 @@ All images are PIL-rendered (1200×630 PNG). No browser or Puppeteer dependency.
 
 ### Embedded Baseline (`data.js`)
 
-All 26 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated by the monthly CI workflow or by editing the file directly (no live API calls at runtime).
+All 27 metrics are pre-loaded as structured JSON extracted from federal sources. Data is updated by the monthly CI workflow or by editing the file directly (no live API calls at runtime).
 
 Each metric follows this structure:
 
@@ -278,7 +279,7 @@ Each metric follows this structure:
 {
   area: "Category name",
   metric: "Full metric name",
-  officialName: "Full official federal metric name - shown as a definition bar below the chart in the modal (required; all 26 metrics have this)",
+  officialName: "Full official federal metric name - shown as a definition bar below the chart in the modal (required; all 27 metrics have this)",
   unit: "%" | "$" | "per 100K" | "per 10K" | "per 1,000" | "¢/kWh" | "×" | "Index (2017=100)" | "score",
   unitLabel: "Human-readable unit description (5-15 words) - shown on cards as the unit suffix and in the modal header below the title (e.g. '% of eligible voters who cast a ballot')",
   goodDirection: "up" | "down",
@@ -289,7 +290,7 @@ Each metric follows this structure:
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
   potentialDrivers: "HTML string: research-backed drivers with hyperlinks to sources (optional)",  // shown in modal above policyLevers; rendered via innerHTML (supports <a> links)
   countyNarrative: "HTML or plain-text county-level breakdown (optional)", // shown as 'County breakdown' section in consolidated layout; rendered via template literal (supports <a> links); omit when the metric has no county-level chart data in county-data.js
-  useConsolidated: true,                                                  // Boolean flag. All 26 metrics use the single-scroll consolidated layout.
+  useConsolidated: true,                                                  // Boolean flag. All 27 metrics use the single-scroll consolidated layout.
   policyLevers: "State-level levers for this outcome (optional)",         // shown as a section in modal
   latestMonthly: {                                              // optional; only 4 metrics with monthly federal data
     value: 2.2,                                                   // latest monthly figure (display units, not decimal)
@@ -323,7 +324,7 @@ Each metric follows this structure:
 
 **`rankHistoryNarrative` structure:**
 
-All 26 metrics have a `rankHistoryNarrative` object that drives the written analysis in the Rank history tab. Structure:
+All 27 metrics have a `rankHistoryNarrative` object that drives the written analysis in the Rank history tab. Structure:
 
 ```js
 rankHistoryNarrative: {
@@ -447,7 +448,7 @@ Two dropdowns sit between the header and the metric grid: "I have a question..."
 
 ### Card Grid (Landing Page)
 
-Each of the 26 metrics gets its own card displaying:
+Each of the 27 metrics gets its own card displaying:
 
 1. **Area icon + label** (e.g., "EDUCATION")
 2. **Metric name** (e.g., "NAEP 8th Grade Math")
@@ -461,7 +462,7 @@ Each of the 26 metrics gets its own card displaying:
 
 Cards are in a responsive CSS grid (auto-fill, 300px minimum). Each card has `id="{slug}"` so direct links (`/#slug`) scroll to the card and open its modal.
 
-The skeleton HTML in `index.html` mirrors the real grid exactly (5 area headings + 26 cards matching `AREA_ORDER`) so the grid height barely changes when `renderCards()` fires, preventing Cumulative Layout Shift (CLS).
+The skeleton HTML in `index.html` mirrors the real grid exactly (5 area headings + 27 cards matching `AREA_ORDER`) so the grid height barely changes when `renderCards()` fires, preventing Cumulative Layout Shift (CLS).
 
 ### Detail Modal
 
@@ -612,7 +613,7 @@ Main application controller.
 | `GOVERNORS` | Array of 9 governors: `{ name, party, start, end }` from 1959 (statehood) to present |
 | `_activeBundle` | The currently active bundle object `{ id, title, metrics[] }`, or `null` |
 | `init()` | Renders cards, sets up modal, populates the question dropdown, reads `?bundle=` from URL, handles routing |
-| `renderCards()` | Creates all 26 card DOM elements with lazy sparklines (IntersectionObserver) and comparisons |
+| `renderCards()` | Creates all 27 card DOM elements with lazy sparklines (IntersectionObserver) and comparisons |
 | `renderQuestionDropdown()` | Populates `#question-dropdown` from `BUNDLES`; wires selection and clear handlers |
 | `activateBundle(bundleId)` | Hides non-matching cards and area headings, sets `?bundle=` URL param |
 | `clearBundle()` | Reverses `activateBundle`; removes URL param, restores all cards |
@@ -1010,7 +1011,7 @@ npm test
 | Modal closes on X button | Close handler broken |
 | Ranked metric shows rank comparison badge | Comparison badge logic broken |
 | `food_insecurity_rate` shows range-key badge | "YYYY-YYYY" key format parsing broken |
-| All 26 cards render without JS errors | `buildVsYearHtml` regression guard |
+| All 27 cards render without JS errors | `buildVsYearHtml` regression guard |
 | County tab shows chart (metric with county data) | County data missing or tab hidden incorrectly |
 | County tab hidden for metric without county data | Tab incorrectly shown when no county data exists |
 | Hash route opens correct modal | Hash-based URL routing broken |
@@ -1019,7 +1020,7 @@ npm test
 | `/rh/{slug}/` opens modal on Rank history tab | Path routing for rank history share links broken |
 | `/rh/{slug}/{code}/` opens Rank history with comparison active | Comparison URL parsing or `slugToState()` broken |
 | Change Summary 5-year view loads without JS errors | JS errors on `/five-year-change/` page |
-| Change Summary 5-year view renders one row per metric (26 rows) | Missing metric in `AREA_ORDER` (js/fyc.js) |
+| Change Summary 5-year view renders one row per metric (27 rows) | Missing metric in `AREA_ORDER` (js/fyc.js) |
 | Change Summary 5-year H1 shows "5 years" and broadband is included | Dropdown wiring, span inference, or exclusion filter regressed |
 | Change Summary 10-year view loads without JS errors | JS errors on `/ten-year-change/` page |
 | Change Summary 10-year view excludes broadband (renders 25 rows, no broadband in rank table) | 10-year shell missing, short-span exclusion filter regressed, or broadband data changed |
@@ -1048,7 +1049,7 @@ Every indexable page has:
 
 | Surface | JSON-LD types |
 |---|---|
-| Home (`/`) | Organization + WebSite + BreadcrumbList + ItemList (enumerates all 26 metric pages with their human-readable names, transfers topical authority to each `/c/`) |
+| Home (`/`) | Organization + WebSite + BreadcrumbList + ItemList (enumerates all 27 metric pages with their human-readable names, transfers topical authority to each `/c/`) |
 | `/c/{slug}/` (26 pages) | Dataset (with `temporalCoverage`, `spatialCoverage`, `variableMeasured`, `publisher`, and `distribution` referencing `/data/{slug}_state.csv` + `/data/{slug}_county.csv` when applicable) + BreadcrumbList |
 | `/about/` | AboutPage + BreadcrumbList |
 | `/faq/` | FAQPage (all 14 Q&A pairs) + BreadcrumbList |
@@ -1067,7 +1068,7 @@ Every indexable page has:
 
 ### AI chat engine optimization
 
-- `llms.txt`, plain-text site summary (~150 lines) describing the dashboard, all 26 metrics, methodology, data sources, URL structure, and the `/data/{slug}_*.csv` endpoints. Follows the [Anthropic / Answer.AI llms.txt convention](https://llmstxt.org/) for AI system context.
+- `llms.txt`, plain-text site summary (~150 lines) describing the dashboard, all 27 metrics, methodology, data sources, URL structure, and the `/data/{slug}_*.csv` endpoints. Follows the [Anthropic / Answer.AI llms.txt convention](https://llmstxt.org/) for AI system context.
 - `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, OAI-SearchBot, and other AI crawlers.
 - All pages have semantic HTML with descriptive headings.
 - FAQ page has FAQPage JSON-LD schema enabling Google rich results; metric landing pages have Dataset JSON-LD for Google Dataset Search.
@@ -1089,7 +1090,7 @@ The default trend-chart comparator is the **median** of the 49 other states (exc
 
 **Why median, not mean.** State-level distributions for most dashboard metrics are right-skewed with long tails. A handful of outlier states pull the mean away from the typical state, which misrepresents what "other states" look like. Median is robust to those tails and aligns with the rank-distribution chart that already anchors on rank 25.5. For single-unit comparison of Hawaiʻi to its peers, median is the honest statistic.
 
-Concrete example: renewables_share_gen in 2003: Hawaiʻi 5.6%, mean of 49 states 12.9%, median 5.0%. The mean is pulled up by hydro- and wind-heavy states; the median reflects the typical state. Roughly 10 of 26 metrics have at least one year where Hawaiʻi's sign vs the comparator flips between the two statistics.
+Concrete example: renewables_share_gen in 2003: Hawaiʻi 5.6%, mean of 49 states 12.9%, median 5.0%. The mean is pulled up by hydro- and wind-heavy states; the median reflects the typical state. Roughly 10 of 27 metrics have at least one year where Hawaiʻi's sign vs the comparator flips between the two statistics.
 
 **Where median is used.** Trend-chart dashed line, sparkline, Bottom Line brief, modal data table, XLSX Chart Data tab values + methodology cells, OG image subtitle.
 
