@@ -646,10 +646,10 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q063",
-      "slug": "hawaii-loses-bigger-share-of-residents-to-mainland-than-any-other-state",
-      "claim": "Hawaiʻi loses a bigger share of its residents to other states than any other state.",
+      "slug": "hawaii-loses-bigger-share-of-residents-to-rest-of-country-than-any-other-state",
+      "claim": "Hawaiʻi loses a bigger share of its residents to the rest of the country than any other state.",
       "correct": true,
-      "answer": "In 2024, Hawaiʻi had a net loss of 64.6 residents per 10,000 to other states, the largest of any state.",
+      "answer": "In 2024, Hawaiʻi had a net loss of 64.6 residents per 10,000 to the rest of the country, the largest of any state.",
       "chartUrl": "/r/net_domestic_migration_rate/",
       "metric": "net_domestic_migration_rate",
       "metricLabel": "Net Migration",
