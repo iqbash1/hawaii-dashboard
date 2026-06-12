@@ -22,8 +22,8 @@
 const QOTD_QUESTIONS = [
   {
       "id": "q001",
-      "slug": "smaller-share-of-hawaii-residents-lack-health-insurance-than-rest-of-country",
-      "claim": "Fewer Hawaiʻi residents lack health insurance than in most states.",
+      "slug": "hawaii-has-lower-health-uninsured-rate-than-most-states",
+      "claim": "Hawaiʻi has a lower health uninsured rate than most states.",
       "correct": true,
       "answer": "In 2024, 3.5% of Hawaiʻi residents lacked health insurance, versus the median of 7.3%.",
       "chartUrl": "/r/uninsured_rate/",
