@@ -1933,6 +1933,20 @@ async function runFreshFetch() {
 
 async function finish() {
     let auditDriftCells = 0;
+    // Missing-Census-key guard. The fetch path below verifies 6 Census-API
+    // metrics (ba_or_higher_pct, broadband_subscription_pct,
+    // renter_cost_burden_pct, uninsured_rate, gini_index, home_price_to_income)
+    // via the build-state-data.js key-shim. With no CENSUS_API_KEY,
+    // api.census.gov returns an HTML "Missing Key" page and every Census
+    // fetch fails its retries silently, so those 6 metrics go UNVERIFIED while
+    // the run still reports "0 drift". Surface it loudly; in --audit-only (the
+    // daily drift cron, whose sole job is catching drift) treat a keyless run
+    // as audit-critical so it fails fast instead of skipping 6 metrics blind.
+    // Run with `node --env-file-if-exists=.env ...` or set CENSUS_API_KEY.
+    if ((FRESH_FETCH || AUDIT_ONLY || PROBE_FLOOR) && !process.env.CENSUS_API_KEY) {
+        warn('[fresh-fetch] CENSUS_API_KEY not set: the 6 Census-API metrics cannot be fetch-verified this run (api.census.gov requires a key since ~2026-06-07). Run via `node --env-file-if-exists=.env` or set CENSUS_API_KEY.');
+        if (AUDIT_ONLY) auditCriticalErrors++;
+    }
     if (FRESH_FETCH || AUDIT_ONLY) auditDriftCells = await runFreshFetch() || 0;
     if (PROBE_FLOOR) await runProbeFloor();
 
