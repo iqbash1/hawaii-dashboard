@@ -439,7 +439,7 @@ const DASHBOARD_DATA = {
     "nextUpdate": "Sep",
     "dataLag": 2,
     "rankHistoryNarrative": {
-      "summary": "Hawaiʻi has ranked in the top 10 every year on record, about 14 percent better than the median. Neighbor island communities hold federal Health Professional Shortage Area designations despite the strong statewide number.",
+      "summary": "Hawaiʻi has ranked in the top 10 every year on record, about 15 percent better than the median. Neighbor island communities hold federal Health Professional Shortage Area designations despite the strong statewide number.",
       "mode": "protect",
       "benchmarks": [
         {
