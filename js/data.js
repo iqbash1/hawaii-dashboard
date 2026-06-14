@@ -416,8 +416,8 @@ const DASHBOARD_DATA = {
       "2019": 93.9,
       "2020": 96.7,
       "2021": 93,
-      "2022": 86.8,
-      "2023": 88.1
+      "2022": 90.3,
+      "2023": 91.8
     },
     "medianSeries": {
       "2010": 74.9,
@@ -432,11 +432,12 @@ const DASHBOARD_DATA = {
       "2019": 79.15,
       "2020": 79.05,
       "2021": 76.8,
-      "2022": 77.65,
-      "2023": 78.65
+      "2022": 79,
+      "2023": 79.6
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Training pipeline</strong> · JABSOM retains 75-90% of family-medicine graduates in-state; a new Kauaʻi track aims to place physicians on neighbor islands. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC11519901/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a> Nationally, 35%+ of primary care physicians are 55 or older, narrowing the replacement window. <a href=\"https://bhw.hrsa.gov/sites/default/files/bureau-health-workforce/data-research/State-of-the-Primary-Care-Workforce-2025.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Retention and burnout</strong> · Hawaiʻi’s physician workforce averages age 54, two years above the national mean, and 10 percent of providers retired or closed practices during the pandemic <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC9036453/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; the statewide shortage is between 710 and 1,008 full-time physician positions, with neighbor-island gaps reaching 30-50 percent.</li><li><strong>Telehealth and rural access</strong> · A $189 million federal Rural Health Transformation award will fund a statewide telehealth network and workforce incentives through 2030 <a href=\"https://governor.hawaii.gov/newsroom/office-of-the-governor-news-release-hawaii-awarded-188-9-million-to-transform-rural-healthcare/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Medicaid reimbursement rates below cost discourage practice in high-need communities. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC11519901/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
-    "nextUpdate": "Jun",
+    "nextUpdate": "Sep",
+    "dataLag": 2,
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked in the top 10 every year on record, about 14 percent better than the median. Neighbor island communities hold federal Health Professional Shortage Area designations despite the strong statewide number.",
       "mode": "protect",
