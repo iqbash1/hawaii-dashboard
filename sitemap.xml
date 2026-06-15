@@ -93,11 +93,20 @@
   </url>
   <url>
     <loc>https://hawaiidashboard.org/off-the-charts/</loc>
-    <lastmod>2026-05-29</lastmod>
+    <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <image:image>
       <image:loc>https://hawaiidashboard.org/assets/og/off-the-charts.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/common-incomes-uncommon-costs/</loc>
+    <lastmod>2026-06-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://hawaiidashboard.org/assets/og/off-the-charts/common-incomes-uncommon-costs.png</image:loc>
     </image:image>
   </url>
   <url>

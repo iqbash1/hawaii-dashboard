@@ -30,6 +30,13 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "common-incomes-uncommon-costs",
+        "title": "Common incomes. Uncommon costs.",
+        "date":  "14 June 2026",
+        # Outlier line: Hawaiʻi's income level sits low despite its narrow income gap.
+        "outlier": "low",
+    },
+    {
         "slug": "safe-state-theft-problem",
         "title": "A safe state with a theft problem.",
         "date":  "29 May 2026",
