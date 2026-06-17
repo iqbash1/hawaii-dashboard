@@ -137,18 +137,6 @@
         return fmtChange(absChange, unit, isDec);
     }
 
-    /* ── Unsigned value with verbose trailing unit stripped. Used when a
-     * second value sits right next to a value-with-unit: e.g.
-     * "28.2 per 10K vs median 3.6" or "-97.4 → -64.6 per 10K". Strips
-     * "per 100K", "per 10K", and "points" from the end; keeps short
-     * symbolic units (%, $, ×, ¢) because they'd be ambiguous bare.
-     * Number precision matches fmtValue exactly: we only remove the
-     * trailing unit token from the formatted string. ── */
-    function fmtValueCompact(value, unit, isDec) {
-        const full = fmtValue(value, unit, isDec);
-        return full.replace(/ (per 100K|per 10K|points)$/, '');
-    }
-
     /* ── Format gap in native units (unsigned, with "better"/"worse") ── */
     function fmtGap(gapValue, unit, isDec, betterOrWorse) {
         // Gap values from getRankForYear are already in display units

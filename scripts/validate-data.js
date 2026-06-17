@@ -294,7 +294,7 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
 
     const rules = METRIC_RULES[slug];
     if (!rules) {
-        // All 26 metrics have rules; a missing entry means a slug typo or incomplete setup
+        // All 27 metrics have rules; a missing entry means a slug typo or incomplete setup
         error(`No validation rules defined for metric "${slug}" -- add an entry to METRIC_RULES`);
         continue;
     }

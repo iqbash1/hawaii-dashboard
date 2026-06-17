@@ -1,6 +1,6 @@
 // Hawaiʻi Dashboard - Embedded Data
 //
-// 26 metrics across 5 areas.
+// 27 metrics across 5 areas.
 // Hawaiʻi values and medianSeries (50-state mathematical median, includes
 // Hawaiʻi, excludes DC and Puerto Rico) sourced from federal agencies.
 // Original baseline: 250814 HI Dashboard.xlsx
