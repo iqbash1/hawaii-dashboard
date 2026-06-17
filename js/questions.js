@@ -95,8 +95,8 @@ const QOTD_QUESTIONS = [
   {
       "id": "q069",
       "slug": "hawaii-has-lower-voter-participation-than-the-rest-of-the-country",
-      "claim": "Hawaiʻi has lower voter turnout than the rest of the country.",
-      "correct": true,
+      "claim": "Hawaiʻi has high voter participation.",
+      "correct": false,
       "answer": "In 2024, Hawaiʻi was 50.3% versus the median of 64.7%.",
       "chartUrl": "/r/voter_participation_rate/",
       "metric": "voter_participation_rate",
