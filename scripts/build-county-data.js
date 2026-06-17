@@ -5,11 +5,20 @@
 // Fetches county-level metric data from federal APIs
 // and outputs js/county-data.js.
 //
-// Usage: node scripts/build-county-data.js
+// Usage:
+//   node scripts/build-county-data.js            full rebuild (all metrics, all sources)
+//   node scripts/build-county-data.js <slug>     scoped: re-fetch ONE metric's threshold
+//                                                 variant(s) and merge into the existing file,
+//                                                 leaving every other metric byte-for-byte.
+//                                                 (e.g. renter_cost_burden_pct)
+//
+// Threshold variants: a metric with both a County tab AND a threshold toggle stores its
+// alternate series under `thresholdVariants` (see COUNTY_FETCHERS) so the County tab
+// toggles in lockstep with Trend/Rank. renter_cost_burden_pct ships 30%+ (base) + 50%+.
 //
 // Data sources:
 //   Census ACS 1-Year: ba_or_higher_pct, broadband_subscription_pct,
-//       renter_cost_burden_pct, uninsured_rate,
+//       renter_cost_burden_pct (30%+ and 50%+), uninsured_rate,
 //       home_price_to_income, labor_force_participation
 //   BEA: real_per_capita_income
 //   BLS LAUS: unemployment_rate, labor_force_participation (fallback)
@@ -226,7 +235,7 @@ async function fetchBroadband() {
 
 async function fetchRenterCostBurden() {
     const vars = 'B25070_001E,B25070_007E,B25070_008E,B25070_009E,B25070_010E,B25070_011E';
-    return fetchACSCounty("Renter cost burden (B25070)", vars, (row) => {
+    return fetchACSCounty("Renter cost burden 30%+ (B25070)", vars, (row) => {
         const total = parseFloat(row['B25070_001E']);
         const notComp = parseFloat(row['B25070_011E']);
         const over30 = parseFloat(row['B25070_007E']) + parseFloat(row['B25070_008E']) +
@@ -234,6 +243,24 @@ async function fetchRenterCostBurden() {
         const denom = total - notComp;
         if (isNaN(denom) || denom <= 0) return null;
         const pct = over30 / denom;
+        return (pct > 0 && pct <= 1) ? parseFloat(pct.toFixed(4)) : null;
+    });
+}
+
+// Severe (50%+) renter cost burden — the threshold-toggle variant. Same B25070
+// source as the 30%+ base, but only the 50%+ bucket (B25070_010E). Stored as a
+// thresholdVariant so the County tab toggles in lockstep with Trend/Rank, whose
+// state series already carries the 50%+ overlay. Without it, the County tab plots
+// a 50%+ state reference line against 30%+ county lines (impossible-looking gap).
+async function fetchRenterSevere() {
+    const vars = 'B25070_001E,B25070_010E,B25070_011E';
+    return fetchACSCounty("Renter cost burden 50%+ severe (B25070)", vars, (row) => {
+        const total = parseFloat(row['B25070_001E']);
+        const notComp = parseFloat(row['B25070_011E']);
+        const over50 = parseFloat(row['B25070_010E']);
+        const denom = total - notComp;
+        if (isNaN(denom) || denom <= 0) return null;
+        const pct = over50 / denom;
         return (pct > 0 && pct <= 1) ? parseFloat(pct.toFixed(4)) : null;
     });
 }
@@ -626,7 +653,115 @@ function buildMetric(countyData, minYear) {
     };
 }
 
+// Metrics that carry a threshold toggle AND a County tab. renter_cost_burden_pct is
+// currently the only one, so its 50%+ (severe) series must ship beside the 30%+ base.
+const COUNTY_FETCHERS = {
+    renter_cost_burden_pct: { base: fetchRenterCostBurden, variants: { '50': fetchRenterSevere } },
+};
+
+// Load the existing js/county-data.js back into an object (same shape the browser sees).
+function loadExistingCountyData() {
+    const src = fs.readFileSync(path.join(__dirname, '..', 'js', 'county-data.js'), 'utf8');
+    return new Function(src + '; return COUNTY_DATA;')();
+}
+
+// Restrict a built metric (base + any threshold variants) to a set of years, so a
+// scoped rebuild can never silently introduce a year the rest of the file lacks.
+function capMetricYears(metric, keepYears) {
+    const cap = (dataObj) => {
+        for (const county of Object.keys(dataObj)) {
+            for (const y of Object.keys(dataObj[county])) {
+                if (!keepYears.has(y)) delete dataObj[county][y];
+            }
+        }
+    };
+    cap(metric.data);
+    if (metric.thresholdVariants) for (const v of Object.values(metric.thresholdVariants)) cap(v.data);
+}
+
+// Serialize one { "County": {year: val} } block at a given indent (one county per line),
+// matching the historical hand-tuned formatting of js/county-data.js.
+function serializeDataBlock(counties, dataObj, indent) {
+    let out = `${indent}"data": {\n`;
+    for (let c = 0; c < counties.length; c++) {
+        out += `${indent}  "${counties[c]}": ${JSON.stringify(dataObj[counties[c]])}`;
+        out += c < counties.length - 1 ? ',\n' : '\n';
+    }
+    out += `${indent}}`;
+    return out;
+}
+
+// Write the whole COUNTY_DATA object. Flat metrics render exactly as before; a metric
+// with `thresholdVariants` gets an extra block after its base data.
+function writeCountyData(results) {
+    const slugs = Object.keys(results);
+    let output = 'const COUNTY_DATA = {\n';
+    for (let s = 0; s < slugs.length; s++) {
+        const metric = results[slugs[s]];
+        output += `  "${slugs[s]}": {\n`;
+        output += `    "counties": ${JSON.stringify(metric.counties)},\n`;
+        output += serializeDataBlock(metric.counties, metric.data, '    ');
+        if (metric.thresholdVariants) {
+            output += ',\n    "thresholdVariants": {\n';
+            const keys = Object.keys(metric.thresholdVariants);
+            for (let k = 0; k < keys.length; k++) {
+                output += `      "${keys[k]}": {\n`;
+                output += serializeDataBlock(metric.counties, metric.thresholdVariants[keys[k]].data, '        ');
+                output += '\n      }' + (k < keys.length - 1 ? ',\n' : '\n');
+            }
+            output += '    }';
+        }
+        output += '\n  }' + (s < slugs.length - 1 ? ',\n' : '\n');
+    }
+    output += '};\n';
+    // Target path held in a variable (not inlined in the writeFileSync call) to match the
+    // existing idiom and keep validate's writer-allowlist filename scan from false-matching
+    // this script as a writer of the sibling data files it only mentions in comments.
+    const outPath = path.join(__dirname, '..', 'js', 'county-data.js');
+    fs.writeFileSync(outPath, output);
+}
+
+// Fetch + attach each registered threshold variant onto the built base metric.
+async function attachThresholdVariants(results, want) {
+    for (const [slug, spec] of Object.entries(COUNTY_FETCHERS)) {
+        if ((want && !want(slug)) || !results[slug] || !spec.variants) continue;
+        const tv = {};
+        for (const [key, fn] of Object.entries(spec.variants)) {
+            const vm = buildMetric(await fn());
+            if (vm) tv[key] = { data: vm.data };
+        }
+        if (Object.keys(tv).length) results[slug].thresholdVariants = tv;
+    }
+}
+
+// Re-fetch one metric's threshold variant(s) and merge into the existing file. The
+// existing base series is PRESERVED untouched; only the new variant block is added,
+// capped to the base's years. Keeps the change surgical (one metric, additive).
+async function runScoped(slug) {
+    const spec = COUNTY_FETCHERS[slug];
+    if (!spec || !spec.variants) { console.error(`No threshold-variant fetcher registered for ${slug}.`); process.exit(1); }
+    const existing = loadExistingCountyData();
+    const entry = existing[slug];
+    if (!entry) { console.error(`${slug} not found in existing js/county-data.js.`); process.exit(1); }
+    const keepYears = new Set(Object.keys(Object.values(entry.data)[0]));
+
+    const wrap = { [slug]: { counties: entry.counties, data: entry.data } };
+    await attachThresholdVariants(wrap, null);
+    if (!wrap[slug].thresholdVariants) { console.error(`Variant fetch produced no data; file left unchanged.`); process.exit(1); }
+    capMetricYears(wrap[slug], keepYears);
+
+    writeCountyData({ ...existing, [slug]: wrap[slug] });
+    console.log(`Scoped: added thresholdVariants to ${slug} in js/county-data.js (base preserved, years ${[...keepYears].sort().join(', ')}).`);
+}
+
 async function main() {
+    // Scoped single-metric rebuild: `node build-county-data.js <slug>` re-fetches just
+    // that metric (and its threshold variants) and MERGES it into the existing file,
+    // leaving every other metric byte-for-byte unchanged. Used to fix/add one metric
+    // without a full multi-source refetch (and without pulling in a newly-released year).
+    const SCOPE = process.argv[2] || null;
+    if (SCOPE) return runScoped(SCOPE);
+
     console.log('Building county-level data for Hawaii...\n');
 
     const results = {};
@@ -682,6 +817,10 @@ async function main() {
         if (metric) results['net_employer_formation'] = metric;
     }
 
+    // Threshold variants (e.g. renter cost burden 50%+) so the full rebuild ships them
+    // too — otherwise the next scheduled refresh would wipe the County tab's toggle data.
+    await attachThresholdVariants(results, null);
+
     // Floor check: every metric in EXPECTED_METRICS must be present.
     // If any are missing, a fetcher silently dropped its metric (most commonly
     // because the source returned HTML / a 5xx page that the try/catch
@@ -700,30 +839,10 @@ async function main() {
     }
 
     // Write output
-    const slugs = Object.keys(results);
-    let output = 'const COUNTY_DATA = {\n';
-    for (let s = 0; s < slugs.length; s++) {
-        const slug = slugs[s];
-        const metric = results[slug];
-        output += `  "${slug}": {\n`;
-        output += `    "counties": ${JSON.stringify(metric.counties)},\n`;
-        output += `    "data": {\n`;
-        const counties = metric.counties;
-        for (let c = 0; c < counties.length; c++) {
-            const county = counties[c];
-            output += `      "${county}": ${JSON.stringify(metric.data[county])}`;
-            output += c < counties.length - 1 ? ',\n' : '\n';
-        }
-        output += `    }\n`;
-        output += `  }`;
-        output += s < slugs.length - 1 ? ',\n' : '\n';
-    }
-    output += '};\n';
-
-    const outPath = path.join(__dirname, '..', 'js', 'county-data.js');
-    fs.writeFileSync(outPath, output);
+    writeCountyData(results);
 
     // Summary
+    const slugs = Object.keys(results);
     console.log(`\nDone! ${slugs.length} metrics written to js/county-data.js`);
     for (const slug of slugs) {
         const metric = results[slug];
