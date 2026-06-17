@@ -223,23 +223,26 @@ body {
     margin-top: 0.25rem;
 }
 
-/* "Watch a 3-minute tour" link in the header (jumps to /about/#tour) */
+/* "Watch a 3-minute tour" button in the header (jumps to /about/#tour).
+   Solid fill so it reads as the page's one call-to-action, not a footnote. */
 .tour-cta {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    margin-top: 0.85rem;
-    padding: 0.4rem 0.9rem;
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--hawaii-blue);
-    background: var(--hawaii-blue-light);
-    border: 1px solid transparent;
+    gap: 0.5rem;
+    margin-top: 1.1rem;
+    padding: 0.6rem 1.3rem;
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: #fff;
+    background: var(--hawaii-blue);
+    border: 1px solid var(--hawaii-blue);
     border-radius: var(--radius-pill);
     text-decoration: none;
-    transition: background 0.15s, border-color 0.15s;
+    box-shadow: var(--shadow-pop);
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
 }
-.tour-cta:hover { background: var(--card-bg); border-color: var(--hawaii-blue); }
+.tour-cta:hover { background: var(--hawaii-blue-dark); border-color: var(--hawaii-blue-dark); box-shadow: var(--shadow-card); transform: translateY(-1px); }
+.tour-cta:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
 .tour-cta-icon { flex-shrink: 0; }
 
 /* --- Question dropdown --- */
