@@ -13,6 +13,11 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .methods-section .criteria-list > li { padding: 0.3rem 0; }
 .methods-section .note-row { margin-top: 0.75rem; }
 
+/* Tour video (orientation walkthrough) — responsive 16:9 frame */
+.tour-video-wrap { position: relative; width: 100%; padding-top: 56.25%; margin-top: 1rem; border-radius: var(--radius-sm); overflow: hidden; background: #000; box-shadow: var(--shadow-soft); }
+.tour-video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border: 0; }
+@media print { .tour-video-wrap { display: none; } }
+
 .registry-wrap { margin-top: 0.5rem; }
 .registry-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--text-sm); }
 .registry-table thead th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: var(--text-2xs); text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }

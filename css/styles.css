@@ -223,6 +223,25 @@ body {
     margin-top: 0.25rem;
 }
 
+/* "Watch a 3-minute tour" link in the header (jumps to /about/#tour) */
+.tour-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+    padding: 0.4rem 0.9rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--hawaii-blue);
+    background: var(--hawaii-blue-light);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+}
+.tour-cta:hover { background: var(--card-bg); border-color: var(--hawaii-blue); }
+.tour-cta-icon { flex-shrink: 0; }
+
 /* --- Question dropdown --- */
 .question-search-wrap {
     position: relative;
