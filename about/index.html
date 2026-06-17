@@ -262,5 +262,23 @@
         <p class="footer-attribution">Developed by <a href="https://guild.consulting/" target="_blank" rel="noopener">GUILD Consulting</a> for Hawai&#x02BB;i residents.</p>
     </footer>
 
+    <!-- Auto-play the tour only when arrived via the homepage CTA (/about/?autoplay=1#tour).
+         A direct visit to /about/ has no param, so the video stays paused. -->
+    <script>
+    (function () {
+        if (!new URLSearchParams(location.search).has('autoplay')) return;
+        var video = document.querySelector('.tour-video');
+        if (!video) return;
+        // Strip the param so a reload counts as a direct visit (no replay loop).
+        history.replaceState(null, '', location.pathname + location.hash);
+        var section = document.getElementById('tour');
+        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Attempt playback with sound; browsers may gate autoplay-with-audio by
+        // media engagement, so swallow the rejection and leave the poster + controls.
+        var p = video.play();
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+    }());
+    </script>
+
 </body>
 </html>

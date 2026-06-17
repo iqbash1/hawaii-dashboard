@@ -241,7 +241,7 @@ body {
     box-shadow: var(--shadow-pop);
     transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
 }
-.tour-cta:hover { background: var(--hawaii-blue-dark); border-color: var(--hawaii-blue-dark); box-shadow: var(--shadow-card); transform: translateY(-1px); }
+.tour-cta:hover { color: #fff; background: var(--hawaii-blue-dark); border-color: var(--hawaii-blue-dark); box-shadow: var(--shadow-card); transform: translateY(-1px); }
 .tour-cta:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
 .tour-cta-icon { flex-shrink: 0; }
 
