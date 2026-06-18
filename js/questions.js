@@ -227,7 +227,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q070",
       "slug": "hawaii-is-among-the-states-with-the-lowest-voter-participation",
-      "claim": "Hawaiʻi is among the states with the lowest voter turnout.",
+      "claim": "Hawaiʻi is among the states with the lowest voter participation.",
       "correct": true,
       "answer": "Hawaiʻi has the #1 lowest value among 50 states in 2024 (50.3%).",
       "chartUrl": "/r/voter_participation_rate/",
@@ -539,7 +539,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q072",
       "slug": "hawaii-has-lower-voter-participation-than-california",
-      "claim": "Hawaiʻi has lower voter turnout than California.",
+      "claim": "Hawaiʻi has lower voter participation than California.",
       "correct": true,
       "answer": "In 2024, Hawaiʻi was 50.3% versus California at 62.3%.",
       "chartUrl": "/t/voter_participation_rate/ca/",
@@ -658,8 +658,8 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q073",
-      "slug": "voter-turnout-has-gone-down-in-hawaii-in-the-last-five-years",
-      "claim": "Voter turnout has gone down in Hawaiʻi in the last five years.",
+      "slug": "voter-participation-has-gone-down-in-hawaii-in-the-last-five-years",
+      "claim": "Voter participation has gone down in Hawaiʻi in the last five years.",
       "correct": true,
       "answer": "Hawaiʻi's voter participation rate went from 55.4% to 50.3% between 2020 and 2024 (-9.2%).",
       "chartUrl": "/t/voter_participation_rate/",
