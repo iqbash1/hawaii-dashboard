@@ -18,6 +18,7 @@
     "validate:strict": "node scripts/validate-data.js --strict",
     "validate:fresh": "node --env-file-if-exists=.env scripts/validate-data.js --fresh-fetch",
     "audit:drift": "node --env-file-if-exists=.env scripts/validate-data.js --audit-only --probe-floor",
+    "ga4:hawaii": "node --env-file-if-exists=.env scripts/ga4-hawaii-report.js",
     "audit": "python3 scripts/audit-internal.py",
     "audit-narratives": "node scripts/audit-narrative-numbers.js",
     "sync-qotd": "node scripts/sync-qotd-answers.js",
@@ -40,8 +41,10 @@
     "audit-metric": "node scripts/audit-metric.js"
   },
   "devDependencies": {
+    "@google-analytics/data": "^6.1.0",
     "eslint": "^10.4.0",
     "globals": "^17.6.0",
+    "nodemailer": "^9.0.1",
     "xlsx": "^0.18.5"
   }
 }
