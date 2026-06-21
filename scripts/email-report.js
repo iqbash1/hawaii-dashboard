@@ -15,18 +15,23 @@ const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
 
-// ---- locate the newest report -------------------------------------------------
-const dir = path.join(process.cwd(), '.analytics');
-const files = fs.existsSync(dir)
-    ? fs.readdirSync(dir).filter(f => /^ga4-hawaii-.*\.md$/.test(f)).sort()
-    : [];
-if (!files.length) {
-    console.error('No report found in .analytics/. Run scripts/ga4-hawaii-report.js first.');
-    process.exit(1);
+// ---- locate the report (argv path, else newest GA4 report) --------------------
+let file = process.argv[2] ? path.resolve(process.argv[2]) : null;
+if (file) {
+    if (!fs.existsSync(file)) { console.error('Report file not found: ' + process.argv[2]); process.exit(1); }
+} else {
+    const dir = path.join(process.cwd(), '.analytics');
+    const files = fs.existsSync(dir)
+        ? fs.readdirSync(dir).filter(f => /^ga4-hawaii-.*\.md$/.test(f)).sort()
+        : [];
+    if (!files.length) {
+        console.error('No report found in .analytics/. Run scripts/ga4-hawaii-report.js first.');
+        process.exit(1);
+    }
+    file = path.join(dir, files[files.length - 1]);
 }
-const file = path.join(dir, files[files.length - 1]);
 const md = fs.readFileSync(file, 'utf8');
-const reportDate = path.basename(file).replace(/^ga4-hawaii-/, '').replace(/\.md$/, '');
+const reportDate = path.basename(file).replace(/\.md$/, '').replace(/^ga4-hawaii-/, '').replace(/^health-/, '');
 
 // ---- minimal markdown -> HTML (only the constructs this report emits) ----------
 // Italic is handled per-line (not inline) so metric slugs like
@@ -123,7 +128,7 @@ const transporter = nodemailer.createTransport({
     await transporter.sendMail({
         from: MAIL_FROM || MAIL_USERNAME,
         to: MAIL_TO,
-        subject: `Weekly Hawaiʻi traffic snapshot (${reportDate})`,
+        subject: process.env.MAIL_SUBJECT || `Weekly Hawaiʻi traffic snapshot (${reportDate})`,
         text: md,
         html: body,
         attachments: [{ filename: path.basename(file), content: md }],

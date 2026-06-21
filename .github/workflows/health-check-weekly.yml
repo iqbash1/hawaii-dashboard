@@ -1,0 +1,53 @@
+name: Weekly dashboard health check
+
+# Runs the "State of the Dashboard" health check and emails the digest.
+# Dimensions: data integrity, live site, security headers, dependencies,
+# content style, SEO (sitemap + structured data), and a rollup of open
+# automated-alert issues.
+#
+# Schedule: Mondays 17:30 UTC (07:30 HST), just after the GA4 usage email.
+# Manual run: Actions tab, this workflow, "Run workflow".
+
+on:
+  schedule:
+    - cron: '30 17 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: health-check-weekly
+  cancel-in-progress: true
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Run health check
+        run: node scripts/health-check.js
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Email the digest
+        run: |
+          REPORT="$(ls -t .analytics/health-*.md | head -1)"
+          DATE="$(basename "$REPORT" .md | sed 's/^health-//')"
+          MAIL_SUBJECT="Dashboard health check ($DATE)" node scripts/email-report.js "$REPORT"
+        env:
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
