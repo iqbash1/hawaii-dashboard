@@ -143,7 +143,7 @@ const QOTD_QUESTIONS = [
   {
       "id": "q005",
       "slug": "most-hawaii-renters-spend-over-30-percent-on-rent",
-      "claim": "Fewer Hawaiʻi renter households are cost-burdened than in most states.",
+      "claim": "Fewer Hawaiʻi renters spend over 30% of their income on rent than in most states.",
       "correct": false,
       "answer": "In 2024, Hawaiʻi was 55.0% versus the median of 49.4%.",
       "chartUrl": "/r/renter_cost_burden_pct/",
