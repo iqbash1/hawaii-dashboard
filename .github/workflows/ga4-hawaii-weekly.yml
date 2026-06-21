@@ -1,9 +1,9 @@
-name: Hawaiʻi traffic — weekly email
+name: Weekly Hawaiʻi traffic email
 
 # Runs the GA4 Hawaiʻi-only usage report and emails it.
 # Geo-scoped to Hawaiʻi, so mainland datacenter/bot traffic is excluded.
 #
-# Schedule: Mondays 17:00 UTC (07:00 HST) — a start-of-week glance.
+# Schedule: Mondays 17:00 UTC (07:00 HST), a start-of-week glance.
 # Manual run: Actions tab → this workflow → "Run workflow".
 #
 # Secrets required:

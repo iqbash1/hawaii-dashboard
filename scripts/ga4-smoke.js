@@ -34,7 +34,7 @@ async function main() {
     const totUsers = Number(tot.rows?.[0]?.metricValues?.[0]?.value || 0);
 
     const rows = resp.rows || [];
-    console.log(`\nGA4 property ${PROPERTY_ID} — last 28 days\n`);
+    console.log(`\nGA4 property ${PROPERTY_ID}, last 28 days\n`);
     console.log('Top regions by active users:');
     for (const r of rows) {
         const region = r.dimensionValues[0].value || '(not set)';

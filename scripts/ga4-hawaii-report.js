@@ -17,7 +17,7 @@ const PROPERTY_ID = process.env.GA4_PROPERTY_ID;
 const DAYS = Number(process.argv[2]) || 28;
 
 if (!PROPERTY_ID) {
-    console.error('GA4_PROPERTY_ID not set — run via: node --env-file-if-exists=.env scripts/ga4-hawaii-report.js');
+    console.error('GA4_PROPERTY_ID not set. Run via: node --env-file-if-exists=.env scripts/ga4-hawaii-report.js');
     process.exit(1);
 }
 
@@ -45,7 +45,7 @@ function dur(totalSecs) {
     return m ? `${m}m ${s % 60}s` : `${s}s`;
 }
 function delta(cur, prev) {
-    if (!prev) return cur ? 'new' : '—';
+    if (!prev) return cur ? 'new' : 'n/a';
     const d = ((cur - prev) / prev) * 100;
     const arrow = d > 0.5 ? '▲' : d < -0.5 ? '▼' : '▬';
     return `${arrow} ${Math.abs(d).toFixed(0)}%`;
@@ -73,7 +73,7 @@ async function run(opts) {
 async function main() {
     const out = [];
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Honolulu' });
-    out.push(`# Hawaiʻi traffic — hawaiidashboard.org`);
+    out.push(`# Hawaiʻi traffic on hawaiidashboard.org`);
     out.push(`\n**Window:** last ${DAYS} days · **Generated:** ${today} · **Source:** GA4 property ${PROPERTY_ID}`);
     out.push(`\n_Scoped to visitors located in Hawaiʻi (US). Datacenter/bot regions are excluded by definition._\n`);
 
@@ -248,17 +248,17 @@ async function main() {
         out.push(`## Question of the Day (Hawaiʻi)\n`);
         out.push(mdTable(['Step', 'Count', 'vs. teaser'],
             [
-                ['Teaser viewed', fmtInt(teaser), '—'],
-                ['Answered', fmtInt(answered), teaser ? pct(answered / teaser) : '—'],
-                ['Chart viewed', fmtInt(eventMap['qotd_chart_viewed'] || 0), teaser ? pct((eventMap['qotd_chart_viewed'] || 0) / teaser) : '—'],
-                ['Shared', fmtInt(eventMap['qotd_share_clicked'] || 0), teaser ? pct((eventMap['qotd_share_clicked'] || 0) / teaser) : '—'],
-                ['Returned next day', fmtInt(ret), teaser ? pct(ret / teaser) : '—'],
+                ['Teaser viewed', fmtInt(teaser), 'n/a'],
+                ['Answered', fmtInt(answered), teaser ? pct(answered / teaser) : 'n/a'],
+                ['Chart viewed', fmtInt(eventMap['qotd_chart_viewed'] || 0), teaser ? pct((eventMap['qotd_chart_viewed'] || 0) / teaser) : 'n/a'],
+                ['Shared', fmtInt(eventMap['qotd_share_clicked'] || 0), teaser ? pct((eventMap['qotd_share_clicked'] || 0) / teaser) : 'n/a'],
+                ['Returned next day', fmtInt(ret), teaser ? pct(ret / teaser) : 'n/a'],
             ]));
         out.push('');
         summary.qotd = { teaser, answered };
     } catch (e) { out.push(`_Events section failed: ${e.message}_\n`); }
 
-    // 7) WHAT THEY OPEN, by metric — needs custom dimensions ----------------
+    // 7) WHAT THEY OPEN, by metric (needs custom dimensions) ----------------
     try {
         const [meta] = await client.getMetadata({ name: `${property}/metadata` });
         const customDims = (meta.dimensions || []).map(d => d.apiName).filter(n => n.startsWith('customEvent:'));
@@ -295,7 +295,7 @@ async function main() {
             }
         } else {
             out.push(`## Which metrics Hawaiʻi opens\n`);
-            out.push(`_Not available yet: the \`area\` / \`slug\` event params aren't registered as custom dimensions, so GA4 can't break \`modal_open\` down by metric. Register them (Admin API or GA4 UI) to unlock this — note it is **not** retroactive, so data accrues only from registration onward._\n`);
+            out.push(`_Not available yet: the \`area\` / \`slug\` event params aren't registered as custom dimensions, so GA4 can't break \`modal_open\` down by metric. Register them (Admin API or GA4 UI) to unlock this. Note it is **not** retroactive, so data accrues only from registration onward._\n`);
         }
     } catch (e) { out.push(`_Custom-dimension section skipped: ${e.message}_\n`); }
 
