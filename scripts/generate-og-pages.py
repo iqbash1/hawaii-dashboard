@@ -2109,7 +2109,7 @@ def generate_for_slug(slug, metric, area, state_data, county_data_all,
                 image_url=img_url, area=area
             )
 
-    # Trend-compare pages: one per state, for all 26 metrics (not just those
+    # Trend-compare pages: one per state, for all 27 metrics (not just those
     # with rank history). Each URL gets its own OG image so a shared link
     # previews Hawaiʻi vs that state's trend directly.
     state_entry = state_data.get(slug)

@@ -1002,7 +1002,7 @@ npm test
 | Test | What it catches |
 |------|----------------|
 | Page loads without JS errors | Any runtime exception on startup |
-| 26 metric cards render | Missing metric data or AREA_ORDER misconfiguration |
+| 27 metric cards render | Missing metric data or AREA_ORDER misconfiguration |
 | Each card shows a value and sparkline canvas | Card rendering incomplete |
 | All 3 modal tabs visible | CSS overflow clipping tab bar |
 | Trend chart renders | Wrong canvas ID or chart not initializing |

@@ -165,21 +165,21 @@ fi
 section "HOMEPAGE STRUCTURE"
 
 # Note: metric cards are JS-rendered, not in static HTML.
-# Check data.js (source of truth) for exactly 26 metrics via goodDirection field.
+# Check data.js (source of truth) for exactly 27 metrics via goodDirection field.
 data_js=$(curl -fsL --max-time 20 "${BASE}/js/data.js" 2>/dev/null) \
     || { fail "Could not fetch data.js"; data_js=""; }
 metric_count=$(echo "$data_js" | grep -c "goodDirection" 2>/dev/null || echo "0")
-if [ "$metric_count" -eq 26 ]; then
-    ok "data.js contains exactly 26 metrics (goodDirection entries)"
+if [ "$metric_count" -eq 27 ]; then
+    ok "data.js contains exactly 27 metrics (goodDirection entries)"
 else
-    fail "data.js has ${metric_count} metrics (expected 26)"
+    fail "data.js has ${metric_count} metrics (expected 27)"
 fi
 
-# Meta description confirms 26 metrics count (updated when metrics change)
-if echo "$html" | grep -q "26 metrics"; then
-    ok "index.html meta description references '26 metrics'"
+# Meta description confirms 27 metrics count (updated when metrics change)
+if echo "$html" | grep -q "27 metrics"; then
+    ok "index.html meta description references '27 metrics'"
 else
-    fail "index.html meta description does not reference '26 metrics'"
+    fail "index.html meta description does not reference '27 metrics'"
 fi
 
 # Skeleton cards confirm JS hydration shell is in place
@@ -311,18 +311,18 @@ if echo "$fyc_js_body" | grep -q "fyc-row"; then
 else
     fail "fyc.js missing fyc-row template (code may be broken)"
 fi
-# Check 2: data.js is loaded (26 metrics confirmed above; FYC uses the same data)
+# Check 2: data.js is loaded (27 metrics confirmed above; FYC uses the same data)
 if echo "$fyc_html" | grep -q "data\.js"; then
     ok "/five-year-change/ loads data.js"
 else
     fail "/five-year-change/ missing data.js script tag"
 fi
 
-# /about/ should mention "26 metrics"
-if echo "$about_html" | grep -q '26 metric'; then
-    ok "/about/ mentions '26 metric'"
+# /about/ should mention "27 metrics"
+if echo "$about_html" | grep -q '27 metric'; then
+    ok "/about/ mentions '27 metric'"
 else
-    warn "/about/ does not mention '26 metric' - may need update"
+    warn "/about/ does not mention '27 metric' - may need update"
 fi
 
 # Verify HTTP 200 for all primary pages

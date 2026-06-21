@@ -20,7 +20,7 @@
  *   net_employer_formation, labor_productivity
  *
  * Known-bad state-data (keep original data.js, use state-data for rankings only):
- *   (none - all 26 metrics verified against state-data.js)
+ *   (none - all 27 metrics verified against state-data.js)
  */
 
 const fs = require('fs');
