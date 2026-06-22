@@ -103,6 +103,7 @@ function renderPage({ years, slug }) {
         <a href="/faq/" class="top-nav-link">FAQ</a>
     </nav>
 
+    <main>
     <button class="fyc-print-btn" onclick="window.print()">Print / Save PDF</button>
 
     <header class="fyc-header">
@@ -121,6 +122,7 @@ ${renderSpanMenu(years)}
     <div class="fyc-container">
         <div id="fyc-content"></div>
     </div>
+    </main>
 
     <script src="../js/data.js?v=20260515a"></script>
     <script src="../js/state-data.js?v=20260515a"></script>
