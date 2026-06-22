@@ -2435,8 +2435,8 @@ async function main() {
         results[slug].data = dropHiMissingYears(results[slug].data, slug);
     }
 
-    // MERGE with existing state-data.js \u2014 this script live-fetches 25 of
-    // 26 metrics (all in EXPECTED_METRICS except pcp_per_100k, which is in
+    // MERGE with existing state-data.js \u2014 this script live-fetches 26 of
+    // 27 metrics (all in EXPECTED_METRICS except pcp_per_100k, which is in
     // PRESERVE_ONLY_METRICS). The merge preserves the previous file's
     // data for any metric that returns null this run, so a single transient
     // fetcher failure doesn't wipe a metric. A full overwrite would silently
