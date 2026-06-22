@@ -10,7 +10,10 @@ import sys
 from pathlib import Path
 from collections import defaultdict
 
-ROOT = Path("/Users/Iqbal/Desktop/hawaii-dashboard")
+# Repo root, derived from this file's location (scripts/) so the audit runs on
+# any machine. A hardcoded absolute path here made `npm run validate` throw
+# FileNotFoundError in CI, falsely reddening the weekly health check.
+ROOT = Path(__file__).resolve().parents[1]
 findings = defaultdict(list)
 
 
