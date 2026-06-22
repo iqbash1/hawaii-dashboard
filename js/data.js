@@ -1793,14 +1793,14 @@ const DASHBOARD_DATA = {
       "2013": 0.2467,
       "2014": 0.2307,
       "2015": 0.2279,
-      "2016": 0.2295,
+      "2016": 0.2296,
       "2017": 0.2408,
       "2018": 0.2428,
       "2019": 0.2611,
       "2020": 0.2222,
       "2022": 0.2155,
       "2023": 0.2162,
-      "2024": 0.1537
+      "2024": 0.1547
     },
     "medianSeries": {
       "2000": 0.0736,
@@ -1819,13 +1819,13 @@ const DASHBOARD_DATA = {
       "2014": 0.0736,
       "2015": 0.0835,
       "2016": 0.0895,
-      "2017": 0.0867,
+      "2017": 0.0868,
       "2018": 0.0791,
       "2019": 0.0776,
       "2020": 0.0836,
       "2022": 0.0744,
       "2023": 0.0708,
-      "2024": 0.0645
+      "2024": 0.0648
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Preventive maintenance funding</strong> · FHWA research shows preventive treatments applied while pavement is still in acceptable condition are four to five times more cost-effective than allowing roads to deteriorate to reconstruction <a href=\"https://www.fhwa.dot.gov/preservation/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's salt air, heavy rainfall, and volcanic soil accelerate deterioration faster than on the mainland.</li><li><strong>Revenue and asset management</strong> · Hawaiʻiʻs road usage charge launched for EVs in 2025 and expands to all vehicles by 2033, potentially restoring the revenue base <a href=\"https://hidot.hawaii.gov/hawai%CA%BBi-road-usage-charge-program/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Concentrating maintenance spending on the highest-traffic segments, where failure has no alternate route, yields the largest returns per dollar <a href=\"https://hidot.hawaii.gov/highways/files/2024/05/HDOT_TAMP_Final_May_2024.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Federal funding and project delivery</strong> · Federal infrastructure-law funds allocate roughly $510 million to Hawaiʻi over five years with state-of-good-repair requirements directing more to maintenance; Virginia's SMART SCALE program demonstrates how data-driven project scoring improves road condition more effectively than ad hoc capital spending <a href=\"https://smartscale.virginia.gov/how-it-works/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
     "nextUpdate": "Nov",
