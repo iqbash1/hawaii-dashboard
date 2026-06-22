@@ -6,6 +6,10 @@
 // Each check returns a status (green | yellow | red) plus a one-line detail.
 // Aggregates into a Markdown digest and prints a summary. Always exits 0 so a
 // CI mail step still runs; the status lives in the report content.
+//
+// Tier 2 (Performance + Accessibility) shells out to tests/audit-tier2.js, which
+// needs the tests/ browser deps (cd tests && npm ci && npx playwright install
+// chromium). Without them those two rows degrade to yellow; the rest still run.
 'use strict';
 
 const { execSync } = require('child_process');
@@ -161,6 +165,38 @@ function checkAlerts() {
     else add('Automated alerts', 'yellow', `${hot.length} open: ` + hot.slice(0, 4).map(i => `#${i.number} ${i.title}`).join('; '));
 }
 
+// ── Tier 2: Performance (Lighthouse desktop) + Accessibility (axe) ──────────
+// One browser run in tests/audit-tier2.js produces both rows. Live site by
+// default (HEALTH_SITE). Perf gates on the worst Lighthouse score across the
+// homepage + Change Summary; a11y gates on axe severity ("0 serious" = green).
+function checkTier2() {
+    const r = sh(`node tests/audit-tier2.js --json --site "${SITE}"`);
+    const degraded = (detail) => { add('Performance', 'yellow', detail); add('Accessibility', 'yellow', detail); };
+    if (!r.ok) {
+        const missing = /Cannot find module|MODULE_NOT_FOUND|playwright install/i.test(r.out);
+        return degraded(missing
+            ? 'audit deps not installed (cd tests && npm ci && npx playwright install chromium)'
+            : 'audit did not run: ' + lastLines(r.out, 2));
+    }
+    let data; try { data = JSON.parse(r.out); } catch { return degraded('could not parse audit output'); }
+    const { perf, a11y } = data;
+
+    // Performance: green ≥ 90, yellow ≥ 70, red below.
+    const worst = perf.pages.reduce((w, p) => (p.score < w.score ? p : w), perf.pages[0]);
+    const scores = perf.pages.map(p => `${p.path} ${p.score}`).join(', ');
+    const pStatus = perf.minScore >= 90 ? 'green' : perf.minScore >= 70 ? 'yellow' : 'red';
+    add('Performance', pStatus, `Lighthouse desktop: ${scores} (min ${perf.minScore}); worst page LCP ${worst.lcp}, CLS ${worst.cls}, TBT ${worst.tbt}`);
+
+    // Accessibility: red on any critical, yellow on any serious, else green.
+    const t = a11y.totals;
+    const aStatus = t.critical > 0 ? 'red' : t.serious > 0 ? 'yellow' : 'green';
+    const rules = [...new Set(a11y.pages.flatMap(p => p.rules))].filter(x => !x.startsWith('ERROR'));
+    const errs = a11y.pages.filter(p => p.rules.some(x => x.startsWith('ERROR'))).map(p => p.path);
+    add('Accessibility', aStatus, aStatus === 'green'
+        ? `0 critical, 0 serious across ${a11y.pages.length} pages (moderate ${t.moderate}, minor ${t.minor})${errs.length ? '; could not scan ' + errs.join(', ') : ''}`
+        : `${t.critical} critical, ${t.serious} serious, ${t.moderate} moderate across ${a11y.pages.length} pages: ${rules.slice(0, 5).join(', ')}`);
+}
+
 // ── run + render ────────────────────────────────────────────────────────────
 async function main() {
     await guard('Data integrity & consistency', checkData);
@@ -171,6 +207,7 @@ async function main() {
     await guard('SEO: sitemap', checkSitemap);
     await guard('SEO: structured data', checkJsonLd);
     await guard('Automated alerts', checkAlerts);
+    await guard('Tier 2 (perf + a11y)', checkTier2);
 
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Honolulu' });
     const dot = s => (s === 'green' ? '🟢' : s === 'yellow' ? '🟡' : '🔴');
@@ -185,7 +222,7 @@ async function main() {
     out.push(`| | Dimension | Detail |`);
     out.push(`| --- | --- | --- |`);
     for (const r of results) out.push(`| ${dot(r.status)} | ${r.name} | ${r.detail} |`);
-    out.push(`\n---\n_Tier 1 health check. Run on demand: \`npm run health\`. Red = blocker, yellow = attention, green = ok._`);
+    out.push(`\n---\n_Tier 1 (data, live site, security, deps, content, SEO, alerts) + Tier 2 (performance, accessibility). Run on demand: \`npm run health\`. Red = blocker, yellow = attention, green = ok._`);
 
     const dir = path.join(ROOT, '.analytics');
     fs.mkdirSync(dir, { recursive: true });

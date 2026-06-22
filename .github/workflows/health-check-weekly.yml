@@ -2,8 +2,9 @@ name: Weekly dashboard health check
 
 # Runs the "State of the Dashboard" health check and emails the digest.
 # Dimensions: data integrity, live site, security headers, dependencies,
-# content style, SEO (sitemap + structured data), and a rollup of open
-# automated-alert issues.
+# content style, SEO (sitemap + structured data), a rollup of open
+# automated-alert issues, and Tier 2 (Lighthouse performance + axe
+# accessibility, driven by tests/audit-tier2.js against the live site).
 #
 # Schedule: Mondays 17:30 UTC (07:30 HST), just after the GA4 usage email.
 # Manual run: Actions tab, this workflow, "Run workflow".
@@ -24,7 +25,7 @@ concurrency:
 jobs:
   health:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
 
@@ -33,6 +34,16 @@ jobs:
           node-version: '20'
 
       - run: npm ci
+
+      # Tier 2 deps (Lighthouse + axe + chromium) live in tests/ to keep the
+      # root lean. Reuses the same Playwright chromium as the smoke tests.
+      - name: Install Tier 2 audit deps
+        working-directory: tests
+        run: npm ci
+
+      - name: Install Playwright chromium
+        working-directory: tests
+        run: npx playwright install --with-deps chromium
 
       - name: Run health check
         run: node scripts/health-check.js
