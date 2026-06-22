@@ -87,6 +87,15 @@ const EXPECTED_BLOCK = [
     'www.gfoa.org',
     'prichardcommittee.org',
     'www.ers.usda.gov',
+    // Academic / state-ed / federal source hosts confirmed live in a browser (200)
+    // but 403/422/connect-timeout to the Node auditor even after 3 retries (2026-06-22).
+    'uhero.hawaii.edu',
+    'www.hawaii.edu',
+    'ahec.hawaii.edu',
+    'malegislature.gov',
+    'consortium.uchicago.edu',
+    'mdek12.org',
+    'aspe.hhs.gov',
 ];
 
 // Statuses to treat as "expected block" rather than broken, when the
