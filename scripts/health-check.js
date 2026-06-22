@@ -69,12 +69,20 @@ function checkSecurityHeaders() {
 // ── 4. Dependencies (npm audit) ─────────────────────────────────────────────
 function checkDeps() {
     const r = sh('npm audit --json');
-    let v = {};
-    try { v = (JSON.parse(r.out).metadata || {}).vulnerabilities || {}; } catch { add('Dependencies', 'yellow', 'could not parse npm audit'); return; }
+    let audit; try { audit = JSON.parse(r.out); } catch { add('Dependencies', 'yellow', 'could not parse npm audit'); return; }
+    const v = (audit.metadata || {}).vulnerabilities || {};
     const c = v.critical || 0, hi = v.high || 0, mo = v.moderate || 0, lo = v.low || 0;
+    // Accepted advisories: no fix available on npm AND not exploitable in this
+    // codebase. xlsx (SheetJS): CDN-only patch (blocked by corp TLS proxy); build
+    // parses a trusted federal HUD file and the browser export only writes xlsx,
+    // never parses untrusted input. Any new or non-accepted high/critical still trips.
+    const ACCEPTED = new Set(['xlsx']);
+    const pkgs = audit.vulnerabilities || {};
+    const severe = Object.keys(pkgs).filter(k => ['high', 'critical'].includes(pkgs[k].severity));
+    const unaccepted = severe.filter(p => !ACCEPTED.has(p));
     const detail = `critical ${c}, high ${hi}, moderate ${mo}, low ${lo}`;
-    if (c > 0) add('Dependencies', 'red', detail);
-    else if (hi > 0) add('Dependencies', 'yellow', detail + ' (dev-only tooling, not shipped to dist)');
+    if (unaccepted.length) add('Dependencies', c > 0 ? 'red' : 'yellow', `${detail}; review: ${unaccepted.join(', ')}`);
+    else if (severe.length) add('Dependencies', 'green', `${detail}; high/critical all reviewed + accepted (${severe.join(', ')}: no npm fix, non-exploitable here)`);
     else add('Dependencies', 'green', detail);
 }
 

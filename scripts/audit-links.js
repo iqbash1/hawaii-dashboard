@@ -81,6 +81,12 @@ const EXPECTED_BLOCK = [
     // sourceUrl host that times out to Node but is live in a browser (confirmed
     // 2026-06-07); was a standing false positive before this allowlist entry.
     'www.nasbo.org',
+    // Rainy-day-fund, NAEP, and food-insecurity source hosts that 403/timeout to
+    // automated clients but render fine in a browser (confirmed live 2026-06-22).
+    'www.pew.org',
+    'www.gfoa.org',
+    'prichardcommittee.org',
+    'www.ers.usda.gov',
 ];
 
 // Statuses to treat as "expected block" rather than broken, when the
