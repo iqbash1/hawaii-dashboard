@@ -24,7 +24,7 @@ const SITE = (siteIdx >= 0 && args[siteIdx + 1]) || process.env.HEALTH_SITE || '
 // Perf: homepage (the interactive app) + the second-heaviest interactive
 // template (Change Summary). A11y: one page of each distinct template.
 const PERF_PAGES = ['/', '/five-year-change/'];
-const A11Y_PAGES = ['/', '/five-year-change/', '/about/', '/off-the-charts/common-incomes-uncommon-costs/', '/c/acgr/'];
+const A11Y_PAGES = ['/', '/five-year-change/', '/about/', '/faq/', '/off-the-charts/common-incomes-uncommon-costs/', '/c/acgr/'];
 
 const log = (...a) => process.stderr.write(a.join(' ') + '\n'); // keep stdout clean for --json
 
