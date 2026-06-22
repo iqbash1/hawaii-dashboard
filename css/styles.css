@@ -33,7 +33,7 @@
     --card-bg: #FFFFFF;
     --text: #333333;
     --text-muted: #555555;
-    --hawaii-blue: #0D7C8F;
+    --hawaii-blue: #0C7081;
     --hawaii-blue-light: #EEF8FA;
     --hawaii-blue-dark: #1a6b8a;
     --text-2xs: 0.7rem;
@@ -51,7 +51,7 @@
     --positive-bg: rgba(5, 150, 105, 0.10);
     --negative: #991B1B;
     --negative-bg: rgba(192, 57, 43, 0.10);
-    --neutral: #c08a1a;
+    --neutral: #8f6700;
     --neutral-bg: #fef9e7;
     --border: #EAEAEA;
     --surface-subtle: #f5f6f8;
@@ -703,7 +703,7 @@ body {
     font-weight: 500;
     color: var(--hawaii-blue);
     cursor: pointer;
-    opacity: 0.8;
+    opacity: 1;
     display: inline-block;
     margin-left: auto;
     transition: opacity var(--transition);
@@ -1623,7 +1623,7 @@ body {
 .footer-updated {
     margin-top: 0.75rem;
     font-size: 0.8rem;
-    opacity: 0.7;
+    color: #6e6e6e;
 }
 
 .footer-attribution {

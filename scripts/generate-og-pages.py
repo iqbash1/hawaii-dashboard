@@ -1222,7 +1222,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
     html {{ -webkit-text-size-adjust: 100%; }}
     body {{ margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; color: #1f2933; background: #fafafa; line-height: 1.55; }}
     .wrap {{ max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }}
-    .crumbs {{ font-size: 0.8125rem; color: #6c7782; margin: 0 0 1rem; }}
+    .crumbs {{ font-size: 0.8125rem; color: #5d6770; margin: 0 0 1rem; }}
     .crumbs a {{ color: #4c5666; text-decoration: none; }}
     .crumbs a:hover {{ text-decoration: underline; }}
     .area-label {{ color: #4c5666; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }}
@@ -1241,7 +1241,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
     ul.related li {{ margin: 0.25rem 0; }}
     p {{ margin: 0.75rem 0; }}
     a {{ color: #0b4f6c; }}
-    .source {{ font-size: 0.8125rem; color: #6c7782; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e6e9ed; }}
+    .source {{ font-size: 0.8125rem; color: #5d6770; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e6e9ed; }}
     .source a {{ color: #4c5666; }}
     @media (max-width: 540px) {{
       h1 {{ font-size: 1.625rem; }}

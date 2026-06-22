@@ -51,8 +51,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--text); }
 .audience-table tbody tr:last-child td { border-bottom: none; }
 .audience-table tbody tr:hover td { background: var(--surface-subtle); }
 .audience-role { font-weight: 600; color: var(--text); white-space: nowrap; width: 18%; }
-.audience-table a { color: var(--hawaii-blue); text-decoration: none; }
-.audience-table a:hover { text-decoration: underline; }
+/* Inline prose links: underline so they are distinguishable without relying on
+   color alone (WCAG link-in-text-block). */
+.audience-table a { color: var(--hawaii-blue); text-decoration: underline; text-underline-offset: 2px; }
 
 .methods-footer-note { font-size: var(--text-sm); color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
 
