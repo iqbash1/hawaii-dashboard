@@ -577,7 +577,7 @@ const QOTD_QUESTIONS = [
       "slug": "of-all-counties-honolulu-has-the-most-college-graduates",
       "claim": "Of all counties, Honolulu has the highest share of college graduates.",
       "correct": true,
-      "answer": "In 2023, the county with the highest value was Honolulu at 39.6%.",
+      "answer": "In 2024, the county with the highest value was Honolulu at 40.1%.",
       "chartUrl": "/c/ba_or_higher_pct/",
       "metric": "ba_or_higher_pct",
       "metricLabel": "Adults with Bachelor's Degree+",
