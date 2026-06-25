@@ -164,6 +164,24 @@ jobs:
       - name: Refresh stale narrative year stamps
         run: node scripts/update-narrative-years.js --apply
 
+      # ----- Re-sync Question of the Day answers to the refreshed data -----
+      # When a metric advances (e.g. county ba_or_higher 2023 -> 2024), any
+      # QOTD whose answer cites that value drifts and fails the sync-qotd gate
+      # (gate 3 of `npm run validate`). This step regenerates the answer text
+      # in js/questions.js + the q/{id}/ pages so the monthly PR ships in sync.
+      # sync-qotd exits non-zero only if a V6 (5-year-change) question's
+      # TRUE/FALSE truth flips, an editorial event surfaced in the PR body +
+      # checklist below (never silent). Added 2026-06-25 after the June refresh
+      # advanced county data but left q100 drifted.
+      - name: Sync QOTD answers to refreshed data
+        id: sync_qotd
+        run: |
+          set +e
+          set -o pipefail
+          node scripts/sync-qotd-answers.js 2>&1 | tee /tmp/qotd-sync.txt
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+
       # ----- Update derived files -----
       - name: Update about/index.html year ranges
         run: node scripts/update-about-years.js
@@ -228,6 +246,9 @@ jobs:
           echo "summary<<EOF" >> "$GITHUB_OUTPUT"
           echo -e "$SUMMARY" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
+          # Also write to a file so the PR-body step can `cat` it without
+          # re-parsing the backtick-wrapped filenames through the shell.
+          echo -e "$SUMMARY" > /tmp/changes-summary.md
 
       # ----- Distinguish ERRORS from WARNINGS in the validator output -----
       # Both produce exit code 2 in --strict mode, but they need different
@@ -319,46 +340,53 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add js/state-data.js js/data.js js/county-data.js about/index.html
-          git add t/ r/ c/ rh/ assets/og/ 2>/dev/null || true
+          git add js/state-data.js js/data.js js/county-data.js js/questions.js about/index.html
+          git add t/ r/ c/ rh/ q/ assets/og/ 2>/dev/null || true
           git commit -m "Data refresh: $(date +%B\ %Y)
 
           Automated monthly data refresh from federal APIs.
           Run validation: $([ '${{ steps.errors.outputs.warning_count }}' = '0' ] && echo 'PASS' || echo 'PASS with ${{ steps.errors.outputs.warning_count }} warnings')"
           git push origin "$BRANCH"
 
-          # Build PR body
-          VALIDATION_STATUS=$([ '${{ steps.errors.outputs.warning_count }}' = '0' ] && echo 'All checks passed' || echo 'Passed with ${{ steps.errors.outputs.warning_count }} warnings (review below)')
-          BODY=$(cat <<'PREOF'
-          ## Monthly Data Refresh
-
-          **Validation**: $VALIDATION_STATUS
-
-          ### Files changed
-          ${{ steps.changes.outputs.summary }}
-
-          ### Validation output
-          <details><summary>Click to expand</summary>
-
-          ```
-          $(cat /tmp/validation-output.txt)
-          ```
-          </details>
-
-          ### Review checklist
-          - [ ] Spot-check a few metrics in the diff for plausibility
-          - [ ] Verify no unexpected metrics lost data
-          - [ ] Check for narrative staleness warnings in the validation output and update insight/crossInsight/rankHistoryNarrative fields as needed
-          - [ ] Preview the site after merge to confirm charts and rankings render correctly
-
-          ---
-          *Automated by [refresh-data workflow](../../actions/workflows/refresh-data.yml)*
-          PREOF
-          )
+          # Build PR body into a file. The previous `cat <<'PREOF'` quoted
+          # heredoc left $VALIDATION_STATUS and $(cat ...) as literal text in
+          # the PR. Assembling with echo/cat expands the shell vars and inlines
+          # the validation output + change summary from files (so the
+          # backtick-wrapped filenames in the summary are never re-parsed).
+          VALIDATION_STATUS=$([ '${{ steps.errors.outputs.warning_count }}' = '0' ] && echo 'All checks passed' || echo "Passed with ${{ steps.errors.outputs.warning_count }} warnings (review below)")
+          QOTD_STATUS=$([ '${{ steps.sync_qotd.outputs.exit_code }}' = '0' ] && echo 'In sync' || echo '⚠️ V6 truth flip or sync error — review the q/ changes before merge (see workflow log: Sync QOTD answers)')
+          {
+            echo "## Monthly Data Refresh"
+            echo ""
+            echo "**Validation**: $VALIDATION_STATUS"
+            echo ""
+            echo "**QOTD sync**: $QOTD_STATUS"
+            echo ""
+            echo "### Files changed"
+            cat /tmp/changes-summary.md
+            echo ""
+            echo "### Validation output"
+            echo "<details><summary>Click to expand</summary>"
+            echo ""
+            echo '```'
+            cat /tmp/validation-output.txt
+            echo '```'
+            echo "</details>"
+            echo ""
+            echo "### Review checklist"
+            echo "- [ ] Spot-check a few metrics in the diff for plausibility"
+            echo "- [ ] Verify no unexpected metrics lost data"
+            echo "- [ ] Check for narrative staleness warnings and update insight/crossInsight/rankHistoryNarrative fields as needed"
+            echo "- [ ] Review any QOTD answer changes in q/ (especially flagged V6 truth flips)"
+            echo "- [ ] Preview the site after merge to confirm charts and rankings render correctly"
+            echo ""
+            echo "---"
+            echo "*Automated by [refresh-data workflow](../../actions/workflows/refresh-data.yml)*"
+          } > /tmp/pr-body.md
 
           gh pr create \
             --title "Data refresh: $(date +%B\ %Y)" \
-            --body "$BODY" \
+            --body-file /tmp/pr-body.md \
             --label "data-refresh"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
