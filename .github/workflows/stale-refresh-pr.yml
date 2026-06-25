@@ -1,0 +1,160 @@
+name: Stale refresh PR nudge
+
+# Nudges when an automated monthly data-refresh PR sits unmerged too long.
+#
+# Why this exists: the refresh cron (refresh-data.yml) opens a PR with the
+# month's new federal data AND the refreshed latestMonthly `asOf` freshness
+# stamps. None of it reaches the live site until that PR merges, so a PR that
+# lingers means the dashboard keeps serving the prior month's values while the
+# `asOf` stamp silently ages. (Found 2026-06-25: PR #43 sat 2 days carrying
+# 6 county metrics' 2024 data + the asOf bumps.) The 45-day staleness
+# validator is the last-resort backstop; this is the early nudge.
+#
+# Rolling-issue pattern (same as cron-heartbeat / audit-links): maintains ONE
+# open `refresh-pr-stale` issue; edits its body on each run, auto-closes when
+# no data-refresh PR has been open longer than the threshold.
+#
+# Schedule: Thursdays 05:00 UTC. Refresh PRs open on the 23rd, so a weekly
+# check flags one still open ~10 days later (early next month). Runs in ~10s.
+
+on:
+  schedule:
+    - cron: '0 5 * * 4'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+concurrency:
+  group: stale-refresh-pr
+  cancel-in-progress: true
+
+env:
+  STALE_DAYS: '10'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Find oldest open data-refresh PR
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Oldest open PR carrying the data-refresh label (gh's built-in jq).
+          PR=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --label data-refresh \
+            --state open \
+            --json number,createdAt,url,title \
+            --jq 'sort_by(.createdAt) | .[0] // empty')
+          if [ -z "$PR" ]; then
+            echo "No open data-refresh PRs"
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          NUM=$(echo "$PR"     | jq -r '.number')
+          CREATED=$(echo "$PR" | jq -r '.createdAt')
+          URL=$(echo "$PR"     | jq -r '.url')
+          TITLE=$(echo "$PR"   | jq -r '.title')
+          NOW=$(date -u +%s)
+          CREATED_TS=$(date -u -d "$CREATED" +%s)
+          AGE=$(( (NOW - CREATED_TS) / 86400 ))
+          echo "Oldest open data-refresh PR: #$NUM ($AGE days old) - $TITLE"
+          {
+            echo "pr_number=$NUM"
+            echo "pr_url=$URL"
+            echo "pr_title=$TITLE"
+            echo "age_days=$AGE"
+            echo "created=$CREATED"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$AGE" -gt "${STALE_DAYS}" ]; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Maintain rolling refresh-pr-stale issue
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const stale     = '${{ steps.check.outputs.stale }}' === 'true';
+            const ageDays   = parseInt('${{ steps.check.outputs.age_days }}' || '0', 10);
+            const prNumber  = '${{ steps.check.outputs.pr_number }}';
+            const prUrl     = '${{ steps.check.outputs.pr_url }}';
+            const prTitle   = '${{ steps.check.outputs.pr_title }}';
+            const created   = '${{ steps.check.outputs.created }}';
+            const staleDays  = parseInt(process.env.STALE_DAYS || '10', 10);
+            const today = new Date().toISOString().slice(0, 10);
+
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'refresh-pr-stale',
+              per_page: 5,
+            });
+            const existing = open.data[0] || null;
+
+            if (!stale) {
+              if (existing) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  body: `No data-refresh PR has been open longer than ${staleDays} days as of ${today}. Closing.`,
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: existing.number,
+                  state: 'closed',
+                });
+              }
+              return;
+            }
+
+            const body = [
+              `Data-refresh [PR #${prNumber}](${prUrl}) ("${prTitle}") has been open for **${ageDays} days** (opened ${created.slice(0, 10)}), past the ${staleDays}-day nudge threshold.`,
+              '',
+              '**Why merge it:** the monthly refresh\'s new federal data and the `latestMonthly` `asOf` freshness stamps only reach the live site when this PR merges. Until then the dashboard keeps serving the prior month\'s values.',
+              '',
+              '**Review + merge:**',
+              '1. Fetch the branch and run the full gate suite: `npm run validate` (the auto-PR runs only `validate-data.js --strict`, so the local run also covers sync-qotd / FYC / OTC-meta).',
+              '2. Spot-check the diff for plausibility; large neighbor-island ACS swings are usually small-county sampling noise (Honolulu, tightest MOE, is the correctness anchor).',
+              '3. Merge (= live deploy) and verify the new SHA + a changed value on the live site.',
+              '',
+              `This issue auto-closes when no data-refresh PR has been open longer than ${staleDays} days.`,
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'Data-refresh PR awaiting review/merge',
+                body,
+                labels: ['refresh-pr-stale'],
+              });
+            }
+        env:
+          STALE_DAYS: ${{ env.STALE_DAYS }}
+
+      - name: Ensure refresh-pr-stale label exists
+        if: always()
+        run: |
+          gh label create refresh-pr-stale \
+            --repo "${{ github.repository }}" \
+            --description "Rolling nudge: a monthly data-refresh PR has been open past the review threshold" \
+            --color "fbca04" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
