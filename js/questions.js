@@ -214,15 +214,15 @@ const QOTD_QUESTIONS = [
   },
   {
       "id": "q059",
-      "slug": "hawaii-is-among-the-states-with-the-most-poor-roads",
-      "claim": "Hawaiʻi is among the states with the most poor roads.",
+      "slug": "hawaii-has-more-roads-in-poor-condition-than-most-states",
+      "claim": "Hawaiʻi has more roads in poor condition than most states.",
       "correct": true,
-      "answer": "Hawaiʻi has the #4 highest value among 50 states in 2024 (15.5%).",
+      "answer": "In 2024, Hawaiʻi was 15.5% versus the median of 6.5%.",
       "chartUrl": "/r/road_poor_pct/",
       "metric": "road_poor_pct",
       "metricLabel": "Roads in Poor Condition",
       "topic": "Infrastructure & Trust",
-      "variant": "V4"
+      "variant": "V1"
   },
   {
       "id": "q070",
