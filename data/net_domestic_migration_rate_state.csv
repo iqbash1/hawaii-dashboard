@@ -507,7 +507,6 @@ year,state,value
 2011,Colorado,53.6
 2011,Connecticut,-33.6
 2011,Delaware,31.6
-2011,District of Columbia,123.1
 2011,Florida,36.2
 2011,Georgia,17.6
 2011,Hawaiʻi,-6.5
@@ -538,7 +537,6 @@ year,state,value
 2011,Oklahoma,18.6
 2011,Oregon,29.6
 2011,Pennsylvania,-5.9
-2011,Puerto Rico,0
 2011,Rhode Island,-57.1
 2011,South Carolina,39
 2011,South Dakota,20.4
@@ -559,7 +557,6 @@ year,state,value
 2012,Colorado,53.8
 2012,Connecticut,-48.3
 2012,Delaware,35.1
-2012,District of Columbia,107
 2012,Florida,54.1
 2012,Georgia,15.2
 2012,Hawaiʻi,-22.1
@@ -590,7 +587,6 @@ year,state,value
 2012,Oklahoma,22.2
 2012,Oregon,28.1
 2012,Pennsylvania,-14.9
-2012,Puerto Rico,0
 2012,Rhode Island,-47.8
 2012,South Carolina,50.3
 2012,South Dakota,39.7
@@ -611,7 +607,6 @@ year,state,value
 2013,Colorado,68.3
 2013,Connecticut,-47.4
 2013,Delaware,35.9
-2013,District of Columbia,94.1
 2013,Florida,57.5
 2013,Georgia,-5.9
 2013,Hawaiʻi,-5.5
@@ -642,7 +637,6 @@ year,state,value
 2013,Oklahoma,36.1
 2013,Oregon,22.4
 2013,Pennsylvania,-23.6
-2013,Puerto Rico,0
 2013,Rhode Island,-43
 2013,South Carolina,61.8
 2013,South Dakota,45.2
@@ -663,7 +657,6 @@ year,state,value
 2014,Colorado,73.4
 2014,Connecticut,-69.8
 2014,Delaware,45.6
-2014,District of Columbia,27.1
 2014,Florida,74.9
 2014,Georgia,23
 2014,Hawaiʻi,-40.4
@@ -694,7 +687,6 @@ year,state,value
 2014,Oklahoma,10.9
 2014,Oregon,56.5
 2014,Pennsylvania,-28.6
-2014,Puerto Rico,0
 2014,Rhode Island,-33.5
 2014,South Carolina,83.1
 2014,South Dakota,4.6
@@ -715,7 +707,6 @@ year,state,value
 2015,Colorado,104.7
 2015,Connecticut,-83.4
 2015,Delaware,43.3
-2015,District of Columbia,47.9
 2015,Florida,98.6
 2015,Georgia,32.2
 2015,Hawaiʻi,-48.1
@@ -746,7 +737,6 @@ year,state,value
 2015,Oklahoma,21.4
 2015,Oregon,92.4
 2015,Pennsylvania,-34.2
-2015,Puerto Rico,0
 2015,Rhode Island,-48.6
 2015,South Carolina,101
 2015,South Dakota,-14.4
@@ -767,7 +757,6 @@ year,state,value
 2016,Colorado,89.3
 2016,Connecticut,-81.6
 2016,Delaware,35.8
-2016,District of Columbia,30.2
 2016,Florida,106.2
 2016,Georgia,37.5
 2016,Hawaiʻi,-80.4
@@ -798,7 +787,6 @@ year,state,value
 2016,Oklahoma,-11.1
 2016,Oregon,126.1
 2016,Pennsylvania,-39.4
-2016,Puerto Rico,0
 2016,Rhode Island,-42.2
 2016,South Carolina,101.9
 2016,South Dakota,14.5
@@ -819,7 +807,6 @@ year,state,value
 2017,Colorado,65.7
 2017,Connecticut,-66.3
 2017,Delaware,46.5
-2017,District of Columbia,14.1
 2017,Florida,79
 2017,Georgia,38.4
 2017,Hawaiʻi,-101.3
@@ -850,7 +837,6 @@ year,state,value
 2017,Oklahoma,-26.7
 2017,Oregon,91.5
 2017,Pennsylvania,-21.4
-2017,Puerto Rico,0
 2017,Rhode Island,-37
 2017,South Carolina,98.7
 2017,South Dakota,23.2
@@ -871,7 +857,6 @@ year,state,value
 2018,Colorado,75.3
 2018,Connecticut,-67.1
 2018,Delaware,71.3
-2018,District of Columbia,-4.6
 2018,Florida,64.2
 2018,Georgia,38.2
 2018,Hawaiʻi,-90.8
@@ -902,7 +887,6 @@ year,state,value
 2018,Oklahoma,-11.2
 2018,Oregon,66.5
 2018,Pennsylvania,-16.2
-2018,Puerto Rico,0
 2018,Rhode Island,-26.2
 2018,South Carolina,99.6
 2018,South Dakota,7.6
@@ -923,7 +907,6 @@ year,state,value
 2019,Colorado,54.7
 2019,Connecticut,-61.8
 2019,Delaware,71.8
-2019,District of Columbia,-31.3
 2019,Florida,62.7
 2019,Georgia,47
 2019,Hawaiʻi,-97.4
@@ -954,7 +937,6 @@ year,state,value
 2019,Oklahoma,9.7
 2019,Oregon,61.5
 2019,Pennsylvania,-15.3
-2019,Puerto Rico,0
 2019,Rhode Island,-30.4
 2019,South Carolina,103.7
 2019,South Dakota,10.9

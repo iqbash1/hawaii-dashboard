@@ -11,6 +11,10 @@ year,county,value
 2015,Honolulu,66.7
 2015,Kauaʻi,67.2
 2015,Maui,66.6
+2016,Hawaiʻi,57.2
+2016,Honolulu,67
+2016,Kauaʻi,67.2
+2016,Maui,67.3
 2017,Hawaiʻi,58.8
 2017,Honolulu,66.3
 2017,Kauaʻi,66.5
@@ -35,3 +39,6 @@ year,county,value
 2023,Honolulu,64.7
 2023,Kauaʻi,64.9
 2023,Maui,62.9
+2024,Hawaiʻi,55.5
+2024,Honolulu,65.6
+2024,Maui,63.4
