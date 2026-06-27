@@ -3,6 +3,10 @@
 
 from PIL import Image, ImageDraw, ImageFont
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from og_font import og_font
 
 W, H = 1200, 630
 OUT = os.path.join(os.path.dirname(__file__), '..', 'assets', 'og-image.png')
@@ -14,13 +18,10 @@ WHITE   = (255, 255, 255)
 LIGHT   = (200, 210, 218)
 TEAL    = (20, 148, 138)     # #14948A  the "Better" green/teal
 
-# Fonts
+# Fonts -- resolved through the shared og_font helper (scripts/og_font.py) so
+# the Mac and the Linux CI runner render identically.
 def font(size, bold=False):
-    # Use SF NS (San Francisco) for a clean Apple-native look
-    try:
-        return ImageFont.truetype('/System/Library/Fonts/SFNS.ttf', size)
-    except:
-        return ImageFont.truetype('/System/Library/Fonts/Helvetica.ttc', size)
+    return og_font(size, bold=bold)
 
 img = ImageDraw.Draw(im := Image.new('RGB', (W, H), BG))
 

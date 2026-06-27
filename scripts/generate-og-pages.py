@@ -40,6 +40,9 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from og_font import og_font
+
 # ── Paths ──────────────────────────────────────────────────────────
 BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 ASSETS_OG = os.path.join(BASE_DIR, 'assets', 'og')
@@ -105,22 +108,12 @@ BAR_GRAY   = (195, 205, 215)   # #C3CDD7  median-comparator bars
 FOOTER_BG  = (235, 237, 240)   # #EBEDF0  footer strip
 
 # ── Fonts ─────────────────────────────────────────────────────────
-_font_cache = {}
+# Resolved through the shared og_font helper (scripts/og_font.py) so the Mac
+# and the Linux CI runner render identically. The macOS-only font paths that
+# used to live here did not exist on CI, so PIL fell back to a tiny bitmap
+# default and shipped unreadable share cards.
 def font(size):
-    if size in _font_cache:
-        return _font_cache[size]
-    for path in ['/System/Library/Fonts/SFNS.ttf',
-                 '/System/Library/Fonts/Helvetica.ttc',
-                 '/System/Library/Fonts/Supplemental/Arial.ttf']:
-        try:
-            f = ImageFont.truetype(path, size)
-            _font_cache[size] = f
-            return f
-        except (IOError, OSError):
-            continue
-    f = ImageFont.load_default()
-    _font_cache[size] = f
-    return f
+    return og_font(size)
 
 
 # ── Data Extraction ───────────────────────────────────────────────

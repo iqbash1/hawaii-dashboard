@@ -13,8 +13,12 @@ Run: python3 scripts/generate-og-off-the-charts-posts.py
 
 from PIL import Image, ImageDraw, ImageFont
 import os
+import sys
 import random
 import math
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from og_font import og_font
 
 W, H = 1200, 630
 OUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'assets', 'og', 'off-the-charts')
@@ -95,25 +99,12 @@ POSTS = [
 ]
 
 
+# Resolved through the shared og_font helper (scripts/og_font.py) so the Mac
+# and the Linux CI runner render identically. The bold weight used to map to
+# SF Rounded locally; it now maps to Liberation Sans Bold (straight, not
+# rounded) everywhere.
 def font(size, weight='regular'):
-    candidates = {
-        'bold': [
-            '/System/Library/Fonts/SFNSRounded.ttf',
-            '/System/Library/Fonts/Supplemental/Arial Bold.ttf',
-            '/System/Library/Fonts/Helvetica.ttc',
-        ],
-        'regular': [
-            '/System/Library/Fonts/SFNS.ttf',
-            '/System/Library/Fonts/Helvetica.ttc',
-        ],
-    }
-    for path in candidates[weight]:
-        if os.path.exists(path):
-            try:
-                return ImageFont.truetype(path, size)
-            except Exception:
-                continue
-    return ImageFont.load_default()
+    return og_font(size, bold=(weight != 'regular'))
 
 
 def wrap_lines(text, fnt, max_width, draw):
