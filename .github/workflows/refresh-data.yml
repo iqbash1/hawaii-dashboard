@@ -33,7 +33,9 @@ jobs:
       - name: Install dependencies
         run: |
           npm install --production 2>/dev/null || true
-          pip install Pillow --quiet
+          # Pinned: OG cards are byte-reproducible only against a fixed Pillow.
+          # Bump deliberately (and regenerate the cards) rather than floating.
+          pip install "Pillow==11.3.0" --quiet
 
       # ----- One-time setup: ensure the data-refresh label exists -----
       # `gh pr create --label data-refresh` (below) hard-fails if the label is
@@ -341,7 +343,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add js/state-data.js js/data.js js/county-data.js js/questions.js about/index.html
-          git add t/ r/ c/ rh/ q/ assets/og/ 2>/dev/null || true
+          # data/ holds the generator's CSV exports (Dataset JSON-LD distribution
+          # URLs). Stage them too, otherwise generate-og-pages.py regenerates them
+          # each run but they are never committed and drift from js/state-data.js.
+          git add t/ r/ c/ rh/ q/ assets/og/ data/ 2>/dev/null || true
           git commit -m "Data refresh: $(date +%B\ %Y)
 
           Automated monthly data refresh from federal APIs.
