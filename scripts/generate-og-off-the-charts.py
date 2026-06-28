@@ -10,8 +10,12 @@ Run: python3 scripts/generate-og-off-the-charts.py
 
 from PIL import Image, ImageDraw, ImageFont
 import os
+import sys
 import random
 import math
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from og_font import og_font
 
 W, H = 1200, 630
 OUT = os.path.join(os.path.dirname(__file__), '..', 'assets', 'og', 'off-the-charts.png')
@@ -26,25 +30,12 @@ ACCENT   = (208, 49, 53)       # the dashboard's red, used for the outlier
 SLATE    = (56, 75, 91)        # the dashboard's slate, used for accent bar
 
 
+# Resolved through the shared og_font helper (scripts/og_font.py) so the Mac
+# and the Linux CI runner render identically. The bold weight used to map to
+# SF Rounded locally; it now maps to Liberation Sans Bold (straight, not
+# rounded) everywhere.
 def font(size, weight='regular'):
-    candidates = {
-        'bold': [
-            '/System/Library/Fonts/SFNSRounded.ttf',
-            '/System/Library/Fonts/Supplemental/Arial Bold.ttf',
-            '/System/Library/Fonts/Helvetica.ttc',
-        ],
-        'regular': [
-            '/System/Library/Fonts/SFNS.ttf',
-            '/System/Library/Fonts/Helvetica.ttc',
-        ],
-    }
-    for path in candidates[weight]:
-        if os.path.exists(path):
-            try:
-                return ImageFont.truetype(path, size)
-            except Exception:
-                continue
-    return ImageFont.load_default()
+    return og_font(size, bold=(weight != 'regular'))
 
 
 im = Image.new('RGB', (W, H), BG)

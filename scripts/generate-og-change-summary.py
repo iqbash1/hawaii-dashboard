@@ -8,6 +8,10 @@ generic Dashboard OG card when links are shared on social platforms.
 
 from PIL import Image, ImageDraw, ImageFont
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from og_font import og_font
 
 W, H = 1200, 630
 OUT = os.path.join(os.path.dirname(__file__), '..', 'assets', 'og-change-summary.png')
@@ -22,11 +26,10 @@ YELLOW    = (207, 161, 39)     # neutral / little-change
 TILE_BG   = (45, 62, 77)
 
 
+# Resolved through the shared og_font helper (scripts/og_font.py) so the Mac
+# and the Linux CI runner render identically.
 def font(size, bold=False):
-    try:
-        return ImageFont.truetype('/System/Library/Fonts/SFNS.ttf', size)
-    except Exception:
-        return ImageFont.truetype('/System/Library/Fonts/Helvetica.ttc', size)
+    return og_font(size, bold=bold)
 
 
 im = Image.new('RGB', (W, H), BG)
