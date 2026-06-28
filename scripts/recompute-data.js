@@ -215,30 +215,45 @@ function computeFromStateData(slug) {
 }
 
 /**
- * Compute medianSeries (50-state median) for a thresholdVariant data block.
- * The variant has the same shape as the main STATE_DATA[slug].data.
- * Returns { medianSeries } (no hawaii -- main hawaii is shared).
+ * Compute hawaii + medianSeries (50-state median) for a thresholdVariant data
+ * block. The variant has the same shape as the main STATE_DATA[slug].data.
+ *
+ * The variant carries its OWN Hawaiʻi series, distinct from the base: severe
+ * cost burden (~28%) is not the same as the 30%+ burden (~55%), very-low food
+ * security is not food insecurity, etc. So the overlay's hawaii must be
+ * re-derived here too -- it is NOT inherited from the base. (This previously
+ * returned medianSeries only, on the false "main hawaii is shared" assumption;
+ * that froze renter_cost_burden_pct/50's hawaii at 2023 while its medianSeries
+ * and state-data advanced to 2024, leaving the severe view a year stale.)
+ *
+ * hawaii is copied raw (no rounding), matching computeFromStateData; only the
+ * 50-state median is rounded. Returns { hawaii, medianSeries }.
  */
-function computeVariantMedianSeries(variantData, metricDef) {
+function computeVariantSeries(variantData, metricDef) {
     if (!variantData) return null;
     const firstKey = Object.keys(variantData)[0];
     const isPCPStyle = variantData[firstKey] && typeof variantData[firstKey] === 'object' && variantData[firstKey].name;
+    const hawaii = {};
     const medianSeries = {};
 
     if (isPCPStyle) {
         const entries = Object.values(variantData).filter(e => !NON_STATES.has(e.name));
+        const hiEntry = Object.values(variantData).find(e => isHawaii(e.name));
         // Collect union of years
         const yearSet = new Set();
         for (const e of entries) {
             for (const k of Object.keys(e)) if (k !== 'name') yearSet.add(k);
         }
         for (const year of [...yearSet].sort()) {
+            if (hiEntry && hiEntry[year] != null) hawaii[year] = hiEntry[year];
             const vals = entries.map(e => e[year]).filter(v => v != null && !isNaN(v));
             if (vals.length >= 25) medianSeries[year] = round(median(vals), metricDef);
         }
     } else {
         for (const year of Object.keys(variantData).sort()) {
             const yearData = variantData[year];
+            const hiKey = Object.keys(yearData).find(isHawaii);
+            if (hiKey && yearData[hiKey] != null) hawaii[year] = yearData[hiKey];
             const allVals = Object.entries(yearData)
                 .filter(([state]) => !NON_STATES.has(state))
                 .map(([, val]) => val)
@@ -247,7 +262,7 @@ function computeVariantMedianSeries(variantData, metricDef) {
         }
     }
 
-    return { medianSeries };
+    return { hawaii, medianSeries };
 }
 
 /**
@@ -410,7 +425,9 @@ for (const slug of RECOMPUTE_METRICS) {
     }
 }
 
-// Recompute thresholdVariants medianSeries from STATE_DATA[slug].thresholdVariants
+// Recompute thresholdVariants hawaii + medianSeries from STATE_DATA[slug].thresholdVariants.
+// Year-level merge (same as the base series): replace/add years state-data covers,
+// keep older data.js years it does not, so legacy backfilled years survive.
 console.log('\nRecomputing thresholdVariants:');
 for (const slug of Object.keys(DASHBOARD_DATA)) {
     const dd = DASHBOARD_DATA[slug];
@@ -418,27 +435,37 @@ for (const slug of Object.keys(DASHBOARD_DATA)) {
     if (!dd || !dd.thresholdVariants || !sd || !sd.thresholdVariants) continue;
 
     for (const [variantKey, variantEntry] of Object.entries(sd.thresholdVariants)) {
-        if (!dd.thresholdVariants[variantKey]) continue;
+        const tv = dd.thresholdVariants[variantKey];
+        if (!tv) continue;
         if (!variantEntry || !variantEntry.data) continue;
-        const computed = computeVariantMedianSeries(variantEntry.data, dd);
+        const computed = computeVariantSeries(variantEntry.data, dd);
         if (!computed || Object.keys(computed.medianSeries).length === 0) continue;
 
-        const oldAvg = { ...dd.thresholdVariants[variantKey].medianSeries };
-        const computedYears = new Set(Object.keys(computed.medianSeries));
-        const newAvg = {};
-        for (const [year, val] of Object.entries(oldAvg)) {
-            if (!computedYears.has(year)) newAvg[year] = val;
-        }
-        for (const [year, val] of Object.entries(computed.medianSeries)) {
-            newAvg[year] = val;
-        }
-        const sorted = {};
-        Object.keys(newAvg).sort().forEach(k => sorted[k] = newAvg[k]);
-        dd.thresholdVariants[variantKey].medianSeries = sorted;
+        // Year-level merge helper: old years not covered by state-data are kept.
+        const mergeYears = (oldObj, computedObj) => {
+            const computedYears = new Set(Object.keys(computedObj));
+            const out = {};
+            for (const [year, val] of Object.entries(oldObj || {})) {
+                if (!computedYears.has(year)) out[year] = val;
+            }
+            for (const [year, val] of Object.entries(computedObj)) out[year] = val;
+            const sorted = {};
+            Object.keys(out).sort().forEach(k => sorted[k] = out[k]);
+            return sorted;
+        };
 
-        const years = Object.keys(sorted);
-        const lastYr = years[years.length - 1];
-        console.log(`  ${slug}/${variantKey}: ${years.length} yrs, median=${sorted[lastYr]}`);
+        // Hawaiʻi: the overlay's own series (severe / very-low / total). Without
+        // this the overlay hawaii silently lags state-data after a refresh.
+        if (Object.keys(computed.hawaii).length > 0) {
+            tv.hawaii = mergeYears(tv.hawaii, computed.hawaii);
+        }
+        tv.medianSeries = mergeYears(tv.medianSeries, computed.medianSeries);
+
+        const mYears = Object.keys(tv.medianSeries);
+        const mLast = mYears[mYears.length - 1];
+        const hYears = Object.keys(tv.hawaii || {});
+        const hLast = hYears[hYears.length - 1];
+        console.log(`  ${slug}/${variantKey}: HI=${tv.hawaii ? tv.hawaii[hLast] : 'n/a'} (${hLast || '-'}), median=${tv.medianSeries[mLast]} (${mLast})`);
     }
 }
 

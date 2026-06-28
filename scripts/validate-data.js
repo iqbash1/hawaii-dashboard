@@ -1597,6 +1597,26 @@ for (const [slug, env] of Object.entries(LATEST_MONTHLY_ENVELOPE)) {
                 error(`[${slug}/${vk}] data.js defines threshold variant but state-data.${slug}.thresholdVariants["${vk}"] is missing/empty: comparator + rank + effective Hawaiʻi will silently fall back to base ${slug} values while the chart's Hawaiʻi line reads the variant. Add the variant data to state-data (fetcher should return it via thresholdVariants).`);
                 issues++;
                 auditCriticalErrors++;
+            } else if (dv.hawaii && Object.keys(dv.hawaii).length) {
+                // Freshness: the overlay's Hawaiʻi series is re-derived from the
+                // state-data variant by recompute-data.js, in lockstep with its
+                // medianSeries. If hawaii lags its own median (e.g. stuck at 2023
+                // while median + state-data advanced to 2024), the severe Trend
+                // view silently shows a stale latest year while the rankings use
+                // the fresh one. This is exactly how renter_cost_burden_pct/50
+                // drifted (fixed 2026-06-28): Section 17 confirmed the variant
+                // EXISTED but never that its Hawaiʻi series kept pace.
+                const lastYr = o => {
+                    const ys = Object.keys(o || {}).filter(k => /^\d{4}/.test(k)).sort();
+                    return ys[ys.length - 1];
+                };
+                const hiLast = lastYr(dv.hawaii);
+                const medLast = lastYr(dv.medianSeries);
+                if (hiLast && medLast && hiLast < medLast) {
+                    error(`[${slug}/${vk}] overlay Hawaiʻi series ends ${hiLast} but its medianSeries ends ${medLast}: the severe-view trend is a year stale vs its own median (and vs state-data). Run \`node scripts/recompute-data.js\` to re-derive the overlay Hawaiʻi series.`);
+                    issues++;
+                    auditCriticalErrors++;
+                }
             }
         }
     }
