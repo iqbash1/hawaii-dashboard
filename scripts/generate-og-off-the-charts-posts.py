@@ -11,7 +11,7 @@ Output: /assets/og/off-the-charts/{slug}.png
 Run: python3 scripts/generate-og-off-the-charts-posts.py
 """
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import os
 import sys
 import random
