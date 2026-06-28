@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate Open Graph preview image for Hawaiʻi Dashboard (1200x630)."""
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import os
 import sys
 

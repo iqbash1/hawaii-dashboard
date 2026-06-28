@@ -6,7 +6,7 @@ One shared image for all five routes (/five-, /ten-, /fifteen-, /twenty-,
 generic Dashboard OG card when links are shared on social platforms.
 """
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import os
 import sys
 

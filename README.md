@@ -58,6 +58,7 @@ data/{slug}_county.csv       Static per-metric county series (when county data
 assets/og/                   Open Graph preview images (1200x630)
 assets/og/q/                 Per-question QOTD OG cards
 assets/og/off-the-charts/    Per-post OTC OG cards
+assets/fonts/                Bundled TTFs for OG card rendering (Liberation Sans, SIL OFL 1.1)
 tests/
   utils.test.js         Unit tests for utils.js (Node.js built-in test runner)
   compute.test.js       Unit tests for compute.js
