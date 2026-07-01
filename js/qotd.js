@@ -53,14 +53,26 @@ const QOTD = {
         return QOTD_QUESTIONS.find(q => q.id === id) || null;
     },
 
-    /** Answer-state is keyed by question id. */
+    /**
+     * Storage key for an answer. Scoped by BOTH day index and question id so
+     * a question that recurs after the 54-question bank wraps (dayIndex >= 54)
+     * gets a fresh claim + True/False buttons instead of replaying the proof
+     * view a returning visitor saw in the first cycle. Mirrors how dismissed
+     * state is keyed per day index.
+     * @private
+     */
+    _answerKey(id) {
+        return `${QOTD_STORAGE_PREFIX}.answer.${this.dayIndex()}.${id}`;
+    },
+
+    /** Answer-state is keyed by day index + question id (see _answerKey). */
     hasAnswered(id) {
         return !!this.getAnswer(id);
     },
 
     getAnswer(id) {
         try {
-            const raw = localStorage.getItem(`${QOTD_STORAGE_PREFIX}.answer.${id}`);
+            const raw = localStorage.getItem(this._answerKey(id));
             return raw ? JSON.parse(raw) : null;
         } catch (e) {
             return null;
@@ -70,7 +82,7 @@ const QOTD = {
     recordAnswer(id, picked, correct) {
         try {
             localStorage.setItem(
-                `${QOTD_STORAGE_PREFIX}.answer.${id}`,
+                this._answerKey(id),
                 JSON.stringify({ picked, correct, ts: Date.now() })
             );
         } catch (e) {
