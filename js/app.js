@@ -972,6 +972,28 @@ const App = {
     // Card Rendering
     // ----------------------------------------------------------------
     /**
+     * Build the Off the Charts strip: one full-width link row with the
+     * day's rotating story. Kept to a single line (eyebrow + title + CTA)
+     * so it reads as a signpost, not a second banner.
+     */
+    buildOtcStrip() {
+        const post = OTC_POSTS[Math.floor(Date.now() / 86400000) % OTC_POSTS.length];
+        const strip = document.createElement('a');
+        strip.className = 'otc-strip';
+        strip.href = `/off-the-charts/${post.slug}/`;
+        strip.setAttribute('aria-label', `Off the Charts: ${post.title}`);
+        strip.innerHTML = `
+            <span class="otc-strip-eyebrow">Off the Charts</span>
+            <span class="otc-strip-title">${post.title}</span>
+            <span class="otc-strip-cta">Read the story →</span>
+        `;
+        strip.addEventListener('click', () => {
+            this._trackEvent('otc_teaser_clicked', { slug: post.slug, surface: 'home_strip' });
+        });
+        return strip;
+    },
+
+    /**
      * Render all metric cards grouped by policy area.
      * Creates area headings, card HTML, sparkline charts, and click handlers.
      */
@@ -994,6 +1016,13 @@ const App = {
             <span class="chart-key-item"><svg class="chart-key-stroke" width="20" height="6" viewBox="0 0 20 6"><line x1="0" y1="3" x2="20" y2="3" stroke="#999" stroke-width="1.5" stroke-dasharray="3 3"/></svg><span>US</span></span>
         </span>`;
         this.AREA_ORDER.forEach((areaGroup, idx) => {
+            // Off the Charts strip: a single one-line story teaser between
+            // the first and second policy-area sections. Rotates daily
+            // through the post bank (generated js/otc-posts.js) so every
+            // story gets surfaced without adding a second banner up top.
+            if (idx === 1 && typeof OTC_POSTS !== 'undefined' && OTC_POSTS.length) {
+                grid.appendChild(this.buildOtcStrip());
+            }
             // Section heading for this area
             const section = document.createElement('div');
             section.className = 'area-section-heading';

@@ -396,8 +396,9 @@ const Modal = {
         // fields whyItMatters / howToRead / potentialDrivers / policyLevers
         // / dataNote are folded into _buildConsolidatedNarrative below.
         const consolidatedEl = document.getElementById('modal-consolidated');
-        consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
+        consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData, slug);
         consolidatedEl.style.display = '';
+        Modal._wireOtcLink(consolidatedEl);
 
         // Source definition bar - shown below the tab bar, visible on all tabs
         const officialEl = document.getElementById('modal-official-name');
@@ -1108,7 +1109,8 @@ const Modal = {
         // Update consolidated narrative
         const consolidatedEl = document.getElementById('modal-consolidated');
         if (consolidatedEl) {
-            consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData);
+            consolidatedEl.innerHTML = Modal._buildConsolidatedNarrative(metricData, slug);
+            Modal._wireOtcLink(consolidatedEl);
         }
 
         // Re-render whichever tab is currently visible
@@ -1260,6 +1262,20 @@ const Modal = {
      * when content is empty (except for unconditional sections which skip
      * the truthy check at the callsite).
      */
+    /**
+     * Attach the analytics handler to the narrative's Off the Charts link
+     * (if present). Called after each innerHTML rebuild of the narrative.
+     */
+    _wireOtcLink(containerEl) {
+        const a = containerEl && containerEl.querySelector('.cn-otc-link a');
+        if (!a) return;
+        a.addEventListener('click', () => {
+            if (typeof App !== 'undefined' && App._trackEvent) {
+                App._trackEvent('otc_teaser_clicked', { slug: a.dataset.otcSlug, surface: 'modal' });
+            }
+        });
+    },
+
     _section(heading, content, asDetails, extraClass) {
         if (!content) return '';
         const cls = `cn-section${extraClass ? ' ' + extraClass : ''}`;
@@ -1269,7 +1285,7 @@ const Modal = {
         return `<div class="${cls}"><h3 class="cn-heading">${heading}</h3><p class="cn-text">${content}</p></div>`;
     },
 
-    _buildConsolidatedNarrative(m) {
+    _buildConsolidatedNarrative(m, slug) {
         const narr = m.rankHistoryNarrative;
         const linkedItem = (x, cls) => {
             const src = x.source ? `<a href="${x.source.url}" target="_blank" rel="noopener" class="cn-source">\u2192 ${x.source.label}</a>` : '';
@@ -1289,6 +1305,14 @@ const Modal = {
         let outer = Modal._section('How to read the chart', m.howToRead, true, 'modal-how-toggle');
         outer += Modal._section('Why it matters',    m.whyItMatters);
         outer += Modal._section('Status', narr && narr.summary);
+
+        // One-line pointer to the Off the Charts story behind this metric,
+        // when one exists (generated js/otc-posts.js). Deliberately a single
+        // link line, not a section, to keep the narrative uncluttered.
+        const otcPost = (typeof otcPostForMetric !== 'undefined' && slug) ? otcPostForMetric(slug) : null;
+        if (otcPost) {
+            outer += `<p class="cn-otc-link"><span class="cn-otc-eyebrow">Off the Charts</span> <a href="/off-the-charts/${otcPost.slug}/" data-otc-slug="${otcPost.slug}">${otcPost.title} →</a></p>`;
+        }
 
         let deep = '';
         deep += Modal._section('County breakdown',     m.countyNarrative);

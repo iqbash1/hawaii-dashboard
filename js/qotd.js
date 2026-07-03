@@ -369,6 +369,13 @@ const QOTD = {
             const whyBlock = whyItMatters
                 ? `<p class="qotd-why-it-matters"><span class="qotd-metric-label">Why it matters:</span> ${this._escape(whyItMatters)}</p>`
                 : '';
+            // One-line pointer to the Off the Charts story on this metric,
+            // when one exists. Sits above the come-back-tomorrow footer so
+            // the proof view ends with a next step, not a dead end.
+            const otcPost = (typeof otcPostForMetric !== 'undefined') ? otcPostForMetric(q.metric) : null;
+            const otcBlock = otcPost
+                ? `<p class="qotd-otc-link"><span class="qotd-otc-eyebrow">Off the Charts</span> <a href="/off-the-charts/${otcPost.slug}/" data-otc-slug="${otcPost.slug}">${this._escape(otcPost.title)} →</a></p>`
+                : '';
             host.innerHTML = `
                 <div class="qotd-teaser-inner qotd-teaser-inner--proof">
                     ${closeBtn}
@@ -390,6 +397,7 @@ const QOTD = {
                         </button>
                         <a class="qotd-link" href="${q.chartUrl}" aria-label="View full chart">View full chart →</a>
                     </div>
+                    ${otcBlock}
                     <p class="qotd-teaser-footer">Come back tomorrow for a new question.</p>
                 </div>
             `;
@@ -424,6 +432,11 @@ const QOTD = {
         });
         host.querySelector('[data-action="share"]')?.addEventListener('click', (e) => this._handleShare(q.id, e.currentTarget));
         host.querySelector('[data-action="close"]')?.addEventListener('click', () => this._closeTeaser());
+        host.querySelector('.qotd-otc-link a')?.addEventListener('click', (e) => {
+            if (typeof App !== 'undefined' && App._trackEvent) {
+                App._trackEvent('otc_teaser_clicked', { slug: e.currentTarget.dataset.otcSlug, surface: 'qotd' });
+            }
+        });
 
         if (typeof App !== 'undefined' && App._trackEvent) {
             App._trackEvent('qotd_teaser_viewed', { id: q.id, answered: this.hasAnswered(q.id) });

@@ -2608,3 +2608,127 @@ body {
         right: 0.5rem;
     }
 }
+
+/* --- Off the Charts cross-surfaces ------------------------------------
+   Three slim signposts that route dashboard attention to the matching
+   Off the Charts story: a rotating one-line strip on the homepage grid,
+   a single link line in the deep-dive narrative, and a link line in the
+   QOTD proof view. All read from generated js/otc-posts.js. Kept to one
+   line each on purpose; these are signposts, not banners. */
+
+/* Homepage strip (inside .dashboard-grid, spans all columns) */
+.otc-strip {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    margin: 0.5rem 0 0.25rem;
+    padding: 0.7rem 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--hawaii-blue);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.otc-strip:hover {
+    border-color: var(--hawaii-blue);
+    box-shadow: 0 2px 8px rgba(12, 112, 129, 0.12);
+}
+.otc-strip-eyebrow {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hawaii-blue);
+    font-weight: 600;
+}
+.otc-strip-title {
+    flex: 0 1 auto;
+    font-size: var(--text-md);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.45;
+}
+.otc-strip-cta {
+    flex-shrink: 0;
+    margin-left: auto;
+    font-size: var(--text-sm);
+    color: var(--hawaii-blue);
+    font-weight: 600;
+    white-space: nowrap;
+}
+@media (max-width: 600px) {
+    .otc-strip { padding: 0.7rem 1rem; gap: 0.35rem 0.9rem; }
+    .otc-strip-cta { margin-left: 0; }
+}
+
+/* Deep-dive modal narrative link line */
+.cn-otc-link {
+    margin: 0.75rem 0 0.5rem;
+    font-size: var(--text-base);
+    line-height: 1.5;
+}
+.cn-otc-link .cn-otc-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-right: 0.35rem;
+}
+.cn-otc-link a {
+    color: var(--hawaii-blue);
+    font-weight: 600;
+    text-decoration: none;
+}
+.cn-otc-link a:hover { text-decoration: underline; }
+
+/* QOTD proof-view link line (mirrors the modal treatment) */
+.qotd-otc-link {
+    margin: 0.75rem 0 0;
+    font-size: var(--text-base);
+    line-height: 1.5;
+}
+.qotd-otc-link .qotd-otc-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-right: 0.35rem;
+}
+.qotd-otc-link a {
+    color: var(--hawaii-blue);
+    font-weight: 600;
+    text-decoration: none;
+}
+.qotd-otc-link a:hover { text-decoration: underline; }
+
+/* Post-page "Read next" block (rendered statically in each post between
+   the article and the all-posts back link; kin picked editorially) */
+.otc-read-next {
+    max-width: 720px;
+    margin: 2.5rem auto 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--hawaii-blue-light);
+    border-left: 3px solid var(--hawaii-blue);
+    border-radius: var(--radius);
+}
+.otc-read-next-label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+.otc-read-next a {
+    color: var(--hawaii-blue);
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+}
+.otc-read-next a:hover { text-decoration: underline; }

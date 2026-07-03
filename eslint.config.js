@@ -27,6 +27,8 @@ module.exports = [
                 STATE_ABBREVS: 'writable',
                 QOTD: 'writable',
                 QOTD_QUESTIONS: 'readonly',
+                OTC_POSTS: 'readonly',
+                otcPostForMetric: 'readonly',
                 THRESHOLD_CONFIG: 'readonly',
                 // Third-party libraries loaded via <script>
                 Chart: 'readonly',
