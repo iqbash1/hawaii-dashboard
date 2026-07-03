@@ -11,6 +11,9 @@
 #
 #   2. audit-narrative-numbers.js --gate
 #        - exit 1 = some narrative claim disagrees with computed value → FAIL
+#        - WARN lines (county / superlative / since-year / quantifier
+#          shapes added 2026-07) are advisory and do NOT fail this gate.
+#          Once the WARN backlog is clean, promote by adding --gate-new.
 #
 #   3. sync-qotd-answers.js --check
 #        - exit 1 = a QOTD answer would change if regenerated → FAIL
