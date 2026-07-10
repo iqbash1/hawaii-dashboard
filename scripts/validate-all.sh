@@ -1,7 +1,7 @@
 #!/bin/bash
 # Aggregated validation gate for `npm run validate`.
 #
-# Runs seven checks in sequence and ALWAYS runs all seven so every
+# Runs eight checks in sequence and ALWAYS runs all eight so every
 # issue surfaces in a single pass:
 #
 #   1. validate-data.js
@@ -41,6 +41,13 @@
 #          twitter:description / JSON-LD description fields. Run
 #          `npm run sync-otc-meta` to fix.
 #
+#   8. audit-otc-numbers.js (WARN lane)
+#        - flags an Off the Charts post whose stated number no longer matches
+#          live data (the class of bug where a refresh updates the metric but
+#          not the post that quotes it). Advisory for now — surfaces drift but
+#          does NOT fail the build. Promote to a hard gate (--gate sets FAIL)
+#          once the specs are proven stable across a refresh cycle.
+#
 # Aggregated exit code: 0 if all pass, 1 if any hard check failed.
 
 cd "$(dirname "$0")/.."
@@ -48,7 +55,7 @@ cd "$(dirname "$0")/.."
 set +e
 FAIL=0
 
-echo "── 1/7 validate-data.js ──"
+echo "── 1/8 validate-data.js ──"
 node scripts/validate-data.js
 V=$?
 if [ $V -eq 2 ]; then
@@ -57,7 +64,7 @@ if [ $V -eq 2 ]; then
 fi
 
 echo ""
-echo "── 2/7 audit-narrative-numbers.js --gate ──"
+echo "── 2/8 audit-narrative-numbers.js --gate ──"
 node scripts/audit-narrative-numbers.js --gate
 A=$?
 if [ $A -ne 0 ]; then
@@ -65,7 +72,7 @@ if [ $A -ne 0 ]; then
 fi
 
 echo ""
-echo "── 3/7 sync-qotd-answers.js --check ──"
+echo "── 3/8 sync-qotd-answers.js --check ──"
 node scripts/sync-qotd-answers.js --check
 S=$?
 if [ $S -ne 0 ]; then
@@ -73,7 +80,7 @@ if [ $S -ne 0 ]; then
 fi
 
 echo ""
-echo "── 4/7 audit-internal.py --gate ──"
+echo "── 4/8 audit-internal.py --gate ──"
 python3 scripts/audit-internal.py --gate
 I=$?
 if [ $I -ne 0 ]; then
@@ -81,7 +88,7 @@ if [ $I -ne 0 ]; then
 fi
 
 echo ""
-echo "── 5/7 update-metric-counts.js --check ──"
+echo "── 5/8 update-metric-counts.js --check ──"
 node scripts/update-metric-counts.js --check
 M=$?
 if [ $M -ne 0 ]; then
@@ -89,7 +96,7 @@ if [ $M -ne 0 ]; then
 fi
 
 echo ""
-echo "── 6/7 generate-fyc-pages.js --check ──"
+echo "── 6/8 generate-fyc-pages.js --check ──"
 node scripts/generate-fyc-pages.js --check
 F=$?
 if [ $F -ne 0 ]; then
@@ -97,11 +104,19 @@ if [ $F -ne 0 ]; then
 fi
 
 echo ""
-echo "── 7/7 sync-otc-meta.js --check ──"
+echo "── 7/8 sync-otc-meta.js --check ──"
 node scripts/sync-otc-meta.js --check
 O=$?
 if [ $O -ne 0 ]; then
     FAIL=1
+fi
+
+echo ""
+echo "── 8/8 audit-otc-numbers.js (WARN lane) ──"
+node scripts/audit-otc-numbers.js --gate
+OTC=$?
+if [ $OTC -ne 0 ]; then
+    echo "⚠ OTC number audit found drift (advisory; fix the post + run sync-otc-meta). Not failing the build yet."
 fi
 
 echo ""

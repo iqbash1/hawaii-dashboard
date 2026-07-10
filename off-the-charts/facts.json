@@ -1,0 +1,64 @@
+{
+  "productivity-vs-unemployment": [
+    { "metric": "unemployment_rate", "kind": "value", "state": "Hawaii", "year": "2025", "scale": 100, "as": "{n2}%", "note": "HI unemployment 2025" },
+    { "metric": "labor_productivity", "kind": "rank", "state": "Hawaii", "year": "2018", "as": "#{n0}", "note": "HI index rank 2018" },
+    { "metric": "labor_productivity", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI index rank 2024" },
+    { "metric": "labor_productivity", "kind": "growthRank", "state": "Hawaii", "window": ["2018", "2024"], "as": "#{n0} of 50", "note": "HI growth rank 2018-2024" },
+    { "metric": "labor_productivity", "kind": "growthPct", "state": "Hawaii", "window": ["2018", "2024"], "as": "{n1}%", "note": "HI productivity growth 2018-2024" },
+    { "metric": "labor_productivity", "kind": "growthPct", "state": "__median__", "window": ["2018", "2024"], "as": "{n0}%", "note": "US median growth 2018-2024" },
+    { "metric": "labor_productivity", "kind": "growthPct", "state": "Hawaii", "window": ["2021", "2023"], "as": "{a1}%", "note": "HI 2021-2023 decline (abs)" },
+    { "metric": "labor_productivity", "kind": "rank", "state": "Maine", "year": "2024", "as": "#{n0}", "note": "Maine rank 2024" },
+    { "metric": "labor_productivity", "kind": "growthPct", "state": "Maine", "window": ["2018", "2024"], "as": "{n0}%", "note": "Maine growth 2018-2024" }
+  ],
+  "safe-state-theft-problem": [
+    { "metric": "violent_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0} of 50", "note": "HI violent-crime rank (lede)" },
+    { "metric": "violent_crime_rate", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{n0}", "note": "HI violent crimes per 100k" },
+    { "metric": "violent_crime_rate", "kind": "median", "year": "2024", "as": "{n0}", "note": "US median violent-crime rate" },
+    { "metric": "property_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0} of 50", "note": "HI property-crime rank (spine)" },
+    { "metric": "property_crime_rate", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{c0}", "note": "HI property crimes per 100k (comma)" },
+    { "metric": "violent_crime_rate", "kind": "rank", "state": "Idaho", "year": "2024", "as": "#{n0}", "note": "Idaho violent-crime rank" },
+    { "metric": "property_crime_rate", "kind": "value", "state": "Idaho", "year": "2024", "as": "{n0}", "note": "Idaho lowest property-crime rate" },
+    { "metric": "property_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2014", "as": "#{n0}", "note": "HI property-crime rank 2014" },
+    { "metric": "property_crime_rate", "kind": "growthPct", "state": "Hawaii", "window": ["2014", "2024"], "as": "{a0}%", "note": "HI property-crime decade decline (abs)" }
+  ],
+  "florida-rent-burden": [
+    { "metric": "renter_cost_burden_pct", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI rent-burden rank" },
+    { "metric": "renter_cost_burden_pct", "kind": "rank", "state": "Florida", "year": "2024", "as": "#{n0}", "note": "Florida rent-burden rank (worst)" },
+    { "metric": "renter_cost_burden_pct", "kind": "value", "state": "Hawaii", "year": "2024", "scale": 100, "as": "{n2}%", "note": "HI share paying >30% of income" },
+    { "metric": "renter_cost_burden_pct", "kind": "value", "state": "Florida", "year": "2024", "scale": 100, "as": "{n2}%", "note": "Florida share paying >30% of income" },
+    { "metric": "home_price_to_income", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{n1}", "note": "HI home price-to-income ratio (anchor)" }
+  ],
+  "expensive-states": [
+    { "metric": "home_price_to_income", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{n1}", "note": "HI home price-to-income ratio" },
+    { "metric": "real_per_capita_income", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI income-per-person rank" },
+    { "metric": "real_per_capita_income", "kind": "rank", "state": "California", "year": "2024", "as": "#{n0}", "note": "California income rank" },
+    { "metric": "real_per_capita_income", "kind": "rank", "state": "Washington", "year": "2024", "as": "#{n0}", "note": "Washington income rank" },
+    { "metric": "real_per_capita_income", "kind": "rank", "state": "Colorado", "year": "2024", "as": "#{n0}", "note": "Colorado income rank" }
+  ],
+  "common-incomes-uncommon-costs": [
+    { "metric": "gini_index", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "{n0}th best", "note": "HI income-equality rank (spine)" }
+  ],
+  "low-violent-crime-high-homelessness": [
+    { "metric": "unsheltered_homeless_rate", "kind": "growthPct", "state": "Hawaii", "window": ["2007", "2024"], "as": "{a0}%", "note": "HI unsheltered growth since 2007 (abs)" },
+    { "metric": "violent_crime_rate", "kind": "growthPct", "state": "Hawaii", "window": ["2007", "2024"], "as": "{a0}%", "note": "HI violent-crime change since 2007 (abs)" },
+    { "metric": "unsheltered_homeless_rate", "kind": "growthPct", "state": "Oregon", "window": ["2007", "2024"], "as": "{a0}%", "note": "Oregon unsheltered growth (abs)" },
+    { "metric": "violent_crime_rate", "kind": "growthPct", "state": "Oregon", "window": ["2007", "2024"], "as": "{a0}%", "note": "Oregon violent-crime change (abs)" }
+  ],
+  "reading-without-raising": [
+    { "metric": "naep_reading_8", "kind": "rank", "state": "Hawaii", "year": "2011", "as": "#{n0}", "note": "HI 8th-grade reading rank 2011" },
+    { "metric": "naep_reading_8", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI 8th-grade reading rank 2024 (tie with VT: #25/#26)" }
+  ],
+  "renewables-prices": [
+    { "metric": "renewables_share_gen", "kind": "value", "state": "Hawaii", "year": "2024", "scale": 100, "as": "{n1}%", "note": "HI renewable share 2024" },
+    { "metric": "renewables_share_gen", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0} out of 50", "note": "HI renewable-share rank" },
+    { "metric": "renewables_share_gen", "kind": "value", "state": "Vermont", "year": "2024", "scale": 100, "as": "{n1}%", "note": "Vermont renewable share (leader)" },
+    { "metric": "residential_price_cpkwh", "kind": "value", "state": "Hawaii", "year": "2003", "as": "{n1}¢", "note": "HI electricity price 2003" },
+    { "metric": "residential_price_cpkwh", "kind": "median", "year": "2003", "as": "{n1}¢", "note": "US median electricity price 2003" },
+    { "metric": "residential_price_cpkwh", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{n1}¢", "note": "HI electricity price 2024" },
+    { "metric": "residential_price_cpkwh", "kind": "median", "year": "2024", "as": "{n1}¢", "note": "US median electricity price 2024" }
+  ],
+  "rainy-day-fund-rule": [
+    { "metric": "rainy_day_fund_pct", "kind": "value", "state": "Hawaii", "year": "2024", "scale": 100, "as": "{n1}%", "note": "HI rainy day fund 2024 (crossing year)" },
+    { "metric": "rainy_day_fund_pct", "kind": "value", "state": "Hawaii", "year": "2020", "scale": 100, "as": "{n1}%", "note": "HI rainy day fund 2020 (COVID low)" }
+  ]
+}
