@@ -115,8 +115,11 @@ hawaii-dashboard/
 │   ├── update-metric-counts.js # Keeps "N metrics" counts in HTML/tests/docs in sync with DASHBOARD_DATA + COUNTY_DATA
 │   ├── generate-fyc-pages.js   # Generates the 7 Change Summary HTMLs from one template; --check exits 1 on drift
 │   ├── check-source-due.js     # Reports metrics whose source release window is within N days
-│   ├── sync-otc-meta.js        # Keeps the four description fields (meta, og, twitter, JSON-LD) in sync across each OTC post; --check is the 7th validate gate
-│   ├── validate-all.sh         # Aggregates the 7 validate gates into one CI command (npm run validate)
+│   ├── sync-otc-meta.js        # Per OTC post: syncs the 4 description fields (meta/og/twitter/JSON-LD), propagates otc:dek to the archive, and regenerates js/otc-posts.js; --check is the 7th validate gate
+│   ├── audit-otc-numbers.js    # Re-derives every number an OTC post states (declared in off-the-charts/facts.json) from live data; --gate is the 8th validate gate
+│   ├── build-share-card-data.js # Emits share-card-data.json: live-derived numbers for the OTC social cards
+│   ├── generate-share-cards.py # Renders forwardable OTC social cards (claim + data visual) to drafts/share-cards/; npm run share-cards
+│   ├── validate-all.sh         # Aggregates the 8 validate gates into one CI command (npm run validate)
 │   ├── REFRESH-PLAYBOOK.md     # Canonical sequence after any data refresh
 │   └── validate-data.js        # Validates data integrity before CI commit
 ├── tests/
@@ -773,7 +776,7 @@ Three weekly workflows surface drift via rolling labeled issues. Each maintains 
 
 ### Per-commit gates (`npm run validate`)
 
-Seven gates run in sequence; any error fails the command:
+Eight gates run in sequence; any error fails the command:
 1. `validate-data.js`, data structure, ranges, YoY spikes, parity, writer allowlist, county-data and state-data floor checks, latestMonthly staleness + seasonal-envelope sanity (Sections 1–15, 17). Optional opt-in modes: `--fresh-fetch` (Section 16) re-fetches every wired metric from the canonical source; `--probe-floor` (Section 18) probes for years available beyond what's stored.
 2. `audit-narrative-numbers.js --gate`, rank/value claims in `rankHistoryNarrative`
 3. `sync-qotd-answers.js --check`, QOTD answer drift (refuses V6 truth-flips)
@@ -781,6 +784,7 @@ Seven gates run in sequence; any error fails the command:
 5. `update-metric-counts.js --check`, hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
 6. `generate-fyc-pages.js --check`, the 7 Change Summary HTMLs must byte-match the single-source generator; hand-edits fail until `npm run generate-fyc` runs
 7. `sync-otc-meta.js --check`, Off the Charts post `<meta>` tags + JSON-LD must match the post body; drift fails until `npm run sync-otc-meta` runs
+8. `audit-otc-numbers.js --gate`, Off the Charts post **bodies**: each number declared in `off-the-charts/facts.json` (by metric/kind/state/year, never the value) is re-derived from live data and must still appear in the post. Tie-aware. Catches the refresh-drift gate 2 cannot see, since it covers `data.js` + `questions.js`, not post prose
 
 ### Manual (one-off value update)
 
@@ -832,8 +836,10 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
 | `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
-| `scripts/sync-otc-meta.js` | **Off the Charts meta-tag sync.** For each post, propagates `<meta name="description">` (canonical) to og:description, twitter:description, and JSON-LD description, with the correct encoding per location (entities in HTML attrs, literal Unicode in JSON-LD). `--check` mode is the 7th `npm run validate` gate. Body lead is intentionally NOT synced (lede may be hooky while meta is SEO-optimised). |
-| `scripts/validate-all.sh` | Aggregates the 7 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, generate-fyc-pages, and sync-otc-meta. |
+| `scripts/sync-otc-meta.js` | **Off the Charts sync.** Per post: propagates `<meta name="description">` (canonical) to og/twitter/JSON-LD description with per-location encoding; propagates `<meta name="otc:dek">` to the archive card; and regenerates `js/otc-posts.js` (the slug→metric index the homepage strip, deep-dive modal, and QOTD proof view read to cross-link stories). `--check` mode is the 7th `npm run validate` gate. Body lead is intentionally NOT synced (lede may be hooky while meta is SEO-optimised). |
+| `scripts/audit-otc-numbers.js` | **OTC post-body drift scanner** — the surface the narrative scanner misses. Each post's checkable numbers live in `off-the-charts/facts.json`, declared by what they refer to (metric, kind ∈ rank/growthRank/value/median/growthPct, state, year/window), never the value. Re-derives the current value from `state-data.js` and asserts the post still states it. Tie-aware (a state tied on a NAEP score is valid at #25 or #26). `--gate` is the 8th `npm run validate` gate. Built after the productivity post's `#46` went stale on a BLS revision. |
+| `scripts/build-share-card-data.js` + `scripts/generate-share-cards.py` | **OTC social-card generator** (`npm run share-cards`). The `.js` re-derives each card's numbers live; the `.py` renders forwardable cards (claim + one honest data visual + attribution) at 1200×630 and 1080×1350 to `drafts/share-cards/` (gitignored). For the messenger/seeding distribution push. |
+| `scripts/validate-all.sh` | Aggregates the 8 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, generate-fyc-pages, sync-otc-meta, and audit-otc-numbers. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 58 unit tests across 9 suites (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, V1/V2 gap threshold, medianSeries invariant). |
 

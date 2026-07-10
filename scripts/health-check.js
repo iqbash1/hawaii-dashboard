@@ -38,10 +38,10 @@ async function guard(name, fn) {
     catch (e) { add(name, 'yellow', 'check errored: ' + (e.message || e)); }
 }
 
-// ── 1. Data integrity & consistency (the 7 validate gates) ──────────────────
+// ── 1. Data integrity & consistency (the 8 validate gates) ──────────────────
 function checkData() {
     const r = sh('npm run validate');
-    if (r.ok) add('Data integrity & consistency', 'green', 'all 7 validate gates pass (data, narratives, QOTD/OTC/Change-Summary sync, counts)');
+    if (r.ok) add('Data integrity & consistency', 'green', 'all 8 validate gates pass (data, narratives, QOTD/OTC/Change-Summary sync, counts, OTC number audit)');
     else add('Data integrity & consistency', 'red', 'validate FAILED: ' + lastLines(r.out, 2));
 }
 

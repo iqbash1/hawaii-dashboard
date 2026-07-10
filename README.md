@@ -104,7 +104,7 @@ Nine GitHub Actions workflows + Dependabot automate the cycle:
 - `.github/workflows/rotate-backup.yml`, `timestamp.yml`: backup tag rotation and footer-timestamp upkeep.
 - `.github/dependabot.yml`: weekly grouped PRs for npm + GitHub Actions updates.
 
-Per-commit gates (`npm run validate` chains 7 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), metric-count consistency, Change-Summary-template drift, and Off the Charts meta-description sync.
+Per-commit gates (`npm run validate` chains 8 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), metric-count consistency, Change-Summary-template drift, Off the Charts meta-description sync, and Off the Charts post-body number audit.
 
 ## OG images, landing pages, and static CSVs
 
