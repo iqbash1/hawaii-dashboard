@@ -1,0 +1,89 @@
+{
+  "generated": null,
+  "residential_price_cpkwh": {
+    "rank": 50,
+    "of": 50,
+    "val": 40.59,
+    "year": "2025",
+    "median": 15.345
+  },
+  "home_price_to_income": {
+    "rank": 50,
+    "of": 50,
+    "val": 8.69,
+    "year": "2024"
+  },
+  "renter_cost_burden_pct": {
+    "rank": 47,
+    "of": 50,
+    "val": 0.5496,
+    "year": "2024"
+  },
+  "real_per_capita_income": {
+    "rank": 46,
+    "of": 50,
+    "val": 52272,
+    "year": "2024"
+  },
+  "violent_crime_rate": {
+    "rank": 12,
+    "of": 50,
+    "val": 230.5,
+    "year": "2024",
+    "median": 327.8
+  },
+  "property_crime_rate": {
+    "rank": 40,
+    "of": 50,
+    "val": 2052.6,
+    "year": "2024"
+  },
+  "gini_index": {
+    "rank": 12,
+    "of": 50,
+    "val": 45.42,
+    "year": "2024"
+  },
+  "unsheltered_homeless_rate": {
+    "rank": 48,
+    "of": 50,
+    "val": 28.17,
+    "year": "2024"
+  },
+  "unemployment_rate": {
+    "rank": 2,
+    "of": 50,
+    "val": 0.0234,
+    "year": "2025"
+  },
+  "naep_reading_8": {
+    "rank": 25,
+    "of": 50,
+    "val": 257.28,
+    "year": "2024"
+  },
+  "labor_productivity_2018": {
+    "rank": 7,
+    "of": 50,
+    "val": 102.895,
+    "year": "2018"
+  },
+  "labor_productivity_2024": {
+    "rank": 41,
+    "of": 50,
+    "val": 108.637,
+    "year": "2024"
+  },
+  "labor_productivity_latest": {
+    "rank": 37,
+    "of": 50,
+    "val": 111.152,
+    "year": "2025"
+  },
+  "rainy_day_fund_pct": {
+    "rank": 22,
+    "of": 50,
+    "val": 0.1445,
+    "year": "2025"
+  }
+}

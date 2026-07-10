@@ -30,6 +30,7 @@
     "generate-fyc:check": "node scripts/generate-fyc-pages.js --check",
     "recompute": "node scripts/recompute-data.js",
     "og": "python3 scripts/generate-og-pages.py",
+    "share-cards": "node scripts/build-share-card-data.js && python3 scripts/generate-share-cards.py",
     "serve": "python3 -m http.server 8080",
     "audit-links": "node scripts/audit-links.js",
     "check-links": "node scripts/check-broken-links.js",
