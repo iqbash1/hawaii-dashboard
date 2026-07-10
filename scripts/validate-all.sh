@@ -41,12 +41,13 @@
 #          twitter:description / JSON-LD description fields. Run
 #          `npm run sync-otc-meta` to fix.
 #
-#   8. audit-otc-numbers.js (WARN lane)
-#        - flags an Off the Charts post whose stated number no longer matches
-#          live data (the class of bug where a refresh updates the metric but
-#          not the post that quotes it). Advisory for now — surfaces drift but
-#          does NOT fail the build. Promote to a hard gate (--gate sets FAIL)
-#          once the specs are proven stable across a refresh cycle.
+#   8. audit-otc-numbers.js --gate
+#        - exit 1 = an Off the Charts post quotes a number that no longer
+#          matches live data (the class of bug where a refresh updates the
+#          metric but not the post). Fix the post + run sync-otc-meta.
+#          Promoted from WARN to a hard gate 2026-07-09 (tie-aware, proven
+#          clean across all 9 posts / 44 claims). Claims declared in
+#          off-the-charts/facts.json.
 #
 # Aggregated exit code: 0 if all pass, 1 if any hard check failed.
 
@@ -112,11 +113,12 @@ if [ $O -ne 0 ]; then
 fi
 
 echo ""
-echo "── 8/8 audit-otc-numbers.js (WARN lane) ──"
+echo "── 8/8 audit-otc-numbers.js --gate ──"
 node scripts/audit-otc-numbers.js --gate
 OTC=$?
 if [ $OTC -ne 0 ]; then
-    echo "⚠ OTC number audit found drift (advisory; fix the post + run sync-otc-meta). Not failing the build yet."
+    FAIL=1
+    echo "✗ OTC number audit: a post quotes a stale number (fix the post + run sync-otc-meta)"
 fi
 
 echo ""
