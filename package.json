@@ -46,9 +46,9 @@
   },
   "devDependencies": {
     "@google-analytics/data": "^6.1.0",
-    "eslint": "^10.6.0",
+    "eslint": "^10.7.0",
     "globals": "^17.7.0",
-    "nodemailer": "^9.0.1",
+    "nodemailer": "^9.0.3",
     "xlsx": "^0.18.5"
   }
 }
