@@ -40,6 +40,10 @@ const EXPECTED_BLOCK = [
     'www.huduser.gov',
     'www.fcc.gov',
     'fred.stlouisfed.org',
+    // CDC/NCHS suicide stats (suicide_rate sourceUrl + potentialDrivers): 403 to
+    // the Node auditor, full content in a browser with current 2024 data
+    // (confirmed live 2026-07-20).
+    'www.cdc.gov',
     // Academic / publisher portals
     'papers.ssrn.com',
     'www.journals.uchicago.edu',
@@ -182,6 +186,13 @@ function checkUrl(url, retries = 3) {
                 }
                 // Consume response body to free socket
                 res.resume();
+                // Retry transient server errors (5xx). web.archive.org sheds load
+                // with a 503 under heavy traffic even when the snapshot is live, so
+                // a single hit should not be reported as rot (confirmed 2026-07-20).
+                if (res.statusCode >= 500 && remaining > 1) {
+                    setTimeout(() => attempt(remaining - 1), 2000);
+                    return;
+                }
                 resolve({ status: res.statusCode, ok: res.statusCode >= 200 && res.statusCode < 400 });
             });
             req.on('error', (err) => {
