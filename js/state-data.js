@@ -1,7 +1,7 @@
 // ============================================================
 // Hawaiʻi Dashboard - All-State Time Series Data
 //
-// Updated: 2026-06-23T10:48:27.648Z
+// Updated: 2026-07-23T09:42:39.839Z
 //
 // Contains per-state values across all available years for
 // metrics with federal API access.
@@ -35262,6 +35262,58 @@ const STATE_DATA = {
         "West Virginia": 0.0415,
         "Wisconsin": 0.0316,
         "Wyoming": 0.0329
+      },
+      "2026": {
+        "Alabama": 0.0285,
+        "Alaska": 0.0463,
+        "Arizona": 0.047,
+        "Arkansas": 0.0428,
+        "California": 0.0532,
+        "Colorado": 0.039,
+        "Connecticut": 0.0488,
+        "Delaware": 0.0525,
+        "Florida": 0.0468,
+        "Georgia": 0.0348,
+        "Hawaiʻi": 0.024,
+        "Idaho": 0.0367,
+        "Illinois": 0.0505,
+        "Indiana": 0.0332,
+        "Iowa": 0.033,
+        "Kansas": 0.0387,
+        "Kentucky": 0.0437,
+        "Louisiana": 0.0438,
+        "Maine": 0.0317,
+        "Maryland": 0.0433,
+        "Massachusetts": 0.0463,
+        "Michigan": 0.0502,
+        "Minnesota": 0.0445,
+        "Mississippi": 0.0375,
+        "Missouri": 0.0383,
+        "Montana": 0.035,
+        "Nebraska": 0.0302,
+        "Nevada": 0.0525,
+        "New Hampshire": 0.0308,
+        "New Jersey": 0.0487,
+        "New Mexico": 0.0477,
+        "New York": 0.046,
+        "North Carolina": 0.0372,
+        "North Dakota": 0.0247,
+        "Ohio": 0.0397,
+        "Oklahoma": 0.04,
+        "Oregon": 0.052,
+        "Pennsylvania": 0.042,
+        "Rhode Island": 0.0445,
+        "South Carolina": 0.0477,
+        "South Dakota": 0.0218,
+        "Tennessee": 0.0357,
+        "Texas": 0.0432,
+        "Utah": 0.0375,
+        "Vermont": 0.0262,
+        "Virginia": 0.0377,
+        "Washington": 0.0513,
+        "West Virginia": 0.0445,
+        "Wisconsin": 0.034,
+        "Wyoming": 0.0348
       }
     }
   },
