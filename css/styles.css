@@ -2664,9 +2664,12 @@ body {
     .otc-strip-cta { margin-left: 0; }
 }
 
-/* Deep-dive modal narrative link line */
+/* Deep-dive modal narrative link line. Bottom margin matches the .cn-section
+   2rem rhythm so the gap above "Deeper analysis" reads the same as every other
+   gap between sections; the <details> that follows carries no top margin, so
+   this value is the whole gap. */
 .cn-otc-link {
-    margin: 0.75rem 0 0.5rem;
+    margin: 0.75rem 0 2rem;
     font-size: var(--text-base);
     line-height: 1.5;
 }

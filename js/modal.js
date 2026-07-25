@@ -1304,9 +1304,10 @@ const Modal = {
         //     a chart they just saw: "is this important?" and "where does HI
         //     fall?". Cheap to read, no reason to hide.
         //   - Everything else (County breakdown, Potential drivers, Lessons,
-        //     Key levers, Data note) is collapsed behind "+ Deeper analysis"
-        //     since it's analysis depth most readers will opt into, not
-        //     default reading.
+        //     Key levers, Data note) groups under "Deeper analysis", which
+        //     renders open by default: the disclosure stays available to
+        //     collapse the depth away, but the content is not hidden behind
+        //     an opt-in click.
         let outer = Modal._section('How to read the chart', m.howToRead, true, 'modal-how-toggle');
         outer += Modal._section('Why it matters',    m.whyItMatters);
         outer += Modal._section('Status', narr && narr.summary);
@@ -1348,7 +1349,7 @@ const Modal = {
         // expandable controls in the modal share one minimal style. No
         // custom JS toggle needed; the browser handles open/close.
         outer += `
-            <details class="cn-section modal-how-toggle modal-deeper-toggle">
+            <details class="cn-section modal-how-toggle modal-deeper-toggle" open>
                 <summary>Deeper analysis</summary>
                 ${deep}
             </details>
