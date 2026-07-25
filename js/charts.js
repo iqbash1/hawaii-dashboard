@@ -720,9 +720,13 @@ const ChartUtils = {
 
         const labels = stateValues.map(s => abbreviateState(s.state));
         const values = stateValues.map(s => s.value);
-        // Dynamic height: 22px per bar + 70px top for dot strip, minimum 500px
+        // Dynamic height: 11px per bar + 70px top for dot strip, minimum 500px.
+        // Row pitch is ~89% of total height for a 50-row chart, so it is the
+        // only lever that meaningfully shortens the chart. At this pitch the
+        // y-axis MUST keep autoSkip:false (set below) or Chart.js starts
+        // dropping state codes to make room.
         const dotStripHeight = 70;
-        const barHeight = 22;
+        const barHeight = 11;
         const chartHeight = Math.max(500, stateValues.length * barHeight + dotStripHeight);
         canvas.style.height = chartHeight + 'px';
         canvas.parentElement.style.height = chartHeight + 'px';
@@ -1010,8 +1014,11 @@ const ChartUtils = {
                     y: {
                         grid: { display: false },
                         ticks: {
+                            // Every state code must render at the tightened row
+                            // pitch; the category default would auto-skip them.
+                            autoSkip: false,
                             font: (ctx) => ({
-                                size: 11,
+                                size: 9,
                                 family: "'Inter', sans-serif",
                                 weight: ctx.index === hawaiiIdx ? 'bold' : 'normal',
                             }),
@@ -1034,7 +1041,7 @@ const ChartUtils = {
                         const meta = chart.getDatasetMeta(0).data[i];
                         if (!meta) return;
                         const isBold = i === hawaiiIdx;
-                        ctx.font = isBold ? 'bold 11px Inter, sans-serif' : '11px Inter, sans-serif';
+                        ctx.font = isBold ? 'bold 9px Inter, sans-serif' : '9px Inter, sans-serif';
                         const label = formattedLabels[i];
                         const textW = ctx.measureText(label).width;
                         const barEnd = meta.x;

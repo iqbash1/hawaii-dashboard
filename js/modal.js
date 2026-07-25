@@ -881,6 +881,11 @@ const Modal = {
             };
             modal.addEventListener('scroll', onScroll);
             Modal._rankingsScrollHandler = onScroll;
+            // The chart now often fits the viewport outright, and then no
+            // scroll event ever fires, so run the same check once on open or
+            // the hint would ask for a scroll that isn't possible. The canvas
+            // height is set inline just above, so layout is already settled.
+            onScroll();
         }
     },
 
