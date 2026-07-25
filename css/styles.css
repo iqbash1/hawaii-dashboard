@@ -1096,14 +1096,6 @@ body {
     display: none;
 }
 
-/* When two minimalist toggles sit back-to-back ("How to read" +
-   "Read the deeper analysis"), the default .cn-section 2rem gap reads
-   as disconnected for two related disclosure controls. Tighten so they
-   feel like a paired group. */
-.modal-how-toggle + .modal-how-toggle {
-    margin-top: -1.25rem;
-}
-
 .modal-source {
     font-size: var(--text-base);
     color: var(--text-muted);
