@@ -720,13 +720,14 @@ const ChartUtils = {
 
         const labels = stateValues.map(s => abbreviateState(s.state));
         const values = stateValues.map(s => s.value);
-        // Dynamic height: 11px per bar + 70px top for dot strip, minimum 500px.
+        // Dynamic height: 16px per bar + 70px top for dot strip, minimum 500px.
         // Row pitch is ~89% of total height for a 50-row chart, so it is the
-        // only lever that meaningfully shortens the chart. At this pitch the
-        // y-axis MUST keep autoSkip:false (set below) or Chart.js starts
-        // dropping state codes to make room.
+        // only lever that meaningfully shortens the chart. 16px is the floor
+        // that still clears the 11px label text; 11px pitch forced a 9px font
+        // and read as cramped. At any tightened pitch the y-axis MUST keep
+        // autoSkip:false (set below) or Chart.js starts dropping state codes.
         const dotStripHeight = 70;
-        const barHeight = 11;
+        const barHeight = 16;
         const chartHeight = Math.max(500, stateValues.length * barHeight + dotStripHeight);
         canvas.style.height = chartHeight + 'px';
         canvas.parentElement.style.height = chartHeight + 'px';
@@ -1018,7 +1019,7 @@ const ChartUtils = {
                             // pitch; the category default would auto-skip them.
                             autoSkip: false,
                             font: (ctx) => ({
-                                size: 9,
+                                size: 11,
                                 family: "'Inter', sans-serif",
                                 weight: ctx.index === hawaiiIdx ? 'bold' : 'normal',
                             }),
@@ -1041,7 +1042,7 @@ const ChartUtils = {
                         const meta = chart.getDatasetMeta(0).data[i];
                         if (!meta) return;
                         const isBold = i === hawaiiIdx;
-                        ctx.font = isBold ? 'bold 9px Inter, sans-serif' : '9px Inter, sans-serif';
+                        ctx.font = isBold ? 'bold 11px Inter, sans-serif' : '11px Inter, sans-serif';
                         const label = formattedLabels[i];
                         const textW = ctx.measureText(label).width;
                         const barEnd = meta.x;
