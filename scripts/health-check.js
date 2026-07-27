@@ -79,12 +79,35 @@ function checkDeps() {
     // Accepted advisories: no fix available on npm AND not exploitable in this
     // codebase. xlsx (SheetJS): CDN-only patch (blocked by corp TLS proxy); build
     // parses a trusted federal HUD file and the browser export only writes xlsx,
-    // never parses untrusted input. Any new or non-accepted high/critical still trips.
-    const ACCEPTED = new Set(['xlsx']);
+    // never parses untrusted input. brace-expansion: only the copy nested under
+    // glob is affected (GHSA-mh99-v99m-4gvg is fixed in 5.0.8, and the 2.x line
+    // has no patched release, so semver "<=5.0.7" flags every 2.x). It arrives
+    // via @google-analytics/data -> google-gax -> rimraf -> glob -> minimatch;
+    // that package is already at its latest, an overrides pin to 5.x breaks
+    // minimatch@9 (5.x's CJS entry exports an object, not the callable 2.x
+    // exports), and the DoS needs attacker-controlled glob patterns, which never
+    // reach rimraf's internal cleanup paths. Dev-only either way: nothing here
+    // ships to the browser. Any new or non-accepted high/critical still trips.
+    const ACCEPTED = new Set(['xlsx', 'brace-expansion']);
     const pkgs = audit.vulnerabilities || {};
-    const severe = Object.keys(pkgs).filter(k => ['high', 'critical'].includes(pkgs[k].severity));
+    // Count only packages carrying their own advisory. npm also marks every
+    // parent up the chain (glob, rimraf, google-gax...) as high purely because a
+    // child is, which inflates the review list without naming a real defect. The
+    // package holding the advisory is always listed too, so dropping the
+    // chain-only parents loses no detection: `via` entries are advisory objects
+    // for a real finding and plain package-name strings for a chain parent.
+    const hasOwnAdvisory = k => (pkgs[k].via || []).some(x => typeof x === 'object');
+    const severe = Object.keys(pkgs)
+        .filter(k => ['high', 'critical'].includes(pkgs[k].severity))
+        .filter(hasOwnAdvisory);
     const unaccepted = severe.filter(p => !ACCEPTED.has(p));
-    const detail = `critical ${c}, high ${hi}, moderate ${mo}, low ${lo}`;
+    // npm's headline counts include the chain-only parents, so say how many of
+    // the high/critical total they are; otherwise "high 8" next to two named
+    // packages reads as six unexplained findings.
+    const chainOnly = Object.keys(pkgs)
+        .filter(k => ['high', 'critical'].includes(pkgs[k].severity) && !hasOwnAdvisory(k)).length;
+    const detail = `critical ${c}, high ${hi}, moderate ${mo}, low ${lo}`
+        + (chainOnly ? ` (${chainOnly} of them chain-only parents, not distinct advisories)` : '');
     if (unaccepted.length) add('Dependencies', c > 0 ? 'red' : 'yellow', `${detail}; review: ${unaccepted.join(', ')}`);
     else if (severe.length) add('Dependencies', 'green', `${detail}; high/critical all reviewed + accepted (${severe.join(', ')}: no npm fix, non-exploitable here)`);
     else add('Dependencies', 'green', detail);
