@@ -70,12 +70,11 @@ function checkSecurityHeaders() {
     else add('Security headers', missing.length >= 4 ? 'red' : 'yellow', 'missing: ' + missing.join(', '));
 }
 
-// ── 4. Dependencies (npm audit) ─────────────────────────────────────────────
+// ── 4. Dependencies (npm audit, root + tests/) ──────────────────────────────
+// tests/ has its own package.json and lockfile (Playwright, Lighthouse, axe).
+// It went unscanned until 2026-07-27 and had quietly accumulated 20 advisories,
+// so both trees are audited here; a finding in either one trips the row.
 function checkDeps() {
-    const r = sh('npm audit --json');
-    let audit; try { audit = JSON.parse(r.out); } catch { add('Dependencies', 'yellow', 'could not parse npm audit'); return; }
-    const v = (audit.metadata || {}).vulnerabilities || {};
-    const c = v.critical || 0, hi = v.high || 0, mo = v.moderate || 0, lo = v.low || 0;
     // Accepted advisories: no fix available on npm AND not exploitable in this
     // codebase. xlsx (SheetJS): CDN-only patch (blocked by corp TLS proxy); build
     // parses a trusted federal HUD file and the browser export only writes xlsx,
@@ -89,25 +88,45 @@ function checkDeps() {
     // reach rimraf's internal cleanup paths. Dev-only either way: nothing here
     // ships to the browser. Any new or non-accepted high/critical still trips.
     const ACCEPTED = new Set(['xlsx', 'brace-expansion']);
-    const pkgs = audit.vulnerabilities || {};
+
     // Count only packages carrying their own advisory. npm also marks every
     // parent up the chain (glob, rimraf, google-gax...) as high purely because a
     // child is, which inflates the review list without naming a real defect. The
     // package holding the advisory is always listed too, so dropping the
     // chain-only parents loses no detection: `via` entries are advisory objects
     // for a real finding and plain package-name strings for a chain parent.
-    const hasOwnAdvisory = k => (pkgs[k].via || []).some(x => typeof x === 'object');
-    const severe = Object.keys(pkgs)
-        .filter(k => ['high', 'critical'].includes(pkgs[k].severity))
-        .filter(hasOwnAdvisory);
+    const scan = (label, cmd) => {
+        const r = sh(cmd);
+        let audit; try { audit = JSON.parse(r.out); } catch { return null; }
+        const v = (audit.metadata || {}).vulnerabilities || {};
+        const pkgs = audit.vulnerabilities || {};
+        const own = k => (pkgs[k].via || []).some(x => typeof x === 'object');
+        const sev = Object.keys(pkgs).filter(k => ['high', 'critical'].includes(pkgs[k].severity));
+        return {
+            label,
+            c: v.critical || 0, hi: v.high || 0, mo: v.moderate || 0, lo: v.low || 0,
+            severe: sev.filter(own),
+            chainOnly: sev.filter(k => !own(k)).length,
+        };
+    };
+
+    const trees = [scan('root', 'npm audit --json'), scan('tests', 'npm audit --json --prefix tests')];
+    if (trees.some(t => !t)) { add('Dependencies', 'yellow', 'could not parse npm audit'); return; }
+
+    const c = trees.reduce((n, t) => n + t.c, 0);
+    // ACCEPTED is keyed by package name, so an accept covers that name in either
+    // tree. Per-tree counts stay in the detail line, so a new finding still shows
+    // up in the numbers even when its name is already accepted elsewhere.
+    const severe = [...new Set(trees.flatMap(t => t.severe))];
     const unaccepted = severe.filter(p => !ACCEPTED.has(p));
     // npm's headline counts include the chain-only parents, so say how many of
     // the high/critical total they are; otherwise "high 8" next to two named
     // packages reads as six unexplained findings.
-    const chainOnly = Object.keys(pkgs)
-        .filter(k => ['high', 'critical'].includes(pkgs[k].severity) && !hasOwnAdvisory(k)).length;
-    const detail = `critical ${c}, high ${hi}, moderate ${mo}, low ${lo}`
-        + (chainOnly ? ` (${chainOnly} of them chain-only parents, not distinct advisories)` : '');
+    const detail = trees.map(t => t.c + t.hi + t.mo + t.lo === 0
+        ? `${t.label}: clean`
+        : `${t.label}: critical ${t.c}, high ${t.hi}, moderate ${t.mo}, low ${t.lo}`
+            + (t.chainOnly ? ` (${t.chainOnly} chain-only parents, not distinct advisories)` : '')
+    ).join('; ');
     if (unaccepted.length) add('Dependencies', c > 0 ? 'red' : 'yellow', `${detail}; review: ${unaccepted.join(', ')}`);
     else if (severe.length) add('Dependencies', 'green', `${detail}; high/critical all reviewed + accepted (${severe.join(', ')}: no npm fix, non-exploitable here)`);
     else add('Dependencies', 'green', detail);
