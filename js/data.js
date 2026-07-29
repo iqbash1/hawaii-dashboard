@@ -1107,7 +1107,7 @@ const DASHBOARD_DATA = {
     "nextUpdate": "Mar",
     "latestMonthly": {"value":2.6,"period":"Jun 2026","asOf":"2026-07-23"},
     "rankHistoryNarrative": {
-      "summary": "Hawaiʻi has typically ranked #3 to #8 over the past 40 years. The exception was 2020, when tourism dependence drove unemployment to 11.6 percent and the rank to near last. Recovery took until 2022 to return to the top 10 and continued through 2025, when Hawaiʻi reached #2: the strongest position on record.",
+      "summary": "Hawaiʻi has ranked in the top 10 in roughly two thirds of the past 40 years, with a weak stretch in the late 1990s when the rank reached #46. The sharpest break was 2020, when tourism dependence drove unemployment to 11.7 percent and the rank to #49. Recovery was gradual: #26 in 2022, back inside the top 10 by 2024, and #2 in both 2025 and 2026. That matches the best showing since 2018, though short of the #1 ranks of 2017 and the mid-2000s.",
       "mode": "protect",
       "benchmarks": [
         {
