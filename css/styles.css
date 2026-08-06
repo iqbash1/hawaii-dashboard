@@ -1792,6 +1792,17 @@ body {
         margin-top: 0.75rem;
     }
 
+    /* Chart first on phones. The brief sits above every tab panel in the DOM so
+       one copy survives tab switches, but at 375px it wraps to ~340px, which is
+       44% of the visible modal and pushes the chart almost entirely below the
+       fold. .modal is already a flex column, so ordering the three trailing
+       blocks moves the brief below whichever panel is open (only one is ever
+       displayed) without touching the markup. DOM order is unchanged, so the
+       summary still precedes the chart for assistive tech. */
+    .modal-brief { order: 1; }
+    .modal-consolidated { order: 2; }
+    .modal-source { order: 3; }
+
     .modal-source {
         padding: 0.75rem 1rem;
     }

@@ -263,8 +263,11 @@
                 <div class="modal-chart-container">
                     <div class="modal-chart-skeleton" id="modal-chart-skeleton"></div>
                     <canvas id="modal-chart"></canvas>
-                    <p class="modal-chart-note" id="modal-chart-note" style="display:none;"></p>
                 </div>
+                <!-- Note sits outside the chart container, matching the county
+                     view below: the container is a fixed height the canvas
+                     fills, so a note inside it overflows onto the next block. -->
+                <p class="modal-chart-note" id="modal-chart-note" style="display:none;"></p>
                 <div class="table-toggle-wrap" id="table-toggle-wrap" style="display:none;">
                     <a href="#" class="table-toggle" id="table-toggle">View as table</a>
                 </div>
