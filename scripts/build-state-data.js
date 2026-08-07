@@ -1910,6 +1910,25 @@ const NCES_ACGR_TOTAL_HEADER = /^total,\s*acgr for all students/i;
 const NCES_ACGR_SCHOOL_YEAR = /^(\d{4})-(\d{2})$/;
 const NCES_ACGR_HEADER_ROWS = 8;   // header band; data starts at row 6
 const NCES_ACGR_MIN_YEARS = 11;    // d23 carries 2012..2022; never accept fewer
+// Digest editions are numbered by year (Digest 2023 = d23) and publish with a
+// lag, so the newest plausible edition tracks the calendar. Probing a fixed
+// list needs a manual bump every few years, and a list that runs out silently
+// pins the series to the last edition it happens to name. Derive the list
+// instead, newest first, with the last hand-verified edition kept as a floor
+// so a bad clock or an unpublished year can never lose the known-good source.
+const NCES_ACGR_FLOOR_EDITION = 23;   // d23, verified by hand
+const NCES_ACGR_MAX_PROBES = 5;
+
+function ncesAcgrEditions(now = new Date()) {
+    const top = now.getUTCFullYear() % 100;
+    const eds = [];
+    for (let n = top; n >= NCES_ACGR_FLOOR_EDITION && eds.length < NCES_ACGR_MAX_PROBES; n--) {
+        eds.push(`d${String(n).padStart(2, '0')}`);
+    }
+    const floor = `d${NCES_ACGR_FLOOR_EDITION}`;
+    if (!eds.includes(floor)) eds.push(floor);
+    return eds;
+}
 
 /**
  * Build the XLSX column -> graduation-year map by reading the header band.
@@ -1958,10 +1977,10 @@ function deriveAcgrColumnMap(rows) {
 async function fetchAcgr() {
     console.log('Fetching: ACGR public high school graduation rate (NCES Digest)...');
     const xlsx = require('xlsx');
-    const editions = ['d23', 'd24', 'd25', 'd26']; // probe latest first
+    const editions = ncesAcgrEditions(); // newest first, floor last
     let buffer = null;
     let editionUsed = null;
-    for (const ed of editions.slice().reverse()) {
+    for (const ed of editions) {
         const url = `https://nces.ed.gov/programs/digest/${ed}/tables/xls/${NCES_TABLE}`;
         try {
             const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' } });
