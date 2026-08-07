@@ -1888,25 +1888,72 @@ async function fetchPcpPer100k() {
 // does not include school year 2010-11. The build merge preserves the
 // existing 2011 cell.
 //
-// URL pattern needs a bump when NCES publishes d24, d25, etc. The probe
-// tries the latest known edition first and falls back one step.
+// The probe tries the latest known edition first and falls back one step.
+//
+// The column -> year map is DERIVED from the sheet header, not hardcoded.
+// A hardcoded map silently caps the series at whatever the edition it was
+// written for contained: pointed at a d24 that appends 2022-23, a d23-shaped
+// map keeps returning 2022 as its newest year and, once NCES shifts the
+// per-characteristic block right, reads the wrong column for that year too.
+// Both failures are silent, since a short-but-parseable result still looks
+// like success. Deriving from the header makes new years arrive on their own
+// and turns a layout change into a hard failure instead.
 
 const NCES_TABLE = 'tabn219.46.xlsx';
 const NCES_ACGR_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
-// School-year XLSX column -> state-data calendar year (graduation year).
-const NCES_ACGR_COL_TO_YEAR = [
-    { col: 1, yr: '2012' },  // 2011-12
-    { col: 3, yr: '2013' },  // 2012-13
-    { col: 5, yr: '2014' },  // 2013-14
-    { col: 6, yr: '2015' },  // 2014-15
-    { col: 7, yr: '2016' },  // 2015-16
-    { col: 8, yr: '2017' },  // 2016-17
-    { col: 9, yr: '2018' },  // 2017-18
-    { col: 10, yr: '2019' }, // 2018-19
-    { col: 11, yr: '2020' }, // 2019-20
-    { col: 13, yr: '2021' }, // 2020-21
-    { col: 15, yr: '2022' }, // 2021-22
-];
+// Row-1 header that opens the all-students block. Columns after the next
+// non-empty header on that row belong to the per-characteristic blocks
+// (race/ethnicity, disability, ...), which are NOT the total ACGR.
+const NCES_ACGR_TOTAL_HEADER = /^total,\s*acgr for all students/i;
+// School-year label, e.g. "2011-\r\n12" or "2013- \r\n14" once whitespace is
+// stripped. NCES spreads these across several header rows.
+const NCES_ACGR_SCHOOL_YEAR = /^(\d{4})-(\d{2})$/;
+const NCES_ACGR_HEADER_ROWS = 8;   // header band; data starts at row 6
+const NCES_ACGR_MIN_YEARS = 11;    // d23 carries 2012..2022; never accept fewer
+
+/**
+ * Build the XLSX column -> graduation-year map by reading the header band.
+ * @param {Array<Array>} rows - sheet_to_json(header:1) output
+ * @returns {Array<{col:number,yr:string}>|null} null when the header is unreadable
+ */
+function deriveAcgrColumnMap(rows) {
+    // Bound the all-students block horizontally.
+    let start = -1, headerRowIdx = -1;
+    for (let i = 0; i < Math.min(rows.length, NCES_ACGR_HEADER_ROWS) && start < 0; i++) {
+        const row = rows[i] || [];
+        for (let c = 0; c < row.length; c++) {
+            if (NCES_ACGR_TOTAL_HEADER.test(String(row[c] || '').trim())) {
+                start = c; headerRowIdx = i; break;
+            }
+        }
+    }
+    if (start < 0) return null;
+    let end = Infinity;
+    const hdr = rows[headerRowIdx] || [];
+    for (let c = start + 1; c < hdr.length; c++) {
+        if (String(hdr[c] || '').trim()) { end = c; break; }
+    }
+    // Collect every school-year label inside that band, across all header rows.
+    const map = [];
+    const seen = new Set();
+    for (let i = 0; i < Math.min(rows.length, NCES_ACGR_HEADER_ROWS); i++) {
+        const row = rows[i] || [];
+        for (let c = start; c < Math.min(row.length, end); c++) {
+            const m = String(row[c] || '').replace(/\s+/g, '').match(NCES_ACGR_SCHOOL_YEAR);
+            if (!m) continue;
+            // School years are consecutive, so the cohort graduates in start + 1.
+            // Checking the printed 2-digit suffix catches a malformed label.
+            const gradYear = parseInt(m[1], 10) + 1;
+            if (String(gradYear % 100).padStart(2, '0') !== m[2]) continue;
+            const yr = String(gradYear);
+            if (seen.has(yr)) continue;
+            seen.add(yr);
+            map.push({ col: c, yr });
+        }
+    }
+    map.sort((a, b) => a.col - b.col);
+    return map;
+}
 
 async function fetchAcgr() {
     console.log('Fetching: ACGR public high school graduation rate (NCES Digest)...');
@@ -1937,6 +1984,14 @@ async function fetchAcgr() {
         return null;
     }
 
+    const colMap = deriveAcgrColumnMap(rows);
+    if (!colMap || colMap.length < NCES_ACGR_MIN_YEARS) {
+        console.log(`  FAIL: derived ${colMap ? colMap.length : 0} year columns from ${editionUsed}, `
+            + `expected at least ${NCES_ACGR_MIN_YEARS}. The header layout changed; fix `
+            + `deriveAcgrColumnMap rather than letting the series cap silently.`);
+        return null;
+    }
+
     const known = new Set(Object.values(NAEP_ABBR_TO_STATE));
     const data = {};
     let cells = 0;
@@ -1947,7 +2002,7 @@ async function fetchAcgr() {
         if (!stateRaw) continue;
         const state = NCES_ACGR_NAME_TO_OUR_NAME[stateRaw] || stateRaw;
         if (!known.has(state)) continue; // skips DC, Puerto Rico, BIE, US, etc.
-        for (const { col, yr } of NCES_ACGR_COL_TO_YEAR) {
+        for (const { col, yr } of colMap) {
             const v = row[col];
             if (typeof v !== 'number' || !isFinite(v)) continue;
             if (!data[yr]) data[yr] = {};
