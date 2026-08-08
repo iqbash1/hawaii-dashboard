@@ -31,6 +31,7 @@ Run from the repo root:
 
 import argparse
 import copy
+import hashlib
 import json
 import math
 import os
@@ -2360,6 +2361,43 @@ def generate_qotd_og_image(question, output_path):
 
 
 
+def qotd_claim_hash(claim):
+    """Hash the exact string the card renderer draws.
+
+    generate_qotd_og_image draws only question['claim'] (the TRUE/FALSE pills
+    are static), so this hash fully determines the card's text. Kept as plain
+    SHA-256 over UTF-8 so scripts/generate-qotd-redirects.js can reproduce it
+    in Node with crypto.createHash('sha256').update(claim, 'utf8').
+    """
+    return hashlib.sha256(claim.encode('utf-8')).hexdigest()
+
+
+def write_qotd_claim_manifest(claims):
+    """Record which claim each card was rendered from.
+
+    A card is a PNG, so a claim edited after the card was drawn leaves an image
+    that is the right name and the right size and shows superseded wording, with
+    nothing to grep. Re-rendering to compare is not viable as a gate: PNG bytes
+    only match under CI's pinned Pillow, so it would fail on every local run.
+    This manifest is the cheap equivalent, and validate gate 9 compares it to
+    the live claims.
+    """
+    path = os.path.join(ASSETS_OG_QOTD, 'claims.json')
+    payload = {
+        'note': ('SHA-256 of the claim each card in this directory was rendered from. '
+                 'Written by scripts/generate-og-pages.py; checked by validate gate 9 '
+                 '(scripts/generate-qotd-redirects.js --check). A mismatch means a claim '
+                 'was edited without regenerating its share card.'),
+        'generatedBy': 'scripts/generate-og-pages.py',
+        'claims': dict(sorted(claims.items())),
+    }
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as fh:
+        json.dump(payload, fh, ensure_ascii=False, indent=2)
+        fh.write('\n')
+    print(f"  manifest: /assets/og/q/claims.json ({len(claims)} claims)")
+
+
 def generate_qotd_assets():
     """Emit one OG PNG per QOTD question.
 
@@ -2373,11 +2411,14 @@ def generate_qotd_assets():
         print("No QOTD questions found; skipping QOTD asset generation.")
         return 0
     print(f"\nQOTD: generating {len(questions)} OG cards")
+    claims = {}
     for q in questions:
         slug = q['slug']
         img_path = os.path.join(ASSETS_OG_QOTD, f"{slug}.png")
         generate_qotd_og_image(q, img_path)
+        claims[slug] = qotd_claim_hash(q['claim'])
         print(f"  {q['id']}: /assets/og/q/{slug}.png")
+    write_qotd_claim_manifest(claims)
     return len(questions)
 
 
@@ -2414,7 +2455,9 @@ def main():
         )
         print(line)
 
-    # QOTD is slug-disjoint from metric slugs and runs regardless of --slug filter
+    # QOTD is slug-disjoint from metric slugs, so --slug (a metric filter) skips
+    # it entirely. That also means claims.json only refreshes on a full run,
+    # which is what validate gate 9 tells you to do when a card goes stale.
     if not args.slug:
         generate_qotd_assets()
 

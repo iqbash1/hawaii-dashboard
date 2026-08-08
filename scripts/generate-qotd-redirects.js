@@ -20,16 +20,32 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const CHECK_ONLY = process.argv.includes('--check');
 
 const BASE = path.join(__dirname, '..');
 const QDIR = path.join(BASE, 'q');
 const OG_QDIR = path.join(BASE, 'assets', 'og', 'q');
+const MANIFEST = path.join(OG_QDIR, 'claims.json');
 const SITE = 'https://hawaiidashboard.org';
 const OG_TITLE = 'You know Hawaiʻi?';
 
 const questions = require(path.join(BASE, 'js', 'questions.js'));
+
+// Must match qotd_claim_hash() in scripts/generate-og-pages.py: SHA-256 over
+// the UTF-8 claim, which is the only per-question input the card renderer uses.
+function claimHash(claim) {
+    return crypto.createHash('sha256').update(String(claim), 'utf8').digest('hex');
+}
+
+function readClaimManifest() {
+    try {
+        return JSON.parse(fs.readFileSync(MANIFEST, 'utf8')).claims || null;
+    } catch {
+        return null;
+    }
+}
 
 function escapeAttr(s) {
     return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
@@ -100,22 +116,48 @@ function main() {
             else if (fs.readFileSync(file, 'utf8') !== renderRedirect(q)) drifted.push(q.id);
             // The share card draws the claim, so a question with no card is the
             // same failure one step earlier: js/questions.js moved, the derived
-            // asset did not. Content staleness is not detectable without
-            // re-rendering, and the monthly cron regenerates every card, so this
-            // only asserts the file is there.
+            // asset did not.
             if (!fs.existsSync(path.join(OG_QDIR, `${q.slug}.png`))) missingCard.push(q.id);
         }
-        const bad = drifted.length + missingPage.length + missingCard.length;
+
+        // Card CONTENT drift. The claim is painted into the PNG, so an edited
+        // claim leaves a card of the right name and size showing superseded
+        // wording, with no text to grep. generate-og-pages.py records the hash
+        // of the claim it drew each card from; compare against the live claims.
+        const staleCard = [];
+        let manifestErr = null;
+        const manifest = readClaimManifest();
+        if (!manifest) {
+            manifestErr = `✗ ${path.relative(BASE, MANIFEST)} missing or unreadable`;
+        } else {
+            for (const q of questions) {
+                const recorded = manifest[q.slug];
+                if (!recorded) continue;            // no card yet: already reported above
+                if (recorded !== claimHash(q.claim)) staleCard.push(q.id);
+            }
+        }
+
+        const bad = drifted.length + missingPage.length + missingCard.length
+            + staleCard.length + (manifestErr ? 1 : 0);
         if (bad === 0) {
-            console.log(`All ${questions.length} q/{id}/index.html pages match js/questions.js; every share card present.`);
+            console.log(`All ${questions.length} q/{id}/index.html pages match js/questions.js; every share card present and drawn from the current claim.`);
             return;
         }
         if (drifted.length) console.log(`✗ ${drifted.length} page(s) differ from js/questions.js: ${drifted.join(', ')}`);
         if (missingPage.length) console.log(`✗ ${missingPage.length} page(s) missing: ${missingPage.join(', ')}`);
         if (missingCard.length) console.log(`✗ ${missingCard.length} share card(s) missing: ${missingCard.join(', ')}`);
-        console.log('  Fix: node scripts/generate-qotd-redirects.js');
-        console.log('  A changed claim also restyles the share card, which only');
-        console.log('  `python3 scripts/generate-og-pages.py` (no --slug) rewrites.');
+        if (manifestErr) console.log(manifestErr);
+        if (staleCard.length) {
+            console.log(`✗ ${staleCard.length} share card(s) drawn from a superseded claim: ${staleCard.join(', ')}`);
+            for (const id of staleCard) {
+                const q = questions.find(x => x.id === id);
+                console.log(`    ${id} now reads: ${q.claim}`);
+            }
+        }
+        if (drifted.length || missingPage.length) console.log('  Fix pages: node scripts/generate-qotd-redirects.js');
+        if (missingCard.length || staleCard.length || manifestErr) {
+            console.log('  Fix cards: python3 scripts/generate-og-pages.py   (no --slug; QOTD is skipped when --slug is passed)');
+        }
         process.exit(1);
     }
     for (const q of questions) {
