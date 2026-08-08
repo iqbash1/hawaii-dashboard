@@ -29,7 +29,7 @@ npm run recompute        # or the per-metric fetcher
 npm run sync-qotd        # writes new js/questions.js + q/{id}/index.html
 
 # 3. Validate everything
-npm run validate         # runs all eight gates; fails fast on drift
+npm run validate         # runs all nine gates; fails fast on drift
 
 # 4. Commit
 git add ...
@@ -48,7 +48,7 @@ question's direction changed because the latest year advanced):
 The sync script refuses to write changes when this happens, the bank's
 truth values cannot ship a silent flip.
 
-## The eight gates in `npm run validate`
+## The nine gates in `npm run validate`
 
 | # | Gate | What it catches |
 |---|------|-----------------|
@@ -61,7 +61,9 @@ truth values cannot ship a silent flip.
 | 7 | `sync-otc-meta.js --check` | Each Off the Charts post's `<meta name="description">` must match the post's og:description, twitter:description, and JSON-LD description fields. |
 | 8 | `audit-otc-numbers.js --gate` | Each number an Off the Charts post **body** states (declared in `off-the-charts/facts.json`) still matches live data. Tie-aware. Catches the drift gate 2 can't see, since it scans data.js/questions.js, not post prose. After a refresh moves a tracked number, update the post + run `npm run sync-otc-meta`. |
 
-All eight always run, so every problem surfaces in a single report.
+| 9 | `generate-qotd-redirects.js --check` | Each `q/{id}/index.html` must byte-match what the generator would write from `js/questions.js`, and every question must have a share card. Catches a hand-edited **claim**: gate 3 only owns the answers, so it reports "no changes needed" and the pages keep serving the superseded claim. Run `node scripts/generate-qotd-redirects.js`; a claim edit also restyles the card, which only `python3 scripts/generate-og-pages.py` (no `--slug`) rewrites. |
+
+All nine always run, so every problem surfaces in a single report.
 
 ## When NOT to run sync-qotd
 

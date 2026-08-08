@@ -8,14 +8,24 @@
  *
  * Re-run whenever js/questions.js claims change or new questions are added.
  *
- *   node scripts/generate-qotd-redirects.js
+ *   node scripts/generate-qotd-redirects.js          -- write the pages
+ *   node scripts/generate-qotd-redirects.js --check  -- exit 1 if any drifted
+ *
+ * The --check mode is validate gate 9. It exists because a hand-edited claim
+ * reaches js/questions.js but not the surfaces that bake it in:
+ * sync-qotd-answers only rewrites the answers it owns and reports "no changes
+ * needed" for a claim edit, so these pages kept serving a superseded claim with
+ * every other gate green (2026-08, q063).
  */
 
 const fs = require('fs');
 const path = require('path');
 
+const CHECK_ONLY = process.argv.includes('--check');
+
 const BASE = path.join(__dirname, '..');
 const QDIR = path.join(BASE, 'q');
+const OG_QDIR = path.join(BASE, 'assets', 'og', 'q');
 const SITE = 'https://hawaiidashboard.org';
 const OG_TITLE = 'You know Hawaiʻi?';
 
@@ -80,6 +90,34 @@ function renderRedirect(q) {
 }
 
 function main() {
+    if (CHECK_ONLY) {
+        const drifted = [];
+        const missingPage = [];
+        const missingCard = [];
+        for (const q of questions) {
+            const file = path.join(QDIR, q.id, 'index.html');
+            if (!fs.existsSync(file)) missingPage.push(q.id);
+            else if (fs.readFileSync(file, 'utf8') !== renderRedirect(q)) drifted.push(q.id);
+            // The share card draws the claim, so a question with no card is the
+            // same failure one step earlier: js/questions.js moved, the derived
+            // asset did not. Content staleness is not detectable without
+            // re-rendering, and the monthly cron regenerates every card, so this
+            // only asserts the file is there.
+            if (!fs.existsSync(path.join(OG_QDIR, `${q.slug}.png`))) missingCard.push(q.id);
+        }
+        const bad = drifted.length + missingPage.length + missingCard.length;
+        if (bad === 0) {
+            console.log(`All ${questions.length} q/{id}/index.html pages match js/questions.js; every share card present.`);
+            return;
+        }
+        if (drifted.length) console.log(`✗ ${drifted.length} page(s) differ from js/questions.js: ${drifted.join(', ')}`);
+        if (missingPage.length) console.log(`✗ ${missingPage.length} page(s) missing: ${missingPage.join(', ')}`);
+        if (missingCard.length) console.log(`✗ ${missingCard.length} share card(s) missing: ${missingCard.join(', ')}`);
+        console.log('  Fix: node scripts/generate-qotd-redirects.js');
+        console.log('  A changed claim also restyles the share card, which only');
+        console.log('  `python3 scripts/generate-og-pages.py` (no --slug) rewrites.');
+        process.exit(1);
+    }
     for (const q of questions) {
         const dir = path.join(QDIR, q.id);
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });

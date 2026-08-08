@@ -1,7 +1,7 @@
 #!/bin/bash
 # Aggregated validation gate for `npm run validate`.
 #
-# Runs eight checks in sequence and ALWAYS runs all eight so every
+# Runs nine checks in sequence and ALWAYS runs all nine so every
 # issue surfaces in a single pass:
 #
 #   1. validate-data.js
@@ -49,6 +49,12 @@
 #          clean across all 9 posts / 44 claims). Claims declared in
 #          off-the-charts/facts.json.
 #
+#   9. generate-qotd-redirects.js --check
+#        - exit 1 = a q/{id}/index.html no longer matches js/questions.js, or a
+#          question has no share card. Catches a hand-edited claim, which
+#          sync-qotd-answers (gate 3) reports as "no changes needed" because it
+#          only owns the answers. Run `node scripts/generate-qotd-redirects.js`.
+#
 # Aggregated exit code: 0 if all pass, 1 if any hard check failed.
 
 cd "$(dirname "$0")/.."
@@ -56,7 +62,7 @@ cd "$(dirname "$0")/.."
 set +e
 FAIL=0
 
-echo "── 1/8 validate-data.js ──"
+echo "── 1/9 validate-data.js ──"
 node scripts/validate-data.js
 V=$?
 if [ $V -eq 2 ]; then
@@ -65,7 +71,7 @@ if [ $V -eq 2 ]; then
 fi
 
 echo ""
-echo "── 2/8 audit-narrative-numbers.js --gate ──"
+echo "── 2/9 audit-narrative-numbers.js --gate ──"
 node scripts/audit-narrative-numbers.js --gate
 A=$?
 if [ $A -ne 0 ]; then
@@ -73,7 +79,7 @@ if [ $A -ne 0 ]; then
 fi
 
 echo ""
-echo "── 3/8 sync-qotd-answers.js --check ──"
+echo "── 3/9 sync-qotd-answers.js --check ──"
 node scripts/sync-qotd-answers.js --check
 S=$?
 if [ $S -ne 0 ]; then
@@ -81,7 +87,7 @@ if [ $S -ne 0 ]; then
 fi
 
 echo ""
-echo "── 4/8 audit-internal.py --gate ──"
+echo "── 4/9 audit-internal.py --gate ──"
 python3 scripts/audit-internal.py --gate
 I=$?
 if [ $I -ne 0 ]; then
@@ -89,7 +95,7 @@ if [ $I -ne 0 ]; then
 fi
 
 echo ""
-echo "── 5/8 update-metric-counts.js --check ──"
+echo "── 5/9 update-metric-counts.js --check ──"
 node scripts/update-metric-counts.js --check
 M=$?
 if [ $M -ne 0 ]; then
@@ -97,7 +103,7 @@ if [ $M -ne 0 ]; then
 fi
 
 echo ""
-echo "── 6/8 generate-fyc-pages.js --check ──"
+echo "── 6/9 generate-fyc-pages.js --check ──"
 node scripts/generate-fyc-pages.js --check
 F=$?
 if [ $F -ne 0 ]; then
@@ -105,7 +111,7 @@ if [ $F -ne 0 ]; then
 fi
 
 echo ""
-echo "── 7/8 sync-otc-meta.js --check ──"
+echo "── 7/9 sync-otc-meta.js --check ──"
 node scripts/sync-otc-meta.js --check
 O=$?
 if [ $O -ne 0 ]; then
@@ -113,12 +119,21 @@ if [ $O -ne 0 ]; then
 fi
 
 echo ""
-echo "── 8/8 audit-otc-numbers.js --gate ──"
+echo "── 8/9 audit-otc-numbers.js --gate ──"
 node scripts/audit-otc-numbers.js --gate
 OTC=$?
 if [ $OTC -ne 0 ]; then
     FAIL=1
     echo "✗ OTC number audit: a post quotes a stale number (fix the post + run sync-otc-meta)"
+fi
+
+echo ""
+echo "── 9/9 generate-qotd-redirects.js --check ──"
+node scripts/generate-qotd-redirects.js --check
+QR=$?
+if [ $QR -ne 0 ]; then
+    FAIL=1
+    echo "✗ QOTD pages drifted from js/questions.js (a claim was edited without regenerating)"
 fi
 
 echo ""

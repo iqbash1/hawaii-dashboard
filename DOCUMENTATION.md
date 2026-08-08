@@ -119,7 +119,7 @@ hawaii-dashboard/
 │   ├── audit-otc-numbers.js    # Re-derives every number an OTC post states (declared in off-the-charts/facts.json) from live data; --gate is the 8th validate gate
 │   ├── build-share-card-data.js # Emits share-card-data.json: live-derived numbers for the OTC social cards
 │   ├── generate-share-cards.py # Renders forwardable OTC social cards (claim + data visual) to drafts/share-cards/; npm run share-cards
-│   ├── validate-all.sh         # Aggregates the 8 validate gates into one CI command (npm run validate)
+│   ├── validate-all.sh         # Aggregates the 9 validate gates into one CI command (npm run validate)
 │   ├── REFRESH-PLAYBOOK.md     # Canonical sequence after any data refresh
 │   └── validate-data.js        # Validates data integrity before CI commit
 ├── tests/
@@ -839,7 +839,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/sync-otc-meta.js` | **Off the Charts sync.** Per post: propagates `<meta name="description">` (canonical) to og/twitter/JSON-LD description with per-location encoding; propagates `<meta name="otc:dek">` to the archive card; and regenerates `js/otc-posts.js` (the slug→metric index the homepage strip, deep-dive modal, and QOTD proof view read to cross-link stories). `--check` mode is the 7th `npm run validate` gate. Body lead is intentionally NOT synced (lede may be hooky while meta is SEO-optimised). |
 | `scripts/audit-otc-numbers.js` | **OTC post-body drift scanner** — the surface the narrative scanner misses. Each post's checkable numbers live in `off-the-charts/facts.json`, declared by what they refer to (metric, kind ∈ rank/growthRank/value/median/growthPct, state, year/window), never the value. Re-derives the current value from `state-data.js` and asserts the post still states it. Tie-aware (a state tied on a NAEP score is valid at #25 or #26). `--gate` is the 8th `npm run validate` gate. Built after the productivity post's `#46` went stale on a BLS revision. |
 | `scripts/build-share-card-data.js` + `scripts/generate-share-cards.py` | **OTC social-card generator** (`npm run share-cards`). The `.js` re-derives each card's numbers live; the `.py` renders forwardable cards (claim + one honest data visual + attribution) at 1200×630 and 1080×1350 to `drafts/share-cards/` (gitignored). For the messenger/seeding distribution push. |
-| `scripts/validate-all.sh` | Aggregates the 8 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, generate-fyc-pages, sync-otc-meta, and audit-otc-numbers. |
+| `scripts/validate-all.sh` | Aggregates the 9 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, generate-fyc-pages, sync-otc-meta, audit-otc-numbers, and generate-qotd-redirects. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 58 unit tests across 9 suites (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, V1/V2 gap threshold, medianSeries invariant). |
 
