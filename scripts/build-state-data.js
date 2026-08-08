@@ -959,35 +959,71 @@ async function fetchNaepReading8() {
 // processes untrusted input; here it parses HUD-published binary Excel
 // files in a dev/CI context, so the practical risk is limited.
 
-const HUD_PIT_URL = 'https://www.huduser.gov/portal/sites/default/files/xls/2007-2024-PIT-Counts-by-State.xlsb';
-const HUD_PIT_CACHE = '/tmp/pit-counts.xlsb';
+// The filename carries the coverage end year, so it moves every December when
+// HUD appends a PIT count. Pinning it does not error, it just keeps serving the
+// previous year's workbook forever, which is how this metric sat a year behind
+// without anything noticing. Probe from the calendar down to a pinned floor.
+//
+// A missing HUD file does NOT 404: the CDN answers 202 with a small bot
+// checkpoint page. Status alone is therefore useless, so a candidate is accepted
+// only once the body clears the size floor an XLSB has to exceed.
+const HUD_PIT_FLOOR_YEAR = 2024;    // last hand-verified workbook
+const HUD_PIT_MAX_PROBES = 4;
+const HUD_PIT_MIN_BYTES = 1000000;
+const hudPitUrl = y => `https://www.huduser.gov/portal/sites/default/files/xls/2007-${y}-PIT-Counts-by-State.xlsb`;
+const hudPitCache = y => `/tmp/pit-counts-${y}.xlsb`;
+
+function hudPitCandidates(now = new Date()) {
+    const top = now.getUTCFullYear();
+    const years = [];
+    for (let y = top; y >= HUD_PIT_FLOOR_YEAR && years.length < HUD_PIT_MAX_PROBES; y--) years.push(y);
+    if (!years.includes(HUD_PIT_FLOOR_YEAR)) years.push(HUD_PIT_FLOOR_YEAR);
+    return years;
+}
+
 const HUD_ABBR_TO_STATE = NAEP_ABBR_TO_STATE; // same USPS → state-name map
 
 async function fetchUnshelteredHomelessRate() {
     console.log('Fetching: Unsheltered homeless rate (HUD PIT + BEA population)...');
     try {
-        // 1. Download XLSB (cached for 1 hour)
-        let needsDownload = true;
-        if (fs.existsSync(HUD_PIT_CACHE)) {
-            const ageMs = Date.now() - fs.statSync(HUD_PIT_CACHE).mtimeMs;
-            if (ageMs < 3600 * 1000 && fs.statSync(HUD_PIT_CACHE).size > 1000000) {
-                needsDownload = false;
+        // 1. Resolve the newest published workbook, newest first, and download it
+        //    (cached for 1 hour, keyed by year so a probe upgrade is never masked
+        //    by the previous year's cache file).
+        let pitCache = null;
+        let pitYear = null;
+        for (const y of hudPitCandidates()) {
+            const cachePath = hudPitCache(y);
+            if (fs.existsSync(cachePath)) {
+                const ageMs = Date.now() - fs.statSync(cachePath).mtimeMs;
+                if (ageMs < 3600 * 1000 && fs.statSync(cachePath).size > HUD_PIT_MIN_BYTES) {
+                    pitCache = cachePath; pitYear = y; break;
+                }
             }
+            let buf;
+            try {
+                const res = await fetch(hudPitUrl(y), {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+                        'Accept': '*/*',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                    },
+                    redirect: 'follow',
+                    // An unpublished year can hang rather than answer, so bound it;
+                    // the timeout aborts into the catch and moves to the next candidate.
+                    signal: AbortSignal.timeout(60000),
+                });
+                if (!res.ok) continue;
+                buf = Buffer.from(await res.arrayBuffer());
+            } catch { continue; }          // connection-level failure/timeout: try the next year
+            // Size is the real test: the bot-checkpoint page returns 202 with a
+            // few KB, so only a body this large is actually the workbook.
+            if (buf.length < HUD_PIT_MIN_BYTES) continue;
+            fs.writeFileSync(cachePath, buf);
+            pitCache = cachePath; pitYear = y; break;
         }
-        if (needsDownload) {
-            const res = await fetch(HUD_PIT_URL, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
-                    'Accept': '*/*',
-                    'Accept-Language': 'en-US,en;q=0.9',
-                },
-                redirect: 'follow',
-            });
-            if (!res.ok) throw new Error(`HUD PIT HTTP ${res.status}`);
-            const buf = Buffer.from(await res.arrayBuffer());
-            if (buf.length < 1000000) throw new Error(`PIT file too small: ${buf.length} bytes`);
-            fs.writeFileSync(HUD_PIT_CACHE, buf);
-        }
+        if (!pitCache) throw new Error('no HUD PIT workbook resolved (tried ' + hudPitCandidates().join(', ') + ')');
+        console.log(`  HUD PIT workbook: 2007-${pitYear}`);
+        const HUD_PIT_CACHE = pitCache;
 
         // 2. Parse all year sheets
         let XLSX;
@@ -1055,7 +1091,7 @@ async function fetchUnshelteredHomelessRate() {
         return yrCount > 0 ? {
             source: 'HUD Point-in-Time Count',
             calculation: 'Unsheltered homeless per 10,000 residents. Numerator: HUD PIT "Unsheltered Homeless" column. Denominator: BEA SAINC1 LineCode 2 (state population).',
-            rawVariables: 'HUD User 2007-2024-PIT-Counts-by-State.xlsb sheet[year], column "Unsheltered Homeless"; BEA SAINC1 line 2 population.',
+            rawVariables: `HUD User 2007-${pitYear}-PIT-Counts-by-State.xlsb sheet[year], column "Unsheltered Homeless"; BEA SAINC1 line 2 population.`,
             data,
         } : null;
     } catch (err) {
@@ -2069,8 +2105,28 @@ async function fetchAcgr() {
 
 const PEP_2019_VINTAGE_URL = 'https://api.census.gov/data/2019/pep/components'
     + '?get=NAME,RDOMESTICMIG,PERIOD_CODE&for=state:*';
-const PEP_2024_NST_URL = 'https://www2.census.gov/programs-surveys/popest/datasets'
-    + '/2020-2024/state/totals/NST-EST2024-ALLDATA.csv';
+// Both the directory and the filename carry the vintage, so this URL moves every
+// December. Pinning it silently froze the series: the old vintage stays served,
+// so there is no error to notice. Probe newest first down to a pinned floor.
+//
+// A missing vintage fails at the connection level rather than returning a clean
+// 404, so the loop treats any failure as "try the next candidate" and confirms a
+// hit by looking for that vintage's own RDOMESTICMIG column in the header. Note
+// Census REVISES prior years between vintages (HI 2024 was -6.456 in vintage
+// 2024, -5.914 in vintage 2025), so advancing a vintage restates earlier years
+// as well as adding one.
+const PEP_NST_FLOOR_VINTAGE = 2024;   // last hand-verified vintage
+const PEP_NST_MAX_PROBES = 4;
+const pepNstUrl = v => 'https://www2.census.gov/programs-surveys/popest/datasets'
+    + `/2020-${v}/state/totals/NST-EST${v}-ALLDATA.csv`;
+
+function pepVintages(now = new Date()) {
+    const top = now.getUTCFullYear();
+    const vs = [];
+    for (let v = top; v >= PEP_NST_FLOOR_VINTAGE && vs.length < PEP_NST_MAX_PROBES; v--) vs.push(v);
+    if (!vs.includes(PEP_NST_FLOOR_VINTAGE)) vs.push(PEP_NST_FLOOR_VINTAGE);
+    return vs;
+}
 const PEP_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
 // PERIOD_CODE → calendar year for 2019 vintage (PC 2 = 2011 through PC 10 = 2019).
 // PC 1 is the April 2010 base (partial year); state-data does not store it.
@@ -2112,22 +2168,39 @@ async function fetchNetDomesticMigration() {
         console.log(`  WARN 2019 vintage fetch failed: ${err.message}`);
     }
 
-    // 2) 2024 vintage NST CSV for 2021-2024 (no 2020 rate per Census methodology)
+    // 2) Newest NST vintage for 2021+ (no 2020 rate per Census methodology)
+    let nstVintage = null;
     try {
-        const r = await fetch(PEP_2024_NST_URL, {
-            headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
-        });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const text = await r.text();
-        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-        const head = parseCsvRow(lines[0]);
+        let lines = null;
+        let head = null;
+        for (const v of pepVintages()) {
+            try {
+                const r = await fetch(pepNstUrl(v), {
+                    headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
+                    // An unpublished vintage hangs instead of returning 404, so bound
+                    // it; the timeout aborts into the catch and tries the next one.
+                    signal: AbortSignal.timeout(30000),
+                });
+                if (!r.ok) continue;
+                const text = await r.text();
+                const ls = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+                const h = parseCsvRow(ls[0]);
+                // Confirms both that the file parsed and that it really is vintage v.
+                if (h.indexOf(`RDOMESTICMIG${v}`) < 0) continue;
+                lines = ls; head = h; nstVintage = v; break;
+            } catch { continue; }   // connection-level failure: try the next vintage
+        }
+        if (!lines) throw new Error(`no NST vintage resolved (tried ${pepVintages().join(', ')})`);
         const nameIdx = head.indexOf('NAME');
         const sumlevIdx = head.indexOf('SUMLEV');
+        // Read whatever RDOMESTICMIG years the file carries rather than a fixed
+        // list, so a new vintage's extra year is not dropped on the floor.
         const rateIdxByYear = {};
-        for (const yr of ['2021', '2022', '2023', '2024']) {
-            rateIdxByYear[yr] = head.indexOf(`RDOMESTICMIG${yr}`);
-        }
-        if (nameIdx < 0 || sumlevIdx < 0 || Object.values(rateIdxByYear).some(i => i < 0)) {
+        head.forEach((h, i) => {
+            const m = /^RDOMESTICMIG(\d{4})$/.exec(h);
+            if (m) rateIdxByYear[m[1]] = i;
+        });
+        if (nameIdx < 0 || sumlevIdx < 0 || Object.keys(rateIdxByYear).length === 0) {
             throw new Error('headers missing in NST CSV');
         }
         let pts = 0;
@@ -2146,9 +2219,10 @@ async function fetchNetDomesticMigration() {
                 pts++;
             }
         }
-        console.log(`  2024 vintage NST CSV (2021-2024): ${pts} state-year cells`);
+        const got = Object.keys(rateIdxByYear).sort();
+        console.log(`  NST vintage ${nstVintage} (${got[0]}-${got[got.length - 1]}): ${pts} state-year cells`);
     } catch (err) {
-        console.log(`  WARN 2024 vintage fetch failed: ${err.message}`);
+        console.log(`  WARN NST vintage fetch failed: ${err.message}`);
     }
 
     const years = Object.keys(data).sort();
@@ -2160,7 +2234,7 @@ async function fetchNetDomesticMigration() {
     return {
         source: 'Census Population Estimates Program',
         calculation: 'RDOMESTICMIG (per 1,000) × 10 = rate per 10,000 residents. Positive means more arrivals than departures.',
-        rawVariables: '2011-2019: api.census.gov 2019 vintage components RDOMESTICMIG by PERIOD_CODE 2-10. 2020-2024: NST-EST2024-ALLDATA.csv RDOMESTICMIG{year} columns (2020 has no rate per Census methodology).',
+        rawVariables: `2011-2019: api.census.gov 2019 vintage components RDOMESTICMIG by PERIOD_CODE 2-10. 2021+: NST-EST${nstVintage}-ALLDATA.csv RDOMESTICMIG{year} columns (2020 has no rate per Census methodology).`,
         data,
     };
 }

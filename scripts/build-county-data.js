@@ -466,12 +466,25 @@ async function fetchPerCapitaIncome() {
 
 // Two source endpoints because Census deprecated the PEP components API after
 // vintage 2019. For 2011-2019 we use the 2019 vintage components API
-// (PERIOD_CODE 2..10 → calendar 2011..2019). For 2021-2024 we read the
-// CO-EST2024-ALLDATA bulk CSV (RDOMESTICMIG{year} columns). 2020 is not
-// published (decennial base year gap). Mirrors the state-level fetcher in
-// build-state-data.js — keep the two in sync when Census ships a new vintage.
-const PEP_2024_COEST_URL = 'https://www2.census.gov/programs-surveys/popest/datasets'
-    + '/2020-2024/counties/totals/co-est2024-alldata.csv';
+// (PERIOD_CODE 2..10 → calendar 2011..2019). For 2021+ we read the
+// CO-EST bulk CSV (RDOMESTICMIG{year} columns). 2020 is not published
+// (decennial base year gap). Mirrors the state-level fetcher in
+// build-state-data.js; both now resolve the vintage themselves, so they stay in
+// sync without a manual bump. Pinning the URL froze the series silently, since
+// the previous vintage keeps serving with a 200. Census also revises prior years
+// between vintages, so advancing restates 2021+ as well as adding a year.
+const PEP_COEST_FLOOR_VINTAGE = 2024;   // last hand-verified vintage
+const PEP_COEST_MAX_PROBES = 4;
+const pepCoestUrl = v => 'https://www2.census.gov/programs-surveys/popest/datasets'
+    + `/2020-${v}/counties/totals/co-est${v}-alldata.csv`;
+
+function pepVintages(now = new Date()) {
+    const top = now.getUTCFullYear();
+    const vs = [];
+    for (let v = top; v >= PEP_COEST_FLOOR_VINTAGE && vs.length < PEP_COEST_MAX_PROBES; v--) vs.push(v);
+    if (!vs.includes(PEP_COEST_FLOOR_VINTAGE)) vs.push(PEP_COEST_FLOOR_VINTAGE);
+    return vs;
+}
 
 async function fetchNetDomesticMigration() {
     console.log('Fetching: Net domestic migration rate (Census PEP)...');
@@ -520,25 +533,42 @@ async function fetchNetDomesticMigration() {
         console.log(`  WARN 2019 vintage fetch failed: ${err.message}`);
     }
 
-    // 2) 2024 vintage CO-EST CSV for 2021-2024 (no 2020 rate per Census methodology)
+    // 2) Newest CO-EST vintage for 2021+ (no 2020 rate per Census methodology)
     // Rate columns RDOMESTICMIG{year} are per 1,000 mid-year residents; we
     // multiply by 10 to match the dashboard's per-10,000 unit.
+    let coestVintage = null;
     try {
-        const r = await fetch(PEP_2024_COEST_URL, {
-            headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
-        });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const text = await r.text();
-        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-        const head = parseCsvRow(lines[0]);
+        let lines = null;
+        let head = null;
+        for (const v of pepVintages()) {
+            try {
+                const r = await fetch(pepCoestUrl(v), {
+                    headers: { 'User-Agent': 'Mozilla/5.0 hawaii-dashboard data refresh' },
+                    // An unpublished vintage hangs instead of returning 404, so bound
+                    // it; the timeout aborts into the catch and tries the next one.
+                    signal: AbortSignal.timeout(30000),
+                });
+                if (!r.ok) continue;
+                const text = await r.text();
+                const ls = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+                const h = parseCsvRow(ls[0]);
+                // Confirms both that the file parsed and that it really is vintage v.
+                if (h.indexOf(`RDOMESTICMIG${v}`) < 0) continue;
+                lines = ls; head = h; coestVintage = v; break;
+            } catch { continue; }   // connection-level failure: try the next vintage
+        }
+        if (!lines) throw new Error(`no CO-EST vintage resolved (tried ${pepVintages().join(', ')})`);
         const sumlevIdx = head.indexOf('SUMLEV');
         const stateIdx = head.indexOf('STATE');
         const countyIdx = head.indexOf('COUNTY');
+        // Read whatever RDOMESTICMIG years the file carries rather than a fixed
+        // list, so a new vintage's extra year is not dropped on the floor.
         const rateIdxByYear = {};
-        for (const yr of ['2021', '2022', '2023', '2024']) {
-            rateIdxByYear[yr] = head.indexOf(`RDOMESTICMIG${yr}`);
-        }
-        if (sumlevIdx < 0 || stateIdx < 0 || countyIdx < 0 || Object.values(rateIdxByYear).some(i => i < 0)) {
+        head.forEach((h2, i) => {
+            const m = /^RDOMESTICMIG(\d{4})$/.exec(h2);
+            if (m) rateIdxByYear[m[1]] = i;
+        });
+        if (sumlevIdx < 0 || stateIdx < 0 || countyIdx < 0 || Object.keys(rateIdxByYear).length === 0) {
             throw new Error('headers missing in CO-EST CSV');
         }
         let pts = 0;
@@ -555,9 +585,10 @@ async function fetchNetDomesticMigration() {
                 pts++;
             }
         }
-        console.log(`  2024 vintage CO-EST CSV (2021-2024): ${pts} county-year cells`);
+        const got = Object.keys(rateIdxByYear).sort();
+        console.log(`  CO-EST vintage ${coestVintage} (${got[0]}-${got[got.length - 1]}): ${pts} county-year cells`);
     } catch (err) {
-        console.log(`  WARN 2024 vintage fetch failed: ${err.message}`);
+        console.log(`  WARN CO-EST vintage fetch failed: ${err.message}`);
     }
 
     const totalPoints = Object.values(byCounty).reduce((s, d) => s + Object.keys(d).length, 0);

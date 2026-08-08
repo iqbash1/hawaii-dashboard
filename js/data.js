@@ -1105,7 +1105,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Tourism employment floor</strong> · Hawaiʻi's visitor economy provides a persistent baseline of service-sector jobs, but tourism-related sectors had recovered to only 94% of pre-pandemic GDP by late 2024 <a href=\"https://dbedt.hawaii.gov/economic/qser/outlook-economy/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; roughly 50% of hospitality tasks are technically automatable, posing a medium-term displacement risk. <a href=\"https://www.mckinsey.com/industries/travel/our-insights/future-of-tourism-bridging-the-labor-gap-enhancing-customer-experience\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Sector-based training</strong> · Randomized trials of programs such as Project QUEST and Year Up show sustained earnings gains of $5,000-$8,000 per year lasting a decade or more <a href=\"https://www.brookings.edu/articles/do-sectoral-training-programs-work-what-the-evidence-on-project-quest-and-year-up-really-shows/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's federally funded training pipeline aligns with this model but remains small relative to at-risk occupations. <a href=\"https://labor.hawaii.gov/wp-content/uploads/2025/12/WIOA-Annual-Report-PY24_12.01.2025.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Reemployment speed</strong> · Rapid-reattachment services such as reemployment bonuses and job-search assistance shorten unemployment spells more cost-effectively than extended benefits <a href=\"https://www.brookings.edu/articles/building-americas-job-skills-with-effective-workforce-programs-a-training-strategy-to-raise-wages-and-increase-work-opportunities/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's single-sector concentration amplifies the value of cross-industry reskilling during tourism downturns. <a href=\"https://uhero.hawaii.edu/potential-opportunities-to-diversify-the-economy-of-hawai%CA%BBi/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {"value":2.6,"period":"Jun 2026","asOf":"2026-08-07"},
+    "latestMonthly": {"value":2.6,"period":"Jun 2026","asOf":"2026-08-08"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked in the top 10 in roughly two thirds of the past 40 years, with a weak stretch in the late 1990s when the rank reached #46. The sharpest break was 2020, when tourism dependence drove unemployment to 11.7 percent and the rank to #49. Recovery was gradual: #26 in 2022, back inside the top 10 by 2024, and #2 in both 2025 and 2026. That matches the best showing since 2018, though short of the #1 ranks of 2017 and the mid-2000s.",
       "mode": "protect",
@@ -1260,7 +1260,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Childcare cost and supply</strong> · Infant care in Hawaiʻi averages $21,167 per year, ranking 6th-highest nationally and consuming roughly 20% of median family income <a href=\"https://www.epi.org/child-care-costs-in-the-united-states/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; federal research finds higher childcare subsidy spending significantly increases low-income mothers' labor force participation. <a href=\"https://aspe.hhs.gov/effects-child-care-subsidies-maternal-labor-force-participation-united-states\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Aging-driven exits</strong> · Population aging reduced U.S. labor force participation by over 3 percentage points from 2000 to 2017 <a href=\"https://www.minneapolisfed.org/article/2023/whos-not-working-understanding-the-uss-aging-workforce\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's median age is among the highest in the nation, and roughly 1.6 million excess retirements nationally during the pandemic have not fully reversed. <a href=\"https://www.atlantafed.org/research-and-data/publications/policy-hub-macroblog/2023/04/21/retirement-and-its-impact-on-labor-supply\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Discouraged and disabled workers</strong> · Childcare-related nonparticipation rose 43% from mid-2023 to late 2024 <a href=\"https://www.kansascityfed.org/research/economic-bulletin/cost-of-childcare-increasingly-weighs-on-labor-force-engagement/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; high living costs in Hawaiʻi amplify barriers for workers deciding whether working is worth the cost, particularly those with disabilities or limited transportation. <a href=\"https://dbedt.hawaii.gov/economic/qser/labor-force/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {"value":60.9,"period":"Jun 2026","asOf":"2026-08-07"},
+    "latestMonthly": {"value":60.9,"period":"Jun 2026","asOf":"2026-08-08"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi ranked #2 in 1976 and has fallen to #37 in 2025. The decline tracks the shift from plantation agriculture to tourism and hospitality, with part-time schedules and lower wages replacing full-time cross-skill employment.",
       "mode": "learn",
@@ -1667,7 +1667,8 @@ const DASHBOARD_DATA = {
       "2020": 25.15,
       "2022": 26.03,
       "2023": 27.23,
-      "2024": 28.17
+      "2024": 28.17,
+      "2025": 28.21
     },
     "medianSeries": {
       "2007": 3.085,
@@ -1686,7 +1687,8 @@ const DASHBOARD_DATA = {
       "2020": 2.355,
       "2022": 2.485,
       "2023": 2.84,
-      "2024": 3.485
+      "2024": 3.485,
+      "2025": 3.86
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Housing First and permanent supply</strong> · Randomized trials show Housing First reduces homelessness by 88% and improves housing stability by 41% compared to treatment-first models <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8513528/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; U.S. programs produce a median benefit-to-cost ratio of 1.80:1, primarily from averted emergency and justice costs <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8863642/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Shelter capacity and outreach</strong> · The Kauhale Initiative has opened over 850 village-style units <a href=\"https://homelessness.hawaii.gov/kauhale/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; scaling low-barrier shelter and rapid rehousing can shorten unsheltered episodes <a href=\"https://homelessness.hawaii.gov/wp-content/uploads/2026/01/SOHHS-HICH-Act-309-Report-to-2026-Legislature-signed.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Behavioral health and prevention</strong> · Integrated behavioral health and housing programs outperform sequential treatment-then-housing models <a href=\"https://www.usich.gov/sites/default/files/document/Federal%20Resources%20for%20Addressing%20the%20Behavioral%20Health%20Needs%20of%20People%20Experiencing%20or%20at%20Risk%20of%20Homelessness.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's mild climate allows year-round outdoor survival, increasing the visible unsheltered count relative to cold-weather states.</li></ul>",
     "nextUpdate": "Nov",
@@ -2095,7 +2097,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Fuel mix and renewable transition</strong> · KIUC on Kauaʻi posts the lowest residential rates statewide through fixed-price solar-plus-battery contracts <a href=\"https://kiuc.coop/renewable-portfolio\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; scaling similar procurement to Oʻahu and Maui could displace the petroleum generation that keeps evening rates highest <a href=\"https://puc.hawaii.gov/wp-content/uploads/2025/01/Hawaii-PUC-Energy-Inclinations-White-Paper-FINAL.12.31.24_signed.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Grid modernization costs</strong> · The PUC capped HECOʻs Waiau repowering cost recovery and required 51% renewable fuel by 2032 <a href=\"https://energy.hawaii.gov/energy-affordability-signalled-as-state-priority-public-utilities-commission-heeds-calls-for-rate-accountability-in-waiau-repowering/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; phased cost recovery and competitive procurement can limit ratepayer exposure during the transition <a href=\"https://energy.hawaii.gov/wp-content/uploads/2026/01/2025-HSEO-Annual-Report.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Rate design and affordability</strong> · HECO's new time-of-use billing shifts price signals across daytime, evening peak, and overnight periods <a href=\"https://puc.hawaii.gov/energy/der/ard/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; pending rate cases and wildfire mitigation spending of $450 million through 2027 could push bills higher before renewables bring long-term savings <a href=\"https://www.hawaiianelectric.com/billing-and-payment/rates-and-regulations/effective-rate-summary\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {"value":52,"period":"May 2026","asOf":"2026-08-07"},
+    "latestMonthly": {"value":52,"period":"May 2026","asOf":"2026-08-08"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked #50 since the mid-1990s. The 1973 oil embargo opened a permanent gap: mainland grids shifted to gas and coal while Hawaiʻi stayed on oil. Renewable generation has grown to over 40 percent by 2025, but transition capital costs pass through to ratepayers and the price gap has widened, not closed.",
       "mode": "learn",
@@ -2193,7 +2195,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Utility-scale procurement</strong> · Renewable share reached 36% statewide in 2025, and an executive order accelerated the 100% target to 2035 for neighbor islands <a href=\"https://energy.hawaii.gov/wp-content/uploads/2026/01/2025-HSEO-Annual-Report.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Scaling Oʻahu procurement to match neighbor-island renewable progress is the binding constraint for statewide gains <a href=\"https://energy.hawaii.gov/hawaii-clean-energy-initiative/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Storage and grid integration</strong> · KIUC reached 51% renewable by 2024 through co-located solar-plus-battery contracts <a href=\"https://kiuc.coop/renewable-portfolio\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>, proving isolated island grids can integrate high shares <a href=\"https://puc.hawaii.gov/wp-content/uploads/2025/01/Hawaii-PUC-Energy-Inclinations-White-Paper-FINAL.12.31.24_signed.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Permitting and interconnection</strong> · A 2025 strategic partnership with JERA aims to accelerate grid modernization <a href=\"https://energy.hawaii.gov/wp-content/uploads/2026/01/2025-HSEO-Annual-Report.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; streamlining interconnection review from the current multi-year timeline is the highest-leverage change <a href=\"https://cnee.colostate.edu/wp-content/uploads/2025/11/Updated_HI-State-Brief_2025.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {"value":24.5,"period":"May 2026","asOf":"2026-08-07"},
+    "latestMonthly": {"value":24.5,"period":"May 2026","asOf":"2026-08-08"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has generated a larger share of its electricity from renewables than the typical state throughout the two decades on record. Rank #22 reflects a handful of hydro- and wind-heavy states (Washington, Iowa, Oregon, South Dakota) that pull well ahead in absolute share. Hawaiʻi has kept improving but has not closed the gap with those leaders.",
       "mode": "learn",
@@ -2613,10 +2615,11 @@ const DASHBOARD_DATA = {
       "2017": -101.3,
       "2018": -90.8,
       "2019": -97.4,
-      "2021": -67.8,
-      "2022": -109.7,
-      "2023": -76.6,
-      "2024": -64.6
+      "2021": -68,
+      "2022": -110.9,
+      "2023": -78.9,
+      "2024": -59.1,
+      "2025": -61.9
     },
     "medianSeries": {
       "2001": 1.05,
@@ -2638,10 +2641,11 @@ const DASHBOARD_DATA = {
       "2017": -6.6,
       "2018": -3.65,
       "2019": -3,
-      "2021": 19.2,
-      "2022": 4.15,
-      "2023": 7.7,
-      "2024": 6.1
+      "2021": 19.45,
+      "2022": 3.6,
+      "2023": 7.35,
+      "2024": 5.5,
+      "2025": 9.8
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Housing cost and supply</strong> · A 10% housing price increase raises out-migration by 1.4% <a href=\"https://www.nber.org/digest/202405/house-prices-and-declining-internal-migration-united-states\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; expanding housing supply is the most direct lever to slow domestic outflow <a href=\"https://dbedt.hawaii.gov/hhfdc/hhps-landing-page/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Income growth and industry mix</strong> · Broadening the economic base beyond tourism would address the income side of the affordability gap that drives out-migration <a href=\"https://uhero.hawaii.edu/are-people-leaving-hawai%CA%BBi-because-of-high-prices-or-low-incomes/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; DBEDT's diversification report identifies ocean-based industries, health care, and technology-enabled services as growth sectors <a href=\"https://files.hawaii.gov/dbedt/economic/data_reports/EconDiversification/Diversification2024.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Quality-of-life retention</strong> · States with net domestic inflow combine housing affordability with job diversity; Hawaiʻi County is the only county with consistent net domestic in-migration, reflecting lower home prices <a href=\"https://uhero.hawaii.edu/beyond-the-price-of-paradise-is-hawaii-being-left-behind/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; international and return migration partially offset domestic losses but are not captured in this metric.</li></ul>",
     "nextUpdate": "Dec",
