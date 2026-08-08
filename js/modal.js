@@ -840,8 +840,10 @@ const Modal = {
         document.getElementById('modal-detail-view').style.display = 'none';
         document.getElementById('modal-rankings').style.display = 'block';
 
-        const rankingsDirHint = metricData.goodDirection === 'up' ? 'higher values are better' : 'lower values are better';
-        document.getElementById('rankings-subtitle').textContent = rankingsDirHint;
+        // No direction hint here: the sorted best-to-worst chart, the colored
+        // tier bands, and "#1 = best performing state" below already carry it,
+        // and next to a rank number the hint reads as being about the rank.
+        document.getElementById('rankings-subtitle').textContent = '';
         const latestDetailYear = App.getLatestValue(metricData.hawaii, ZERO_IS_VALID.has(slug)).year;
         const yearNote = (year !== latestDetailYear)
             ? ` \u00B7 ${year} (latest year with full state coverage)`
@@ -1168,10 +1170,9 @@ const Modal = {
         if (sd && sd.data) {
             const rankings = App.getStateRankings(slug);
             if (rankings && rankings.stateValues.length > 0) {
-                const dirLabel = effective.goodDirection === 'up' ? 'higher values are better' : 'lower values are better';
                 const otherStates = rankings.stateValues.filter(sv => !isHI(sv.state));
                 html += '<thead><tr class="section-header"><td colspan="3">'
-                    + 'Other States (' + rankings.year + ') - ' + dirLabel
+                    + 'Other States (' + rankings.year + ') - #1 = best'
                     + '</td></tr><tr><th>Rank</th><th>State</th><th>Value</th></tr></thead><tbody>';
                 otherStates.forEach((sv, i) => {
                     html += '<tr><td>' + (i + 1) + '</td><td>' + sv.state + '</td><td>' + fmtRank(sv.value) + '</td></tr>';
