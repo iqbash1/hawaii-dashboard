@@ -48,12 +48,28 @@ const COUNTY_FIPS_5 = {
     '15901': 'Maui',  // BEA combines Maui + Kalawao
 };
 
-// BLS LAUS time windows (max 10-year span per v1 API request)
-const BLS_TIME_WINDOWS = [
-    { start: '2000', end: '2009' },
-    { start: '2010', end: '2019' },
-    { start: '2020', end: '2025' },
-];
+// BLS LAUS time windows (max 10-year span per v1 API request).
+//
+// Derived from the calendar, not pinned. The last window used to end at a fixed
+// year (2025), so the moment the calendar passed it the county series would stop
+// asking for new years and freeze at that value, with no error and nothing to
+// alert on: the request still succeeds, it just never covers the new year. The
+// state fetcher already builds its windows this way (BLS_LAUS_START /
+// BLS_LAUS_END in build-state-data.js); this mirrors it.
+//
+// Window count is the request count here (all four counties ride one request per
+// window), so this stays at 3 requests through 2029 and ticks to 4 in 2030, well
+// inside the 25/day no-key BLS limit.
+const BLS_LAUS_START = 2000;
+
+function blsTimeWindows(now = new Date()) {
+    const end = now.getUTCFullYear();
+    const windows = [];
+    for (let s = BLS_LAUS_START; s <= end; s += 10) {
+        windows.push({ start: String(s), end: String(Math.min(s + 9, end)) });
+    }
+    return windows;
+}
 
 // Minimum monthly data points required to compute annual average
 const MIN_MONTHLY_DATA_POINTS = 10;
@@ -318,7 +334,7 @@ async function fetchUnemploymentRate() {
     }
     const seriesIds = Object.keys(seriesMap);
 
-    for (const tw of BLS_TIME_WINDOWS) {
+    for (const tw of blsTimeWindows()) {
         const body = JSON.stringify({
             seriesid: seriesIds,
             startyear: tw.start,
