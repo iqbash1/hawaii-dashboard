@@ -841,7 +841,7 @@ const Modal = {
         document.getElementById('modal-rankings').style.display = 'block';
 
         // No direction hint here: the sorted best-to-worst chart, the colored
-        // tier bands, and "#1 = best performing state" below already carry it,
+        // tier bands, and "#1 = best-performing state" below already carry it,
         // and next to a rank number the hint reads as being about the rank.
         document.getElementById('rankings-subtitle').textContent = '';
         const latestDetailYear = App.getLatestValue(metricData.hawaii, ZERO_IS_VALID.has(slug)).year;
@@ -849,7 +849,7 @@ const Modal = {
             ? ` \u00B7 ${year} (latest year with full state coverage)`
             : ` \u00B7 ${year}`;
         document.getElementById('rankings-rank').innerHTML =
-            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best performing state</span>`;
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best-performing state</span>`;
 
         // Median + formatter for the rankings chart's reference line.
         // (Q1/Q3 are no longer needed since the rankings chart replaced the
