@@ -60,6 +60,52 @@ const COUNTY_FIPS_5 = {
 // Window count is the request count here (all four counties ride one request per
 // window), so this stays at 3 requests through 2029 and ticks to 4 in 2030, well
 // inside the 25/day no-key BLS limit.
+// Last known-good national PCE price index (2017=100), BEA NIPA T20304 line 1.
+// Only used when the live BEA call fails; the live values are authoritative and
+// carry BEA's annual revisions (2023 read 120.237 here and 120.511 live).
+const PCE_BY_YEAR_FALLBACK = {
+    '2008': 89.120, '2009': 89.442, '2010': 90.864, '2011': 93.030,
+    '2012': 94.696, '2013': 95.879, '2014': 97.317, '2015': 97.542,
+    '2016': 98.273, '2017': 100.000, '2018': 101.938, '2019': 103.375,
+    '2020': 104.583, '2021': 108.774, '2022': 115.762, '2023': 120.237,
+    '2024': 123.666,
+};
+
+/**
+ * National PCE price index by year, newest vintage, from BEA NIPA T20304.
+ * Falls back to the pinned table if BEA is unreachable so a transient outage
+ * doesn't drop a year (which would now skip rather than mis-deflate).
+ */
+async function fetchPceDeflator() {
+    const url = `https://apps.bea.gov/api/data?UserID=${KEYS.BEA}`
+        + '&method=GetData&datasetname=NIPA&TableName=T20304&Frequency=A'
+        + '&Year=ALL&ResultFormat=JSON';
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const rows = json?.BEAAPI?.Results?.Data;
+        if (!Array.isArray(rows)) throw new Error('no Data array');
+        const out = {};
+        for (const r of rows) {
+            if (r.LineNumber !== '1') continue;         // line 1 = PCE, all items
+            const v = parseFloat(String(r.DataValue).replace(/,/g, ''));
+            if (/^\d{4}$/.test(r.TimePeriod) && isFinite(v) && v > 0) out[r.TimePeriod] = v;
+        }
+        // Guard against a shape change quietly yielding a near-empty map, which
+        // would skip most years instead of deflating them.
+        if (Object.keys(out).length < Object.keys(PCE_BY_YEAR_FALLBACK).length) {
+            throw new Error(`only ${Object.keys(out).length} years parsed`);
+        }
+        const years = Object.keys(out).sort();
+        console.log(`  PCE deflator: BEA NIPA T20304, ${years.length} years (${years[0]}-${years[years.length - 1]})`);
+        return out;
+    } catch (err) {
+        console.log(`  WARN PCE deflator fetch failed (${err.message}); using pinned fallback table`);
+        return { ...PCE_BY_YEAR_FALLBACK };
+    }
+}
+
 const BLS_LAUS_START = 2000;
 
 function blsTimeWindows(now = new Date()) {
@@ -433,15 +479,15 @@ async function fetchPerCapitaIncome() {
             }
         }
 
-        // National PCE price index (base 2017=100), from BEA NIPA Table 2.3.4 / FRED DPCERG3A086NBEA
-        // Updated annually when BEA publishes revised SARPI data
-        const pceByYear = {
-            '2008': 89.120, '2009': 89.442, '2010': 90.864, '2011': 93.030,
-            '2012': 94.696, '2013': 95.879, '2014': 97.317, '2015': 97.542,
-            '2016': 98.273, '2017': 100.000, '2018': 101.938, '2019': 103.375,
-            '2020': 104.583, '2021': 108.774, '2022': 115.762, '2023': 120.237,
-            '2024': 123.666,
-        };
+        // National PCE price index (base 2017=100), BEA NIPA Table 2.3.4 line 1.
+        // Fetched rather than hardcoded: the table used to stop at 2024, and a
+        // year with no entry did not skip, it fell through to the RPP-only branch
+        // below and wrote an undeflated figure into a constant-2017-dollar series
+        // (~24% high at the 2024 deflator). A wrong number, silently, in the same
+        // column as right ones. PCE_BY_YEAR_FALLBACK keeps the last known-good
+        // table for the case where BEA is unreachable.
+        const pceByYear = await fetchPceDeflator();
+        const skippedYears = new Set();
 
         for (const row of jsonIncome.BEAAPI.Results.Data) {
             if (row.DataValue === '(NA)') continue;
@@ -459,15 +505,21 @@ async function fetchPerCapitaIncome() {
             if (rpp && rpp > 0 && pce && pce > 0) {
                 // IRPD = (RPP / 100) * (PCE / 100)
                 byCounty[countyName][year] = Math.round(nominal / ((rpp / 100) * (pce / 100)));
-            } else if (rpp && rpp > 0) {
-                // Fallback: RPP-only if PCE unavailable
-                byCounty[countyName][year] = Math.round(nominal / (rpp / 100));
             } else {
-                byCounty[countyName][year] = Math.round(nominal);
+                // No usable RPP+PCE pair: skip the year rather than write a
+                // differently-deflated number into the same series. The old
+                // RPP-only and raw-nominal fallbacks looked like resilience but
+                // silently mixed units, which is worse than a gap the coverage
+                // checks can see.
+                skippedYears.add(year);
             }
         }
 
         const totalPoints = Object.values(byCounty).reduce((s, d) => s + Object.keys(d).length, 0);
+        if (skippedYears.size) {
+            console.log(`  WARN skipped ${skippedYears.size} year(s) with no RPP+PCE pair: `
+                + `${[...skippedYears].sort().join(', ')} (would have been mis-deflated)`);
+        }
         console.log(`  -> ${totalPoints} data points`);
         return totalPoints > 0 ? byCounty : null;
     } catch (err) {

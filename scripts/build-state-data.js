@@ -1346,13 +1346,22 @@ async function fetchFoodInsecurity() {
 // Source: Pew Fiscal 50 / NASBO Fiscal Survey of States, RSRV CSV
 //   https://www.pew.org/-/media/data-visualizations/interactives/2024/fiscal50/data/RSRV_20260212.csv
 //
-// The CSV URL embeds a date suffix (RSRV_20260212.csv) that Pew updates
-// when they publish a new vintage (typically annually around December
-// after NASBO publishes the Fiscal Survey of States). The fetcher uses
-// the most recent published URL we know about; future updates will need
-// the URL refreshed in this constant. The Pew Fiscal 50 page itself
-// (https://www.pew.org/en/research-and-analysis/data-visualizations/2014/fiscal-50)
-// always links to the current vintage.
+// The CSV URL embeds a publication date (RSRV_20260212.csv) that Pew changes
+// when they publish a new vintage (typically annually around December, after
+// NASBO publishes the Fiscal Survey of States). This one URL stays pinned, and
+// unlike the other sources here that is deliberate: the date is arbitrary so it
+// cannot be derived, the Fiscal 50 page renders its download link client-side so
+// there is nothing to scrape server-side, and a wrong date returns 302 rather
+// than 404, so date-probing could not even tell a miss from a hit. Checked
+// 2026-08; revisit if Pew ever exposes a stable "latest" URL.
+//
+// The backstop is validate-data.js Section 9 (source freshness): rainy_day_fund_pct
+// carries nextUpdate Jan, so once a new vintage exists and this URL keeps serving
+// the old one, the latest data year stops advancing and Section 9 reports
+// "Source overdue" (the same way it currently flags acgr). Staleness here is
+// visible, not silent, which is the property that mattered for the pinned URLs
+// that were unpinned. To update: open the Fiscal 50 page, copy the current RSRV
+// CSV link, replace the constant below.
 
 const PEW_RDF_URL = 'https://www.pew.org/-/media/data-visualizations/interactives/2024/fiscal50/data/RSRV_20260212.csv';
 const PEW_NAME_TO_OUR_NAME = { Hawaii: 'Hawaiʻi' };
@@ -1752,7 +1761,23 @@ async function fetchPropertyCrimeRate() { return fetchFbiCdeCrime('property_crim
 // URL pattern bumps when CHR publishes the next year's trends. The fetcher
 // probes the most recent candidate first and falls back one year if 404.
 
-const CHR_TRENDS_RELEASES = [2027, 2026, 2025, 2024]; // most recent first
+// Release candidates are derived from the calendar rather than listed, so the
+// probe never runs out. A fixed list silently pins the metric to its last named
+// year: the fetch still succeeds against the old release, so there is no error,
+// the series just stops advancing. Same shape as ncesAcgrEditions above, with
+// the last hand-verified release kept as a floor.
+const CHR_TRENDS_FLOOR_RELEASE = 2024;   // last release verified by hand
+const CHR_TRENDS_MAX_PROBES = 4;
+
+function chrTrendsReleases(now = new Date()) {
+    const top = now.getUTCFullYear() + 1;   // CHR ships the next year's release early
+    const years = [];
+    for (let y = top; y >= CHR_TRENDS_FLOOR_RELEASE && years.length < CHR_TRENDS_MAX_PROBES; y--) {
+        years.push(y);
+    }
+    if (!years.includes(CHR_TRENDS_FLOOR_RELEASE)) years.push(CHR_TRENDS_FLOOR_RELEASE);
+    return years;
+}
 const CHR_PCP_MEASURE_ID = '4';
 
 async function fetchPcpPer100k() {
@@ -1762,7 +1787,7 @@ async function fetchPcpPer100k() {
     // 1) Download CHR trends CSV (try most recent release first).
     let csvText = null;
     let releaseYear = null;
-    for (const ry of CHR_TRENDS_RELEASES) {
+    for (const ry of chrTrendsReleases()) {
         const url = `https://www.countyhealthrankings.org/sites/default/files/media/document/chr_trends_csv_${ry}.csv`;
         try {
             const res = await fetch(url, { headers, signal: AbortSignal.timeout(120000), redirect: 'follow' });
