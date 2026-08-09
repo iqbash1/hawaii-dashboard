@@ -44,6 +44,14 @@ const EXPECTED_BLOCK = [
     // the Node auditor, full content in a browser with current 2024 data
     // (confirmed live 2026-07-20).
     'www.cdc.gov',
+    // Hawaiʻi State Energy Office (residential_price_cpkwh + renewables_share_gen
+    // cites, 4 URLs): behind a Cloudflare challenge that 403s every automated
+    // client. Confirmed 2026-08-09: curl 403 with a browser User-Agent too, and
+    // headless Chromium gets the "Just a moment..." interstitial rather than the
+    // page. The content is live: three of the four have Wayback 200s from 2025-26,
+    // and /hawaii-clean-energy-initiative/ is indexed by Google with its real
+    // title (its last Wayback 200 is 2022, i.e. before the challenge went up).
+    'energy.hawaii.gov',
     // Academic / publisher portals
     'papers.ssrn.com',
     'www.journals.uchicago.edu',
