@@ -104,7 +104,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260808d">
+    <link rel="stylesheet" href="css/styles.css?v=20260808e">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
     <!-- SheetJS loaded on demand in downloadData() to save ~200KB on initial page load -->
 </head>
@@ -252,7 +252,6 @@
                     <option value="" selected>US</option>
                 </select>
             </div>
-            <div class="modal-official" id="modal-official-name" style="display:none;"></div>
             <!-- Bottom-line summary: lives above all tab panels and the
                  consolidated narrative so it stays visible across tab switches
                  and across both narrative modes. Hidden by default; openModal
@@ -294,6 +293,10 @@
                 <div class="county-chart-container"><canvas id="county-chart"></canvas></div>
                 <p class="county-note" id="county-note" style="display:none;"></p>
             </div>
+            <!-- Chart caption: what the metric measures, plus attribution.
+                 Sits after all four tab panels so one element captions
+                 whichever chart is visible. -->
+            <div class="modal-official" id="modal-official-name" style="display:none;"></div>
             <!-- Consolidated narrative (shown instead of per-tab narrative when metric has countyNarrative) -->
             <div class="modal-consolidated" id="modal-consolidated" style="display:none;"></div>
             <div class="modal-source" id="modal-source"></div>
@@ -379,7 +382,7 @@
     <script src="js/chart-export.js?v=20260808c"></script>
     <script src="js/share-menu.js?v=20260527a"></script>
     <script src="js/otc-posts.js?v=20260702a"></script>
-    <script src="js/modal.js?v=20260808b"></script>
+    <script src="js/modal.js?v=20260808c"></script>
     <script src="js/questions.js?v=20260530d"></script>
     <script src="js/qotd.js?v=20260808b"></script>
     <script src="js/app.js?v=20260807a"></script>

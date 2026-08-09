@@ -28,6 +28,19 @@ const Modal = {
     _activeTab: 'detail',
     /** Active threshold per slug. Empty = base (30%+). "50" = severe. */
     _activeThreshold: {},
+    /**
+     * Chart caption: what the metric measures, plus attribution. The source
+     * line at the foot of the modal sits past the whole narrative, so on a
+     * tall chart the reader has no attribution in view. Values come from
+     * data.js, not user input, so they are interpolated as-is.
+     */
+    _captionHtml(metricData) {
+        const src = metricData.source
+            ? ` <span class="modal-caption-source">Source: ${metricData.source}</span>`
+            : '';
+        return metricData.officialName + src;
+    },
+
     /** Build path suffix for the active threshold, or '' if default. */
     _thPath(slug) {
         const th = Modal._activeThreshold[slug];
@@ -400,11 +413,11 @@ const Modal = {
         consolidatedEl.style.display = '';
         Modal._wireOtcLink(consolidatedEl);
 
-        // Source definition bar - shown below the tab bar, visible on all tabs
+        // Chart caption - shown below the tab panels, visible on all tabs
         const officialEl = document.getElementById('modal-official-name');
         if (officialEl) {
             if (metricData.officialName) {
-                officialEl.textContent = metricData.officialName;
+                officialEl.innerHTML = Modal._captionHtml(metricData);
                 officialEl.style.display = '';
             } else {
                 officialEl.textContent = '';
@@ -1113,10 +1126,10 @@ const Modal = {
         const metricData = App.getActiveMetricData(slug);
         if (!metricData) return;
 
-        // Update official name
+        // Update chart caption
         const officialEl = document.getElementById('modal-official-name');
         if (officialEl && metricData.officialName) {
-            officialEl.textContent = metricData.officialName;
+            officialEl.innerHTML = Modal._captionHtml(metricData);
         }
 
         // Update brief (full on Trend, first sentence on Rank tabs).
