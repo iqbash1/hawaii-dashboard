@@ -1944,6 +1944,17 @@ function auditRankWindows(slug, metric, field, text) {
             else winYears = ys.filter(y => +y >= +(since || from));
         }
         if (presidential) winYears = winYears.filter(y => +y % 4 === 0);
+        // A year the prose names as an exception ("…since 2004 except 2020,
+        // when it reached #47") is part of the claim, not a breach of it.
+        // Without this, correcting a narrative to disclose its own outlier
+        // makes the warning worse instead of clearing it.
+        const excepted = new Set();
+        const exRe = /\b(?:except|excepting|apart\s+from|other\s+than|save\s+for)\s+((?:19|20)\d{2}(?:\s*(?:,|and|&)\s*(?:19|20)\d{2})*)/ig;
+        let exM;
+        while ((exM = exRe.exec(sentence)) !== null) {
+            (exM[1].match(/(?:19|20)\d{2}/g) || []).forEach(y => excepted.add(y));
+        }
+        if (excepted.size) winYears = winYears.filter(y => !excepted.has(y));
         if (/typically|generally|for\s+most\s+of/i.test(sentence)) qualifier = 'most';
         if (!winYears || winYears.length < 3) { skipNew({ slug, field, check: 'rank-window', claim: sentence.trim().slice(0, 80), note: 'window too small' }); continue; }
 
@@ -1959,7 +1970,7 @@ function auditRankWindows(slug, metric, field, text) {
         const ok = qualifier === 'every' ? outliers.length === 0 : inBand / n >= 0.6;
         recordNew(ok, {
             slug, field, check: 'rank-window',
-            claim: `${band.text} ${winM[0]} [${winYears[0]}-${winYears[winYears.length - 1]}]`,
+            claim: `${band.text} ${winM[0]}${excepted.size ? ` except ${[...excepted].join(', ')}` : ''} [${winYears[0]}-${winYears[winYears.length - 1]}]`,
             expected: outliers.length ? `${inBand}/${n} in band; outliers: ${outliers.slice(0, 6).join(', ')}${outliers.length > 6 ? '…' : ''}` : `all ${n} years within #${band.lo}-#${band.hi}`,
             found: `${qualifier === 'every' ? 'every year' : 'most years'} in #${band.lo}-#${band.hi}`,
         });

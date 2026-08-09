@@ -9,7 +9,7 @@
 #        - exit 1 = warnings only → ok (informational)
 #        - exit 0 = clean → ok
 #
-#   2. audit-narrative-numbers.js --gate
+#   2. audit-narrative-numbers.js --gate --gate-new
 #        - exit 1 = some narrative claim disagrees with computed value → FAIL
 #        - WARN lines (county / superlative / since-year / quantifier
 #          shapes added 2026-07) are advisory and do NOT fail this gate.
@@ -71,8 +71,8 @@ if [ $V -eq 2 ]; then
 fi
 
 echo ""
-echo "── 2/9 audit-narrative-numbers.js --gate ──"
-node scripts/audit-narrative-numbers.js --gate
+echo "── 2/9 audit-narrative-numbers.js --gate --gate-new ──"
+node scripts/audit-narrative-numbers.js --gate --gate-new
 A=$?
 if [ $A -ne 0 ]; then
     FAIL=1
