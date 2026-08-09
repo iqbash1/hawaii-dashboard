@@ -1353,62 +1353,6 @@ body {
     background-position: right 0.6rem center;
     background-size: 12px;
 }
-/* --- Rank History Narrative --- */
-.rh-narrative {
-    padding: 1.25rem 0 1.5rem;
-    border-top: 1px solid var(--border);
-}
-.rh-narr-section {
-    margin-bottom: 1.1rem;
-}
-.rh-narr-section:last-child {
-    margin-bottom: 0;
-}
-.rh-narr-heading {
-    font-size: var(--text-base);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-}
-.rh-narr-item {
-    margin-bottom: 0.75rem;
-}
-.rh-narr-item:last-child {
-    margin-bottom: 0;
-}
-.rh-narr-state {
-    font-size: var(--text-sm);
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 0.2rem;
-}
-.rh-narr-text {
-    font-size: var(--text-xl);
-    line-height: 1.65;
-    color: var(--text-muted);
-    margin: 0;
-}
-.rh-narr-explore {
-    margin-bottom: 0.6rem;
-}
-.rh-narr-explore:last-child {
-    margin-bottom: 0;
-}
-.rh-narr-source {
-    display: inline-block;
-    font-size: var(--text-xs);
-    color: var(--hawaii-blue);
-    text-decoration: none;
-    margin-top: 0.3rem;
-    opacity: 0.8;
-}
-.rh-narr-source:hover {
-    opacity: 1;
-    text-decoration: underline;
-}
-
 /* --- Consolidated narrative (test: metrics with countyNarrative field) --- */
 .modal-consolidated {
     padding: 1.25rem 2rem 2rem;

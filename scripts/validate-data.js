@@ -301,6 +301,14 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
         error(`Invalid goodDirection: "${metric.goodDirection}" (must be "up" or "down")`);
     }
 
+    // 1a. Consolidated-narrative invariant. The Rank history tab's per-tab
+    // narrative renderer was removed 2026-08-09 because every metric sets this
+    // flag, so the branch was unreachable. Without this check a new metric that
+    // omits it would silently render no narrative at all.
+    if (metric.useConsolidated !== true) {
+        error(`${slug}: useConsolidated must be true -- the per-tab rank-history narrative renderer no longer exists, so a metric without it renders no narrative`);
+    }
+
     const rules = METRIC_RULES[slug];
     if (!rules) {
         // All 27 metrics have rules; a missing entry means a slug typo or incomplete setup

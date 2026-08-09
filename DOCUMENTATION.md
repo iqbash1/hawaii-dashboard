@@ -37,6 +37,7 @@ hawaii-dashboard/
 │   ├── app.js              # Coordinator: init, card rendering, bundles, metric search, helpers, analytics
 │   ├── modal.js            # Modal: open/close, tabs, charts, narrative, Bottom Line brief
 │   ├── export.js           # XLSX download with lazy-loaded SheetJS
+│   ├── chart-export.js     # Hi-res framed PNG of the active chart (offscreen re-render at 3x)
 │   ├── routing.js          # URL parsing, permalink routing, state slug conversion
 │   ├── compute.js          # Pure utilities: parseYearLabel, keyEnd, getLatestValue, getPriorValue, median, comparisonPhrase, getStateTimeSeries
 │   ├── charts.js           # Chart.js sparklines, detail charts, rankings, governor overlay
@@ -108,7 +109,7 @@ hawaii-dashboard/
 │   ├── update-monthly.js       # Fetches latest BLS/EIA monthly data for 4 metrics
 │   ├── audit-metric.js         # Comprehensive per-metric audit (10 checks)
 │   ├── audit-links.js          # HTTP link checker for all URLs in data.js
-│   ├── audit-narrative-numbers.js  # Scans every numeric claim in narratives against data; --gate exits 1 on mismatch
+│   ├── audit-narrative-numbers.js  # Scans every numeric claim in narratives against data; --gate --gate-new exits 1 on mismatch
 │   ├── audit-internal.py       # 10-phase site audit (data/stub/OTC/QOTD/JSON-LD/sitemap/style); --gate exits 1 on P0/P1
 │   ├── audit-external-citations.js # Verifies hardcoded external numbers (UHERO/DBEDT figures) for staleness + cross-metric coupling
 │   ├── sync-qotd-answers.js    # Regenerates QOTD answer fields from live data; --check exits 1 on drift
@@ -658,6 +659,29 @@ XLSX download with lazy-loaded SheetJS.
 |--------|-------------|
 | `downloadData(slug)` | Generates and downloads a multi-tab .xlsx file. Lazy-loads SheetJS (~200KB) on first call |
 
+### `ChartExport` (chart-export.js)
+
+Downloads the active modal chart as a high-resolution PNG, framed so the image is
+self-describing once it leaves the site. Wired to "Download chart" in the modal source
+row and to the QOTD proof view.
+
+The frame carries the area, the metric name, Hawaiʻi's latest value in the metric's own
+words (`unitLabel`), the full `officialName` definition, and a source/site footer. Values
+come from `App.getActiveMetricData`, so a metric with threshold variants reports the
+variant actually on screen.
+
+| Method | Description |
+|--------|-------------|
+| `download(slug)` | Resolves the active tab via `Modal._activeTab`, renders, composes and saves the PNG |
+| `renderChart(live, height)` | Clones the live Chart config onto a detached canvas at a fixed 1400px width with `devicePixelRatio: 3`. Never captures the on-screen canvas: on a phone that is ~340px wide and would export an unusable image |
+| `compose(chartImg, meta, slug, spec)` | Paints the frame. Fills an opaque background, since Chart.js canvases are transparent and a transparent PNG is unreadable on a dark slide |
+
+Two correctness notes worth keeping: percent formatting routes through
+`ChartUtils.isDecimalPctMetric` because some `%` metrics store the Hawaiʻi series as
+decimals while the ranked cross-section is already scaled; and the County card says
+"Hawaiʻi statewide" rather than "Hawaiʻi", because that chart carries a line for Hawaiʻi
+County.
+
 ### `Router` (routing.js)
 
 URL parsing and permalink routing.
@@ -776,9 +800,9 @@ Three weekly workflows surface drift via rolling labeled issues. Each maintains 
 
 ### Per-commit gates (`npm run validate`)
 
-Eight gates run in sequence; any error fails the command:
+Nine gates run in sequence; any error fails the command:
 1. `validate-data.js`, data structure, ranges, YoY spikes, parity, writer allowlist, county-data and state-data floor checks, latestMonthly staleness + seasonal-envelope sanity (Sections 1–15, 17). Optional opt-in modes: `--fresh-fetch` (Section 16) re-fetches every wired metric from the canonical source; `--probe-floor` (Section 18) probes for years available beyond what's stored.
-2. `audit-narrative-numbers.js --gate`, rank/value claims in `rankHistoryNarrative`
+2. `audit-narrative-numbers.js --gate --gate-new`, rank/value claims in `rankHistoryNarrative`, plus the county/superlative/rank-window/quantifier shapes promoted from advisory to blocking on 2026-08-09
 3. `sync-qotd-answers.js --check`, QOTD answer drift (refuses V6 truth-flips)
 4. `audit-internal.py --gate`, 10-phase site audit (P0+P1 findings block; P2 informational)
 5. `update-metric-counts.js --check`, hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
@@ -835,7 +859,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/generate-og-pages.py` (`generate_qotd_assets`) | OG-image generator. Reads `js/questions.js` and writes every QOTD PNG as part of the main OG build. Re-run via `npm run og` when claims change. |
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
-| `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate` mode is wired into `npm run validate`. |
+| `scripts/audit-narrative-numbers.js` | **Drift scanner** (data.js + questions.js). Verifies every quantitative claim in every narrative field against the underlying time series. `--gate --gate-new` is wired into `npm run validate`; `--gate-new` covers the county-value, superlative, rank-window and 50-state-quantifier shapes, blocking since 2026-08-09. Rank-window claims honour a named exception (`"…since 2004 except 2020"`), so disclosing an outlier does not read as a violation. |
 | `scripts/sync-otc-meta.js` | **Off the Charts sync.** Per post: propagates `<meta name="description">` (canonical) to og/twitter/JSON-LD description with per-location encoding; propagates `<meta name="otc:dek">` to the archive card; and regenerates `js/otc-posts.js` (the slug→metric index the homepage strip, deep-dive modal, and QOTD proof view read to cross-link stories). `--check` mode is the 7th `npm run validate` gate. Body lead is intentionally NOT synced (lede may be hooky while meta is SEO-optimised). |
 | `scripts/audit-otc-numbers.js` | **OTC post-body drift scanner** — the surface the narrative scanner misses. Each post's checkable numbers live in `off-the-charts/facts.json`, declared by what they refer to (metric, kind ∈ rank/growthRank/value/median/growthPct, state, year/window), never the value. Re-derives the current value from `state-data.js` and asserts the post still states it. Tie-aware (a state tied on a NAEP score is valid at #25 or #26). `--gate` is the 8th `npm run validate` gate. Built after the productivity post's `#46` went stale on a BLS revision. |
 | `scripts/build-share-card-data.js` + `scripts/generate-share-cards.py` | **OTC social-card generator** (`npm run share-cards`). The `.js` re-derives each card's numbers live; the `.py` renders forwardable cards (claim + one honest data visual + attribution) at 1200×630 and 1080×1350 to `drafts/share-cards/` (gitignored). For the messenger/seeding distribution push. |

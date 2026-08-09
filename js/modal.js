@@ -991,63 +991,11 @@ const Modal = {
         // If a comparison was pre-set from URL, sync dropdown + URL
         if (pendingCompare) onCompareFn(pendingCompare);
 
-        // Render policy narrative if available for this metric
-        const narrativeEl = document.getElementById('rank-history-narrative');
-        const narr = metricData.rankHistoryNarrative;
-        // Consolidated layout: narrative lives in modal-consolidated, not here
-        if (metricData.useConsolidated) {
-            if (narrativeEl) narrativeEl.style.display = 'none';
-        } else if (narr && narrativeEl) {
-            let html = `<div class="rh-narr-section">
-                <h3 class="rh-narr-heading">Hawai\u02BBi\u2019s track record</h3>
-                <p class="rh-narr-text">${narr.summary}</p>
-            </div>`;
-
-            if (narr.benchmarks && narr.benchmarks.length) {
-                html += `<div class="rh-narr-section">
-                    <h3 class="rh-narr-heading">States that improved</h3>`;
-                narr.benchmarks.forEach(b => {
-                    const srcHtml = b.source
-                        ? `<a href="${b.source.url}" target="_blank" rel="noopener" class="rh-narr-source">\u2192 ${b.source.label}</a>`
-                        : '';
-                    html += `<div class="rh-narr-item">
-                        <div class="rh-narr-state">${b.state}</div>
-                        <p class="rh-narr-text">${b.text}</p>
-                        ${srcHtml}
-                    </div>`;
-                });
-                html += `</div>`;
-            }
-
-            if (narr.explore && narr.explore.length) {
-                html += `<div class="rh-narr-section">
-                    <h3 class="rh-narr-heading">What these comparisons suggest</h3>`;
-                narr.explore.forEach(point => {
-                    html += `<p class="rh-narr-text rh-narr-explore">${point}</p>`;
-                });
-                html += `</div>`;
-            }
-
-            if (narr.caution) {
-                const srcHtml = narr.caution.source
-                    ? `<a href="${narr.caution.source.url}" target="_blank" rel="noopener" class="rh-narr-source">\u2192 ${narr.caution.source.label}</a>`
-                    : '';
-                html += `<div class="rh-narr-section">
-                    <h3 class="rh-narr-heading">Cautionary outcome</h3>
-                    <div class="rh-narr-item">
-                        <div class="rh-narr-state">${narr.caution.state}</div>
-                        <p class="rh-narr-text">${narr.caution.text}</p>
-                        ${srcHtml}
-                    </div>
-                </div>`;
-            }
-
-            narrativeEl.innerHTML = html;
-            narrativeEl.style.display = '';
-        } else if (narrativeEl) {
-            narrativeEl.innerHTML = '';
-            narrativeEl.style.display = 'none';
-        }
+        // The rank-history narrative renders in modal-consolidated. The per-tab
+        // layout this tab used to carry (and its #rank-history-narrative host)
+        // was removed 2026-08-09: every metric sets useConsolidated, so the
+        // branch had been unreachable. validate-data.js Section 1a now fails
+        // the build if a metric ever omits the flag.
     },
 
     /**
