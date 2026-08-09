@@ -521,7 +521,7 @@ const Modal = {
         document.getElementById('chart-download').onclick = (e) => {
             e.preventDefault();
             ChartExport.download(slug);
-            App._trackEvent('chart_exported', { slug, tab: Modal._activeTab });
+            App._trackEvent('chart_exported', { slug, tab: Modal._activeTab, source: 'modal' });
         };
         // Share: delegated to window.ShareMenu (js/share-menu.js) so the
         // chart-modal share gets the same unified experience as Off the
