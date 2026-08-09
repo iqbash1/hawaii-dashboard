@@ -248,6 +248,34 @@ const QOTD = {
         fig.innerHTML = `<img src="${ogImg}" alt="Chart showing ${this._escape(q.metricLabel)} data" class="qotd-chart-image" />`;
     },
 
+    /** chartUrl prefix to the ChartExport tab key it corresponds to. */
+    CHART_VIEW_TABS: { t: 'detail', r: 'rankings', c: 'county' },
+
+    /**
+     * Reveal and wire the hi-res chart download, but only when a live
+     * Chart.js canvas actually rendered. The OG-image fallback replaces
+     * the canvas outright, and there is nothing to re-render from.
+     * @private
+     */
+    _wireChartDownload(host, q) {
+        const link = host.querySelector('[data-action="download-chart"]');
+        if (!link || typeof ChartExport === 'undefined' || typeof Chart === 'undefined') return;
+        const canvas = host.querySelector('.qotd-chart-canvas');
+        const chart = canvas && Chart.getChart(canvas);
+        const m = q.chartUrl.match(/^\/(t|r|c)\//);
+        const tab = m && this.CHART_VIEW_TABS[m[1]];
+        if (!chart || !tab) return;
+
+        link.hidden = false;
+        link.onclick = (e) => {
+            e.preventDefault();
+            ChartExport.download(q.metric, { tab, chart });
+            if (typeof App !== 'undefined' && App._trackEvent) {
+                App._trackEvent('chart_exported', { slug: q.metric, tab, source: 'qotd' });
+            }
+        };
+    },
+
     /**
      * Wire an IntersectionObserver that fires qotd_chart_viewed once when
      * the embedded proof image first becomes visible.
@@ -396,12 +424,14 @@ const QOTD = {
                             ${this.SHARE_ICON_SVG}<span>Share</span>
                         </button>
                         <a class="qotd-link" href="${q.chartUrl}" aria-label="View full chart">View full chart →</a>
+                        <a class="qotd-link" href="#" data-action="download-chart" aria-label="Download this chart as an image" hidden>Download chart</a>
                     </div>
                     ${otcBlock}
                     <p class="qotd-teaser-footer">Come back tomorrow for a new question.</p>
                 </div>
             `;
             this._renderLiveChart(host.querySelector('[data-qotd-chart]'), q);
+            this._wireChartDownload(host, q);
             this._observeChartView(q.id);
         } else {
             host.classList.add('qotd-teaser--banner');

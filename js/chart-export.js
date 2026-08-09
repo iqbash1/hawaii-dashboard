@@ -44,12 +44,20 @@ const ChartExport = {
 
     /**
      * Build and download the PNG for whichever chart is on screen.
+     *
+     * With no options this reads the modal's own state. The QOTD proof
+     * view renders its chart outside the modal, so it passes its tab and
+     * Chart instance explicitly.
+     *
      * @param {string} slug - Metric ID
+     * @param {{tab?: string, chart?: Chart}} [opts]
      */
-    async download(slug) {
-        const tab = (typeof Modal !== 'undefined' && Modal._activeTab) || 'detail';
+    async download(slug, opts) {
+        const o = opts || {};
+        const tab = o.tab || (typeof Modal !== 'undefined' && Modal._activeTab) || 'detail';
         const spec = this.TABS[tab];
-        const live = spec && Modal[spec.chart];
+        if (!spec) return;
+        const live = o.chart || (typeof Modal !== 'undefined' && Modal[spec.chart]);
         if (!live) return;
 
         const meta = App.getActiveMetricData(slug);
