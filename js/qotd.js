@@ -245,7 +245,11 @@ const QOTD = {
     _fallbackOgImage(fig, q) {
         if (!fig) return;
         const ogImg = this.chartOgImage(q.chartUrl);
-        fig.innerHTML = `<img src="${ogImg}" alt="Chart showing ${this._escape(q.metricLabel)} data" class="qotd-chart-image" />`;
+        const html = `<img src="${ogImg}" alt="Chart showing ${this._escape(q.metricLabel)} data" class="qotd-chart-image" />`;
+        // Swap only the canvas, not the whole figure: the caption below it
+        // describes the metric either way.
+        const wrap = fig.querySelector('.qotd-chart-canvas-wrap');
+        if (wrap) wrap.outerHTML = html; else fig.innerHTML = html;
     },
 
     /** chartUrl prefix to the ChartExport tab key it corresponds to. */
@@ -397,6 +401,12 @@ const QOTD = {
             const whyBlock = whyItMatters
                 ? `<p class="qotd-why-it-matters"><span class="qotd-metric-label">Why it matters:</span> ${this._escape(whyItMatters)}</p>`
                 : '';
+            // What the chart actually measures, plus attribution. The claim
+            // and answer give the number; without this the reader still has
+            // no way to know what the number is a share of.
+            const captionBlock = (metricData && metricData.officialName)
+                ? `<figcaption class="qotd-chart-caption">${this._escape(metricData.officialName)}${metricData.source ? ` <span class="qotd-chart-source">Source: ${this._escape(metricData.source)}</span>` : ''}</figcaption>`
+                : '';
             // One-line pointer to the Off the Charts story on this metric,
             // when one exists. Sits above the come-back-tomorrow footer so
             // the proof view ends with a next step, not a dead end.
@@ -418,6 +428,7 @@ const QOTD = {
                     ${whyBlock}
                     <figure class="qotd-chart" data-qotd-chart>
                         <div class="qotd-chart-canvas-wrap"><canvas class="qotd-chart-canvas" aria-label="Chart showing ${this._escape(q.metricLabel)} data"></canvas></div>
+                        ${captionBlock}
                     </figure>
                     <div class="qotd-actions">
                         <button class="qotd-share-btn" type="button" data-action="share" aria-label="Share this question">
