@@ -15,7 +15,8 @@
  * Page-scoped prefixes:
  *   .fyc-*   Change Summary page components  (all 7 year-span shells: one-/three-/five-/ten-/fifteen-/twenty-/twenty-five-year-change/)
  *   .sc-*    Scorecard sub-components          (Change Summary pages)
- *   .rh-*    Rank-history sub-components       (modal)
+ *   (.rh-* was the Rank-history narrative prefix; removed 2026-08-09 with the
+ *    per-tab renderer, since every metric now uses the consolidated layout)
  *
  * CSS custom properties:  --hawaii-blue, --border, --radius, etc.
  *   -- all defined in :root; never overridden inline except for theming
