@@ -86,6 +86,8 @@ const STATE_DATA = fs.existsSync(statePath) ? loadJSConst(statePath, 'STATE_DATA
 // ---- Validation rules per metric ----
 // min/max: absolute plausible bounds for the value
 // maxYoYPct: maximum year-over-year % change before flagging (as decimal, 0.5 = 50%)
+// maxYoYPctCounty: optional, same but for the county series. Set it when small-county
+//         sampling noise would otherwise force maxYoYPct up and blind the state check.
 // format: 'decimal_pct' means stored as 0.05 = 5%, 'whole_pct' means stored as 5.0 = 5%
 //         'rate' means per-100K/10K value, 'dollar' means dollar amount, 'score'/'index'
 
@@ -95,20 +97,27 @@ const METRIC_RULES = {
     violent_crime_rate:         { min: 15,    max: 800,    maxYoYPct: 2.00, format: 'rate' },
     property_crime_rate:        { min: 500,   max: 8000,   maxYoYPct: 0.40, format: 'rate' },
     pcp_per_100k:               { min: 40,    max: 200,    maxYoYPct: 0.20, format: 'rate' },
-    // Uninsured: county-level ACS samples are small; Kauaʻi can swing 97% in a single year
-    uninsured_rate:             { min: 0.01,  max: 0.25,   maxYoYPct: 1.20, format: 'decimal_pct' },
+    // Uninsured: hawaii/medianSeries never move more than ~25% (HI 2014->2015,
+    // median 2013->2014), but county ACS samples are tiny and Kauaʻi alone has
+    // run 127% (2.6%->5.9%, 2023->2024). One threshold had to cover the county
+    // case at 120%, which left the checked series with a 5x blind spot. County
+    // limit stays wide enough for sampling noise, tight enough to catch a 10x
+    // scale error.
+    uninsured_rate:             { min: 0.01,  max: 0.25,   maxYoYPct: 0.60, maxYoYPctCounty: 2.00, format: 'decimal_pct' },
     suicide_rate:               { min: 3,     max: 35,     maxYoYPct: 0.50, format: 'rate' },
     acgr:                       { min: 60,    max: 100,    maxYoYPct: 0.10, format: 'whole_pct' },
-    // ba_or_higher: county ACS samples for small counties (Kauaʻi) can swing 25-30% in a year
-    ba_or_higher_pct:           { min: 0.15,  max: 0.55,   maxYoYPct: 0.35, format: 'decimal_pct' },
+    // ba_or_higher: checked series peak at 6.2%; Kauaʻi hits 27% across the
+    // suppressed-2020 gap (2019->2021), which is what forced the old 35%.
+    ba_or_higher_pct:           { min: 0.15,  max: 0.55,   maxYoYPct: 0.20, maxYoYPctCounty: 0.40, format: 'decimal_pct' },
     naep_math_8:                { min: 220,   max: 320,    maxYoYPct: 0.05, format: 'score' },
     naep_reading_8:             { min: 220,   max: 300,    maxYoYPct: 0.05, format: 'score' },
     // Unemployment: COVID caused 6-7x spikes for small counties in a single year (Maui: +637%)
     unemployment_rate:          { min: 0.01,  max: 0.25,   maxYoYPct: 8.00, format: 'decimal_pct' },
     labor_force_participation:  { min: 50,    max: 80,     maxYoYPct: 0.10, format: 'whole_pct' },
     real_per_capita_income:     { min: 30000, max: 80000, maxYoYPct: 0.15, format: 'dollar' },
-    // renter_cost_burden: county ACS samples for small counties (Kauaʻi) can swing 50% in a year
-    renter_cost_burden_pct:     { min: 0.25,  max: 0.75,   maxYoYPct: 0.55, format: 'decimal_pct' },
+    // renter_cost_burden: checked series peak at 8.5% (HI 2019->2021); Kauaʻi
+    // hits 50% across the same gap, which is what forced the old 55%.
+    renter_cost_burden_pct:     { min: 0.25,  max: 0.75,   maxYoYPct: 0.30, maxYoYPctCounty: 0.70, format: 'decimal_pct' },
     home_price_to_income:       { min: 2.0,   max: 15.0,   maxYoYPct: 0.25, format: 'ratio' },
     // Homeless PIT counts: methodology changes and small populations cause big swings
     unsheltered_homeless_rate:  { min: 1,     max: 100,    maxYoYPct: 1.00, format: 'rate' },
@@ -344,7 +353,7 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
             if (rules.format === 'decimal_pct' && changePct > 10.0) {
                 error(`${slug} ${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}): likely inverted or corrupted source`);
             } else if (changePct > rules.maxYoYPct && !exempt) {
-                warn(`${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
+                warn(`${slug} ${series} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
             }
         }
     }
@@ -444,6 +453,14 @@ for (const [slug, metric] of Object.entries(COUNTY_DATA)) {
         }
 
         // 2c. Year-over-year spike detection
+        // County series get their own limit when the metric declares one. A
+        // single threshold has to be set by the noisiest county, which leaves
+        // the state check far looser than it needs to be: uninsured_rate's
+        // 120% was sized for Kauaʻi, while the worst state swing on record is
+        // 58%, so a state value could double and pass silently.
+        const countyYoYLimit = (typeof rules.maxYoYPctCounty === 'number')
+            ? rules.maxYoYPctCounty
+            : rules.maxYoYPct;
         const years = Object.keys(data).sort();
         for (let i = 1; i < years.length; i++) {
             const prev = data[years[i - 1]];
@@ -455,8 +472,8 @@ for (const [slug, metric] of Object.entries(COUNTY_DATA)) {
             // spike check above for rationale).
             if (rules.format === 'decimal_pct' && changePct > 10.0) {
                 error(`${slug} ${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(0)}% change (${prev} -> ${curr}): likely inverted or corrupted source`);
-            } else if (changePct > rules.maxYoYPct) {
-                warn(`${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(rules.maxYoYPct * 100).toFixed(0)}%`);
+            } else if (changePct > countyYoYLimit) {
+                warn(`${slug} ${county} ${years[i-1]}->${years[i]}: ${(changePct * 100).toFixed(1)}% change (${prev} -> ${curr}), threshold ${(countyYoYLimit * 100).toFixed(0)}%`);
             }
         }
 
