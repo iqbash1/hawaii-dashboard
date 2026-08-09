@@ -1857,6 +1857,18 @@ body {
         margin: 0 0.2rem;
     }
 
+    /* Three actions no longer fit beside the source on a phone. Let the
+       row wrap and keep the actions intact, so a separator dot never
+       dangles at the end of a broken line. */
+    .source-line {
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    .source-actions {
+        white-space: nowrap;
+    }
+
     .modal-source {
         font-size: 0.72rem;
     }
@@ -2080,6 +2092,7 @@ body {
     .modal-actions,
     .modal-close,
     .modal-tabs,
+    .chart-download,
     .csv-download,
     .csv-sep,
     .go-deeper,

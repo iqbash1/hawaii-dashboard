@@ -11,8 +11,8 @@
   "private": true,
   "scripts": {
     "build": "bash build.sh",
-    "lint": "eslint js/app.js js/modal.js js/export.js js/routing.js js/compute.js js/charts.js js/bundles.js",
-    "lint:fix": "eslint --fix js/app.js js/modal.js js/export.js js/routing.js js/compute.js js/charts.js js/bundles.js",
+    "lint": "eslint js/app.js js/modal.js js/export.js js/chart-export.js js/routing.js js/compute.js js/charts.js js/bundles.js",
+    "lint:fix": "eslint --fix js/app.js js/modal.js js/export.js js/chart-export.js js/routing.js js/compute.js js/charts.js js/bundles.js",
     "validate": "bash scripts/validate-all.sh",
     "validate:data": "node scripts/validate-data.js",
     "validate:strict": "node scripts/validate-data.js --strict",

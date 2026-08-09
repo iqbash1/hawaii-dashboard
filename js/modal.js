@@ -504,7 +504,9 @@ const Modal = {
         document.getElementById('modal-source').innerHTML = `
             <div class="source-line">
                 <span>Source: <a href="${metricData.sourceUrl}" target="_blank" rel="noopener">${metricData.source}</a></span>
-                <span class="source-actions"><a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
+                <span class="source-actions"><a href="#" class="chart-download" id="chart-download">Download chart</a>
+                <span class="csv-sep">&middot;</span>
+                <a href="#" class="csv-download" id="csv-download">Download .xlsx</a>
                 <span class="csv-sep">&middot;</span>
                 <a href="#" class="print-link" id="print-link">Print</a></span>
             </div>
@@ -513,6 +515,13 @@ const Modal = {
             e.preventDefault();
             Export.downloadData(slug);
             App._trackEvent('data_exported', { slug, format: 'xlsx' });
+        };
+        // Hi-res PNG of whichever chart is on screen, framed with the
+        // metric's definition (ChartExport reads Modal._activeTab).
+        document.getElementById('chart-download').onclick = (e) => {
+            e.preventDefault();
+            ChartExport.download(slug);
+            App._trackEvent('chart_exported', { slug, tab: Modal._activeTab });
         };
         // Share: delegated to window.ShareMenu (js/share-menu.js) so the
         // chart-modal share gets the same unified experience as Off the

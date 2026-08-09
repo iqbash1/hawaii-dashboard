@@ -13,6 +13,7 @@ module.exports = [
                 App: 'writable',
                 Modal: 'writable',
                 Export: 'writable',
+                ChartExport: 'writable',
                 Router: 'writable',
                 Compute: 'writable',
                 ChartUtils: 'writable',
