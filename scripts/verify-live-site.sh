@@ -278,8 +278,11 @@ fi
 # -----------------------------------------------------------------------------
 section "CSS INTEGRITY"
 
+# .rh-narrative was dropped 2026-08-09 with the per-tab rank-history renderer.
+# Replaced with the two chart-caption markers so this still catches a stale
+# stylesheet, and now catches one serving pre-2026-08-09 CSS specifically.
 for marker in ".modal-official" ".modal-unit-label" ".card-unit" \
-              ".rh-narrative" ".modal-header"; do
+              ".modal-caption-source" ".qotd-chart-caption" ".modal-header"; do
     if grep -q "$marker" "$CSS_FILE"; then
         ok "styles.css contains: ${marker}"
     else
