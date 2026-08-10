@@ -26,6 +26,15 @@ const SITE = (siteIdx >= 0 && args[siteIdx + 1]) || process.env.HEALTH_SITE || '
 const PERF_PAGES = ['/', '/five-year-change/'];
 const A11Y_PAGES = ['/', '/five-year-change/', '/about/', '/faq/', '/off-the-charts/common-incomes-uncommon-costs/', '/c/acgr/'];
 
+// Every page below is a real browser load, so without this each health-check
+// run reports 8 pageviews to GA4 as a genuine visitor. CI runs land outside
+// Hawaiʻi and miss the Hawaiʻi-scoped weekly report, but a local `npm run
+// health` is indistinguishable from a resident. ?notrack=1 sets hd_notrack in
+// localStorage before analytics.js reads it, so the very first load is tagged
+// traffic_type=internal. That tag only removes the traffic from reports while
+// the GA4 admin-side internal-traffic filter is Active, not merely Testing.
+const withNotrack = (u) => u + (u.includes('?') ? '&' : '?') + 'notrack=1';
+
 const log = (...a) => process.stderr.write(a.join(' ') + '\n'); // keep stdout clean for --json
 
 // Desktop Lighthouse preset, inline so it does not depend on a version-specific
@@ -48,7 +57,7 @@ async function runPerf() {
     const pages = [];
     try {
         for (const p of PERF_PAGES) {
-            const url = SITE + p;
+            const url = withNotrack(SITE + p);
             log(`[perf] ${url}`);
             const r = await lighthouse(url, { ...DESKTOP_FLAGS, port: chrome.port });
             const lhr = r.lhr;
@@ -80,7 +89,7 @@ async function runA11y() {
     const totals = { critical: 0, serious: 0, moderate: 0, minor: 0 };
     try {
         for (const p of A11Y_PAGES) {
-            const url = SITE + p;
+            const url = withNotrack(SITE + p);
             log(`[a11y] ${url}`);
             const page = await context.newPage();
             const counts = { critical: 0, serious: 0, moderate: 0, minor: 0 };
