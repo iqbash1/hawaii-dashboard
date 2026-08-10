@@ -56,6 +56,23 @@ async function runPerf() {
     });
     const pages = [];
     try {
+        // Cold-start guard. The first Lighthouse run in a fresh Chrome pays for
+        // cold DNS/TLS/JIT and scores far below steady state: an A/B on one URL
+        // in a single Chrome gave 78 cold then 96/96/97 warm, and under load the
+        // first page measured 55 and 59 on consecutive runs. PERF_PAGES[0] always
+        // absorbed that, which is below the red threshold and enough to email a
+        // red Performance row with nothing actually wrong. Burn one throwaway run
+        // so every reported score is warm. A real regression still shows: this
+        // removes the artifact, not the measurement.
+        if (PERF_PAGES.length) {
+            const warm = withNotrack(SITE + PERF_PAGES[0]);
+            log(`[perf] warm-up (discarded): ${warm}`);
+            try {
+                await lighthouse(warm, { ...DESKTOP_FLAGS, port: chrome.port });
+            } catch (e) {
+                log(`[perf] warm-up failed, continuing: ${e.message}`);
+            }
+        }
         for (const p of PERF_PAGES) {
             const url = withNotrack(SITE + p);
             log(`[perf] ${url}`);
