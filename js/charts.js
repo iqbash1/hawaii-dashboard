@@ -270,6 +270,23 @@ const ChartUtils = {
         // Detect if % values are stored as decimals (0.028 = 2.8%) vs whole (86 = 86%)
         const isDecimalPct = this.isDecimalPctMetric(data);
 
+        // Latest-month marker. The line is annual averages, so on fast-moving
+        // metrics the newest annual point can sit far below current reality
+        // (residential electricity: 2025 annual 40.6c vs May 2026 at 52c, a 28%
+        // gap) and the chart reads as stale. Drawn as its own dataset with no
+        // connecting line so it can never be mistaken for another annual point.
+        // Unit note: latestMonthly is stored in display units (2.6 = 2.6%) while
+        // some hawaii series are decimals (0.024), so decimal-pct metrics scale.
+        const lm = data.latestMonthly;
+        const hasMonthly = !!(lm && typeof lm.value === 'number' && lm.period);
+        if (hasMonthly) {
+            labels.push(lm.period);
+            hawaiiValues.push(null);
+            compValues.push(null);
+        }
+        const monthlyValues = !hasMonthly ? [] : labels.map((_, i) =>
+            i === labels.length - 1 ? (isDecimalPct ? lm.value / 100 : lm.value) : null);
+
         return new Chart(ctx, {
             type: 'line',
             data: {
@@ -317,26 +334,44 @@ const ChartUtils = {
                         pointBorderColor: '#fff',
                         pointBorderWidth: 1,
                         spanGaps: true,
-                    }
+                    },
+                    ...(!hasMonthly ? [] : [{
+                        label: 'Latest month',
+                        data: monthlyValues,
+                        // No connecting line: a segment from the last annual
+                        // point would imply the annual series continued.
+                        showLine: false,
+                        borderColor: this.HAWAII_BLUE,
+                        fill: false,
+                        pointRadius: monthlyValues.map(v => (v === null ? 0 : 5)),
+                        pointHoverRadius: 7,
+                        // Hollow ring, deliberately unlike the filled annual dots.
+                        pointBackgroundColor: '#FFFFFF',
+                        pointBorderColor: this.HAWAII_BLUE,
+                        pointBorderWidth: 3,
+                    }]),
                 ]
             },
             plugins: [governorPlugin],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: { padding: 0 },
+                // Right padding keeps the latest-month marker off the plot edge.
+                layout: { padding: { right: 14 } },
                 plugins: {
                     legend: {
                         display: true,
                         position: 'top',
                         align: 'center',
                         labels: {
-                            usePointStyle: false,
+                            // Point style so "Latest month" shows its hollow ring
+                            // rather than a solid line swatch indistinguishable
+                            // from the Hawaiʻi series.
+                            usePointStyle: true,
                             padding: 16,
                             font: { size: 12, weight: '500' },
                             color: '#555555',
                             boxWidth: 28,
-                            boxHeight: 0,
                         }
                     },
                     tooltip: {
@@ -352,6 +387,12 @@ const ChartUtils = {
                             label: function(context) {
                                 const val = context.parsed.y;
                                 const formatted = ChartUtils.formatValue(val, data.unit, isDecimalPct);
+                                // The monthly marker gets no year-over-year figure:
+                                // its neighbour is an annual average, so a percent
+                                // change between them would compare unlike things.
+                                if (context.dataset.label === 'Latest month') {
+                                    return `Single month, not an annual average: ${formatted}`;
+                                }
                                 // YoY % change
                                 const idx = context.dataIndex;
                                 const series = context.dataset.data;
@@ -377,7 +418,22 @@ const ChartUtils = {
                             font: { size: 11 },
                             color: '#888888',
                             maxRotation: 45,
-                            maxTicksLimit: 15,
+                            // Own subsampling instead of autoSkip, because autoSkip
+                            // drops the final tick on long series and that tick is
+                            // the one naming the monthly marker's period. A hollow
+                            // point with no label under it is exactly the ambiguity
+                            // this marker is supposed to avoid.
+                            autoSkip: false,
+                            callback: function(value, index, ticksArr) {
+                                const label = this.getLabelForValue(value);
+                                const n = ticksArr.length;
+                                const stride = Math.max(1, Math.ceil(n / 14));
+                                if (index === n - 1) return label;
+                                // Suppress the run just before the forced last tick
+                                // so the two never collide.
+                                if (index > n - 1 - stride) return '';
+                                return index % stride === 0 ? label : '';
+                            },
                         },
                         border: {
                             display: false,
