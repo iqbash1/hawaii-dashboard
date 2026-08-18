@@ -193,7 +193,7 @@ const QOTD_QUESTIONS = [
       "slug": "hawaii-has-a-lower-property-crime-rate-than-the-rest-of-the-country",
       "claim": "Hawaiʻi has a lower property crime rate than the rest of the country.",
       "correct": false,
-      "answer": "In 2024, Hawaiʻi was 2052.6 per 100K versus the median of 1687.0 per 100K.",
+      "answer": "In 2024, Hawaiʻi was 2052.6 per 100K people versus the median of 1687.0 per 100K people.",
       "chartUrl": "/r/property_crime_rate/",
       "metric": "property_crime_rate",
       "metricLabel": "Property Crime Rate",
