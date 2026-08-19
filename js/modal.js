@@ -878,7 +878,7 @@ const Modal = {
         // as making the rank itself monthly.
         const lm = metricData.latestMonthly;
         const monthlyNote = lm
-            ? ` <span class="rankings-monthly-note">Hawai\u02BBi's latest month: ${ChartUtils.formatValue(lm.value, metricData.unit, false)} (${lm.period}). The rank compares ${year} annual figures.</span>`
+            ? ` <span class="rankings-monthly-note"><span class="rankings-monthly-value">Hawai\u02BBi's latest month: ${ChartUtils.formatValue(lm.value, metricData.unit, false)} (${lm.period}).</span> The rank compares ${year} annual figures.</span>`
             : '';
         document.getElementById('rankings-rank').innerHTML =
             `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best-performing state</span>${monthlyNote}`;

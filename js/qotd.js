@@ -417,7 +417,7 @@ const QOTD = {
             // the moment the monthly refreshes.
             const lm = metricData && metricData.latestMonthly;
             const monthlyBlock = (lm && typeof ChartUtils !== 'undefined')
-                ? `<p class="qotd-monthly-note"><span class="qotd-monthly-label">Latest month:</span> ${this._escape(ChartUtils.formatValue(lm.value, metricData.unit, false))} (${this._escape(lm.period)}). Newer than the annual figure above.</p>`
+                ? `<p class="qotd-monthly-note"><span class="qotd-monthly-label">Latest month:</span> <span class="qotd-monthly-value">${this._escape(ChartUtils.formatValue(lm.value, metricData.unit, false))} (${this._escape(lm.period)}).</span> Newer than the annual figure above.</p>`
                 : '';
             // One-line pointer to the Off the Charts story on this metric,
             // when one exists. Sits above the come-back-tomorrow footer so
