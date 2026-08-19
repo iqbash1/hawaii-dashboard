@@ -6,7 +6,7 @@
     { "metric": "voter_participation_rate", "kind": "rank", "state": "Oregon", "year": "2024", "as": "#{n0}", "note": "Oregon rank (all-mail since 2000 comparator)" },
     { "metric": "voter_participation_rate", "kind": "rank", "state": "Colorado", "year": "2024", "as": "#{n0}", "note": "Colorado rank (all-mail since 2013 comparator)" },
     { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "1998", "as": "#{n0}", "note": "HI midterm rank 1998 (closest governor's race; gubernatorial paragraph added 2026-08-19)" },
-    { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "2018", "as": "#{n0}", "note": "HI midterm rank 2018 = #50, the 'only last-place midterm finish' claim. Weak guard: '#50' also appears in P2, so this row only fires if the 2018 rank changes AND '#50' leaves the post; the distinctive guard is the 1998 row" }
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "2018", "as": "#{n0}", "note": "HI midterm rank 2018 = #50, the 'only midterm since 1982 in which Hawaiʻi has ranked last' claim. Weak guard: '#50' also appears in P2, so this row only fires if the 2018 rank changes AND '#50' leaves the post; the distinctive guard is the 1998 row" }
   ],
   "productivity-vs-unemployment": [
     { "metric": "unemployment_rate", "kind": "value", "state": "Hawaii", "year": "2025", "scale": 100, "as": "{n2}%", "note": "HI unemployment 2025" },
