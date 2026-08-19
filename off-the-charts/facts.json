@@ -1,4 +1,11 @@
 {
+  "easiest-ballot-lowest-turnout": [
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI presidential-turnout rank (spine; also carries the five-of-six line)" },
+    { "metric": "voter_participation_rate", "kind": "value", "state": "Hawaii", "year": "2016", "scale": 100, "as": "{n0}%", "note": "HI turnout 2016 (start of the about-7-point rise)" },
+    { "metric": "voter_participation_rate", "kind": "value", "state": "Hawaii", "year": "2024", "scale": 100, "as": "{n0}%", "note": "HI turnout 2024 (end of the rise; if either endpoint drifts, restate the about-7-points and more-than-doubled lines too)" },
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Oregon", "year": "2024", "as": "#{n0}", "note": "Oregon rank (all-mail since 2000 comparator)" },
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Colorado", "year": "2024", "as": "#{n0}", "note": "Colorado rank (all-mail since 2013 comparator)" }
+  ],
   "productivity-vs-unemployment": [
     { "metric": "unemployment_rate", "kind": "value", "state": "Hawaii", "year": "2025", "scale": 100, "as": "{n2}%", "note": "HI unemployment 2025" },
     { "metric": "labor_productivity", "kind": "rank", "state": "Hawaii", "year": "2018", "as": "#{n0}", "note": "HI index rank 2018" },

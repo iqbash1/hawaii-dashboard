@@ -13,6 +13,7 @@
 // ============================================================
 
 const OTC_POSTS = [
+    { slug: "easiest-ballot-lowest-turnout", title: "Easy to vote. Less to vote for.", date: "2026-08-19", metrics: ["voter_participation_rate"] },
     { slug: "common-incomes-uncommon-costs", title: "Common incomes. Uncommon costs.", date: "2026-06-14", metrics: ["gini_index","real_per_capita_income","home_price_to_income"] },
     { slug: "safe-state-theft-problem", title: "A safe state with a theft problem.", date: "2026-05-29", metrics: ["violent_crime_rate","property_crime_rate"] },
     { slug: "florida-rent-burden", title: "Florida has Hawaiʻi beat on rent burden.", date: "2026-05-27", metrics: ["home_price_to_income","renter_cost_burden_pct"] },
