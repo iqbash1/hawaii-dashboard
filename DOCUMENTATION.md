@@ -840,7 +840,7 @@ See `scripts/REFRESH-PLAYBOOK.md` for the full canonical sequence.
 
 ## Question of the Day (QOTD)
 
-Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict + 1-sentence answer + live Chart.js canvas pulled from `chartUrl`). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 54 questions in the bank; rotation wraps.
+Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict, 1-sentence answer, a latest-month note when the metric carries `latestMonthly`, why-it-matters, and a live Chart.js canvas pulled from `chartUrl` with a definition caption beneath it). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 54 questions in the bank; rotation wraps.
 
 ### URL pattern
 
