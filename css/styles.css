@@ -2348,6 +2348,14 @@ body {
     height: 340px;
     margin: 0 auto;
 }
+/* Rank-tab latest-month note: same footnote treatment as the QOTD note. */
+.rankings-monthly-note {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
 /* Latest-month note: sits right under the answer, since that is the number
    it corrects. Muted so it reads as a footnote, not a competing headline. */
 .qotd-monthly-note {

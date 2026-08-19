@@ -870,8 +870,18 @@ const Modal = {
         const yearNote = (year !== latestDetailYear)
             ? ` \u00B7 ${year} (latest year with full state coverage)`
             : ` \u00B7 ${year}`;
+        // Latest-month note. The rank is a cross-section of ANNUAL figures, so
+        // on fast-moving metrics the ranked Hawai\u02BBi value can trail the current
+        // monthly reading by a lot (electricity: ranked on 2025's 40.6c while
+        // May 2026 is 52c). The wording names the boundary explicitly, "the
+        // rank compares annual figures", so the fresher number cannot be read
+        // as making the rank itself monthly.
+        const lm = metricData.latestMonthly;
+        const monthlyNote = lm
+            ? ` <span class="rankings-monthly-note">Hawai\u02BBi's latest month: ${ChartUtils.formatValue(lm.value, metricData.unit, false)} (${lm.period}). The rank compares ${year} annual figures.</span>`
+            : '';
         document.getElementById('rankings-rank').innerHTML =
-            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best-performing state</span>`;
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best-performing state</span>${monthlyNote}`;
 
         // Median + formatter for the rankings chart's reference line.
         // (Q1/Q3 are no longer needed since the rankings chart replaced the

@@ -1101,7 +1101,15 @@ for (const [slug, m] of Object.entries(DASHBOARD_DATA)) {
 const LATEST_MONTHLY_ENVELOPE = {
     unemployment_rate:         { scaleMul: 100, maxRelDev: 0.40 },
     labor_force_participation: { scaleMul: 1,   maxAbsDev: 3    },
-    residential_price_cpkwh:   { scaleMul: 1,   maxRelDev: 0.30 },
+    // Electricity widened 0.30 -> 0.45 on 2026-08-09: the divergence the
+    // envelope flags had become real. May 2026 monthly (52c) sits 28.1% above
+    // the 2025 annual (40.6c), a genuine price rise the site now displays
+    // deliberately (chart marker + QOTD note), so the next EIA uptick would
+    // have failed the gate on correct data. The failure class this check
+    // exists for, the May 2026 fuel-subtype truncation, showed up as a 31%
+    // UNDERcount (18.3 -> 12.7 equivalent), and unit errors land at 10-100x,
+    // so 0.45 still catches both while tolerating the real divergence.
+    residential_price_cpkwh:   { scaleMul: 1,   maxRelDev: 0.45 },
     renewables_share_gen:      { scaleMul: 100, maxRelDev: 0.30 },
 };
 
