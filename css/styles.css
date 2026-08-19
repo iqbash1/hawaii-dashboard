@@ -2348,6 +2348,24 @@ body {
     height: 340px;
     margin: 0 auto;
 }
+/* Latest-month note: sits right under the answer, since that is the number
+   it corrects. Muted so it reads as a footnote, not a competing headline. */
+.qotd-monthly-note {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin: 0;
+    /* width:100% as well as the cap: the parent is a centred flex column, so a
+       one-line block would otherwise shrink to its text and sit indented
+       relative to the two-line answer it belongs to. */
+    width: 100%;
+    max-width: 520px;
+    text-align: left;
+}
+.qotd-monthly-label {
+    font-weight: 600;
+    color: var(--text);
+}
 .qotd-chart-caption {
     font-size: 0.8rem;
     line-height: 1.5;
