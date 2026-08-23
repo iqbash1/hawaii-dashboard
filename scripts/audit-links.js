@@ -77,8 +77,6 @@ const EXPECTED_BLOCK = [
     'www.campbellcollaboration.org',
     // Industry research / CRE data
     'www.cbre.com',
-    // Hawaii / state agencies that block bots
-    'www.hawaiitourismauthority.org',
     // Foreign government PDFs
     'www.infrastructure.gov.au',
     // Benchmark/caution source hosts that 403/timeout to automated clients but

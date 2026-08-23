@@ -7,6 +7,7 @@ import subprocess
 import re
 import os
 import sys
+import html
 from pathlib import Path
 from collections import defaultdict
 
@@ -19,6 +20,11 @@ findings = defaultdict(list)
 
 def add(phase, severity, page, msg):
     findings[phase].append((severity, page, msg))
+
+
+def norm_text(t):
+    """Collapse whitespace and decode entities so generated HTML compares to source prose."""
+    return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
 
 def load_dashboard_data():
@@ -776,6 +782,25 @@ def phase6(data, state_data):
                 if r_year != ref_year:
                     add("phase6", "P1", f"rh/{metric}/{sub.name}/",
                         f"rank-history stub year {r_year}, but metric-level page year {ref_year}")
+
+    # 6b-2, rh/ stub prose vs the rankHistoryNarrative it is generated from.
+    # The rank/year checks above only read the OG description, so an edit to the
+    # narrative TEXT in data.js could ship without anyone re-running
+    # `npm run og`. Four metrics (acgr, renter_cost_burden_pct, road_poor_pct,
+    # voter_participation_rate) served stale prose for two weeks that way after
+    # the 2026-08-09 narrative-audit corrections, including a voter turnout
+    # sentence that asserted the opposite of its own data.
+    for metric, meta in data.items():
+        summary = (meta.get("rankHistoryNarrative") or {}).get("summary")
+        if not summary:
+            continue
+        idx = ROOT / f"rh/{metric}/index.html"
+        if not idx.exists():
+            continue
+        if norm_text(summary) not in norm_text(idx.read_text()):
+            add("phase6", "P0", f"rh/{metric}/",
+                "rank-history stub prose does not match rankHistoryNarrative.summary "
+                "in data.js; run `npm run og`")
 
     # 6c, /t/ vs /r/ same metric should agree on year + rank
     # /r/ stub OG description format: "Hawaiʻi ranks #N of 50 states in METRIC. VALUE (YEAR)."
