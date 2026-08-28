@@ -119,18 +119,21 @@ jobs:
               'This issue auto-closes when the next heartbeat finds a successful run within the last 32 days.',
             ].join('\n');
 
+            // Live day count in the title: refresh it on update too, not only at creation.
+            const title = `Cron stale: monthly refresh-data has not succeeded in ${ageDays} days`;
             if (existing) {
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: existing.number,
+                title,
                 body,
               });
             } else {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Cron stale: monthly refresh-data has not succeeded in ${ageDays} days`,
+                title,
                 body,
                 labels: ['cron-stale'],
               });

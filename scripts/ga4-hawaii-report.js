@@ -16,6 +16,20 @@ const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const PROPERTY_ID = process.env.GA4_PROPERTY_ID;
 const DAYS = Number(process.argv[2]) || 28;
 
+// GA4 does not finalise attribution or engagement for roughly 24-48 hours. Until
+// it does, a session reports sessionSourceMedium "(not set)", an empty
+// landingPage / newVsReturning, and engagedSessions 0 -- even though page_view,
+// scroll and user_engagement all fired on it. Ending a window at "today" therefore
+// blends settled days with days whose engagement is structurally zero and drags
+// the rate down. Measured 2026-08-28: Aug 27-28 carried 30 Hawaiʻi sessions and 0
+// engaged between them while every settled day ran 40-70%, which alone made a
+// 5-day window read 38% engagement. Every range below ends LAG_DAYS back so the
+// report only ever describes settled data.
+const LAG_DAYS = 2;
+const END = `${LAG_DAYS}daysAgo`;
+/** Window of `n` days that ends on the last settled day. */
+const startAgo = n => `${n + LAG_DAYS}daysAgo`;
+
 if (!PROPERTY_ID) {
     console.error('GA4_PROPERTY_ID not set. Run via: node --env-file-if-exists=.env scripts/ga4-hawaii-report.js');
     process.exit(1);
@@ -74,8 +88,9 @@ async function main() {
     const out = [];
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Honolulu' });
     out.push(`# Hawaiʻi traffic on hawaiidashboard.org`);
-    out.push(`\n**Window:** last ${DAYS} days · **Generated:** ${today} · **Source:** GA4 property ${PROPERTY_ID}`);
-    out.push(`\n_Scoped to visitors located in Hawaiʻi (US). Datacenter/bot regions are excluded by definition._\n`);
+    out.push(`\n**Window:** ${DAYS} days ending ${LAG_DAYS} days ago · **Generated:** ${today} · **Source:** GA4 property ${PROPERTY_ID}`);
+    out.push(`\n_Scoped to visitors located in Hawaiʻi (US). Datacenter/bot regions are excluded by definition._`);
+    out.push(`\n_The last ${LAG_DAYS} days are excluded: GA4 has not finished attributing them, so they report "(not set)" sources and zero engaged sessions until they settle._\n`);
 
     const summary = {}; // for console
 
@@ -84,8 +99,8 @@ async function main() {
         const HEAD = ['activeUsers', 'newUsers', 'sessions', 'engagedSessions', 'engagementRate', 'userEngagementDuration', 'eventCount'];
         const resp = await run({
             dateRanges: [
-                { startDate: `${DAYS}daysAgo`, endDate: 'today', name: 'cur' },
-                { startDate: `${DAYS * 2}daysAgo`, endDate: `${DAYS + 1}daysAgo`, name: 'prev' },
+                { startDate: startAgo(DAYS), endDate: END, name: 'cur' },
+                { startDate: startAgo(DAYS * 2), endDate: `${DAYS + 1 + LAG_DAYS}daysAgo`, name: 'prev' },
             ],
             dimensionFilter: HAWAII,
             metrics: HEAD.map(name => ({ name })),
@@ -121,7 +136,7 @@ async function main() {
     // 2) DAILY TREND ---------------------------------------------------------
     try {
         const resp = await run({
-            dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+            dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
             dimensionFilter: HAWAII,
             dimensions: [{ name: 'date' }],
             metrics: [{ name: 'activeUsers' }],
@@ -138,7 +153,7 @@ async function main() {
     // 2b) WEEKLY TREND SINCE LAUNCH -----------------------------------------
     try {
         const resp = await run({
-            dateRanges: [{ startDate: '200daysAgo', endDate: 'today' }],
+            dateRanges: [{ startDate: '200daysAgo', endDate: END }],
             dimensionFilter: HAWAII,
             dimensions: [{ name: 'yearWeek' }],
             metrics: [{ name: 'activeUsers' }, { name: 'engagedSessions' }, { name: 'engagementRate' }],
@@ -160,7 +175,7 @@ async function main() {
     // 3) HOW THEY ARRIVE -----------------------------------------------------
     try {
         const ch = await run({
-            dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+            dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
             dimensionFilter: HAWAII,
             dimensions: [{ name: 'sessionDefaultChannelGroup' }],
             metrics: [{ name: 'sessions' }, { name: 'engagementRate' }],
@@ -173,7 +188,7 @@ async function main() {
         out.push('');
 
         const sm = await run({
-            dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+            dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
             dimensionFilter: HAWAII,
             dimensions: [{ name: 'sessionSourceMedium' }],
             metrics: [{ name: 'sessions' }, { name: 'engagementRate' }],
@@ -189,7 +204,7 @@ async function main() {
     // 4) WHICH ISLAND (city) -------------------------------------------------
     try {
         const resp = await run({
-            dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+            dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
             dimensionFilter: HAWAII,
             dimensions: [{ name: 'city' }],
             metrics: [{ name: 'activeUsers' }, { name: 'engagementRate' }],
@@ -205,7 +220,7 @@ async function main() {
     // 5) TOP PAGES -----------------------------------------------------------
     try {
         const resp = await run({
-            dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+            dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
             dimensionFilter: HAWAII,
             dimensions: [{ name: 'pagePath' }],
             metrics: [{ name: 'screenPageViews' }, { name: 'activeUsers' }, { name: 'userEngagementDuration' }],
@@ -225,7 +240,7 @@ async function main() {
     let eventMap = {};
     try {
         const resp = await run({
-            dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+            dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
             dimensionFilter: HAWAII,
             dimensions: [{ name: 'eventName' }],
             metrics: [{ name: 'eventCount' }],
@@ -269,7 +284,7 @@ async function main() {
             out.push(`## Which metrics Hawaiʻi opens (deep-dive modal)\n`);
             if (hasArea) {
                 const r = await run({
-                    dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+                    dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
                     dimensionFilter: hawaiiAnd({ filter: { fieldName: 'eventName', stringFilter: { value: 'modal_open' } } }),
                     dimensions: [{ name: 'customEvent:area' }],
                     metrics: [{ name: 'eventCount' }],
@@ -282,7 +297,7 @@ async function main() {
             }
             if (hasSlug) {
                 const r = await run({
-                    dateRanges: [{ startDate: `${DAYS}daysAgo`, endDate: 'today' }],
+                    dateRanges: [{ startDate: startAgo(DAYS), endDate: END }],
                     dimensionFilter: hawaiiAnd({ filter: { fieldName: 'eventName', stringFilter: { value: 'modal_open' } } }),
                     dimensions: [{ name: 'customEvent:slug' }],
                     metrics: [{ name: 'eventCount' }],
@@ -307,7 +322,7 @@ async function main() {
     const file = path.join(dir, `ga4-hawaii-${today}.md`);
     fs.writeFileSync(file, out.join('\n'));
 
-    console.log(`\nHawaiʻi traffic, last ${DAYS} days:`);
+    console.log(`\nHawaiʻi traffic, ${DAYS} days ending ${LAG_DAYS} days ago:`);
     console.log(`  Active users:      ${fmtInt(summary.users)} (${summary.usersDelta} vs prev period)`);
     console.log(`  Engagement rate:   ${pct(summary.engRate)}`);
     console.log(`  Avg time / user:   ${dur(summary.engPerUser)}`);
