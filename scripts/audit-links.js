@@ -59,6 +59,14 @@ const EXPECTED_BLOCK = [
     'www.sciencedirect.com',
     'direct.mit.edu',
     'www.elibrary.imf.org',
+    // Wayback snapshots (3 citations: acgr, rainy_day_fund_pct, unsheltered_homeless_rate).
+    // archive.org rate-limits by IP, so a CI run that requests several snapshots in
+    // quick succession gets 503 on all of them at once: the 2026-08-28 run reported
+    // every Wayback citation in the file as broken while all three returned 200 from
+    // a laptop. Per-URL backoff does not help because the limiter is global, not
+    // per-URL. Safe to allowlist because Wayback answers a genuinely missing snapshot
+    // with 404, not 503 (verified 2026-08-28), so real rot still surfaces.
+    'web.archive.org',
     // Columbia/Teachers College CCRC (ba_or_higher_pct "Tracking Transfer" cite):
     // intermittent connect-timeout (status 0) to Node, returns 200 in ~1.4s in a
     // browser and via curl on retry. Confirmed live 2026-06-08.
@@ -115,8 +123,9 @@ const EXPECTED_BLOCK = [
 // educationrecoveryscorecard) to reject non-browser requests; 0 is
 // the audit-link library's signal for connect timeout / socket reset /
 // TLS handshake refusal, which most anti-bot edges do (rather than
-// returning a status code) to avoid leaking signal.
-const EXPECTED_BLOCK_STATUSES = new Set([403, 406, 429, 405, 422, 0]);
+// returning a status code) to avoid leaking signal. 503 is web.archive.org
+// load-shedding (see its EXPECTED_BLOCK entry).
+const EXPECTED_BLOCK_STATUSES = new Set([403, 406, 429, 405, 422, 503, 0]);
 
 function loadData() {
     const src = fs.readFileSync(DATA_PATH, 'utf8');
