@@ -1710,7 +1710,7 @@ const DASHBOARD_DATA = {
           "text": "Like Hawaiʻi, Virginia had fragmented homeless service providers operating separate databases and waitlists. Virginia cut unsheltered homelessness 47% from 2010 to 2019 by requiring every provider statewide to share one database and one housing waitlist, backed by a dedicated Housing Trust Fund.",
           "source": {
             "label": "Virginia Housing Trust Fund Homeless Reduction Grants - DHCD",
-            "url": "https://www.dhcd.virginia.gov/vhtf-homeless-reduction"
+            "url": "https://web.archive.org/web/20260318224446/https://www.dhcd.virginia.gov/vhtf-homeless-reduction"
           }
         }
       ],

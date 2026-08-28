@@ -195,8 +195,12 @@ function checkUrl(url, retries = 3) {
                 // Retry transient server errors (5xx). web.archive.org sheds load
                 // with a 503 under heavy traffic even when the snapshot is live, so
                 // a single hit should not be reported as rot (confirmed 2026-07-20).
+                // Back off progressively (2s, 6s, 18s) rather than retrying three
+                // times inside six seconds: load-shedding lasts longer than that, and
+                // three fast retries were still reporting live snapshots as rot
+                // (web.archive.org 503 on the acgr citation, 2026-08-28).
                 if (res.statusCode >= 500 && remaining > 1) {
-                    setTimeout(() => attempt(remaining - 1), 2000);
+                    setTimeout(() => attempt(remaining - 1), 2000 * Math.pow(3, retries - remaining));
                     return;
                 }
                 resolve({ status: res.statusCode, ok: res.statusCode >= 200 && res.statusCode < 400 });
