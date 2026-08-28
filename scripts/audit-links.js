@@ -85,6 +85,11 @@ const EXPECTED_BLOCK = [
     'www.campbellcollaboration.org',
     // Industry research / CRE data
     'www.cbre.com',
+    // UTOPIA Fiber (broadband_subscription_pct benchmark): live but slow, 39s on a
+    // cold hit and ~9s warm against the auditor's 15s timeout, so it intermittently
+    // reports status 0. Confirmed 2026-08-28: 200 to curl on three tries and the full
+    // history page renders in the browser.
+    'www.utopiafiber.com',
     // Foreign government PDFs
     'www.infrastructure.gov.au',
     // Benchmark/caution source hosts that 403/timeout to automated clients but
