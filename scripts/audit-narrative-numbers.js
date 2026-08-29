@@ -1887,11 +1887,40 @@ function parseRankBand(sentence, total) {
     return null;
 }
 
-function auditRankWindows(slug, metric, field, text) {
+/** Full state names carried by STATE_DATA, minus Hawaiʻi. Derived from
+ *  the data so it never drifts from the series being ranked. */
+const OTHER_STATE_NAMES = (() => {
+    const out = new Set();
+    for (const meta of Object.values(STATE_DATA)) {
+        const sd = meta && meta.data;
+        if (!sd) continue;
+        const keys = Object.keys(sd);
+        const isPCPStyle = keys.length > 0 && keys.every(k => /^\d{1,2}$/.test(k));
+        const names = isPCPStyle
+            ? Object.values(sd).map(rec => rec && rec.name)
+            : keys.flatMap(y => (/^\d{4}/.test(y) ? Object.keys(sd[y]) : []));
+        for (const n of names) if (n && !isHawaii(n)) out.add(n);
+    }
+    return [...out];
+})();
+
+/** explore[] mixes Hawaiʻi with comparator states in one field, so a
+ *  bare "#N in YYYY" there may belong to Massachusetts, not Hawaiʻi.
+ *  Only rank a sentence that names Hawaiʻi and no other state. */
+function hawaiiIsSubject(sentence) {
+    if (!/Hawai[ʻ'’‘]?i/i.test(sentence)) return false;
+    return !OTHER_STATE_NAMES.some(n => sentence.includes(n));
+}
+
+function auditRankWindows(slug, metric, field, text, hawaiiSubjectOnly = false) {
     const ys = stateYears(slug);
     if (ys.length < 3) return;
     for (const sentence of splitSentences(text)) {
         if (!/rank|held|holding|#\d/.test(sentence)) continue;
+        if (hawaiiSubjectOnly && !hawaiiIsSubject(sentence)) {
+            skipNew({ slug, field, check: 'rank-at-year', claim: sentence.trim().slice(0, 80), note: 'subject is not Hawaiʻi alone' });
+            continue;
+        }
 
         // 8h. "improved from #47 in 2003 to #30 in 2024" + single
         // "#N in YYYY" / "(#N in YYYY)" / "back to #N by YYYY" claims.
@@ -1994,6 +2023,14 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
         auditSinceYearChanges(slug, metric, 'rankHistoryNarrative.summary', rhn.summary, false);
         auditStateQuantifiers(slug, metric, 'rankHistoryNarrative.summary', rhn.summary, false);
         auditRankWindows(slug, metric, 'rankHistoryNarrative.summary', rhn.summary);
+    }
+    // explore[] carries Hawaiʻi rank claims too, and went unchecked until
+    // the June 2026 BLS restatement moved 2022/2023 under a bullet the
+    // gate could not see (summary was corrected, explore[0] was not).
+    if (rhn && Array.isArray(rhn.explore)) {
+        rhn.explore.forEach((t, i) => {
+            if (t) auditRankWindows(slug, metric, `rankHistoryNarrative.explore[${i}]`, t, true);
+        });
     }
 }
 

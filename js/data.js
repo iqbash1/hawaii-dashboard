@@ -3058,7 +3058,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Massachusetts concentrated investment in high-output sectors; Nevada shows headline employer wins do not shift productivity when the dominant sector stays low-output. Hawaiʻi has pockets of high-value activity including HURL, HIMB, and NOAA Pacific facilities in ocean technology, but the 2023 Maui wildfires destroyed roughly 3,000 structures and likely contributed to the sharp productivity drop from #34 in 2022 to #48 in 2023."
+        "Massachusetts concentrated investment in high-output sectors; Nevada shows headline employer wins do not shift productivity when the dominant sector stays low-output. Hawaiʻi has pockets of high-value activity including HURL, HIMB, and NOAA Pacific facilities in ocean technology, but the 2023 Maui wildfires destroyed roughly 3,000 structures and likely contributed to the sharp productivity drop from #35 in 2022 to #43 in 2023."
       ],
       "caution": {
         "state": "Nevada",
