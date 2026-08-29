@@ -660,7 +660,12 @@ function stateYears(slug) {
     return Object.keys(counts).filter(y => counts[y] >= 25).sort();
 }
 
-/** Dashboard-style rank for a specific year (1 = best per goodDirection). */
+/** Dashboard-style rank for a specific year (1 = best per goodDirection).
+ *  `rank` is what the dashboard renders (naive findIndex, matching
+ *  App.getStateRankings). `lo`/`hi` bound the block of states sharing
+ *  Hawaiʻi's exact value: inside a tie the sort order is arbitrary, so
+ *  every rank in [lo, hi] states the same fact. They are equal when
+ *  nothing ties. Mirrors tieRange() in audit-otc-numbers.js. */
 function rankForYear(slug, year, goodDirection) {
     const vals = stateValuesForYear(slug, year);
     if (!vals) return null;
@@ -669,7 +674,17 @@ function rankForYear(slug, year, goodDirection) {
     entries.sort((a, b) => goodDirection === 'up' ? b[1] - a[1] : a[1] - b[1]);
     const hi = entries.findIndex(([st]) => isHawaii(st));
     if (hi < 0) return null;
-    return { rank: hi + 1, total: entries.length };
+    const v = entries[hi][1];
+    let lo = hi, up = hi;
+    while (lo > 0 && entries[lo - 1][1] === v) lo--;
+    while (up < entries.length - 1 && entries[up + 1][1] === v) up++;
+    return { rank: hi + 1, lo: lo + 1, hi: up + 1, total: entries.length };
+}
+
+/** Render a rank for a report line, disclosing the tie block when there
+ *  is one so "expected #37" does not look arbitrary. */
+function rankText(r) {
+    return r.lo === r.hi ? `#${r.rank}` : `#${r.lo}-#${r.hi} (${r.hi - r.lo + 1}-way tie)`;
 }
 
 /** Per-state moves between two years (states with both endpoints). */
@@ -1878,10 +1893,12 @@ function parseRankBand(sentence, total) {
     m = sentence.match(/\btop\s+(quarter|third|half|(\d{1,2}))\b/i);
     if (m) {
         const map = { quarter: Math.round(total / 4), third: Math.round(total / 3), half: Math.round(total / 2) };
-        return { lo: 1, hi: m[2] ? +m[2] : map[m[1].toLowerCase()], text: m[0] };
+        // "top 10" states its own edge; "top quarter" does not, so the
+        // #13 boundary is this parser's reading, not the prose's claim.
+        return { lo: 1, hi: m[2] ? +m[2] : map[m[1].toLowerCase()], text: m[0], fuzzy: !m[2] };
     }
     m = sentence.match(/\b(?:at\s+or\s+near\s+last|last\s+or\s+near[- ]last|near\s+last)\b/i);
-    if (m) return { lo: total - 4, hi: total, text: m[0] };
+    if (m) return { lo: total - 4, hi: total, text: m[0], fuzzy: true };
     m = sentence.match(/(?:rank(?:s|ed)?|hold(?:ing)?|held)\s+#(\d{1,2})\b/);
     if (m) return { lo: +m[1], hi: +m[1], text: m[0] };
     return null;
@@ -1932,9 +1949,9 @@ function auditRankWindows(slug, metric, field, text, hawaiiSubjectOnly = false) 
             if (!y || y !== rm[2]) { skipNew({ slug, field, check: 'rank-at-year', claim: rm[0], note: `no >=25-state data for ${rm[2]}` }); continue; }
             const r = rankForYear(slug, y, metric.goodDirection);
             if (!r) { skipNew({ slug, field, check: 'rank-at-year', claim: rm[0], note: `cannot rank ${y}` }); continue; }
-            recordNew(Math.abs(r.rank - claimedRank) <= 1, {
+            recordNew(claimedRank >= r.lo && claimedRank <= r.hi, {
                 slug, field, check: 'rank-at-year', claim: rm[0],
-                expected: `#${r.rank} of ${r.total} in ${y}`,
+                expected: `${rankText(r)} of ${r.total} in ${y}`,
                 found: `#${claimedRank}`,
             });
         }
@@ -1992,8 +2009,13 @@ function auditRankWindows(slug, metric, field, text, hawaiiSubjectOnly = false) 
         for (const y of winYears) {
             const r = rankForYear(slug, y, metric.goodDirection);
             if (!r) continue;
-            if (r.rank >= band.lo - 1 && r.rank <= band.hi + 1) inBand++; // 1-rank slack for method drift
-            else outliers.push(`${y}=#${r.rank}${r.total < 50 ? `/${r.total}` : ''}`);
+            // In band if any rank Hawaiʻi could legitimately be called
+            // that year falls inside it; with no tie that is the exact rank.
+            // A fuzzy band ("near last") keeps one rank of give, because its
+            // edge was inferred here rather than stated by the prose.
+            const give = band.fuzzy ? 1 : 0;
+            if (r.hi >= band.lo - give && r.lo <= band.hi + give) inBand++;
+            else outliers.push(`${y}=${rankText(r)}${r.total < 50 ? `/${r.total}` : ''}`);
         }
         const n = inBand + outliers.length;
         const ok = qualifier === 'every' ? outliers.length === 0 : inBand / n >= 0.6;
