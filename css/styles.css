@@ -673,6 +673,13 @@ body {
     font-weight: 500;
 }
 
+/* On metrics carrying a tierSubject the tier phrase is too long to share a
+   line with the count, so the count drops below it instead of trailing a
+   "·". Metrics without a subject keep the single-line form. */
+.comp-rank-count {
+    display: block;
+}
+
 /* Card footer: combines source attribution (left) with the "View by county"
    link (right) on a single low-weight row, separated from the comparisons by
    a thin divider. Either can be absent; the row collapses to one item. */

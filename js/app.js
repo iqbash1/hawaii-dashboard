@@ -712,17 +712,23 @@ const App = {
                     // whether high or low values are "good").
                     // A bare tier does NOT read cleanly in both directions on its own:
                     // "Top tier" under "Violent Crime Rate" invites the reading "most
-                    // violent". Prose surfaces fix this with metric.tierSubject ("Top tier
-                    // nationally for safety" — see Modal.buildBottomLine and the OG badge).
-                    // The chip is left bare on purpose: this row is ~125px, and the card
-                    // already prints "lower values are better" directly above it, so the
-                    // direction cue is adjacent here in a way it is not in prose or in a
-                    // share preview. Widen the row before adding the subject here.
+                    // violent", so metric.tierSubject names what the tier is good at
+                    // (see also Modal.buildBottomLine and the OG badge).
+                    // The card's own "lower values are better" cue does not rescue it:
+                    // that cue sits above the sparkline, ~115px and a divider away from
+                    // this row, on mobile and desktop alike.
+                    // Subject metrics drop the "·" and put the count on its own line,
+                    // since the full phrase exceeds this ~182px column. The row absorbs
+                    // the second line because the year-change block beside it is already
+                    // two lines, so card heights do not change.
                     const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
                     const tierLabel = rankClass === 'rank-good' ? 'Top tier'
                         : rankClass === 'rank-mid' ? 'Middle tier'
                         : 'Bottom tier';
-                    rankHtml = `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel}</span> · #${rankings.hawaiiRank} of ${rankings.total}</span>`;
+                    const rankCount = `#${rankings.hawaiiRank} of ${rankings.total}`;
+                    rankHtml = metricData.tierSubject
+                        ? `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel} for ${metricData.tierSubject}</span><span class="comp-rank-count">${rankCount}</span></span>`
+                        : `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel}</span> · ${rankCount}</span>`;
                 }
             }
         }
