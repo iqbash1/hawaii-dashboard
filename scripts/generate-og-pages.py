@@ -825,13 +825,21 @@ _ORDINAL_WORDS_HIGH = {
 
 def _rank_descriptor(rank, total, good_direction):
     """Return a short human phrase for a rank: 'second-lowest in the nation',
-    'ranked #N of M states', etc. `good_direction` is 'up' or 'down' (from
-    metric.goodDirection); we describe the position regardless of good/bad."""
+    'ranked #N of M states', etc. Describes where Hawaiʻi's VALUE sits, not
+    whether that is good or bad.
+
+    `rank` is direction-aware (#1 = best), so translating it into a
+    highest/lowest word needs good_direction. On a lower-is-better metric #1
+    is the lowest value; on a higher-is-better metric #1 is the highest. The
+    two are mirror images, and conflating them inverts the sentence: voter
+    participation (higher is better) at #50 of 50 was reading "highest in the
+    nation" when Hawaiʻi is in fact the lowest."""
     if not rank or rank < 1:
         return ''
-    # Position-from-bottom for "lowest" framing
-    rank_low = rank
-    rank_high = total - rank + 1
+    if good_direction == 'up':
+        rank_high, rank_low = rank, total - rank + 1
+    else:
+        rank_low, rank_high = rank, total - rank + 1
     if rank_low in _ORDINAL_WORDS and rank_low <= 5:
         return f'{_ORDINAL_WORDS[rank_low]} in the nation'
     if rank_high in _ORDINAL_WORDS_HIGH and rank_high <= 5:
