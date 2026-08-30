@@ -35,7 +35,7 @@ SLATE    = (56, 75, 91)
 POSTS = [
     {
         "slug": "homelessness-tracks-home-prices",
-        "title": "Homelessness is more about housing costs than income.",
+        "title": "Where home prices outrun incomes, homelessness follows.",
         "date":  "29 August 2026",
         # Outlier line: Hawaiʻi worst-tier on homelessness with the nation's priciest homes.
         "outlier": "high",
