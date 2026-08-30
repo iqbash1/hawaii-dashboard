@@ -1729,6 +1729,14 @@ const DASHBOARD_DATA = {
     "thresholdVariants": {
       "all": {
         "officialName": "One-night count of all homeless people (sheltered and unsheltered combined), per 10,000 residents.",
+        "scale": {
+          "denominator": 1441387,
+          "denominatorRounded": 1440000,
+          "unit": "residents",
+          "countLabel": "people homeless on any given night",
+          "year": 2023,
+          "source": "Census NST-EST2024 (2023 estimate)"
+        },
         "dataNote": "Based on HUD Point-in-Time counts, a single-night snapshot. Methodology changes between years can affect comparability. The 2024 spike reflects the August 2023 Maui wildfires: thousands of displaced residents were living in emergency shelters and hotel rooms on the January 2024 count night, and HUD counted them as sheltered homeless. By the January 2025 count most had moved into longer-term housing, and the total returned to its pre-fire range.",
         "hawaii": {
           "2012": 45.3,

@@ -424,7 +424,9 @@ const App = {
      */
     computeScaleTranslation(slug, value) {
         if (value === null || value === undefined) return null;
-        const base = DASHBOARD_DATA[slug];
+        // Variant-merged so a thresholdVariants scale override (e.g. the
+        // total-homeless countLabel) applies on the variant view.
+        const base = this.getActiveMetricData(slug);
         if (!base || !base.scale) return null;
         const scale = base.scale;
         const denom = scale.denominator;
