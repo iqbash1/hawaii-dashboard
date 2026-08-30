@@ -1455,7 +1455,11 @@ const Modal = {
         // Tier-first framing: the categorical verdict leads, the metric
         // value follows. A grant writer or board reader scans the tier
         // before the number; the number is the supporting evidence.
-        let brief = `Bottom line: Hawaiʻi is in the ${tierLabel} nationally (#${rank} of ${rankings.total}). ${intro}.`;
+        // On a metric that names a bad thing, a bare tier inverts: "Top tier"
+        // under "Violent Crime Rate" reads as most violent. tierSubject names
+        // what the tier is good at, so the sentence carries its own direction.
+        const subject = m.tierSubject ? ` for ${m.tierSubject}` : '';
+        let brief = `Bottom line: Hawaiʻi is in the ${tierLabel} nationally${subject} (#${rank} of ${rankings.total}). ${intro}.`;
         if (trend) brief += ` It has ${trend},`;
         brief += ` and is ${vsAvg} the US median.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;

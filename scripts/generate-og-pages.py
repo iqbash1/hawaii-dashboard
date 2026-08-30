@@ -412,7 +412,12 @@ def generate_og_image(slug, metric, area, rankings, output_path):
             tier_label, tier_color = 'Middle tier', NEUTRAL
         else:
             tier_label, tier_color = 'Bottom tier', NEGATIVE
-        badge_text = f"{tier_label} \u00B7 #{rankings['hawaiiRank']} of {rankings['total']}"
+        # A share preview travels with no direction cue around it, so on a
+        # metric that names a bad thing a bare "Top tier" reads as most of
+        # that bad thing. tierSubject names what the tier is good at.
+        subject = metric.get('tierSubject', '')
+        tier_phrase = f"{tier_label} for {subject}" if subject else tier_label
+        badge_text = f"{tier_phrase} \u00B7 #{rankings['hawaiiRank']} of {rankings['total']}"
         f_badge = font(16)
         bb = d.textbbox((0, 0), badge_text, font=f_badge)
         text_w = bb[2] - bb[0]
