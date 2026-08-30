@@ -402,7 +402,15 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
 // V5 "Hawaiʻi has the #N lowest value among 50 states in YYYY (X)"
 // V6 "Hawaiʻi's {metric} went from A to B between YYYY and YYYY (+N%)"
 const QOTD_RANKED_VALUE_RE = /\bHawai[ʻ'']?i\s+has\s+the\s+#(\d{1,2})\s+(highest|lowest)\s+value\s+among\s+\d+\s+states\s+in\s+(20\d{2})\s+\(([^)]+)\)/i;
-const QOTD_FROM_TO_RE = /\bHawai[ʻ'']?i'?s?\s+[^.]+?\s+went\s+from\s+(-?\$?\d+(?:,\d{3})*(?:\.\d+)?)\s*([%¢$x]?)\s+to\s+(-?\$?\d+(?:,\d{3})*(?:\.\d+)?)\s*([%¢$x]?)\s+between\s+(20\d{2}|19\d{2})\s+and\s+(20\d{2}|19\d{2})/i;
+// The unit can trail the number as a symbol ("40.6¢") or as a phrase
+// ("2052.6 per 100K"). Only the symbol form was allowed, so every rate
+// metric silently fell out of this check: q042 carried a stale 2024
+// property-crime value for months while validate stayed green.
+const QOTD_UNIT = String.raw`\s*([%¢$x]?)(?:\s+per\s+[\w,.]+(?:\s+(?:people|residents|kWh))?)?`;
+const QOTD_NUM = String.raw`(-?\$?\d+(?:,\d{3})*(?:\.\d+)?)`;
+const QOTD_FROM_TO_RE = new RegExp(
+    String.raw`\bHawai[ʻ'']?i'?s?\s+[^.]+?\s+went\s+from\s+${QOTD_NUM}${QOTD_UNIT}\s+to\s+${QOTD_NUM}${QOTD_UNIT}\s+between\s+(20\d{2}|19\d{2})\s+and\s+(20\d{2}|19\d{2})`,
+    'i');
 
 function auditQotdRankedValue(slug, metric, field, text) {
     const clean = stripHtml(text);
