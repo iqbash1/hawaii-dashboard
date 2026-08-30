@@ -1654,7 +1654,7 @@ const DASHBOARD_DATA = {
       "year": 2023,
       "source": "Census NST-EST2024 (2023 estimate)"
     },
-    "howToRead": "Hawaiʻi is far worse than the median at both the unsheltered and total (sheltered + unsheltered) thresholds. The total view is roughly 2-3 times the unsheltered figure because it includes people in emergency shelters and transitional housing. Even small declines represent hundreds of lives improved.",
+    "howToRead": "Hawaiʻi is far worse than the median at both the unsheltered and total (sheltered + unsheltered) thresholds. The total view includes people in emergency shelters and transitional housing on top of the unsheltered count. Even small declines represent hundreds of lives improved.",
     "potentialDrivers": "The safety net is intact; the problem is housing. Hawaiʻi ranks near the bottom in unsheltered homelessness despite strong performance in violent crime and health coverage. <a href=\"https://www.huduser.gov/portal/sites/default/files/pdf/2024-AHAR-Part-1.pdf\" target=\"_blank\" rel=\"noopener\">HUD's 2024 homeless assessment</a> attributed the rise to lack of affordable housing and inability to pay rent. A <a href=\"https://www.usich.gov/sites/default/files/document/Federal%20Resources%20for%20Addressing%20the%20Behavioral%20Health%20Needs%20of%20People%20Experiencing%20or%20at%20Risk%20of%20Homelessness.pdf\" target=\"_blank\" rel=\"noopener\">federal USICH/HHS guide</a> found housing scarcity and income loss are the primary causes, with behavioral health problems more a barrier to exiting than an initial cause. Hawaiʻi's <a href=\"https://homelessness.hawaii.gov/wp-content/uploads/2026/01/SOHHS-HICH-Act-309-Report-to-2026-Legislature-signed.pdf\" target=\"_blank\" rel=\"noopener\">2026 legislative report</a> added that insufficient shelter capacity leads to longer stays, and many people fall into homelessness from a single economic crisis.",
     "countyNarrative": "At the unsheltered level, <a href=\"https://hhdw.org/na-2024-homeless-point-in-time-counts/\">the 2024 Point in Time counts</a> put Kauaʻi highest by a wide margin (63 per 10K, more than double any other county), having tripled since 2015. Honolulu carries the largest absolute count due to population size, but its per-capita unsheltered rate (28.3) is lower than Kauaʻi's. Hawaiʻi County's unsheltered rate has been volatile, peaking at 57 per 10K in 2016 before falling to 25 in 2024. Maui's unsheltered rate declined to 17 per 10K in 2024, the lowest of the four counties, despite the August 2023 wildfires because most wildfire-displaced residents were counted as sheltered. The total-homeless view shows a different pattern: Kauaʻi's total rate (71 per 10K) remains the highest, but the gap with other counties narrows because shelter capacity is more evenly distributed.",
     "useConsolidated": true,
@@ -1729,6 +1729,7 @@ const DASHBOARD_DATA = {
     "thresholdVariants": {
       "all": {
         "officialName": "One-night count of all homeless people (sheltered and unsheltered combined), per 10,000 residents.",
+        "dataNote": "Based on HUD Point-in-Time counts, a single-night snapshot. Methodology changes between years can affect comparability. The 2024 spike reflects the August 2023 Maui wildfires: thousands of displaced residents were living in emergency shelters and hotel rooms on the January 2024 count night, and HUD counted them as sheltered homeless. By the January 2025 count most had moved into longer-term housing, and the total returned to its pre-fire range.",
         "hawaii": {
           "2012": 45.3,
           "2013": 45.4,
@@ -1741,7 +1742,8 @@ const DASHBOARD_DATA = {
           "2020": 45.6,
           "2022": 41.2,
           "2023": 43.2,
-          "2024": 80.7
+          "2024": 80.7,
+          "2025": 47.7
         },
         "medianSeries": {
           "2012": 14.15,
@@ -1755,7 +1757,8 @@ const DASHBOARD_DATA = {
           "2020": 10.55,
           "2022": 10.6,
           "2023": 11.1,
-          "2024": 12.45
+          "2024": 12.45,
+          "2025": 12.8
         }
       }
     }

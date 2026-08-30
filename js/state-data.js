@@ -5,7 +5,7 @@
 // backfill scripts contributing the historical metrics this fetcher
 // does not cover; build-state-data.js MERGES with the existing file
 // rather than overwriting, to preserve those backfilled metrics).
-// Generated: 2026-08-23T08:08:20.564Z
+// Generated: 2026-08-30T05:35:36.918Z
 //
 // Contains per-state values across all available years.
 // Structure: { slug: { source, calculation, data: { year: { state: val } } } }
@@ -36011,7 +36011,7 @@ const STATE_DATA = {
       "all": {
         "source": "HUD Point-in-Time Count, Overall Homeless",
         "calculation": "Total homeless (sheltered + unsheltered) per 10,000 residents",
-        "rawVariables": "Overall Homeless from HUD PIT Count / State population estimate (Census NST)",
+        "rawVariables": "HUD User 2007-2025-PIT-Counts-by-State.xlsb sheet[year], column \"Overall Homeless\"; BEA SAINC1 line 2 population (2025+; the 2012-2024 backfill used Census NST estimates).",
         "data": {
           "2012": {
             "Alabama": 10.9,
@@ -36636,6 +36636,58 @@ const STATE_DATA = {
             "West Virginia": 10,
             "Wisconsin": 8.5,
             "Wyoming": 8.6
+          },
+          "2025": {
+            "Alabama": 8,
+            "Alaska": 36,
+            "Arizona": 20,
+            "Arkansas": 8.7,
+            "California": 46.2,
+            "Colorado": 27.8,
+            "Connecticut": 10.1,
+            "Delaware": 14.8,
+            "Florida": 11.9,
+            "Georgia": 10.9,
+            "Hawaiʻi": 47.7,
+            "Idaho": 13.3,
+            "Illinois": 11.5,
+            "Indiana": 9.6,
+            "Iowa": 8.7,
+            "Kansas": 8.9,
+            "Kentucky": 12.6,
+            "Louisiana": 8,
+            "Maine": 17.1,
+            "Maryland": 11.4,
+            "Massachusetts": 39.6,
+            "Michigan": 10,
+            "Minnesota": 14.4,
+            "Mississippi": 4.2,
+            "Missouri": 13.3,
+            "Montana": 19.8,
+            "Nebraska": 13.2,
+            "Nevada": 30.2,
+            "New Hampshire": 17,
+            "New Jersey": 14.4,
+            "New Mexico": 22,
+            "New York": 72.8,
+            "North Carolina": 13.9,
+            "North Dakota": 10.8,
+            "Ohio": 10.2,
+            "Oklahoma": 12.5,
+            "Oregon": 63.7,
+            "Pennsylvania": 11.4,
+            "Rhode Island": 21.3,
+            "South Carolina": 7.9,
+            "South Dakota": 15.5,
+            "Tennessee": 12.1,
+            "Texas": 8.8,
+            "Utah": 13,
+            "Vermont": 52.5,
+            "Virginia": 8.2,
+            "Washington": 39.6,
+            "West Virginia": 10.9,
+            "Wisconsin": 8.8,
+            "Wyoming": 9.1
           }
         }
       }
