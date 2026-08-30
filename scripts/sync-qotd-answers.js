@@ -340,6 +340,25 @@ function parseRankAssertion(claim) {
         const n = /^\d+$/.test(top[1]) ? +top[1] : WORD_NUM[top[1]];
         return { text: `rank <= ${n}`, test: (r) => r <= n };
     }
+    // Fraction bands ("top quarter"), matching parseRankBand in
+    // audit-narrative-numbers.js. Without these, a claim phrased as a
+    // fraction rather than a number parsed to null and went UNGATED: q037
+    // drifted from #10 to #12 unnoticed after "top 10" was softened to the
+    // unparseable "top-ranked".
+    const frac = c.match(/\btop[- ](quarter|quartile|third|half)\b/);
+    if (frac) {
+        const div = { quarter: 4, quartile: 4, third: 3, half: 2 }[frac[1]];
+        return {
+            text: `rank <= total/${div}`,
+            test: (r, t) => r <= Math.round(t / div),
+        };
+    }
+    // Bare "top-ranked" names no number, so it parsed to null and escaped the
+    // gate entirely. Hold it to the documented V3 discipline (rank <= 10):
+    // that is what the phrase asserts, and it is the rule q037 quietly broke.
+    if (/\btop[- ]ranked\b/.test(c)) {
+        return { text: 'rank <= 10 (V3 discipline)', test: (r) => r <= 10 };
+    }
     const only = c.match(/\bonly (one|two|three)\b/);
     if (only) {
         // "only N states are more extreme than Hawaiʻi" -> Hawaiʻi sits N places
