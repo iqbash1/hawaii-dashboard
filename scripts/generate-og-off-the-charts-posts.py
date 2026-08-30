@@ -34,6 +34,13 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "homelessness-tracks-home-prices",
+        "title": "Homelessness is more about housing costs than income.",
+        "date":  "29 August 2026",
+        # Outlier line: Hawaiʻi worst-tier on homelessness with the nation's priciest homes.
+        "outlier": "high",
+    },
+    {
         "slug": "easiest-ballot-lowest-turnout",
         "title": "Easy to vote. Less to vote for.",
         "date":  "19 August 2026",

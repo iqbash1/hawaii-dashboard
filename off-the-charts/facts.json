@@ -1,4 +1,8 @@
 {
+  "homelessness-tracks-home-prices": [
+    { "metric": "unsheltered_homeless_rate", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{n0}", "note": "HI unsheltered 2024 (body: about 28 in the 2024 count; also the third-worst sentence's subject)" },
+    { "metric": "unsheltered_homeless_rate", "kind": "value", "state": "Alabama", "year": "2024", "as": "{n0}", "note": "AL unsheltered 2024 (body: about 5; deliberately AL's high year, understates the gap)" }
+  ],
   "easiest-ballot-lowest-turnout": [
     { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI presidential-turnout rank (spine; also carries the five-of-six line)" },
     { "metric": "voter_participation_rate", "kind": "value", "state": "Hawaii", "year": "2016", "scale": 100, "as": "{n0}%", "note": "HI turnout 2016 (start of the about-7-point rise)" },
