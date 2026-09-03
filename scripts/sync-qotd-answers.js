@@ -32,6 +32,12 @@
  * computed direction conflicts with the question's `correct` field, exits
  * 1 and reports -- a refresh that flips a V6 question's truth value
  * cannot ship silently.
+ *
+ * Rank-claim truth is checked the same way, across every variant: a claim
+ * that names a countable rank ("top 10", "only one other state", "than
+ * any other state") is re-tested against the live ranking, so a rank shift
+ * that falsifies the CLAIM (not just the answer) cannot ship silently
+ * either. See findRankFlips().
  */
 
 const fs = require('fs');
@@ -304,9 +310,93 @@ function renderCountyLeader(q, metric) {
     return `In ${year}, the county with the ${isHighest ? 'highest' : 'lowest'} value was ${leader.name} at ${fmt(leader.value, metric)}.`;
 }
 
+// ── Rank-claim truth check ─────────────────────────────────────────
+//
+// Some claims name a countable rank in prose ("top 10", "only one other
+// state", "than any other state"). The renderers keep the ANSWER in sync
+// with the data, but nothing re-tested the CLAIM: after a BLS revision
+// moved Hawaiʻi from #2 to #3 on unemployment (2026-08-22), q021 ("Only
+// one state has lower unemployment than Hawaiʻi", correct: true) kept its
+// true marking while its answer read "#3 of 50", and every gate stayed
+// green. Fuzzy claims ("among the top-ranked", "almost any other state",
+// "few states") assert no countable band and are deliberately not checked.
+
+const WORD_NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, ten: 10 };
+
+/** Parse a countable rank assertion out of a claim; null when the claim is fuzzy. */
+function parseRankAssertion(claim) {
+    const c = claim.toLowerCase();
+    // "almost any other state" / "almost no state" name no count, but they do
+    // promise a near-extreme. Held to the V4/V5 rank discipline (top or bottom
+    // five) so a claim like this cannot drift to mid-pack unnoticed.
+    if (/\balmost\b/.test(c)) {
+        if (/\b(any other state|no other state|no state)\b/.test(c)) {
+            return { text: 'rank <= 5 or within 5 of the bottom', test: (r, t) => r <= 5 || r > t - 5 };
+        }
+        return null;
+    }
+    const top = c.match(/\btop[- ](\d+|three|five|ten)\b/);
+    if (top) {
+        const n = /^\d+$/.test(top[1]) ? +top[1] : WORD_NUM[top[1]];
+        return { text: `rank <= ${n}`, test: (r) => r <= n };
+    }
+    // Fraction bands ("top quarter"), matching parseRankBand in
+    // audit-narrative-numbers.js. Without these, a claim phrased as a
+    // fraction rather than a number parsed to null and went UNGATED: q037
+    // drifted from #10 to #12 unnoticed after "top 10" was softened to the
+    // unparseable "top-ranked".
+    const frac = c.match(/\btop[- ](quarter|quartile|third|half)\b/);
+    if (frac) {
+        const div = { quarter: 4, quartile: 4, third: 3, half: 2 }[frac[1]];
+        return {
+            text: `rank <= total/${div}`,
+            test: (r, t) => r <= Math.round(t / div),
+        };
+    }
+    // Bare "top-ranked" names no number, so it parsed to null and escaped the
+    // gate entirely. Hold it to the documented V3 discipline (rank <= 10):
+    // that is what the phrase asserts, and it is the rule q037 quietly broke.
+    if (/\btop[- ]ranked\b/.test(c)) {
+        return { text: 'rank <= 10 (V3 discipline)', test: (r) => r <= 10 };
+    }
+    const only = c.match(/\bonly (one|two|three)\b/);
+    if (only) {
+        // "only N states are more extreme than Hawaiʻi" -> Hawaiʻi sits N places
+        // off one end. Which end depends on the metric's framing, so accept both.
+        const n = WORD_NUM[only[1]];
+        return { text: `rank == ${n + 1} or ${n} off the bottom`, test: (r, t) => r === n + 1 || r === t - n };
+    }
+    if (/\b(any other state|no other state)\b/.test(c)) {
+        return { text: 'rank == 1 or last', test: (r, t) => r === 1 || r === t };
+    }
+    return null;
+}
+
+/** Questions whose claim asserts a rank the data no longer supports. */
+function findRankFlips() {
+    const flips = [];
+    for (const q of QOTD_QUESTIONS) {
+        if (typeof q.correct !== 'boolean') continue;
+        const metric = DASHBOARD_DATA[q.metric];
+        if (!metric) continue;
+        const assertion = parseRankAssertion(q.claim || '');
+        if (!assertion) continue;
+        const r = computeHawaiiRank(q.metric, metric.goodDirection);
+        if (!r) continue;
+        const holds = assertion.test(r.rank, r.total);
+        if (holds !== q.correct) {
+            flips.push({
+                id: q.id, claim: q.claim, storedCorrect: q.correct, computedCorrect: holds,
+                detail: `${assertion.text}; Hawaiʻi is #${r.rank} of ${r.total} in ${r.year}`,
+            });
+        }
+    }
+    return flips;
+}
+
 // ── Run ────────────────────────────────────────────────────────────
 
-const report = { regen: [], same: [], custom: [], skipped: [], v6_flip: [] };
+const report = { regen: [], same: [], custom: [], skipped: [], v6_flip: [], rank_flip: [] };
 
 for (const q of QOTD_QUESTIONS) {
     const metric = DASHBOARD_DATA[q.metric];
@@ -361,6 +451,10 @@ for (const q of QOTD_QUESTIONS) {
     q.answer = next;
 }
 
+// Runs over every question, not just regenerated ones: a claim's rank can go
+// stale while its answer sentence never mentions a rank (V1/V2/V6/V7).
+report.rank_flip = findRankFlips();
+
 // ── Report ─────────────────────────────────────────────────────────
 
 console.log('\n══════ SYNC-QOTD-ANSWERS ══════');
@@ -369,6 +463,7 @@ console.log(`Unchanged:    ${report.same.length}`);
 console.log(`Custom phrasing (left alone): ${report.custom.length}`);
 console.log(`Skipped:      ${report.skipped.length}`);
 console.log(`V6 truth flips: ${report.v6_flip.length}`);
+console.log(`Rank-claim flips: ${report.rank_flip.length}`);
 console.log('═══════════════════════════════\n');
 
 if (report.regen.length) {
@@ -387,6 +482,14 @@ if (report.v6_flip.length) {
         console.log(`    answer: ${f.newAnswer}`);
     }
 }
+if (report.rank_flip.length) {
+    console.log('\n── RANK-CLAIM FLIPS (human decision required) ──');
+    for (const f of report.rank_flip) {
+        console.log(`  ${f.id}: stored correct=${f.storedCorrect}, computed=${f.computedCorrect}`);
+        console.log(`    claim:  ${f.claim}`);
+        console.log(`    checks: ${f.detail}`);
+    }
+}
 if (VERBOSE && report.custom.length) {
     console.log('\n── Custom-phrased (audit catches drift here) ──');
     for (const c of report.custom) console.log(`  ${c.id} (${c.variant}): ${c.answer}`);
@@ -399,7 +502,7 @@ if (VERBOSE && report.skipped.length) {
 // ── Mode handling ──────────────────────────────────────────────────
 
 if (CHECK_MODE) {
-    if (report.regen.length > 0 || report.v6_flip.length > 0) {
+    if (report.regen.length > 0 || report.v6_flip.length > 0 || report.rank_flip.length > 0) {
         console.error('\n✗ Drift detected. Run `npm run sync-qotd` to refresh, then commit.');
         process.exit(1);
     }
@@ -410,6 +513,12 @@ if (CHECK_MODE) {
 if (report.v6_flip.length > 0) {
     console.error('\n✗ V6 truth-value flip detected. Refusing to write changes.');
     console.error('  Resolve by (a) reverting the data refresh, (b) updating the claim to match new direction and flipping `correct`, or (c) retiring the question.');
+    process.exit(1);
+}
+
+if (report.rank_flip.length > 0) {
+    console.error('\n✗ Rank-claim truth flip detected. Refusing to write changes.');
+    console.error('  The claim names a rank the data no longer supports. Resolve by (a) rewording the claim to a band that survives rank movement, (b) flipping `correct`, or (c) retiring the question.');
     process.exit(1);
 }
 

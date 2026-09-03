@@ -34,6 +34,20 @@ SLATE    = (56, 75, 91)
 
 POSTS = [
     {
+        "slug": "homelessness-tracks-home-prices",
+        "title": "Where home prices outrun incomes, homelessness follows.",
+        "date":  "29 August 2026",
+        # Outlier line: Hawaiʻi worst-tier on homelessness with the nation's priciest homes.
+        "outlier": "high",
+    },
+    {
+        "slug": "easiest-ballot-lowest-turnout",
+        "title": "Easy to vote. Less to vote for.",
+        "date":  "19 August 2026",
+        # Outlier line: Hawaiʻi's turnout sits at the bottom despite the 4th-easiest ballot access.
+        "outlier": "low",
+    },
+    {
         "slug": "common-incomes-uncommon-costs",
         "title": "Common incomes. Uncommon costs.",
         "date":  "14 June 2026",

@@ -402,7 +402,15 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
 // V5 "Hawaiʻi has the #N lowest value among 50 states in YYYY (X)"
 // V6 "Hawaiʻi's {metric} went from A to B between YYYY and YYYY (+N%)"
 const QOTD_RANKED_VALUE_RE = /\bHawai[ʻ'']?i\s+has\s+the\s+#(\d{1,2})\s+(highest|lowest)\s+value\s+among\s+\d+\s+states\s+in\s+(20\d{2})\s+\(([^)]+)\)/i;
-const QOTD_FROM_TO_RE = /\bHawai[ʻ'']?i'?s?\s+[^.]+?\s+went\s+from\s+(-?\$?\d+(?:,\d{3})*(?:\.\d+)?)\s*([%¢$x]?)\s+to\s+(-?\$?\d+(?:,\d{3})*(?:\.\d+)?)\s*([%¢$x]?)\s+between\s+(20\d{2}|19\d{2})\s+and\s+(20\d{2}|19\d{2})/i;
+// The unit can trail the number as a symbol ("40.6¢") or as a phrase
+// ("2052.6 per 100K"). Only the symbol form was allowed, so every rate
+// metric silently fell out of this check: q042 carried a stale 2024
+// property-crime value for months while validate stayed green.
+const QOTD_UNIT = String.raw`\s*([%¢$x]?)(?:\s+per\s+[\w,.]+(?:\s+(?:people|residents|kWh))?)?`;
+const QOTD_NUM = String.raw`(-?\$?\d+(?:,\d{3})*(?:\.\d+)?)`;
+const QOTD_FROM_TO_RE = new RegExp(
+    String.raw`\bHawai[ʻ'']?i'?s?\s+[^.]+?\s+went\s+from\s+${QOTD_NUM}${QOTD_UNIT}\s+to\s+${QOTD_NUM}${QOTD_UNIT}\s+between\s+(20\d{2}|19\d{2})\s+and\s+(20\d{2}|19\d{2})`,
+    'i');
 
 function auditQotdRankedValue(slug, metric, field, text) {
     const clean = stripHtml(text);
@@ -660,7 +668,12 @@ function stateYears(slug) {
     return Object.keys(counts).filter(y => counts[y] >= 25).sort();
 }
 
-/** Dashboard-style rank for a specific year (1 = best per goodDirection). */
+/** Dashboard-style rank for a specific year (1 = best per goodDirection).
+ *  `rank` is what the dashboard renders (naive findIndex, matching
+ *  App.getStateRankings). `lo`/`hi` bound the block of states sharing
+ *  Hawaiʻi's exact value: inside a tie the sort order is arbitrary, so
+ *  every rank in [lo, hi] states the same fact. They are equal when
+ *  nothing ties. Mirrors tieRange() in audit-otc-numbers.js. */
 function rankForYear(slug, year, goodDirection) {
     const vals = stateValuesForYear(slug, year);
     if (!vals) return null;
@@ -669,7 +682,17 @@ function rankForYear(slug, year, goodDirection) {
     entries.sort((a, b) => goodDirection === 'up' ? b[1] - a[1] : a[1] - b[1]);
     const hi = entries.findIndex(([st]) => isHawaii(st));
     if (hi < 0) return null;
-    return { rank: hi + 1, total: entries.length };
+    const v = entries[hi][1];
+    let lo = hi, up = hi;
+    while (lo > 0 && entries[lo - 1][1] === v) lo--;
+    while (up < entries.length - 1 && entries[up + 1][1] === v) up++;
+    return { rank: hi + 1, lo: lo + 1, hi: up + 1, total: entries.length };
+}
+
+/** Render a rank for a report line, disclosing the tie block when there
+ *  is one so "expected #37" does not look arbitrary. */
+function rankText(r) {
+    return r.lo === r.hi ? `#${r.rank}` : `#${r.lo}-#${r.hi} (${r.hi - r.lo + 1}-way tie)`;
 }
 
 /** Per-state moves between two years (states with both endpoints). */
@@ -1878,20 +1901,51 @@ function parseRankBand(sentence, total) {
     m = sentence.match(/\btop\s+(quarter|third|half|(\d{1,2}))\b/i);
     if (m) {
         const map = { quarter: Math.round(total / 4), third: Math.round(total / 3), half: Math.round(total / 2) };
-        return { lo: 1, hi: m[2] ? +m[2] : map[m[1].toLowerCase()], text: m[0] };
+        // "top 10" states its own edge; "top quarter" does not, so the
+        // #13 boundary is this parser's reading, not the prose's claim.
+        return { lo: 1, hi: m[2] ? +m[2] : map[m[1].toLowerCase()], text: m[0], fuzzy: !m[2] };
     }
     m = sentence.match(/\b(?:at\s+or\s+near\s+last|last\s+or\s+near[- ]last|near\s+last)\b/i);
-    if (m) return { lo: total - 4, hi: total, text: m[0] };
+    if (m) return { lo: total - 4, hi: total, text: m[0], fuzzy: true };
     m = sentence.match(/(?:rank(?:s|ed)?|hold(?:ing)?|held)\s+#(\d{1,2})\b/);
     if (m) return { lo: +m[1], hi: +m[1], text: m[0] };
     return null;
 }
 
-function auditRankWindows(slug, metric, field, text) {
+/** Full state names carried by STATE_DATA, minus Hawaiʻi. Derived from
+ *  the data so it never drifts from the series being ranked. */
+const OTHER_STATE_NAMES = (() => {
+    const out = new Set();
+    for (const meta of Object.values(STATE_DATA)) {
+        const sd = meta && meta.data;
+        if (!sd) continue;
+        const keys = Object.keys(sd);
+        const isPCPStyle = keys.length > 0 && keys.every(k => /^\d{1,2}$/.test(k));
+        const names = isPCPStyle
+            ? Object.values(sd).map(rec => rec && rec.name)
+            : keys.flatMap(y => (/^\d{4}/.test(y) ? Object.keys(sd[y]) : []));
+        for (const n of names) if (n && !isHawaii(n)) out.add(n);
+    }
+    return [...out];
+})();
+
+/** explore[] mixes Hawaiʻi with comparator states in one field, so a
+ *  bare "#N in YYYY" there may belong to Massachusetts, not Hawaiʻi.
+ *  Only rank a sentence that names Hawaiʻi and no other state. */
+function hawaiiIsSubject(sentence) {
+    if (!/Hawai[ʻ'’‘]?i/i.test(sentence)) return false;
+    return !OTHER_STATE_NAMES.some(n => sentence.includes(n));
+}
+
+function auditRankWindows(slug, metric, field, text, hawaiiSubjectOnly = false) {
     const ys = stateYears(slug);
     if (ys.length < 3) return;
     for (const sentence of splitSentences(text)) {
         if (!/rank|held|holding|#\d/.test(sentence)) continue;
+        if (hawaiiSubjectOnly && !hawaiiIsSubject(sentence)) {
+            skipNew({ slug, field, check: 'rank-at-year', claim: sentence.trim().slice(0, 80), note: 'subject is not Hawaiʻi alone' });
+            continue;
+        }
 
         // 8h. "improved from #47 in 2003 to #30 in 2024" + single
         // "#N in YYYY" / "(#N in YYYY)" / "back to #N by YYYY" claims.
@@ -1903,9 +1957,9 @@ function auditRankWindows(slug, metric, field, text) {
             if (!y || y !== rm[2]) { skipNew({ slug, field, check: 'rank-at-year', claim: rm[0], note: `no >=25-state data for ${rm[2]}` }); continue; }
             const r = rankForYear(slug, y, metric.goodDirection);
             if (!r) { skipNew({ slug, field, check: 'rank-at-year', claim: rm[0], note: `cannot rank ${y}` }); continue; }
-            recordNew(Math.abs(r.rank - claimedRank) <= 1, {
+            recordNew(claimedRank >= r.lo && claimedRank <= r.hi, {
                 slug, field, check: 'rank-at-year', claim: rm[0],
-                expected: `#${r.rank} of ${r.total} in ${y}`,
+                expected: `${rankText(r)} of ${r.total} in ${y}`,
                 found: `#${claimedRank}`,
             });
         }
@@ -1963,8 +2017,13 @@ function auditRankWindows(slug, metric, field, text) {
         for (const y of winYears) {
             const r = rankForYear(slug, y, metric.goodDirection);
             if (!r) continue;
-            if (r.rank >= band.lo - 1 && r.rank <= band.hi + 1) inBand++; // 1-rank slack for method drift
-            else outliers.push(`${y}=#${r.rank}${r.total < 50 ? `/${r.total}` : ''}`);
+            // In band if any rank Hawaiʻi could legitimately be called
+            // that year falls inside it; with no tie that is the exact rank.
+            // A fuzzy band ("near last") keeps one rank of give, because its
+            // edge was inferred here rather than stated by the prose.
+            const give = band.fuzzy ? 1 : 0;
+            if (r.hi >= band.lo - give && r.lo <= band.hi + give) inBand++;
+            else outliers.push(`${y}=${rankText(r)}${r.total < 50 ? `/${r.total}` : ''}`);
         }
         const n = inBand + outliers.length;
         const ok = qualifier === 'every' ? outliers.length === 0 : inBand / n >= 0.6;
@@ -1994,6 +2053,14 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
         auditSinceYearChanges(slug, metric, 'rankHistoryNarrative.summary', rhn.summary, false);
         auditStateQuantifiers(slug, metric, 'rankHistoryNarrative.summary', rhn.summary, false);
         auditRankWindows(slug, metric, 'rankHistoryNarrative.summary', rhn.summary);
+    }
+    // explore[] carries Hawaiʻi rank claims too, and went unchecked until
+    // the June 2026 BLS restatement moved 2022/2023 under a bullet the
+    // gate could not see (summary was corrected, explore[0] was not).
+    if (rhn && Array.isArray(rhn.explore)) {
+        rhn.explore.forEach((t, i) => {
+            if (t) auditRankWindows(slug, metric, `rankHistoryNarrative.explore[${i}]`, t, true);
+        });
     }
 }
 

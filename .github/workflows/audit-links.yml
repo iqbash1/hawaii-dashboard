@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: '20'
 
@@ -92,8 +92,11 @@ jobs:
             }
 
             const brokenList = fs.readFileSync('/tmp/audit-links-broken.txt', 'utf8').trim();
+            // Title carries a live count, so it is refreshed on every update, not just
+            // at creation. It read "4 broken" against a 1-link body for three runs.
+            const title = `Link rot: ${brokenCount} broken external link${brokenCount === 1 ? '' : 's'} in data.js`;
             const body = [
-              `Weekly link audit detected **${brokenCount} broken external links** in \`js/data.js\`.`,
+              `Weekly link audit detected **${brokenCount} broken external link${brokenCount === 1 ? '' : 's'}** in \`js/data.js\`.`,
               '',
               `**Last run:** ${runUrl} (${today})`,
               '',
@@ -122,6 +125,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: existing.number,
+                title,
                 body,
               });
               if (prevList !== brokenList) {
@@ -136,7 +140,7 @@ jobs:
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Link rot: ${brokenCount} broken external links in data.js`,
+                title,
                 body,
                 labels: ['link-rot'],
               });

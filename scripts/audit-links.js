@@ -59,6 +59,14 @@ const EXPECTED_BLOCK = [
     'www.sciencedirect.com',
     'direct.mit.edu',
     'www.elibrary.imf.org',
+    // Wayback snapshots (3 citations: acgr, rainy_day_fund_pct, unsheltered_homeless_rate).
+    // archive.org rate-limits by IP, so a CI run that requests several snapshots in
+    // quick succession gets 503 on all of them at once: the 2026-08-28 run reported
+    // every Wayback citation in the file as broken while all three returned 200 from
+    // a laptop. Per-URL backoff does not help because the limiter is global, not
+    // per-URL. Safe to allowlist because Wayback answers a genuinely missing snapshot
+    // with 404, not 503 (verified 2026-08-28), so real rot still surfaces.
+    'web.archive.org',
     // Columbia/Teachers College CCRC (ba_or_higher_pct "Tracking Transfer" cite):
     // intermittent connect-timeout (status 0) to Node, returns 200 in ~1.4s in a
     // browser and via curl on retry. Confirmed live 2026-06-08.
@@ -77,8 +85,11 @@ const EXPECTED_BLOCK = [
     'www.campbellcollaboration.org',
     // Industry research / CRE data
     'www.cbre.com',
-    // Hawaii / state agencies that block bots
-    'www.hawaiitourismauthority.org',
+    // UTOPIA Fiber (broadband_subscription_pct benchmark): live but slow, 39s on a
+    // cold hit and ~9s warm against the auditor's 15s timeout, so it intermittently
+    // reports status 0. Confirmed 2026-08-28: 200 to curl on three tries and the full
+    // history page renders in the browser.
+    'www.utopiafiber.com',
     // Foreign government PDFs
     'www.infrastructure.gov.au',
     // Benchmark/caution source hosts that 403/timeout to automated clients but
@@ -117,8 +128,9 @@ const EXPECTED_BLOCK = [
 // educationrecoveryscorecard) to reject non-browser requests; 0 is
 // the audit-link library's signal for connect timeout / socket reset /
 // TLS handshake refusal, which most anti-bot edges do (rather than
-// returning a status code) to avoid leaking signal.
-const EXPECTED_BLOCK_STATUSES = new Set([403, 406, 429, 405, 422, 0]);
+// returning a status code) to avoid leaking signal. 503 is web.archive.org
+// load-shedding (see its EXPECTED_BLOCK entry).
+const EXPECTED_BLOCK_STATUSES = new Set([403, 406, 429, 405, 422, 503, 0]);
 
 function loadData() {
     const src = fs.readFileSync(DATA_PATH, 'utf8');
@@ -197,8 +209,12 @@ function checkUrl(url, retries = 3) {
                 // Retry transient server errors (5xx). web.archive.org sheds load
                 // with a 503 under heavy traffic even when the snapshot is live, so
                 // a single hit should not be reported as rot (confirmed 2026-07-20).
+                // Back off progressively (2s, 6s, 18s) rather than retrying three
+                // times inside six seconds: load-shedding lasts longer than that, and
+                // three fast retries were still reporting live snapshots as rot
+                // (web.archive.org 503 on the acgr citation, 2026-08-28).
                 if (res.statusCode >= 500 && remaining > 1) {
-                    setTimeout(() => attempt(remaining - 1), 2000);
+                    setTimeout(() => attempt(remaining - 1), 2000 * Math.pow(3, retries - remaining));
                     return;
                 }
                 resolve({ status: res.statusCode, ok: res.statusCode >= 200 && res.statusCode < 400 });

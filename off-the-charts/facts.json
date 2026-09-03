@@ -1,4 +1,17 @@
 {
+  "homelessness-tracks-home-prices": [
+    { "metric": "unsheltered_homeless_rate", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{n0}", "note": "HI unsheltered 2024 (body: about 28 in the 2024 count; also the third-worst sentence's subject)" },
+    { "metric": "unsheltered_homeless_rate", "kind": "value", "state": "Alabama", "year": "2024", "as": "{n0}", "note": "AL unsheltered 2024 (body: about 5; deliberately AL's high year, understates the gap)" }
+  ],
+  "easiest-ballot-lowest-turnout": [
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI presidential-turnout rank (spine; also carries the five-of-six line)" },
+    { "metric": "voter_participation_rate", "kind": "value", "state": "Hawaii", "year": "2016", "scale": 100, "as": "{n0}%", "note": "HI turnout 2016 (start of the about-7-point rise)" },
+    { "metric": "voter_participation_rate", "kind": "value", "state": "Hawaii", "year": "2024", "scale": 100, "as": "{n0}%", "note": "HI turnout 2024 (end of the rise; if either endpoint drifts, restate the about-7-points and more-than-doubled lines too)" },
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Oregon", "year": "2024", "as": "#{n0}", "note": "Oregon rank (all-mail since 2000 comparator)" },
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Colorado", "year": "2024", "as": "#{n0}", "note": "Colorado rank (all-mail since 2013 comparator)" },
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "1998", "as": "#{n0}", "note": "HI midterm rank 1998 (closest governor's race; gubernatorial paragraph added 2026-08-19)" },
+    { "metric": "voter_participation_rate", "kind": "rank", "state": "Hawaii", "year": "2018", "as": "#{n0}", "note": "HI midterm rank 2018 = #50, the 'only midterm since 1982 in which Hawaiʻi has ranked last' claim. Weak guard: '#50' also appears in P2, so this row only fires if the 2018 rank changes AND '#50' leaves the post; the distinctive guard is the 1998 row" }
+  ],
   "productivity-vs-unemployment": [
     { "metric": "unemployment_rate", "kind": "value", "state": "Hawaii", "year": "2025", "scale": 100, "as": "{n2}%", "note": "HI unemployment 2025" },
     { "metric": "labor_productivity", "kind": "rank", "state": "Hawaii", "year": "2018", "as": "#{n0}", "note": "HI index rank 2018" },

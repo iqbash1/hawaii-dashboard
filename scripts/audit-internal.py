@@ -7,6 +7,7 @@ import subprocess
 import re
 import os
 import sys
+import html
 from pathlib import Path
 from collections import defaultdict
 
@@ -19,6 +20,11 @@ findings = defaultdict(list)
 
 def add(phase, severity, page, msg):
     findings[phase].append((severity, page, msg))
+
+
+def norm_text(t):
+    """Collapse whitespace and decode entities so generated HTML compares to source prose."""
+    return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
 
 def load_dashboard_data():
@@ -777,6 +783,25 @@ def phase6(data, state_data):
                     add("phase6", "P1", f"rh/{metric}/{sub.name}/",
                         f"rank-history stub year {r_year}, but metric-level page year {ref_year}")
 
+    # 6b-2, rh/ stub prose vs the rankHistoryNarrative it is generated from.
+    # The rank/year checks above only read the OG description, so an edit to the
+    # narrative TEXT in data.js could ship without anyone re-running
+    # `npm run og`. Four metrics (acgr, renter_cost_burden_pct, road_poor_pct,
+    # voter_participation_rate) served stale prose for two weeks that way after
+    # the 2026-08-09 narrative-audit corrections, including a voter turnout
+    # sentence that asserted the opposite of its own data.
+    for metric, meta in data.items():
+        summary = (meta.get("rankHistoryNarrative") or {}).get("summary")
+        if not summary:
+            continue
+        idx = ROOT / f"rh/{metric}/index.html"
+        if not idx.exists():
+            continue
+        if norm_text(summary) not in norm_text(idx.read_text()):
+            add("phase6", "P0", f"rh/{metric}/",
+                "rank-history stub prose does not match rankHistoryNarrative.summary "
+                "in data.js; run `npm run og`")
+
     # 6c, /t/ vs /r/ same metric should agree on year + rank
     # /r/ stub OG description format: "Hawaiʻi ranks #N of 50 states in METRIC. VALUE (YEAR)."
     R_OG_RE = re.compile(
@@ -1107,6 +1132,54 @@ def phase10():
 
 
 # -----------------------------------------------------------------------
+# Phase 11, /c/ superlative agrees with the rank it prints
+# -----------------------------------------------------------------------
+
+def phase11(data):
+    """A /c/ landing page can say "lowest in the nation" next to "rank: #50".
+
+    Rank is direction-aware (#1 = best), so turning it into a highest/lowest
+    word depends on goodDirection: on a lower-is-better metric #1 is the
+    lowest value, on a higher-is-better metric #1 is the highest. The
+    generator ignored goodDirection and inverted every higher-is-better
+    metric, putting "highest in the nation" in the meta description of a
+    page ranked #50 of 50 for voter participation.
+
+    Derived here from goodDirection rather than imported from the generator,
+    so the same mistake cannot pass both. These strings are the search
+    snippet, so a wrong one is P0."""
+    LOW = {1: "lowest", 2: "second-lowest", 3: "third-lowest",
+           4: "fourth-lowest", 5: "fifth-lowest"}
+    HIGH = {1: "highest", 2: "second-highest", 3: "third-highest",
+            4: "fourth-highest", 5: "fifth-highest"}
+    for page in sorted((ROOT / "c").glob("*/index.html")):
+        slug = page.parent.name
+        metric = data.get(slug)
+        if not metric:
+            continue
+        text = norm_text(page.read_text())
+        m = re.search(r"\b((?:second|third|fourth|fifth)-)?(lowest|highest) in the nation", text)
+        if not m:
+            continue
+        said = (m.group(1) or "") + m.group(2)
+        r = re.search(r"Ranked #(\d+) of (\d+) States", text)
+        if not r:
+            add("phase11", "P1", f"c/{slug}/",
+                f'says "{said} in the nation" but no "Ranked #N of M" to check it against')
+            continue
+        rank, total = int(r.group(1)), int(r.group(2))
+        if metric.get("goodDirection") == "up":
+            pos_high, pos_low = rank, total - rank + 1
+        else:
+            pos_low, pos_high = rank, total - rank + 1
+        expected = LOW.get(pos_low) if pos_low <= 5 else HIGH.get(pos_high) if pos_high <= 5 else None
+        if expected and said != expected:
+            add("phase11", "P0", f"c/{slug}/",
+                f'says "{said} in the nation" but rank #{rank} of {total} on a '
+                f'{metric.get("goodDirection")}-is-better metric means "{expected}"')
+
+
+# -----------------------------------------------------------------------
 # Run
 # -----------------------------------------------------------------------
 
@@ -1126,6 +1199,7 @@ def main():
     phase8()
     phase9()
     phase10()
+    phase11(data)
 
     # Print findings
     total_p0 = total_p1 = total_p2 = 0

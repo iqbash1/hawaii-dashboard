@@ -870,8 +870,18 @@ const Modal = {
         const yearNote = (year !== latestDetailYear)
             ? ` \u00B7 ${year} (latest year with full state coverage)`
             : ` \u00B7 ${year}`;
+        // Latest-month note. The rank is a cross-section of ANNUAL figures, so
+        // on fast-moving metrics the ranked Hawai\u02BBi value can trail the current
+        // monthly reading by a lot (electricity: ranked on 2025's 40.6c while
+        // May 2026 is 52c). The wording names the boundary explicitly, "the
+        // rank compares annual figures", so the fresher number cannot be read
+        // as making the rank itself monthly.
+        const lm = metricData.latestMonthly;
+        const monthlyNote = lm
+            ? ` <span class="rankings-monthly-note"><span class="rankings-monthly-value">Hawai\u02BBi's latest month: ${ChartUtils.formatValue(lm.value, metricData.unit, false)} (${lm.period}).</span> The rank compares ${year} annual figures.</span>`
+            : '';
         document.getElementById('rankings-rank').innerHTML =
-            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best-performing state</span>`;
+            `Hawai\u02BBi ranks #${hawaiiRank} of ${total} states${yearNote} <span style="display:block;font-size:0.78rem;font-weight:400;color:var(--text-muted);margin-top:0.25rem">#1 = best-performing state</span>${monthlyNote}`;
 
         // Median + formatter for the rankings chart's reference line.
         // (Q1/Q3 are no longer needed since the rankings chart replaced the
@@ -1445,7 +1455,11 @@ const Modal = {
         // Tier-first framing: the categorical verdict leads, the metric
         // value follows. A grant writer or board reader scans the tier
         // before the number; the number is the supporting evidence.
-        let brief = `Bottom line: Hawaiʻi is in the ${tierLabel} nationally (#${rank} of ${rankings.total}). ${intro}.`;
+        // On a metric that names a bad thing, a bare tier inverts: "Top tier"
+        // under "Violent Crime Rate" reads as most violent. tierSubject names
+        // what the tier is good at, so the sentence carries its own direction.
+        const subject = m.tierSubject ? ` for ${m.tierSubject}` : '';
+        let brief = `Bottom line: Hawaiʻi is in the ${tierLabel} nationally${subject} (#${rank} of ${rankings.total}). ${intro}.`;
         if (trend) brief += ` It has ${trend},`;
         brief += ` and is ${vsAvg} the US median.`;
         if (tpl.caveat) brief += ` Keep in mind: ${tpl.caveat}`;

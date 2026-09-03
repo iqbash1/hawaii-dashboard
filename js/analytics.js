@@ -20,6 +20,9 @@
 //
 // To undo on a device, visit /?track=1 once.
 //
+// Local dev (localhost / 127.0.0.1 / file://) is treated as internal
+// unconditionally, no flag needed.
+//
 // The flag is checked via `window.__hdInternal` (true | false) for
 // debugging. Works on iOS Safari, Android Chrome, desktop browsers.
 // ============================================================
@@ -35,11 +38,15 @@
         // localStorage may throw in Safari Private mode; treat as no-flag.
     }
 
-    let isInternal = false;
+    // Local dev/preview origins are always internal. localStorage is
+    // per-origin, so a ?notrack=1 flag set on hawaiidashboard.org never
+    // reaches http://localhost:8080.
+    const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]', '::1', ''];
+    let isInternal = LOCAL_HOSTS.includes(location.hostname);
     try {
-        isInternal = localStorage.getItem('hd_notrack') === '1';
+        isInternal = isInternal || localStorage.getItem('hd_notrack') === '1';
     } catch (e) {
-        isInternal = false;
+        // localStorage may throw in Safari Private mode; keep the host check.
     }
     window.__hdInternal = isInternal;
 

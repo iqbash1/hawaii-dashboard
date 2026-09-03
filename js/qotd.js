@@ -407,6 +407,18 @@ const QOTD = {
             const captionBlock = (metricData && metricData.officialName)
                 ? `<figcaption class="qotd-chart-caption">${this._escape(metricData.officialName)}${metricData.source ? ` <span class="qotd-chart-source">Source: ${this._escape(metricData.source)}</span>` : ''}</figcaption>`
                 : '';
+            // Latest-month note. 13 of the 54 questions sit on metrics with a
+            // monthly series, so about one day in four the answer quotes an
+            // annual figure that a resident knows is out of date (q051 answers
+            // electricity with 2025's 40.6c while May 2026 is 52c). Rendered
+            // from metricData at display time, deliberately NOT folded into
+            // q.answer: that field is machine-owned by sync-qotd-answers.js and
+            // hashed by gates 3 and 9, and a value baked into it would go stale
+            // the moment the monthly refreshes.
+            const lm = metricData && metricData.latestMonthly;
+            const monthlyBlock = (lm && typeof ChartUtils !== 'undefined')
+                ? `<p class="qotd-monthly-note"><span class="qotd-monthly-label">Latest month:</span> <span class="qotd-monthly-value">${this._escape(ChartUtils.formatValue(lm.value, metricData.unit, false))} (${this._escape(lm.period)}).</span> Newer than the annual figure above.</p>`
+                : '';
             // One-line pointer to the Off the Charts story on this metric,
             // when one exists. Sits above the come-back-tomorrow footer so
             // the proof view ends with a next step, not a dead end.
@@ -425,6 +437,7 @@ const QOTD = {
                     </div>
                     <p class="qotd-answer-reveal">Answer: <strong>${verdict}</strong></p>
                     <p class="qotd-answer-text"><span class="qotd-metric-label">${this._escape(q.metricLabel)}:</span> ${this._escape(q.answer)}</p>
+                    ${monthlyBlock}
                     ${whyBlock}
                     <figure class="qotd-chart" data-qotd-chart>
                         <div class="qotd-chart-canvas-wrap"><canvas class="qotd-chart-canvas" aria-label="Chart showing ${this._escape(q.metricLabel)} data"></canvas></div>

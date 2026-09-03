@@ -673,6 +673,13 @@ body {
     font-weight: 500;
 }
 
+/* On metrics carrying a tierSubject the tier phrase is too long to share a
+   line with the count, so the count drops below it instead of trailing a
+   "·". Metrics without a subject keep the single-line form. */
+.comp-rank-count {
+    display: block;
+}
+
 /* Card footer: combines source attribution (left) with the "View by county"
    link (right) on a single low-weight row, separated from the comparisons by
    a thin divider. Either can be absent; the row collapses to one item. */
@@ -971,15 +978,21 @@ body {
     letter-spacing: 0.01em;
 }
 
+/* Latest-monthly callouts read in the brand teal (a11y-verified 4.5:1 on
+   white) with a step up in weight, so the freshest number on each surface
+   stands apart from ordinary muted footnotes. Explanatory sentences beside
+   them stay muted. */
 .modal-latest-monthly {
     font-size: var(--text-sm);
-    color: var(--text-muted);
+    color: var(--hawaii-blue);
+    font-weight: 500;
     margin-top: 0.15rem;
 }
 
 .card-latest-monthly {
     font-size: var(--text-2xs);
-    color: var(--text-muted);
+    color: var(--hawaii-blue);
+    font-weight: 500;
     margin-top: 0.15rem;
 }
 
@@ -2347,6 +2360,37 @@ body {
     max-width: 640px;
     height: 340px;
     margin: 0 auto;
+}
+/* Rank-tab latest-month note: same footnote treatment as the QOTD note. */
+.rankings-monthly-note {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+.rankings-monthly-value {
+    color: var(--hawaii-blue);
+    font-weight: 600;
+}
+/* Latest-month note: sits right under the answer, since that is the number
+   it corrects. Muted so it reads as a footnote, not a competing headline. */
+.qotd-monthly-note {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin: 0;
+    /* width:100% as well as the cap: the parent is a centred flex column, so a
+       one-line block would otherwise shrink to its text and sit indented
+       relative to the two-line answer it belongs to. */
+    width: 100%;
+    max-width: 520px;
+    text-align: left;
+}
+.qotd-monthly-label,
+.qotd-monthly-value {
+    font-weight: 600;
+    color: var(--hawaii-blue);
 }
 .qotd-chart-caption {
     font-size: 0.8rem;

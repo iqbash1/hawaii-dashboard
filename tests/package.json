@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.1",
     "chrome-launcher": "^1.2.1",
     "http-server": "^14.1.1",
     "lighthouse": "^13.4.0"

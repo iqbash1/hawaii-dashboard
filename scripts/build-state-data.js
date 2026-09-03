@@ -950,6 +950,9 @@ async function fetchNaepReading8() {
 //   https://www.huduser.gov/portal/sites/default/files/xls/2007-2024-PIT-Counts-by-State.xlsb
 //
 // Calculation: rate = (Unsheltered Homeless / state population) × 10,000.
+// Also emits the "all" thresholdVariant from the same workbook's "Overall
+// Homeless" column (sheltered + unsheltered), 2025+ only; see
+// HUD_PIT_ALL_VARIANT_START below.
 // HUD updates the file once a year (typically December) with the latest
 // PIT count appended; older sheets are stable. The auditor will detect
 // any retroactive revision in the per-year-state-unsheltered-count cells.
@@ -967,9 +970,16 @@ async function fetchNaepReading8() {
 // A missing HUD file does NOT 404: the CDN answers 202 with a small bot
 // checkpoint page. Status alone is therefore useless, so a candidate is accepted
 // only once the body clears the size floor an XLSB has to exceed.
-const HUD_PIT_FLOOR_YEAR = 2024;    // last hand-verified workbook
+const HUD_PIT_FLOOR_YEAR = 2025;    // last hand-verified workbook
 const HUD_PIT_MAX_PROBES = 4;
 const HUD_PIT_MIN_BYTES = 1000000;
+// The "all" thresholdVariant (Overall Homeless = sheltered + unsheltered) was a
+// one-time 2012-2024 backfill computed with Census NST denominators; those years
+// are preserved as published. From 2025 the variant is fetcher-owned, using the
+// same workbook and the same BEA denominator as the base series, so each new
+// PIT release appends to the variant instead of stalling it at the backfill
+// ceiling (which is how the total view sat at Maui-inflated 2024 for a year).
+const HUD_PIT_ALL_VARIANT_START = 2025;
 const hudPitUrl = y => `https://www.huduser.gov/portal/sites/default/files/xls/2007-${y}-PIT-Counts-by-State.xlsb`;
 const hudPitCache = y => `/tmp/pit-counts-${y}.xlsb`;
 
@@ -1034,18 +1044,31 @@ async function fetchUnshelteredHomelessRate() {
         }
         const wb = XLSX.readFile(HUD_PIT_CACHE);
         const yearSheets = wb.SheetNames.filter(n => /^\d{4}$/.test(n)).sort();
-        const counts = {}; // year → state → unsheltered count
+        const counts = {};    // year → state → unsheltered count
+        const countsAll = {}; // year → state → overall (sheltered + unsheltered) count, variant years only
         for (const yr of yearSheets) {
             const rows = XLSX.utils.sheet_to_json(wb.Sheets[yr], { header: 1, blankrows: false });
             const idxUnsh = rows[0].findIndex(h => h === 'Unsheltered Homeless');
+            // Sheltered-only count years (2021) lack this column; skipping them
+            // here keeps BOTH series comparable across years.
             if (idxUnsh < 0) continue;
+            const idxAll = parseInt(yr) >= HUD_PIT_ALL_VARIANT_START
+                ? rows[0].findIndex(h => h === 'Overall Homeless') : -1;
             counts[yr] = {};
+            if (idxAll >= 0) countsAll[yr] = {};
             for (const r of rows.slice(1)) {
                 const abbr = r[0];
-                const val = r[idxUnsh];
                 if (typeof abbr !== 'string' || !HUD_ABBR_TO_STATE[abbr]) continue;
-                if (typeof val !== 'number' || val <= 0) continue;
-                counts[yr][HUD_ABBR_TO_STATE[abbr]] = val;
+                const val = r[idxUnsh];
+                if (typeof val === 'number' && val > 0) {
+                    counts[yr][HUD_ABBR_TO_STATE[abbr]] = val;
+                }
+                if (idxAll >= 0) {
+                    const allVal = r[idxAll];
+                    if (typeof allVal === 'number' && allVal > 0) {
+                        countsAll[yr][HUD_ABBR_TO_STATE[abbr]] = allVal;
+                    }
+                }
             }
         }
 
@@ -1072,28 +1095,53 @@ async function fetchUnshelteredHomelessRate() {
             pops[yr][stateName] = pop;
         }
 
-        // 4. Compute rate per (year, state)
+        // 4. Compute rate per (year, state). The variant keeps the backfill's
+        //    1-decimal precision so the series stays homogeneous.
+        const rateFor = (count, pop, decimals) => {
+            const rate = (count / pop) * 10000;
+            return (rate < 0.1 || rate > 200) ? null : parseFloat(rate.toFixed(decimals));
+        };
         const data = {};
+        const dataAll = {};
         for (const yr of Object.keys(counts).sort()) {
             const yearStates = {};
             for (const [stateName, count] of Object.entries(counts[yr])) {
                 const pop = pops[yr]?.[stateName];
                 if (!pop) continue;
-                const rate = (count / pop) * 10000;
-                if (rate < 0.1 || rate > 200) continue;
-                yearStates[stateName] = parseFloat(rate.toFixed(2));
+                const rate = rateFor(count, pop, 2);
+                if (rate !== null) yearStates[stateName] = rate;
             }
             if (Object.keys(yearStates).length > 0) data[yr] = yearStates;
+            const yearStatesAll = {};
+            for (const [stateName, count] of Object.entries(countsAll[yr] || {})) {
+                const pop = pops[yr]?.[stateName];
+                if (!pop) continue;
+                const rate = rateFor(count, pop, 1);
+                if (rate !== null) yearStatesAll[stateName] = rate;
+            }
+            if (Object.keys(yearStatesAll).length > 0) dataAll[yr] = yearStatesAll;
         }
 
         const yrCount = Object.keys(data).length;
-        console.log(`  OK ${yrCount} years`);
-        return yrCount > 0 ? {
+        console.log(`  OK ${yrCount} years (base), ${Object.keys(dataAll).length} years (all variant, ${HUD_PIT_ALL_VARIANT_START}+)`);
+        if (yrCount === 0) return null;
+        const result = {
             source: 'HUD Point-in-Time Count',
             calculation: 'Unsheltered homeless per 10,000 residents. Numerator: HUD PIT "Unsheltered Homeless" column. Denominator: BEA SAINC1 LineCode 2 (state population).',
             rawVariables: `HUD User 2007-${pitYear}-PIT-Counts-by-State.xlsb sheet[year], column "Unsheltered Homeless"; BEA SAINC1 line 2 population.`,
             data,
-        } : null;
+        };
+        if (Object.keys(dataAll).length > 0) {
+            result.thresholdVariants = {
+                all: {
+                    source: 'HUD Point-in-Time Count, Overall Homeless',
+                    calculation: 'Total homeless (sheltered + unsheltered) per 10,000 residents',
+                    rawVariables: `HUD User 2007-${pitYear}-PIT-Counts-by-State.xlsb sheet[year], column "Overall Homeless"; BEA SAINC1 line 2 population (${HUD_PIT_ALL_VARIANT_START}+; the 2012-2024 backfill used Census NST estimates).`,
+                    data: dataAll,
+                },
+            };
+        }
+        return result;
     } catch (err) {
         console.log(`  FAIL: ${err.message}`);
         return null;

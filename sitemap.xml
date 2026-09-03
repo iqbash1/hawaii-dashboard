@@ -101,6 +101,24 @@
     </image:image>
   </url>
   <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/homelessness-tracks-home-prices/</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://hawaiidashboard.org/assets/og/off-the-charts/homelessness-tracks-home-prices.png</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://hawaiidashboard.org/off-the-charts/easiest-ballot-lowest-turnout/</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://hawaiidashboard.org/assets/og/off-the-charts/easiest-ballot-lowest-turnout.png</image:loc>
+    </image:image>
+  </url>
+  <url>
     <loc>https://hawaiidashboard.org/off-the-charts/common-incomes-uncommon-costs/</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>

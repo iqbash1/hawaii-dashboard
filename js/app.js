@@ -424,7 +424,9 @@ const App = {
      */
     computeScaleTranslation(slug, value) {
         if (value === null || value === undefined) return null;
-        const base = DASHBOARD_DATA[slug];
+        // Variant-merged so a thresholdVariants scale override (e.g. the
+        // total-homeless countLabel) applies on the variant view.
+        const base = this.getActiveMetricData(slug);
         if (!base || !base.scale) return null;
         const scale = base.scale;
         const denom = scale.denominator;
@@ -707,14 +709,26 @@ const App = {
                 if (rankings && rankings.hawaiiRank > 0) {
                     // Single source of truth: same tier function as the Summary page.
                     // Rank is direction-aware (rank 1 = best for the metric, regardless of
-                    // whether high or low values are "good"). Prepend the tier word so
-                    // readers don't have to know which. "Top tier · #1 of 50" reads cleanly
-                    // for both metrics where high is good and metrics where low is good.
+                    // whether high or low values are "good").
+                    // A bare tier does NOT read cleanly in both directions on its own:
+                    // "Top tier" under "Violent Crime Rate" invites the reading "most
+                    // violent", so metric.tierSubject names what the tier is good at
+                    // (see also Modal.buildBottomLine and the OG badge).
+                    // The card's own "lower values are better" cue does not rescue it:
+                    // that cue sits above the sparkline, ~115px and a divider away from
+                    // this row, on mobile and desktop alike.
+                    // Subject metrics drop the "·" and put the count on its own line,
+                    // since the full phrase exceeds this ~182px column. The row absorbs
+                    // the second line because the year-change block beside it is already
+                    // two lines, so card heights do not change.
                     const rankClass = Utils.rankColorClass(rankings.hawaiiRank, rankings.total);
                     const tierLabel = rankClass === 'rank-good' ? 'Top tier'
                         : rankClass === 'rank-mid' ? 'Middle tier'
                         : 'Bottom tier';
-                    rankHtml = `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel}</span> · #${rankings.hawaiiRank} of ${rankings.total}</span>`;
+                    const rankCount = `#${rankings.hawaiiRank} of ${rankings.total}`;
+                    rankHtml = metricData.tierSubject
+                        ? `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel} for ${metricData.tierSubject}</span><span class="comp-rank-count">${rankCount}</span></span>`
+                        : `<span class="comp-rank ${rankClass}"><span class="comp-rank-tier">${tierLabel}</span> · ${rankCount}</span>`;
                 }
             }
         }

@@ -4,7 +4,7 @@ The canonical sequence for refreshing this dashboard's underlying data
 (BLS unemployment, Census ACS, FBI CDE, etc.) and keeping every
 downstream narrative in lockstep with it.
 
-Designed to prevent the bug class that produced two May 2026 incidents:
+Designed to prevent the bug class that produced these incidents:
 
 1. **property_crime_rate** `rankHistoryNarrative.summary` claimed `#36`
    while STATE_DATA computed `#40`, a "narrative-sync" pass refreshed
@@ -14,9 +14,22 @@ Designed to prevent the bug class that produced two May 2026 incidents:
    restated to `2.77%` and then 2025 was added, but the QOTD answers
    weren't touched.
 
-Both were silent until a human read them by eye. The playbook closes
-that loop by making `npm run validate` block any commit that introduces
-drift between narrative claims and the underlying data.
+3. **labor_productivity** the June 2026 BLS restatement moved Hawaiʻi's
+   2022/2023 ranks, and the refresh commit corrected
+   `rankHistoryNarrative.summary` but missed the `explore[]` bullet in
+   the same object, which kept the pre-restatement `#34 → #48`. Gate 2
+   could not see it: rank checks ran on `.summary` only. The summary and
+   the bullet disagreed by five ranks for eleven weeks with `validate`
+   green. Fixed 2026-08-29 by extending the rank check to `explore[]`.
+
+All three were silent until a human read them by eye. The playbook
+closes that loop by making `npm run validate` block any commit that
+introduces drift between narrative claims and the underlying data.
+
+**The recurring shape: a refresh corrects the field the gate checks and
+leaves its neighbour stale.** After any refresh that changes a rank,
+re-read every field of that metric's `rankHistoryNarrative`, not just
+the one the audit named.
 
 ## After every data refresh
 
@@ -53,7 +66,7 @@ truth values cannot ship a silent flip.
 | # | Gate | What it catches |
 |---|------|-----------------|
 | 1 | `validate-data.js` | Data structure: shape, coverage, parity, freshness, source allowlist. |
-| 2 | `audit-narrative-numbers.js --gate --gate-new` | Quantitative claims in any narrative field that disagree with the computed value. Patterns: rank, latest-year HI value, vs-median, vs-state, V4/V5 ranked value, V6 from-to, plus the `--gate-new` shapes (county value, county superlative, rank window, 50-state quantifier) which became blocking on 2026-08-09. A rank-window claim may name its own exception (`"…since 2004 except 2020"`) and still pass. |
+| 2 | `audit-narrative-numbers.js --gate --gate-new` | Quantitative claims in any narrative field that disagree with the computed value. Patterns: rank, latest-year HI value, vs-median, vs-state, V4/V5 ranked value, V6 from-to, plus the `--gate-new` shapes (county value, county superlative, rank window, 50-state quantifier) which became blocking on 2026-08-09. A rank-window claim may name its own exception (`"…since 2004 except 2020"`) and still pass. Rank claims are checked in `rankHistoryNarrative.explore[]` as well as `.summary`, restricted there to sentences naming Hawaiʻi and no other state. Ranks must match exactly; the only give is a genuine tie block (any rank in it is valid) and a parser-inferred band edge such as "near last". |
 | 3 | `sync-qotd-answers.js --check` | QOTD answer drift. Re-renders each canonical-shape answer and exits 1 if any would change. |
 | 4 | `audit-internal.py --gate` | 10-phase site audit (data self-consistency, stub pages, OTC posts, QOTD claims, JSON-LD, sitemap, editorial style). P0+P1 findings fail; P2 informational. |
 | 5 | `update-metric-counts.js --check` | Hardcoded "N metrics" counts in HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`. |
