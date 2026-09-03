@@ -1112,9 +1112,9 @@ const DASHBOARD_DATA = {
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Tourism employment floor</strong> · Hawaiʻi's visitor economy provides a persistent baseline of service-sector jobs, but tourism-related sectors had recovered to only 94% of pre-pandemic GDP by late 2024 <a href=\"https://dbedt.hawaii.gov/economic/qser/outlook-economy/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; roughly 50% of hospitality tasks are technically automatable, posing a medium-term displacement risk. <a href=\"https://www.mckinsey.com/industries/travel/our-insights/future-of-tourism-bridging-the-labor-gap-enhancing-customer-experience\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Sector-based training</strong> · Randomized trials of programs such as Project QUEST and Year Up show sustained earnings gains of $5,000-$8,000 per year lasting a decade or more <a href=\"https://www.brookings.edu/articles/do-sectoral-training-programs-work-what-the-evidence-on-project-quest-and-year-up-really-shows/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's federally funded training pipeline aligns with this model but remains small relative to at-risk occupations. <a href=\"https://labor.hawaii.gov/wp-content/uploads/2025/12/WIOA-Annual-Report-PY24_12.01.2025.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Reemployment speed</strong> · Rapid-reattachment services such as reemployment bonuses and job-search assistance shorten unemployment spells more cost-effectively than extended benefits <a href=\"https://www.brookings.edu/articles/building-americas-job-skills-with-effective-workforce-programs-a-training-strategy-to-raise-wages-and-increase-work-opportunities/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's single-sector concentration amplifies the value of cross-industry reskilling during tourism downturns. <a href=\"https://uhero.hawaii.edu/potential-opportunities-to-diversify-the-economy-of-hawai%CA%BBi/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Mar",
     "latestMonthly": {
-      "value": 2.6,
-      "period": "Jun 2026",
-      "asOf": "2026-08-08"
+      "value": 2.7,
+      "period": "Jul 2026",
+      "asOf": "2026-08-23"
     },
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked in the top 10 in roughly two thirds of the past 40 years, with a weak stretch in the late 1990s when the rank reached #46. The sharpest break was 2020, when tourism dependence drove unemployment to 11.7 percent and the rank to #49. Recovery was gradual: #26 in 2022, back inside the top 10 by 2024, and #2 in both 2025 and 2026. That matches the best showing since 2018, though short of the #1 ranks of 2017 and the mid-2000s.",
@@ -1271,9 +1271,9 @@ const DASHBOARD_DATA = {
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Childcare cost and supply</strong> · Infant care in Hawaiʻi averages $21,167 per year, ranking 6th-highest nationally and consuming roughly 20% of median family income <a href=\"https://www.epi.org/child-care-costs-in-the-united-states/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; federal research finds higher childcare subsidy spending significantly increases low-income mothers' labor force participation. <a href=\"https://aspe.hhs.gov/effects-child-care-subsidies-maternal-labor-force-participation-united-states\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Aging-driven exits</strong> · Population aging reduced U.S. labor force participation by over 3 percentage points from 2000 to 2017 <a href=\"https://www.minneapolisfed.org/article/2023/whos-not-working-understanding-the-uss-aging-workforce\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's median age is among the highest in the nation, and roughly 1.6 million excess retirements nationally during the pandemic have not fully reversed. <a href=\"https://www.atlantafed.org/research-and-data/publications/policy-hub-macroblog/2023/04/21/retirement-and-its-impact-on-labor-supply\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Discouraged and disabled workers</strong> · Childcare-related nonparticipation rose 43% from mid-2023 to late 2024 <a href=\"https://www.kansascityfed.org/research/economic-bulletin/cost-of-childcare-increasingly-weighs-on-labor-force-engagement/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; high living costs in Hawaiʻi amplify barriers for workers deciding whether working is worth the cost, particularly those with disabilities or limited transportation. <a href=\"https://dbedt.hawaii.gov/economic/qser/labor-force/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Mar",
     "latestMonthly": {
-      "value": 60.9,
-      "period": "Jun 2026",
-      "asOf": "2026-08-08"
+      "value": 61,
+      "period": "Jul 2026",
+      "asOf": "2026-08-23"
     },
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi ranked #2 in 1976 and has fallen to #37 in 2025. The decline tracks the shift from plantation agriculture to tourism and hospitality, with part-time schedules and lower wages replacing full-time cross-skill employment.",
@@ -2130,7 +2130,7 @@ const DASHBOARD_DATA = {
     "latestMonthly": {
       "value": 52,
       "period": "May 2026",
-      "asOf": "2026-08-08"
+      "asOf": "2026-08-23"
     },
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked #50 in every year since the mid-1990s except 1998. The 1973 oil embargo opened a permanent gap: mainland grids shifted to gas and coal while Hawaiʻi stayed on oil. Renewables, on the state's rooftop-inclusive RPS measure, have grown to over a third of electricity sales by 2025, but transition capital costs pass through to ratepayers and the price gap has widened, not closed.",
@@ -2232,7 +2232,7 @@ const DASHBOARD_DATA = {
     "latestMonthly": {
       "value": 24.5,
       "period": "May 2026",
-      "asOf": "2026-08-08"
+      "asOf": "2026-08-23"
     },
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has generated a larger share of its electricity from renewables than the typical state throughout the two decades on record. Rank #22 reflects a handful of hydro- and wind-heavy states (Washington, Iowa, Oregon, South Dakota) that pull well ahead in absolute share. Hawaiʻi has kept improving but has not closed the gap with those leaders.",
