@@ -45,7 +45,7 @@
     "audit-metric": "node scripts/audit-metric.js"
   },
   "devDependencies": {
-    "@google-analytics/data": "^6.1.0",
+    "@google-analytics/data": "^7.0.0",
     "eslint": "^10.9.1",
     "globals": "^17.11.0",
     "nodemailer": "^9.0.6",
