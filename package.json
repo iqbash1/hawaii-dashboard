@@ -48,7 +48,7 @@
     "@google-analytics/data": "^6.1.0",
     "eslint": "^10.9.1",
     "globals": "^17.11.0",
-    "nodemailer": "^9.0.6",
+    "nodemailer": "^10.0.0",
     "xlsx": "^0.18.5"
   }
 }
