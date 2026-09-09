@@ -994,7 +994,7 @@ Readers can get the Question of the Day every morning and each new Off the Chart
 
 1. `/subscribe/` posts first name + email (plus a Turnstile token and an empty honeypot field) to `POST /api/subscribe`. `js/subscribe.js` sends JSON and renders the outcome in place; without JS the plain form post is redirected back to the page with `?sent=1` or `?error=…`.
 2. The Worker validates both fields, verifies Turnstile server-side, then sends a confirmation email (Resend, from `hello@hawaiidashboard.org`) whose link carries an HMAC-SHA256-signed token `{e, n, t}` valid for 48 hours. Nothing is stored at this point.
-3. `GET /api/confirm?t=…` verifies the token, creates the contact in the readers segment (or reactivates an existing contact and re-attaches the segment) and redirects to `/subscribed/`. Expired or forged tokens go to `/subscribe/?expired=1`.
+3. `GET /api/confirm?t=…` verifies the token, then runs three idempotent Resend calls (create contact, update name + `unsubscribed:false`, add to the readers segment) and redirects to `/subscribed/`. All three are needed: Resend's `POST /contacts` answers 201 for a known address too, but then neither updates it nor attaches segments. Expired or forged tokens go to `/subscribe/?expired=1`.
 
 A honeypot hit still returns success and sends nothing, so the endpoint never reveals who is subscribed.
 
@@ -1026,6 +1026,8 @@ curl -s -H 'Content-Type: application/json' \
   -d '{"first_name":"Test","email":"you@example.com","cf-turnstile-response":"x"}' \
   http://127.0.0.1:8787/api/subscribe          # {"ok":true} and a real confirmation email
 ```
+
+Use an address that is not yet a Resend contact, then check `GET /contacts/{email}/segments` after following the link: an address already in the segment cannot tell a working save from a silent no-op.
 
 ---
 

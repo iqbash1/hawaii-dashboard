@@ -156,15 +156,17 @@ export async function handleConfirm(request, env) {
     return redirect(url.origin, saved ? '/subscribed/' : '/subscribe/?error=save');
 }
 
-// Create the contact in the readers segment. If the address is already a
-// contact (an earlier subscription, an unsubscribe, a second click on the
-// link), reactivate it and make sure it is in the segment.
+// Put the contact in the readers segment, whether it is new or already known
+// (an earlier subscription, an unsubscribe, a second click on the link).
+// Resend's POST /contacts answers 201 for an existing address too, but then
+// changes nothing: no field update, no segment attached (verified 2026-09-09,
+// the first live confirmation landed in no segment at all). So every save
+// runs all three calls; each is idempotent.
 async function saveSubscriber(env, email, firstName) {
-    const created = await resend(env, 'POST', '/contacts', { email, first_name: firstName, unsubscribed: false, segments: [{ id: env.RESEND_SEGMENT_ID }] });
-    if (created.ok) return true;
     const id = encodeURIComponent(email);
+    const created = await resend(env, 'POST', '/contacts', { email, first_name: firstName, unsubscribed: false });
+    if (!created.ok) return false;
     const updated = await resend(env, 'PATCH', `/contacts/${id}`, { first_name: firstName, unsubscribed: false });
-    if (!updated.ok) return false;
-    await resend(env, 'POST', `/contacts/${id}/segments/${env.RESEND_SEGMENT_ID}`);
-    return true;
+    const attached = await resend(env, 'POST', `/contacts/${id}/segments/${env.RESEND_SEGMENT_ID}`);
+    return updated.ok && attached.ok;
 }
