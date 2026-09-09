@@ -992,7 +992,7 @@ The site-header banner on per-post pages is a styled `<p>`, not `<h1>`, so the p
 
 ## Email subscriptions
 
-Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 (signup routes) shipped 2026-09-08; Phase 2 (the Subscribe pill in the nav and the prompts after the daily question and each post, all opening one dialog) shipped 2026-09-09; Phase 3 (the daily question email and the new-post email) shipped 2026-09-09 and starts in `dry-run`. Phase 4 (monitoring in the health check and the weekly GA4 email) is pending.
+Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 (signup routes) shipped 2026-09-08; Phase 2 (the Subscribe pill in the nav and the prompts after the daily question and each post, all opening one dialog) shipped 2026-09-09; Phase 3 (the daily question email and the new-post email) shipped 2026-09-09 and went `live` the same day. Phase 4 (monitoring in the health check and the weekly GA4 email) is pending.
 
 ### Flow (double opt-in)
 
@@ -1037,9 +1037,9 @@ Both open with "Aloha {first name}," and stay minimal (user call 2026-09-09). Th
 
 | Mode | Behaviour |
 |------|-----------|
-| `dry-run` (current) | The rendered email goes to `MAIL_TO` only, through Resend `/emails`, subject prefixed `[dry run]`, merge tags filled in. Nothing reaches subscribers. |
+| `dry-run` | The rendered email goes to `MAIL_TO` only, through Resend `/emails`, subject prefixed `[dry run]`, merge tags filled in (the recipient's first name is looked up from their contact). Nothing reaches subscribers. |
 | `beta` | Broadcast to the Beta segment. |
-| `live` | Broadcast to the Dashboard readers segment. |
+| `live` (current since 2026-09-09) | Broadcast to the Dashboard readers segment. |
 
 Change it with `gh variable set EMAIL_SEND_MODE --body beta` (or `live`). `--preview` on either script writes the HTML to `.analytics/` without any API call.
 
