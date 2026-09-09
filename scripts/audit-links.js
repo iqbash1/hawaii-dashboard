@@ -209,11 +209,23 @@ function checkUrl(url, retries = 3) {
                 // Retry transient server errors (5xx). web.archive.org sheds load
                 // with a 503 under heavy traffic even when the snapshot is live, so
                 // a single hit should not be reported as rot (confirmed 2026-07-20).
-                // Back off progressively (2s, 6s, 18s) rather than retrying three
-                // times inside six seconds: load-shedding lasts longer than that, and
-                // three fast retries were still reporting live snapshots as rot
+                // Back off progressively (2s then 6s) rather than retrying twice
+                // inside four seconds: load-shedding lasts longer than that, and
+                // fast retries were still reporting live snapshots as rot
                 // (web.archive.org 503 on the acgr citation, 2026-08-28).
-                if (res.statusCode >= 500 && remaining > 1) {
+                //
+                // 404 is retried too, even though it normally means dead. Some edges
+                // answer an automated client with 404 instead of 403 to avoid leaking
+                // that they blocked it, and the answer is not stable: the Med-QUEST
+                // 1115 report 404'd from CI on 2 of 6 runs while serving a 678KB PDF
+                // with 200 to every local client on every attempt (2026-08-23 and
+                // 2026-09-06 failed, 2026-08-28 and 2026-08-30 passed). Retrying is
+                // the honest fix rather than allowlisting the domain, which would
+                // have meant adding 404 to EXPECTED_BLOCK_STATUSES and masking real
+                // rot across every allowlisted host. A genuinely dead URL 404s on the
+                // retries too, so the signal survives; it just costs two extra
+                // requests and 8s per dead link.
+                if ((res.statusCode >= 500 || res.statusCode === 404) && remaining > 1) {
                     setTimeout(() => attempt(remaining - 1), 2000 * Math.pow(3, retries - remaining));
                     return;
                 }
