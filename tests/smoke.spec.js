@@ -378,3 +378,33 @@ test.describe('Change Summary: longer-window views (15/20/25)', () => {
         });
     }
 });
+
+// ---------------------------------------------------------------------------
+// Email subscribe dialog (js/subscribe.js)
+// ---------------------------------------------------------------------------
+
+test.describe('Email subscribe dialog', () => {
+    test('nav Subscribe pill opens the dialog on the homepage and Escape closes it', async ({ page }) => {
+        await page.goto('/');
+        await page.waitForSelector('.card[data-metric]');
+        await page.locator('.top-nav-subscribe').click();
+        const dialog = page.locator('dialog.subscribe-dialog[open]');
+        await expect(dialog).toBeVisible();
+        await expect(dialog.locator('input[name="email"]')).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(dialog).toHaveCount(0);
+    });
+
+    test('Off the Charts post carries the nav pill and the post prompt', async ({ page }) => {
+        await page.goto('/off-the-charts/renewables-prices/');
+        await expect(page.locator('.top-nav-subscribe')).toBeVisible();
+        await page.locator('.otc-subscribe a[data-subscribe-open]').click();
+        await expect(page.locator('dialog.subscribe-dialog[open] input[name="first_name"]')).toBeVisible();
+    });
+
+    test('?subscribed=1 opens the confirmation state and cleans the URL', async ({ page }) => {
+        await page.goto('/?subscribed=1');
+        await expect(page.locator('dialog.subscribe-dialog[open]')).toContainText('You’re in');
+        await expect(page).toHaveURL(/\/$/);
+    });
+});

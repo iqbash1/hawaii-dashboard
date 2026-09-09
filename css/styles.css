@@ -2840,3 +2840,143 @@ body {
     color: var(--text-muted);
     line-height: 1.5;
 }
+
+/* Nav pill: the one filled element in the link row, on every page. On
+   phones it stays outside the collapsed menu, left of the hamburger. */
+.top-nav-subscribe {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.5rem;
+    padding: 0.45rem 0.95rem;
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: #fff;
+    background: var(--hawaii-blue);
+    border: 1px solid var(--hawaii-blue);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition), border-color var(--transition);
+}
+.top-nav-subscribe:hover,
+.top-nav-subscribe:focus-visible {
+    background: var(--hawaii-blue-dark);
+    border-color: var(--hawaii-blue-dark);
+    color: #fff;
+    outline: none;
+}
+@media (max-width: 700px) {
+    .top-nav-subscribe {
+        order: -1;
+        margin-left: 0;
+        margin-right: auto;
+    }
+}
+
+/* Header call-to-action pair: subscribe filled (primary), tour outlined. */
+.header-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.1rem;
+}
+.header-ctas .tour-cta { margin-top: 0; }
+.tour-cta--secondary {
+    color: var(--hawaii-blue);
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Contextual prompts that open the dialog. */
+.qotd-teaser-footer a {
+    color: var(--hawaii-blue);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.otc-subscribe {
+    max-width: 720px;
+    margin: 2rem auto 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--hawaii-blue-light);
+    border-left: 3px solid var(--hawaii-blue);
+    border-radius: var(--radius);
+    font-size: var(--text-md);
+    line-height: 1.5;
+    color: var(--text);
+}
+.otc-subscribe a {
+    display: inline-block;
+    margin-left: 0.35rem;
+    padding: 0.3rem 0.9rem;
+    color: #fff;
+    background: var(--hawaii-blue);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-base);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.otc-subscribe a:hover { background: var(--hawaii-blue-dark); }
+
+/* The dialog itself (js/subscribe.js builds it on first open). */
+.subscribe-dialog {
+    /* The global reset zeroes margins; restore the UA centering for dialogs. */
+    margin: auto;
+    width: min(440px, calc(100% - 2rem));
+    padding: 0;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    color: var(--text);
+    box-shadow: var(--shadow-card);
+    font-family: var(--font);
+}
+.subscribe-dialog::backdrop { background: rgba(17, 24, 28, 0.45); }
+.subscribe-dialog-body { padding: 1.6rem 1.75rem 1.5rem; }
+.subscribe-dialog-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+}
+.subscribe-dialog-close:hover { background: var(--avg-gray-light); }
+.subscribe-eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hawaii-blue);
+    font-weight: 600;
+}
+.subscribe-dialog-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+}
+.subscribe-dialog-lede {
+    margin: 0 0 1rem;
+    color: var(--text-muted);
+    font-size: var(--text-md);
+    line-height: 1.5;
+}
+.subscribe-dialog .subscribe-form { margin-top: 0; max-width: none; }
+/* Reserve the widget's height so the button does not jump when it renders. */
+.subscribe-turnstile { min-height: 65px; margin-bottom: 0.85rem; }
+@media (max-width: 480px) {
+    .subscribe-dialog-body { padding: 1.4rem 1.1rem 1.25rem; }
+}

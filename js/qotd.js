@@ -451,7 +451,7 @@ const QOTD = {
                         <a class="qotd-link" href="#" data-action="download-chart" aria-label="Download this chart as an image" hidden>Download chart</a>
                     </div>
                     ${otcBlock}
-                    <p class="qotd-teaser-footer">Come back tomorrow for a new question.</p>
+                    <p class="qotd-teaser-footer">Come back tomorrow for a new question, or <a href="/subscribe/" data-subscribe-open="qotd">get it by email</a>.</p>
                 </div>
             `;
             this._renderLiveChart(host.querySelector('[data-qotd-chart]'), q);

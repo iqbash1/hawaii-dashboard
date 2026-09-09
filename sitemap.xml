@@ -92,6 +92,15 @@
     </image:image>
   </url>
   <url>
+    <loc>https://hawaiidashboard.org/subscribe/</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <image:image>
+      <image:loc>https://hawaiidashboard.org/assets/og-image.png</image:loc>
+    </image:image>
+  </url>
+  <url>
     <loc>https://hawaiidashboard.org/off-the-charts/</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>

@@ -150,10 +150,10 @@ describe('GET /api/confirm', () => {
     // Resend answers 201 to POST /contacts for a known address too, without
     // updating it or attaching segments, so a save is always create + update
     // + attach. The same sequence covers new, returning, and unsubscribed readers.
-    it('creates or refreshes the contact, attaches the readers segment, lands on /subscribed/', async () => {
+    it('creates or refreshes the contact, attaches the readers segment, lands on /?subscribed=1', async () => {
         const res = await confirm(await fresh());
         assert.equal(res.status, 302);
-        assert.equal(res.headers.get('location'), `${ORIGIN}/subscribed/`);
+        assert.equal(res.headers.get('location'), `${ORIGIN}/?subscribed=1`);
         assert.deepEqual(calls.map(c => `${c.method} ${c.url.replace('https://api.resend.com', '')}`), [
             'POST /contacts',
             'PATCH /contacts/reader%40example.com',
@@ -167,21 +167,21 @@ describe('GET /api/confirm', () => {
         const realFetch = globalThis.fetch;
         globalThis.fetch = async (url, init) => (String(url).includes('/segments/') ? new Response('{}', { status: 500 }) : realFetch(url, init));
         const res = await confirm(await fresh());
-        assert.equal(res.headers.get('location'), `${ORIGIN}/subscribe/?error=save`);
+        assert.equal(res.headers.get('location'), `${ORIGIN}/?subscribe=save`);
     });
     it('sends expired, forged, and missing tokens back to the form', async () => {
         const old = await lib.signToken({ e: 'reader@example.com', n: 'Iqbal', t: Math.floor(Date.now() / 1000) - 49 * 3600 }, ENV.SUBSCRIBE_SIGNING_KEY);
         for (const t of [old, await lib.signToken({ e: 'x@y.co', n: 'X', t: 1 }, 'wrong-key'), 'junk', '']) {
             const res = await confirm(t);
             assert.equal(res.status, 302);
-            assert.equal(res.headers.get('location'), `${ORIGIN}/subscribe/?expired=1`);
+            assert.equal(res.headers.get('location'), `${ORIGIN}/?subscribe=expired`);
         }
         assert.equal(calls.length, 0);
     });
     it('reports a save failure instead of claiming success', async () => {
         contactStatus = 500;
         const res = await confirm(await fresh());
-        assert.equal(res.headers.get('location'), `${ORIGIN}/subscribe/?error=save`);
+        assert.equal(res.headers.get('location'), `${ORIGIN}/?subscribe=save`);
         assert.equal(calls.length, 1);
     });
 });
