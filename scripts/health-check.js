@@ -257,10 +257,18 @@ function checkAlerts() {
     const r = sh('gh issue list --state open --json number,title,labels --limit 50');
     if (!r.ok) { add('Automated alerts', 'yellow', 'could not query GitHub issues'); return; }
     let issues = []; try { issues = JSON.parse(r.out); } catch { add('Automated alerts', 'yellow', 'could not parse issue list'); return; }
-    const labels = new Set(['link-rot', 'data-drift', 'data-audit', 'cron-stale', 'source-due']);
+    const labels = new Set(['link-rot', 'data-drift', 'data-audit', 'cron-stale', 'source-due', 'email-failed']);
     const hot = issues.filter(i => (i.labels || []).some(l => labels.has(l.name)));
-    if (!hot.length) add('Automated alerts', 'green', 'no open link-rot / data-drift / cron-stale issues');
+    if (!hot.length) add('Automated alerts', 'green', 'no open link-rot / data-drift / cron-stale / email-failed issues');
     else add('Automated alerts', 'yellow', `${hot.length} open: ` + hot.slice(0, 4).map(i => `#${i.number} ${i.title}`).join('; '));
+}
+
+// ── 9. Email subscriptions (Resend: domain, readers, today's question, post emails, signup route) ──
+// Needs RESEND_API_KEY + RESEND_SEGMENT_ID (secrets in CI, .env locally); degrades to yellow without them.
+async function checkSubscriptions() {
+    const { subscriptionHealth } = require('./email-monitor');
+    const r = await subscriptionHealth();
+    add('Email subscriptions', r.status, r.detail);
 }
 
 // ── Tier 2: Performance (Lighthouse desktop) + Accessibility (axe) ──────────
@@ -305,6 +313,7 @@ async function main() {
     await guard('SEO: sitemap', checkSitemap);
     await guard('SEO: structured data', checkJsonLd);
     await guard('Automated alerts', checkAlerts);
+    await guard('Email subscriptions', checkSubscriptions);
     await guard('Tier 2 (perf + a11y)', checkTier2);
 
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Pacific/Honolulu' });
@@ -320,7 +329,7 @@ async function main() {
     out.push(`| | Dimension | Detail |`);
     out.push(`| --- | --- | --- |`);
     for (const r of results) out.push(`| ${dot(r.status)} | ${r.name} | ${r.detail} |`);
-    out.push(`\n---\n_Tier 1 (data, live site, security, deps, content, SEO, alerts) + Tier 2 (performance, accessibility). Run on demand: \`npm run health\`. Red = blocker, yellow = attention, green = ok._`);
+    out.push(`\n---\n_Tier 1 (data, live site, security, deps, content, SEO, alerts, email subscriptions) + Tier 2 (performance, accessibility). Run on demand: \`npm run health\`. Red = blocker, yellow = attention, green = ok._`);
 
     const dir = path.join(ROOT, '.analytics');
     fs.mkdirSync(dir, { recursive: true });

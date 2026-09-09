@@ -109,6 +109,7 @@ hawaii-dashboard/
 │   ├── email-template.js       # Subscriber email chrome + Resend delivery (dry-run | beta | live)
 │   ├── send-qotd-email.js      # Daily question email builder/sender (npm run email:qotd)
 │   ├── send-otc-email.js       # New-post email builder/sender (npm run email:otc)
+│   ├── email-monitor.js        # Read-only Resend view for the health check + GA4 email (readers, today's broadcast, post emails)
 │   ├── update-narrative-years.js # Finds stale year references in narratives
 │   ├── update-monthly.js       # Fetches latest BLS/EIA monthly data for 4 metrics
 │   ├── audit-metric.js         # Comprehensive per-metric audit (10 checks)
@@ -135,7 +136,8 @@ hawaii-dashboard/
 │   ├── compute.test.js         # Unit tests for js/compute.js
 │   ├── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
 │   ├── subscribe.test.js       # Unit tests for worker-subscribe.mjs (validation, signed token, both handlers; Turnstile + Resend stubbed)
-│   └── email.test.js           # Unit tests for the subscriber email builders (scripts/email-template.js, send-qotd-email.js, send-otc-email.js)
+│   ├── email.test.js           # Unit tests for the subscriber email builders (scripts/email-template.js, send-qotd-email.js, send-otc-email.js)
+│   └── email-monitor.test.js   # Unit tests for the subscription monitoring verdicts (scripts/email-monitor.js)
 ├── .github/
 │   ├── dependabot.yml          # Weekly npm + actions dep PRs (grouped)
 │   └── workflows/
@@ -146,7 +148,7 @@ hawaii-dashboard/
 │       ├── source-release-reminder.yml # Weekly 7-day-ahead reminder for source release windows
 │       ├── tests.yml           # Unit + smoke tests on every push/PR to main
 │       ├── qotd-daily-email.yml # Daily question email: 05:20 HST cron creates a Resend broadcast scheduled for 06:00 HST
-│       ├── otc-post-email.yml  # New Off the Charts post email on push to main touching js/otc-posts.js
+│       ├── otc-post-email.yml  # New Off the Charts post email on push to main touching js/otc-posts.js (both email workflows keep a rolling email-failed issue)
 │       ├── rotate-backup.yml   # Off-site git mirror backup
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
 ├── faq/
@@ -992,7 +994,7 @@ The site-header banner on per-post pages is a styled `<p>`, not `<h1>`, so the p
 
 ## Email subscriptions
 
-Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 (signup routes) shipped 2026-09-08; Phase 2 (the Subscribe pill in the nav and the prompts after the daily question and each post, all opening one dialog) shipped 2026-09-09; Phase 3 (the daily question email and the new-post email) shipped 2026-09-09 and went `live` the same day. Phase 4 (monitoring in the health check and the weekly GA4 email) is pending.
+Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 (signup routes) shipped 2026-09-08; Phase 2 (the Subscribe pill in the nav and the prompts after the daily question and each post, all opening one dialog) shipped 2026-09-09; Phase 3 (the daily question email and the new-post email) shipped 2026-09-09 and went `live` the same day. Phase 4 (monitoring) shipped 2026-09-09.
 
 ### Flow (double opt-in)
 
@@ -1047,6 +1049,13 @@ Change it with `gh variable set EMAIL_SEND_MODE --body beta` (or `live`). `--pre
 - Edited today's question after 05:20 HST? The scheduled broadcast still carries the old claim: delete it in Resend (Broadcasts, it is `qotd-<date>`, status scheduled) and run the daily workflow by hand with `now` checked. A run without deleting it first sends nothing, by design.
 - A post published and no email the next day? Check the workflow run from the publish push: the live-site wait fails if the deploy took longer than 10 minutes, and re-running the workflow by hand with the slug is safe (the name guard stops duplicates). To pull a scheduled post email, delete the `otc-<slug>` broadcast in Resend before noon HST the next day.
 - Kill switch: set `EMAIL_SEND_MODE` to `dry-run`, or disable the workflow in the Actions tab. Cancelling an already scheduled broadcast is only possible in Resend.
+
+### Monitoring (Phase 4)
+
+- **Weekly health check** row "Email subscriptions" (`scripts/email-monitor.js`, `subscriptionHealth()`): Resend domain still verified, active readers with this week's signups and unsubscribes, whether today's `qotd-<date>` broadcast was sent (red when neither today's nor yesterday's exists), whether every post published since 2026-09-09 and older than two days has its `otc-<slug>` broadcast, and that `GET /api/subscribe` still answers 405. Needs `RESEND_API_KEY` + `RESEND_SEGMENT_ID` (yellow without them).
+- **Weekly GA4 email** section "Email subscribers": the site-side funnel from the GA4 events (`subscribe_opened` → `subscribe_submitted` → `subscribe_confirmed`, Hawaiʻi-scoped) and the Resend list (active readers, new in 7 and 28 days, unsubscribed).
+- **Rolling `email-failed` issue**: either email workflow opens or updates it when a run fails and the next successful run closes it; the health check rolls it up under "Automated alerts".
+- Pure verdict functions are unit-tested in `tests/email-monitor.test.js`.
 
 ### Local end-to-end test
 
@@ -1194,7 +1203,7 @@ Every indexable page has:
 - Audit metric data: `npm run audit-metric -- <slug>` or `npm run audit-metric -- --all`
 - Audit links: `npm run audit-links`
 - Validate data: `npm run validate`
-- Weekly health check: `npm run health` (10 dimensions: data, live site, security, deps, content, SEO, alerts, plus Lighthouse desktop perf + axe a11y via `tests/audit-tier2.js`)
+- Weekly health check: `npm run health` (11 dimensions: data, live site, security, deps, content, SEO, alerts, email subscriptions, plus Lighthouse desktop perf + axe a11y via `tests/audit-tier2.js`)
 - Build for deployment: `npm run build` (copies to dist/ with cache-busted SHA)
 
 ---

@@ -49,6 +49,8 @@ jobs:
         run: node scripts/health-check.js
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_SEGMENT_ID: ${{ secrets.RESEND_SEGMENT_ID }}
 
       - name: Email the digest
         run: |
