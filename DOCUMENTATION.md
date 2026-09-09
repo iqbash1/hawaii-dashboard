@@ -106,6 +106,9 @@ hawaii-dashboard/
 │   ├── build-county-data.js    # Fetches county-level data from federal APIs
 │   ├── recompute-data.js       # Recomputes derived fields in data.js
 │   ├── update-about-years.js   # Updates year ranges in about/index.html
+│   ├── email-template.js       # Subscriber email chrome + Resend delivery (dry-run | beta | live)
+│   ├── send-qotd-email.js      # Daily question email builder/sender (npm run email:qotd)
+│   ├── send-otc-email.js       # New-post email builder/sender (npm run email:otc)
 │   ├── update-narrative-years.js # Finds stale year references in narratives
 │   ├── update-monthly.js       # Fetches latest BLS/EIA monthly data for 4 metrics
 │   ├── audit-metric.js         # Comprehensive per-metric audit (10 checks)
@@ -131,7 +134,8 @@ hawaii-dashboard/
 │   ├── utils.test.js           # Unit tests for js/utils.js (Node.js built-in test runner)
 │   ├── compute.test.js         # Unit tests for js/compute.js
 │   ├── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
-│   └── subscribe.test.js       # Unit tests for worker-subscribe.mjs (validation, signed token, both handlers; Turnstile + Resend stubbed)
+│   ├── subscribe.test.js       # Unit tests for worker-subscribe.mjs (validation, signed token, both handlers; Turnstile + Resend stubbed)
+│   └── email.test.js           # Unit tests for the subscriber email builders (scripts/email-template.js, send-qotd-email.js, send-otc-email.js)
 ├── .github/
 │   ├── dependabot.yml          # Weekly npm + actions dep PRs (grouped)
 │   └── workflows/
@@ -140,7 +144,9 @@ hawaii-dashboard/
 │       ├── audit-links.yml     # Weekly external-URL liveness check; rolling link-rot issue
 │       ├── cron-heartbeat.yml  # Weekly dead-man switch on refresh-data; rolling cron-stale issue
 │       ├── source-release-reminder.yml # Weekly 7-day-ahead reminder for source release windows
-│       ├── tests.yml           # Smoke tests on every push/PR to main
+│       ├── tests.yml           # Unit + smoke tests on every push/PR to main
+│       ├── qotd-daily-email.yml # Daily question email: 05:20 HST cron creates a Resend broadcast scheduled for 06:00 HST
+│       ├── otc-post-email.yml  # New Off the Charts post email on push to main touching js/otc-posts.js
 │       ├── rotate-backup.yml   # Off-site git mirror backup
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
 ├── faq/
@@ -986,11 +992,11 @@ The site-header banner on per-post pages is a styled `<p>`, not `<h1>`, so the p
 
 ## Email subscriptions
 
-Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 (signup routes) shipped 2026-09-08; Phase 2 (the Subscribe pill in the nav, the header button, the prompts after the daily question and each post, all opening one dialog) shipped 2026-09-09. Phases 3 and 4 (the daily QOTD and new-post senders, monitoring) are pending.
+Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 (signup routes) shipped 2026-09-08; Phase 2 (the Subscribe pill in the nav and the prompts after the daily question and each post, all opening one dialog) shipped 2026-09-09; Phase 3 (the daily question email and the new-post email) shipped 2026-09-09 and starts in `dry-run`. Phase 4 (monitoring in the health check and the weekly GA4 email) is pending.
 
 ### Flow (double opt-in)
 
-1. Any element with `data-subscribe-open` (the nav pill on every page, the homepage header button, the QOTD proof-view footer link, the prompt after each Off the Charts post) opens the subscribe `<dialog>` that `js/subscribe.js` builds on first use. The form posts first name + email (plus a Turnstile token and an empty honeypot field) as JSON to `POST /api/subscribe` and renders the outcome in place; Turnstile's script loads only when the dialog first opens. `/subscribe/` carries the same form inline as the fallback (no `<dialog>` support, no JS, or a shared link); there a plain form post is redirected back with `?sent=1` or `?error=…`.
+1. Any element with `data-subscribe-open` (the nav pill on every page, the QOTD proof-view footer link, the prompt after each Off the Charts post) opens the subscribe `<dialog>` that `js/subscribe.js` builds on first use. The form posts first name + email (plus a Turnstile token and an empty honeypot field) as JSON to `POST /api/subscribe` and renders the outcome in place; Turnstile's script loads only when the dialog first opens. `/subscribe/` carries the same form inline as the fallback (no `<dialog>` support, no JS, or a shared link); there a plain form post is redirected back with `?sent=1` or `?error=…`.
 2. The Worker validates both fields, verifies Turnstile server-side, then sends a confirmation email (Resend, from `hello@hawaiidashboard.org`) whose link carries an HMAC-SHA256-signed token `{e, n, t}` valid for 48 hours. Nothing is stored at this point.
 3. `GET /api/confirm?t=…` verifies the token, then runs three idempotent Resend calls (create contact, update name + `unsubscribed:false`, add to the readers segment) and redirects to `/?subscribed=1`, where the dialog opens in its "You're in" state over today's question. All three calls are needed: Resend's `POST /contacts` answers 201 for a known address too, but then neither updates it nor attaches segments. Expired or forged tokens go to `/?subscribe=expired` and a Resend failure to `/?subscribe=save`; both open the dialog with the form and a message.
 
@@ -1003,8 +1009,8 @@ A honeypot hit still returns success and sends nothing, so the endpoint never re
 | `worker.js` | Routes `/api/subscribe` and `/api/confirm` (plus the tour-video range shim). `wrangler.jsonc` `run_worker_first` limits the Worker to `/assets/tour.mp4` and `/api/*`; every other path is served straight from Static Assets. |
 | `worker-subscribe.mjs` | Handlers, validation, token sign/verify, confirmation email template. |
 | `subscribe/index.html` | Fallback signup page with the form inline; listed in the sitemap. |
-| `js/subscribe.js` | Builds and opens the dialog (ask, "You're in", expired and save-failed states), lazy-loads Turnstile, submits the form, fires GA4 `subscribe_opened` / `subscribe_submitted` / `subscribe_confirmed` with a `surface` param. |
-| `tests/subscribe.test.js` | 16 unit tests: `cd tests && npm run test:unit`. |
+| `js/subscribe.js` | Builds and opens the dialog (ask, "You're in", expired and save-failed states), lazy-loads Turnstile, submits the form, fires GA4 `subscribe_opened` / `subscribe_submitted` / `subscribe_confirmed` with a `surface` param (nav, qotd, otc). |
+| `tests/subscribe.test.js`, `tests/email.test.js` | 16 + 9 unit tests (handlers; email builders and the new-post detection): `cd tests && npm run test:unit`. |
 | `_headers` | CSP allows `https://challenges.cloudflare.com` (script and frame) for Turnstile. |
 | `scripts/verify-live-site.sh` | Checks `/subscribe/` returns 200, that a GET on `/api/subscribe` reaches the Worker (405), and that the homepage carries the pill and script. |
 
@@ -1015,6 +1021,32 @@ A honeypot hit still returns success and sends nothing, so the endpoint never re
 - Resend: domain `hawaiidashboard.org` verified (DKIM at `resend._domainkey`, SPF on `send.`), segments "Dashboard readers" (live) and "Beta" (test sends). The pre-existing DMARC record is `p=reject`; Resend's signing aligns with it, any other sender will be rejected.
 - Cloudflare WAF rate-limit rule: 5 POSTs per 10 seconds per IP on `/api/subscribe`.
 - GitHub Actions: secrets `RESEND_API_KEY`, `RESEND_SEGMENT_ID`, `RESEND_BETA_SEGMENT_ID`; repository variable `EMAIL_SEND_MODE=dry-run` gates the Phase 3 senders.
+
+### The emails (Phase 3)
+
+Two senders, one shared chrome (`scripts/email-template.js`: sender identity, grey ground + white card, teal eyebrow, footer with `{{{RESEND_UNSUBSCRIBE_URL}}}` and the postal address; Resend fills the tags per recipient). Both go out as Resend **broadcasts** to a segment, so unsubscribes are handled by Resend, and both are idempotent by broadcast name.
+
+| Email | Script | Workflow | When | Broadcast name |
+|-------|--------|----------|------|----------------|
+| Daily question | `scripts/send-qotd-email.js` (`npm run email:qotd`) | `qotd-daily-email.yml` | cron 05:20 HST creates a broadcast **scheduled for 06:00 HST**, so GitHub's cron jitter never moves delivery. `--now` sends immediately (also automatic after 06:00). | `qotd-<HST date>` |
+| New post | `scripts/send-otc-email.js` (`npm run email:otc`) | `otc-post-email.yml` | on push to main touching `js/otc-posts.js`: slugs new since the previous commit, dated within 7 days, after the post answers on the live site. `[no-email]` in the commit message skips. Manual run takes a slug. | `otc-<slug>` |
+
+The daily email carries the claim in the subject ("True or false: …"), True/False buttons that both open `/q/{id}/` on the site (the answer is never in the email), and "Yesterday's answer" with its verdict and chart link. The new-post email carries the title, the post's OG card, the dek and a "Read the post" button. Links carry `utm_source=email&utm_medium=qotd|otc`.
+
+**Where it goes** is the `EMAIL_SEND_MODE` repository variable, read at run time:
+
+| Mode | Behaviour |
+|------|-----------|
+| `dry-run` (current) | The rendered email goes to `MAIL_TO` only, through Resend `/emails`, subject prefixed `[dry run]`, merge tags filled in. Nothing reaches subscribers. |
+| `beta` | Broadcast to the Beta segment. |
+| `live` | Broadcast to the Dashboard readers segment. |
+
+Change it with `gh variable set EMAIL_SEND_MODE --body beta` (or `live`). `--preview` on either script writes the HTML to `.analytics/` without any API call.
+
+**Runbook**
+- Edited today's question after 05:20 HST? The scheduled broadcast still carries the old claim: delete it in Resend (Broadcasts, it is `qotd-<date>`, status scheduled) and run the daily workflow by hand with `now` checked. A run without deleting it first sends nothing, by design.
+- A post published and the email did not go? Check the workflow run: the live-site wait fails if the deploy took longer than 10 minutes, and re-running the workflow by hand with the slug is safe (the name guard stops duplicates).
+- Kill switch: set `EMAIL_SEND_MODE` to `dry-run`, or disable the workflow in the Actions tab. Cancelling an already scheduled broadcast is only possible in Resend.
 
 ### Local end-to-end test
 

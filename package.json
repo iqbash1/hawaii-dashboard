@@ -42,7 +42,9 @@
     "update-metric-counts:check": "node scripts/update-metric-counts.js --check",
     "check-source-due": "node scripts/check-source-due.js",
     "audit-citations": "node scripts/audit-external-citations.js",
-    "audit-metric": "node scripts/audit-metric.js"
+    "audit-metric": "node scripts/audit-metric.js",
+    "email:qotd": "node --env-file-if-exists=.env scripts/send-qotd-email.js",
+    "email:otc": "node --env-file-if-exists=.env scripts/send-otc-email.js"
   },
   "devDependencies": {
     "@google-analytics/data": "^7.0.0",

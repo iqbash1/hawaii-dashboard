@@ -153,7 +153,7 @@ The home grid is the core, but the site has six supporting surfaces:
 - **FAQ** (`/faq/`): 14 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
 - **Question of the Day** (thin banner teaser on the home page that expands to a proof card after the reader answers; `/q/{id}/` shareable URL per question): 54-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
 - **Off the Charts** (`/off-the-charts/`): short-form blog at 175–220 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
-- **Email subscriptions** (Subscribe pill in the nav, header button, prompts after the daily question and each post; `/subscribe/` as the fallback page): double opt-in signup for the daily question and new Off the Charts posts, in a dialog. The list lives in Resend; the Worker only signs and verifies confirmation links. See DOCUMENTATION.md.
+- **Email subscriptions** (Subscribe pill in the nav, prompts after the daily question and each post; `/subscribe/` as the fallback page): double opt-in signup for the daily question and new Off the Charts posts, in a dialog. The list lives in Resend; the Worker only signs and verifies confirmation links. See DOCUMENTATION.md.
 
 ## Local development
 

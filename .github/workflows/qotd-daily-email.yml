@@ -1,0 +1,53 @@
+name: Daily question email
+
+# Builds today's Question of the Day email and hands it to Resend as a
+# broadcast scheduled for 06:00 HST, so GitHub's cron jitter never moves
+# the delivery time. Cron: 15:20 UTC = 05:20 HST (no daylight saving).
+#
+# Where it goes is the EMAIL_SEND_MODE repository variable:
+#   dry-run  a preview to MAIL_TO only (default while trialling)
+#   beta     the Beta segment
+#   live     the Dashboard readers segment
+# The broadcast is named qotd-<date>; a re-run on the same day sends nothing.
+# To replace a scheduled send (e.g. after editing today's question), delete
+# the scheduled broadcast in Resend, then run this workflow by hand.
+#
+# Secrets: RESEND_API_KEY, RESEND_SEGMENT_ID, RESEND_BETA_SEGMENT_ID, MAIL_TO
+
+on:
+  schedule:
+    - cron: '20 15 * * *'
+  workflow_dispatch:
+    inputs:
+      now:
+        description: 'Send immediately instead of scheduling for 06:00 HST'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qotd-daily-email
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+
+      # No npm install: the script uses only Node built-ins and the QOTD bank.
+      - name: Build and hand off today's question
+        run: node scripts/send-qotd-email.js ${{ inputs.now && '--now' || '' }}
+        env:
+          EMAIL_SEND_MODE: ${{ vars.EMAIL_SEND_MODE }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_SEGMENT_ID: ${{ secrets.RESEND_SEGMENT_ID }}
+          RESEND_BETA_SEGMENT_ID: ${{ secrets.RESEND_BETA_SEGMENT_ID }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
