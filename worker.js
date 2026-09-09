@@ -1,11 +1,14 @@
-// Byte-range shim for the self-hosted tour video.
+// Two jobs, both scoped by "run_worker_first" in wrangler.jsonc so every
+// other route is served directly by Static Assets and never invokes this
+// Worker:
 //
-// Cloudflare Workers Static Assets serves files with HTTP 200 and no
-// Accept-Ranges, so <video> playback fails on iOS Safari (which requires
-// 206 Partial Content). This Worker runs first ONLY for the video path
-// (see "run_worker_first" in wrangler.jsonc) and re-serves it with proper
-// range support. Every other route is served directly by Static Assets and
-// never invokes this Worker, so the rest of the site is unaffected.
+// 1. Byte-range shim for the self-hosted tour video. Static Assets serves
+//    files with HTTP 200 and no Accept-Ranges, so <video> playback fails on
+//    iOS Safari (which requires 206 Partial Content). The video path is
+//    re-served here with proper range support.
+// 2. Email subscription endpoints under /api/ (see worker-subscribe.mjs).
+
+import { handleSubscribe, handleConfirm } from './worker-subscribe.mjs';
 
 const VIDEO_PATH = '/assets/tour.mp4';
 const IMMUTABLE = 'public, max-age=31536000, immutable';
@@ -16,6 +19,8 @@ export default {
     if (pathname === VIDEO_PATH && (request.method === 'GET' || request.method === 'HEAD')) {
       return serveVideoWithRange(request, env);
     }
+    if (pathname === '/api/subscribe') return handleSubscribe(request, env);
+    if (pathname === '/api/confirm') return handleConfirm(request, env);
     // Defensive passthrough; with the scoped run_worker_first this is rarely hit.
     return env.ASSETS.fetch(request);
   },

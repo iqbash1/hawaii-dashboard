@@ -348,6 +348,24 @@ else
     fail "/t/violent_crime_rate/ returned ${redirect_status}"
 fi
 
+# Email subscription: the page is static, the two /api/ routes are served by
+# the Worker (run_worker_first in wrangler.jsonc). A GET on the subscribe
+# route must reach the Worker (405), not fall through to a static 404.
+subscribe_status=$(curl -fs --max-time 10 -o /dev/null -w "%{http_code}" \
+    "${BASE}/subscribe/" 2>/dev/null || echo "000")
+if [ "$subscribe_status" = "200" ]; then
+    ok "/subscribe/ returns HTTP 200"
+else
+    fail "/subscribe/ returned HTTP ${subscribe_status} (expected 200)"
+fi
+api_status=$(curl -s --max-time 10 -o /dev/null -w "%{http_code}" \
+    "${BASE}/api/subscribe" 2>/dev/null || echo "000")
+if [ "$api_status" = "405" ]; then
+    ok "/api/subscribe reaches the Worker (GET returns 405)"
+else
+    fail "/api/subscribe returned ${api_status} (expected 405; Worker route not wired?)"
+fi
+
 # -----------------------------------------------------------------------------
 # 8. SUMMARY
 # -----------------------------------------------------------------------------

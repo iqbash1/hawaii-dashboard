@@ -6,10 +6,13 @@ A statewide scorecard of outcomes and the conditions that shape them, tracking 2
 
 ## Architecture
 
-Static site hosted on Cloudflare Pages. No backend, no database, no build step for the frontend.
+Static site hosted on Cloudflare, with one small Worker that runs only for the tour-video range shim and the email subscribe endpoints. No database, no build step for the frontend.
 
 ```
 index.html              Main page (single-page app)
+worker.js               Cloudflare Worker, runs first only for /assets/tour.mp4 and /api/*
+worker-subscribe.mjs    POST /api/subscribe + GET /api/confirm (double opt-in; list lives in Resend)
+wrangler.jsonc          Worker config (static assets from ./dist, run_worker_first paths)
 css/
   styles.css            All shared styles
   fyc.css               Change Summary page styles (shared by all year-span views)
@@ -27,11 +30,14 @@ js/
   qotd.js               Question of the Day controller (teaser render, answer state, share)
   questions.js          QOTD question bank (54 entries, 8 template variants)
   otc-share.js          Off the Charts share-button handler (Web Share API → clipboard with pre-composed payload → execCommand fallback; fires GA4 `share_clicked` with method)
+  subscribe.js          Email signup form: posts JSON to /api/subscribe, renders the outcome in place
   data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)
   county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauaʻi
 about/index.html             About page (metric registry, comparator rules)
 faq/index.html               FAQ page (14 Q&A, feedback form)
+subscribe/index.html         Email signup page (first name + email + Turnstile)
+subscribed/index.html        Landing page after the confirmation link
 off-the-charts/              Short-form blog (archive + per-post canonical pages)
   index.html                 Archive index
   {slug}/index.html          Full canonical post page (Article + BreadcrumbList JSON-LD)
@@ -141,13 +147,14 @@ Requires `Pillow` (`pip3 install Pillow`).
 
 ## Beyond the grid
 
-The home grid is the core, but the site has four supporting surfaces:
+The home grid is the core, but the site has six supporting surfaces:
 
 - **Change Summary** (`/five-year-change/` and 6 sibling year-span views): sortable scoreboard of what improved, what declined, and what stayed stuck, by area and metric. Shared logic via `js/fyc.js`; same shell renders 1/3/5/10/15/20/25-year spans.
 - **About** (`/about/`): mission, methodology, comparator rules, metric registry. Source ledger for every claim on the site.
 - **FAQ** (`/faq/`): 14 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
 - **Question of the Day** (thin banner teaser on the home page that expands to a proof card after the reader answers; `/q/{id}/` shareable URL per question): 54-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
 - **Off the Charts** (`/off-the-charts/`): short-form blog at 175–220 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
+- **Email subscriptions** (`/subscribe/`): double opt-in signup for the daily question and new Off the Charts posts. The list lives in Resend; the Worker only signs and verifies confirmation links. See DOCUMENTATION.md.
 
 ## Local development
 
@@ -163,7 +170,7 @@ Unit tests (no dependencies, Node 18+):
 
 ```bash
 cd tests
-node --test utils.test.js
+npm run test:unit   # utils, compute, qotd, subscribe
 ```
 
 End-to-end smoke tests (Playwright):

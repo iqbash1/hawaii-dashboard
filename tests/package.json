@@ -7,7 +7,7 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
-    "test:unit": "node --test utils.test.js compute.test.js qotd.test.js"
+    "test:unit": "node --test utils.test.js compute.test.js qotd.test.js subscribe.test.js"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

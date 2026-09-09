@@ -46,6 +46,7 @@ hawaii-dashboard/
 │   ├── qotd.js             # Question of the Day controller (teaser render, answer state, share)
 │   ├── questions.js        # QOTD question bank (54 entries, 8 template variants)
 │   ├── otc-share.js        # Off the Charts share-button handler (Web Share API → clipboard w/ pre-composed payload → execCommand fallback)
+│   ├── subscribe.js        # Email signup form: posts JSON to /api/subscribe, renders the outcome in place (see "Email subscriptions")
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers)
 ├── assets/
 │   ├── og-image.png        # Generic OG image (fallback for homepage + about)
@@ -129,7 +130,8 @@ hawaii-dashboard/
 │   ├── smoke.spec.js           # Critical-path E2E smoke tests (Playwright)
 │   ├── utils.test.js           # Unit tests for js/utils.js (Node.js built-in test runner)
 │   ├── compute.test.js         # Unit tests for js/compute.js
-│   └── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
+│   ├── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
+│   └── subscribe.test.js       # Unit tests for worker-subscribe.mjs (validation, signed token, both handlers; Turnstile + Resend stubbed)
 ├── .github/
 │   ├── dependabot.yml          # Weekly npm + actions dep PRs (grouped)
 │   └── workflows/
@@ -143,6 +145,13 @@ hawaii-dashboard/
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
 ├── faq/
 │   └── index.html          # FAQ page: 14 Q&A pairs, feedback form
+├── subscribe/
+│   └── index.html          # Email signup page (first name + email + Turnstile); unlinked and noindex until Phase 2
+├── subscribed/
+│   └── index.html          # Landing page after the email confirmation link
+├── worker.js               # Cloudflare Worker, runs first ONLY for /assets/tour.mp4 (byte-range shim) and /api/* (routes to worker-subscribe.mjs)
+├── worker-subscribe.mjs    # Email subscription endpoints: POST /api/subscribe (double opt-in start), GET /api/confirm (finish)
+├── wrangler.jsonc          # Worker config: static assets served from ./dist, run_worker_first paths
 ├── robots.txt              # Crawl directives for search engines and AI bots (all AI bots allowlisted)
 ├── sitemap.xml             # Site sitemap (47 URLs with inline <image:image> entries; build.sh rewrites lastmod in dist/)
 ├── llms.txt                # Plain-text site summary for AI chat engines (Anthropic/Answer.AI llms.txt convention)
@@ -977,6 +986,49 @@ The site-header banner on per-post pages is a styled `<p>`, not `<h1>`, so the p
 
 ---
 
+## Email subscriptions
+
+Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 shipped 2026-09-08 (signup routes plus an unlinked `/subscribe/` page). Phases 2 to 4 (the visible Subscribe button and inline forms, the daily QOTD and new-post senders, monitoring) are pending.
+
+### Flow (double opt-in)
+
+1. `/subscribe/` posts first name + email (plus a Turnstile token and an empty honeypot field) to `POST /api/subscribe`. `js/subscribe.js` sends JSON and renders the outcome in place; without JS the plain form post is redirected back to the page with `?sent=1` or `?error=…`.
+2. The Worker validates both fields, verifies Turnstile server-side, then sends a confirmation email (Resend, from `hello@hawaiidashboard.org`) whose link carries an HMAC-SHA256-signed token `{e, n, t}` valid for 48 hours. Nothing is stored at this point.
+3. `GET /api/confirm?t=…` verifies the token, creates the contact in the readers segment (or reactivates an existing contact and re-attaches the segment) and redirects to `/subscribed/`. Expired or forged tokens go to `/subscribe/?expired=1`.
+
+A honeypot hit still returns success and sends nothing, so the endpoint never reveals who is subscribed.
+
+### File map
+
+| File | Role |
+|------|------|
+| `worker.js` | Routes `/api/subscribe` and `/api/confirm` (plus the tour-video range shim). `wrangler.jsonc` `run_worker_first` limits the Worker to `/assets/tour.mp4` and `/api/*`; every other path is served straight from Static Assets. |
+| `worker-subscribe.mjs` | Handlers, validation, token sign/verify, confirmation email template. |
+| `subscribe/index.html`, `subscribed/index.html` | Signup page and confirmation landing page (both `noindex` for now). |
+| `js/subscribe.js` | Progressive enhancement for the form. |
+| `tests/subscribe.test.js` | 16 unit tests: `cd tests && npm run test:unit`. |
+| `_headers` | CSP allows `https://challenges.cloudflare.com` (script and frame) for Turnstile. |
+| `scripts/verify-live-site.sh` | Checks `/subscribe/` returns 200 and that a GET on `/api/subscribe` reaches the Worker (405). |
+
+### Configuration (not in the repo)
+
+- Worker secrets (`wrangler secret put`): `RESEND_API_KEY`, `RESEND_SEGMENT_ID`, `TURNSTILE_SECRET_KEY`, `SUBSCRIBE_SIGNING_KEY`. Local dev reads the same names from `.dev.vars` (gitignored); use Turnstile's always-pass test secret `1x0000000000000000000000000000000AA` and the Beta segment there.
+- Turnstile widget "hawaiidashboard.org subscribe", managed mode, domains hawaiidashboard.org and localhost. The public sitekey is hardcoded in the page.
+- Resend: domain `hawaiidashboard.org` verified (DKIM at `resend._domainkey`, SPF on `send.`), segments "Dashboard readers" (live) and "Beta" (test sends). The pre-existing DMARC record is `p=reject`; Resend's signing aligns with it, any other sender will be rejected.
+- Cloudflare WAF rate-limit rule: 5 POSTs per 10 seconds per IP on `/api/subscribe`.
+- GitHub Actions: secrets `RESEND_API_KEY`, `RESEND_SEGMENT_ID`, `RESEND_BETA_SEGMENT_ID`; repository variable `EMAIL_SEND_MODE=dry-run` gates the Phase 3 senders.
+
+### Local end-to-end test
+
+```bash
+bash build.sh && wrangler dev --port 8787     # serves ./dist, reads .dev.vars
+curl -s -H 'Content-Type: application/json' \
+  -d '{"first_name":"Test","email":"you@example.com","cf-turnstile-response":"x"}' \
+  http://127.0.0.1:8787/api/subscribe          # {"ok":true} and a real confirmation email
+```
+
+---
+
 ## Analytics
 
 Four platforms are active on every HTML page (home, About, FAQ, all 7 Change Summary spans, Off the Charts archive + every post, every `/c/{slug}/` and `/q/{id}/` redirect page):
@@ -1006,17 +1058,17 @@ To add more events (e.g. tab switches, link clicks), call `this._trackEvent()` w
 
 Two test suites guard the project: unit tests for pure functions, and Playwright E2E smoke tests for the full browser experience.
 
-### Unit tests (`tests/utils.test.js`)
+### Unit tests (`tests/*.test.js`)
 
-Tests every function in `js/utils.js` using Node.js's built-in test runner (no dependencies, Node 18+).
+Node.js's built-in test runner (no dependencies, Node 20+).
 
 ```bash
 cd tests
-node --test utils.test.js compute.test.js
+node --test utils.test.js compute.test.js qotd.test.js subscribe.test.js
 # or: npm run test:unit
 ```
 
-Covers pure helpers in `js/utils.js` (rank thresholds, narrative generation) and `js/compute.js` (year parsing, median, comparison phrasing, state time-series extraction).
+Covers pure helpers in `js/utils.js` (rank thresholds, narrative generation) and `js/compute.js` (year parsing, median, comparison phrasing, state time-series extraction), the QOTD bank invariants, and the email subscription handlers in `worker-subscribe.mjs` (validation, signed confirmation token, both `/api/` routes with Turnstile and Resend stubbed).
 
 ### E2E smoke tests (`tests/smoke.spec.js`)
 
