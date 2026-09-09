@@ -147,25 +147,27 @@ describe('GET /api/confirm', () => {
     const confirm = token => lib.handleConfirm(new Request(`${ORIGIN}/api/confirm?t=${token}`), ENV);
     const fresh = () => lib.signToken({ e: 'reader@example.com', n: 'Iqbal', t: Math.floor(Date.now() / 1000) }, ENV.SUBSCRIBE_SIGNING_KEY);
 
-    it('creates the contact in the readers segment and lands on /subscribed/', async () => {
+    // Resend answers 201 to POST /contacts for a known address too, without
+    // updating it or attaching segments, so a save is always create + update
+    // + attach. The same sequence covers new, returning, and unsubscribed readers.
+    it('creates or refreshes the contact, attaches the readers segment, lands on /subscribed/', async () => {
         const res = await confirm(await fresh());
         assert.equal(res.status, 302);
-        assert.equal(res.headers.get('location'), `${ORIGIN}/subscribed/`);
-        assert.equal(calls.length, 1);
-        assert.equal(calls[0].method, 'POST');
-        assert.ok(calls[0].url.endsWith('/contacts'));
-        assert.deepEqual(calls[0].body, { email: 'reader@example.com', first_name: 'Iqbal', unsubscribed: false, segments: [{ id: 'seg-1' }] });
-    });
-    it('reactivates an existing contact and re-attaches the segment', async () => {
-        contactStatus = 409;
-        const res = await confirm(await fresh());
         assert.equal(res.headers.get('location'), `${ORIGIN}/subscribed/`);
         assert.deepEqual(calls.map(c => `${c.method} ${c.url.replace('https://api.resend.com', '')}`), [
             'POST /contacts',
             'PATCH /contacts/reader%40example.com',
             'POST /contacts/reader%40example.com/segments/seg-1',
         ]);
+        assert.deepEqual(calls[0].body, { email: 'reader@example.com', first_name: 'Iqbal', unsubscribed: false });
         assert.deepEqual(calls[1].body, { first_name: 'Iqbal', unsubscribed: false });
+        assert.equal(calls[2].body, undefined);
+    });
+    it('reports a failure when the segment attach fails, even though the create succeeded', async () => {
+        const realFetch = globalThis.fetch;
+        globalThis.fetch = async (url, init) => (String(url).includes('/segments/') ? new Response('{}', { status: 500 }) : realFetch(url, init));
+        const res = await confirm(await fresh());
+        assert.equal(res.headers.get('location'), `${ORIGIN}/subscribe/?error=save`);
     });
     it('sends expired, forged, and missing tokens back to the form', async () => {
         const old = await lib.signToken({ e: 'reader@example.com', n: 'Iqbal', t: Math.floor(Date.now() / 1000) - 49 * 3600 }, ENV.SUBSCRIBE_SIGNING_KEY);
@@ -177,8 +179,9 @@ describe('GET /api/confirm', () => {
         assert.equal(calls.length, 0);
     });
     it('reports a save failure instead of claiming success', async () => {
-        globalThis.fetch = async () => new Response('{}', { status: 500 });
+        contactStatus = 500;
         const res = await confirm(await fresh());
         assert.equal(res.headers.get('location'), `${ORIGIN}/subscribe/?error=save`);
+        assert.equal(calls.length, 1);
     });
 });
