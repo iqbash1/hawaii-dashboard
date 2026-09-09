@@ -2760,19 +2760,20 @@ body {
 .otc-read-next a:hover { text-decoration: underline; }
 
 /* --- Email subscribe form -------------------------------------------------
-   One component for every subscribe surface (the /subscribe/ page today),
-   driven by js/subscribe.js. Filled pill button matches .tour-cta. */
+   One component for every subscribe surface: the dialog that js/subscribe.js
+   builds and the inline fallback on /subscribe/. Spacing follows the metric
+   modal; the filled pill button follows .tour-cta. */
 .subscribe-form {
     position: relative;
-    max-width: 440px;
-    margin-top: 1.25rem;
+    max-width: 480px;
+    margin-top: 1.5rem;
 }
 .subscribe-form label {
     display: block;
     font-size: var(--text-sm);
     font-weight: 600;
     color: var(--text);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.45rem;
 }
 .subscribe-form input {
     display: block;
@@ -2780,18 +2781,23 @@ body {
     font: inherit;
     font-size: var(--text-md);
     color: var(--text);
-    padding: 0.55rem 0.7rem;
+    padding: 0.7rem 0.85rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     background: var(--card-bg);
-    margin-bottom: 0.85rem;
+    margin-bottom: 1.15rem;
 }
 .subscribe-form input:focus {
     outline: none;
     border-color: var(--hawaii-blue);
     box-shadow: var(--shadow-focus);
 }
-.subscribe-form .cf-turnstile { margin-bottom: 0.85rem; }
+/* Reserve the widget's height so the button does not jump when it renders. */
+.subscribe-form .cf-turnstile,
+.subscribe-turnstile {
+    min-height: 65px;
+    margin-bottom: 1.15rem;
+}
 /* Honeypot: off-screen, never focusable. */
 .subscribe-hp {
     position: absolute;
@@ -2804,8 +2810,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
-    padding: 0 1.4rem;
+    min-height: 46px;
+    padding: 0 1.6rem;
     font-family: inherit;
     font-size: var(--text-md);
     font-weight: 600;
@@ -2826,19 +2832,19 @@ body {
 .subscribe-btn:disabled { opacity: 0.6; cursor: default; }
 .subscribe-form--sent .subscribe-fields { display: none; }
 .subscribe-status {
-    margin: 0.85rem 0 0;
+    margin: 1rem 0 0;
     font-size: var(--text-base);
     font-weight: 500;
-    line-height: 1.5;
+    line-height: 1.55;
 }
 .subscribe-status:empty { display: none; }
 .subscribe-status--ok { color: var(--positive); }
 .subscribe-status--err { color: var(--negative); }
 .subscribe-note {
-    margin-top: 1rem;
+    margin-top: 1.25rem;
     font-size: var(--text-sm);
     color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.55;
 }
 
 /* Nav pill: the one filled element in the link row, on every page. On
@@ -2874,21 +2880,6 @@ body {
     }
 }
 
-/* Header call-to-action pair: subscribe filled (primary), tour outlined. */
-.header-ctas {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.6rem;
-    margin-top: 1.1rem;
-}
-.header-ctas .tour-cta { margin-top: 0; }
-.tour-cta--secondary {
-    color: var(--hawaii-blue);
-    background: transparent;
-    box-shadow: none;
-}
-
 /* Contextual prompts that open the dialog. */
 .qotd-teaser-footer a {
     color: var(--hawaii-blue);
@@ -2920,63 +2911,55 @@ body {
 }
 .otc-subscribe a:hover { background: var(--hawaii-blue-dark); }
 
-/* The dialog itself (js/subscribe.js builds it on first open). */
+/* The dialog itself (js/subscribe.js builds it on first open). Same grammar
+   as the metric modal: white card, 1px border, --radius, the .modal-close
+   button, the rgba(0,0,0,.5) overlay, .modal-title type for the heading. */
 .subscribe-dialog {
     /* The global reset zeroes margins; restore the UA centering for dialogs. */
     margin: auto;
-    width: min(440px, calc(100% - 2rem));
+    width: min(500px, calc(100% - 2rem));
     padding: 0;
-    border: none;
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--card-bg);
     color: var(--text);
     box-shadow: var(--shadow-card);
     font-family: var(--font);
 }
-.subscribe-dialog::backdrop { background: rgba(17, 24, 28, 0.45); }
-.subscribe-dialog-body { padding: 1.6rem 1.75rem 1.5rem; }
-.subscribe-dialog-close {
+.subscribe-dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+.subscribe-dialog .modal-close {
     position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border);
-    background: var(--card-bg);
-    border-radius: var(--radius-sm);
-    font-size: 0.95rem;
-    line-height: 1;
-    color: var(--text);
-    cursor: pointer;
+    top: 1.25rem;
+    right: 1.25rem;
 }
-.subscribe-dialog-close:hover { background: var(--avg-gray-light); }
+.subscribe-dialog-body { padding: 2.25rem 2.5rem; }
 .subscribe-eyebrow {
-    margin: 0 0 0.5rem;
-    font-size: 0.72rem;
+    margin: 0 0 0.85rem;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--hawaii-blue);
     font-weight: 600;
 }
 .subscribe-dialog-title {
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.75rem;
+    padding-right: 2.75rem;
+    font-family: var(--font-heading);
     font-size: 1.35rem;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     line-height: 1.3;
     color: var(--text);
 }
 .subscribe-dialog-lede {
-    margin: 0 0 1rem;
+    margin: 0 0 1.5rem;
     color: var(--text-muted);
-    font-size: var(--text-md);
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: 1.55;
 }
 .subscribe-dialog .subscribe-form { margin-top: 0; max-width: none; }
-/* Reserve the widget's height so the button does not jump when it renders. */
-.subscribe-turnstile { min-height: 65px; margin-bottom: 0.85rem; }
+.subscribe-dialog .subscribe-note { margin-top: 1.5rem; }
 @media (max-width: 480px) {
-    .subscribe-dialog-body { padding: 1.4rem 1.1rem 1.25rem; }
+    .subscribe-dialog-body { padding: 1.75rem 1.25rem 1.5rem; }
+    .subscribe-dialog .modal-close { top: 0.9rem; right: 0.9rem; }
 }

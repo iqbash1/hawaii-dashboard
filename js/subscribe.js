@@ -6,7 +6,7 @@
 // the Charts prompt) opens a <dialog> with the signup form, so the
 // reader never leaves the page. Its value names the surface for GA4.
 //
-//   ?subscribed=1        the confirmation link landed: open the "You're in" state
+//   ?subscribed=1        the confirmation link landed: open the "You're in" state (message only; close with ✕, Esc or the backdrop)
 //   ?subscribe=expired   the link was too old: open the form with a message
 //   ?subscribe=save      Resend failed on confirm: open the form with a message
 //
@@ -128,7 +128,7 @@
         dialog = document.createElement('dialog');
         dialog.className = 'subscribe-dialog';
         dialog.setAttribute('aria-labelledby', 'subscribe-dialog-title');
-        dialog.innerHTML = '<button class="subscribe-dialog-close" type="button" aria-label="Close">&#x2715;</button><div class="subscribe-dialog-body"></div>';
+        dialog.innerHTML = '<button class="modal-close subscribe-dialog-close" type="button" aria-label="Close">&#x2715;</button><div class="subscribe-dialog-body"></div>';
         document.body.appendChild(dialog);
         dialog.querySelector('.subscribe-dialog-close').addEventListener('click', closeDialog);
         dialog.addEventListener('click', function (e) { if (e.target === dialog) closeDialog(); });
@@ -172,11 +172,9 @@
         var body = ensureDialog().querySelector('.subscribe-dialog-body');
         body.innerHTML = EYEBROW +
             '<h2 id="subscribe-dialog-title" class="subscribe-dialog-title">You’re in.</h2>' +
-            '<p class="subscribe-dialog-lede">Tomorrow’s question lands in your inbox around 6 AM. New Off the Charts posts arrive as they publish.</p>' +
-            '<p><button class="subscribe-btn" type="button" data-subscribe-close>Back to today’s question</button></p>';
-        body.querySelector('[data-subscribe-close]').addEventListener('click', closeDialog);
+            '<p class="subscribe-dialog-lede">Tomorrow’s question lands in your inbox around 6 AM. New Off the Charts posts arrive as they publish.</p>';
         if (!dialog.open) dialog.showModal();
-        body.querySelector('[data-subscribe-close]').focus();
+        dialog.querySelector('.modal-close').focus();
     }
 
     // ---- wiring ----

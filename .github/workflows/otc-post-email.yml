@@ -1,0 +1,55 @@
+name: New post email
+
+# Emails subscribers when an Off the Charts post is published. Fires on any
+# push to main that touches js/otc-posts.js (sync-otc-meta regenerates it
+# with every post), then sends only the slugs that are new since the
+# previous commit and dated within the last 7 days, after the post answers
+# on the live site. Put [no-email] in the commit message to skip.
+#
+# Manual run: pick the slug yourself (the 7-day guard does not apply).
+# Where it goes is the EMAIL_SEND_MODE repository variable (dry-run | beta | live).
+# The broadcast is named otc-<slug>; a re-run for the same slug sends nothing.
+#
+# Secrets: RESEND_API_KEY, RESEND_SEGMENT_ID, RESEND_BETA_SEGMENT_ID, MAIL_TO
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/otc-posts.js'
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Post slug to send, e.g. renewables-prices'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otc-post-email
+  cancel-in-progress: false
+
+jobs:
+  send:
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[no-email]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # the previous commit's js/otc-posts.js is the baseline
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+
+      - name: Build and send the new-post email
+        run: node scripts/send-otc-email.js ${{ github.event_name == 'workflow_dispatch' && format('--slug {0}', inputs.slug) || format('--since {0}', github.event.before) }}
+        env:
+          EMAIL_SEND_MODE: ${{ vars.EMAIL_SEND_MODE }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_SEGMENT_ID: ${{ secrets.RESEND_SEGMENT_ID }}
+          RESEND_BETA_SEGMENT_ID: ${{ secrets.RESEND_BETA_SEGMENT_ID }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
