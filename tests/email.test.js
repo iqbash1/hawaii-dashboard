@@ -13,17 +13,17 @@ const qotd = require('../scripts/send-qotd-email');
 const otc = require('../scripts/send-otc-email');
 
 const TODAY = { id: 'q083', claim: 'Food insecurity has gone down in Hawaiʻi in the last five years.', correct: false, answer: "Hawaiʻi's food insecurity rate went from 8.0% to 10.8%.", chartUrl: '/t/food_insecurity_rate/' };
-const YESTERDAY = { id: 'q079', claim: 'Unsheltered homelessness has gone down in Hawaiʻi in the last five years.', correct: false, answer: "Hawaiʻi's unsheltered homelessness rate went from 25.0 to 28.2 per 10K between 2019 and 2024 (+12.8%).", chartUrl: '/t/unsheltered_homeless_rate/' };
 
 describe('email chrome', () => {
-    it('wraps the body with the eyebrow, unsubscribe tag and postal address', () => {
-        const { html, text } = tpl.layout({ eyebrow: 'Test & Co', bodyHtml: '<p>hi</p>', bodyText: 'hi' });
-        assert.match(html, /Test &amp; Co/);
+    it('wraps the body with the unsubscribe tag and postal address, nothing above the body', () => {
+        const { html, text } = tpl.layout({ bodyHtml: '<p>hi</p>', bodyText: 'hi' });
         assert.match(html, /<p>hi<\/p>/);
         assert.match(html, /\{\{\{RESEND_UNSUBSCRIBE_URL\}\}\}/);
         assert.match(html, /Honolulu, HI 96822/);
-        assert.match(text, /^TEST & CO\n\nhi\n/);
-        assert.match(text, /Unsubscribe: \{\{\{RESEND_UNSUBSCRIBE_URL\}\}\}/);
+        assert.equal(html.indexOf('<p>hi</p>') < html.indexOf('<hr'), true);
+        assert.match(text, /^hi\n\n--\n/);
+        assert.match(text, /Unsubscribe at any time: \{\{\{RESEND_UNSUBSCRIBE_URL\}\}\}\n\nGUILD Consulting/);
+        assert.match(html, /at any time\.<\/p>\s*<p style="margin:14px 0 0[^"]*">GUILD Consulting/);
     });
     it('fills merge tags for previews', () => {
         const s = tpl.previewCopy('Aloha {{{contact.first_name|there}}}, <a href="{{{RESEND_UNSUBSCRIBE_URL}}}">x</a>');
@@ -39,23 +39,22 @@ describe('daily question email', () => {
         assert.equal(qotd.hstDate(Date.parse('2026-09-10T05:30:00Z')), '2026-09-09'); // 19:30 HST the day before
         assert.equal(qotd.hstDate(Date.parse('2026-09-10T16:00:00Z')), '2026-09-10'); // 06:00 HST
     });
-    it('picks today and yesterday from the bank by day index, wrapping at the ends', () => {
+    it('picks today from the bank by day index, wrapping at the end', () => {
         const bank = [{ id: 'a' }, { id: 'b' }, { id: 'c' }];
-        assert.deepEqual(qotd.questionsFor({ dayIndex: () => 4 }, bank), { today: { id: 'b' }, yesterday: { id: 'a' } });
-        assert.deepEqual(qotd.questionsFor({ dayIndex: () => 0 }, bank), { today: { id: 'a' }, yesterday: { id: 'c' } });
+        assert.deepEqual(qotd.todayFor({ dayIndex: () => 4 }, bank), { id: 'b' });
+        assert.deepEqual(qotd.todayFor({ dayIndex: () => 3 }, bank), { id: 'a' });
     });
-    it('puts the claim in the subject, both answer buttons on the question link, and yesterday\'s verdict in the body', () => {
-        const mail = qotd.buildQotdEmail(TODAY, YESTERDAY, '2026-09-09');
+    it('opens with the greeting, puts the claim in the subject, and both answer buttons on the question link', () => {
+        const mail = qotd.buildQotdEmail(TODAY, '2026-09-09');
         assert.equal(mail.name, 'qotd-2026-09-09');
         assert.equal(mail.subject, `True or false: ${TODAY.claim}`);
+        const body = mail.html.slice(mail.html.indexOf('<p'));
+        assert.match(body, /^<p style="[^"]*">Aloha \{\{\{contact\.first_name\|there\}\}\},<\/p>/, 'greeting is the first thing in the card');
         const answerLinks = mail.html.match(/href="https:\/\/hawaiidashboard\.org\/q\/q083\/\?utm_source=email&utm_medium=qotd&utm_campaign=daily"/g);
         assert.equal(answerLinks.length, 2);
-        assert.match(mail.html, /Aloha \{\{\{contact\.first_name\|there\}\}\},/);
-        assert.match(mail.html, /<strong>False\.<\/strong> Hawaiʻi&#39;s unsheltered homelessness rate/);
-        assert.match(mail.html, /\/t\/unsheltered_homeless_rate\/\?utm_source=email&utm_medium=qotd&utm_campaign=yesterday/);
-        assert.doesNotMatch(mail.html, /10\.8%/, 'today\'s answer must not leak into today\'s email');
+        assert.doesNotMatch(mail.html, /10\.8%|Yesterday/, 'no answers in the email');
+        assert.match(mail.text, /^Aloha \{\{\{contact\.first_name\|there\}\}\},\n\nFood insecurity/);
         assert.match(mail.text, /True or false\? Answer and see the chart: https:\/\/hawaiidashboard\.org\/q\/q083\//);
-        assert.match(mail.text, /False\. Hawaiʻi's unsheltered/);
     });
 });
 
@@ -76,11 +75,15 @@ describe('new post email', () => {
         const mail = otc.buildOtcEmail(post);
         assert.equal(mail.name, 'otc-homelessness-tracks-home-prices');
         assert.equal(mail.subject, 'Where home prices outrun incomes, homelessness follows.');
-        assert.match(mail.html, /OFF THE CHARTS · 29 AUGUST 2026|Off the Charts · 29 August 2026/);
+        assert.match(mail.html, /Aloha \{\{\{contact\.first_name\|there\}\}\},<\/p>\s*<p[^>]*>New on Off the Charts, 29 August 2026:/);
         assert.match(mail.html, /assets\/og\/off-the-charts\/homelessness-tracks-home-prices\.png/);
         assert.match(mail.html, /off-the-charts\/homelessness-tracks-home-prices\/\?utm_source=email&utm_medium=otc&utm_campaign=homelessness-tracks-home-prices/);
         assert.match(mail.html, /Alabama&rsquo;s income/);
         assert.match(mail.text, /Alabama’s income is about the same as Hawaiʻi’s/);
+    });
+    it('schedules for 12:00 HST on the next HST calendar day', () => {
+        assert.equal(otc.nextDayNoonHst(Date.parse('2026-09-09T21:00:00Z')), '2026-09-10T22:00:00Z'); // 11:00 HST Sep 9 -> noon Sep 10
+        assert.equal(otc.nextDayNoonHst(Date.parse('2026-09-10T05:00:00Z')), '2026-09-10T22:00:00Z'); // 19:00 HST Sep 9 -> noon Sep 10
     });
     it('refuses a page it cannot parse', () => {
         assert.throws(() => otc.parsePost('x', '<h1>Title</h1>'), /could not read/);

@@ -32,18 +32,21 @@ const BUTTON = 'display:inline-block;min-width:120px;text-align:center;padding:1
 const button = (href, label, filled = true) =>
     `<a href="${href}" style="${BUTTON}${filled ? 'background:#0C7081;color:#fff;border:2px solid #0C7081' : 'background:#fff;color:#0C7081;border:2px solid #0C7081'}">${label}</a>`;
 
-// Email chrome: grey ground, white card, teal eyebrow, footer with the
-// unsubscribe merge tag (Resend resolves it per recipient in broadcasts).
-function layout({ eyebrow, bodyHtml, bodyText }) {
+const GREETING = 'Aloha {{{contact.first_name|there}}},';
+
+// Email chrome: grey ground, white card, footer with the unsubscribe merge
+// tag (Resend resolves it per recipient in broadcasts). The body opens with
+// the greeting; the subject line already says what the email is about.
+function layout({ bodyHtml, bodyText }) {
     const html = `<div style="background:#F5F5F5;padding:24px 12px">
   <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #EAEAEA;border-radius:8px;padding:28px 28px 24px;font-family:Inter,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#333;font-size:16px;line-height:1.5">
-    <p style="margin:0 0 18px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#0C7081;font-weight:600">${esc(eyebrow)}</p>
 ${bodyHtml}
     <hr style="border:none;border-top:1px solid #EAEAEA;margin:28px 0 16px">
-    <p style="margin:0;font-size:12px;color:#777;line-height:1.5">You are getting this because you subscribed at <a href="${SITE}/" style="color:#0C7081">hawaiidashboard.org</a>. <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#0C7081">Unsubscribe</a> any time.<br>${esc(POSTAL)}</p>
+    <p style="margin:0;font-size:12px;color:#777;line-height:1.5">You are getting this email because you subscribed at <a href="${SITE}/" style="color:#0C7081">hawaiidashboard.org</a>. <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#0C7081">Unsubscribe</a> at any time.</p>
+    <p style="margin:14px 0 0;font-size:12px;color:#777;line-height:1.5">${esc(POSTAL)}</p>
   </div>
 </div>`;
-    const text = `${eyebrow.toUpperCase()}\n\n${bodyText}\n\n--\nYou are getting this because you subscribed at ${SITE}/. Unsubscribe: {{{RESEND_UNSUBSCRIBE_URL}}}\n${POSTAL}`;
+    const text = `${bodyText}\n\n--\nYou are getting this email because you subscribed at ${SITE}/. Unsubscribe at any time: {{{RESEND_UNSUBSCRIBE_URL}}}\n\n${POSTAL}`;
     return { html, text };
 }
 
@@ -103,4 +106,4 @@ async function deliver({ name, subject, html, text }, { scheduledAt } = {}) {
     return { mode: m, id: out.id };
 }
 
-module.exports = { SITE, FROM, REPLY_TO, POSTAL, esc, decode, button, layout, previewCopy, resend, mode, broadcastExists, deliver };
+module.exports = { SITE, FROM, REPLY_TO, POSTAL, GREETING, esc, decode, button, layout, previewCopy, resend, mode, broadcastExists, deliver };

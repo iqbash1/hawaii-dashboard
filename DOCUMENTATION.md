@@ -1024,14 +1024,14 @@ A honeypot hit still returns success and sends nothing, so the endpoint never re
 
 ### The emails (Phase 3)
 
-Two senders, one shared chrome (`scripts/email-template.js`: sender identity, grey ground + white card, teal eyebrow, footer with `{{{RESEND_UNSUBSCRIBE_URL}}}` and the postal address; Resend fills the tags per recipient). Both go out as Resend **broadcasts** to a segment, so unsubscribes are handled by Resend, and both are idempotent by broadcast name.
+Two senders, one shared chrome (`scripts/email-template.js`: sender identity, grey ground + white card, footer with `{{{RESEND_UNSUBSCRIBE_URL}}}` and the postal address; Resend fills the tags per recipient). Both go out as Resend **broadcasts** to a segment, so unsubscribes are handled by Resend, and both are idempotent by broadcast name.
 
 | Email | Script | Workflow | When | Broadcast name |
 |-------|--------|----------|------|----------------|
 | Daily question | `scripts/send-qotd-email.js` (`npm run email:qotd`) | `qotd-daily-email.yml` | cron 05:20 HST creates a broadcast **scheduled for 06:00 HST**, so GitHub's cron jitter never moves delivery. `--now` sends immediately (also automatic after 06:00). | `qotd-<HST date>` |
-| New post | `scripts/send-otc-email.js` (`npm run email:otc`) | `otc-post-email.yml` | on push to main touching `js/otc-posts.js`: slugs new since the previous commit, dated within 7 days, after the post answers on the live site. `[no-email]` in the commit message skips. Manual run takes a slug. | `otc-<slug>` |
+| New post | `scripts/send-otc-email.js` (`npm run email:otc`) | `otc-post-email.yml` | on push to main touching `js/otc-posts.js`: slugs new since the previous commit, dated within 7 days, after the post answers on the live site, **scheduled for 12:00 HST the next day** (a day to cancel in Resend). `[no-email]` in the commit message skips. Manual run takes a slug, `now` sends immediately. | `otc-<slug>` |
 
-The daily email carries the claim in the subject ("True or false: …"), True/False buttons that both open `/q/{id}/` on the site (the answer is never in the email), and "Yesterday's answer" with its verdict and chart link. The new-post email carries the title, the post's OG card, the dek and a "Read the post" button. Links carry `utm_source=email&utm_medium=qotd|otc`.
+Both open with "Aloha {first name}," and stay minimal (user call 2026-09-09). The daily email: the claim in the subject ("True or false: …"), the claim, and True/False buttons that both open `/q/{id}/` on the site; the answer is never in the email. The new-post email: one context line, the title, the post's OG card, the dek and a "Read the post" button. Links carry `utm_source=email&utm_medium=qotd|otc`.
 
 **Where it goes** is the `EMAIL_SEND_MODE` repository variable, read at run time:
 
@@ -1045,7 +1045,7 @@ Change it with `gh variable set EMAIL_SEND_MODE --body beta` (or `live`). `--pre
 
 **Runbook**
 - Edited today's question after 05:20 HST? The scheduled broadcast still carries the old claim: delete it in Resend (Broadcasts, it is `qotd-<date>`, status scheduled) and run the daily workflow by hand with `now` checked. A run without deleting it first sends nothing, by design.
-- A post published and the email did not go? Check the workflow run: the live-site wait fails if the deploy took longer than 10 minutes, and re-running the workflow by hand with the slug is safe (the name guard stops duplicates).
+- A post published and no email the next day? Check the workflow run from the publish push: the live-site wait fails if the deploy took longer than 10 minutes, and re-running the workflow by hand with the slug is safe (the name guard stops duplicates). To pull a scheduled post email, delete the `otc-<slug>` broadcast in Resend before noon HST the next day.
 - Kill switch: set `EMAIL_SEND_MODE` to `dry-run`, or disable the workflow in the Actions tab. Cancelling an already scheduled broadcast is only possible in Resend.
 
 ### Local end-to-end test

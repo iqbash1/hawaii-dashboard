@@ -4,13 +4,17 @@
 //
 //   node scripts/send-otc-email.js --slug <slug>       # one post (manual dispatch)
 //   node scripts/send-otc-email.js --since <git-ref>   # every post added to js/otc-posts.js since that commit
+//   node scripts/send-otc-email.js --slug <slug> --now       # send right away instead of the next day
 //   node scripts/send-otc-email.js --slug <slug> --preview   # write .analytics/email-otc-<slug>.html, no API call
 //
-// --since is what the push-triggered workflow uses. Guards: only slugs new
-// since the given commit, dated within the last 7 days (so a first run or a
-// history rewrite can never mail the back catalogue), skipped when a
-// broadcast named otc-<slug> already exists, and in beta/live modes the
-// post must answer on the live site before anything goes out (the email
+// The email goes out the day AFTER publication (user call 2026-09-09): the
+// broadcast is created when the post lands on main and scheduled for 12:00
+// HST the next day, which leaves a full day to catch a problem and cancel
+// it in Resend. --since is what the push-triggered workflow uses. Guards:
+// only slugs new since the given commit, dated within the last 7 days (so
+// a first run or a history rewrite can never mail the back catalogue),
+// skipped when a broadcast named otc-<slug> already exists, and in
+// beta/live modes the post must answer on the live site first (the email
 // links to it). Target and behaviour come from EMAIL_SEND_MODE, see
 // scripts/email-template.js. Runs from .github/workflows/otc-post-email.yml.
 'use strict';
@@ -18,10 +22,18 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
-const { SITE, decode, button, layout, deliver, previewCopy, mode } = require('./email-template');
+const { SITE, GREETING, decode, button, layout, deliver, previewCopy, mode } = require('./email-template');
 
 const ROOT = path.join(__dirname, '..');
 const MAX_AGE_DAYS = 7;
+const SEND_HOUR_UTC = 22; // 12:00 HST
+
+/** ISO timestamp for 12:00 HST on the day after `now` (HST calendar). */
+function nextDayNoonHst(now = Date.now()) {
+    const hst = new Date(now - 10 * 60 * 60 * 1000);
+    const next = new Date(Date.UTC(hst.getUTCFullYear(), hst.getUTCMonth(), hst.getUTCDate() + 1, SEND_HOUR_UTC));
+    return next.toISOString().replace('.000Z', 'Z');
+}
 
 /** {slug, date} pairs from a js/otc-posts.js source text. */
 function postsIn(src) {
@@ -53,13 +65,14 @@ function readPost(slug) {
 function buildOtcEmail(post) {
     const url = `${SITE}/off-the-charts/${post.slug}/?utm_source=email&utm_medium=otc&utm_campaign=${post.slug}`;
     const card = `${SITE}/assets/og/off-the-charts/${post.slug}.png`;
-    const bodyHtml = `    <p style="margin:0 0 18px">Aloha {{{contact.first_name|there}}},</p>
+    const bodyHtml = `    <p style="margin:0 0 20px">${GREETING}</p>
+    <p style="margin:0 0 8px;font-size:14px;color:#555">New on Off the Charts, ${post.date}:</p>
     <h1 style="font-size:24px;line-height:1.35;font-weight:600;margin:0 0 18px;color:#333">${post.title}</h1>
     <p style="margin:0 0 20px"><a href="${url}"><img src="${card}" width="504" alt="" style="display:block;width:100%;max-width:504px;height:auto;border:1px solid #EAEAEA;border-radius:6px"></a></p>
     <p style="margin:0 0 24px">${post.dek}</p>
     <p style="margin:0">${button(url, 'Read the post &rarr;')}</p>`;
-    const bodyText = `Aloha {{{contact.first_name|there}}},\n\n${decode(post.title)}\n\n${decode(post.dek)}\n\nRead the post: ${url}`;
-    return { name: `otc-${post.slug}`, subject: decode(post.title), ...layout({ eyebrow: `Off the Charts · ${post.date}`, bodyHtml, bodyText }) };
+    const bodyText = `${GREETING}\n\nNew on Off the Charts, ${post.date}:\n${decode(post.title)}\n\n${decode(post.dek)}\n\nRead the post: ${url}`;
+    return { name: `otc-${post.slug}`, subject: decode(post.title), ...layout({ bodyHtml, bodyText }) };
 }
 
 /** Wait until the live page serves the post (the email links to it). */
@@ -111,11 +124,13 @@ async function main() {
             continue;
         }
         if (mode() !== 'dry-run') await waitForLive(post);
-        await deliver(mail);
+        const scheduledAt = args.includes('--now') ? null : nextDayNoonHst();
+        if (scheduledAt && mode() === 'dry-run') console.log(`(would be scheduled for ${scheduledAt}; dry-run previews go out now)`);
+        await deliver(mail, { scheduledAt });
     }
 }
 
-module.exports = { postsIn, newSlugs, parsePost, buildOtcEmail };
+module.exports = { postsIn, newSlugs, parsePost, buildOtcEmail, nextDayNoonHst };
 
 if (require.main === module) {
     main().catch(err => { console.error(err.message || err); process.exit(1); });
