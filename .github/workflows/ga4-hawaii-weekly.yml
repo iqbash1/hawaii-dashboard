@@ -32,7 +32,10 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          # @google-analytics/data v7 declares engines node >=22; on 20 the
+          # weekly report would install with an EBADENGINE warning and then
+          # run against unsupported auth deps.
+          node-version: '22'
 
       - run: npm ci
 
