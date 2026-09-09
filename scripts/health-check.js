@@ -46,12 +46,68 @@ function checkData() {
 }
 
 // ── 2. Live site invariants ─────────────────────────────────────────────────
-function checkLiveSite() {
+// A deploy in flight serves a mix of old and new assets, so invariants that are
+// each individually fine fail together. That reddened this row on 2026-09-08
+// while two deploys were landing; verify-live-site.sh passed 54/54 minutes
+// later, unchanged. verify-live-site.sh's own wait mode does not fix it: that
+// mode polls for ANY content-hash change for up to 10 minutes, which is right
+// after a push but burns the whole window on a run where nothing is deploying,
+// which is why this check passed --no-wait in the first place.
+//
+// So wait for the specific commit instead. build.sh stamps ?v={short-SHA} on
+// every asset, so the homepage says which build is live. Normal runs cost one
+// extra request and no delay, because the SHA already matches.
+const DEPLOY_WAIT_MS = 240000;
+const DEPLOY_POLL_MS = 15000;
+
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+/** Short SHA of the build the live site is currently serving, or null. */
+function liveSha() {
+    const m = sh(`curl -s --max-time 20 "${SITE}/"`).out.match(/\.js\?v=([0-9a-f]+)/);
+    return m ? m[1] : null;
+}
+
+/**
+ * Poll until the live site serves the commit under test. Returns null when
+ * waiting cannot apply, so the caller falls back to checking immediately.
+ */
+async function waitForDeploy() {
+    const head = sh('git rev-parse --short=7 HEAD').out.trim();
+    if (!head) return null;
+    // Skip the wait when HEAD was never pushed: the live site can never catch up
+    // to a local-only commit, so waiting would just burn the window every run.
+    // If origin/main is missing (a shallow CI checkout), fall through and wait.
+    if (sh('git rev-parse --verify --quiet origin/main').ok
+        && !sh('git merge-base --is-ancestor HEAD origin/main').ok) return null;
+
+    const deadline = Date.now() + DEPLOY_WAIT_MS;
+    let live = liveSha();
+    while (live && live !== head && Date.now() < deadline) {
+        await sleep(DEPLOY_POLL_MS);
+        live = liveSha();
+    }
+    return { head, live, settled: live === head };
+}
+
+async function checkLiveSite() {
+    const deploy = await waitForDeploy();
     const r = sh('bash scripts/verify-live-site.sh --no-wait');
     const failed = (r.out.match(/Failed:\s*(\d+)/) || [])[1];
     const passed = (r.out.match(/Passed:\s*(\d+)/) || [])[1];
-    if (r.ok && (failed === '0' || failed === undefined)) add('Live site', 'green', `${passed || 'all'} live invariants pass on ${SITE}`);
-    else add('Live site', 'red', `${failed || 'some'} live-site check(s) failed: ${lastLines(r.out, 1)}`);
+    if (r.ok && (failed === '0' || failed === undefined)) {
+        add('Live site', 'green', `${passed || 'all'} live invariants pass on ${SITE}`);
+    } else if (deploy && deploy.live && !deploy.settled) {
+        // Still failing AND we can see the live site is serving a different build:
+        // the deploy is the story, not the invariants. Yellow, with both SHAs named.
+        // Requires deploy.live: a null SHA means the site did not answer or the
+        // stamp was unreadable, which is an outage, not a slow deploy, and must
+        // stay red rather than being softened into "still propagating".
+        add('Live site', 'yellow',
+            `live site is serving ${deploy.live}, not ${deploy.head}, after ${DEPLOY_WAIT_MS / 1000}s: deploy stalled or still propagating, so ${failed || 'some'} invariant(s) could not be trusted`);
+    } else {
+        add('Live site', 'red', `${failed || 'some'} live-site check(s) failed: ${lastLines(r.out, 1)}`);
+    }
 }
 
 // ── 3. Security headers ─────────────────────────────────────────────────────
