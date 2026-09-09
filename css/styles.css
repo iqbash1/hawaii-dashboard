@@ -2758,3 +2758,85 @@ body {
     text-decoration: none;
 }
 .otc-read-next a:hover { text-decoration: underline; }
+
+/* --- Email subscribe form -------------------------------------------------
+   One component for every subscribe surface (the /subscribe/ page today),
+   driven by js/subscribe.js. Filled pill button matches .tour-cta. */
+.subscribe-form {
+    position: relative;
+    max-width: 440px;
+    margin-top: 1.25rem;
+}
+.subscribe-form label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+}
+.subscribe-form input {
+    display: block;
+    width: 100%;
+    font: inherit;
+    font-size: var(--text-md);
+    color: var(--text);
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card-bg);
+    margin-bottom: 0.85rem;
+}
+.subscribe-form input:focus {
+    outline: none;
+    border-color: var(--hawaii-blue);
+    box-shadow: var(--shadow-focus);
+}
+.subscribe-form .cf-turnstile { margin-bottom: 0.85rem; }
+/* Honeypot: off-screen, never focusable. */
+.subscribe-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+.subscribe-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 1.4rem;
+    font-family: inherit;
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: #fff;
+    background: var(--hawaii-blue);
+    border: 1px solid var(--hawaii-blue);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    box-shadow: var(--shadow-pop);
+    transition: background 0.15s, border-color 0.15s;
+}
+.subscribe-btn:hover,
+.subscribe-btn:focus-visible {
+    background: var(--hawaii-blue-dark);
+    border-color: var(--hawaii-blue-dark);
+    outline: none;
+}
+.subscribe-btn:disabled { opacity: 0.6; cursor: default; }
+.subscribe-form--sent .subscribe-fields { display: none; }
+.subscribe-status {
+    margin: 0.85rem 0 0;
+    font-size: var(--text-base);
+    font-weight: 500;
+    line-height: 1.5;
+}
+.subscribe-status:empty { display: none; }
+.subscribe-status--ok { color: var(--positive); }
+.subscribe-status--err { color: var(--negative); }
+.subscribe-note {
+    margin-top: 1rem;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+}
