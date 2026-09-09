@@ -28,6 +28,7 @@ describe('email chrome', () => {
     it('fills merge tags for previews', () => {
         const s = tpl.previewCopy('Aloha {{{contact.first_name|there}}}, <a href="{{{RESEND_UNSUBSCRIBE_URL}}}">x</a>');
         assert.equal(s, 'Aloha there, <a href="https://hawaiidashboard.org/subscribe/#preview-only">x</a>');
+        assert.equal(tpl.previewCopy('Aloha {{{contact.first_name|there}}},', 'Iqbal'), 'Aloha Iqbal,');
     });
     it('decodes the entities the site uses', () => {
         assert.equal(tpl.decode('Hawai&#x02BB;i&rsquo;s &amp; more&hellip;'), 'Hawaiʻi’s & more…');

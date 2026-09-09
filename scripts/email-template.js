@@ -50,10 +50,12 @@ ${bodyHtml}
     return { html, text };
 }
 
-// Previews go out as plain emails, where Resend does not resolve merge tags.
-function previewCopy(s) {
+// Previews go out as plain emails, where Resend does not resolve merge tags,
+// so fill them here: the recipient's first name (looked up from their contact
+// when available) and a stand-in for the unsubscribe link.
+function previewCopy(s, firstName = 'there') {
     return String(s)
-        .replace(/\{\{\{contact\.first_name\|there\}\}\}/g, 'there')
+        .replace(/\{\{\{contact\.first_name\|there\}\}\}/g, firstName)
         .replace(/\{\{\{RESEND_UNSUBSCRIBE_URL\}\}\}/g, `${SITE}/subscribe/#preview-only`);
 }
 
@@ -89,7 +91,8 @@ async function deliver({ name, subject, html, text }, { scheduledAt } = {}) {
     if (m === 'dry-run') {
         const to = process.env.MAIL_TO;
         if (!to) throw new Error('MAIL_TO is not set (dry-run preview recipient)');
-        const out = await resend('POST', '/emails', { from: FROM, to: [to], reply_to: REPLY_TO, subject: `[dry run] ${subject}`, html: previewCopy(html), text: previewCopy(text) });
+        const firstName = await resend('GET', `/contacts/${encodeURIComponent(to)}`).then(c => c.first_name || 'there').catch(() => 'there');
+        const out = await resend('POST', '/emails', { from: FROM, to: [to], reply_to: REPLY_TO, subject: `[dry run] ${subject}`, html: previewCopy(html, firstName), text: previewCopy(text, firstName) });
         console.log(`dry-run: preview of "${name}" sent to ${to} (${out.id})`);
         return { mode: m, id: out.id };
     }
