@@ -26,6 +26,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: qotd-daily-email
@@ -51,3 +52,23 @@ jobs:
           RESEND_SEGMENT_ID: ${{ secrets.RESEND_SEGMENT_ID }}
           RESEND_BETA_SEGMENT_ID: ${{ secrets.RESEND_BETA_SEGMENT_ID }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
+
+      # Rolling `email-failed` issue: opened or updated when this job fails,
+      # closed again by the next successful run. Rolled up by the weekly
+      # health check under "Automated alerts".
+      - name: Open or update the email-failed issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create email-failed --description "A subscriber email workflow failed" --color d73a4a 2>/dev/null || true
+          N=$(gh issue list --state open --label email-failed --json number --jq '.[0].number // empty')
+          BODY="**${{ github.workflow }}** failed on $(date -u +%Y-%m-%dT%H:%MZ): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ -n "$N" ]; then gh issue comment "$N" --body "$BODY"; else gh issue create --title "Subscriber email failed: ${{ github.workflow }}" --label email-failed --body "$BODY"; fi
+      - name: Close the email-failed issue after a good run
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          N=$(gh issue list --state open --label email-failed --json number --jq '.[0].number // empty')
+          [ -n "$N" ] && gh issue close "$N" --comment "**${{ github.workflow }}** succeeded on $(date -u +%Y-%m-%dT%H:%MZ). Closing." || true

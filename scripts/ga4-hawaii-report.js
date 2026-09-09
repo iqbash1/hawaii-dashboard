@@ -273,6 +273,36 @@ async function main() {
         summary.qotd = { teaser, answered };
     } catch (e) { out.push(`_Events section failed: ${e.message}_\n`); }
 
+    // 6b) EMAIL SUBSCRIBERS: site-side funnel (GA4 events) + the list itself (Resend) ---
+    try {
+        const opened = eventMap['subscribe_opened'] || 0;
+        const submitted = eventMap['subscribe_submitted'] || 0;
+        const confirmed = eventMap['subscribe_confirmed'] || 0;
+        out.push(`## Email subscribers\n`);
+        out.push(mdTable(['Step (Hawaiʻi visitors)', 'Count', 'vs. opened'],
+            [
+                ['Dialog opened', fmtInt(opened), 'n/a'],
+                ['Form submitted', fmtInt(submitted), opened ? pct(submitted / opened) : 'n/a'],
+                ['Confirmed (landed on the site)', fmtInt(confirmed), opened ? pct(confirmed / opened) : 'n/a'],
+            ]));
+        out.push('');
+        if (process.env.RESEND_API_KEY && process.env.RESEND_SEGMENT_ID) {
+            const { listSegmentContacts, readerStats } = require('./email-monitor');
+            const stats = readerStats(await listSegmentContacts());
+            out.push(mdTable(['Readers list (Resend, all readers, not Hawaiʻi-scoped)', 'Count'],
+                [
+                    ['Active readers', fmtInt(stats.active)],
+                    ['New in the last 7 days', fmtInt(stats.newLast7)],
+                    ['New in the last 28 days', fmtInt(stats.newLast28)],
+                    ['Unsubscribed (all time)', fmtInt(stats.unsubscribed)],
+                ]));
+            out.push('');
+            summary.readers = stats;
+        } else {
+            out.push(`_Readers list not included: RESEND_API_KEY / RESEND_SEGMENT_ID not set._\n`);
+        }
+    } catch (e) { out.push(`_Subscribers section failed: ${e.message}_\n`); }
+
     // 7) WHAT THEY OPEN, by metric (needs custom dimensions) ----------------
     try {
         const [meta] = await client.getMetadata({ name: `${property}/metadata` });
@@ -327,6 +357,7 @@ async function main() {
     console.log(`  Engagement rate:   ${pct(summary.engRate)}`);
     console.log(`  Avg time / user:   ${dur(summary.engPerUser)}`);
     if (summary.qotd) console.log(`  QOTD answered:     ${fmtInt(summary.qotd.answered)} (of ${fmtInt(summary.qotd.teaser)} teasers)`);
+    if (summary.readers) console.log(`  Email readers:     ${fmtInt(summary.readers.active)} active (${fmtInt(summary.readers.newLast7)} new this week)`);
     console.log(`\n📄 Full report: ${path.relative(process.cwd(), file)}`);
 }
 

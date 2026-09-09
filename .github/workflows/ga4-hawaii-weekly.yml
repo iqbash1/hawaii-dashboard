@@ -49,6 +49,8 @@ jobs:
         env:
           GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/ga4-sa.json
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_SEGMENT_ID: ${{ secrets.RESEND_SEGMENT_ID }}
 
       - name: Email the report
         run: node scripts/email-report.js
