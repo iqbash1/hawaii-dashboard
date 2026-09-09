@@ -148,12 +148,15 @@ export async function handleSubscribe(request, env) {
     return sent.ok ? done() : fail(502, 'send');
 }
 
+// The link opens a fresh tab, so the outcome is shown by the home page:
+// js/subscribe.js reads the flag and opens the subscribe dialog in the
+// matching state ("You're in", expired, or save failed).
 export async function handleConfirm(request, env) {
     const url = new URL(request.url);
     const data = await verifyToken(url.searchParams.get('t'), env.SUBSCRIBE_SIGNING_KEY);
-    if (!data || typeof data.t !== 'number' || nowSec() - data.t > TOKEN_TTL_SEC) return redirect(url.origin, '/subscribe/?expired=1');
+    if (!data || typeof data.t !== 'number' || nowSec() - data.t > TOKEN_TTL_SEC) return redirect(url.origin, '/?subscribe=expired');
     const saved = await saveSubscriber(env, data.e, data.n);
-    return redirect(url.origin, saved ? '/subscribed/' : '/subscribe/?error=save');
+    return redirect(url.origin, saved ? '/?subscribed=1' : '/?subscribe=save');
 }
 
 // Put the contact in the readers segment, whether it is new or already known

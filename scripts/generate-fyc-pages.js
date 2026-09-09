@@ -101,6 +101,7 @@ function renderPage({ years, slug }) {
         <a href="/off-the-charts/" class="top-nav-link">Off the Charts</a>
         <a href="/about/" class="top-nav-link">About</a>
         <a href="/faq/" class="top-nav-link">FAQ</a>
+        <a href="/subscribe/" class="top-nav-subscribe" data-subscribe-open="nav">Subscribe</a>
     </nav>
 
     <main>
@@ -128,6 +129,7 @@ ${renderSpanMenu(years)}
     <script src="../js/state-data.js?v=20260515a"></script>
     <script src="../js/utils.js?v=20260515a"></script>
     <script src="../js/fyc.js?v=20260515a"></script>
+    <script src="/js/subscribe.js?v=20260909a"></script>
 
     <footer class="footer">
         <p class="footer-updated">Last reviewed: 26 May 2026</p>

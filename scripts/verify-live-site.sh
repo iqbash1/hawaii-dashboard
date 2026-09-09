@@ -365,6 +365,11 @@ if [ "$api_status" = "405" ]; then
 else
     fail "/api/subscribe returned ${api_status} (expected 405; Worker route not wired?)"
 fi
+if echo "$html" | grep -q "top-nav-subscribe" && echo "$html" | grep -q "js/subscribe\.js"; then
+    ok "homepage carries the Subscribe pill and js/subscribe.js"
+else
+    fail "homepage is missing the Subscribe pill or js/subscribe.js"
+fi
 
 # -----------------------------------------------------------------------------
 # 8. SUMMARY

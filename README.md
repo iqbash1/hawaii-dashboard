@@ -30,14 +30,13 @@ js/
   qotd.js               Question of the Day controller (teaser render, answer state, share)
   questions.js          QOTD question bank (54 entries, 8 template variants)
   otc-share.js          Off the Charts share-button handler (Web Share API → clipboard with pre-composed payload → execCommand fallback; fires GA4 `share_clicked` with method)
-  subscribe.js          Email signup form: posts JSON to /api/subscribe, renders the outcome in place
+  subscribe.js          Subscribe dialog + form: opens from any data-subscribe-open element, posts JSON to /api/subscribe
   data.js               Metric definitions + Hawaiʻi and 50-state median time series (`medianSeries` field)
   state-data.js         Per-state data for all 50 states (used for rankings)
   county-data.js        Per-county data for Honolulu, Hawaiʻi, Maui, Kauaʻi
 about/index.html             About page (metric registry, comparator rules)
 faq/index.html               FAQ page (14 Q&A, feedback form)
-subscribe/index.html         Email signup page (first name + email + Turnstile)
-subscribed/index.html        Landing page after the confirmation link
+subscribe/index.html         Email signup page (inline fallback for the subscribe dialog)
 off-the-charts/              Short-form blog (archive + per-post canonical pages)
   index.html                 Archive index
   {slug}/index.html          Full canonical post page (Article + BreadcrumbList JSON-LD)
@@ -154,7 +153,7 @@ The home grid is the core, but the site has six supporting surfaces:
 - **FAQ** (`/faq/`): 14 Q&A pairs with feedback form; FAQPage JSON-LD for Google rich results.
 - **Question of the Day** (thin banner teaser on the home page that expands to a proof card after the reader answers; `/q/{id}/` shareable URL per question): 54-question bank, deterministic daily rotation, inline proof view with live Chart.js canvas after answer. See DOCUMENTATION.md for variant rules and analytics events.
 - **Off the Charts** (`/off-the-charts/`): short-form blog at 175–220 words per post, each post stitching 3+ metric views. Each post is its own canonical URL with `Article` JSON-LD. See DOCUMENTATION.md for adding new posts.
-- **Email subscriptions** (`/subscribe/`): double opt-in signup for the daily question and new Off the Charts posts. The list lives in Resend; the Worker only signs and verifies confirmation links. See DOCUMENTATION.md.
+- **Email subscriptions** (Subscribe pill in the nav, header button, prompts after the daily question and each post; `/subscribe/` as the fallback page): double opt-in signup for the daily question and new Off the Charts posts, in a dialog. The list lives in Resend; the Worker only signs and verifies confirmation links. See DOCUMENTATION.md.
 
 ## Local development
 

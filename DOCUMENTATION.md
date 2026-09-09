@@ -46,7 +46,7 @@ hawaii-dashboard/
 │   ├── qotd.js             # Question of the Day controller (teaser render, answer state, share)
 │   ├── questions.js        # QOTD question bank (54 entries, 8 template variants)
 │   ├── otc-share.js        # Off the Charts share-button handler (Web Share API → clipboard w/ pre-composed payload → execCommand fallback)
-│   ├── subscribe.js        # Email signup form: posts JSON to /api/subscribe, renders the outcome in place (see "Email subscriptions")
+│   ├── subscribe.js        # Subscribe dialog + form: opens from data-subscribe-open elements, posts JSON to /api/subscribe (see "Email subscriptions")
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers)
 ├── assets/
 │   ├── og-image.png        # Generic OG image (fallback for homepage + about)
@@ -146,14 +146,12 @@ hawaii-dashboard/
 ├── faq/
 │   └── index.html          # FAQ page: 14 Q&A pairs, feedback form
 ├── subscribe/
-│   └── index.html          # Email signup page (first name + email + Turnstile); unlinked and noindex until Phase 2
-├── subscribed/
-│   └── index.html          # Landing page after the email confirmation link
+│   └── index.html          # Fallback email signup page (form inline); the dialog in js/subscribe.js is the primary surface
 ├── worker.js               # Cloudflare Worker, runs first ONLY for /assets/tour.mp4 (byte-range shim) and /api/* (routes to worker-subscribe.mjs)
 ├── worker-subscribe.mjs    # Email subscription endpoints: POST /api/subscribe (double opt-in start), GET /api/confirm (finish)
 ├── wrangler.jsonc          # Worker config: static assets served from ./dist, run_worker_first paths
 ├── robots.txt              # Crawl directives for search engines and AI bots (all AI bots allowlisted)
-├── sitemap.xml             # Site sitemap (47 URLs with inline <image:image> entries; build.sh rewrites lastmod in dist/)
+├── sitemap.xml             # Site sitemap (50 URLs with inline <image:image> entries; build.sh rewrites lastmod in dist/)
 ├── llms.txt                # Plain-text site summary for AI chat engines (Anthropic/Answer.AI llms.txt convention)
 ├── _headers                # Cloudflare response headers: HSTS, CSP, Referrer-Policy, Permissions-Policy, per-route cache rules
 ├── data/                   # Static per-metric CSV exports (38 files: 27 state + 11 county) referenced by Dataset.distribution
@@ -988,13 +986,13 @@ The site-header banner on per-post pages is a styled `<p>`, not `<h1>`, so the p
 
 ## Email subscriptions
 
-Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 shipped 2026-09-08 (signup routes plus an unlinked `/subscribe/` page). Phases 2 to 4 (the visible Subscribe button and inline forms, the daily QOTD and new-post senders, monitoring) are pending.
+Readers can get the Question of the Day every morning and each new Off the Charts post by email. The list lives in Resend (segment "Dashboard readers"); the site keeps no database. Status: Phase 1 (signup routes) shipped 2026-09-08; Phase 2 (the Subscribe pill in the nav, the header button, the prompts after the daily question and each post, all opening one dialog) shipped 2026-09-09. Phases 3 and 4 (the daily QOTD and new-post senders, monitoring) are pending.
 
 ### Flow (double opt-in)
 
-1. `/subscribe/` posts first name + email (plus a Turnstile token and an empty honeypot field) to `POST /api/subscribe`. `js/subscribe.js` sends JSON and renders the outcome in place; without JS the plain form post is redirected back to the page with `?sent=1` or `?error=…`.
+1. Any element with `data-subscribe-open` (the nav pill on every page, the homepage header button, the QOTD proof-view footer link, the prompt after each Off the Charts post) opens the subscribe `<dialog>` that `js/subscribe.js` builds on first use. The form posts first name + email (plus a Turnstile token and an empty honeypot field) as JSON to `POST /api/subscribe` and renders the outcome in place; Turnstile's script loads only when the dialog first opens. `/subscribe/` carries the same form inline as the fallback (no `<dialog>` support, no JS, or a shared link); there a plain form post is redirected back with `?sent=1` or `?error=…`.
 2. The Worker validates both fields, verifies Turnstile server-side, then sends a confirmation email (Resend, from `hello@hawaiidashboard.org`) whose link carries an HMAC-SHA256-signed token `{e, n, t}` valid for 48 hours. Nothing is stored at this point.
-3. `GET /api/confirm?t=…` verifies the token, then runs three idempotent Resend calls (create contact, update name + `unsubscribed:false`, add to the readers segment) and redirects to `/subscribed/`. All three are needed: Resend's `POST /contacts` answers 201 for a known address too, but then neither updates it nor attaches segments. Expired or forged tokens go to `/subscribe/?expired=1`.
+3. `GET /api/confirm?t=…` verifies the token, then runs three idempotent Resend calls (create contact, update name + `unsubscribed:false`, add to the readers segment) and redirects to `/?subscribed=1`, where the dialog opens in its "You're in" state over today's question. All three calls are needed: Resend's `POST /contacts` answers 201 for a known address too, but then neither updates it nor attaches segments. Expired or forged tokens go to `/?subscribe=expired` and a Resend failure to `/?subscribe=save`; both open the dialog with the form and a message.
 
 A honeypot hit still returns success and sends nothing, so the endpoint never reveals who is subscribed.
 
@@ -1004,11 +1002,11 @@ A honeypot hit still returns success and sends nothing, so the endpoint never re
 |------|------|
 | `worker.js` | Routes `/api/subscribe` and `/api/confirm` (plus the tour-video range shim). `wrangler.jsonc` `run_worker_first` limits the Worker to `/assets/tour.mp4` and `/api/*`; every other path is served straight from Static Assets. |
 | `worker-subscribe.mjs` | Handlers, validation, token sign/verify, confirmation email template. |
-| `subscribe/index.html`, `subscribed/index.html` | Signup page and confirmation landing page (both `noindex` for now). |
-| `js/subscribe.js` | Progressive enhancement for the form. |
+| `subscribe/index.html` | Fallback signup page with the form inline; listed in the sitemap. |
+| `js/subscribe.js` | Builds and opens the dialog (ask, "You're in", expired and save-failed states), lazy-loads Turnstile, submits the form, fires GA4 `subscribe_opened` / `subscribe_submitted` / `subscribe_confirmed` with a `surface` param. |
 | `tests/subscribe.test.js` | 16 unit tests: `cd tests && npm run test:unit`. |
 | `_headers` | CSP allows `https://challenges.cloudflare.com` (script and frame) for Turnstile. |
-| `scripts/verify-live-site.sh` | Checks `/subscribe/` returns 200 and that a GET on `/api/subscribe` reaches the Worker (405). |
+| `scripts/verify-live-site.sh` | Checks `/subscribe/` returns 200, that a GET on `/api/subscribe` reaches the Worker (405), and that the homepage carries the pill and script. |
 
 ### Configuration (not in the repo)
 
@@ -1149,7 +1147,7 @@ Every indexable page has:
 ### Site-level SEO infrastructure
 
 - `robots.txt`, allows all crawlers, explicitly permits AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, etc.)
-- `sitemap.xml`, 47 URLs (home, 7 change-summary year-spans, About, FAQ, Off the Charts archive, 9 OtC posts, 27 `/c/` metric pages) with inline `<image:image>` entries for each URL's OG image (image-sitemap extension namespace). Priority hints; `<lastmod>` auto-rewritten at build time from each file's git history.
+- `sitemap.xml`, 50 URLs (home, 7 change-summary year-spans, About, FAQ, Subscribe, Off the Charts archive, 11 OtC posts, 27 `/c/` metric pages) with inline `<image:image>` entries for each URL's OG image (image-sitemap extension namespace). Priority hints; `<lastmod>` auto-rewritten at build time from each file's git history.
 - `_headers`, Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML.
 
 ### AI chat engine optimization
