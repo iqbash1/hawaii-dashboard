@@ -71,7 +71,7 @@ jobs:
         run: npm run lint
 
   smoke:
-    name: Playwright smoke tests
+    name: Unit + smoke tests
     runs-on: ubuntu-latest
     needs: [build-check, lint]
     timeout-minutes: 10
