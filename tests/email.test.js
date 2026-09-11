@@ -51,11 +51,13 @@ describe('daily question email', () => {
         assert.equal(mail.subject, `True or false: ${TODAY.claim}`);
         const body = mail.html.slice(mail.html.indexOf('<p'));
         assert.match(body, /^<p style="[^"]*">Aloha \{\{\{contact\.first_name\|there\}\}\},<\/p>/, 'greeting is the first thing in the card');
-        const answerLinks = mail.html.match(/href="https:\/\/hawaiidashboard\.org\/q\/q083\/\?utm_source=email&utm_medium=qotd&utm_campaign=daily"/g);
-        assert.equal(answerLinks.length, 2);
+        const link = pick => `https://hawaiidashboard.org/?from_q=q083&a=${pick}&utm_source=email&utm_medium=qotd&utm_campaign=daily`;
+        const button = pick => new RegExp(`href="${link(pick).replace(/[?.]/g, '\\$&')}"[^>]*>${pick === 'true' ? 'True' : 'False'}<`);
+        assert.match(mail.html, button('true'), 'True button carries a=true');
+        assert.match(mail.html, button('false'), 'False button carries a=false');
         assert.doesNotMatch(mail.html, /10\.8%|Yesterday/, 'no answers in the email');
         assert.match(mail.text, /^Aloha \{\{\{contact\.first_name\|there\}\}\},\n\nFood insecurity/);
-        assert.match(mail.text, /True or false\? Answer and see the chart: https:\/\/hawaiidashboard\.org\/q\/q083\//);
+        assert.ok(mail.text.includes(`True: ${link('true')}`) && mail.text.includes(`False: ${link('false')}`));
     });
 });
 

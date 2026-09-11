@@ -159,6 +159,31 @@ describe('QOTD answer state', () => {
     it('getAnswer returns null for unanswered id', () => {
         assert.equal(QOTD.getAnswer('none'), null);
     });
+
+    // The daily email's True/False buttons land on /?from_q={id}&a=…
+    describe('answerFromLink', () => {
+        beforeEach(() => { global.document = { getElementById: () => null }; });
+
+        it('records the pick from the link and grades it', () => {
+            const q = QOTD_QUESTIONS[0];
+            QOTD.answerFromLink(q.id, !q.correct);
+            const a = QOTD.getAnswer(q.id);
+            assert.equal(a.picked, !q.correct);
+            assert.equal(a.correct, false);
+        });
+
+        it('keeps an answer this device already gave', () => {
+            const q = QOTD_QUESTIONS[0];
+            QOTD.recordAnswer(q.id, q.correct, true);
+            QOTD.answerFromLink(q.id, !q.correct);
+            assert.equal(QOTD.getAnswer(q.id).picked, q.correct);
+        });
+
+        it('ignores unknown ids', () => {
+            QOTD.answerFromLink('q999', true);
+            assert.equal(QOTD.getAnswer('q999'), null);
+        });
+    });
 });
 
 describe('QOTD.shareUrl', () => {

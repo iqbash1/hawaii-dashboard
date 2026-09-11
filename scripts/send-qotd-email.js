@@ -26,12 +26,14 @@ function hstDate(now = Date.now()) {
 }
 
 function buildQotdEmail(today, date) {
-    const answerUrl = `${SITE}/q/${today.id}/?${UTM}&utm_campaign=daily`;
+    // Each button carries the pick; the site records it on landing and opens
+    // the proof view, so the reader is not asked the same question again.
+    const answerUrl = pick => `${SITE}/?from_q=${today.id}&a=${pick}&${UTM}&utm_campaign=daily`;
     const bodyHtml = `    <p style="margin:0 0 20px">${GREETING}</p>
     <h1 style="font-size:24px;line-height:1.35;font-weight:600;margin:0 0 18px;color:#333">${esc(today.claim)}</h1>
     <p style="margin:0 0 22px;color:#555">True or false? Tap your answer to see the chart.</p>
-    <p style="margin:0">${button(answerUrl, 'True', true)}&nbsp;&nbsp;${button(answerUrl, 'False', false)}</p>`;
-    const bodyText = `${GREETING}\n\n${today.claim}\n\nTrue or false? Answer and see the chart: ${answerUrl}`;
+    <p style="margin:0">${button(answerUrl('true'), 'True', true)}&nbsp;&nbsp;${button(answerUrl('false'), 'False', false)}</p>`;
+    const bodyText = `${GREETING}\n\n${today.claim}\n\nTrue or false?\nTrue: ${answerUrl('true')}\nFalse: ${answerUrl('false')}`;
     return { name: `qotd-${date}`, subject: `True or false: ${today.claim}`, ...layout({ bodyHtml, bodyText }) };
 }
 

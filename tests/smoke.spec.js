@@ -383,6 +383,21 @@ test.describe('Change Summary: longer-window views (15/20/25)', () => {
 // Email subscribe dialog (js/subscribe.js)
 // ---------------------------------------------------------------------------
 
+test.describe('Daily email answer link', () => {
+    test('/?from_q={id}&a=… records the pick and opens the proof view', async ({ page }) => {
+        await page.goto('/');
+        await page.waitForSelector('.card[data-metric]');
+        const id = await page.evaluate(() => QOTD.today().id);
+        await page.goto(`/?from_q=${id}&a=true&utm_source=email`);
+        await expect(page.locator('#qotd-teaser .qotd-teaser-inner--proof')).toBeVisible();
+        await expect(page.locator('#qotd-teaser .qotd-verdict')).toBeVisible();
+        await expect(page.locator('#qotd-teaser [data-answer]')).toHaveCount(0);
+        await expect(page).toHaveURL(/\/$/);
+        const stored = await page.evaluate((qid) => QOTD.getAnswer(qid), id);
+        expect(stored.picked).toBe(true);
+    });
+});
+
 test.describe('Email subscribe dialog', () => {
     test('nav Subscribe pill opens the dialog on the homepage and Escape closes it', async ({ page }) => {
         await page.goto('/');

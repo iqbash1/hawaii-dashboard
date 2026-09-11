@@ -28,10 +28,15 @@ const Router = {
     handleRoute() {
         // Shared QOTD landing: /q/{id}/ pages are static meta-refresh redirects
         // to /?from_q={id}. Treat the query param as a tracking signal only;
-        // the teaser on the home page already shows today's question.
-        const fromQ = new URLSearchParams(window.location.search).get('from_q');
+        // the teaser on the home page already shows today's question. The
+        // daily email adds &a=true|false: that is the reader's answer, so it
+        // is recorded and the proof view opens instead of the question.
+        const qParams = new URLSearchParams(window.location.search);
+        const fromQ = qParams.get('from_q');
         if (fromQ && typeof QOTD !== 'undefined') {
-            QOTD.trackSharedUrlLanding(fromQ);
+            const a = qParams.get('a');
+            if (a === 'true' || a === 'false') QOTD.answerFromLink(fromQ, a === 'true');
+            else QOTD.trackSharedUrlLanding(fromQ);
             // Strip the param so refreshes don't re-fire the event.
             const clean = window.location.pathname + window.location.hash;
             history.replaceState(null, '', clean || '/');
