@@ -154,6 +154,32 @@ const QOTD = {
     },
 
     /**
+     * The daily email's True / False buttons land on /?from_q={id}&a=true|false.
+     * Record the pick (unless this device already answered) and show that
+     * question's proof view, so the reader is never asked twice. Handles an
+     * older email too: the proof shown is for the question in the link, not
+     * necessarily today's. Called from routing.js.
+     */
+    answerFromLink(id, picked) {
+        const q = this.getById(id);
+        if (!q) return;
+        if (!this.hasAnswered(id)) {
+            const correct = picked === q.correct;
+            this.recordAnswer(id, picked, correct);
+            if (typeof App !== 'undefined' && App._trackEvent) {
+                App._trackEvent('qotd_answered', {
+                    id,
+                    picked,
+                    correct: q.correct,
+                    result: correct ? 'correct' : 'incorrect',
+                    source: 'email',
+                });
+            }
+        }
+        this.renderTeaser(q);
+    },
+
+    /**
      * Track-only handler for /q/{id}/ redirects that land on home. Called
      * from routing.js when the URL includes ?from_q={id}.
      */
@@ -378,12 +404,16 @@ const QOTD = {
      *   - no question (before launch) or dismissed-today → hidden
      *   - not answered → claim + True/False + share + close
      *   - answered → full proof (verdict + claim + answer + chart + share + view chart) + close + footer
+     *
+     * @param {object} [question] Render this question instead of today's
+     *   (an email answer link for an earlier day). Shown even if today's
+     *   teaser was dismissed: the reader asked for it.
      */
-    renderTeaser() {
+    renderTeaser(question) {
         const host = document.getElementById('qotd-teaser');
         if (!host) return;
-        const q = this.today();
-        if (!q || this.isDismissedToday()) { host.style.display = 'none'; return; }
+        const q = question || this.today();
+        if (!q || (!question && this.isDismissedToday())) { host.style.display = 'none'; return; }
         host.style.display = 'block';
 
         const closeBtn = `

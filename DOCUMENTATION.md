@@ -861,6 +861,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 
 - `/q/{id}/` is a static redirect page (one per question). Carries OG meta (`og:title = "You know Hawaiʻi?"`, `og:image = /assets/og/q/{slug}.png`, no `og:description`) and meta-refreshes to `/?from_q={id}`.
 - The `?from_q={id}` query is consumed by `js/routing.js` (fires `qotd_shared_url_landed`) and stripped, so shared URLs land on `/` and show today's question (which may differ from the shared question's original day). Tradeoff is intentional: the URL is share-tracking, not deep-linking.
+- `?from_q={id}&a=true|false` is the daily email's answer link: `js/routing.js` hands it to `QOTD.answerFromLink`, which records the pick (unless this device already answered) and renders the proof view for that question via `renderTeaser(question)`, so an older email still shows its own question rather than today's.
 
 ### File map
 
@@ -1033,7 +1034,7 @@ Two senders, one shared chrome (`scripts/email-template.js`: sender identity, gr
 | Daily question | `scripts/send-qotd-email.js` (`npm run email:qotd`) | `qotd-daily-email.yml` | cron 05:20 HST creates a broadcast **scheduled for 06:00 HST**, so GitHub's cron jitter never moves delivery. `--now` sends immediately (also automatic after 06:00). | `qotd-<HST date>` |
 | New post | `scripts/send-otc-email.js` (`npm run email:otc`) | `otc-post-email.yml` | on push to main touching `js/otc-posts.js`: slugs new since the previous commit, dated within 7 days, after the post answers on the live site, **scheduled for 12:00 HST the next day** (a day to cancel in Resend). `[no-email]` in the commit message skips. Manual run takes a slug, `now` sends immediately. | `otc-<slug>` |
 
-Both open with "Aloha {first name}," and stay minimal (user call 2026-09-09). The daily email: the claim in the subject ("True or false: …"), the claim, and True/False buttons that both open `/q/{id}/` on the site; the answer is never in the email. The new-post email: one context line, the title, the post's OG card, the dek and a "Read the post" button. Links carry `utm_source=email&utm_medium=qotd|otc`.
+Both open with "Aloha {first name}," and stay minimal (user call 2026-09-09). The daily email: the claim in the subject ("True or false: …"), the claim, and True/False buttons that open `/?from_q={id}&a=true|false`; the site records the pick on landing (`QOTD.answerFromLink`, GA4 `qotd_answered` with `source: email`) and opens the proof view for that question, even a day later. The answer is never in the email. The new-post email: one context line, the title, the post's OG card, the dek and a "Read the post" button. Links carry `utm_source=email&utm_medium=qotd|otc`.
 
 **Where it goes** is the `EMAIL_SEND_MODE` repository variable, read at run time:
 
