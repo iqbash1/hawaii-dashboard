@@ -2,11 +2,16 @@ name: Monthly Data Refresh
 
 on:
   schedule:
-    # 7:17 AM UTC on the 23rd of each month (avoid :00/:30 load spikes).
-    # The 23rd is chosen so BLS state LAUS (typically released on the 3rd
-    # Friday, between the 17th and 22nd) is reliably out before we run.
-    # This keeps annual fetches and latestMonthly updates on the same cycle.
-    - cron: '17 7 23 * *'
+    # 7:17 AM UTC on the 28th of each month (avoid :00/:30 load spikes).
+    # Two monthly sources must both be out before we run:
+    #   BLS state LAUS: 3rd Friday, between the 17th and 22nd.
+    #   EIA Electric Power Monthly: about the 24th to 26th (June 2026 data
+    #   shipped Aug 26; the next is Sep 24).
+    # The prior 23rd sat between them, so the two EIA metrics (residential
+    # price, renewables share) lagged the source by a full month on every
+    # cycle: the Aug 23 run took May while June was published three days
+    # later. Moved to the 28th on 2026-09-12; both sources are reliably out.
+    - cron: '17 7 28 * *'
   workflow_dispatch:  # allow manual trigger from GitHub UI
 
 permissions:
