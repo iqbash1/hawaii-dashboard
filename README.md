@@ -99,7 +99,7 @@ node scripts/validate-data.js
 ```
 
 Nine GitHub Actions workflows + Dependabot automate the cycle:
-- `.github/workflows/refresh-data.yml`: monthly full refresh on the 23rd, opens a PR if data changed; blocks PR on fresh-fetch drift errors.
+- `.github/workflows/refresh-data.yml`: monthly full refresh on the 28th, opens a PR if data changed; blocks PR on fresh-fetch drift errors.
 - `.github/workflows/data-audit.yml`: twice-daily drift audit (1 PM + 6 PM HST) that re-fetches every wired metric and compares against state-data at strict tolerance (0.5% relative / 0.0001 absolute). Failure opens a `data-drift` issue.
 - `.github/workflows/audit-links.yml`: weekly external-URL liveness check (~200 URLs); rolling `link-rot` issue.
 - `.github/workflows/cron-heartbeat.yml`: weekly dead-man switch on the monthly cron; rolling `cron-stale` issue if no successful run in 32 days.

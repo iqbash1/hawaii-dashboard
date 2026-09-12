@@ -141,7 +141,7 @@ hawaii-dashboard/
 ├── .github/
 │   ├── dependabot.yml          # Weekly npm + actions dep PRs (grouped)
 │   └── workflows/
-│       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs (23rd, 7:17 UTC)
+│       ├── refresh-data.yml    # Monthly automated data refresh from federal APIs (28th, 7:17 UTC)
 │       ├── data-audit.yml      # Twice-daily fresh-fetch audit (state-data vs canonical source)
 │       ├── audit-links.yml     # Weekly external-URL liveness check; rolling link-rot issue
 │       ├── cron-heartbeat.yml  # Weekly dead-man switch on refresh-data; rolling cron-stale issue
@@ -784,7 +784,7 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 
 ### Automated (monthly refresh)
 
-`.github/workflows/refresh-data.yml` runs on the 23rd of each month (7:17 UTC). The 23rd is chosen so the BLS state LAUS release (typically the 3rd Friday, 17th–22nd) is reliably out before the cron fires.
+`.github/workflows/refresh-data.yml` runs on the 28th of each month (7:17 UTC). The 28th is chosen so BOTH monthly sources are out before the cron fires: BLS state LAUS (3rd Friday, 17th–22nd) and EIA Electric Power Monthly (about the 24th–26th). It ran on the 23rd until 2026-09-12, which sat between the two, so the EIA metrics lagged their source by a full month every cycle.
 
 1. Snapshots current data files for later diffing
 2. Runs `build-state-data.js` (50-state federal-API fetcher)
