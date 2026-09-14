@@ -207,8 +207,10 @@
         var url = options.url || window.location.href;
         var track = typeof options.track === 'function' ? options.track : function () {};
 
-        // Pre-composed text payloads.
-        var clipboardText = buildClipboardText(title, lede, url);
+        // Pre-composed text payloads. unfurlOnly: a pasted link unfurls into
+        // the same card, so the clipboard gets the bare URL (email keeps the
+        // text: mail clients don't unfurl).
+        var clipboardText = options.unfurlOnly ? url : buildClipboardText(title, lede, url);
         var xText = title; // X auto-fetches the OG card; bare title reads cleanest.
         var blueskyText = title;
         var emailSubject = title || 'Hawaiʻi Dashboard';
@@ -287,12 +289,15 @@
     // ---------------------------------------------------------------------
 
     function openNative(anchorBtn, options) {
-        var title = options.title || '';
-        var lede = options.lede || '';
+        // unfurlOnly: the link preview already carries the title and the text
+        // (QOTD's OG card is the claim itself), so sending them again makes
+        // Messages / WhatsApp show everything twice. Share the bare URL.
+        var title = options.unfurlOnly ? '' : (options.title || '');
+        var lede = options.unfurlOnly ? '' : (options.lede || '');
         var url = options.url || window.location.href;
         var track = typeof options.track === 'function' ? options.track : function () {};
 
-        navigator.share({
+        navigator.share(options.unfurlOnly ? { url: url } : {
             title: title,
             text: lede,
             url: url,
@@ -333,6 +338,8 @@
          * @param {Function} [options.track] - called with method name on each share path
          * @param {boolean} [options.forceNative]   - always use navigator.share, even on desktop
          * @param {boolean} [options.forceMenu]     - always use the popover, even on mobile
+         * @param {boolean} [options.unfurlOnly]    - the link preview already carries title + text:
+         *                                            native sheet and clipboard get the bare URL
          */
         open: function (btnEl, options) {
             options = options || {};

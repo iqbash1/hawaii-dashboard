@@ -357,6 +357,7 @@ const QOTD = {
                 title: 'You know Hawaiʻi?',
                 lede: lede,
                 track: track,
+                unfurlOnly: true,
             });
             return;
         }
