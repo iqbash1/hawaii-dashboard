@@ -477,30 +477,6 @@ const QOTD_QUESTIONS = [
       "variant": "V6"
   },
   {
-      "id": "q048",
-      "slug": "hawaii-is-in-the-top-10-states-for-primary-care-doctors-per-resident",
-      "claim": "Hawaiʻi ranks among the top 10 states for primary care doctors as a share of population.",
-      "correct": true,
-      "answer": "Hawaiʻi ranks #7 of 50 in 2023.",
-      "chartUrl": "/r/pcp_per_100k/",
-      "metric": "pcp_per_100k",
-      "metricLabel": "Primary Care Physicians (civilian)",
-      "topic": "Safety & Health",
-      "variant": "V3"
-  },
-  {
-      "id": "q053",
-      "slug": "hawaii-has-higher-electricity-prices-than-california",
-      "claim": "Hawaiʻi has higher residential electricity prices than California.",
-      "correct": true,
-      "answer": "In 2025, Hawaiʻi was 40.6¢ versus California at 32.5¢.",
-      "chartUrl": "/t/residential_price_cpkwh/ca/",
-      "metric": "residential_price_cpkwh",
-      "metricLabel": "Residential Electricity Price",
-      "topic": "Affordability",
-      "variant": "V7"
-  },
-  {
       "id": "q057",
       "slug": "hawaii-gets-more-renewable-electricity-than-florida",
       "claim": "Hawaiʻi gets a larger share of its electricity from renewables than Florida does.",
@@ -511,6 +487,18 @@ const QOTD_QUESTIONS = [
       "metricLabel": "Electricity from Renewables",
       "topic": "Infrastructure & Trust",
       "variant": "V7"
+  },
+  {
+      "id": "q101",
+      "slug": "hawaii-is-among-the-states-with-the-lowest-per-capita-income",
+      "claim": "Going by income per person, Hawaiʻi is one of the richest states.",
+      "correct": false,
+      "answer": "Hawaiʻi has the #5 lowest value among 50 states in 2024 ($52,272).",
+      "chartUrl": "/r/real_per_capita_income/",
+      "metric": "real_per_capita_income",
+      "metricLabel": "Per Capita Income (real)",
+      "topic": "Economy & Workforce",
+      "variant": "V5"
   },
   {
       "id": "q061",
@@ -667,6 +655,30 @@ const QOTD_QUESTIONS = [
       "metricLabel": "Voter Participation Rate",
       "topic": "Infrastructure & Trust",
       "variant": "V6"
+  },
+  {
+      "id": "q048",
+      "slug": "hawaii-is-in-the-top-10-states-for-primary-care-doctors-per-resident",
+      "claim": "Hawaiʻi ranks among the top 10 states for primary care doctors as a share of population.",
+      "correct": true,
+      "answer": "Hawaiʻi ranks #7 of 50 in 2023.",
+      "chartUrl": "/r/pcp_per_100k/",
+      "metric": "pcp_per_100k",
+      "metricLabel": "Primary Care Physicians (civilian)",
+      "topic": "Safety & Health",
+      "variant": "V3"
+  },
+  {
+      "id": "q053",
+      "slug": "hawaii-has-higher-electricity-prices-than-california",
+      "claim": "Hawaiʻi has higher residential electricity prices than California.",
+      "correct": true,
+      "answer": "In 2025, Hawaiʻi was 40.6¢ versus California at 32.5¢.",
+      "chartUrl": "/t/residential_price_cpkwh/ca/",
+      "metric": "residential_price_cpkwh",
+      "metricLabel": "Residential Electricity Price",
+      "topic": "Affordability",
+      "variant": "V7"
   }
 ];
 

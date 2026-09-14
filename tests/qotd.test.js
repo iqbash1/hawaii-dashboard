@@ -21,8 +21,8 @@ global.QOTD_QUESTIONS = require('../js/questions.js');
 const QOTD = require('../js/qotd.js');
 
 describe('QOTD_QUESTIONS bank', () => {
-    it('has 54 questions', () => {
-        assert.equal(QOTD_QUESTIONS.length, 54);
+    it('has 55 questions', () => {
+        assert.equal(QOTD_QUESTIONS.length, 55);
     });
 
     it('every question has required fields', () => {

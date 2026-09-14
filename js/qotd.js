@@ -55,7 +55,7 @@ const QOTD = {
 
     /**
      * Storage key for an answer. Scoped by BOTH day index and question id so
-     * a question that recurs after the 54-question bank wraps (dayIndex >= 54)
+     * a question that recurs after the 55-question bank wraps (dayIndex >= 55)
      * gets a fresh claim + True/False buttons instead of replaying the proof
      * view a returning visitor saw in the first cycle. Mirrors how dismissed
      * state is keyed per day index.
@@ -437,7 +437,7 @@ const QOTD = {
             const captionBlock = (metricData && metricData.officialName)
                 ? `<figcaption class="qotd-chart-caption">${this._escape(metricData.officialName)}${metricData.source ? ` <span class="qotd-chart-source">Source: ${this._escape(metricData.source)}</span>` : ''}</figcaption>`
                 : '';
-            // Latest-month note. 13 of the 54 questions sit on metrics with a
+            // Latest-month note. 13 of the 55 questions sit on metrics with a
             // monthly series, so about one day in four the answer quotes an
             // annual figure that a resident knows is out of date (q051 answers
             // electricity with 2025's 40.6c while May 2026 is 52c). Rendered

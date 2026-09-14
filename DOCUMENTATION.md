@@ -44,7 +44,7 @@ hawaii-dashboard/
 │   ├── bundles.js          # Bundle config: resident-voice questions with metric lists
 │   ├── fyc.js              # Change Summary page logic (span-aware; shared by all 7 year-span shells)
 │   ├── qotd.js             # Question of the Day controller (teaser render, answer state, share)
-│   ├── questions.js        # QOTD question bank (54 entries, 8 template variants)
+│   ├── questions.js        # QOTD question bank (55 entries, 8 template variants)
 │   ├── otc-share.js        # Off the Charts share-button handler (Web Share API → clipboard w/ pre-composed payload → execCommand fallback)
 │   ├── subscribe.js        # Subscribe dialog + form: opens from data-subscribe-open elements, posts JSON to /api/subscribe (see "Email subscriptions")
 │   └── utils.js            # Shared pure functions (narrative, ranking helpers)
@@ -73,7 +73,7 @@ hawaii-dashboard/
 ├── rh/                     # Rank history redirect pages for OG sharing
 │   ├── {slug}/index.html
 │   └── {slug}/{code}/index.html   # Per-comparison redirect pages (49 per metric)
-├── q/                      # Question of the Day redirect pages (54 questions)
+├── q/                      # Question of the Day redirect pages (55 questions)
 │   └── {id}/index.html             # Meta-refresh to /?from_q={id}; carries OG meta for the claim card
 ├── off-the-charts/         # Short-form blog (SEO-first, per-post canonical URLs)
 │   ├── index.html                   # Archive index
@@ -855,7 +855,7 @@ See `scripts/REFRESH-PLAYBOOK.md` for the full canonical sequence.
 
 ## Question of the Day (QOTD)
 
-Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict, 1-sentence answer, a latest-month note when the metric carries `latestMonthly`, why-it-matters, and a live Chart.js canvas pulled from `chartUrl` with a definition caption beneath it). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 54 questions in the bank; rotation wraps.
+Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the home page; once answered the same card transforms inline into the proof view (verdict, 1-sentence answer, a latest-month note when the metric carries `latestMonthly`, why-it-matters, and a live Chart.js canvas pulled from `chartUrl` with a definition caption beneath it). Deterministic day-index rotation (HST-local) from `DAY_ZERO = 2026-04-18`. 55 questions in the bank; rotation wraps.
 
 ### URL pattern
 
@@ -867,11 +867,11 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 
 | File | Role |
 |------|------|
-| `js/questions.js` | The 54-question bank. Each entry: `{id, slug, claim, correct, answer, chartUrl, metric, metricLabel, topic, variant}`. `id` is the URL identity and primary key. `slug` is retained only for OG-image filename lookup. |
+| `js/questions.js` | The 55-question bank. Each entry: `{id, slug, claim, correct, answer, chartUrl, metric, metricLabel, topic, variant}`. `id` is the URL identity and primary key. `slug` is retained only for OG-image filename lookup. |
 | `js/qotd.js` | Controller. Public surface: `today()`, `getById(id)`, `renderTeaser()`, `submitAnswer(id, picked)`, `recordAnswer(id, ...)`, `hasAnswered(id)`, `getAnswer(id)`, `shareUrl(id)`, `dismissToday()` / `isDismissedToday()`, `trackSharedUrlLanding(id)`, `init()`. No modal; proof view renders inline in the same card. |
 | `js/routing.js` | Handles `/q/{id}/` path and `?from_q={id}` query as track-and-redirect to `/`. |
-| `q/{id}/index.html` | 54 pre-generated redirect pages with OG meta. |
-| `assets/og/q/{slug}.png` | 54 pre-generated 1200×630 OG cards (claim + True/False pills). |
+| `q/{id}/index.html` | 55 pre-generated redirect pages with OG meta. |
+| `assets/og/q/{slug}.png` | 55 pre-generated 1200×630 OG cards (claim + True/False pills). |
 | `scripts/generate-og-pages.py` (`generate_qotd_assets`) | OG-image generator. Reads `js/questions.js` and writes every QOTD PNG as part of the main OG build. Re-run via `npm run og` when claims change. |
 | `scripts/generate-qotd-redirects.js` | Redirect-page generator. Reads `js/questions.js` and writes every `q/{id}/index.html`. Re-run when claims change or new questions are added. |
 | `scripts/sync-qotd-answers.js` | **Answer renderer.** Regenerates the `answer` field of every canonical-shape question from live data, eliminating the manual hand-write surface that produced the May 2026 unemployment_rate drift. Per-variant renderers; custom-phrased answers are detected and left alone. Run `npm run sync-qotd` after any data refresh. `--check` mode is wired into `npm run validate` as a CI gate. |
