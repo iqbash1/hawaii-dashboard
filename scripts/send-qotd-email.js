@@ -11,7 +11,7 @@
 // Target and behaviour come from EMAIL_SEND_MODE, see
 // scripts/email-template.js. Idempotent: the broadcast is named
 // qotd-<date> and is never created twice. Runs from
-// .github/workflows/qotd-daily-email.yml at 05:20 HST.
+// .github/workflows/qotd-daily-email.yml at 01:00 HST.
 'use strict';
 
 const fs = require('fs');

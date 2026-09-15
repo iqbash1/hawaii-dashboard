@@ -59,7 +59,7 @@ function dailyEmailStatus(broadcasts, todayHst) {
         return { status: 'yellow', detail: `today's question is "${today.status}", not sent yet (${todayHst})` };
     }
     if (byName(`qotd-${yesterday}`)) return { status: 'yellow', detail: `no broadcast for today (${todayHst}) yet; yesterday's went out` };
-    return { status: 'red', detail: `no daily broadcast for ${todayHst} or ${yesterday}: the 05:20 HST workflow is not running` };
+    return { status: 'red', detail: `no daily broadcast for ${todayHst} or ${yesterday}: the 01:00 HST workflow is not running` };
 }
 
 /**

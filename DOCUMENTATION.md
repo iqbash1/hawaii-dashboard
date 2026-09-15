@@ -147,7 +147,7 @@ hawaii-dashboard/
 │       ├── cron-heartbeat.yml  # Weekly dead-man switch on refresh-data; rolling cron-stale issue
 │       ├── source-release-reminder.yml # Weekly 7-day-ahead reminder for source release windows
 │       ├── tests.yml           # Unit + smoke tests on every push/PR to main
-│       ├── qotd-daily-email.yml # Daily question email: 05:20 HST cron creates a Resend broadcast scheduled for 06:00 HST
+│       ├── qotd-daily-email.yml # Daily question email: 01:00 HST cron creates a Resend broadcast scheduled for 06:00 HST
 │       ├── otc-post-email.yml  # New Off the Charts post email on push to main touching js/otc-posts.js (both email workflows keep a rolling email-failed issue)
 │       ├── rotate-backup.yml   # Off-site git mirror backup
 │       └── timestamp.yml       # Updates footer timestamp on every push to main
@@ -1031,7 +1031,7 @@ Two senders, one shared chrome (`scripts/email-template.js`: sender identity, gr
 
 | Email | Script | Workflow | When | Broadcast name |
 |-------|--------|----------|------|----------------|
-| Daily question | `scripts/send-qotd-email.js` (`npm run email:qotd`) | `qotd-daily-email.yml` | cron 05:20 HST creates a broadcast **scheduled for 06:00 HST**, so GitHub's cron jitter never moves delivery. `--now` sends immediately (also automatic after 06:00). | `qotd-<HST date>` |
+| Daily question | `scripts/send-qotd-email.js` (`npm run email:qotd`) | `qotd-daily-email.yml` | cron 01:00 HST creates a broadcast **scheduled for 06:00 HST**, so GitHub's cron jitter (2.5 to 4.5 h late in Sep 2026) never moves delivery. `--now` sends immediately (also automatic after 06:00). | `qotd-<HST date>` |
 | New post | `scripts/send-otc-email.js` (`npm run email:otc`) | `otc-post-email.yml` | on push to main touching `js/otc-posts.js`: slugs new since the previous commit, dated within 7 days, after the post answers on the live site, **scheduled for 12:00 HST the next day** (a day to cancel in Resend). `[no-email]` in the commit message skips. Manual run takes a slug, `now` sends immediately. | `otc-<slug>` |
 
 Both open with "Aloha {first name}," and stay minimal (user call 2026-09-09). The daily email: the claim in the subject ("True or false: …"), the claim, and True/False buttons that open `/?from_q={id}&a=true|false`; the site records the pick on landing (`QOTD.answerFromLink`, GA4 `qotd_answered` with `source: email`) and opens the proof view for that question, even a day later. The answer is never in the email. The new-post email: one context line, the title, the post's OG card, the dek and a "Read the post" button. Links carry `utm_source=email&utm_medium=qotd|otc`.
@@ -1047,7 +1047,7 @@ Both open with "Aloha {first name}," and stay minimal (user call 2026-09-09). Th
 Change it with `gh variable set EMAIL_SEND_MODE --body beta` (or `live`). `--preview` on either script writes the HTML to `.analytics/` without any API call.
 
 **Runbook**
-- Edited today's question after 05:20 HST? The scheduled broadcast still carries the old claim: delete it in Resend (Broadcasts, it is `qotd-<date>`, status scheduled) and run the daily workflow by hand with `now` checked. A run without deleting it first sends nothing, by design.
+- Edited today's question after 01:00 HST? The scheduled broadcast still carries the old claim: delete it in Resend (Broadcasts, it is `qotd-<date>`, status scheduled) and run the daily workflow by hand with `now` checked. A run without deleting it first sends nothing, by design.
 - A post published and no email the next day? Check the workflow run from the publish push: the live-site wait fails if the deploy took longer than 10 minutes, and re-running the workflow by hand with the slug is safe (the name guard stops duplicates). To pull a scheduled post email, delete the `otc-<slug>` broadcast in Resend before noon HST the next day.
 - Kill switch: set `EMAIL_SEND_MODE` to `dry-run`, or disable the workflow in the Actions tab. Cancelling an already scheduled broadcast is only possible in Resend.
 

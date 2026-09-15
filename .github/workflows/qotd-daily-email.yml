@@ -2,7 +2,11 @@ name: Daily question email
 
 # Builds today's Question of the Day email and hands it to Resend as a
 # broadcast scheduled for 06:00 HST, so GitHub's cron jitter never moves
-# the delivery time. Cron: 15:20 UTC = 05:20 HST (no daylight saving).
+# the delivery time. Cron: 11:00 UTC = 01:00 HST (no daylight saving).
+# It was 05:20 HST until 2026-09-14: GitHub started the run 2.5 to 4.5 hours
+# late every day that week, past 06:00, so the script sent immediately and
+# readers got the question between 07:45 and 09:51. Five hours of slack now.
+# The bank on main must carry the day's question by 01:00 HST.
 #
 # Where it goes is the EMAIL_SEND_MODE repository variable:
 #   dry-run  a preview to MAIL_TO only (default while trialling)
@@ -16,7 +20,7 @@ name: Daily question email
 
 on:
   schedule:
-    - cron: '20 15 * * *'
+    - cron: '0 11 * * *'
   workflow_dispatch:
     inputs:
       now:

@@ -103,15 +103,17 @@ export function confirmationEmail(firstName, confirmUrl) {
     const href = escapeHtml(confirmUrl);
     const promise = "Confirm your email to get the day's true-or-false question every morning around 6 AM, and each new Off the Charts post as it publishes.";
     const fine = "The link works for 48 hours. If you didn't ask for this, ignore this email and nothing will be sent.";
+    const contacts = "Add hello@hawaiidashboard.org to your contacts so the daily question does not land in junk.";
     return {
         subject: 'Confirm your Hawaiʻi Dashboard subscription',
-        text: `Aloha ${firstName},\n\nOne tap and you're in. ${promise}\n\nConfirm: ${confirmUrl}\n\n${fine}\n\nHawaiʻi Dashboard, hawaiidashboard.org\n${POSTAL}`,
+        text: `Aloha ${firstName},\n\nOne tap and you're in. ${promise}\n\nConfirm: ${confirmUrl}\n\n${contacts}\n\n${fine}\n\nHawaiʻi Dashboard, hawaiidashboard.org\n${POSTAL}`,
         html: `<div style="font-family:Inter,-apple-system,'Segoe UI',Roboto,sans-serif;max-width:560px;margin:0 auto;color:#333;line-height:1.5">
   <p style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#0C7081;font-weight:600;margin:0 0 14px">Hawaiʻi Dashboard</p>
   <h1 style="font-size:22px;font-weight:600;margin:0 0 16px">One tap and you're in.</h1>
   <p>Aloha ${name},</p>
   <p>${promise}</p>
   <p style="margin:24px 0"><a href="${href}" style="display:inline-block;background:#0C7081;color:#fff;text-decoration:none;font-weight:600;padding:12px 22px;border-radius:999px">Confirm my email</a></p>
+  <p style="font-size:14px;color:#555">${contacts}</p>
   <p style="font-size:14px;color:#555">${fine}</p>
   <p style="font-size:12px;color:#777;margin-top:28px">Hawaiʻi Dashboard, <a href="https://hawaiidashboard.org" style="color:#0C7081">hawaiidashboard.org</a><br>${POSTAL}</p>
 </div>`,
