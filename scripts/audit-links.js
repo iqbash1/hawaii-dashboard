@@ -85,6 +85,17 @@ const EXPECTED_BLOCK = [
     'www.campbellcollaboration.org',
     // Industry research / CRE data
     'www.cbre.com',
+    // AP News (voter_participation_rate candidate-filing cite): 403 from CI
+    // datacenter IPs since 2026-09-13, the standard news-wire bot posture.
+    // Confirmed live 2026-09-14 and 2026-10-05: 200 to curl with both a browser
+    // and the default User-Agent, and the article renders in the browser pane
+    // ("Fewer candidates filed for election in Hawaii this year than in the past
+    // 10 years", Chad Blair / Civil Beat via AP, 2024-06-05).
+    'apnews.com',
+    // Med-QUEST 1115 waiver monitoring report (uninsured_rate cite). Listed here
+    // for the global statuses; its 404-specific entry is in
+    // EXPECTED_BLOCK_HOST_STATUSES below, with the evidence.
+    'medquest.hawaii.gov',
     // UTOPIA Fiber (broadband_subscription_pct benchmark): live but slow, 39s on a
     // cold hit and ~9s warm against the auditor's 15s timeout, so it intermittently
     // reports status 0. Confirmed 2026-08-28: 200 to curl on three tries and the full
@@ -131,6 +142,31 @@ const EXPECTED_BLOCK = [
 // returning a status code) to avoid leaking signal. 503 is web.archive.org
 // load-shedding (see its EXPECTED_BLOCK entry).
 const EXPECTED_BLOCK_STATUSES = new Set([403, 406, 429, 405, 422, 503, 0]);
+
+// Per-host extra statuses, accepted ONLY for the named host and only in
+// addition to the global list above. This exists so a host that answers
+// automated clients with a status the global list deliberately excludes can be
+// handled without weakening that status everywhere.
+//
+// 404 is the one status that reliably means dead, so it is not in the global
+// list and must never be added there: that would blind the auditor across all
+// ~45 allowlisted hosts at once. medquest.hawaii.gov nonetheless answers
+// datacenter IPs with 404 rather than 403, which is a known way edges avoid
+// leaking that they blocked a client. Evidence (2026-08-23 through 2026-10-04):
+// it 404s from GitHub Actions on roughly one scheduled run in three while
+// serving a 678KB PDF with 200 to every local client on every attempt, default
+// and browser User-Agent alike. The 2026-09-09 retry (2s/6s backoff) was aimed
+// at this and is not enough: on 2026-10-04 it 404'd through all three attempts,
+// so the block outlasts the retry window rather than being a momentary blip.
+const EXPECTED_BLOCK_HOST_STATUSES = {
+    'medquest.hawaii.gov': [404],
+};
+
+/** True when `status` from `domain` is a known block rather than real rot. */
+function isExpectedBlock(domain, status) {
+    if (EXPECTED_BLOCK_STATUSES.has(status) && EXPECTED_BLOCK.includes(domain)) return true;
+    return (EXPECTED_BLOCK_HOST_STATUSES[domain] || []).includes(status);
+}
 
 function loadData() {
     const src = fs.readFileSync(DATA_PATH, 'utf8');
@@ -274,7 +310,7 @@ async function main() {
             const domain = new URL(r.url).hostname;
             if (r.ok || (r.status >= 200 && r.status < 400)) {
                 ok++;
-            } else if (EXPECTED_BLOCK_STATUSES.has(r.status) && EXPECTED_BLOCK.includes(domain)) {
+            } else if (isExpectedBlock(domain, r.status)) {
                 expected403++;
                 process.stdout.write('.');
             } else {
