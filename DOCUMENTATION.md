@@ -804,12 +804,13 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 - For every wired federal-API metric, re-fetches the current canonical-source values for all Hawaiʻi years and compares against `state-data.js`. Strict tolerance: 0.5% relative or 0.0001 absolute.
 - Failure opens a `data-drift` issue automatically; the workflow's `--audit-only` mode keeps unrelated structural warnings from triggering false drift alerts.
 - Two crime metrics carry an explicit `frozen.through: 2019` boundary in `SOURCE_COVERAGE`: pre-2020 values are static historical artifacts (FBI ceased UCR annual reports after 2019); 2020+ is live via FBI CDE / NIBRS.
+- `unemployment_rate` carries `movingTail` in `SOURCE_COVERAGE`: BLS publishes the M13 annual average only after a year ends, so the fetcher averages the published months and the current year is a year-to-date mean that moves with every monthly release. Drift on that one year warns (naming both values) instead of failing; every earlier year still errors, and the monthly refresh settles the cell.
 
 ### Automated (weekly self-healing checks)
 
 Three weekly workflows surface drift via rolling labeled issues. Each maintains a single open issue; subsequent runs edit the body and auto-close when the condition clears.
 
-- **`audit-links.yml`** (Sundays 02:00 UTC): liveness check of ~200 external URLs cited in `data.js` (sourceUrl, potentialDrivers, policyLevers, rankHistoryNarrative). Bot-blocked domains live in `EXPECTED_BLOCK` in `scripts/audit-links.js`. Failure opens a rolling `link-rot` issue.
+- **`audit-links.yml`** (Sundays 02:00 UTC): liveness check of ~200 external URLs cited in `data.js` (sourceUrl, potentialDrivers, policyLevers, rankHistoryNarrative). Bot-blocked domains live in `EXPECTED_BLOCK` in `scripts/audit-links.js`, which accepts the statuses in `EXPECTED_BLOCK_STATUSES` (403/406/429/405/422/503/0). A host that blocks with a status outside that list gets a narrow entry in `EXPECTED_BLOCK_HOST_STATUSES` instead; 404 is deliberately kept out of the global list so it keeps meaning dead everywhere else. Failure opens a rolling `link-rot` issue.
 - **`cron-heartbeat.yml`** (Mondays 03:00 UTC): dead-man switch on the monthly refresh-data cron. If no successful run within 32 days, opens a rolling `cron-stale` issue. Catches the April 2026 silent-failure class.
 - **`source-release-reminder.yml`** (Tuesdays 04:00 UTC): reads each metric's `nextUpdate` field (3-letter month abbreviation = annual release) and surfaces metrics whose release window is within 7 days. Opens a rolling `source-due-soon` issue.
 

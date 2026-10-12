@@ -184,12 +184,31 @@ const METRIC_RULES = {
 // "active but no fetcher yet, here's the unblock path." Both are visible
 // in the audit log; neither is silent.
 //
+// Optional movingTail field (also read by Section 16):
+//   movingTail: {
+//     reason: 'why the current calendar year is a moving target',
+//   }
+//
+// Use movingTail when the fetcher derives the CURRENT calendar year from a
+// partial period, so its value legitimately changes every time the source
+// publishes again. Drift on that one year is then a WARN, not an ERROR: the
+// stored value is not wrong, it is one publication behind, and the monthly
+// refresh corrects it. Without this the audit fails every month between
+// refreshes and reopens the data-drift issue on a cell nobody needs to fix:
+// unemployment_rate HI 2026 went 2.40% -> 2.44% (Aug) -> 2.48% (Oct), each
+// step a fresh ERROR and a new issue.
+//
+// Scope it narrowly. It applies to the current year ONLY; every earlier year
+// still errors on drift, so a real regression in settled history is unaffected.
+// A fetcher that stops updating altogether is caught by the source-freshness
+// checks instead, which is why downgrading this one cell is safe.
+//
 // Frozen does NOT mean "skip silently"; it means "explicit one-time
 // verification on record, no automatic daily drift detection." To force a
 // one-time re-audit of frozen years (e.g. to confirm they still match
 // provenance, or to test a new source path), run with --include-frozen.
 const SOURCE_COVERAGE = {
-    unemployment_rate:          { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000003 from 1976' },
+    unemployment_rate:          { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000003 from 1976', movingTail: { reason: 'BLS publishes M13 (annual average) only after the year ends, so the fetcher averages the published months once at least 6 exist. The current year is therefore a year-to-date mean that moves with every monthly release.' } },
     labor_force_participation:  { expectedStart: 1976, source: 'BLS LAUS',            note: 'M13 annual avg, series LASST{FIPS}0000000000008 from 1976' },
     real_per_capita_income:     { expectedStart: 2008, source: 'BEA SARPI',           note: 'SARPI table (real per capita personal income, chained 2017 dollars) was first published for 2008+. Pre-2008 would require nominal SAINC + custom deflator.' },
     residential_price_cpkwh:    { expectedStart: 1970, source: 'EIA Form 826/861',    note: 'State retail electricity prices from 1970' },
@@ -1909,8 +1928,15 @@ async function runFreshFetch() {
         const freezeThrough = (frozenSpec && Number.isFinite(frozenSpec.through))
             ? frozenSpec.through
             : -Infinity;
+        // Years the fetcher derives from a partial period move with every source
+        // release, so drift on them is "one publication behind", not an error.
+        // Current year only; see the movingTail docs on SOURCE_COVERAGE.
+        const movingTailYear = SOURCE_COVERAGE?.[slug]?.movingTail
+            ? String(new Date().getFullYear())
+            : null;
         let metricCells = 0;
         let metricDrift = 0;
+        let metricTailDrift = 0;
         for (const yr of Object.keys(result.data).sort()) {
             // Skip frozen years (state-data is canonical for them by definition).
             const yrNum = parseInt(yr, 10);
@@ -1925,9 +1951,14 @@ async function runFreshFetch() {
             }
             metricCells++;
             if (!inTolerance(stored, fresh)) {
-                metricDrift++;
-                if (driftSamples.length < 12) {
-                    driftSamples.push({slug, year: yr, stored, fresh, delta: (fresh - stored).toFixed(4)});
+                if (yr === movingTailYear) {
+                    metricTailDrift++;
+                    warn(`[fresh-fetch:${slug}] ${yr} is a moving tail: stored ${stored}, source now ${fresh}. Not an error; the next monthly refresh picks it up.`);
+                } else {
+                    metricDrift++;
+                    if (driftSamples.length < 12) {
+                        driftSamples.push({slug, year: yr, stored, fresh, delta: (fresh - stored).toFixed(4)});
+                    }
                 }
             }
         }
@@ -1935,7 +1966,9 @@ async function runFreshFetch() {
         driftCells += metricDrift;
         checkedMetrics++;
 
-        if (metricDrift === 0) {
+        if (metricDrift === 0 && metricTailDrift > 0) {
+            console.log(`  OK [${slug}] HI ${metricCells - metricTailDrift} settled years match canonical source; ${metricTailDrift} moving-tail year behind the latest release (warned above)`);
+        } else if (metricDrift === 0) {
             console.log(`  OK [${slug}] HI ${metricCells} years match canonical source within tolerance`);
         } else {
             error(`[${slug}] HI ${metricDrift} of ${metricCells} years drift beyond ${TOLERANCE_PP}pp/${TOLERANCE_REL*100}%: see drift summary`);
