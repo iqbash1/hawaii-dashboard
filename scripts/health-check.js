@@ -134,16 +134,16 @@ function checkDeps() {
     // Accepted advisories: no fix available on npm AND not exploitable in this
     // codebase. xlsx (SheetJS): CDN-only patch (blocked by corp TLS proxy); build
     // parses a trusted federal HUD file and the browser export only writes xlsx,
-    // never parses untrusted input. brace-expansion: only the copy nested under
-    // glob is affected (GHSA-mh99-v99m-4gvg is fixed in 5.0.8, and the 2.x line
-    // has no patched release, so semver "<=5.0.7" flags every 2.x). It arrives
-    // via @google-analytics/data -> google-gax -> rimraf -> glob -> minimatch;
-    // that package is already at its latest, an overrides pin to 5.x breaks
-    // minimatch@9 (5.x's CJS entry exports an object, not the callable 2.x
-    // exports), and the DoS needs attacker-controlled glob patterns, which never
-    // reach rimraf's internal cleanup paths. Dev-only either way: nothing here
-    // ships to the browser. Any new or non-accepted high/critical still trips.
-    const ACCEPTED = new Set(['xlsx', 'brace-expansion']);
+    // never parses untrusted input. Dev-only: nothing here ships to the browser.
+    //
+    // brace-expansion was accepted here while the 2.x line it arrived on had no
+    // patched release. It now resolves to 5.0.12 under eslint -> minimatch@10 and
+    // audits clean, so the entry was removed 2026-10-12: leaving it would have
+    // silently green-lit the NEXT brace-expansion advisory. Re-add only with a
+    // fresh no-fix justification.
+    //
+    // Any new or non-accepted high/critical still trips this row.
+    const ACCEPTED = new Set(['xlsx']);
 
     // Count only packages carrying their own advisory. npm also marks every
     // parent up the chain (glob, rimraf, google-gax...) as high purely because a
