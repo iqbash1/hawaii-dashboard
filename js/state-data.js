@@ -5,7 +5,7 @@
 // backfill scripts contributing the historical metrics this fetcher
 // does not cover; build-state-data.js MERGES with the existing file
 // rather than overwriting, to preserve those backfilled metrics).
-// Generated: 2026-09-28T15:37:10.966Z
+// Generated: 2026-10-12T16:52:51.825Z
 //
 // Contains per-state values across all available years.
 // Structure: { slug: { source, calculation, data: { year: { state: val } } } }
@@ -28843,6 +28843,7 @@ const STATE_DATA = {
       },
       "2016": {
         "Alabama": 11.99,
+        "Alaska": 20.3,
         "Arizona": 12.15,
         "Arkansas": 9.92,
         "California": 17.39,
