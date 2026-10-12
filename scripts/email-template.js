@@ -59,15 +59,43 @@ function previewCopy(s, firstName = 'there') {
         .replace(/\{\{\{RESEND_UNSUBSCRIBE_URL\}\}\}/g, `${SITE}/subscribe/#preview-only`);
 }
 
+// Retries GETs only, and only on failures that are actually transient: a
+// network-level throw ("fetch failed"), a 5xx, or a 429. One blip used to make
+// the weekly health check report "Email subscriptions: check errored: fetch
+// failed", which reads like a subscriber problem when nothing is wrong with the
+// subscriptions at all (seen 2026-10-05 and 2026-10-12, both times with the row
+// reporting correctly minutes later).
+//
+// Writes are deliberately NOT retried. A POST here creates or sends a
+// broadcast, and a retry after an ambiguous failure could send a second copy to
+// every reader. A failed write should surface, not be quietly repeated.
 async function resend(method, p, body) {
-    const res = await fetch(API + p, {
-        method,
-        headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-        body: body ? JSON.stringify(body) : undefined,
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(`${method} ${p} -> HTTP ${res.status} ${JSON.stringify(data)}`);
-    return data;
+    const attempts = method === 'GET' ? 3 : 1;
+    let lastErr;
+    for (let i = 0; i < attempts; i++) {
+        // Base delay is overridable so the unit tests can exercise the retry
+        // path without spending the real 1s + 3s on every run.
+        const baseMs = Number(process.env.RESEND_RETRY_BASE_MS || 1000);
+        if (i) await new Promise(r => setTimeout(r, baseMs * Math.pow(3, i - 1))); // 1s, then 3s
+        let res;
+        try {
+            res = await fetch(API + p, {
+                method,
+                headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+                body: body ? JSON.stringify(body) : undefined,
+            });
+        } catch (e) {
+            lastErr = e;   // network-level: no response at all, worth retrying
+            continue;
+        }
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) return data;
+        lastErr = new Error(`${method} ${p} -> HTTP ${res.status} ${JSON.stringify(data)}`);
+        // 4xx other than 429 is a real answer (bad key, missing segment); retrying
+        // it just delays a failure that will not change.
+        if (res.status < 500 && res.status !== 429) break;
+    }
+    throw lastErr;
 }
 
 function mode() {

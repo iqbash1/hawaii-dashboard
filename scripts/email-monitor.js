@@ -75,6 +75,25 @@ function postEmailStatus(posts, broadcasts, now = Date.now()) {
     return { status: 'green', detail: latest ? `last post email ${latest.name} ${latest.status}` : 'no post published since the senders went live' };
 }
 
+/**
+ * GET /api/subscribe, which the Worker answers 405 (it is POST-only). Returns
+ * the status code, or null when the route could not be reached at all.
+ *
+ * The distinction matters: this previously collapsed a network failure to 0 and
+ * then reported "signup route answered nothing instead of 405" as RED, which
+ * claims the signup route is down when the only thing that failed was our own
+ * ability to reach it. Unreachable is "not checked", not "broken".
+ */
+async function probeSignupRoute(attempts = 3) {
+    for (let i = 0; i < attempts; i++) {
+        if (i) await new Promise(r => setTimeout(r, 1000 * i));
+        try {
+            return (await fetch(`${SITE}/api/subscribe`)).status;
+        } catch { /* network-level failure; retry */ }
+    }
+    return null;
+}
+
 // ---- composed check for the health digest ----------------------------------
 
 async function subscriptionHealth() {
@@ -85,7 +104,7 @@ async function subscriptionHealth() {
     const readers = readerStats(contacts);
     const daily = dailyEmailStatus(broadcasts, todayHst);
     const post = postEmailStatus(posts, broadcasts);
-    const signup = await fetch(`${SITE}/api/subscribe`).then(r => r.status).catch(() => 0);
+    const signup = await probeSignupRoute();
 
     const parts = [];
     const worst = [];
@@ -93,7 +112,9 @@ async function subscriptionHealth() {
     parts.push(`${readers.active} active reader${readers.active === 1 ? '' : 's'} (${readers.newLast7} new this week, ${readers.unsubscribed} unsubscribed)`);
     parts.push(daily.detail); worst.push(daily.status);
     parts.push(post.detail); worst.push(post.status);
-    if (signup !== 405) { parts.push(`signup route answered ${signup || 'nothing'} instead of 405`); worst.push('red'); } else parts.push('signup route up');
+    if (signup === null) { parts.push('signup route unreachable from here, not checked'); worst.push('yellow'); }
+    else if (signup !== 405) { parts.push(`signup route answered ${signup} instead of 405`); worst.push('red'); }
+    else parts.push('signup route up');
     const status = worst.includes('red') ? 'red' : worst.includes('yellow') ? 'yellow' : 'green';
     return { status, detail: parts.join(' · '), readers };
 }

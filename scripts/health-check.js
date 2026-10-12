@@ -153,7 +153,16 @@ function checkDeps() {
     // for a real finding and plain package-name strings for a chain parent.
     const scan = (label, cmd) => {
         const r = sh(cmd);
-        let audit; try { audit = JSON.parse(r.out); } catch { return null; }
+        // npm audit exits non-zero whenever it finds anything, so sh() takes its
+        // error path and returns stdout followed by stderr. Any warning npm or
+        // Node emits is therefore appended AFTER the JSON, and a whole-blob parse
+        // fails with "Unexpected non-whitespace character", reporting "could not
+        // parse npm audit" when the audit itself ran fine. Seen with the
+        // NODE_TLS_REJECT_UNAUTHORIZED notice; npm's own "New major version
+        // available" notice would do it too. Take the outermost JSON object.
+        const first = r.out.indexOf('{'), last = r.out.lastIndexOf('}');
+        let audit;
+        try { audit = JSON.parse(r.out.slice(first, last + 1)); } catch { return null; }
         const v = (audit.metadata || {}).vulnerabilities || {};
         const pkgs = audit.vulnerabilities || {};
         const own = k => (pkgs[k].via || []).some(x => typeof x === 'object');
@@ -267,8 +276,24 @@ function checkAlerts() {
 // Needs RESEND_API_KEY + RESEND_SEGMENT_ID (secrets in CI, .env locally); degrades to yellow without them.
 async function checkSubscriptions() {
     const { subscriptionHealth } = require('./email-monitor');
-    const r = await subscriptionHealth();
-    add('Email subscriptions', r.status, r.detail);
+    try {
+        const r = await subscriptionHealth();
+        add('Email subscriptions', r.status, r.detail);
+    } catch (e) {
+        // Reaching Resend and the subscriptions being healthy are different
+        // things, and the row used to conflate them: a bare "check errored:
+        // fetch failed" reads like a subscriber problem. Name the cause instead.
+        // Locally that cause is almost always the corp TLS proxy, which returns
+        // SELF_SIGNED_CERT_IN_CHAIN and makes the row flap between runs while CI
+        // reports it correctly throughout (2026-10-05, 2026-10-12).
+        const code = (e && e.cause && e.cause.code) || '';
+        const msg = String((e && e.message) || e);
+        const tls = /SELF_SIGNED_CERT|UNABLE_TO_VERIFY|^CERT_|DEPTH_ZERO/i.test(code)
+            || /self.signed|unable to verify/i.test(msg);
+        add('Email subscriptions', 'yellow', tls
+            ? 'could not reach Resend from here: TLS interception by the local proxy, not a subscriber problem. CI reports this row accurately; locally re-run with NODE_TLS_REJECT_UNAUTHORIZED=0.'
+            : `could not reach Resend after retries (${code || msg}); this is reachability, not subscriber health`);
+    }
 }
 
 // ── Tier 2: Performance (Lighthouse desktop) + Accessibility (axe) ──────────

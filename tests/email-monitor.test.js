@@ -62,3 +62,60 @@ describe('postEmailStatus', () => {
         assert.match(r.detail, /no post published since/);
     });
 });
+
+// ============================================================
+// Transient-failure handling. The weekly health check reported
+// "Email subscriptions: check errored: fetch failed" on 2026-10-05 and
+// 2026-10-12, both times with the row reporting correctly minutes later: a
+// network blip, not a subscriber problem. These lock in the two fixes.
+// ============================================================
+
+describe('resend() retry policy', () => {
+    const tpl = require('../scripts/email-template');
+    process.env.RESEND_RETRY_BASE_MS = '1';   // exercise the backoff without paying it
+    const realFetch = global.fetch;
+    const ok = (body = {}) => ({ ok: true, status: 200, json: async () => body });
+    const bad = (status) => ({ ok: false, status, json: async () => ({ message: 'nope' }) });
+    const restore = () => { global.fetch = realFetch; };
+
+    it('retries a GET through a transient network throw', async () => {
+        let calls = 0;
+        global.fetch = async () => { calls++; if (calls < 3) throw new TypeError('fetch failed'); return ok({ data: [1] }); };
+        const r = await tpl.resend('GET', '/domains');
+        restore();
+        assert.equal(calls, 3);
+        assert.deepEqual(r, { data: [1] });
+    });
+
+    it('retries a GET through a 5xx', async () => {
+        let calls = 0;
+        global.fetch = async () => { calls++; return calls < 2 ? bad(503) : ok({ data: [] }); };
+        await tpl.resend('GET', '/broadcasts');
+        restore();
+        assert.equal(calls, 2);
+    });
+
+    it('does NOT retry a GET on a 4xx, which is a real answer', async () => {
+        let calls = 0;
+        global.fetch = async () => { calls++; return bad(401); };
+        await assert.rejects(() => tpl.resend('GET', '/domains'), /HTTP 401/);
+        restore();
+        assert.equal(calls, 1);
+    });
+
+    it('does NOT retry a POST, so an ambiguous failure cannot double-send', async () => {
+        let calls = 0;
+        global.fetch = async () => { calls++; throw new TypeError('fetch failed'); };
+        await assert.rejects(() => tpl.resend('POST', '/broadcasts', { name: 'x' }), /fetch failed/);
+        restore();
+        assert.equal(calls, 1);
+    });
+
+    it('surfaces the last error when every GET attempt fails', async () => {
+        let calls = 0;
+        global.fetch = async () => { calls++; throw new TypeError('fetch failed'); };
+        await assert.rejects(() => tpl.resend('GET', '/domains'), /fetch failed/);
+        restore();
+        assert.equal(calls, 3);
+    });
+});
