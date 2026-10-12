@@ -96,8 +96,9 @@ const DASHBOARD_DATA = {
       "2020": 254.2,
       "2021": 269.9,
       "2022": 275.9,
-      "2023": 244.4,
-      "2024": 230.5
+      "2023": 244.5,
+      "2024": 230.3,
+      "2025": 213.7
     },
     "medianSeries": {
       "1960": 97,
@@ -161,10 +162,11 @@ const DASHBOARD_DATA = {
       "2018": 344.3,
       "2019": 349.65,
       "2020": 373.7,
-      "2021": 338.65,
-      "2022": 362.45,
-      "2023": 351.8,
-      "2024": 327.8
+      "2021": 338.8,
+      "2022": 362.35,
+      "2023": 352.6,
+      "2024": 330.05,
+      "2025": 300.7
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Community and geography</strong> · Tight-knit multigenerational households and island isolation both suppress violent crime; comprehensive gun laws limit the most lethal weapon types. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8460118/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Violence intervention</strong> · Community violence intervention programs and youth-facing workers drove recent national crime declines; federal CVI funding has since been cut roughly in half. <a href=\"https://counciloncj.org/whats-driving-the-drop-in-homicide-how-low-might-it-go/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Treatment and housing access</strong> · No long-term dual-diagnosis residential treatment exists outside Oʻahu <a href=\"https://health.hawaii.gov/substance-abuse/files/2023/05/Draft-State-Plan-2022-May-2023-Edition.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; housing instability is linked to increased violence in neglected neighborhoods. <a href=\"https://www.brookings.edu/articles/want-to-reduce-violence-invest-in-place/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Oct",
@@ -215,7 +217,7 @@ const DASHBOARD_DATA = {
       "source": "Census NST-EST2024 (2023 estimate)"
     },
     "howToRead": "Both lines rose from 1960, peaking around 1980, then fell steeply. Hawaiʻi has been consistently worse than the median throughout.",
-    "potentialDrivers": "Despite a 68% decline over 30 years, Hawaiʻi still ranks worse than average, pointing to a stubborn floor tied to tourism. A <a href=\"https://www.ojp.gov/library/publications/ecology-business-environments-and-consequences-crime\" target=\"_blank\" rel=\"noopener\">2024 NIJ-sponsored study</a> found that a one standard deviation increase in commercial mixing on a block was linked to 35–95% more crime, suggesting concentrated visitor and retail areas create elevated theft opportunities. Hawaiʻi's pattern of residents and visitors sharing the same high-traffic spaces (noted in <a href=\"https://hta.hawaii.gov/what-we-do/plans-reports/dmaps/oahu-dmap-2021-2024/\" target=\"_blank\" rel=\"noopener\">HTA's Oʻahu Destination Management Plan</a>) likely explains why property crime remains elevated relative to other states even as violent crime stays better than the median. A second factor is drug-related theft-driven crime: <a href=\"https://nij.ojp.gov/topics/drugs\" target=\"_blank\" rel=\"noopener\">NIJ research</a> links stimulant dependency, particularly methamphetamine, to elevated larceny-theft and motor vehicle theft rates, and Hawaiʻi's <a href=\"https://ag.hawaii.gov/cpja/rs/\" target=\"_blank\" rel=\"noopener\">CPJA annual crime data</a> show these two categories make up the large majority of the state's property crime volume.",
+    "potentialDrivers": "Despite a 76% decline over 30 years, Hawaiʻi still ranks worse than average, pointing to a stubborn floor tied to tourism. A <a href=\"https://www.ojp.gov/library/publications/ecology-business-environments-and-consequences-crime\" target=\"_blank\" rel=\"noopener\">2024 NIJ-sponsored study</a> found that a one standard deviation increase in commercial mixing on a block was linked to 35–95% more crime, suggesting concentrated visitor and retail areas create elevated theft opportunities. Hawaiʻi's pattern of residents and visitors sharing the same high-traffic spaces (noted in <a href=\"https://hta.hawaii.gov/what-we-do/plans-reports/dmaps/oahu-dmap-2021-2024/\" target=\"_blank\" rel=\"noopener\">HTA's Oʻahu Destination Management Plan</a>) likely explains why property crime remains elevated relative to other states even as violent crime stays better than the median. A second factor is drug-related theft-driven crime: <a href=\"https://nij.ojp.gov/topics/drugs\" target=\"_blank\" rel=\"noopener\">NIJ research</a> links stimulant dependency, particularly methamphetamine, to elevated larceny-theft and motor vehicle theft rates, and Hawaiʻi's <a href=\"https://ag.hawaii.gov/cpja/rs/\" target=\"_blank\" rel=\"noopener\">CPJA annual crime data</a> show these two categories make up the large majority of the state's property crime volume.",
     "countyNarrative": "Maui County recorded the highest per-capita property crime rate among the four counties through 2021, likely reflecting its high visitor-to-resident ratio and resort-corridor theft concentration. Honolulu County accounts for the largest volume by far, driven by urban density and Waikiki's concentrated visitor foot traffic. Hawaiʻi County and Kauaʻi County post lower rates, though <a href=\"https://ag.hawaii.gov/cpja/rs/cih/\">county crime reports</a> show Kauaʻi declining over 60% from 2010 to 2021, while Hawaiʻi County declined roughly 30% as statewide rates fell.",
     "useConsolidated": true,
     "dataNote": "Values 1960-2020 come from FBI's pre-NIBRS Crime in the United States annual reports (UCR vintage). Values from 2021 forward come from FBI Crime Data Explorer's NIBRS-era state reconstructions, which sum monthly agency submissions and can differ from UCR-vintage figures on overlap years; visible breaks across the 2020/2021 boundary reflect this methodology shift rather than actual one-year change. Pre-1985 UCR data reflects incomplete voluntary agency reporting; New York is absent from 1960-1964 due to a reporting dispute.",
@@ -281,10 +283,11 @@ const DASHBOARD_DATA = {
       "2018": 2888,
       "2019": 2841.2,
       "2020": 2411.4,
-      "2021": 2673.7,
-      "2022": 2591.4,
+      "2021": 2673.8,
+      "2022": 2591.5,
       "2023": 2196.8,
-      "2024": 2052.6
+      "2024": 2058.2,
+      "2025": 1681.9
     },
     "medianSeries": {
       "1960": 1469.1,
@@ -348,10 +351,11 @@ const DASHBOARD_DATA = {
       "2018": 2248.05,
       "2019": 2112.25,
       "2020": 1959.05,
-      "2021": 1616.35,
-      "2022": 1857.7,
-      "2023": 1811.6,
-      "2024": 1687
+      "2021": 1616.25,
+      "2022": 1857.65,
+      "2023": 1812.8,
+      "2024": 1692.75,
+      "2025": 1469.45
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Treatment and diversion</strong> · Drug courts reduce recidivism roughly 12 percentage points on average <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC3859122/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; methamphetamine drives a disproportionate share of theft-driven crime in Hawaiʻi, yet only a fraction of those needing treatment receive it. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8111791/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Place-based prevention</strong> · Hot-spots policing produces statistically significant property-crime reductions without displacing crime to nearby areas <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC8356500/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; improved street lighting cuts crime roughly 21 percent in treated areas, partly through stronger more eyes on the block. <a href=\"https://www.campbellcollaboration.org/review/effects-of-improved-street-lighting-on-crime/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Reentry and supervision</strong> · Hawaiʻi’s Justice Reinvestment Initiative shifted resources toward supervising higher-risk individuals and community treatment <a href=\"https://csgjusticecenter.org/projects/justice-reinvestment/past-states/hawaii/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; recidivism falls when reentry programs pair housing stability with employment support and behavioral health services. <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/PMC3859122/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Oct",
@@ -1111,11 +1115,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Tourism employment floor</strong> · Hawaiʻi's visitor economy provides a persistent baseline of service-sector jobs, but tourism-related sectors had recovered to only 94% of pre-pandemic GDP by late 2024 <a href=\"https://dbedt.hawaii.gov/economic/qser/outlook-economy/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; roughly 50% of hospitality tasks are technically automatable, posing a medium-term displacement risk. <a href=\"https://www.mckinsey.com/industries/travel/our-insights/future-of-tourism-bridging-the-labor-gap-enhancing-customer-experience\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Sector-based training</strong> · Randomized trials of programs such as Project QUEST and Year Up show sustained earnings gains of $5,000-$8,000 per year lasting a decade or more <a href=\"https://www.brookings.edu/articles/do-sectoral-training-programs-work-what-the-evidence-on-project-quest-and-year-up-really-shows/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's federally funded training pipeline aligns with this model but remains small relative to at-risk occupations. <a href=\"https://labor.hawaii.gov/wp-content/uploads/2025/12/WIOA-Annual-Report-PY24_12.01.2025.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Reemployment speed</strong> · Rapid-reattachment services such as reemployment bonuses and job-search assistance shorten unemployment spells more cost-effectively than extended benefits <a href=\"https://www.brookings.edu/articles/building-americas-job-skills-with-effective-workforce-programs-a-training-strategy-to-raise-wages-and-increase-work-opportunities/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's single-sector concentration amplifies the value of cross-industry reskilling during tourism downturns. <a href=\"https://uhero.hawaii.edu/potential-opportunities-to-diversify-the-economy-of-hawai%CA%BBi/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {
-      "value": 2.7,
-      "period": "Aug 2026",
-      "asOf": "2026-09-28"
-    },
+    "latestMonthly": {"value":2.7,"period":"Aug 2026","asOf":"2026-10-12"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked in the top 10 in roughly two thirds of the past 40 years, with a weak stretch in the late 1990s when the rank reached #46. The sharpest break was 2020, when tourism dependence drove unemployment to 11.7 percent and the rank to #49. Recovery was gradual: #26 in 2022, back inside the top 10 by 2024, and #2 in both 2025 and 2026. That matches the best showing since 2018, though short of the #1 ranks of 2017 and the mid-2000s.",
       "mode": "protect",
@@ -1270,11 +1270,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Childcare cost and supply</strong> · Infant care in Hawaiʻi averages $21,167 per year, ranking 6th-highest nationally and consuming roughly 20% of median family income <a href=\"https://www.epi.org/child-care-costs-in-the-united-states/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; federal research finds higher childcare subsidy spending significantly increases low-income mothers' labor force participation. <a href=\"https://aspe.hhs.gov/effects-child-care-subsidies-maternal-labor-force-participation-united-states\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Aging-driven exits</strong> · Population aging reduced U.S. labor force participation by over 3 percentage points from 2000 to 2017 <a href=\"https://www.minneapolisfed.org/article/2023/whos-not-working-understanding-the-uss-aging-workforce\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's median age is among the highest in the nation, and roughly 1.6 million excess retirements nationally during the pandemic have not fully reversed. <a href=\"https://www.atlantafed.org/research-and-data/publications/policy-hub-macroblog/2023/04/21/retirement-and-its-impact-on-labor-supply\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li><li><strong>Discouraged and disabled workers</strong> · Childcare-related nonparticipation rose 43% from mid-2023 to late 2024 <a href=\"https://www.kansascityfed.org/research/economic-bulletin/cost-of-childcare-increasingly-weighs-on-labor-force-engagement/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; high living costs in Hawaiʻi amplify barriers for workers deciding whether working is worth the cost, particularly those with disabilities or limited transportation. <a href=\"https://dbedt.hawaii.gov/economic/qser/labor-force/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a></li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {
-      "value": 61.1,
-      "period": "Aug 2026",
-      "asOf": "2026-09-28"
-    },
+    "latestMonthly": {"value":61.1,"period":"Aug 2026","asOf":"2026-10-12"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi ranked #2 in 1976 and has fallen to #37 in 2025. The decline tracks the shift from plantation agriculture to tourism and hospitality, with part-time schedules and lower wages replacing full-time cross-skill employment.",
       "mode": "learn",
@@ -2127,11 +2123,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Fuel mix and renewable transition</strong> · KIUC on Kauaʻi posts the lowest residential rates statewide through fixed-price solar-plus-battery contracts <a href=\"https://kiuc.coop/renewable-portfolio\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; scaling similar procurement to Oʻahu and Maui could displace the petroleum generation that keeps evening rates highest <a href=\"https://puc.hawaii.gov/wp-content/uploads/2025/01/Hawaii-PUC-Energy-Inclinations-White-Paper-FINAL.12.31.24_signed.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Grid modernization costs</strong> · The PUC capped HECOʻs Waiau repowering cost recovery and required 51% renewable fuel by 2032 <a href=\"https://energy.hawaii.gov/energy-affordability-signalled-as-state-priority-public-utilities-commission-heeds-calls-for-rate-accountability-in-waiau-repowering/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; phased cost recovery and competitive procurement can limit ratepayer exposure during the transition <a href=\"https://energy.hawaii.gov/wp-content/uploads/2026/01/2025-HSEO-Annual-Report.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Rate design and affordability</strong> · HECO's new time-of-use billing shifts price signals across daytime, evening peak, and overnight periods <a href=\"https://puc.hawaii.gov/energy/der/ard/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; pending rate cases and wildfire mitigation spending of $450 million through 2027 could push bills higher before renewables bring long-term savings <a href=\"https://www.hawaiianelectric.com/billing-and-payment/rates-and-regulations/effective-rate-summary\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {
-      "value": 48,
-      "period": "Jul 2026",
-      "asOf": "2026-09-28"
-    },
+    "latestMonthly": {"value":48,"period":"Jul 2026","asOf":"2026-10-12"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked #50 in every year since the mid-1990s except 1998. The 1973 oil embargo opened a permanent gap: mainland grids shifted to gas and coal while Hawaiʻi stayed on oil. Renewables, on the state's rooftop-inclusive RPS measure, have grown to over a third of electricity sales by 2025, but transition capital costs pass through to ratepayers and the price gap has widened, not closed.",
       "mode": "learn",
@@ -2229,11 +2221,7 @@ const DASHBOARD_DATA = {
     },
     "policyLevers": "<ul class='cn-focus-list'><li><strong>Utility-scale procurement</strong> · Renewable share reached 36% statewide in 2025, and an executive order accelerated the 100% target to 2035 for neighbor islands <a href=\"https://energy.hawaii.gov/wp-content/uploads/2026/01/2025-HSEO-Annual-Report.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Scaling Oʻahu procurement to match neighbor-island renewable progress is the binding constraint for statewide gains <a href=\"https://energy.hawaii.gov/hawaii-clean-energy-initiative/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Storage and grid integration</strong> · KIUC reached 51% renewable by 2024 through co-located solar-plus-battery contracts <a href=\"https://kiuc.coop/renewable-portfolio\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>, proving isolated island grids can integrate high shares <a href=\"https://puc.hawaii.gov/wp-content/uploads/2025/01/Hawaii-PUC-Energy-Inclinations-White-Paper-FINAL.12.31.24_signed.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Permitting and interconnection</strong> · A 2025 strategic partnership with JERA aims to accelerate grid modernization <a href=\"https://energy.hawaii.gov/wp-content/uploads/2026/01/2025-HSEO-Annual-Report.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; streamlining interconnection review from the current multi-year timeline is the highest-leverage change <a href=\"https://cnee.colostate.edu/wp-content/uploads/2025/11/Updated_HI-State-Brief_2025.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
     "nextUpdate": "Mar",
-    "latestMonthly": {
-      "value": 24.7,
-      "period": "Jul 2026",
-      "asOf": "2026-09-28"
-    },
+    "latestMonthly": {"value":24.7,"period":"Jul 2026","asOf":"2026-10-12"},
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has generated a larger share of its electricity from renewables than the typical state throughout the two decades on record. Rank #22 reflects a handful of hydro- and wind-heavy states (Washington, Iowa, Oregon, South Dakota) that pull well ahead in absolute share. Hawaiʻi has kept improving but has not closed the gap with those leaders.",
       "mode": "learn",
