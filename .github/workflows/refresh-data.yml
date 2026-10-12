@@ -82,6 +82,41 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
           # api.census.gov requires an API key as of ~2026-06-07 (8 ACS metrics).
           CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+          # FBI CDE (violent + property crime) sits behind api.data.gov and has
+          # no in-script fallback. Without this the fetcher logs "SKIP:
+          # API_DATA_GOV_KEY env var not set" and both crime metrics never
+          # refresh, while data-audit.yml (which does wire it) stays green.
+          API_DATA_GOV_KEY: ${{ secrets.API_DATA_GOV_KEY }}
+
+      # ----- A fetcher whose API key the workflow does not pass SKIPs quietly
+      #       and the run still reports success. That hid FBI crime for every
+      #       cron run until 2026-10-12 (API_DATA_GOV_KEY was wired into
+      #       data-audit.yml but not here). Non-blocking on purpose: the other
+      #       metrics still refresh, but the gap opens a data-drift issue,
+      #       which the weekly health check rolls up as a yellow.
+      - name: Flag fetchers skipped for a missing API key
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const log = fs.existsSync('/tmp/build-state-output.txt')
+              ? fs.readFileSync('/tmp/build-state-output.txt', 'utf8') : '';
+            const misses = [...new Set([...log.matchAll(/^Fetching: (.+?)\.\.\.\s*\n\s*SKIP: (\w+) env var not set/gm)]
+              .map(m => `- ${m[1]}: \`${m[2]}\` not set`))];
+            if (!misses.length) { core.info('No fetcher skipped for a missing key.'); return; }
+            core.warning(`Fetchers skipped for a missing API key:\n${misses.join('\n')}`);
+            const title = 'Data refresh: fetcher skipped for a missing API key';
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'data-drift' });
+            if (open.some(i => i.title === title)) return;
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo, title, labels: ['data-drift'],
+              body: [
+                'These fetchers did not run this cycle because the refresh workflow does not pass their key, so their metrics did not refresh:',
+                '', ...misses, '',
+                'Fix: add the secret to the "Fetch state-level data" step env in `.github/workflows/refresh-data.yml` (the secret usually already exists; `data-audit.yml` may wire it).',
+              ].join('\n'),
+            });
 
       - name: Fetch county-level data
         id: fetch_county
