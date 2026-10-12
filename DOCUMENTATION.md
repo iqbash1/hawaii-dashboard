@@ -309,6 +309,8 @@ Each metric follows this structure:
   whyItMatters: "One sentence: why this metric matters to residents",
   howToRead: "How to interpret the chart visually",
   dataNote: "Methodological caveat or known discontinuity (optional)",   // shown as ⚠ banner in modal
+  nextUpdate: "Sep" | "Biennial" | "Monthly" | "Discontinued",           // month of the next source release; "Discontinued" = source stopped publishing (food_insecurity_rate since 2026-10-12): card shows a muted "No longer updated" line, About page prints "Discontinued", freshness checks skip it
+  updateCadence: "Annual (default)" | "Biennial" | "No longer updated", // optional; shown in the modal header vintage line ("Data: 2006-2024 · No longer updated")
   potentialDrivers: "HTML string: research-backed drivers with hyperlinks to sources (optional)",  // shown in modal above policyLevers; rendered via innerHTML (supports <a> links)
   countyNarrative: "HTML or plain-text county-level breakdown (optional)", // shown as 'County breakdown' section in consolidated layout; rendered via template literal (supports <a> links); omit when the metric has no county-level chart data in county-data.js
   useConsolidated: true,                                                  // Boolean flag. All 27 metrics use the single-scroll consolidated layout.

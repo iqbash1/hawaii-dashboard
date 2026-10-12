@@ -1063,6 +1063,12 @@ const App = {
                     ? `<span class="card-unit">${effective.unitLabel}</span>`
                     : '';
 
+                // A metric whose source stopped publishing stays on the grid
+                // frozen at its last period; without this line its old year
+                // reads like ordinary lag.
+                const discontinuedHtml = effective.nextUpdate === 'Discontinued'
+                    ? '<div class="card-discontinued">No longer updated: the source report ended in 2025</div>'
+                    : '';
                 const monthlyHtml = effective.latestMonthly
                     ? `<div class="card-latest-monthly">Latest: ${ChartUtils.formatValue(effective.latestMonthly.value, effective.unit, false)} (${effective.latestMonthly.period})</div>`
                     : '';
@@ -1091,6 +1097,7 @@ const App = {
                     </div>
                     ${directionHtml}
                     ${monthlyHtml}
+                    ${discontinuedHtml}
                     <div class="card-sparkline">
                         <canvas></canvas>
                     </div>

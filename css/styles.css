@@ -996,6 +996,15 @@ body {
     margin-top: 0.15rem;
 }
 
+/* Frozen metric (source stopped publishing): muted, not teal. Teal is reserved
+   for the latest-monthly figures, which signal fresher data, the opposite. */
+.card-discontinued {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.15rem;
+}
+
 /* --- Modal Tabs --- */
 .modal-tabs {
     display: flex;
