@@ -1656,20 +1656,19 @@ async function fetchFbiCdeCrime(slug) {
             + `?from=01-${fromYear}&to=12-${toYear}&api_key=${key}`;
         let monthly;
         try {
-            const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
-            if (!res.ok) {
-                // 503s are common on CDE; one retry usually clears it.
-                if (res.status >= 500 && res.status < 600) {
-                    await sleep(1500);
-                    const retry = await fetch(url, { signal: AbortSignal.timeout(20000) });
-                    if (!retry.ok) throw new Error(`HTTP ${retry.status} (after retry)`);
-                    monthly = await retry.json();
-                } else {
-                    throw new Error(`HTTP ${res.status}`);
-                }
-            } else {
-                monthly = await res.json();
+            // CDE throttles in bursts: both crime fetchers start at once, and
+            // on 2026-10-12 ten state requests (AK..HI, the first in line)
+            // drew 503s that one retry 1.5s later did not clear. A single
+            // failed state drops every year from the 50-state set, so back
+            // off and retry before giving up on a state.
+            const CDE_BACKOFF_MS = [2000, 5000, 10000];
+            let res = await fetch(url, { signal: AbortSignal.timeout(20000) });
+            for (let i = 0; !res.ok && res.status >= 500 && res.status < 600 && i < CDE_BACKOFF_MS.length; i++) {
+                await sleep(CDE_BACKOFF_MS[i]);
+                res = await fetch(url, { signal: AbortSignal.timeout(20000) });
             }
+            if (!res.ok) throw new Error(`HTTP ${res.status}${res.status >= 500 ? ` (after ${CDE_BACKOFF_MS.length} retries)` : ''}`);
+            monthly = await res.json();
         } catch (err) {
             statesFailed++;
             console.log(`  WARN ${abbr}: ${err.message}; skipping`);

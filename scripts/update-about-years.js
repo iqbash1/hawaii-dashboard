@@ -25,37 +25,13 @@ function loadJSConst(filePath, varName) {
 
 const DASHBOARD_DATA = loadJSConst(DATA_PATH, 'DASHBOARD_DATA');
 
-// Mapping: display name in about/index.html -> slug in data.js
-// Display names must match the exact text inside <td class="metric-name">...</td>
-const NAME_TO_SLUG = {
-    'Violent Crime Rate':                                   'violent_crime_rate',
-    'Property Crime Rate':                                  'property_crime_rate',
-    'Primary Care Physicians': 'pcp_per_100k',
-    'Uninsured Rate':                                       'uninsured_rate',
-    'Suicide Rate':                                         'suicide_rate',
-    'High School Graduation Rate':                          'acgr',
-    "Adults with Bachelor&#x2019;s Degree+":                'ba_or_higher_pct',
-    'NAEP 8th Grade Math':                                  'naep_math_8',
-    'NAEP 8th Grade Reading':                               'naep_reading_8',
-    'Unemployment Rate':                                    'unemployment_rate',
-    'Labor Force Participation':                            'labor_force_participation',
-    'Per Capita Income (real)':               'real_per_capita_income',
-    'Renter Housing Cost Burden':                            'renter_cost_burden_pct',
-    'Home Price-to-Income Ratio':                           'home_price_to_income',
-    'Homelessness':                                         'unsheltered_homeless_rate',
-    'Roads in Poor Condition':                              'road_poor_pct',
-    'Households with Broadband':                            'broadband_subscription_pct',
-    'Residential Electricity Price':                        'residential_price_cpkwh',
-    'Electricity from Renewables':                          'renewables_share_gen',
-    'Food Insecurity Rate':                                 'food_insecurity_rate',
-    'Rainy Day Fund':                                       'rainy_day_fund_pct',
-    'Voter Participation Rate':                             'voter_participation_rate',
-    'Net Migration':                                        'net_domestic_migration_rate',
-    'New Business Entry Rate':                              'estabs_entry_rate',
-    'Net Employer Business Formation':                      'net_employer_formation',
-    'Labor Productivity':                                   'labor_productivity',
-    'Income Inequality':                                    'gini_index',
-};
+// About-page row names ARE the data.js `metric` field, HTML-encoded as the
+// page writes them, so the map is derived rather than hand-kept. Two hand
+// keys went stale after metric renames ("Primary Care Physicians" and
+// "Labor Force Participation"), and both rows silently stopped updating.
+const toHtml = (s) => s.replace(/&/g, '&amp;').replace(/\u2019/g, '&#x2019;');
+const NAME_TO_SLUG = Object.fromEntries(
+    Object.entries(DASHBOARD_DATA).map(([slug, m]) => [toHtml(m.metric), slug]));
 
 // Extract a 4-digit year number from a key like "2006", "2006-2008", etc.
 function extractYear(key) {
@@ -138,6 +114,12 @@ for (const [displayName, slug] of Object.entries(NAME_TO_SLUG)) {
 if (notFound.length > 0) {
     console.log('\nCould not match in HTML (check NAME_TO_SLUG mapping):');
     notFound.forEach(s => console.log('  ' + s));
+    // A row that cannot be matched never updates again. That used to be a
+    // printed line every month (pcp since its rename) and nobody saw it.
+    if (notFound.some(s => s.includes('row pattern not found'))) {
+        console.error('ERROR: an About-page row no longer matches its data.js metric name; its years and next-update date are frozen.');
+        process.exitCode = 1;
+    }
 }
 
 // ── Next-update column ─────────────────────────────────────────────
@@ -155,19 +137,34 @@ for (const [displayName, slug] of Object.entries(NAME_TO_SLUG)) {
     let displayDate;
     const nu = metric.nextUpdate;
     const monthIdx = MONTHS.indexOf(nu);
-    if (monthIdx === -1) continue;
+    // A source that has stopped publishing (USDA ended the Household Food
+    // Security report on 2025-09-20) shows as such, never as a future date.
+    if (nu === 'Discontinued') displayDate = 'Discontinued';
+    else if (monthIdx === -1) continue;
 
     const isBiennial = (metric.updateCadence || '').includes('Biennial');
-    if (isBiennial) {
+    if (displayDate) {
+        // already set (Discontinued)
+    } else if (isBiennial) {
         // NAEP, voter: find next release year based on latest data year
         const latestYear = Math.max(...Object.keys(metric.hawaii || {}).map(Number).filter(n => !isNaN(n)));
         const nextDataYear = latestYear + 2;
         // Results release the year after the test year
         displayDate = `${nu} ${nextDataYear + 1}`;
+    } else if (curMonth <= monthIdx) {
+        // Annual, release month still ahead this year.
+        displayDate = `${nu} ${curYear}`;
     } else {
-        // Annual: show "Month Year", advancing if we're past that month
-        const targetYear = curMonth > monthIdx ? curYear + 1 : curYear;
-        displayDate = `${nu} ${targetYear}`;
+        // Annual, release month passed. Advance only if the release actually
+        // landed: the data year it should bring is present. Otherwise it is
+        // late, not a year away. Same expectation validate-data.js Section 9
+        // uses for "Source overdue" (curYear - dataLag, default lag 1).
+        // Without this, in Oct 2026 the delayed ACS 2025 release read as
+        // "Sep 2027".
+        const lag = (typeof metric.dataLag === 'number' && metric.dataLag > 0) ? metric.dataLag : 1;
+        const latestYear = Math.max(...Object.keys(metric.hawaii || {})
+            .map(k => { const y = k.match(/(\d{4})$/); return y ? Number(y[1]) : 0; }));
+        displayDate = latestYear >= curYear - lag ? `${nu} ${curYear + 1}` : 'Delayed';
     }
 
     // Find and replace the Next update cell
