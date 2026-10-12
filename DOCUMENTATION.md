@@ -105,7 +105,7 @@ hawaii-dashboard/
 │   ├── build-state-data.js     # Fetches per-state data from federal APIs
 │   ├── build-county-data.js    # Fetches county-level data from federal APIs
 │   ├── recompute-data.js       # Recomputes derived fields in data.js
-│   ├── update-about-years.js   # Updates year ranges in about/index.html
+│   ├── update-about-years.js   # Updates year ranges + next-update column in about/index.html (rows keyed by data.js `metric`; overdue releases print "Delayed")
 │   ├── email-template.js       # Subscriber email chrome + Resend delivery (dry-run | beta | live)
 │   ├── send-qotd-email.js      # Daily question email builder/sender (npm run email:qotd)
 │   ├── send-otc-email.js       # New-post email builder/sender (npm run email:otc)
@@ -201,7 +201,7 @@ hawaii-dashboard/
 | 7 | Affordability | Home Price to Income Ratio | x | Down | Census ACS |
 | 8 | Affordability | Homelessness | per 10K | Down | HUD PIT Count |
 | 9 | Affordability | Residential Electricity Price | c/kWh | Down | EIA |
-| 10 | Affordability | Food Insecurity Rate | % | Down | USDA ERS |
+| 10 | Affordability | Food Insecurity Rate | % | Down | USDA ERS (report discontinued 2025-09-20; 2022-2024 is the last window) |
 | 11 | Economy & Workforce | Unemployment Rate | % | Down | BLS LAUS |
 | 12 | Economy & Workforce | Labor Force Participation Rate | % | Up | BLS LAUS |
 | 13 | Economy & Workforce | Labor Productivity (Output per Hour) | Index (2017=100) | Up | BLS |
@@ -792,7 +792,7 @@ The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadDa
 4. Runs `recompute-data.js` to derive `data.js` from `state-data.js` (HI series + 50-state medianSeries)
 5. Runs `update-monthly.js` to refresh the 4 metrics with monthly callouts (UR, LFP, electricity price, renewables share)
 6. Runs `update-narrative-years.js --apply` so stale "in YYYY" stamps in narratives auto-bump
-7. Runs `update-about-years.js` for the Metric Registry year ranges
+7. Runs `update-about-years.js` for the Metric Registry year ranges and next-update dates. An annual release past its month without its data year prints "Delayed" rather than rolling to next year; `nextUpdate: "Discontinued"` prints as such; a row that no longer matches its `metric` name fails the script
 8. Runs `generate-og-pages.py` to regenerate OG images + stub pages
 9. Validates data integrity (`--strict`)
 10. **Blocking** fresh-fetch drift check: re-fetches each auto-audited metric's latest HI year directly from the canonical federal source and exits non-zero if any drift exceeds tolerance (0.5% relative / 0.0001 absolute)
