@@ -2691,6 +2691,30 @@ async function main() {
     const merged = {};
     const allSlugs = new Set([...Object.keys(existing), ...Object.keys(results)]);
     let preservedYearCount = 0;
+    // Merge one metric's year data, keeping any state the fresh fetch omitted
+    // from a year it otherwise returned. pcp_per_100k stores FIPS-first
+    // (data[FIPS][year] with a 'name' key), so its buckets are merged the same
+    // way but keyed by FIPS; the shape is uniform enough that one helper covers
+    // both. Returns the merged data and logs every preserved cell.
+    function mergeYearsByState(slug, existingData = {}, freshData = {}) {
+        const out = { ...existingData };
+        for (const [key, freshBucket] of Object.entries(freshData)) {
+            const existingBucket = existingData[key];
+            if (!existingBucket || typeof existingBucket !== 'object' || typeof freshBucket !== 'object') {
+                out[key] = freshBucket;
+                continue;
+            }
+            const kept = Object.keys(existingBucket).filter(
+                s => !(s in freshBucket) && existingBucket[s] != null
+            );
+            if (kept.length) {
+                console.log(`  ${slug}: ${key} kept ${kept.length} value(s) the source omitted this run (${kept.join(', ')})`);
+            }
+            out[key] = { ...existingBucket, ...freshBucket };
+        }
+        return out;
+    }
+
     for (const slug of [...allSlugs].sort()) {
         if (!results[slug]) {
             merged[slug] = existing[slug];
@@ -2708,10 +2732,18 @@ async function main() {
             merged[slug] = {
                 ...existing[slug],     // base from existing (rare metadata only in old file)
                 ...results[slug],      // fresh metadata wins
-                data: {
-                    ...existing[slug].data, // existing year data
-                    ...results[slug].data,  // fresh year data overwrites for overlap years
-                },
+                // Overlap years merge STATE-level, not whole-year. Spreading the
+                // fresh year object wholesale drops any state the source omitted
+                // this run, which silently shrinks a complete year and breaks the
+                // 50-state ranking invariant. Seen 2026-09-28: EIA returned null
+                // for Alaska 2016 residential price while 2014, 2015, 2017 and
+                // 2018 were all present, so the refresh took that year from 50
+                // states to 49 and left Hawaiʻi ranked "#49 of 49". A single
+                // interior null in a continuous annual series is a publishing
+                // glitch, not a withdrawal. Preserving matches how this file
+                // already treats absent metrics, years and threshold variants;
+                // every preserved cell is logged so the omission stays visible.
+                data: mergeYearsByState(slug, existing[slug].data, results[slug].data),
             };
             // Threshold variants: preserve existing variants the fetcher didn't
             // return (so daily refresh doesn't wipe legacy backfilled variants
