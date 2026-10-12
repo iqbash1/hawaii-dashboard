@@ -127,6 +127,11 @@ const EXPECTED_BLOCK = [
     'www.hawaii.edu',
     'ahec.hawaii.edu',
     'malegislature.gov',
+    // California legislature bill text (renter_cost_burden_pct caution source,
+    // AB-1482 Tenant Protection Act). 403s every automated client including curl
+    // with a browser User-Agent; confirmed live 2026-10-12 in the browser pane,
+    // rendering the chaptered bill text. Same posture as malegislature.gov above.
+    'leginfo.legislature.ca.gov',
     'consortium.uchicago.edu',
     'mdek12.org',
     'aspe.hhs.gov',
