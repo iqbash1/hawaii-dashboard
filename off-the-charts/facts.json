@@ -24,15 +24,18 @@
     { "metric": "labor_productivity", "kind": "growthPct", "state": "Maine", "window": ["2018", "2024"], "as": "{n0}%", "note": "Maine growth 2018-2024" }
   ],
   "safe-state-theft-problem": [
-    { "metric": "violent_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0} of 50", "note": "HI violent-crime rank (lede)" },
-    { "metric": "violent_crime_rate", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{n0}", "note": "HI violent crimes per 100k" },
-    { "metric": "violent_crime_rate", "kind": "median", "year": "2024", "as": "{n0}", "note": "US median violent-crime rate" },
-    { "metric": "property_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0} of 50", "note": "HI property-crime rank (spine)" },
-    { "metric": "property_crime_rate", "kind": "value", "state": "Hawaii", "year": "2024", "as": "{c0}", "note": "HI property crimes per 100k (comma)" },
-    { "metric": "violent_crime_rate", "kind": "rank", "state": "Idaho", "year": "2024", "as": "#{n0}", "note": "Idaho violent-crime rank" },
-    { "metric": "property_crime_rate", "kind": "value", "state": "Idaho", "year": "2024", "as": "{n0}", "note": "Idaho lowest property-crime rate" },
-    { "metric": "property_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2014", "as": "#{n0}", "note": "HI property-crime rank 2014" },
-    { "metric": "property_crime_rate", "kind": "growthPct", "state": "Hawaii", "window": ["2014", "2024"], "as": "{a0}%", "note": "HI property-crime decade decline (abs)" }
+    { "metric": "violent_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2025", "as": "#{n0} of 50", "note": "HI violent-crime rank (lede)" },
+    { "metric": "violent_crime_rate", "kind": "value", "state": "Hawaii", "year": "2025", "as": "{n0}", "note": "HI violent crimes per 100k" },
+    { "metric": "violent_crime_rate", "kind": "median", "year": "2025", "as": "{n0}", "note": "US median violent-crime rate" },
+    { "metric": "property_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2025", "as": "#{n0} of 50", "note": "HI property-crime rank (spine; one rank inside the bottom tier in 2025, so the post states the number and keeps tier words on the since-1960 record)" },
+    { "metric": "property_crime_rate", "kind": "value", "state": "Hawaii", "year": "2025", "as": "{c0}", "note": "HI property crimes per 100k (comma; P3 and the decade endpoint)" },
+    { "metric": "violent_crime_rate", "kind": "rank", "state": "Idaho", "year": "2025", "as": "#{n0}", "note": "Idaho violent-crime rank" },
+    { "metric": "property_crime_rate", "kind": "value", "state": "Idaho", "year": "2025", "as": "{n0}", "note": "Idaho lowest property-crime rate" },
+    { "metric": "property_crime_rate", "kind": "value", "state": "Hawaii", "year": "2015", "as": "{c0}", "note": "HI property-crime rate 2015 (decade start)" },
+    { "metric": "property_crime_rate", "kind": "growthPct", "state": "Hawaii", "window": ["2015", "2025"], "as": "{a0}%", "note": "HI property-crime decade decline (abs)" },
+    { "metric": "property_crime_rate", "kind": "rank", "state": "Hawaii", "year": "2022", "as": "#{n0}", "note": "HI property-crime rank 2022 (still #45 when the late drop began)" },
+    { "metric": "property_crime_rate", "kind": "growthPct", "state": "Hawaii", "window": ["2022", "2025"], "as": "{a0}%", "note": "HI property-crime decline since 2022 (abs)" },
+    { "metric": "property_crime_rate", "kind": "growthRank", "state": "Hawaii", "window": ["2022", "2025"], "within": 3, "as": "one of the three largest drops of any state", "note": "#2 of 50 in the first 2025 vintage, 0.2 points ahead of Idaho #3; bracket wording so a revision cannot flip it" }
   ],
   "florida-rent-burden": [
     { "metric": "renter_cost_burden_pct", "kind": "rank", "state": "Hawaii", "year": "2024", "as": "#{n0}", "note": "HI rent-burden rank" },

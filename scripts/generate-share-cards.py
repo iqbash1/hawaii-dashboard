@@ -159,7 +159,7 @@ CARDS = [
      "viz": "pair",
      "pair": lambda d: [("Violent crime", d["violent_crime_rate"]["rank"], d["violent_crime_rate"]["of"]),
                         ("Property crime", d["property_crime_rate"]["rank"], d["property_crime_rate"]["of"])],
-     "caption": "Among the safest from violence, near the worst on theft."},
+     "caption": "Among the safest from violence, worse than most states on theft."},
 
     {"slug": "florida-rent-burden", "date": "27 May 2026",
      "title": "Two housing problems, not one.",

@@ -217,7 +217,13 @@ function main() {
       const raw = derive(c);
       if (raw == null) { problems.push(`  ⚠ ${claimLabel(c)} — could not derive (data gap?)`); missing++; continue; }
       let expected, ok;
-      if (RANK_KINDS.has(c.kind)) {
+      if (RANK_KINDS.has(c.kind) && c.within) {
+        // A bracket claim ("one of the three largest"): `as` is literal text,
+        // true while the best rank in the tie range is at most `within`.
+        expected = `${c.as} [needs rank <= ${c.within}, now #${raw.lo}]`;
+        ok = raw.lo <= c.within && states(text, c.as);
+        if (ok) expected = c.as;
+      } else if (RANK_KINDS.has(c.kind)) {
         // raw is a tie range {lo, hi}; accept any rank in it.
         const opts = [];
         for (let r = raw.lo; r <= raw.hi; r++) opts.push(applyFormat(c.as, r, c.scale));

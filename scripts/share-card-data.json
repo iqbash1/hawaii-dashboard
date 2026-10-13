@@ -26,17 +26,17 @@
     "year": "2024"
   },
   "violent_crime_rate": {
-    "rank": 12,
+    "rank": 8,
     "of": 50,
-    "val": 230.5,
-    "year": "2024",
-    "median": 327.8
+    "val": 213.7,
+    "year": "2025",
+    "median": 300.7
   },
   "property_crime_rate": {
-    "rank": 40,
+    "rank": 35,
     "of": 50,
-    "val": 2052.6,
-    "year": "2024"
+    "val": 1681.9,
+    "year": "2025"
   },
   "gini_index": {
     "rank": 12,
@@ -47,14 +47,14 @@
   "unsheltered_homeless_rate": {
     "rank": 48,
     "of": 50,
-    "val": 28.17,
-    "year": "2024"
+    "val": 28.21,
+    "year": "2025"
   },
   "unemployment_rate": {
-    "rank": 2,
+    "rank": 3,
     "of": 50,
-    "val": 0.0234,
-    "year": "2025"
+    "val": 0.0248,
+    "year": "2026"
   },
   "naep_reading_8": {
     "rank": 25,
