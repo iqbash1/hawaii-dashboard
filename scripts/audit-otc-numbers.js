@@ -84,7 +84,7 @@ function rankOf(metric, name, year) {
   rows.sort((a, b) => (up ? b[1] - a[1] : a[1] - b[1]));
   const set = matchState(name);
   const i = rows.findIndex(([s]) => set.has(s));
-  return i < 0 ? null : tieRange(rows, i);
+  return i < 0 ? null : { ...tieRange(rows, i), of: rows.length };
 }
 function growthRankOf(metric, name, [y0, y1]) {
   const b = byYear(SD[metric].data);
@@ -107,6 +107,38 @@ function growthPct(metric, name, [y0, y1]) {
   return (v1 / v0 - 1) * 100;
 }
 
+// Years in claim.window where a state meets every condition: {metric, tier}
+// on the 50-state rank (thirds, mirroring Utils.rankColorClass) or
+// {metric, vsMedian: 'better'|'worse'}. Years absent from the first
+// condition's metric are skipped (e.g. HUD's paused 2021 count).
+const tierOf = (rank, of) => (rank / of <= 0.33 ? 'top' : rank / of <= 0.67 ? 'middle' : 'bottom');
+function meets(cond, name, year) {
+  if (cond.tier) {
+    const r = rankOf(cond.metric, name, year);
+    return r != null && tierOf(r.lo, r.of) === cond.tier;
+  }
+  const v = stateVal(cond.metric, name, year), m = medianVal(cond.metric, year);
+  if (v == null || m == null) return false;
+  const better = DD[cond.metric].goodDirection === 'up' ? v > m : v < m;
+  return cond.vsMedian === 'better' ? better : !better && v !== m;
+}
+function windowYears(claim) {
+  const [y0, y1] = claim.window;
+  return Object.keys(byYear(SD[claim.conditions[0].metric].data)).filter((y) => /^\d{4}$/.test(y) && y >= y0 && y <= y1);
+}
+function yearsMeeting(claim, name) {
+  return windowYears(claim).filter((y) => claim.conditions.every((c) => meets(c, name, y))).length;
+}
+// How many of the 50 states met the conditions in [range[0], range[1]] years.
+function statesMeeting(claim) {
+  const states = new Set();
+  for (const yr of Object.values(byYear(SD[claim.conditions[0].metric].data))) {
+    for (const s of Object.keys(yr)) if (!NON.has(s)) states.add(s);
+  }
+  const [lo, hi] = claim.range;
+  return [...states].filter((s) => { const n = yearsMeeting(claim, s); return n >= lo && n <= hi; }).length;
+}
+
 function derive(claim) {
   const st = claim.state || 'Hawaii';
   switch (claim.kind) {
@@ -115,6 +147,8 @@ function derive(claim) {
     case 'growthPct':  return growthPct(claim.metric, st, claim.window);
     case 'value':      return st === '__median__' ? medianVal(claim.metric, claim.year) : stateVal(claim.metric, st, claim.year);
     case 'median':     return medianVal(claim.metric, claim.year);
+    case 'yearsMeeting':  return yearsMeeting(claim, st);
+    case 'statesMeeting': return statesMeeting(claim);
     default: throw new Error(`unknown kind: ${claim.kind}`);
   }
 }
@@ -147,8 +181,18 @@ function postText(slug) {
   return t.replace(/\s+/g, ' ');
 }
 
+// A stated number must stand alone in the text: "7 / 17" must not pass on
+// "17 / 17", nor "7%" on "47%", "#1" on "#12", or "214" on "2,214"/"214.5".
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function states(text, s) {
+  const lead = /^\d/.test(s) ? '(?<![\\d.,])' : '';
+  const tail = /\d$/.test(s) ? '(?!\\d|[.,]\\d)' : '';
+  return new RegExp(lead + esc(s) + tail).test(text);
+}
+
 function claimLabel(c) {
-  const who = c.state && c.state !== 'Hawaii' ? (c.state === '__median__' ? 'US median' : c.state) : 'HI';
+  const who = c.kind === 'statesMeeting' ? `states meeting ${c.range.join('-')}y`
+    : c.state && c.state !== 'Hawaii' ? (c.state === '__median__' ? 'US median' : c.state) : 'HI';
   const when = c.window ? `${c.window[0]}-${c.window[1]}` : c.year;
   return `${c.metric} ${who} ${c.kind} @${when}`;
 }
@@ -177,11 +221,11 @@ function main() {
         // raw is a tie range {lo, hi}; accept any rank in it.
         const opts = [];
         for (let r = raw.lo; r <= raw.hi; r++) opts.push(applyFormat(c.as, r, c.scale));
-        ok = opts.some((s) => text.includes(s));
+        ok = opts.some((s) => states(text, s));
         expected = opts.length > 1 ? `${opts[0]}..${opts[opts.length - 1]}` : opts[0];
       } else {
         expected = applyFormat(c.as, raw, c.scale);
-        ok = text.includes(expected);
+        ok = states(text, expected);
       }
       if (!ok) {
         problems.push(`  ✗ ${claimLabel(c)} — post is missing current value "${expected}"${c.note ? ` (${c.note})` : ''}`);
