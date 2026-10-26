@@ -268,8 +268,38 @@ function checkAlerts() {
     let issues = []; try { issues = JSON.parse(r.out); } catch { add('Automated alerts', 'yellow', 'could not parse issue list'); return; }
     const labels = new Set(['link-rot', 'data-drift', 'data-audit', 'cron-stale', 'source-due', 'email-failed']);
     const hot = issues.filter(i => (i.labels || []).some(l => labels.has(l.name)));
-    if (!hot.length) add('Automated alerts', 'green', 'no open link-rot / data-drift / cron-stale / email-failed issues');
-    else add('Automated alerts', 'yellow', `${hot.length} open: ` + hot.slice(0, 4).map(i => `#${i.number} ${i.title}`).join('; '));
+
+    // A scheduled workflow that fails does not necessarily open an issue, so
+    // counting issues alone left a hole: rotate-backup.yml failed every week
+    // from 2026-05-17 to 2026-10-25, 24 runs, and this row stayed green the
+    // whole time while its backup tags sat 430 commits behind main. Ask each
+    // workflow for its most recent run instead of trusting it to self-report.
+    const broken = failingWorkflows();
+
+    const parts = [];
+    if (hot.length) parts.push(`${hot.length} open: ` + hot.slice(0, 4).map(i => `#${i.number} ${i.title}`).join('; '));
+    if (broken.length) parts.push(`last run failed: ${broken.join(', ')}`);
+    if (!parts.length) add('Automated alerts', 'green', 'no open link-rot / data-drift / cron-stale / email-failed issues; every workflow\'s last run passed');
+    else add('Automated alerts', 'yellow', parts.join(' · '));
+}
+
+/** Names of active workflows whose most recent completed run failed. */
+function failingWorkflows() {
+    const wf = sh('gh workflow list --json name,id,state --limit 50');
+    if (!wf.ok) return [];
+    let list = []; try { list = JSON.parse(wf.out.slice(wf.out.indexOf('['), wf.out.lastIndexOf(']') + 1)); } catch { return []; }
+    const bad = [];
+    for (const w of list.filter(x => x.state === 'active')) {
+        // Per workflow rather than one big `gh run list`: a chatty workflow can
+        // push a quiet one off a shared page, and a quiet workflow failing is
+        // exactly the case this check exists for.
+        const r = sh(`gh run list --workflow=${w.id} --limit 1 --json conclusion,status`);
+        if (!r.ok) continue;
+        let runs = []; try { runs = JSON.parse(r.out.slice(r.out.indexOf('['), r.out.lastIndexOf(']') + 1)); } catch { continue; }
+        const last = runs[0];
+        if (last && last.status === 'completed' && last.conclusion === 'failure') bad.push(w.name);
+    }
+    return bad;
 }
 
 // ── 9. Email subscriptions (Resend: domain, readers, today's question, post emails, signup route) ──
