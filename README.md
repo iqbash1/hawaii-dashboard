@@ -106,7 +106,6 @@ Nine GitHub Actions workflows + Dependabot automate the cycle:
 - `.github/workflows/source-release-reminder.yml`: weekly 7-day-ahead reminder for source release windows; rolling `source-due-soon` issue.
 - `.github/workflows/notify-state-dashboards.yml`: per-PR pingback for state-dashboard partners when state-data.js changes.
 - `.github/workflows/tests.yml`: per-push build + lint + Playwright + live-site canary.
-- `.github/workflows/rotate-backup.yml`, `timestamp.yml`: backup tag rotation and footer-timestamp upkeep.
 - `.github/dependabot.yml`: weekly grouped PRs for npm + GitHub Actions updates.
 
 Per-commit gates (`npm run validate` chains 8 checks): data integrity, narrative-number audit, QOTD sync, 10-phase internal audit (`audit-internal.py`), metric-count consistency, Change-Summary-template drift, Off the Charts meta-description sync, and Off the Charts post-body number audit.

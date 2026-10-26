@@ -149,8 +149,7 @@ hawaii-dashboard/
 │       ├── tests.yml           # Unit + smoke tests on every push/PR to main
 │       ├── qotd-daily-email.yml # Daily question email: 01:00 HST cron creates a Resend broadcast scheduled for 06:00 HST
 │       ├── otc-post-email.yml  # New Off the Charts post email on push to main touching js/otc-posts.js (both email workflows keep a rolling email-failed issue)
-│       ├── rotate-backup.yml   # Off-site git mirror backup
-│       └── timestamp.yml       # Updates footer timestamp on every push to main
+│       └── stale-refresh-pr.yml # Nudges a data-refresh PR left unmerged past 10 days
 ├── faq/
 │   └── index.html          # FAQ page: 14 Q&A pairs, feedback form
 ├── subscribe/
@@ -776,7 +775,7 @@ ESLint runs in CI before smoke tests. Configuration: `eslint.config.js` (flat co
 
 ### Footer Timestamp
 
-The footer shows "Last reviewed: [date]". This is updated automatically on every push to `main` by `.github/workflows/timestamp.yml`. The workflow writes the current Hawaii date into `index.html` and commits with `[skip ci]` to prevent a loop. The label says "reviewed" (not "updated") to avoid implying all data is from that date.
+The footer shows "Last reviewed: [date]". This is a **manual editorial stamp**, not automatic. A `timestamp.yml` workflow once tried to maintain it but its `sed` targeted "Last updated:" while the footer reads "Last reviewed:", so it matched nothing and no-op'd on every push; it was removed in the 2026-06-26 deep clean (5ee242707) with the decision that footer dates stay manual. The label says "reviewed" (not "updated") to avoid implying all data is from that date, which is also why it is a judgement call rather than a push timestamp. Bump it when you have actually reviewed the page; `js/export.js` reads `#last-updated` into the XLSX export, so a stale stamp travels with downloads too.
 
 The footer paragraph carries `id="last-updated"` so the XLSX export (`downloadData()`) can read the timestamp and include it in the Methodology sheet's "Last reviewed" field.
 
