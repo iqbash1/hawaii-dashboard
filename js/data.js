@@ -462,10 +462,10 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "Oklahoma",
-        "text": "Oklahoma's neighbor-island-like rural communities face the same financial pressures as Hawaiʻi's outer-island hospitals. Oklahoma ranked in the top half for primary care physician density through the 2000s and has since declined as rural hospital closures reduced the practice environments that attract physicians. Fourteen rural hospitals closed in Oklahoma between 2010 and 2023, and physicians do not locate near closed hospitals. Hawaiʻi's neighbor island hospitals face similar financial pressures, and their closure would accelerate the physician shortage the J-1 program currently offsets.",
+        "text": "Oklahoma's neighbor-island-like rural communities face the same financial pressures as Hawaiʻi's outer-island hospitals. Oklahoma ranked in the top half for primary care physician density through the 2000s and has since declined as rural hospital closures reduced the practice environments that attract physicians. Eight rural hospitals in Oklahoma have closed or stopped inpatient care since 2010, and physicians do not locate near closed hospitals. Hawaiʻi's neighbor island hospitals face similar financial pressures, and their closure would accelerate the physician shortage the J-1 program currently offsets.",
         "source": {
-          "label": "Health Professional Shortage Area Designation - Oklahoma.gov",
-          "url": "https://oklahoma.gov/health/health-education/community-outreach/community-development-services/office-of-primary-care-and-rural-health-development/health-professional-shortage-area-designation.html"
+          "label": "Rural Hospital Closures - Sheps Center, UNC",
+          "url": "https://www.shepscenter.unc.edu/programs-projects/rural-health/rural-hospital-closures/"
         }
       }
     }
