@@ -995,7 +995,9 @@ const App = {
         const strip = document.createElement('a');
         strip.className = 'otc-strip';
         strip.href = `/off-the-charts/${post.slug}/`;
-        strip.setAttribute('aria-label', `Off the Charts: ${post.title}`);
+        // No aria-label: the visible eyebrow, title and "Read the story" CTA name
+        // the link. An aria-label omitting the CTA failed WCAG 2.5.3 (label in name),
+        // since a voice-control user saying the visible words could not activate it.
         strip.innerHTML = `
             <span class="otc-strip-eyebrow">Off the Charts</span>
             <span class="otc-strip-title">${post.title}</span>
