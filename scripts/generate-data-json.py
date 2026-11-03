@@ -8,7 +8,8 @@
                       and the latest county values
 
 These are for AI assistants and other programs (and the /mcp server, which
-reads them). Values, years and ranks come from the SAME functions that build
+reads them and quotes the `display` strings, so it never formats a number
+itself). Values, years and ranks come from the SAME functions that build
 the /c/ landing pages (scripts/generate-og-pages.py), and every run also
 checks each catalog entry against the committed /c/ page title, so a JSON
 answer can't disagree with the page it links to.
@@ -48,8 +49,13 @@ def _num(v, dec):
     return round(v * 100 if dec else v, 4)
 
 
-def _series(series, dec):
-    return [{'year': y, 'value': _num(series[y], dec)}
+def _state_name(name):
+    # The FIPS-keyed metric (pcp_per_100k) stores 'Hawaii'; every other uses 'Hawaiʻi'.
+    return 'Hawaiʻi' if name == 'Hawaii' else name
+
+
+def _series(series, unit, dec):
+    return [{'year': y, 'value': _num(series[y], dec), 'display': og._format_with_unit(series[y], unit, dec)}
             for y in sorted(series, key=_year_key) if series[y] is not None]
 
 
@@ -90,11 +96,13 @@ def build_metric(slug, metric, area, data):
     detail['source_url'] = metric.get('sourceUrl', '')
     detail['rank_note'] = '#1 = best performing state; ' + (
         'higher values are better.' if summary['higher_is_better'] else 'lower values are better.')
-    detail['hawaii_series'] = _series(metric.get('hawaii', {}) or {}, dec)
-    detail['median_series'] = _series(metric.get('medianSeries', {}) or {}, dec)
+    detail['hawaii_series'] = _series(metric.get('hawaii', {}) or {}, unit, dec)
+    detail['median_series'] = _series(metric.get('medianSeries', {}) or {}, unit, dec)
     detail['rankings'] = {
         'year': rankings['year'],
-        'states': [{'rank': i + 1, 'state': s['state'], 'value': round(s['value'], 4)}
+        # get_rankings has already scaled decimal percentages, so format with dec=False.
+        'states': [{'rank': i + 1, 'state': _state_name(s['state']), 'value': round(s['value'], 4),
+                    'display': og._format_with_unit(s['value'], unit, False)}
                    for i, s in enumerate(rankings['stateValues'])],
     } if rankings else None
 
@@ -108,6 +116,8 @@ def build_metric(slug, metric, area, data):
             detail['counties'] = {
                 'year': cy,
                 'values': {cn: _num(county['data'].get(cn, {}).get(cy), dec) for cn in county['counties']},
+                'display': {cn: og._format_with_unit(county['data'].get(cn, {}).get(cy), unit, dec)
+                            for cn in county['counties']},
             }
     return summary, detail
 

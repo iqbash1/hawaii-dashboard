@@ -25,405 +25,505 @@
  "hawaii_series": [
   {
    "year": "1976",
-   "value": 69.3
+   "value": 69.3,
+   "display": "69.3%"
   },
   {
    "year": "1977",
-   "value": 68.5
+   "value": 68.5,
+   "display": "68.5%"
   },
   {
    "year": "1978",
-   "value": 67.6
+   "value": 67.6,
+   "display": "67.6%"
   },
   {
    "year": "1979",
-   "value": 66.5
+   "value": 66.5,
+   "display": "66.5%"
   },
   {
    "year": "1980",
-   "value": 66.4
+   "value": 66.4,
+   "display": "66.4%"
   },
   {
    "year": "1981",
-   "value": 66.6
+   "value": 66.6,
+   "display": "66.6%"
   },
   {
    "year": "1982",
-   "value": 66.6
+   "value": 66.6,
+   "display": "66.6%"
   },
   {
    "year": "1983",
-   "value": 66.5
+   "value": 66.5,
+   "display": "66.5%"
   },
   {
    "year": "1984",
-   "value": 66
+   "value": 66,
+   "display": "66.0%"
   },
   {
    "year": "1985",
-   "value": 65.9
+   "value": 65.9,
+   "display": "65.9%"
   },
   {
    "year": "1986",
-   "value": 66.3
+   "value": 66.3,
+   "display": "66.3%"
   },
   {
    "year": "1987",
-   "value": 67.1
+   "value": 67.1,
+   "display": "67.1%"
   },
   {
    "year": "1988",
-   "value": 66.9
+   "value": 66.9,
+   "display": "66.9%"
   },
   {
    "year": "1989",
-   "value": 67.1
+   "value": 67.1,
+   "display": "67.1%"
   },
   {
    "year": "1990",
-   "value": 67.7
+   "value": 67.7,
+   "display": "67.7%"
   },
   {
    "year": "1991",
-   "value": 68.2
+   "value": 68.2,
+   "display": "68.2%"
   },
   {
    "year": "1992",
-   "value": 68.6
+   "value": 68.6,
+   "display": "68.6%"
   },
   {
    "year": "1993",
-   "value": 68.5
+   "value": 68.5,
+   "display": "68.5%"
   },
   {
    "year": "1994",
-   "value": 68
+   "value": 68,
+   "display": "68.0%"
   },
   {
    "year": "1995",
-   "value": 67.6
+   "value": 67.6,
+   "display": "67.6%"
   },
   {
    "year": "1996",
-   "value": 67.8
+   "value": 67.8,
+   "display": "67.8%"
   },
   {
    "year": "1997",
-   "value": 67.7
+   "value": 67.7,
+   "display": "67.7%"
   },
   {
    "year": "1998",
-   "value": 67.4
+   "value": 67.4,
+   "display": "67.4%"
   },
   {
    "year": "1999",
-   "value": 67.4
+   "value": 67.4,
+   "display": "67.4%"
   },
   {
    "year": "2000",
-   "value": 67.3
+   "value": 67.3,
+   "display": "67.3%"
   },
   {
    "year": "2001",
-   "value": 67.1
+   "value": 67.1,
+   "display": "67.1%"
   },
   {
    "year": "2002",
-   "value": 65.9
+   "value": 65.9,
+   "display": "65.9%"
   },
   {
    "year": "2003",
-   "value": 65.5
+   "value": 65.5,
+   "display": "65.5%"
   },
   {
    "year": "2004",
-   "value": 65
+   "value": 65,
+   "display": "65.0%"
   },
   {
    "year": "2005",
-   "value": 65.7
+   "value": 65.7,
+   "display": "65.7%"
   },
   {
    "year": "2006",
-   "value": 65.9
+   "value": 65.9,
+   "display": "65.9%"
   },
   {
    "year": "2007",
-   "value": 65.4
+   "value": 65.4,
+   "display": "65.4%"
   },
   {
    "year": "2008",
-   "value": 65.4
+   "value": 65.4,
+   "display": "65.4%"
   },
   {
    "year": "2009",
-   "value": 64
+   "value": 64,
+   "display": "64.0%"
   },
   {
    "year": "2010",
-   "value": 63.3
+   "value": 63.3,
+   "display": "63.3%"
   },
   {
    "year": "2011",
-   "value": 62.9
+   "value": 62.9,
+   "display": "62.9%"
   },
   {
    "year": "2012",
-   "value": 61.3
+   "value": 61.3,
+   "display": "61.3%"
   },
   {
    "year": "2013",
-   "value": 60.8
+   "value": 60.8,
+   "display": "60.8%"
   },
   {
    "year": "2014",
-   "value": 61.6
+   "value": 61.6,
+   "display": "61.6%"
   },
   {
    "year": "2015",
-   "value": 61.7
+   "value": 61.7,
+   "display": "61.7%"
   },
   {
    "year": "2016",
-   "value": 62.1
+   "value": 62.1,
+   "display": "62.1%"
   },
   {
    "year": "2017",
-   "value": 62
+   "value": 62,
+   "display": "62.0%"
   },
   {
    "year": "2018",
-   "value": 61.5
+   "value": 61.5,
+   "display": "61.5%"
   },
   {
    "year": "2019",
-   "value": 61.1
+   "value": 61.1,
+   "display": "61.1%"
   },
   {
    "year": "2020",
-   "value": 59.1
+   "value": 59.1,
+   "display": "59.1%"
   },
   {
    "year": "2021",
-   "value": 59.5
+   "value": 59.5,
+   "display": "59.5%"
   },
   {
    "year": "2022",
-   "value": 59.9
+   "value": 59.9,
+   "display": "59.9%"
   },
   {
    "year": "2023",
-   "value": 60.2
+   "value": 60.2,
+   "display": "60.2%"
   },
   {
    "year": "2024",
-   "value": 60.2
+   "value": 60.2,
+   "display": "60.2%"
   },
   {
    "year": "2025",
-   "value": 60.6
+   "value": 60.6,
+   "display": "60.6%"
   }
  ],
  "median_series": [
   {
    "year": "1976",
-   "value": 63
+   "value": 63,
+   "display": "63.0%"
   },
   {
    "year": "1977",
-   "value": 63.75
+   "value": 63.75,
+   "display": "63.8%"
   },
   {
    "year": "1978",
-   "value": 64.55
+   "value": 64.55,
+   "display": "64.5%"
   },
   {
    "year": "1979",
-   "value": 64.8
+   "value": 64.8,
+   "display": "64.8%"
   },
   {
    "year": "1980",
-   "value": 65.25
+   "value": 65.25,
+   "display": "65.2%"
   },
   {
    "year": "1981",
-   "value": 65.45
+   "value": 65.45,
+   "display": "65.5%"
   },
   {
    "year": "1982",
-   "value": 65.55
+   "value": 65.55,
+   "display": "65.5%"
   },
   {
    "year": "1983",
-   "value": 65.4
+   "value": 65.4,
+   "display": "65.4%"
   },
   {
    "year": "1984",
-   "value": 65.9
+   "value": 65.9,
+   "display": "65.9%"
   },
   {
    "year": "1985",
-   "value": 66
+   "value": 66,
+   "display": "66.0%"
   },
   {
    "year": "1986",
-   "value": 66.65
+   "value": 66.65,
+   "display": "66.7%"
   },
   {
    "year": "1987",
-   "value": 67.05
+   "value": 67.05,
+   "display": "67.0%"
   },
   {
    "year": "1988",
-   "value": 67.4
+   "value": 67.4,
+   "display": "67.4%"
   },
   {
    "year": "1989",
-   "value": 68
+   "value": 68,
+   "display": "68.0%"
   },
   {
    "year": "1990",
-   "value": 67.75
+   "value": 67.75,
+   "display": "67.8%"
   },
   {
    "year": "1991",
-   "value": 67.8
+   "value": 67.8,
+   "display": "67.8%"
   },
   {
    "year": "1992",
-   "value": 68.1
+   "value": 68.1,
+   "display": "68.1%"
   },
   {
    "year": "1993",
-   "value": 68
+   "value": 68,
+   "display": "68.0%"
   },
   {
    "year": "1994",
-   "value": 68
+   "value": 68,
+   "display": "68.0%"
   },
   {
    "year": "1995",
-   "value": 67.8
+   "value": 67.8,
+   "display": "67.8%"
   },
   {
    "year": "1996",
-   "value": 68
+   "value": 68,
+   "display": "68.0%"
   },
   {
    "year": "1997",
-   "value": 68.2
+   "value": 68.2,
+   "display": "68.2%"
   },
   {
    "year": "1998",
-   "value": 68.2
+   "value": 68.2,
+   "display": "68.2%"
   },
   {
    "year": "1999",
-   "value": 68.3
+   "value": 68.3,
+   "display": "68.3%"
   },
   {
    "year": "2000",
-   "value": 68.3
+   "value": 68.3,
+   "display": "68.3%"
   },
   {
    "year": "2001",
-   "value": 67.8
+   "value": 67.8,
+   "display": "67.8%"
   },
   {
    "year": "2002",
-   "value": 67.3
+   "value": 67.3,
+   "display": "67.3%"
   },
   {
    "year": "2003",
-   "value": 67.1
+   "value": 67.1,
+   "display": "67.1%"
   },
   {
    "year": "2004",
-   "value": 66.55
+   "value": 66.55,
+   "display": "66.5%"
   },
   {
    "year": "2005",
-   "value": 66.85
+   "value": 66.85,
+   "display": "66.8%"
   },
   {
    "year": "2006",
-   "value": 67.25
+   "value": 67.25,
+   "display": "67.2%"
   },
   {
    "year": "2007",
-   "value": 67.1
+   "value": 67.1,
+   "display": "67.1%"
   },
   {
    "year": "2008",
-   "value": 66.95
+   "value": 66.95,
+   "display": "67.0%"
   },
   {
    "year": "2009",
-   "value": 65.95
+   "value": 65.95,
+   "display": "66.0%"
   },
   {
    "year": "2010",
-   "value": 65.5
+   "value": 65.5,
+   "display": "65.5%"
   },
   {
    "year": "2011",
-   "value": 64.95
+   "value": 64.95,
+   "display": "65.0%"
   },
   {
    "year": "2012",
-   "value": 64.35
+   "value": 64.35,
+   "display": "64.3%"
   },
   {
    "year": "2013",
-   "value": 63.95
+   "value": 63.95,
+   "display": "64.0%"
   },
   {
    "year": "2014",
-   "value": 63.45
+   "value": 63.45,
+   "display": "63.5%"
   },
   {
    "year": "2015",
-   "value": 63.45
+   "value": 63.45,
+   "display": "63.5%"
   },
   {
    "year": "2016",
-   "value": 63.55
+   "value": 63.55,
+   "display": "63.5%"
   },
   {
    "year": "2017",
-   "value": 63.65
+   "value": 63.65,
+   "display": "63.6%"
   },
   {
    "year": "2018",
-   "value": 63.35
+   "value": 63.35,
+   "display": "63.4%"
   },
   {
    "year": "2019",
-   "value": 63.85
+   "value": 63.85,
+   "display": "63.9%"
   },
   {
    "year": "2020",
-   "value": 62.65
+   "value": 62.65,
+   "display": "62.6%"
   },
   {
    "year": "2021",
-   "value": 62.1
+   "value": 62.1,
+   "display": "62.1%"
   },
   {
    "year": "2022",
-   "value": 62.65
+   "value": 62.65,
+   "display": "62.6%"
   },
   {
    "year": "2023",
-   "value": 63.2
+   "value": 63.2,
+   "display": "63.2%"
   },
   {
    "year": "2024",
-   "value": 63.05
+   "value": 63.05,
+   "display": "63.0%"
   },
   {
    "year": "2025",
-   "value": 62.95
+   "value": 62.95,
+   "display": "63.0%"
   }
  ],
  "rankings": {
@@ -432,252 +532,302 @@
    {
     "rank": 1,
     "state": "Nebraska",
-    "value": 70.1
+    "value": 70.1,
+    "display": "70.1%"
    },
    {
     "rank": 2,
     "state": "North Dakota",
-    "value": 69.7
+    "value": 69.7,
+    "display": "69.7%"
    },
    {
     "rank": 3,
     "state": "Minnesota",
-    "value": 68.3
+    "value": 68.3,
+    "display": "68.3%"
    },
    {
     "rank": 4,
     "state": "South Dakota",
-    "value": 68.2
+    "value": 68.2,
+    "display": "68.2%"
    },
    {
     "rank": 5,
     "state": "Utah",
-    "value": 68
+    "value": 68,
+    "display": "68.0%"
    },
    {
     "rank": 6,
     "state": "Iowa",
-    "value": 67.8
+    "value": 67.8,
+    "display": "67.8%"
    },
    {
     "rank": 7,
     "state": "Kansas",
-    "value": 67.8
+    "value": 67.8,
+    "display": "67.8%"
    },
    {
     "rank": 8,
     "state": "Colorado",
-    "value": 67.2
+    "value": 67.2,
+    "display": "67.2%"
    },
    {
     "rank": 9,
     "state": "Massachusetts",
-    "value": 66.5
+    "value": 66.5,
+    "display": "66.5%"
    },
    {
     "rank": 10,
     "state": "Alaska",
-    "value": 65.7
+    "value": 65.7,
+    "display": "65.7%"
    },
    {
     "rank": 11,
     "state": "New Hampshire",
-    "value": 65.5
+    "value": 65.5,
+    "display": "65.5%"
    },
    {
     "rank": 12,
     "state": "Texas",
-    "value": 64.8
+    "value": 64.8,
+    "display": "64.8%"
    },
    {
     "rank": 13,
     "state": "Maryland",
-    "value": 64.5
+    "value": 64.5,
+    "display": "64.5%"
    },
    {
     "rank": 14,
     "state": "Wisconsin",
-    "value": 64.5
+    "value": 64.5,
+    "display": "64.5%"
    },
    {
     "rank": 15,
     "state": "Virginia",
-    "value": 64.3
+    "value": 64.3,
+    "display": "64.3%"
    },
    {
     "rank": 16,
     "state": "Connecticut",
-    "value": 64.2
+    "value": 64.2,
+    "display": "64.2%"
    },
    {
     "rank": 17,
     "state": "Illinois",
-    "value": 64.2
+    "value": 64.2,
+    "display": "64.2%"
    },
    {
     "rank": 18,
     "state": "Rhode Island",
-    "value": 64.1
+    "value": 64.1,
+    "display": "64.1%"
    },
    {
     "rank": 19,
     "state": "Vermont",
-    "value": 64.1
+    "value": 64.1,
+    "display": "64.1%"
    },
    {
     "rank": 20,
     "state": "Indiana",
-    "value": 63.8
+    "value": 63.8,
+    "display": "63.8%"
    },
    {
     "rank": 21,
     "state": "Missouri",
-    "value": 63.6
+    "value": 63.6,
+    "display": "63.6%"
    },
    {
     "rank": 22,
     "state": "New Jersey",
-    "value": 63.6
+    "value": 63.6,
+    "display": "63.6%"
    },
    {
     "rank": 23,
     "state": "Idaho",
-    "value": 63.3
+    "value": 63.3,
+    "display": "63.3%"
    },
    {
     "rank": 24,
     "state": "Nevada",
-    "value": 63.1
+    "value": 63.1,
+    "display": "63.1%"
    },
    {
     "rank": 25,
     "state": "Oklahoma",
-    "value": 63
+    "value": 63,
+    "display": "63.0%"
    },
    {
     "rank": 26,
     "state": "Oregon",
-    "value": 62.9
+    "value": 62.9,
+    "display": "62.9%"
    },
    {
     "rank": 27,
     "state": "Washington",
-    "value": 62.8
+    "value": 62.8,
+    "display": "62.8%"
    },
    {
     "rank": 28,
     "state": "Ohio",
-    "value": 62.5
+    "value": 62.5,
+    "display": "62.5%"
    },
    {
     "rank": 29,
     "state": "California",
-    "value": 62.4
+    "value": 62.4,
+    "display": "62.4%"
    },
    {
     "rank": 30,
     "state": "Montana",
-    "value": 62.4
+    "value": 62.4,
+    "display": "62.4%"
    },
    {
     "rank": 31,
     "state": "Arizona",
-    "value": 62.1
+    "value": 62.1,
+    "display": "62.1%"
    },
    {
     "rank": 32,
     "state": "Pennsylvania",
-    "value": 61.6
+    "value": 61.6,
+    "display": "61.6%"
    },
    {
     "rank": 33,
     "state": "Wyoming",
-    "value": 61.6
+    "value": 61.6,
+    "display": "61.6%"
    },
    {
     "rank": 34,
     "state": "Michigan",
-    "value": 61.2
+    "value": 61.2,
+    "display": "61.2%"
    },
    {
     "rank": 35,
     "state": "New York",
-    "value": 61.1
+    "value": 61.1,
+    "display": "61.1%"
    },
    {
     "rank": 36,
     "state": "Georgia",
-    "value": 60.9
+    "value": 60.9,
+    "display": "60.9%"
    },
    {
     "rank": 37,
     "state": "Hawaiʻi",
-    "value": 60.6
+    "value": 60.6,
+    "display": "60.6%"
    },
    {
     "rank": 38,
     "state": "Tennessee",
-    "value": 60.6
+    "value": 60.6,
+    "display": "60.6%"
    },
    {
     "rank": 39,
     "state": "Maine",
-    "value": 59.9
+    "value": 59.9,
+    "display": "59.9%"
    },
    {
     "rank": 40,
     "state": "Delaware",
-    "value": 59.8
+    "value": 59.8,
+    "display": "59.8%"
    },
    {
     "rank": 41,
     "state": "North Carolina",
-    "value": 59.5
+    "value": 59.5,
+    "display": "59.5%"
    },
    {
     "rank": 42,
     "state": "Arkansas",
-    "value": 58.7
+    "value": 58.7,
+    "display": "58.7%"
    },
    {
     "rank": 43,
     "state": "South Carolina",
-    "value": 58.4
+    "value": 58.4,
+    "display": "58.4%"
    },
    {
     "rank": 44,
     "state": "Kentucky",
-    "value": 58.3
+    "value": 58.3,
+    "display": "58.3%"
    },
    {
     "rank": 45,
     "state": "Louisiana",
-    "value": 58.2
+    "value": 58.2,
+    "display": "58.2%"
    },
    {
     "rank": 46,
     "state": "Florida",
-    "value": 57.8
+    "value": 57.8,
+    "display": "57.8%"
    },
    {
     "rank": 47,
     "state": "New Mexico",
-    "value": 57.7
+    "value": 57.7,
+    "display": "57.7%"
    },
    {
     "rank": 48,
     "state": "Alabama",
-    "value": 57.6
+    "value": 57.6,
+    "display": "57.6%"
    },
    {
     "rank": 49,
     "state": "Mississippi",
-    "value": 55.8
+    "value": 55.8,
+    "display": "55.8%"
    },
    {
     "rank": 50,
     "state": "West Virginia",
-    "value": 54.5
+    "value": 54.5,
+    "display": "54.5%"
    }
   ]
  },
@@ -688,6 +838,12 @@
    "Hawaiʻi": 55.5,
    "Maui": 63.4,
    "Kauaʻi": null
+  },
+  "display": {
+   "Honolulu": "65.6%",
+   "Hawaiʻi": "55.5%",
+   "Maui": "63.4%",
+   "Kauaʻi": "N/A"
   }
  }
 }

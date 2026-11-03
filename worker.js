@@ -1,4 +1,4 @@
-// Two jobs, both scoped by "run_worker_first" in wrangler.jsonc so every
+// Three jobs, all scoped by "run_worker_first" in wrangler.jsonc so every
 // other route is served directly by Static Assets and never invokes this
 // Worker:
 //
@@ -7,8 +7,10 @@
 //    iOS Safari (which requires 206 Partial Content). The video path is
 //    re-served here with proper range support.
 // 2. Email subscription endpoints under /api/ (see worker-subscribe.mjs).
+// 3. The /mcp server for AI assistants (see worker-mcp.mjs).
 
 import { handleSubscribe, handleConfirm } from './worker-subscribe.mjs';
+import { handleMcp } from './worker-mcp.mjs';
 
 const VIDEO_PATH = '/assets/tour.mp4';
 const IMMUTABLE = 'public, max-age=31536000, immutable';
@@ -21,6 +23,7 @@ export default {
     }
     if (pathname === '/api/subscribe') return handleSubscribe(request, env);
     if (pathname === '/api/confirm') return handleConfirm(request, env);
+    if (pathname === '/mcp') return handleMcp(request, env);
     // Defensive passthrough; with the scoped run_worker_first this is rarely hit.
     return env.ASSETS.fetch(request);
   },

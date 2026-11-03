@@ -1,0 +1,11 @@
+{
+  "name": "org.hawaiidashboard/data",
+  "title": "Hawaiʻi Dashboard",
+  "description": "Hawaiʻi compared with the other 49 states on outcome measures from nonpartisan federal and national sources, with 50-state ranks (#1 = best) and county values. Tools: list_metrics, get_metric, compare, rankings.",
+  "version": "1.0.0",
+  "websiteUrl": "https://hawaiidashboard.org/",
+  "capabilities": { "tools": {} },
+  "remotes": [
+    { "type": "streamable-http", "url": "https://hawaiidashboard.org/mcp" }
+  ]
+}

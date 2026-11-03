@@ -25,533 +25,665 @@
  "hawaii_series": [
   {
    "year": "1960",
-   "value": 21.8
+   "value": 21.8,
+   "display": "22 per 100K"
   },
   {
    "year": "1961",
-   "value": 24.5
+   "value": 24.5,
+   "display": "24 per 100K"
   },
   {
    "year": "1962",
-   "value": 36.9
+   "value": 36.9,
+   "display": "37 per 100K"
   },
   {
    "year": "1963",
-   "value": 31
+   "value": 31,
+   "display": "31 per 100K"
   },
   {
    "year": "1964",
-   "value": 82
+   "value": 82,
+   "display": "82 per 100K"
   },
   {
    "year": "1965",
-   "value": 69.1
+   "value": 69.1,
+   "display": "69 per 100K"
   },
   {
    "year": "1966",
-   "value": 83.3
+   "value": 83.3,
+   "display": "83 per 100K"
   },
   {
    "year": "1967",
-   "value": 80
+   "value": 80,
+   "display": "80 per 100K"
   },
   {
    "year": "1968",
-   "value": 85.1
+   "value": 85.1,
+   "display": "85 per 100K"
   },
   {
    "year": "1969",
-   "value": 86.1
+   "value": 86.1,
+   "display": "86 per 100K"
   },
   {
    "year": "1970",
-   "value": 121.8
+   "value": 121.8,
+   "display": "122 per 100K"
   },
   {
    "year": "1971",
-   "value": 231.9
+   "value": 231.9,
+   "display": "232 per 100K"
   },
   {
    "year": "1972",
-   "value": 155.5
+   "value": 155.5,
+   "display": "156 per 100K"
   },
   {
    "year": "1973",
-   "value": 155.6
+   "value": 155.6,
+   "display": "156 per 100K"
   },
   {
    "year": "1974",
-   "value": 208
+   "value": 208,
+   "display": "208 per 100K"
   },
   {
    "year": "1975",
-   "value": 218.4
+   "value": 218.4,
+   "display": "218 per 100K"
   },
   {
    "year": "1976",
-   "value": 229.3
+   "value": 229.3,
+   "display": "229 per 100K"
   },
   {
    "year": "1977",
-   "value": 224.8
+   "value": 224.8,
+   "display": "225 per 100K"
   },
   {
    "year": "1978",
-   "value": 270.1
+   "value": 270.1,
+   "display": "270 per 100K"
   },
   {
    "year": "1979",
-   "value": 289.7
+   "value": 289.7,
+   "display": "290 per 100K"
   },
   {
    "year": "1980",
-   "value": 299.5
+   "value": 299.5,
+   "display": "300 per 100K"
   },
   {
    "year": "1981",
-   "value": 247.6
+   "value": 247.6,
+   "display": "248 per 100K"
   },
   {
    "year": "1982",
-   "value": 255.7
+   "value": 255.7,
+   "display": "256 per 100K"
   },
   {
    "year": "1983",
-   "value": 252.1
+   "value": 252.1,
+   "display": "252 per 100K"
   },
   {
    "year": "1984",
-   "value": 231.9
+   "value": 231.9,
+   "display": "232 per 100K"
   },
   {
    "year": "1985",
-   "value": 219.4
+   "value": 219.4,
+   "display": "219 per 100K"
   },
   {
    "year": "1986",
-   "value": 245.2
+   "value": 245.2,
+   "display": "245 per 100K"
   },
   {
    "year": "1987",
-   "value": 263.3
+   "value": 263.3,
+   "display": "263 per 100K"
   },
   {
    "year": "1988",
-   "value": 257.1
+   "value": 257.1,
+   "display": "257 per 100K"
   },
   {
    "year": "1989",
-   "value": 270.1
+   "value": 270.1,
+   "display": "270 per 100K"
   },
   {
    "year": "1990",
-   "value": 280.9
+   "value": 280.9,
+   "display": "281 per 100K"
   },
   {
    "year": "1991",
-   "value": 241.8
+   "value": 241.8,
+   "display": "242 per 100K"
   },
   {
    "year": "1992",
-   "value": 258.4
+   "value": 258.4,
+   "display": "258 per 100K"
   },
   {
    "year": "1993",
-   "value": 261.2
+   "value": 261.2,
+   "display": "261 per 100K"
   },
   {
    "year": "1994",
-   "value": 262.2
+   "value": 262.2,
+   "display": "262 per 100K"
   },
   {
    "year": "1995",
-   "value": 295.6
+   "value": 295.6,
+   "display": "296 per 100K"
   },
   {
    "year": "1996",
-   "value": 280.6
+   "value": 280.6,
+   "display": "281 per 100K"
   },
   {
    "year": "1997",
-   "value": 277.9
+   "value": 277.9,
+   "display": "278 per 100K"
   },
   {
    "year": "1998",
-   "value": 246.9
+   "value": 246.9,
+   "display": "247 per 100K"
   },
   {
    "year": "1999",
-   "value": 234.9
+   "value": 234.9,
+   "display": "235 per 100K"
   },
   {
    "year": "2000",
-   "value": 243.8
+   "value": 243.8,
+   "display": "244 per 100K"
   },
   {
    "year": "2001",
-   "value": 254
+   "value": 254,
+   "display": "254 per 100K"
   },
   {
    "year": "2002",
-   "value": 262.9
+   "value": 262.9,
+   "display": "263 per 100K"
   },
   {
    "year": "2003",
-   "value": 272.3
+   "value": 272.3,
+   "display": "272 per 100K"
   },
   {
    "year": "2004",
-   "value": 254.6
+   "value": 254.6,
+   "display": "255 per 100K"
   },
   {
    "year": "2005",
-   "value": 256
+   "value": 256,
+   "display": "256 per 100K"
   },
   {
    "year": "2006",
-   "value": 280.7
+   "value": 280.7,
+   "display": "281 per 100K"
   },
   {
    "year": "2007",
-   "value": 276.1
+   "value": 276.1,
+   "display": "276 per 100K"
   },
   {
    "year": "2008",
-   "value": 272.5
+   "value": 272.5,
+   "display": "272 per 100K"
   },
   {
    "year": "2009",
-   "value": 274.1
+   "value": 274.1,
+   "display": "274 per 100K"
   },
   {
    "year": "2010",
-   "value": 264.3
+   "value": 264.3,
+   "display": "264 per 100K"
   },
   {
    "year": "2011",
-   "value": 251.4
+   "value": 251.4,
+   "display": "251 per 100K"
   },
   {
    "year": "2012",
-   "value": 239.2
+   "value": 239.2,
+   "display": "239 per 100K"
   },
   {
    "year": "2013",
-   "value": 251.6
+   "value": 251.6,
+   "display": "252 per 100K"
   },
   {
    "year": "2014",
-   "value": 259.2
+   "value": 259.2,
+   "display": "259 per 100K"
   },
   {
    "year": "2015",
-   "value": 293.4
+   "value": 293.4,
+   "display": "293 per 100K"
   },
   {
    "year": "2016",
-   "value": 309.2
+   "value": 309.2,
+   "display": "309 per 100K"
   },
   {
    "year": "2017",
-   "value": 250.6
+   "value": 250.6,
+   "display": "251 per 100K"
   },
   {
    "year": "2018",
-   "value": 248.6
+   "value": 248.6,
+   "display": "249 per 100K"
   },
   {
    "year": "2019",
-   "value": 285.5
+   "value": 285.5,
+   "display": "286 per 100K"
   },
   {
    "year": "2020",
-   "value": 254.2
+   "value": 254.2,
+   "display": "254 per 100K"
   },
   {
    "year": "2021",
-   "value": 269.9
+   "value": 269.9,
+   "display": "270 per 100K"
   },
   {
    "year": "2022",
-   "value": 275.9
+   "value": 275.9,
+   "display": "276 per 100K"
   },
   {
    "year": "2023",
-   "value": 244.5
+   "value": 244.5,
+   "display": "244 per 100K"
   },
   {
    "year": "2024",
-   "value": 230.3
+   "value": 230.3,
+   "display": "230 per 100K"
   },
   {
    "year": "2025",
-   "value": 213.7
+   "value": 213.7,
+   "display": "214 per 100K"
   }
  ],
  "median_series": [
   {
    "year": "1960",
-   "value": 97
+   "value": 97,
+   "display": "97 per 100K"
   },
   {
    "year": "1961",
-   "value": 88.9
+   "value": 88.9,
+   "display": "89 per 100K"
   },
   {
    "year": "1962",
-   "value": 91.4
+   "value": 91.4,
+   "display": "91 per 100K"
   },
   {
    "year": "1963",
-   "value": 92.1
+   "value": 92.1,
+   "display": "92 per 100K"
   },
   {
    "year": "1964",
-   "value": 118.6
+   "value": 118.6,
+   "display": "119 per 100K"
   },
   {
    "year": "1965",
-   "value": 135.15
+   "value": 135.15,
+   "display": "135 per 100K"
   },
   {
    "year": "1966",
-   "value": 145.4
+   "value": 145.4,
+   "display": "145 per 100K"
   },
   {
    "year": "1967",
-   "value": 159.05
+   "value": 159.05,
+   "display": "159 per 100K"
   },
   {
    "year": "1968",
-   "value": 198.7
+   "value": 198.7,
+   "display": "199 per 100K"
   },
   {
    "year": "1969",
-   "value": 220.7
+   "value": 220.7,
+   "display": "221 per 100K"
   },
   {
    "year": "1970",
-   "value": 228.45
+   "value": 228.45,
+   "display": "228 per 100K"
   },
   {
    "year": "1971",
-   "value": 272.5
+   "value": 272.5,
+   "display": "272 per 100K"
   },
   {
    "year": "1972",
-   "value": 296.4
+   "value": 296.4,
+   "display": "296 per 100K"
   },
   {
    "year": "1973",
-   "value": 292.2
+   "value": 292.2,
+   "display": "292 per 100K"
   },
   {
    "year": "1974",
-   "value": 351.55
+   "value": 351.55,
+   "display": "352 per 100K"
   },
   {
    "year": "1975",
-   "value": 385.75
+   "value": 385.75,
+   "display": "386 per 100K"
   },
   {
    "year": "1976",
-   "value": 318.5
+   "value": 318.5,
+   "display": "318 per 100K"
   },
   {
    "year": "1977",
-   "value": 348.9
+   "value": 348.9,
+   "display": "349 per 100K"
   },
   {
    "year": "1978",
-   "value": 367.8
+   "value": 367.8,
+   "display": "368 per 100K"
   },
   {
    "year": "1979",
-   "value": 413.65
+   "value": 413.65,
+   "display": "414 per 100K"
   },
   {
    "year": "1980",
-   "value": 427.75
+   "value": 427.75,
+   "display": "428 per 100K"
   },
   {
    "year": "1981",
-   "value": 439.2
+   "value": 439.2,
+   "display": "439 per 100K"
   },
   {
    "year": "1982",
-   "value": 413.75
+   "value": 413.75,
+   "display": "414 per 100K"
   },
   {
    "year": "1983",
-   "value": 386.45
+   "value": 386.45,
+   "display": "386 per 100K"
   },
   {
    "year": "1984",
-   "value": 398.7
+   "value": 398.7,
+   "display": "399 per 100K"
   },
   {
    "year": "1985",
-   "value": 411.45
+   "value": 411.45,
+   "display": "411 per 100K"
   },
   {
    "year": "1986",
-   "value": 426.4
+   "value": 426.4,
+   "display": "426 per 100K"
   },
   {
    "year": "1987",
-   "value": 420.15
+   "value": 420.15,
+   "display": "420 per 100K"
   },
   {
    "year": "1988",
-   "value": 451.85
+   "value": 451.85,
+   "display": "452 per 100K"
   },
   {
    "year": "1989",
-   "value": 472.7
+   "value": 472.7,
+   "display": "473 per 100K"
   },
   {
    "year": "1990",
-   "value": 515.65
+   "value": 515.65,
+   "display": "516 per 100K"
   },
   {
    "year": "1991",
-   "value": 549.5
+   "value": 549.5,
+   "display": "550 per 100K"
   },
   {
    "year": "1992",
-   "value": 535
+   "value": 535,
+   "display": "535 per 100K"
   },
   {
    "year": "1993",
-   "value": 509.35
+   "value": 509.35,
+   "display": "509 per 100K"
   },
   {
    "year": "1994",
-   "value": 515.95
+   "value": 515.95,
+   "display": "516 per 100K"
   },
   {
    "year": "1995",
-   "value": 512.6
+   "value": 512.6,
+   "display": "513 per 100K"
   },
   {
    "year": "1996",
-   "value": 484.3
+   "value": 484.3,
+   "display": "484 per 100K"
   },
   {
    "year": "1997",
-   "value": 456.7
+   "value": 456.7,
+   "display": "457 per 100K"
   },
   {
    "year": "1998",
-   "value": 429.75
+   "value": 429.75,
+   "display": "430 per 100K"
   },
   {
    "year": "1999",
-   "value": 397.35
+   "value": 397.35,
+   "display": "397 per 100K"
   },
   {
    "year": "2000",
-   "value": 376.75
+   "value": 376.75,
+   "display": "377 per 100K"
   },
   {
    "year": "2001",
-   "value": 379.95
+   "value": 379.95,
+   "display": "380 per 100K"
   },
   {
    "year": "2002",
-   "value": 366.7
+   "value": 366.7,
+   "display": "367 per 100K"
   },
   {
    "year": "2003",
-   "value": 364.65
+   "value": 364.65,
+   "display": "365 per 100K"
   },
   {
    "year": "2004",
-   "value": 364.15
+   "value": 364.15,
+   "display": "364 per 100K"
   },
   {
    "year": "2005",
-   "value": 372
+   "value": 372,
+   "display": "372 per 100K"
   },
   {
    "year": "2006",
-   "value": 386.35
+   "value": 386.35,
+   "display": "386 per 100K"
   },
   {
    "year": "2007",
-   "value": 367.6
+   "value": 367.6,
+   "display": "368 per 100K"
   },
   {
    "year": "2008",
-   "value": 352.95
+   "value": 352.95,
+   "display": "353 per 100K"
   },
   {
    "year": "2009",
-   "value": 337.55
+   "value": 337.55,
+   "display": "338 per 100K"
   },
   {
    "year": "2010",
-   "value": 323.5
+   "value": 323.5,
+   "display": "324 per 100K"
   },
   {
    "year": "2011",
-   "value": 323.1
+   "value": 323.1,
+   "display": "323 per 100K"
   },
   {
    "year": "2012",
-   "value": 333.75
+   "value": 333.75,
+   "display": "334 per 100K"
   },
   {
    "year": "2013",
-   "value": 325.95
+   "value": 325.95,
+   "display": "326 per 100K"
   },
   {
    "year": "2014",
-   "value": 325.1
+   "value": 325.1,
+   "display": "325 per 100K"
   },
   {
    "year": "2015",
-   "value": 348.3
+   "value": 348.3,
+   "display": "348 per 100K"
   },
   {
    "year": "2016",
-   "value": 370.25
+   "value": 370.25,
+   "display": "370 per 100K"
   },
   {
    "year": "2017",
-   "value": 357.6
+   "value": 357.6,
+   "display": "358 per 100K"
   },
   {
    "year": "2018",
-   "value": 344.3
+   "value": 344.3,
+   "display": "344 per 100K"
   },
   {
    "year": "2019",
-   "value": 349.65
+   "value": 349.65,
+   "display": "350 per 100K"
   },
   {
    "year": "2020",
-   "value": 373.7
+   "value": 373.7,
+   "display": "374 per 100K"
   },
   {
    "year": "2021",
-   "value": 338.75
+   "value": 338.75,
+   "display": "339 per 100K"
   },
   {
    "year": "2022",
-   "value": 362.4
+   "value": 362.4,
+   "display": "362 per 100K"
   },
   {
    "year": "2023",
-   "value": 352.7
+   "value": 352.7,
+   "display": "353 per 100K"
   },
   {
    "year": "2024",
-   "value": 330.15
+   "value": 330.15,
+   "display": "330 per 100K"
   },
   {
    "year": "2025",
-   "value": 300.25
+   "value": 300.25,
+   "display": "300 per 100K"
   }
  ],
  "rankings": {
@@ -560,252 +692,302 @@
    {
     "rank": 1,
     "state": "Maine",
-    "value": 95.3
+    "value": 95.3,
+    "display": "95 per 100K"
    },
    {
     "rank": 2,
     "state": "Connecticut",
-    "value": 111.2
+    "value": 111.2,
+    "display": "111 per 100K"
    },
    {
     "rank": 3,
     "state": "New Hampshire",
-    "value": 119.2
+    "value": 119.2,
+    "display": "119 per 100K"
    },
    {
     "rank": 4,
     "state": "Rhode Island",
-    "value": 146.4
+    "value": 146.4,
+    "display": "146 per 100K"
    },
    {
     "rank": 5,
     "state": "Wyoming",
-    "value": 187.8
+    "value": 187.8,
+    "display": "188 per 100K"
    },
    {
     "rank": 6,
     "state": "New Jersey",
-    "value": 198.5
+    "value": 198.5,
+    "display": "198 per 100K"
    },
    {
     "rank": 7,
     "state": "Virginia",
-    "value": 210.8
+    "value": 210.8,
+    "display": "211 per 100K"
    },
    {
     "rank": 8,
     "state": "Hawaiʻi",
-    "value": 213.7
+    "value": 213.7,
+    "display": "214 per 100K"
    },
    {
     "rank": 9,
     "state": "Kentucky",
-    "value": 216.2
+    "value": 216.2,
+    "display": "216 per 100K"
    },
    {
     "rank": 10,
     "state": "Vermont",
-    "value": 220
+    "value": 220,
+    "display": "220 per 100K"
    },
    {
     "rank": 11,
     "state": "Mississippi",
-    "value": 220.4
+    "value": 220.4,
+    "display": "220 per 100K"
    },
    {
     "rank": 12,
     "state": "Idaho",
-    "value": 221.7
+    "value": 221.7,
+    "display": "222 per 100K"
    },
    {
     "rank": 13,
     "state": "Nebraska",
-    "value": 222.7
+    "value": 222.7,
+    "display": "223 per 100K"
    },
    {
     "rank": 14,
     "state": "Utah",
-    "value": 224.8
+    "value": 224.8,
+    "display": "225 per 100K"
    },
    {
     "rank": 15,
     "state": "Minnesota",
-    "value": 226.4
+    "value": 226.4,
+    "display": "226 per 100K"
    },
    {
     "rank": 16,
     "state": "Pennsylvania",
-    "value": 229.3
+    "value": 229.3,
+    "display": "229 per 100K"
    },
    {
     "rank": 17,
     "state": "Iowa",
-    "value": 237.9
+    "value": 237.9,
+    "display": "238 per 100K"
    },
    {
     "rank": 18,
     "state": "North Dakota",
-    "value": 240.6
+    "value": 240.6,
+    "display": "241 per 100K"
    },
    {
     "rank": 19,
     "state": "Wisconsin",
-    "value": 244.5
+    "value": 244.5,
+    "display": "244 per 100K"
    },
    {
     "rank": 20,
     "state": "Florida",
-    "value": 247.7
+    "value": 247.7,
+    "display": "248 per 100K"
    },
    {
     "rank": 21,
     "state": "Illinois",
-    "value": 257.7
+    "value": 257.7,
+    "display": "258 per 100K"
    },
    {
     "rank": 22,
     "state": "West Virginia",
-    "value": 264.5
+    "value": 264.5,
+    "display": "264 per 100K"
    },
    {
     "rank": 23,
     "state": "Ohio",
-    "value": 287.9
+    "value": 287.9,
+    "display": "288 per 100K"
    },
    {
     "rank": 24,
     "state": "Washington",
-    "value": 292.2
+    "value": 292.2,
+    "display": "292 per 100K"
    },
    {
     "rank": 25,
     "state": "Indiana",
-    "value": 299.5
+    "value": 299.5,
+    "display": "300 per 100K"
    },
    {
     "rank": 26,
     "state": "Massachusetts",
-    "value": 301
+    "value": 301,
+    "display": "301 per 100K"
    },
    {
     "rank": 27,
     "state": "Georgia",
-    "value": 303.7
+    "value": 303.7,
+    "display": "304 per 100K"
    },
    {
     "rank": 28,
     "state": "Oregon",
-    "value": 319.1
+    "value": 319.1,
+    "display": "319 per 100K"
    },
    {
     "rank": 29,
     "state": "South Dakota",
-    "value": 327.2
+    "value": 327.2,
+    "display": "327 per 100K"
    },
    {
     "rank": 30,
     "state": "North Carolina",
-    "value": 334.2
+    "value": 334.2,
+    "display": "334 per 100K"
    },
    {
     "rank": 31,
     "state": "Texas",
-    "value": 348.4
+    "value": 348.4,
+    "display": "348 per 100K"
    },
    {
     "rank": 32,
     "state": "Alabama",
-    "value": 352.8
+    "value": 352.8,
+    "display": "353 per 100K"
    },
    {
     "rank": 33,
     "state": "Delaware",
-    "value": 354.1
+    "value": 354.1,
+    "display": "354 per 100K"
    },
    {
     "rank": 34,
     "state": "Maryland",
-    "value": 365
+    "value": 365,
+    "display": "365 per 100K"
    },
    {
     "rank": 35,
     "state": "New York",
-    "value": 367.7
+    "value": 367.7,
+    "display": "368 per 100K"
    },
    {
     "rank": 36,
     "state": "Nevada",
-    "value": 384.1
+    "value": 384.1,
+    "display": "384 per 100K"
    },
    {
     "rank": 37,
     "state": "Arizona",
-    "value": 385
+    "value": 385,
+    "display": "385 per 100K"
    },
    {
     "rank": 38,
     "state": "South Carolina",
-    "value": 390
+    "value": 390,
+    "display": "390 per 100K"
    },
    {
     "rank": 39,
     "state": "Oklahoma",
-    "value": 412.3
+    "value": 412.3,
+    "display": "412 per 100K"
    },
    {
     "rank": 40,
     "state": "Montana",
-    "value": 422.6
+    "value": 422.6,
+    "display": "423 per 100K"
    },
    {
     "rank": 41,
     "state": "Missouri",
-    "value": 425.5
+    "value": 425.5,
+    "display": "426 per 100K"
    },
    {
     "rank": 42,
     "state": "Michigan",
-    "value": 431
+    "value": 431,
+    "display": "431 per 100K"
    },
    {
     "rank": 43,
     "state": "California",
-    "value": 435.1
+    "value": 435.1,
+    "display": "435 per 100K"
    },
    {
     "rank": 44,
     "state": "Colorado",
-    "value": 440.2
+    "value": 440.2,
+    "display": "440 per 100K"
    },
    {
     "rank": 45,
     "state": "Louisiana",
-    "value": 465.6
+    "value": 465.6,
+    "display": "466 per 100K"
    },
    {
     "rank": 46,
     "state": "Kansas",
-    "value": 476.2
+    "value": 476.2,
+    "display": "476 per 100K"
    },
    {
     "rank": 47,
     "state": "Tennessee",
-    "value": 498.8
+    "value": 498.8,
+    "display": "499 per 100K"
    },
    {
     "rank": 48,
     "state": "Arkansas",
-    "value": 535.7
+    "value": 535.7,
+    "display": "536 per 100K"
    },
    {
     "rank": 49,
     "state": "New Mexico",
-    "value": 651.2
+    "value": 651.2,
+    "display": "651 per 100K"
    },
    {
     "rank": 50,
     "state": "Alaska",
-    "value": 736.2
+    "value": 736.2,
+    "display": "736 per 100K"
    }
   ]
  },

@@ -25,157 +25,195 @@
  "hawaii_series": [
   {
    "year": "2005",
-   "value": 7.81
+   "value": 7.81,
+   "display": "7.8×"
   },
   {
    "year": "2006",
-   "value": 8.66
+   "value": 8.66,
+   "display": "8.7×"
   },
   {
    "year": "2007",
-   "value": 8.71
+   "value": 8.71,
+   "display": "8.7×"
   },
   {
    "year": "2008",
-   "value": 8.33
+   "value": 8.33,
+   "display": "8.3×"
   },
   {
    "year": "2009",
-   "value": 8.08
+   "value": 8.08,
+   "display": "8.1×"
   },
   {
    "year": "2010",
-   "value": 8.34
+   "value": 8.34,
+   "display": "8.3×"
   },
   {
    "year": "2011",
-   "value": 7.88
+   "value": 7.88,
+   "display": "7.9×"
   },
   {
    "year": "2012",
-   "value": 7.49
+   "value": 7.49,
+   "display": "7.5×"
   },
   {
    "year": "2013",
-   "value": 7.35
+   "value": 7.35,
+   "display": "7.3×"
   },
   {
    "year": "2014",
-   "value": 7.59
+   "value": 7.59,
+   "display": "7.6×"
   },
   {
    "year": "2015",
-   "value": 7.71
+   "value": 7.71,
+   "display": "7.7×"
   },
   {
    "year": "2016",
-   "value": 7.95
+   "value": 7.95,
+   "display": "8.0×"
   },
   {
    "year": "2017",
-   "value": 7.94
+   "value": 7.94,
+   "display": "7.9×"
   },
   {
    "year": "2018",
-   "value": 7.88
+   "value": 7.88,
+   "display": "7.9×"
   },
   {
    "year": "2019",
-   "value": 8.05
+   "value": 8.05,
+   "display": "8.1×"
   },
   {
    "year": "2021",
-   "value": 8.51
+   "value": 8.51,
+   "display": "8.5×"
   },
   {
    "year": "2022",
-   "value": 8.87
+   "value": 8.87,
+   "display": "8.9×"
   },
   {
    "year": "2023",
-   "value": 8.88
+   "value": 8.88,
+   "display": "8.9×"
   },
   {
    "year": "2024",
-   "value": 8.69
+   "value": 8.69,
+   "display": "8.7×"
   }
  ],
  "median_series": [
   {
    "year": "2005",
-   "value": 3.305
+   "value": 3.305,
+   "display": "3.3×"
   },
   {
    "year": "2006",
-   "value": 3.535
+   "value": 3.535,
+   "display": "3.5×"
   },
   {
    "year": "2007",
-   "value": 3.675
+   "value": 3.675,
+   "display": "3.7×"
   },
   {
    "year": "2008",
-   "value": 3.635
+   "value": 3.635,
+   "display": "3.6×"
   },
   {
    "year": "2009",
-   "value": 3.58
+   "value": 3.58,
+   "display": "3.6×"
   },
   {
    "year": "2010",
-   "value": 3.53
+   "value": 3.53,
+   "display": "3.5×"
   },
   {
    "year": "2011",
-   "value": 3.33
+   "value": 3.33,
+   "display": "3.3×"
   },
   {
    "year": "2012",
-   "value": 3.245
+   "value": 3.245,
+   "display": "3.2×"
   },
   {
    "year": "2013",
-   "value": 3.28
+   "value": 3.28,
+   "display": "3.3×"
   },
   {
    "year": "2014",
-   "value": 3.38
+   "value": 3.38,
+   "display": "3.4×"
   },
   {
    "year": "2015",
-   "value": 3.44
+   "value": 3.44,
+   "display": "3.4×"
   },
   {
    "year": "2016",
-   "value": 3.49
+   "value": 3.49,
+   "display": "3.5×"
   },
   {
    "year": "2017",
-   "value": 3.46
+   "value": 3.46,
+   "display": "3.5×"
   },
   {
    "year": "2018",
-   "value": 3.52
+   "value": 3.52,
+   "display": "3.5×"
   },
   {
    "year": "2019",
-   "value": 3.41
+   "value": 3.41,
+   "display": "3.4×"
   },
   {
    "year": "2021",
-   "value": 3.785
+   "value": 3.785,
+   "display": "3.8×"
   },
   {
    "year": "2022",
-   "value": 4.075
+   "value": 4.075,
+   "display": "4.1×"
   },
   {
    "year": "2023",
-   "value": 4.105
+   "value": 4.105,
+   "display": "4.1×"
   },
   {
    "year": "2024",
-   "value": 4.19
+   "value": 4.19,
+   "display": "4.2×"
   }
  ],
  "rankings": {
@@ -184,252 +222,302 @@
    {
     "rank": 1,
     "state": "West Virginia",
-    "value": 2.81
+    "value": 2.81,
+    "display": "2.8×"
    },
    {
     "rank": 2,
     "state": "Iowa",
-    "value": 3.01
+    "value": 3.01,
+    "display": "3.0×"
    },
    {
     "rank": 3,
     "state": "Mississippi",
-    "value": 3.15
+    "value": 3.15,
+    "display": "3.1×"
    },
    {
     "rank": 4,
     "state": "Kansas",
-    "value": 3.16
+    "value": 3.16,
+    "display": "3.2×"
    },
    {
     "rank": 5,
     "state": "Ohio",
-    "value": 3.32
+    "value": 3.32,
+    "display": "3.3×"
    },
    {
     "rank": 6,
     "state": "Oklahoma",
-    "value": 3.36
+    "value": 3.36,
+    "display": "3.4×"
    },
    {
     "rank": 7,
     "state": "Illinois",
-    "value": 3.37
+    "value": 3.37,
+    "display": "3.4×"
    },
    {
     "rank": 8,
     "state": "Indiana",
-    "value": 3.38
+    "value": 3.38,
+    "display": "3.4×"
    },
    {
     "rank": 9,
     "state": "North Dakota",
-    "value": 3.42
+    "value": 3.42,
+    "display": "3.4×"
    },
    {
     "rank": 10,
     "state": "Nebraska",
-    "value": 3.44
+    "value": 3.44,
+    "display": "3.4×"
    },
    {
     "rank": 11,
     "state": "Arkansas",
-    "value": 3.47
+    "value": 3.47,
+    "display": "3.5×"
    },
    {
     "rank": 12,
     "state": "Alabama",
-    "value": 3.5
+    "value": 3.5,
+    "display": "3.5×"
    },
    {
     "rank": 13,
     "state": "Kentucky",
-    "value": 3.5
+    "value": 3.5,
+    "display": "3.5×"
    },
    {
     "rank": 14,
     "state": "Michigan",
-    "value": 3.51
+    "value": 3.51,
+    "display": "3.5×"
    },
    {
     "rank": 15,
     "state": "Missouri",
-    "value": 3.55
+    "value": 3.55,
+    "display": "3.5×"
    },
    {
     "rank": 16,
     "state": "Pennsylvania",
-    "value": 3.58
+    "value": 3.58,
+    "display": "3.6×"
    },
    {
     "rank": 17,
     "state": "Louisiana",
-    "value": 3.66
+    "value": 3.66,
+    "display": "3.7×"
    },
    {
     "rank": 18,
     "state": "South Dakota",
-    "value": 3.77
+    "value": 3.77,
+    "display": "3.8×"
    },
    {
     "rank": 19,
     "state": "Wisconsin",
-    "value": 3.8
+    "value": 3.8,
+    "display": "3.8×"
    },
    {
     "rank": 20,
     "state": "Texas",
-    "value": 3.93
+    "value": 3.93,
+    "display": "3.9×"
    },
    {
     "rank": 21,
     "state": "Alaska",
-    "value": 3.94
+    "value": 3.94,
+    "display": "3.9×"
    },
    {
     "rank": 22,
     "state": "Minnesota",
-    "value": 3.96
+    "value": 3.96,
+    "display": "4.0×"
    },
    {
     "rank": 23,
     "state": "Connecticut",
-    "value": 4.13
+    "value": 4.13,
+    "display": "4.1×"
    },
    {
     "rank": 24,
     "state": "New Mexico",
-    "value": 4.13
+    "value": 4.13,
+    "display": "4.1×"
    },
    {
     "rank": 25,
     "state": "South Carolina",
-    "value": 4.14
+    "value": 4.14,
+    "display": "4.1×"
    },
    {
     "rank": 26,
     "state": "Maryland",
-    "value": 4.24
+    "value": 4.24,
+    "display": "4.2×"
    },
    {
     "rank": 27,
     "state": "Delaware",
-    "value": 4.25
+    "value": 4.25,
+    "display": "4.2×"
    },
    {
     "rank": 28,
     "state": "Vermont",
-    "value": 4.26
+    "value": 4.26,
+    "display": "4.3×"
    },
    {
     "rank": 29,
     "state": "Georgia",
-    "value": 4.29
+    "value": 4.29,
+    "display": "4.3×"
    },
    {
     "rank": 30,
     "state": "Virginia",
-    "value": 4.38
+    "value": 4.38,
+    "display": "4.4×"
    },
    {
     "rank": 31,
     "state": "Maine",
-    "value": 4.47
+    "value": 4.47,
+    "display": "4.5×"
    },
    {
     "rank": 32,
     "state": "Wyoming",
-    "value": 4.49
+    "value": 4.49,
+    "display": "4.5×"
    },
    {
     "rank": 33,
     "state": "North Carolina",
-    "value": 4.5
+    "value": 4.5,
+    "display": "4.5×"
    },
    {
     "rank": 34,
     "state": "New Hampshire",
-    "value": 4.6
+    "value": 4.6,
+    "display": "4.6×"
    },
    {
     "rank": 35,
     "state": "Tennessee",
-    "value": 4.62
+    "value": 4.62,
+    "display": "4.6×"
    },
    {
     "rank": 36,
     "state": "New Jersey",
-    "value": 4.76
+    "value": 4.76,
+    "display": "4.8×"
    },
    {
     "rank": 37,
     "state": "Florida",
-    "value": 5.11
+    "value": 5.11,
+    "display": "5.1×"
    },
    {
     "rank": 38,
     "state": "Arizona",
-    "value": 5.23
+    "value": 5.23,
+    "display": "5.2×"
    },
    {
     "rank": 39,
     "state": "New York",
-    "value": 5.24
+    "value": 5.24,
+    "display": "5.2×"
    },
    {
     "rank": 40,
     "state": "Rhode Island",
-    "value": 5.46
+    "value": 5.46,
+    "display": "5.5×"
    },
    {
     "rank": 41,
     "state": "Idaho",
-    "value": 5.5
+    "value": 5.5,
+    "display": "5.5×"
    },
    {
     "rank": 42,
     "state": "Nevada",
-    "value": 5.61
+    "value": 5.61,
+    "display": "5.6×"
    },
    {
     "rank": 43,
     "state": "Utah",
-    "value": 5.64
+    "value": 5.64,
+    "display": "5.6×"
    },
    {
     "rank": 44,
     "state": "Montana",
-    "value": 5.65
+    "value": 5.65,
+    "display": "5.7×"
    },
    {
     "rank": 45,
     "state": "Massachusetts",
-    "value": 5.79
+    "value": 5.79,
+    "display": "5.8×"
    },
    {
     "rank": 46,
     "state": "Oregon",
-    "value": 5.84
+    "value": 5.84,
+    "display": "5.8×"
    },
    {
     "rank": 47,
     "state": "Colorado",
-    "value": 5.92
+    "value": 5.92,
+    "display": "5.9×"
    },
    {
     "rank": 48,
     "state": "Washington",
-    "value": 6.06
+    "value": 6.06,
+    "display": "6.1×"
    },
    {
     "rank": 49,
     "state": "California",
-    "value": 7.58
+    "value": 7.58,
+    "display": "7.6×"
    },
    {
     "rank": 50,
     "state": "Hawaiʻi",
-    "value": 8.69
+    "value": 8.69,
+    "display": "8.7×"
    }
   ]
  },
@@ -440,6 +528,12 @@
    "Hawaiʻi": 7.7,
    "Maui": 10.5,
    "Kauaʻi": 9.6
+  },
+  "display": {
+   "Honolulu": "8.8×",
+   "Hawaiʻi": "7.7×",
+   "Maui": "10.5×",
+   "Kauaʻi": "9.6×"
   }
  }
 }

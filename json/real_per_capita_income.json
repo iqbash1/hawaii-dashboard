@@ -25,141 +25,175 @@
  "hawaii_series": [
   {
    "year": "2008",
-   "value": 42828
+   "value": 42828,
+   "display": "$43K"
   },
   {
    "year": "2009",
-   "value": 41102
+   "value": 41102,
+   "display": "$41K"
   },
   {
    "year": "2010",
-   "value": 41904
+   "value": 41904,
+   "display": "$42K"
   },
   {
    "year": "2011",
-   "value": 41967
+   "value": 41967,
+   "display": "$42K"
   },
   {
    "year": "2012",
-   "value": 42532
+   "value": 42532,
+   "display": "$43K"
   },
   {
    "year": "2013",
-   "value": 40531
+   "value": 40531,
+   "display": "$41K"
   },
   {
    "year": "2014",
-   "value": 42363
+   "value": 42363,
+   "display": "$42K"
   },
   {
    "year": "2015",
-   "value": 43533
+   "value": 43533,
+   "display": "$44K"
   },
   {
    "year": "2016",
-   "value": 45054
+   "value": 45054,
+   "display": "$45K"
   },
   {
    "year": "2017",
-   "value": 45829
+   "value": 45829,
+   "display": "$46K"
   },
   {
    "year": "2018",
-   "value": 45636
+   "value": 45636,
+   "display": "$46K"
   },
   {
    "year": "2019",
-   "value": 46712
+   "value": 46712,
+   "display": "$47K"
   },
   {
    "year": "2020",
-   "value": 48228
+   "value": 48228,
+   "display": "$48K"
   },
   {
    "year": "2021",
-   "value": 50046
+   "value": 50046,
+   "display": "$50K"
   },
   {
    "year": "2022",
-   "value": 49022
+   "value": 49022,
+   "display": "$49K"
   },
   {
    "year": "2023",
-   "value": 50923
+   "value": 50923,
+   "display": "$51K"
   },
   {
    "year": "2024",
-   "value": 52272
+   "value": 52272,
+   "display": "$52K"
   }
  ],
  "median_series": [
   {
    "year": "2008",
-   "value": 45907
+   "value": 45907,
+   "display": "$46K"
   },
   {
    "year": "2009",
-   "value": 44299.5
+   "value": 44299.5,
+   "display": "$44K"
   },
   {
    "year": "2010",
-   "value": 44428
+   "value": 44428,
+   "display": "$44K"
   },
   {
    "year": "2011",
-   "value": 45605
+   "value": 45605,
+   "display": "$46K"
   },
   {
    "year": "2012",
-   "value": 46462
+   "value": 46462,
+   "display": "$46K"
   },
   {
    "year": "2013",
-   "value": 46298.5
+   "value": 46298.5,
+   "display": "$46K"
   },
   {
    "year": "2014",
-   "value": 47210.5
+   "value": 47210.5,
+   "display": "$47K"
   },
   {
    "year": "2015",
-   "value": 48939
+   "value": 48939,
+   "display": "$49K"
   },
   {
    "year": "2016",
-   "value": 48719
+   "value": 48719,
+   "display": "$49K"
   },
   {
    "year": "2017",
-   "value": 49632
+   "value": 49632,
+   "display": "$50K"
   },
   {
    "year": "2018",
-   "value": 50577
+   "value": 50577,
+   "display": "$51K"
   },
   {
    "year": "2019",
-   "value": 52163.5
+   "value": 52163.5,
+   "display": "$52K"
   },
   {
    "year": "2020",
-   "value": 54987.5
+   "value": 54987.5,
+   "display": "$55K"
   },
   {
    "year": "2021",
-   "value": 57162.5
+   "value": 57162.5,
+   "display": "$57K"
   },
   {
    "year": "2022",
-   "value": 56194
+   "value": 56194,
+   "display": "$56K"
   },
   {
    "year": "2023",
-   "value": 57114
+   "value": 57114,
+   "display": "$57K"
   },
   {
    "year": "2024",
-   "value": 58246
+   "value": 58246,
+   "display": "$58K"
   }
  ],
  "rankings": {
@@ -168,252 +202,302 @@
    {
     "rank": 1,
     "state": "Wyoming",
-    "value": 75501
+    "value": 75501,
+    "display": "$76K"
    },
    {
     "rank": 2,
     "state": "Connecticut",
-    "value": 74254
+    "value": 74254,
+    "display": "$74K"
    },
    {
     "rank": 3,
     "state": "Massachusetts",
-    "value": 71629
+    "value": 71629,
+    "display": "$72K"
    },
    {
     "rank": 4,
     "state": "South Dakota",
-    "value": 69153
+    "value": 69153,
+    "display": "$69K"
    },
    {
     "rank": 5,
     "state": "Nebraska",
-    "value": 65297
+    "value": 65297,
+    "display": "$65K"
    },
    {
     "rank": 6,
     "state": "North Dakota",
-    "value": 65271
+    "value": 65271,
+    "display": "$65K"
    },
    {
     "rank": 7,
     "state": "Colorado",
-    "value": 65223
+    "value": 65223,
+    "display": "$65K"
    },
    {
     "rank": 8,
     "state": "New Hampshire",
-    "value": 64632
+    "value": 64632,
+    "display": "$65K"
    },
    {
     "rank": 9,
     "state": "Washington",
-    "value": 64421
+    "value": 64421,
+    "display": "$64K"
    },
    {
     "rank": 10,
     "state": "New York",
-    "value": 64153
+    "value": 64153,
+    "display": "$64K"
    },
    {
     "rank": 11,
     "state": "New Jersey",
-    "value": 63142
+    "value": 63142,
+    "display": "$63K"
    },
    {
     "rank": 12,
     "state": "California",
-    "value": 63028
+    "value": 63028,
+    "display": "$63K"
    },
    {
     "rank": 13,
     "state": "Minnesota",
-    "value": 62039
+    "value": 62039,
+    "display": "$62K"
    },
    {
     "rank": 14,
     "state": "Virginia",
-    "value": 61914
+    "value": 61914,
+    "display": "$62K"
    },
    {
     "rank": 15,
     "state": "Maryland",
-    "value": 61111
+    "value": 61111,
+    "display": "$61K"
    },
    {
     "rank": 16,
     "state": "Illinois",
-    "value": 60333
+    "value": 60333,
+    "display": "$60K"
    },
    {
     "rank": 17,
     "state": "Alaska",
-    "value": 60272
+    "value": 60272,
+    "display": "$60K"
    },
    {
     "rank": 18,
     "state": "Iowa",
-    "value": 60144
+    "value": 60144,
+    "display": "$60K"
    },
    {
     "rank": 19,
     "state": "Montana",
-    "value": 59203
+    "value": 59203,
+    "display": "$59K"
    },
    {
     "rank": 20,
     "state": "Kansas",
-    "value": 59172
+    "value": 59172,
+    "display": "$59K"
    },
    {
     "rank": 21,
     "state": "Vermont",
-    "value": 58893
+    "value": 58893,
+    "display": "$59K"
    },
    {
     "rank": 22,
     "state": "Oklahoma",
-    "value": 58692
+    "value": 58692,
+    "display": "$59K"
    },
    {
     "rank": 23,
     "state": "Pennsylvania",
-    "value": 58620
+    "value": 58620,
+    "display": "$59K"
    },
    {
     "rank": 24,
     "state": "Tennessee",
-    "value": 58582
+    "value": 58582,
+    "display": "$59K"
    },
    {
     "rank": 25,
     "state": "Wisconsin",
-    "value": 58273
+    "value": 58273,
+    "display": "$58K"
    },
    {
     "rank": 26,
     "state": "Texas",
-    "value": 58219
+    "value": 58219,
+    "display": "$58K"
    },
    {
     "rank": 27,
     "state": "Missouri",
-    "value": 57850
+    "value": 57850,
+    "display": "$58K"
    },
    {
     "rank": 28,
     "state": "Maine",
-    "value": 57480
+    "value": 57480,
+    "display": "$57K"
    },
    {
     "rank": 29,
     "state": "Florida",
-    "value": 57131
+    "value": 57131,
+    "display": "$57K"
    },
    {
     "rank": 30,
     "state": "Louisiana",
-    "value": 56789
+    "value": 56789,
+    "display": "$57K"
    },
    {
     "rank": 31,
     "state": "Nevada",
-    "value": 56503
+    "value": 56503,
+    "display": "$57K"
    },
    {
     "rank": 32,
     "state": "North Carolina",
-    "value": 56310
+    "value": 56310,
+    "display": "$56K"
    },
    {
     "rank": 33,
     "state": "Ohio",
-    "value": 56232
+    "value": 56232,
+    "display": "$56K"
    },
    {
     "rank": 34,
     "state": "Rhode Island",
-    "value": 55878
+    "value": 55878,
+    "display": "$56K"
    },
    {
     "rank": 35,
     "state": "Indiana",
-    "value": 55562
+    "value": 55562,
+    "display": "$56K"
    },
    {
     "rank": 36,
     "state": "Oregon",
-    "value": 55451
+    "value": 55451,
+    "display": "$55K"
    },
    {
     "rank": 37,
     "state": "Arkansas",
-    "value": 55219
+    "value": 55219,
+    "display": "$55K"
    },
    {
     "rank": 38,
     "state": "Delaware",
-    "value": 55185
+    "value": 55185,
+    "display": "$55K"
    },
    {
     "rank": 39,
     "state": "Utah",
-    "value": 55116
+    "value": 55116,
+    "display": "$55K"
    },
    {
     "rank": 40,
     "state": "Michigan",
-    "value": 53569
+    "value": 53569,
+    "display": "$54K"
    },
    {
     "rank": 41,
     "state": "Georgia",
-    "value": 52952
+    "value": 52952,
+    "display": "$53K"
    },
    {
     "rank": 42,
     "state": "Arizona",
-    "value": 52890
+    "value": 52890,
+    "display": "$53K"
    },
    {
     "rank": 43,
     "state": "Idaho",
-    "value": 52816
+    "value": 52816,
+    "display": "$53K"
    },
    {
     "rank": 44,
     "state": "South Carolina",
-    "value": 52463
+    "value": 52463,
+    "display": "$52K"
    },
    {
     "rank": 45,
     "state": "Kentucky",
-    "value": 52290
+    "value": 52290,
+    "display": "$52K"
    },
    {
     "rank": 46,
     "state": "Hawaiʻi",
-    "value": 52272
+    "value": 52272,
+    "display": "$52K"
    },
    {
     "rank": 47,
     "state": "Alabama",
-    "value": 52216
+    "value": 52216,
+    "display": "$52K"
    },
    {
     "rank": 48,
     "state": "New Mexico",
-    "value": 51121
+    "value": 51121,
+    "display": "$51K"
    },
    {
     "rank": 49,
     "state": "West Virginia",
-    "value": 50051
+    "value": 50051,
+    "display": "$50K"
    },
    {
     "rank": 50,
     "state": "Mississippi",
-    "value": 48465
+    "value": 48465,
+    "display": "$48K"
    }
   ]
  },
@@ -424,6 +508,12 @@
    "Hawaiʻi": 42432,
    "Maui": 49636,
    "Kauaʻi": 49401
+  },
+  "display": {
+   "Honolulu": "$55K",
+   "Hawaiʻi": "$42K",
+   "Maui": "$50K",
+   "Kauaʻi": "$49K"
   }
  }
 }

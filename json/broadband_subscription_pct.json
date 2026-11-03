@@ -25,69 +25,85 @@
  "hawaii_series": [
   {
    "year": "2016",
-   "value": 83.18
+   "value": 83.18,
+   "display": "83.2%"
   },
   {
    "year": "2017",
-   "value": 84.48
+   "value": 84.48,
+   "display": "84.5%"
   },
   {
    "year": "2018",
-   "value": 85.73
+   "value": 85.73,
+   "display": "85.7%"
   },
   {
    "year": "2019",
-   "value": 88.02
+   "value": 88.02,
+   "display": "88.0%"
   },
   {
    "year": "2021",
-   "value": 91.34
+   "value": 91.34,
+   "display": "91.3%"
   },
   {
    "year": "2022",
-   "value": 91.29
+   "value": 91.29,
+   "display": "91.3%"
   },
   {
    "year": "2023",
-   "value": 92.62
+   "value": 92.62,
+   "display": "92.6%"
   },
   {
    "year": "2024",
-   "value": 93.04
+   "value": 93.04,
+   "display": "93.0%"
   }
  ],
  "median_series": [
   {
    "year": "2016",
-   "value": 81.01
+   "value": 81.01,
+   "display": "81.0%"
   },
   {
    "year": "2017",
-   "value": 83.2
+   "value": 83.2,
+   "display": "83.2%"
   },
   {
    "year": "2018",
-   "value": 84.51
+   "value": 84.51,
+   "display": "84.5%"
   },
   {
    "year": "2019",
-   "value": 85.93
+   "value": 85.93,
+   "display": "85.9%"
   },
   {
    "year": "2021",
-   "value": 89.9
+   "value": 89.9,
+   "display": "89.9%"
   },
   {
    "year": "2022",
-   "value": 90.67
+   "value": 90.67,
+   "display": "90.7%"
   },
   {
    "year": "2023",
-   "value": 91.91
+   "value": 91.91,
+   "display": "91.9%"
   },
   {
    "year": "2024",
-   "value": 92.81
+   "value": 92.81,
+   "display": "92.8%"
   }
  ],
  "rankings": {
@@ -96,252 +112,302 @@
    {
     "rank": 1,
     "state": "New Hampshire",
-    "value": 95.29
+    "value": 95.29,
+    "display": "95.3%"
    },
    {
     "rank": 2,
     "state": "Nevada",
-    "value": 95.11
+    "value": 95.11,
+    "display": "95.1%"
    },
    {
     "rank": 3,
     "state": "California",
-    "value": 95.0
+    "value": 95.0,
+    "display": "95.0%"
    },
    {
     "rank": 4,
     "state": "Washington",
-    "value": 94.98
+    "value": 94.98,
+    "display": "95.0%"
    },
    {
     "rank": 5,
     "state": "Colorado",
-    "value": 94.9
+    "value": 94.9,
+    "display": "94.9%"
    },
    {
     "rank": 6,
     "state": "New Jersey",
-    "value": 94.8
+    "value": 94.8,
+    "display": "94.8%"
    },
    {
     "rank": 7,
     "state": "Maryland",
-    "value": 94.42
+    "value": 94.42,
+    "display": "94.4%"
    },
    {
     "rank": 8,
     "state": "Massachusetts",
-    "value": 94.38
+    "value": 94.38,
+    "display": "94.4%"
    },
    {
     "rank": 9,
     "state": "Delaware",
-    "value": 94.29
+    "value": 94.29,
+    "display": "94.3%"
    },
    {
     "rank": 10,
     "state": "Florida",
-    "value": 94.26
+    "value": 94.26,
+    "display": "94.3%"
    },
    {
     "rank": 11,
     "state": "Utah",
-    "value": 94.06
+    "value": 94.06,
+    "display": "94.1%"
    },
    {
     "rank": 12,
     "state": "Connecticut",
-    "value": 94.03
+    "value": 94.03,
+    "display": "94.0%"
    },
    {
     "rank": 13,
     "state": "Texas",
-    "value": 93.69
+    "value": 93.69,
+    "display": "93.7%"
    },
    {
     "rank": 14,
     "state": "Oregon",
-    "value": 93.67
+    "value": 93.67,
+    "display": "93.7%"
    },
    {
     "rank": 15,
     "state": "Alaska",
-    "value": 93.6
+    "value": 93.6,
+    "display": "93.6%"
    },
    {
     "rank": 16,
     "state": "Arizona",
-    "value": 93.56
+    "value": 93.56,
+    "display": "93.6%"
    },
    {
     "rank": 17,
     "state": "Georgia",
-    "value": 93.44
+    "value": 93.44,
+    "display": "93.4%"
    },
    {
     "rank": 18,
     "state": "Rhode Island",
-    "value": 93.44
+    "value": 93.44,
+    "display": "93.4%"
    },
    {
     "rank": 19,
     "state": "North Carolina",
-    "value": 93.18
+    "value": 93.18,
+    "display": "93.2%"
    },
    {
     "rank": 20,
     "state": "New York",
-    "value": 93.1
+    "value": 93.1,
+    "display": "93.1%"
    },
    {
     "rank": 21,
     "state": "Hawaiʻi",
-    "value": 93.04
+    "value": 93.04,
+    "display": "93.0%"
    },
    {
     "rank": 22,
     "state": "Illinois",
-    "value": 92.93
+    "value": 92.93,
+    "display": "92.9%"
    },
    {
     "rank": 23,
     "state": "South Carolina",
-    "value": 92.91
+    "value": 92.91,
+    "display": "92.9%"
    },
    {
     "rank": 24,
     "state": "Minnesota",
-    "value": 92.86
+    "value": 92.86,
+    "display": "92.9%"
    },
    {
     "rank": 25,
     "state": "Michigan",
-    "value": 92.81
+    "value": 92.81,
+    "display": "92.8%"
    },
    {
     "rank": 26,
     "state": "Virginia",
-    "value": 92.81
+    "value": 92.81,
+    "display": "92.8%"
    },
    {
     "rank": 27,
     "state": "Idaho",
-    "value": 92.79
+    "value": 92.79,
+    "display": "92.8%"
    },
    {
     "rank": 28,
     "state": "Vermont",
-    "value": 92.75
+    "value": 92.75,
+    "display": "92.8%"
    },
    {
     "rank": 29,
     "state": "Kansas",
-    "value": 92.53
+    "value": 92.53,
+    "display": "92.5%"
    },
    {
     "rank": 30,
     "state": "Tennessee",
-    "value": 92.49
+    "value": 92.49,
+    "display": "92.5%"
    },
    {
     "rank": 31,
     "state": "Maine",
-    "value": 92.37
+    "value": 92.37,
+    "display": "92.4%"
    },
    {
     "rank": 32,
     "state": "Wisconsin",
-    "value": 92.32
+    "value": 92.32,
+    "display": "92.3%"
    },
    {
     "rank": 33,
     "state": "Ohio",
-    "value": 92.22
+    "value": 92.22,
+    "display": "92.2%"
    },
    {
     "rank": 34,
     "state": "Oklahoma",
-    "value": 92.14
+    "value": 92.14,
+    "display": "92.1%"
    },
    {
     "rank": 35,
     "state": "Pennsylvania",
-    "value": 92.1
+    "value": 92.1,
+    "display": "92.1%"
    },
    {
     "rank": 36,
     "state": "Indiana",
-    "value": 91.99
+    "value": 91.99,
+    "display": "92.0%"
    },
    {
     "rank": 37,
     "state": "Nebraska",
-    "value": 91.93
+    "value": 91.93,
+    "display": "91.9%"
    },
    {
     "rank": 38,
     "state": "Alabama",
-    "value": 91.64
+    "value": 91.64,
+    "display": "91.6%"
    },
    {
     "rank": 39,
     "state": "Montana",
-    "value": 91.49
+    "value": 91.49,
+    "display": "91.5%"
    },
    {
     "rank": 40,
     "state": "Missouri",
-    "value": 91.3
+    "value": 91.3,
+    "display": "91.3%"
    },
    {
     "rank": 41,
     "state": "South Dakota",
-    "value": 91.28
+    "value": 91.28,
+    "display": "91.3%"
    },
    {
     "rank": 42,
     "state": "Kentucky",
-    "value": 90.87
+    "value": 90.87,
+    "display": "90.9%"
    },
    {
     "rank": 43,
     "state": "Arkansas",
-    "value": 90.76
+    "value": 90.76,
+    "display": "90.8%"
    },
    {
     "rank": 44,
     "state": "Iowa",
-    "value": 90.71
+    "value": 90.71,
+    "display": "90.7%"
    },
    {
     "rank": 45,
     "state": "North Dakota",
-    "value": 90.71
+    "value": 90.71,
+    "display": "90.7%"
    },
    {
     "rank": 46,
     "state": "New Mexico",
-    "value": 90.53
+    "value": 90.53,
+    "display": "90.5%"
    },
    {
     "rank": 47,
     "state": "Louisiana",
-    "value": 90.46
+    "value": 90.46,
+    "display": "90.5%"
    },
    {
     "rank": 48,
     "state": "Wyoming",
-    "value": 89.92
+    "value": 89.92,
+    "display": "89.9%"
    },
    {
     "rank": 49,
     "state": "West Virginia",
-    "value": 89.4
+    "value": 89.4,
+    "display": "89.4%"
    },
    {
     "rank": 50,
     "state": "Mississippi",
-    "value": 88.33
+    "value": 88.33,
+    "display": "88.3%"
    }
   ]
  },
@@ -352,6 +418,12 @@
    "Hawaiʻi": 92.86,
    "Maui": 91.03,
    "Kauaʻi": 94.74
+  },
+  "display": {
+   "Honolulu": "93.3%",
+   "Hawaiʻi": "92.9%",
+   "Maui": "91.0%",
+   "Kauaʻi": "94.7%"
   }
  }
 }

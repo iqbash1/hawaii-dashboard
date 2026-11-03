@@ -25,373 +25,465 @@
  "hawaii_series": [
   {
    "year": "1978",
-   "value": 16.491
+   "value": 16.491,
+   "display": "16.5%"
   },
   {
    "year": "1979",
-   "value": 16.049
+   "value": 16.049,
+   "display": "16.0%"
   },
   {
    "year": "1980",
-   "value": 15.097
+   "value": 15.097,
+   "display": "15.1%"
   },
   {
    "year": "1981",
-   "value": 14.444
+   "value": 14.444,
+   "display": "14.4%"
   },
   {
    "year": "1982",
-   "value": 12.74
+   "value": 12.74,
+   "display": "12.7%"
   },
   {
    "year": "1983",
-   "value": 14.362
+   "value": 14.362,
+   "display": "14.4%"
   },
   {
    "year": "1984",
-   "value": 12.833
+   "value": 12.833,
+   "display": "12.8%"
   },
   {
    "year": "1985",
-   "value": 12.185
+   "value": 12.185,
+   "display": "12.2%"
   },
   {
    "year": "1986",
-   "value": 13.323
+   "value": 13.323,
+   "display": "13.3%"
   },
   {
    "year": "1987",
-   "value": 14.216
+   "value": 14.216,
+   "display": "14.2%"
   },
   {
    "year": "1988",
-   "value": 14.219
+   "value": 14.219,
+   "display": "14.2%"
   },
   {
    "year": "1989",
-   "value": 13.052
+   "value": 13.052,
+   "display": "13.1%"
   },
   {
    "year": "1990",
-   "value": 13.015
+   "value": 13.015,
+   "display": "13.0%"
   },
   {
    "year": "1991",
-   "value": 13.34
+   "value": 13.34,
+   "display": "13.3%"
   },
   {
    "year": "1992",
-   "value": 11.006
+   "value": 11.006,
+   "display": "11.0%"
   },
   {
    "year": "1993",
-   "value": 10.412
+   "value": 10.412,
+   "display": "10.4%"
   },
   {
    "year": "1994",
-   "value": 10.304
+   "value": 10.304,
+   "display": "10.3%"
   },
   {
    "year": "1995",
-   "value": 10.474
+   "value": 10.474,
+   "display": "10.5%"
   },
   {
    "year": "1996",
-   "value": 10.225
+   "value": 10.225,
+   "display": "10.2%"
   },
   {
    "year": "1997",
-   "value": 10.442
+   "value": 10.442,
+   "display": "10.4%"
   },
   {
    "year": "1998",
-   "value": 9.662
+   "value": 9.662,
+   "display": "9.7%"
   },
   {
    "year": "1999",
-   "value": 9.474
+   "value": 9.474,
+   "display": "9.5%"
   },
   {
    "year": "2000",
-   "value": 9.483
+   "value": 9.483,
+   "display": "9.5%"
   },
   {
    "year": "2001",
-   "value": 9.925
+   "value": 9.925,
+   "display": "9.9%"
   },
   {
    "year": "2002",
-   "value": 11.09
+   "value": 11.09,
+   "display": "11.1%"
   },
   {
    "year": "2003",
-   "value": 10.325
+   "value": 10.325,
+   "display": "10.3%"
   },
   {
    "year": "2004",
-   "value": 10.131
+   "value": 10.131,
+   "display": "10.1%"
   },
   {
    "year": "2005",
-   "value": 10.308
+   "value": 10.308,
+   "display": "10.3%"
   },
   {
    "year": "2006",
-   "value": 11.365
+   "value": 11.365,
+   "display": "11.4%"
   },
   {
    "year": "2007",
-   "value": 10.063
+   "value": 10.063,
+   "display": "10.1%"
   },
   {
    "year": "2008",
-   "value": 8.762
+   "value": 8.762,
+   "display": "8.8%"
   },
   {
    "year": "2009",
-   "value": 8.461
+   "value": 8.461,
+   "display": "8.5%"
   },
   {
    "year": "2010",
-   "value": 8.017
+   "value": 8.017,
+   "display": "8.0%"
   },
   {
    "year": "2011",
-   "value": 8.087
+   "value": 8.087,
+   "display": "8.1%"
   },
   {
    "year": "2012",
-   "value": 7.944
+   "value": 7.944,
+   "display": "7.9%"
   },
   {
    "year": "2013",
-   "value": 8.506
+   "value": 8.506,
+   "display": "8.5%"
   },
   {
    "year": "2014",
-   "value": 8.487
+   "value": 8.487,
+   "display": "8.5%"
   },
   {
    "year": "2015",
-   "value": 8.422
+   "value": 8.422,
+   "display": "8.4%"
   },
   {
    "year": "2016",
-   "value": 8.778
+   "value": 8.778,
+   "display": "8.8%"
   },
   {
    "year": "2017",
-   "value": 8.454
+   "value": 8.454,
+   "display": "8.5%"
   },
   {
    "year": "2018",
-   "value": 8.346
+   "value": 8.346,
+   "display": "8.3%"
   },
   {
    "year": "2019",
-   "value": 8.449
+   "value": 8.449,
+   "display": "8.4%"
   },
   {
    "year": "2020",
-   "value": 7.802
+   "value": 7.802,
+   "display": "7.8%"
   },
   {
    "year": "2021",
-   "value": 8.618
+   "value": 8.618,
+   "display": "8.6%"
   },
   {
    "year": "2022",
-   "value": 11.354
+   "value": 11.354,
+   "display": "11.4%"
   },
   {
    "year": "2023",
-   "value": 9.199
+   "value": 9.199,
+   "display": "9.2%"
   }
  ],
  "median_series": [
   {
    "year": "1978",
-   "value": 15.1355
+   "value": 15.1355,
+   "display": "15.1%"
   },
   {
    "year": "1979",
-   "value": 14.082
+   "value": 14.082,
+   "display": "14.1%"
   },
   {
    "year": "1980",
-   "value": 12.298
+   "value": 12.298,
+   "display": "12.3%"
   },
   {
    "year": "1981",
-   "value": 12.0155
+   "value": 12.0155,
+   "display": "12.0%"
   },
   {
    "year": "1982",
-   "value": 11.912
+   "value": 11.912,
+   "display": "11.9%"
   },
   {
    "year": "1983",
-   "value": 13.165
+   "value": 13.165,
+   "display": "13.2%"
   },
   {
    "year": "1984",
-   "value": 14.7885
+   "value": 14.7885,
+   "display": "14.8%"
   },
   {
    "year": "1985",
-   "value": 13.694
+   "value": 13.694,
+   "display": "13.7%"
   },
   {
    "year": "1986",
-   "value": 13.497
+   "value": 13.497,
+   "display": "13.5%"
   },
   {
    "year": "1987",
-   "value": 14.2395
+   "value": 14.2395,
+   "display": "14.2%"
   },
   {
    "year": "1988",
-   "value": 13.8785
+   "value": 13.8785,
+   "display": "13.9%"
   },
   {
    "year": "1989",
-   "value": 12.994
+   "value": 12.994,
+   "display": "13.0%"
   },
   {
    "year": "1990",
-   "value": 12.0535
+   "value": 12.0535,
+   "display": "12.1%"
   },
   {
    "year": "1991",
-   "value": 12.0425
+   "value": 12.0425,
+   "display": "12.0%"
   },
   {
    "year": "1992",
-   "value": 11.2825
+   "value": 11.2825,
+   "display": "11.3%"
   },
   {
    "year": "1993",
-   "value": 11.337
+   "value": 11.337,
+   "display": "11.3%"
   },
   {
    "year": "1994",
-   "value": 11.7205
+   "value": 11.7205,
+   "display": "11.7%"
   },
   {
    "year": "1995",
-   "value": 11.9
+   "value": 11.9,
+   "display": "11.9%"
   },
   {
    "year": "1996",
-   "value": 11.6255
+   "value": 11.6255,
+   "display": "11.6%"
   },
   {
    "year": "1997",
-   "value": 11.8685
+   "value": 11.8685,
+   "display": "11.9%"
   },
   {
    "year": "1998",
-   "value": 11.1425
+   "value": 11.1425,
+   "display": "11.1%"
   },
   {
    "year": "1999",
-   "value": 10.787
+   "value": 10.787,
+   "display": "10.8%"
   },
   {
    "year": "2000",
-   "value": 10.3975
+   "value": 10.3975,
+   "display": "10.4%"
   },
   {
    "year": "2001",
-   "value": 10.499
+   "value": 10.499,
+   "display": "10.5%"
   },
   {
    "year": "2002",
-   "value": 11.4475
+   "value": 11.4475,
+   "display": "11.4%"
   },
   {
    "year": "2003",
-   "value": 10.9525
+   "value": 10.9525,
+   "display": "11.0%"
   },
   {
    "year": "2004",
-   "value": 10.83
+   "value": 10.83,
+   "display": "10.8%"
   },
   {
    "year": "2005",
-   "value": 10.78
+   "value": 10.78,
+   "display": "10.8%"
   },
   {
    "year": "2006",
-   "value": 11.7155
+   "value": 11.7155,
+   "display": "11.7%"
   },
   {
    "year": "2007",
-   "value": 11.14
+   "value": 11.14,
+   "display": "11.1%"
   },
   {
    "year": "2008",
-   "value": 9.685
+   "value": 9.685,
+   "display": "9.7%"
   },
   {
    "year": "2009",
-   "value": 8.781
+   "value": 8.781,
+   "display": "8.8%"
   },
   {
    "year": "2010",
-   "value": 8.666
+   "value": 8.666,
+   "display": "8.7%"
   },
   {
    "year": "2011",
-   "value": 9.113
+   "value": 9.113,
+   "display": "9.1%"
   },
   {
    "year": "2012",
-   "value": 9.2945
+   "value": 9.2945,
+   "display": "9.3%"
   },
   {
    "year": "2013",
-   "value": 8.9495
+   "value": 8.9495,
+   "display": "8.9%"
   },
   {
    "year": "2014",
-   "value": 9.135
+   "value": 9.135,
+   "display": "9.1%"
   },
   {
    "year": "2015",
-   "value": 9.184
+   "value": 9.184,
+   "display": "9.2%"
   },
   {
    "year": "2016",
-   "value": 9.5165
+   "value": 9.5165,
+   "display": "9.5%"
   },
   {
    "year": "2017",
-   "value": 8.8115
+   "value": 8.8115,
+   "display": "8.8%"
   },
   {
    "year": "2018",
-   "value": 8.388
+   "value": 8.388,
+   "display": "8.4%"
   },
   {
    "year": "2019",
-   "value": 8.7665
+   "value": 8.7665,
+   "display": "8.8%"
   },
   {
    "year": "2020",
-   "value": 8.738
+   "value": 8.738,
+   "display": "8.7%"
   },
   {
    "year": "2021",
-   "value": 9.8775
+   "value": 9.8775,
+   "display": "9.9%"
   },
   {
    "year": "2022",
-   "value": 10.7275
+   "value": 10.7275,
+   "display": "10.7%"
   },
   {
    "year": "2023",
-   "value": 9.8875
+   "value": 9.8875,
+   "display": "9.9%"
   }
  ],
  "rankings": {
@@ -400,252 +492,302 @@
    {
     "rank": 1,
     "state": "Florida",
-    "value": 13.105
+    "value": 13.105,
+    "display": "13.1%"
    },
    {
     "rank": 2,
     "state": "Delaware",
-    "value": 12.811
+    "value": 12.811,
+    "display": "12.8%"
    },
    {
     "rank": 3,
     "state": "Utah",
-    "value": 12.766
+    "value": 12.766,
+    "display": "12.8%"
    },
    {
     "rank": 4,
     "state": "Wyoming",
-    "value": 12.737
+    "value": 12.737,
+    "display": "12.7%"
    },
    {
     "rank": 5,
     "state": "Nevada",
-    "value": 12.537
+    "value": 12.537,
+    "display": "12.5%"
    },
    {
     "rank": 6,
     "state": "Arizona",
-    "value": 12.409
+    "value": 12.409,
+    "display": "12.4%"
    },
    {
     "rank": 7,
     "state": "Idaho",
-    "value": 12.055
+    "value": 12.055,
+    "display": "12.1%"
    },
    {
     "rank": 8,
     "state": "Texas",
-    "value": 11.85
+    "value": 11.85,
+    "display": "11.8%"
    },
    {
     "rank": 9,
     "state": "Georgia",
-    "value": 11.793
+    "value": 11.793,
+    "display": "11.8%"
    },
    {
     "rank": 10,
     "state": "Colorado",
-    "value": 11.787
+    "value": 11.787,
+    "display": "11.8%"
    },
    {
     "rank": 11,
     "state": "Montana",
-    "value": 11.41
+    "value": 11.41,
+    "display": "11.4%"
    },
    {
     "rank": 12,
     "state": "California",
-    "value": 11.401
+    "value": 11.401,
+    "display": "11.4%"
    },
    {
     "rank": 13,
     "state": "Washington",
-    "value": 10.852
+    "value": 10.852,
+    "display": "10.9%"
    },
    {
     "rank": 14,
     "state": "North Carolina",
-    "value": 10.711
+    "value": 10.711,
+    "display": "10.7%"
    },
    {
     "rank": 15,
     "state": "South Carolina",
-    "value": 10.692
+    "value": 10.692,
+    "display": "10.7%"
    },
    {
     "rank": 16,
     "state": "Alaska",
-    "value": 10.681
+    "value": 10.681,
+    "display": "10.7%"
    },
    {
     "rank": 17,
     "state": "Tennessee",
-    "value": 10.614
+    "value": 10.614,
+    "display": "10.6%"
    },
    {
     "rank": 18,
     "state": "New York",
-    "value": 10.53
+    "value": 10.53,
+    "display": "10.5%"
    },
    {
     "rank": 19,
     "state": "New Jersey",
-    "value": 10.507
+    "value": 10.507,
+    "display": "10.5%"
    },
    {
     "rank": 20,
     "state": "New Mexico",
-    "value": 10.272
+    "value": 10.272,
+    "display": "10.3%"
    },
    {
     "rank": 21,
     "state": "Oregon",
-    "value": 10.255
+    "value": 10.255,
+    "display": "10.3%"
    },
    {
     "rank": 22,
     "state": "Indiana",
-    "value": 10.123
+    "value": 10.123,
+    "display": "10.1%"
    },
    {
     "rank": 23,
     "state": "Oklahoma",
-    "value": 10.049
+    "value": 10.049,
+    "display": "10.0%"
    },
    {
     "rank": 24,
     "state": "Missouri",
-    "value": 10.032
+    "value": 10.032,
+    "display": "10.0%"
    },
    {
     "rank": 25,
     "state": "Virginia",
-    "value": 10.019
+    "value": 10.019,
+    "display": "10.0%"
    },
    {
     "rank": 26,
     "state": "Maryland",
-    "value": 9.756
+    "value": 9.756,
+    "display": "9.8%"
    },
    {
     "rank": 27,
     "state": "Michigan",
-    "value": 9.751
+    "value": 9.751,
+    "display": "9.8%"
    },
    {
     "rank": 28,
     "state": "Arkansas",
-    "value": 9.621
+    "value": 9.621,
+    "display": "9.6%"
    },
    {
     "rank": 29,
     "state": "Massachusetts",
-    "value": 9.603
+    "value": 9.603,
+    "display": "9.6%"
    },
    {
     "rank": 30,
     "state": "South Dakota",
-    "value": 9.533
+    "value": 9.533,
+    "display": "9.5%"
    },
    {
     "rank": 31,
     "state": "Illinois",
-    "value": 9.526
+    "value": 9.526,
+    "display": "9.5%"
    },
    {
     "rank": 32,
     "state": "Maine",
-    "value": 9.416
+    "value": 9.416,
+    "display": "9.4%"
    },
    {
     "rank": 33,
     "state": "Kentucky",
-    "value": 9.375
+    "value": 9.375,
+    "display": "9.4%"
    },
    {
     "rank": 34,
     "state": "Alabama",
-    "value": 9.306
+    "value": 9.306,
+    "display": "9.3%"
    },
    {
     "rank": 35,
     "state": "Rhode Island",
-    "value": 9.283
+    "value": 9.283,
+    "display": "9.3%"
    },
    {
     "rank": 36,
     "state": "North Dakota",
-    "value": 9.251
+    "value": 9.251,
+    "display": "9.3%"
    },
    {
     "rank": 37,
     "state": "Hawaiʻi",
-    "value": 9.199
+    "value": 9.199,
+    "display": "9.2%"
    },
    {
     "rank": 38,
     "state": "Kansas",
-    "value": 9.177
+    "value": 9.177,
+    "display": "9.2%"
    },
    {
     "rank": 39,
     "state": "West Virginia",
-    "value": 9.167
+    "value": 9.167,
+    "display": "9.2%"
    },
    {
     "rank": 40,
     "state": "Mississippi",
-    "value": 9.077
+    "value": 9.077,
+    "display": "9.1%"
    },
    {
     "rank": 41,
     "state": "Nebraska",
-    "value": 8.953
+    "value": 8.953,
+    "display": "9.0%"
    },
    {
     "rank": 42,
     "state": "Vermont",
-    "value": 8.944
+    "value": 8.944,
+    "display": "8.9%"
    },
    {
     "rank": 43,
     "state": "Louisiana",
-    "value": 8.934
+    "value": 8.934,
+    "display": "8.9%"
    },
    {
     "rank": 44,
     "state": "Minnesota",
-    "value": 8.887
+    "value": 8.887,
+    "display": "8.9%"
    },
    {
     "rank": 45,
     "state": "Wisconsin",
-    "value": 8.843
+    "value": 8.843,
+    "display": "8.8%"
    },
    {
     "rank": 46,
     "state": "New Hampshire",
-    "value": 8.792
+    "value": 8.792,
+    "display": "8.8%"
    },
    {
     "rank": 47,
     "state": "Connecticut",
-    "value": 8.782
+    "value": 8.782,
+    "display": "8.8%"
    },
    {
     "rank": 48,
     "state": "Ohio",
-    "value": 8.707
+    "value": 8.707,
+    "display": "8.7%"
    },
    {
     "rank": 49,
     "state": "Iowa",
-    "value": 8.572
+    "value": 8.572,
+    "display": "8.6%"
    },
    {
     "rank": 50,
     "state": "Pennsylvania",
-    "value": 8.262
+    "value": 8.262,
+    "display": "8.3%"
    }
   ]
  },
@@ -656,6 +798,12 @@
    "Hawaiʻi": 9.7,
    "Maui": 10,
    "Kauaʻi": 9.8
+  },
+  "display": {
+   "Honolulu": "8.8%",
+   "Hawaiʻi": "9.7%",
+   "Maui": "10.0%",
+   "Kauaʻi": "9.8%"
   }
  }
 }

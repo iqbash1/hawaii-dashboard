@@ -377,6 +377,25 @@ else
     fail "homepage is missing the Subscribe pill or js/subscribe.js"
 fi
 
+# MCP server for AI assistants (worker-mcp.mjs, run_worker_first "/mcp"). A
+# real tool call, so a broken /json/ read shows up here, not only a dead route.
+mcp_reply=$(curl -s --max-time 15 -X POST "${BASE}/mcp" -H 'Content-Type: application/json' \
+    -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"compare","arguments":{"id":"uninsured_rate"}}}' \
+    2>/dev/null || echo "")
+if echo "$mcp_reply" | grep -q 'Cite as:' && echo "$mcp_reply" | grep -q '/c/uninsured_rate/' \
+    && ! echo "$mcp_reply" | grep -q '"isError":true'; then
+    ok "/mcp answers a compare tool call with the page URL and Cite as line"
+else
+    fail "/mcp tool call failed: ${mcp_reply:0:160}"
+fi
+card_status=$(curl -s --max-time 10 -o /dev/null -w "%{http_code}" \
+    "${BASE}/.well-known/mcp/server-card.json" 2>/dev/null || echo "000")
+if [ "$card_status" = "200" ]; then
+    ok "/.well-known/mcp/server-card.json returns HTTP 200"
+else
+    fail "/.well-known/mcp/server-card.json returned HTTP ${card_status}"
+fi
+
 # -----------------------------------------------------------------------------
 # 8. SUMMARY
 # -----------------------------------------------------------------------------

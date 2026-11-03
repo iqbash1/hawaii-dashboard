@@ -25,109 +25,135 @@
  "hawaii_series": [
   {
    "year": "1998",
-   "value": 249.69
+   "value": 249.69,
+   "display": "249.7"
   },
   {
    "year": "2002",
-   "value": 251.61
+   "value": 251.61,
+   "display": "251.6"
   },
   {
    "year": "2003",
-   "value": 251.28
+   "value": 251.28,
+   "display": "251.3"
   },
   {
    "year": "2005",
-   "value": 248.51
+   "value": 248.51,
+   "display": "248.5"
   },
   {
    "year": "2007",
-   "value": 251.33
+   "value": 251.33,
+   "display": "251.3"
   },
   {
    "year": "2009",
-   "value": 254.74
+   "value": 254.74,
+   "display": "254.7"
   },
   {
    "year": "2011",
-   "value": 257.19
+   "value": 257.19,
+   "display": "257.2"
   },
   {
    "year": "2013",
-   "value": 259.96
+   "value": 259.96,
+   "display": "260.0"
   },
   {
    "year": "2015",
-   "value": 257.35
+   "value": 257.35,
+   "display": "257.4"
   },
   {
    "year": "2017",
-   "value": 260.98
+   "value": 260.98,
+   "display": "261.0"
   },
   {
    "year": "2019",
-   "value": 258.16
+   "value": 258.16,
+   "display": "258.2"
   },
   {
    "year": "2022",
-   "value": 258.98
+   "value": 258.98,
+   "display": "259.0"
   },
   {
    "year": "2024",
-   "value": 257.28
+   "value": 257.28,
+   "display": "257.3"
   }
  ],
  "median_series": [
   {
    "year": "1998",
-   "value": 262.145
+   "value": 262.145,
+   "display": "262.1"
   },
   {
    "year": "2002",
-   "value": 264.72
+   "value": 264.72,
+   "display": "264.7"
   },
   {
    "year": "2003",
-   "value": 264.465
+   "value": 264.465,
+   "display": "264.5"
   },
   {
    "year": "2005",
-   "value": 263.73
+   "value": 263.73,
+   "display": "263.7"
   },
   {
    "year": "2007",
-   "value": 263.825
+   "value": 263.825,
+   "display": "263.8"
   },
   {
    "year": "2009",
-   "value": 265.045
+   "value": 265.045,
+   "display": "265.0"
   },
   {
    "year": "2011",
-   "value": 265.77
+   "value": 265.77,
+   "display": "265.8"
   },
   {
    "year": "2013",
-   "value": 267.245
+   "value": 267.245,
+   "display": "267.2"
   },
   {
    "year": "2015",
-   "value": 266.825
+   "value": 266.825,
+   "display": "266.8"
   },
   {
    "year": "2017",
-   "value": 266.44
+   "value": 266.44,
+   "display": "266.4"
   },
   {
    "year": "2019",
-   "value": 262.89
+   "value": 262.89,
+   "display": "262.9"
   },
   {
    "year": "2022",
-   "value": 259.195
+   "value": 259.195,
+   "display": "259.2"
   },
   {
    "year": "2024",
-   "value": 257.28
+   "value": 257.28,
+   "display": "257.3"
   }
  ],
  "rankings": {
@@ -136,252 +162,302 @@
    {
     "rank": 1,
     "state": "Massachusetts",
-    "value": 268.01
+    "value": 268.01,
+    "display": "268.0"
    },
    {
     "rank": 2,
     "state": "New Jersey",
-    "value": 265.96
+    "value": 265.96,
+    "display": "266.0"
    },
    {
     "rank": 3,
     "state": "Colorado",
-    "value": 264.54
+    "value": 264.54,
+    "display": "264.5"
    },
    {
     "rank": 4,
     "state": "New Hampshire",
-    "value": 263.91
+    "value": 263.91,
+    "display": "263.9"
    },
    {
     "rank": 5,
     "state": "Connecticut",
-    "value": 263.1
+    "value": 263.1,
+    "display": "263.1"
    },
    {
     "rank": 6,
     "state": "Indiana",
-    "value": 261.66
+    "value": 261.66,
+    "display": "261.7"
    },
    {
     "rank": 7,
     "state": "Illinois",
-    "value": 261.62
+    "value": 261.62,
+    "display": "261.6"
    },
    {
     "rank": 8,
     "state": "Utah",
-    "value": 261.19
+    "value": 261.19,
+    "display": "261.2"
    },
    {
     "rank": 9,
     "state": "Idaho",
-    "value": 260.73
+    "value": 260.73,
+    "display": "260.7"
    },
    {
     "rank": 10,
     "state": "Iowa",
-    "value": 260.7
+    "value": 260.7,
+    "display": "260.7"
    },
    {
     "rank": 11,
     "state": "Montana",
-    "value": 260.53
+    "value": 260.53,
+    "display": "260.5"
    },
    {
     "rank": 12,
     "state": "Ohio",
-    "value": 260.42
+    "value": 260.42,
+    "display": "260.4"
    },
    {
     "rank": 13,
     "state": "Wisconsin",
-    "value": 260.09
+    "value": 260.09,
+    "display": "260.1"
    },
    {
     "rank": 14,
     "state": "Minnesota",
-    "value": 260.07
+    "value": 260.07,
+    "display": "260.1"
    },
    {
     "rank": 15,
     "state": "Wyoming",
-    "value": 259.97
+    "value": 259.97,
+    "display": "260.0"
    },
    {
     "rank": 16,
     "state": "South Dakota",
-    "value": 259.89
+    "value": 259.89,
+    "display": "259.9"
    },
    {
     "rank": 17,
     "state": "Georgia",
-    "value": 259.33
+    "value": 259.33,
+    "display": "259.3"
    },
    {
     "rank": 18,
     "state": "Washington",
-    "value": 259.27
+    "value": 259.27,
+    "display": "259.3"
    },
    {
     "rank": 19,
     "state": "Pennsylvania",
-    "value": 259.15
+    "value": 259.15,
+    "display": "259.1"
    },
    {
     "rank": 20,
     "state": "Tennessee",
-    "value": 258.97
+    "value": 258.97,
+    "display": "259.0"
    },
    {
     "rank": 21,
     "state": "Maryland",
-    "value": 258.32
+    "value": 258.32,
+    "display": "258.3"
    },
    {
     "rank": 22,
     "state": "Kentucky",
-    "value": 258
+    "value": 258,
+    "display": "258.0"
    },
    {
     "rank": 23,
     "state": "Rhode Island",
-    "value": 257.77
+    "value": 257.77,
+    "display": "257.8"
    },
    {
     "rank": 24,
     "state": "North Dakota",
-    "value": 257.39
+    "value": 257.39,
+    "display": "257.4"
    },
    {
     "rank": 25,
     "state": "Hawaiʻi",
-    "value": 257.28
+    "value": 257.28,
+    "display": "257.3"
    },
    {
     "rank": 26,
     "state": "Vermont",
-    "value": 257.28
+    "value": 257.28,
+    "display": "257.3"
    },
    {
     "rank": 27,
     "state": "New York",
-    "value": 256.87
+    "value": 256.87,
+    "display": "256.9"
    },
    {
     "rank": 28,
     "state": "Louisiana",
-    "value": 256.53
+    "value": 256.53,
+    "display": "256.5"
    },
    {
     "rank": 29,
     "state": "Virginia",
-    "value": 256.26
+    "value": 256.26,
+    "display": "256.3"
    },
    {
     "rank": 30,
     "state": "Nebraska",
-    "value": 256.13
+    "value": 256.13,
+    "display": "256.1"
    },
    {
     "rank": 31,
     "state": "Kansas",
-    "value": 255.49
+    "value": 255.49,
+    "display": "255.5"
    },
    {
     "rank": 32,
     "state": "Missouri",
-    "value": 255.28
+    "value": 255.28,
+    "display": "255.3"
    },
    {
     "rank": 33,
     "state": "Michigan",
-    "value": 255.06
+    "value": 255.06,
+    "display": "255.1"
    },
    {
     "rank": 34,
     "state": "Maine",
-    "value": 255.04
+    "value": 255.04,
+    "display": "255.0"
    },
    {
     "rank": 35,
     "state": "North Carolina",
-    "value": 254.9
+    "value": 254.9,
+    "display": "254.9"
    },
    {
     "rank": 36,
     "state": "Oregon",
-    "value": 254.83
+    "value": 254.83,
+    "display": "254.8"
    },
    {
     "rank": 37,
     "state": "Arkansas",
-    "value": 254.77
+    "value": 254.77,
+    "display": "254.8"
    },
    {
     "rank": 38,
     "state": "California",
-    "value": 254.37
+    "value": 254.37,
+    "display": "254.4"
    },
    {
     "rank": 39,
     "state": "Arizona",
-    "value": 254.34
+    "value": 254.34,
+    "display": "254.3"
    },
    {
     "rank": 40,
     "state": "South Carolina",
-    "value": 253.69
+    "value": 253.69,
+    "display": "253.7"
    },
    {
     "rank": 41,
     "state": "Mississippi",
-    "value": 253.47
+    "value": 253.47,
+    "display": "253.5"
    },
    {
     "rank": 42,
     "state": "Nevada",
-    "value": 253.29
+    "value": 253.29,
+    "display": "253.3"
    },
    {
     "rank": 43,
     "state": "Florida",
-    "value": 252.86
+    "value": 252.86,
+    "display": "252.9"
    },
    {
     "rank": 44,
     "state": "Texas",
-    "value": 252.27
+    "value": 252.27,
+    "display": "252.3"
    },
    {
     "rank": 45,
     "state": "Alabama",
-    "value": 249.6
+    "value": 249.6,
+    "display": "249.6"
    },
    {
     "rank": 46,
     "state": "Delaware",
-    "value": 249.45
+    "value": 249.45,
+    "display": "249.4"
    },
    {
     "rank": 47,
     "state": "Oklahoma",
-    "value": 248.79
+    "value": 248.79,
+    "display": "248.8"
    },
    {
     "rank": 48,
     "state": "West Virginia",
-    "value": 247.36
+    "value": 247.36,
+    "display": "247.4"
    },
    {
     "rank": 49,
     "state": "Alaska",
-    "value": 246.45
+    "value": 246.45,
+    "display": "246.4"
    },
    {
     "rank": 50,
     "state": "New Mexico",
-    "value": 245.06
+    "value": 245.06,
+    "display": "245.1"
    }
   ]
  },

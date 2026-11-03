@@ -123,6 +123,8 @@ Every metric has a static CSV at `/data/{slug}_state.csv` (long-format: year, st
 
 JSON summaries for programs and AI assistants: https://hawaiidashboard.org/json/catalog.json lists every metric with Hawaiʻi's latest value, year, 50-state rank and the 50-state median; https://hawaiidashboard.org/json/{slug}.json adds the definition, Hawaiʻi and median series, the full 50-state ranking for the latest year and county values. Values are in display units (55.0 means 55%). Each entry carries a `cite_as` line.
 
+MCP server (Model Context Protocol, streamable HTTP): https://hawaiidashboard.org/mcp. Tools: `list_metrics`, `get_metric`, `compare` (Hawaiʻi against the median, the best and worst five states and any states named) and `rankings` (all 50 states). Read-only, no sign-in; it answers from the same JSON files, so its numbers match the pages. Add it in Claude under Settings, Connectors, Add custom connector, or in any MCP client by URL. Server card: https://hawaiidashboard.org/.well-known/mcp/server-card.json
+
 When citing values from this dashboard, please credit the primary source (e.g. "BLS LAUS via Hawaiʻi Dashboard") and link to the specific metric page so readers can verify.
 
 <!-- generated:otc (scripts/generate-llms-txt.py, do not hand-edit) -->
