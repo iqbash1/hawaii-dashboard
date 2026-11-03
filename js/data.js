@@ -450,15 +450,15 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Vermont",
-          "text": "Like Hawaiʻi, Vermont has a rural, geographically dispersed population that makes provider distribution a persistent challenge. Vermont has ranked in the top 5 for primary care physician density for most of the past two decades despite having one of the most rural and geographically dispersed populations in the country. Vermont's Blueprint for Health (enacted 2006) created a statewide primary care coordination framework with community health teams embedded in practices, improving physician retention by reducing administrative burden. Vermont also operates a loan repayment program requiring multi-year rural service commitments.",
+          "text": "Like Hawaiʻi, Vermont has a rural, geographically dispersed population that makes provider distribution a persistent challenge. Vermont has ranked in the top 5 for primary care physician density for most of the past two decades despite having one of the most rural and geographically dispersed populations in the country. Vermont's Blueprint for Health, created by the legislature in 2006 (Act 191), built a statewide primary care framework of medical homes supported by community health teams.",
           "source": {
-            "label": "Vermont Blueprint for Health - blueprintforhealth.vermont.gov",
-            "url": "https://blueprintforhealth.vermont.gov/about-blueprint"
+            "label": "18 V.S.A. Chapter 13, Blueprint for Health - Vermont General Assembly",
+            "url": "https://legislature.vermont.gov/statutes/fullchapter/18/013"
           }
         }
       ],
       "explore": [
-        "Vermont retained rural physicians through coordinated primary care teams; Oklahoma lost them as rural hospitals closed. Hawaiʻi actively uses the J-1 visa waiver program to place international medical graduates in shortage areas, but the number of slots requested annually determines reach. Physicians who train at JABSOM or complete residencies on Oʻahu rarely relocate to neighbor islands, a pipeline gap that has been proposed but not sustained."
+        "Vermont built a statewide primary care framework with community health teams; Oklahoma lost them as rural hospitals closed. Hawaiʻi actively uses the J-1 visa waiver program to place international medical graduates in shortage areas, but the number of slots requested annually determines reach. Physicians who train at JABSOM or complete residencies on Oʻahu rarely relocate to neighbor islands, a pipeline gap that has been proposed but not sustained."
       ],
       "caution": {
         "state": "Oklahoma",
@@ -1719,7 +1719,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Virginia",
-          "text": "Like Hawaiʻi, Virginia had fragmented homeless service providers operating separate databases and waitlists. Virginia cut unsheltered homelessness 47% from 2010 to 2019 by requiring every provider statewide to share one database and one housing waitlist, backed by a dedicated Housing Trust Fund.",
+          "text": "Like Hawaiʻi, Virginia runs its homeless response through regional Continuums of Care. Virginia cut unsheltered homelessness 47% from 2010 to 2019 while funding rapid re-housing and supportive-housing rental assistance through Homeless Reduction Grants, which draw up to 20 percent of its Housing Trust Fund and must fit their local Continuum of Care's strategy.",
           "source": {
             "label": "Virginia Housing Trust Fund Homeless Reduction Grants - DHCD",
             "url": "https://web.archive.org/web/20260318224446/https://www.dhcd.virginia.gov/vhtf-homeless-reduction"
@@ -1727,7 +1727,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Virginia unified provider data to drive placements; Oregon's unsheltered rate kept climbing as housing supply lagged. Hawaiʻi's Kauhale Initiative achieves $20,000 per unit on surplus state and federal land, compared to $200,000-plus for conventional affordable housing; scaling to 5,000 units would require more military and state surplus land transfers. The Return to Home program costs $500,000 per year, relocates mainland-connected individuals at a 2 percent return rate, and died in the 2025 legislature."
+        "Virginia funded rapid re-housing through its Housing Trust Fund; Oregon's unsheltered rate kept climbing as housing supply lagged. Hawaiʻi's Kauhale Initiative achieves $20,000 per unit on surplus state and federal land, compared to $200,000-plus for conventional affordable housing; scaling to 5,000 units would require more military and state surplus land transfers. The Return to Home program costs $500,000 per year, relocates mainland-connected individuals at a 2 percent return rate, and died in the 2025 legislature."
       ],
       "caution": {
         "state": "Oregon",
@@ -1857,7 +1857,7 @@ const DASHBOARD_DATA = {
       "2023": 0.0708,
       "2024": 0.0648
     },
-    "policyLevers": "<ul class='cn-focus-list'><li><strong>Preventive maintenance funding</strong> · FHWA research shows preventive treatments applied while pavement is still in acceptable condition are four to five times more cost-effective than allowing roads to deteriorate to reconstruction <a href=\"https://www.fhwa.dot.gov/preservation/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's salt air, heavy rainfall, and volcanic soil accelerate deterioration faster than on the mainland.</li><li><strong>Revenue and asset management</strong> · Hawaiʻiʻs road usage charge launched for EVs in 2025 and expands to all vehicles by 2033, potentially restoring the revenue base <a href=\"https://hidot.hawaii.gov/hawai%CA%BBi-road-usage-charge-program/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Concentrating maintenance spending on the highest-traffic segments, where failure has no alternate route, yields the largest returns per dollar <a href=\"https://hidot.hawaii.gov/highways/files/2024/05/HDOT_TAMP_Final_May_2024.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Federal funding and project delivery</strong> · Federal infrastructure-law funds allocate roughly $510 million to Hawaiʻi over five years with state-of-good-repair requirements directing more to maintenance; Virginia's SMART SCALE program demonstrates how data-driven project scoring improves road condition more effectively than ad hoc capital spending <a href=\"https://smartscale.virginia.gov/how-it-works/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
+    "policyLevers": "<ul class='cn-focus-list'><li><strong>Preventive maintenance funding</strong> · FHWA research shows preventive treatments applied while pavement is still in acceptable condition are four to five times more cost-effective than allowing roads to deteriorate to reconstruction <a href=\"https://www.fhwa.dot.gov/preservation/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Hawaiʻi's salt air, heavy rainfall, and volcanic soil accelerate deterioration faster than on the mainland.</li><li><strong>Revenue and asset management</strong> · Hawaiʻiʻs road usage charge launched for EVs in 2025 and expands to all vehicles by 2033, potentially restoring the revenue base <a href=\"https://hidot.hawaii.gov/hawai%CA%BBi-road-usage-charge-program/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>; Concentrating maintenance spending on the highest-traffic segments, where failure has no alternate route, yields the largest returns per dollar <a href=\"https://hidot.hawaii.gov/highways/files/2024/05/HDOT_TAMP_Final_May_2024.pdf\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li><li><strong>Federal funding and project delivery</strong> · Federal infrastructure-law funds allocate roughly $510 million to Hawaiʻi over five years with state-of-good-repair requirements directing more to maintenance; Virginia's SMART SCALE program shows how capital projects can be scored on cost-effectiveness before funding rather than chosen ad hoc <a href=\"https://smartscale.virginia.gov/how-it-works/\" target=\"_blank\" rel=\"noopener\" class=\"cn-cite\">↗</a>.</li></ul>",
     "nextUpdate": "Nov",
     "rankHistoryNarrative": {
       "summary": "Hawaiʻi has ranked in the bottom tier for road quality (#45 or worse) every year since 2006. The road surface itself has improved since 2019, from 26% of rated miles poor to 15.5% in 2024, the best value in the consolidated record, but 34 of the 50 states improved in 2024 as well, three of them by more than Hawaiʻi did, so the rank has barely moved. The 2000-2005 series is noisier because state IRI methodology was still standardizing, and Hawaiʻi's rank swung between the middle and bottom tiers before settling. The poor-and-mediocre view (both combined) shows about 60% of Hawaiʻi's rated miles are below good condition, roughly double the median. Salt air, heavy rainfall, and volcanic soil accelerate deterioration, and preventive maintenance is consistently the first item cut when budgets tighten.",
@@ -1865,7 +1865,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Virginia",
-          "text": "Like Hawaiʻi, Virginia needed a systematic method to prioritize limited road dollars across competing projects. Virginia overhauled its transportation spending in 2015 with the SMART SCALE program, a data-driven project scoring system that ranks capital investments by cost-efficiency, safety, accessibility, and economic impact before committing funds. VDOT adopted a formal pavement management system with a published target of maintaining at least 82 percent of state-maintained roads in acceptable condition. Virginia's road condition rankings improved measurably in the five years following implementation.",
+          "text": "Like Hawaiʻi, Virginia needed a systematic method to prioritize limited road dollars across competing projects. Virginia overhauled its transportation spending with SMART SCALE, a data-driven system that scores capital projects on safety, congestion, accessibility, environmental quality, economic development, and land use, relative to cost, before committing funds. Virginia's road condition rankings improved measurably in the five years following implementation.",
           "source": {
             "label": "SMART SCALE: How It Works - Virginia's Official Program Site",
             "url": "https://smartscale.virginia.gov/how-it-works/"
@@ -1873,7 +1873,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Virginia's SMART SCALE prioritized cost-effective maintenance; Rhode Island's capital package funded visible projects over systematic upkeep. Federal infrastructure-law funds allocate approximately $510 million to Hawaiʻi over five years, with state-of-good-repair requirements directing more to maintenance. Neighbor island road maintenance costs more per mile than Oʻahu because every piece of equipment and material must be shipped separately."
+        "Virginia's SMART SCALE scores projects on cost-effectiveness before funding; Rhode Island's capital package funded visible projects over systematic upkeep. Federal infrastructure-law funds allocate approximately $510 million to Hawaiʻi over five years, with state-of-good-repair requirements directing more to maintenance. Neighbor island road maintenance costs more per mile than Oʻahu because every piece of equipment and material must be shipped separately."
       ],
       "caution": {
         "state": "Rhode Island",
@@ -2711,7 +2711,7 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "California",
-        "text": "Like Hawaiʻi, California enacted zoning mandates but continued losing domestic population because structural costs outpaced the reforms. California enacted statewide zoning mandates (SB 9, SB 10, ADU reform) and declared repeated housing crises over more than a decade. Domestic population loss has continued because state-level zoning mandates were not matched with permit streamlining or environmental review reform. Projects permitted under new state law still took three to seven years to break ground.",
+        "text": "Like Hawaiʻi, California enacted zoning mandates but continued losing domestic population because structural costs outpaced the reforms. California enacted statewide zoning mandates (SB 9, SB 10, ADU reform) and declared repeated housing crises over more than a decade. California has kept losing residents to other states, and out-migration during the pandemic deepened its population losses.",
         "source": {
           "label": "U.S. Population Growth Has Nearly Flatlined - Brookings Institution",
           "url": "https://www.brookings.edu/articles/u-s-population-growth-has-nearly-flatlined-new-census-data-shows/"
