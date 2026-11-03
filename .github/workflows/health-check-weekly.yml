@@ -35,6 +35,14 @@ jobs:
 
       - run: npm ci
 
+      # Validate gates 10 and 11 import generate-og-pages.py, which needs
+      # Pillow; without it the data row went red on 2026-11-03. Same pin as
+      # refresh-data.yml.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - run: pip install "Pillow==11.3.0" --quiet
+
       # Tier 2 deps (Lighthouse + axe + chromium) live in tests/ to keep the
       # root lean. Reuses the same Playwright chromium as the smoke tests.
       - name: Install Tier 2 audit deps
