@@ -333,6 +333,12 @@ if echo "$about_html" | grep -q '27 metric'; then
 else
     warn "/about/ does not mention '27 metric' - may need update"
 fi
+# The only reader-facing pointer to /mcp; if it moves, update this marker.
+if echo "$about_html" | grep -q 'id="ai-assistants"' && echo "$about_html" | grep -q 'hawaiidashboard.org/mcp'; then
+    ok "/about/ carries the AI-assistant section with the /mcp address"
+else
+    fail "/about/ is missing the AI-assistant section (id=\"ai-assistants\") or the /mcp address"
+fi
 
 # Verify HTTP 200 for all primary pages
 for page in "/" "/five-year-change/" "/about/"; do
