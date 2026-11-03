@@ -101,6 +101,11 @@ const EXPECTED_BLOCK = [
     // reports status 0. Confirmed 2026-08-28: 200 to curl on three tries and the full
     // history page renders in the browser.
     'www.utopiafiber.com',
+    // ITU broadband-impact report PDF (labor_productivity policy lever): a 2.4 MB
+    // PDF served slowly, 7.7-9.2s to curl locally, so over the 15s timeout from CI
+    // and reported as status 0. Confirmed live 2026-11-02 (200, application/pdf,
+    // twice).
+    'www.itu.int',
     // Foreign government PDFs
     'www.infrastructure.gov.au',
     // Benchmark/caution source hosts that 403/timeout to automated clients but
