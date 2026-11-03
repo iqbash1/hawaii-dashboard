@@ -2036,6 +2036,283 @@ function auditRankWindows(slug, metric, field, text, hawaiiSubjectOnly = false) 
     }
 }
 
+// ── Shape 9: named-state claims in benchmarks and cautions ─────────
+//
+// rankHistoryNarrative.benchmarks[].text and caution.text make rank and
+// value claims about a COMPARATOR state, so every pass above (all
+// Hawaiʻi-guarded) skips them. A 2026-11-02 audit of all 54 found 19 false,
+// 13 of them refutable from STATE_DATA alone: Virginia's graduation rate
+// "87 percent in 2011" beside a chart showing 83.0%; Oregon's all-mail
+// voting rank "has since declined" while Oregon ranked #1 in 2022. Each
+// claim here is checked for the entry's own `state`, and anything this
+// parser cannot read unambiguously is skipped rather than guessed at,
+// because a false WARN turns validate red.
+
+/** Value for one state-year, or null. */
+function stateVal(slug, year, state) {
+    const v = stateValuesForYear(slug, year);
+    return v && v[state] != null ? v[state] : null;
+}
+
+/** Tie-aware rank of `state` (1 = best per goodDirection), or null. */
+function stateRankForYear(slug, year, state, goodDirection) {
+    const vals = stateValuesForYear(slug, year);
+    if (!vals) return null;
+    const e = Object.entries(vals);
+    if (e.length < 25) return null;
+    e.sort((a, b) => goodDirection === 'up' ? b[1] - a[1] : a[1] - b[1]);
+    const i = e.findIndex(([s]) => s === state);
+    if (i < 0) return null;
+    const v = e[i][1];
+    let lo = i, hi = i;
+    while (lo > 0 && e[lo - 1][1] === v) lo--;
+    while (hi < e.length - 1 && e[hi + 1][1] === v) hi++;
+    return { rank: i + 1, lo: lo + 1, hi: hi + 1, total: e.length };
+}
+
+/** A tie block overlaps the band, so any rank inside a tie states the same fact. */
+function inBand(r, band) { return r.hi >= band.lo && r.lo <= band.hi; }
+
+/** Names this state (and not merely as part of "West Virginia"). */
+function namesState(sentence, state) {
+    return new RegExp(`(?<!West )\\b${state}\\b`).test(sentence);
+}
+
+/** The sentence is about `state`: it names it, or names no state at all
+ *  (continuation sentences like "Chapter 58 ... reducing the uninsured rate"),
+ *  and it neither mentions Hawaiʻi nor names some other state. */
+function aboutState(sentence, state) {
+    if (/Hawai[ʻ'’‘]?i/.test(sentence)) return false;
+    const others = OTHER_STATE_NAMES.filter(n => n !== state && !state.includes(n));
+    if (others.some(n => new RegExp(`(?<!West )\\b${n}\\b`).test(sentence))) return false;
+    return true;
+}
+
+const S9_NUM = String.raw`(-?\d+(?:,\d{3})*(?:\.\d+)?)`;
+const S9_UNIT = String.raw`\s*(?:percent|%|per\s+100,000|per\s+10,000)?`;
+const S9_YEAR = String.raw`((?:19|20)\d{2})`;
+const S9_WORDS = { a: 1, one: 1, two: 2, three: 3, four: 4, five: 5, ten: 10, twenty: 20 };
+
+/** "for most of the past two decades" -> {years, threshold}. "most" needs a
+ *  majority; a flat duration ("for over 25 years") reads as near-continuous. */
+function s9Window(slug, sentence, latest) {
+    let m = sentence.match(/\bfor\s+(most\s+of\s+)?(?:the\s+)?(?:past|last)\s+(?:(\w+)\s+)?(decades?|years?)\b/i)
+        || sentence.match(/\bfor\s+(?:over|more\s+than)\s+(\w+)\s+(decades?|years?)\b/i);
+    if (!m) return null;
+    const most = /^for\s+most/i.test(m[0]);
+    const nTok = m.length === 4 ? m[2] : m[1];
+    const unit = m.length === 4 ? m[3] : m[2];
+    const n = !nTok ? 1 : /^\d+$/.test(nTok) ? +nTok : S9_WORDS[nTok.toLowerCase()];
+    if (!n) return null;
+    const span = /decade/i.test(unit) ? n * 10 : n;
+    const years = stateYears(slug).filter(y => +y > +latest - span);
+    const label = `the past ${nTok && nTok.toLowerCase() !== 'a' ? nTok + ' ' : ''}${unit.toLowerCase()}`;
+    return years.length ? { years, threshold: most ? 0.5 : 0.9, strictMajority: most, text: m[0], label } : null;
+}
+
+/** Rank band in a sentence, extending parseRankBand with word numbers and
+ *  "the top states" (read as top 10; the prose names no edge, hence fuzzy). */
+function s9Band(sentence, total) {
+    const s = sentence.replace(/\btop\s+(five|ten|twenty|three)\b/gi, (_, w) => `top ${S9_WORDS[w.toLowerCase()] || ({ three: 3 })[w.toLowerCase()]}`);
+    if (/\bamong\s+the\s+top\s+states\b/i.test(s)) return { lo: 1, hi: 10, text: 'among the top states', fuzzy: true };
+    return parseRankBand(s, total);
+}
+
+function share(results) { return results.filter(Boolean).length / results.length; }
+
+/** Period phrase right after `idx` ("in the early 2000s", "through the 1990s",
+ *  "in 2011"), or a leading "By 2022," / "In 2011," on the sentence. Anything
+ *  farther away is ambiguous about which year the tier belongs to. */
+function s9Period(slug, sentence, idx) {
+    const after = sentence.slice(idx, idx + 70);
+    let m = after.match(/\b(?:in|through|during)\s+the\s+(early|mid|late)?[- ]?((?:19|20)\d)0s\b/i);
+    if (m) {
+        const dec = +(m[2] + '0');
+        const [a, b] = m[1] === 'early' ? [0, 3] : m[1] === 'mid' ? [4, 6] : m[1] === 'late' ? [7, 9] : [0, 9];
+        return stateYears(slug).filter(y => +y >= dec + a && +y <= dec + b);
+    }
+    m = after.match(/\b(?:in|by)\s+((?:19|20)\d{2})\b/);
+    if (m) return stateYears(slug).includes(m[1]) ? [m[1]] : [];
+    m = sentence.match(/^(?:By|In)\s+((?:19|20)\d{2}),/);
+    if (m) return stateYears(slug).includes(m[1]) ? [m[1]] : [];
+    return null;
+}
+
+function auditNamedState(slug, metric, field, text, state) {
+    if (!state || !STATE_DATA[slug]) return;
+    const years = stateYears(slug);
+    if (!years.length) return;
+    const latest = years[years.length - 1];
+    const dir = metric.goodDirection;
+    const scale = metricScale(slug, metric);
+    const total = (stateRankForYear(slug, latest, state, dir) || {}).total || 50;
+    const val = y => { const v = stateVal(slug, y, state); return v == null ? null : v * scale; };
+    const rk = y => stateRankForYear(slug, y, state, dir);
+    const firstYearInText = (stripHtml(text).match(/\b(?:19|20)\d{2}\b/) || [])[0];
+
+    for (const sentence of splitSentences(text)) {
+        if (!aboutState(sentence, state)) continue;
+        const base = { slug, field, claim: sentence.length > 160 ? sentence.slice(0, 157) + '...' : sentence };
+        let handledValue = false;
+
+        // (a) rank band over a window: "#1 or #2 ... for most of the past decade"
+        const win = s9Window(slug, sentence, latest);
+        const band = s9Band(sentence, total);
+        if (win && band && !/\bsince\s+(?:19|20)\d{2}/.test(sentence)) {
+            const hits = win.years.map(y => { const r = rk(y); return r ? inBand(r, band) : null; }).filter(x => x !== null);
+            if (hits.length) {
+                const sh = share(hits);
+                const pass = win.strictMajority ? sh > win.threshold : sh >= win.threshold;
+                recordNew(pass, { ...base, check: 's9 rank-window',
+                    expected: `${band.text} in ${win.strictMajority ? 'over half' : 'nearly all'} of ${win.label}`,
+                    found: `${Math.round(sh * hits.length)} of ${hits.length} years (${win.years[0]}-${win.years[win.years.length - 1]})` });
+            }
+        }
+
+        // (b) "#N ... since YYYY" / "top N ... since YYYY". The band must sit in
+        // the same clause as "since": in "swung from the top 10 (2007 to 2011)
+        // to the bottom third in most years since 2015" the top 10 is history.
+        const since = sentence.match(new RegExp(String.raw`\bsince\s+${S9_YEAR}`));
+        if (since) {
+            const before = sentence.slice(0, since.index);
+            const cut = Math.max(...[...before.matchAll(/,|;|\(|\bbut\b|\band\s+(?!#)|\bto\s+the\b/g)].map(m => m.index + m[0].length), 0);
+            const clause = before.slice(cut);
+            const sBand = s9Band(clause, total);
+            const most = /\bmost\s+years\b/i.test(clause);
+            const ys = years.filter(y => +y >= +since[1]);
+            const hits = sBand ? ys.map(y => { const r = rk(y); return r ? inBand(r, sBand) : null; }).filter(x => x !== null) : [];
+            if (hits.length) {
+                const sh = share(hits);
+                recordNew(most ? sh > 0.5 : sh >= 0.9, { ...base, check: 's9 since',
+                    expected: `${sBand.text} ${most ? 'in most years' : 'every year'} since ${since[1]}`,
+                    found: `${Math.round(sh * hits.length)} of ${hits.length} years` });
+            }
+        }
+
+        // (c) "from X in Y1 to [below] Z in/by Y2"
+        const ft = sentence.match(new RegExp(String.raw`\bfrom\s+(?:(below|above|under|over)\s+)?${S9_NUM}${S9_UNIT}\s+in\s+${S9_YEAR}\s+to\s+(?:(below|above|under|over)\s+)?${S9_NUM}${S9_UNIT}\s+(?:in|by)\s+${S9_YEAR}`, 'i'));
+        if (ft) {
+            handledValue = true;
+            for (const [cmp, num, yr] of [[ft[1], ft[2], ft[3]], [ft[4], ft[5], ft[6]]]) {
+                const a = val(yr);
+                if (a == null) { skipNew({ ...base, check: 's9 from-to', note: `${state} has no ${yr} value` }); continue; }
+                const n = parseNum(num);
+                const ok = cmp && /below|under/i.test(cmp) ? a < n : cmp ? a > n : numMatches(num, a, /\b(?:roughly|about|around|nearly)\b/i.test(sentence));
+                recordNew(ok, { ...base, check: 's9 from-to', expected: `${cmp ? cmp + ' ' : ''}${num} in ${yr}`, found: `${+a.toFixed(2)} in ${yr}` });
+            }
+        }
+
+        // (d) "crossed 60 percent ... by 2020" / "reaching 45 percent ... by 2023"
+        const th = sentence.match(new RegExp(String.raw`\b(crossed|exceeded|surpassed|topped|reach(?:ed|ing))\s+${S9_NUM}${S9_UNIT}\b[^.]*?\bby\s+${S9_YEAR}`, 'i'));
+        if (th && !ft) {
+            handledValue = true;
+            const a = val(th[3]);
+            if (a == null) skipNew({ ...base, check: 's9 threshold', note: `${state} has no ${th[3]} value` });
+            else {
+                const ok = /^reach/i.test(th[1]) ? numMatches(th[2], a, true) : a >= parseNum(th[2]);
+                recordNew(ok, { ...base, check: 's9 threshold', expected: `${th[1]} ${th[2]} by ${th[3]}`, found: `${+a.toFixed(2)} in ${th[3]}` });
+            }
+        }
+
+        // (e) "consistently below 8 per 100,000" / "remained above 25 per 100,000"
+        const cons = sentence.match(new RegExp(String.raw`\b(?:consistently|remained|stayed)\s+(below|above|under|over)\s+${S9_NUM}${S9_UNIT}`, 'i'));
+        if (cons) {
+            handledValue = true;
+            const ys = win ? win.years : years.slice(-10);
+            const n = parseNum(cons[2]);
+            const hits = ys.map(y => { const a = val(y); return a == null ? null : (/below|under/i.test(cons[1]) ? a < n : a > n); }).filter(x => x !== null);
+            if (hits.length) {
+                const sh = share(hits);
+                recordNew(sh >= 0.9, { ...base, check: 's9 consistently', expected: `${cons[1]} ${cons[2]} in nearly all of ${ys[0]}-${ys[ys.length - 1]}`,
+                    found: `${Math.round(sh * hits.length)} of ${hits.length} years` });
+            }
+        }
+
+        // (f) percent change across a year range: "rose 17% ... from 2019 to 2024"
+        const chg = sentence.match(/\b(fell|dropped|declined|cut|reduced|rose|increased|grew)\b[^.]*?\b(over\s+|more\s+than\s+|roughly\s+|about\s+|nearly\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent)(?!\s+of)/i);
+        const rng = sentence.match(new RegExp(String.raw`\b(?:from|between)\s+${S9_YEAR}\s+(?:to|and)\s+${S9_YEAR}`));
+        if (chg && rng && !handledValue) {
+            const a = val(rng[1]), b = val(rng[2]);
+            if (a == null || b == null || a === 0) skipNew({ ...base, check: 's9 pct-change', note: 'endpoint missing' });
+            else {
+                const actual = (b - a) / Math.abs(a) * 100;
+                const claimed = (/rose|increased|grew/i.test(chg[1]) ? 1 : -1) * +chg[3];
+                const ok = /over|more/i.test(chg[2] || '')
+                    ? Math.sign(actual) === Math.sign(claimed) && Math.abs(actual) >= Math.abs(claimed)
+                    : Math.abs(actual - claimed) <= 6; // rates vs counts differ by population change
+                recordNew(ok, { ...base, check: 's9 pct-change', expected: `${claimed > 0 ? '+' : ''}${claimed}% ${rng[1]}-${rng[2]}`,
+                    found: `${actual > 0 ? '+' : ''}${actual.toFixed(1)}%` });
+            }
+        }
+
+        // (g) "better/worse than the median in <period>", "near the midpoint through the 1990s"
+        const tier = sentence.match(/\b(better|worse)\s+than\s+(?:the\s+)?(?:national\s+)?(?:average|median)\b|\bnear\s+the\s+(?:national\s+)?midpoint\b/i);
+        if (tier) {
+            const ys = s9Period(slug, sentence, tier.index + tier[0].length);
+            if (ys === null) { /* no adjacent period: ambiguous, skip silently */ }
+            else if (!ys.length) skipNew({ ...base, check: 's9 tier', note: 'period outside the series' });
+            else {
+                const hits = ys.map(y => {
+                    const r = rk(y); if (!r) return null;
+                    if (!tier[1]) return r.rank > Math.round(r.total * 0.25) && r.rank <= Math.round(r.total * 0.75);
+                    const better = r.rank <= r.total / 2;
+                    return /better/i.test(tier[1]) ? better : !better;
+                }).filter(x => x !== null);
+                if (hits.length) {
+                    const sh = share(hits);
+                    recordNew(sh > 0.5, { ...base, check: 's9 tier', expected: `${tier[0]} in ${ys[0]}${ys.length > 1 ? '-' + ys[ys.length - 1] : ''}`,
+                        found: ys.map(y => `${y} #${(rk(y) || {}).rank}`).join(', ') });
+                }
+            }
+        }
+
+        // (h) "top 20 ... by 2020"; with "consistently", every year from then on
+        const topBy = sentence.match(new RegExp(String.raw`\btop\s+(\d{1,2}|five|ten|twenty)\b[^.]*?\bby\s+${S9_YEAR}`, 'i'))
+            || (() => { const m = sentence.match(new RegExp(String.raw`^By\s+${S9_YEAR},[^.]*?\btop\s+(\d{1,2}|five|ten|twenty)\b`, 'i')); return m ? [m[0], m[2], m[1]] : null; })();
+        if (topBy && !win) {
+            const n = /^\d+$/.test(topBy[1]) ? +topBy[1] : S9_WORDS[topBy[1].toLowerCase()];
+            const ys = /consistently/i.test(sentence) ? years.filter(y => +y >= +topBy[2]) : [topBy[2]];
+            const hits = ys.map(y => { const r = rk(y); return r ? r.lo <= n : null; }).filter(x => x !== null);
+            if (hits.length) {
+                const sh = share(hits);
+                recordNew(sh >= 0.9, { ...base, check: 's9 top-by', expected: `top ${n} ${ys.length > 1 ? 'every year from' : 'in'} ${topBy[2]}`,
+                    found: ys.map(y => `${y} #${(rk(y) || {}).rank}`).join(', ') });
+            }
+        }
+
+        // (i) "one of the lowest/highest <metric> rates": present tense, latest year.
+        //     Guarded on the metric's own title words, so "disability claim rate
+        //     is among the highest" under labor-force participation is skipped.
+        const sup = sentence.match(/\b(?:one\s+of|among)\s+the\s+(lowest|highest)\b/i);
+        if (sup) {
+            const words = String(metric.metric || '').toLowerCase().split(/\W+/).filter(w => w.length >= 4 && !['rate', 'rates', 'state', 'share', 'percent'].includes(w));
+            const need = Math.min(2, words.length);
+            const tail = sentence.slice(sup.index).toLowerCase();
+            if (need && words.filter(w => tail.includes(w)).length >= need) {
+                const vals = stateValuesForYear(slug, latest);
+                const e = Object.entries(vals).sort((a, b) => /lowest/i.test(sup[1]) ? a[1] - b[1] : b[1] - a[1]);
+                const pos = e.findIndex(([s]) => s === state) + 1;
+                recordNew(pos > 0 && pos <= 10, { ...base, check: 's9 superlative', expected: `among the 10 ${sup[1].toLowerCase()} in ${latest}`,
+                    found: `#${pos} ${sup[1].toLowerCase()} of ${e.length}` });
+            }
+        }
+
+        // (j) "remained in the bottom quarter throughout the ... period"
+        const qtr = sentence.match(/\b(top|bottom)\s+(quarter|third|half)\b[^.]*?\bthroughout\b/i);
+        if (qtr && firstYearInText) {
+            const cut = { quarter: 0.25, third: 1 / 3, half: 0.5 }[qtr[2].toLowerCase()];
+            const ys = years.filter(y => +y >= +firstYearInText);
+            const hits = ys.map(y => { const r = rk(y); if (!r) return null;
+                return qtr[1].toLowerCase() === 'top' ? r.lo <= Math.round(r.total * cut) : r.hi > Math.round(r.total * (1 - cut)); }).filter(x => x !== null);
+            if (hits.length) {
+                const sh = share(hits);
+                recordNew(sh >= 0.9, { ...base, check: 's9 quarter', expected: `${qtr[1]} ${qtr[2]} throughout ${ys[0]}-${ys[ys.length - 1]}`,
+                    found: `${Math.round(sh * hits.length)} of ${hits.length} years` });
+            }
+        }
+    }
+}
+
 // ── Run the new-shape audit ────────────────────────────────────────
 
 for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
@@ -2061,6 +2338,15 @@ for (const [slug, metric] of Object.entries(DASHBOARD_DATA)) {
         rhn.explore.forEach((t, i) => {
             if (t) auditRankWindows(slug, metric, `rankHistoryNarrative.explore[${i}]`, t, true);
         });
+    }
+    // Benchmarks and cautions are about a comparator state, not Hawaiʻi.
+    if (rhn && Array.isArray(rhn.benchmarks)) {
+        rhn.benchmarks.forEach((b, i) => {
+            if (b && b.text) auditNamedState(slug, metric, `rankHistoryNarrative.benchmarks[${i}]`, b.text, b.state);
+        });
+    }
+    if (rhn && rhn.caution && rhn.caution.text) {
+        auditNamedState(slug, metric, 'rankHistoryNarrative.caution', rhn.caution.text, rhn.caution.state);
     }
 }
 

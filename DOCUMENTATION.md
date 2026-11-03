@@ -819,7 +819,7 @@ Three weekly workflows surface drift via rolling labeled issues. Each maintains 
 
 Nine gates run in sequence; any error fails the command:
 1. `validate-data.js`, data structure, ranges, YoY spikes, parity, writer allowlist, county-data and state-data floor checks, latestMonthly staleness + seasonal-envelope sanity (Sections 1–15, 17). Optional opt-in modes: `--fresh-fetch` (Section 16) re-fetches every wired metric from the canonical source; `--probe-floor` (Section 18) probes for years available beyond what's stored.
-2. `audit-narrative-numbers.js --gate --gate-new`, rank/value claims in `rankHistoryNarrative`, plus the county/superlative/rank-window/quantifier shapes promoted from advisory to blocking on 2026-08-09
+2. `audit-narrative-numbers.js --gate --gate-new`, rank/value claims in `rankHistoryNarrative`, plus the county/superlative/rank-window/quantifier shapes promoted from advisory to blocking on 2026-08-09, plus (2026-11-02) rank/value/trend claims about the named comparator state in `rankHistoryNarrative.benchmarks[].text` and `caution.text`
 3. `sync-qotd-answers.js --check`, QOTD answer drift (refuses V6 truth-flips)
 4. `audit-internal.py --gate`, 10-phase site audit (P0+P1 findings block; P2 informational)
 5. `update-metric-counts.js --check`, hardcoded "N metrics" counts across HTML/tests/docs must match `Object.keys(DASHBOARD_DATA).length`; "X of N county" must match `Object.keys(COUNTY_DATA).length`
