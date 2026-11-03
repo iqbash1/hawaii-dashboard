@@ -1634,14 +1634,14 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Minneapolis legalized more housing types citywide; California's reforms stalled against permitting and labor barriers. Hawaiʻi faces both: a 20-to-40 percent construction cost premium driven by Jones Act shipping, and an estimated 20,000 to 25,000 residential units converted to full-time vacation rentals, directly reducing supply available to residents."
+        "Minneapolis legalized more housing types citywide; California's lot-split law has produced few homes because local limits and high costs keep many projects from being worth building. Hawaiʻi adds its own pressures: a 20-to-40 percent construction cost premium driven by Jones Act shipping, and an estimated 20,000 to 25,000 residential units converted to full-time vacation rentals, directly reducing supply available to residents."
       ],
       "caution": {
         "state": "California",
-        "text": "Like Hawaiʻi, California enacted zoning mandates but faces permitting, labor, and environmental barriers that prevent supply from catching up with demand. California enacted statewide zoning mandates (SB 9, SB 10, ADU reform) over the past decade. Housing production has not increased proportionally because environmental review litigation and neighborhood opposition delayed or blocked projects permitted under state law. Zoning reform without parallel permitting reform has produced limited actual construction.",
+        "text": "Like Hawaiʻi, California passed statewide zoning mandates, but its lot-split law has produced few homes so far. SB 9 (2021) lets owners of single-family lots build two homes on a lot or split it in two. In the law's first year, the 13 cities studied by UC Berkeley's Terner Center received about 280 applications for SB 9 homes and approved about 50. The researchers pointed to local size and design limits, fees, the owner-occupancy requirement, and high construction and borrowing costs. Legalizing more homes did not make them worth building.",
         "source": {
-          "label": "SB 9 Fact Sheet - California Department of Housing and Community Development",
-          "url": "https://www.hcd.ca.gov/sites/default/files/docs/planning-and-community/sb-9-fact-sheet.pdf"
+          "label": "California's HOME Act Turns One: Data and Insights from the First Year of SB 9 - Terner Center for Housing Innovation, UC Berkeley",
+          "url": "https://ternercenter.berkeley.edu/research-and-policy/sb-9-turns-one-applications/"
         }
       }
     }
@@ -2343,11 +2343,11 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Minnesota's strength comes from robust safety-net enrollment; Arkansas shows what happens when access tightens. The 2022-2024 uptick coincided with the return to pre-pandemic SNAP allotments alongside elevated grocery prices, and Hawaiʻi's heavy import dependence amplified the effect."
+        "Minnesota's strength comes from robust safety-net enrollment; Arkansas shows how tighter access can cut people off over paperwork. The 2022-2024 uptick coincided with the return to pre-pandemic SNAP allotments alongside elevated grocery prices, and Hawaiʻi's heavy import dependence amplified the effect."
       ],
       "caution": {
         "state": "Arkansas",
-        "text": "Arkansas's experience shows the risk of tightening nutrition program access in a state where safety-net enrollment holds the line on food security. Arkansas implemented SNAP work requirements in 2018 through a federal waiver, requiring able-bodied adults without dependents to document work or job training activities to maintain benefits. In the year following implementation, SNAP enrollment declined sharply and food insecurity rates rose in affected counties. Arkansas illustrates that eligibility restrictions on nutrition assistance programs can worsen food security outcomes when the underlying economic conditions that make people eligible for assistance have not changed.",
+        "text": "Arkansas shows that tightening nutrition program access can cut people off over paperwork rather than because they found work. In 2016 Arkansas reinstated SNAP time limits for adults ages 18 to 49 without dependents, who lose benefits after three months in three years unless they work or take part in job training. Interviews and focus groups by the Urban Institute found that people lost benefits because of confusing rules and unclear communication, while steady jobs and training beyond basic work-readiness classes were hard to reach. Arkansas has had one of the five worst food insecurity rates in most years of our data, so the households cut off had few other buffers.",
         "source": {
           "label": "SNAP Work Requirements in Arkansas - Urban Institute",
           "url": "https://www.urban.org/research/publication/snap-work-requirements-arkansas-adults-without-dependents-or-disabilities"
