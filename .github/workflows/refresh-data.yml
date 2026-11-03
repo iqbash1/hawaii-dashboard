@@ -234,6 +234,9 @@ jobs:
       - name: Regenerate llms.txt figures
         run: python3 scripts/generate-llms-txt.py
 
+      - name: Regenerate json/ metric summaries
+        run: python3 scripts/generate-data-json.py
+
       # ----- Validate (strict mode for CI) -----
       - name: Validate data integrity
         id: validate
@@ -389,7 +392,7 @@ jobs:
           # data/ holds the generator's CSV exports (Dataset JSON-LD distribution
           # URLs). Stage them too, otherwise generate-og-pages.py regenerates them
           # each run but they are never committed and drift from js/state-data.js.
-          git add t/ r/ c/ rh/ q/ assets/og/ data/ 2>/dev/null || true
+          git add t/ r/ c/ rh/ q/ assets/og/ data/ json/ 2>/dev/null || true
           git commit -m "Data refresh: $(date +%B\ %Y)
 
           Automated monthly data refresh from federal APIs.

@@ -1,0 +1,469 @@
+{
+ "id": "road_poor_pct",
+ "name": "Roads in Poor Condition",
+ "area": "Infrastructure & Trust",
+ "unit": "%",
+ "unit_label": "of road miles rated poor",
+ "higher_is_better": false,
+ "hawaii": {
+  "year": "2024",
+  "value": 15.47,
+  "display": "15.5%",
+  "rank": 47,
+  "of": 50
+ },
+ "median_50_states": 6.48,
+ "source": "FHWA Highway Statistics, Table HM-64",
+ "page_url": "https://hawaiidashboard.org/c/road_poor_pct/",
+ "json_url": "https://hawaiidashboard.org/json/road_poor_pct.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/road_poor_pct_state.csv",
+ "csv_county_url": null,
+ "cite_as": "FHWA Highway Statistics, Table HM-64 via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/road_poor_pct/",
+ "definition": "Share of public road miles rated poor based on ride quality measured by the International Roughness Index.",
+ "source_url": "https://www.fhwa.dot.gov/policyinformation/statistics.cfm",
+ "rank_note": "#1 = best performing state; lower values are better.",
+ "hawaii_series": [
+  {
+   "year": "2000",
+   "value": 11.11
+  },
+  {
+   "year": "2001",
+   "value": 19.91
+  },
+  {
+   "year": "2002",
+   "value": 18.32
+  },
+  {
+   "year": "2003",
+   "value": 13.06
+  },
+  {
+   "year": "2004",
+   "value": 11.04
+  },
+  {
+   "year": "2005",
+   "value": 18.32
+  },
+  {
+   "year": "2006",
+   "value": 21.52
+  },
+  {
+   "year": "2007",
+   "value": 21.02
+  },
+  {
+   "year": "2008",
+   "value": 22.41
+  },
+  {
+   "year": "2009",
+   "value": 20.19
+  },
+  {
+   "year": "2011",
+   "value": 24.48
+  },
+  {
+   "year": "2012",
+   "value": 24.56
+  },
+  {
+   "year": "2013",
+   "value": 24.67
+  },
+  {
+   "year": "2014",
+   "value": 23.07
+  },
+  {
+   "year": "2015",
+   "value": 22.79
+  },
+  {
+   "year": "2016",
+   "value": 22.96
+  },
+  {
+   "year": "2017",
+   "value": 24.08
+  },
+  {
+   "year": "2018",
+   "value": 24.28
+  },
+  {
+   "year": "2019",
+   "value": 26.11
+  },
+  {
+   "year": "2020",
+   "value": 22.22
+  },
+  {
+   "year": "2022",
+   "value": 21.55
+  },
+  {
+   "year": "2023",
+   "value": 21.62
+  },
+  {
+   "year": "2024",
+   "value": 15.47
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2000",
+   "value": 7.36
+  },
+  {
+   "year": "2001",
+   "value": 6.65
+  },
+  {
+   "year": "2002",
+   "value": 6.88
+  },
+  {
+   "year": "2003",
+   "value": 7.38
+  },
+  {
+   "year": "2004",
+   "value": 8.49
+  },
+  {
+   "year": "2005",
+   "value": 7.73
+  },
+  {
+   "year": "2006",
+   "value": 6.91
+  },
+  {
+   "year": "2007",
+   "value": 6.66
+  },
+  {
+   "year": "2008",
+   "value": 6.49
+  },
+  {
+   "year": "2009",
+   "value": 7.37
+  },
+  {
+   "year": "2011",
+   "value": 8.15
+  },
+  {
+   "year": "2012",
+   "value": 8.14
+  },
+  {
+   "year": "2013",
+   "value": 7.51
+  },
+  {
+   "year": "2014",
+   "value": 7.36
+  },
+  {
+   "year": "2015",
+   "value": 8.35
+  },
+  {
+   "year": "2016",
+   "value": 8.95
+  },
+  {
+   "year": "2017",
+   "value": 8.68
+  },
+  {
+   "year": "2018",
+   "value": 7.91
+  },
+  {
+   "year": "2019",
+   "value": 7.76
+  },
+  {
+   "year": "2020",
+   "value": 8.36
+  },
+  {
+   "year": "2022",
+   "value": 7.44
+  },
+  {
+   "year": "2023",
+   "value": 7.08
+  },
+  {
+   "year": "2024",
+   "value": 6.48
+  }
+ ],
+ "rankings": {
+  "year": "2024",
+  "states": [
+   {
+    "rank": 1,
+    "state": "Alabama",
+    "value": 2.12
+   },
+   {
+    "rank": 2,
+    "state": "Georgia",
+    "value": 2.32
+   },
+   {
+    "rank": 3,
+    "state": "North Dakota",
+    "value": 2.44
+   },
+   {
+    "rank": 4,
+    "state": "Wyoming",
+    "value": 2.75
+   },
+   {
+    "rank": 5,
+    "state": "Nevada",
+    "value": 3.15
+   },
+   {
+    "rank": 6,
+    "state": "South Dakota",
+    "value": 3.34
+   },
+   {
+    "rank": 7,
+    "state": "Kansas",
+    "value": 3.45
+   },
+   {
+    "rank": 8,
+    "state": "Florida",
+    "value": 3.58
+   },
+   {
+    "rank": 9,
+    "state": "Utah",
+    "value": 3.78
+   },
+   {
+    "rank": 10,
+    "state": "Kentucky",
+    "value": 3.81
+   },
+   {
+    "rank": 11,
+    "state": "Montana",
+    "value": 4.2
+   },
+   {
+    "rank": 12,
+    "state": "Minnesota",
+    "value": 4.28
+   },
+   {
+    "rank": 13,
+    "state": "Delaware",
+    "value": 4.35
+   },
+   {
+    "rank": 14,
+    "state": "Oregon",
+    "value": 4.53
+   },
+   {
+    "rank": 15,
+    "state": "Indiana",
+    "value": 4.55
+   },
+   {
+    "rank": 16,
+    "state": "Virginia",
+    "value": 5.1
+   },
+   {
+    "rank": 17,
+    "state": "Tennessee",
+    "value": 5.11
+   },
+   {
+    "rank": 18,
+    "state": "Idaho",
+    "value": 5.26
+   },
+   {
+    "rank": 19,
+    "state": "Vermont",
+    "value": 5.27
+   },
+   {
+    "rank": 20,
+    "state": "Arkansas",
+    "value": 5.4
+   },
+   {
+    "rank": 21,
+    "state": "Nebraska",
+    "value": 5.55
+   },
+   {
+    "rank": 22,
+    "state": "Texas",
+    "value": 5.71
+   },
+   {
+    "rank": 23,
+    "state": "South Carolina",
+    "value": 6.01
+   },
+   {
+    "rank": 24,
+    "state": "North Carolina",
+    "value": 6.14
+   },
+   {
+    "rank": 25,
+    "state": "Missouri",
+    "value": 6.33
+   },
+   {
+    "rank": 26,
+    "state": "Maine",
+    "value": 6.64
+   },
+   {
+    "rank": 27,
+    "state": "Ohio",
+    "value": 7.06
+   },
+   {
+    "rank": 28,
+    "state": "Michigan",
+    "value": 7.11
+   },
+   {
+    "rank": 29,
+    "state": "Iowa",
+    "value": 7.39
+   },
+   {
+    "rank": 30,
+    "state": "Oklahoma",
+    "value": 7.66
+   },
+   {
+    "rank": 31,
+    "state": "West Virginia",
+    "value": 7.8
+   },
+   {
+    "rank": 32,
+    "state": "Maryland",
+    "value": 8.22
+   },
+   {
+    "rank": 33,
+    "state": "Pennsylvania",
+    "value": 8.41
+   },
+   {
+    "rank": 34,
+    "state": "Connecticut",
+    "value": 8.58
+   },
+   {
+    "rank": 35,
+    "state": "New Hampshire",
+    "value": 8.65
+   },
+   {
+    "rank": 36,
+    "state": "New York",
+    "value": 8.95
+   },
+   {
+    "rank": 37,
+    "state": "Illinois",
+    "value": 9.23
+   },
+   {
+    "rank": 38,
+    "state": "Arizona",
+    "value": 9.36
+   },
+   {
+    "rank": 39,
+    "state": "Mississippi",
+    "value": 9.36
+   },
+   {
+    "rank": 40,
+    "state": "Colorado",
+    "value": 9.43
+   },
+   {
+    "rank": 41,
+    "state": "Washington",
+    "value": 10.5
+   },
+   {
+    "rank": 42,
+    "state": "Alaska",
+    "value": 10.98
+   },
+   {
+    "rank": 43,
+    "state": "New Mexico",
+    "value": 12.05
+   },
+   {
+    "rank": 44,
+    "state": "Louisiana",
+    "value": 12.55
+   },
+   {
+    "rank": 45,
+    "state": "Wisconsin",
+    "value": 12.73
+   },
+   {
+    "rank": 46,
+    "state": "New Jersey",
+    "value": 13.46
+   },
+   {
+    "rank": 47,
+    "state": "Hawaiʻi",
+    "value": 15.47
+   },
+   {
+    "rank": 48,
+    "state": "California",
+    "value": 17.61
+   },
+   {
+    "rank": 49,
+    "state": "Massachusetts",
+    "value": 18.5
+   },
+   {
+    "rank": 50,
+    "state": "Rhode Island",
+    "value": 24.28
+   }
+  ]
+ },
+ "counties": null
+}

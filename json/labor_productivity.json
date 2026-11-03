@@ -1,0 +1,437 @@
+{
+ "id": "labor_productivity",
+ "name": "Labor Productivity",
+ "area": "Economy & Workforce",
+ "unit": "% of 2017 level",
+ "unit_label": "% of 2017 level",
+ "higher_is_better": true,
+ "hawaii": {
+  "year": "2025",
+  "value": 111.152,
+  "display": "111.2",
+  "rank": 37,
+  "of": 50
+ },
+ "median_50_states": 114.1825,
+ "source": "Bureau of Labor Statistics",
+ "page_url": "https://hawaiidashboard.org/c/labor_productivity/",
+ "json_url": "https://hawaiidashboard.org/json/labor_productivity.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/labor_productivity_state.csv",
+ "csv_county_url": null,
+ "cite_as": "Bureau of Labor Statistics via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/labor_productivity/",
+ "definition": "Real economic output per hour worked, measuring how efficiently the workforce produces goods and services. Values show output relative to the 2017 level (100 = same as 2017).",
+ "source_url": "https://www.bls.gov/lpc/state-productivity.htm",
+ "rank_note": "#1 = best performing state; higher values are better.",
+ "hawaii_series": [
+  {
+   "year": "2007",
+   "value": 90.076
+  },
+  {
+   "year": "2008",
+   "value": 89.602
+  },
+  {
+   "year": "2009",
+   "value": 92.111
+  },
+  {
+   "year": "2010",
+   "value": 94.882
+  },
+  {
+   "year": "2011",
+   "value": 94.983
+  },
+  {
+   "year": "2012",
+   "value": 92.008
+  },
+  {
+   "year": "2013",
+   "value": 94.962
+  },
+  {
+   "year": "2014",
+   "value": 92.865
+  },
+  {
+   "year": "2015",
+   "value": 96.45
+  },
+  {
+   "year": "2016",
+   "value": 98.717
+  },
+  {
+   "year": "2017",
+   "value": 100
+  },
+  {
+   "year": "2018",
+   "value": 102.895
+  },
+  {
+   "year": "2019",
+   "value": 103.735
+  },
+  {
+   "year": "2020",
+   "value": 107.352
+  },
+  {
+   "year": "2021",
+   "value": 107.972
+  },
+  {
+   "year": "2022",
+   "value": 105.831
+  },
+  {
+   "year": "2023",
+   "value": 104.2
+  },
+  {
+   "year": "2024",
+   "value": 108.637
+  },
+  {
+   "year": "2025",
+   "value": 111.152
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2007",
+   "value": 87.613
+  },
+  {
+   "year": "2008",
+   "value": 89.4685
+  },
+  {
+   "year": "2009",
+   "value": 92.0835
+  },
+  {
+   "year": "2010",
+   "value": 95.503
+  },
+  {
+   "year": "2011",
+   "value": 95.783
+  },
+  {
+   "year": "2012",
+   "value": 95.506
+  },
+  {
+   "year": "2013",
+   "value": 95.3135
+  },
+  {
+   "year": "2014",
+   "value": 97.8265
+  },
+  {
+   "year": "2015",
+   "value": 98.4925
+  },
+  {
+   "year": "2016",
+   "value": 99.2175
+  },
+  {
+   "year": "2017",
+   "value": 100
+  },
+  {
+   "year": "2018",
+   "value": 101.3305
+  },
+  {
+   "year": "2019",
+   "value": 102.6025
+  },
+  {
+   "year": "2020",
+   "value": 107.083
+  },
+  {
+   "year": "2021",
+   "value": 108.348
+  },
+  {
+   "year": "2022",
+   "value": 107.9245
+  },
+  {
+   "year": "2023",
+   "value": 109.455
+  },
+  {
+   "year": "2024",
+   "value": 112.4695
+  },
+  {
+   "year": "2025",
+   "value": 114.1825
+  }
+ ],
+ "rankings": {
+  "year": "2025",
+  "states": [
+   {
+    "rank": 1,
+    "state": "Washington",
+    "value": 134.826
+   },
+   {
+    "rank": 2,
+    "state": "New Mexico",
+    "value": 132.658
+   },
+   {
+    "rank": 3,
+    "state": "California",
+    "value": 125.919
+   },
+   {
+    "rank": 4,
+    "state": "Maine",
+    "value": 125.671
+   },
+   {
+    "rank": 5,
+    "state": "Colorado",
+    "value": 125.531
+   },
+   {
+    "rank": 6,
+    "state": "Utah",
+    "value": 124.89
+   },
+   {
+    "rank": 7,
+    "state": "Nebraska",
+    "value": 124.595
+   },
+   {
+    "rank": 8,
+    "state": "Massachusetts",
+    "value": 124.407
+   },
+   {
+    "rank": 9,
+    "state": "New Hampshire",
+    "value": 121.644
+   },
+   {
+    "rank": 10,
+    "state": "Arizona",
+    "value": 121.091
+   },
+   {
+    "rank": 11,
+    "state": "Virginia",
+    "value": 120.806
+   },
+   {
+    "rank": 12,
+    "state": "Delaware",
+    "value": 120.492
+   },
+   {
+    "rank": 13,
+    "state": "Minnesota",
+    "value": 118.989
+   },
+   {
+    "rank": 14,
+    "state": "Tennessee",
+    "value": 118.954
+   },
+   {
+    "rank": 15,
+    "state": "Oregon",
+    "value": 118.097
+   },
+   {
+    "rank": 16,
+    "state": "Indiana",
+    "value": 116.921
+   },
+   {
+    "rank": 17,
+    "state": "Texas",
+    "value": 116.399
+   },
+   {
+    "rank": 18,
+    "state": "New York",
+    "value": 116.275
+   },
+   {
+    "rank": 19,
+    "state": "Vermont",
+    "value": 116.217
+   },
+   {
+    "rank": 20,
+    "state": "Montana",
+    "value": 116.1
+   },
+   {
+    "rank": 21,
+    "state": "Florida",
+    "value": 115.899
+   },
+   {
+    "rank": 22,
+    "state": "Arkansas",
+    "value": 115.365
+   },
+   {
+    "rank": 23,
+    "state": "Wisconsin",
+    "value": 114.966
+   },
+   {
+    "rank": 24,
+    "state": "South Carolina",
+    "value": 114.659
+   },
+   {
+    "rank": 25,
+    "state": "Iowa",
+    "value": 114.44
+   },
+   {
+    "rank": 26,
+    "state": "Missouri",
+    "value": 113.925
+   },
+   {
+    "rank": 27,
+    "state": "North Carolina",
+    "value": 113.799
+   },
+   {
+    "rank": 28,
+    "state": "Alabama",
+    "value": 113.705
+   },
+   {
+    "rank": 29,
+    "state": "Michigan",
+    "value": 113.201
+   },
+   {
+    "rank": 30,
+    "state": "Illinois",
+    "value": 112.813
+   },
+   {
+    "rank": 31,
+    "state": "New Jersey",
+    "value": 112.778
+   },
+   {
+    "rank": 32,
+    "state": "Kentucky",
+    "value": 112.553
+   },
+   {
+    "rank": 33,
+    "state": "Ohio",
+    "value": 112.468
+   },
+   {
+    "rank": 34,
+    "state": "Idaho",
+    "value": 112.176
+   },
+   {
+    "rank": 35,
+    "state": "Maryland",
+    "value": 111.512
+   },
+   {
+    "rank": 36,
+    "state": "West Virginia",
+    "value": 111.361
+   },
+   {
+    "rank": 37,
+    "state": "Hawaiʻi",
+    "value": 111.152
+   },
+   {
+    "rank": 38,
+    "state": "North Dakota",
+    "value": 110.372
+   },
+   {
+    "rank": 39,
+    "state": "Kansas",
+    "value": 109.496
+   },
+   {
+    "rank": 40,
+    "state": "Georgia",
+    "value": 109.492
+   },
+   {
+    "rank": 41,
+    "state": "Louisiana",
+    "value": 108.979
+   },
+   {
+    "rank": 42,
+    "state": "Nevada",
+    "value": 107.904
+   },
+   {
+    "rank": 43,
+    "state": "Mississippi",
+    "value": 107.901
+   },
+   {
+    "rank": 44,
+    "state": "Connecticut",
+    "value": 106.935
+   },
+   {
+    "rank": 45,
+    "state": "Rhode Island",
+    "value": 106.771
+   },
+   {
+    "rank": 46,
+    "state": "Alaska",
+    "value": 105.688
+   },
+   {
+    "rank": 47,
+    "state": "South Dakota",
+    "value": 105.084
+   },
+   {
+    "rank": 48,
+    "state": "Pennsylvania",
+    "value": 105.028
+   },
+   {
+    "rank": 49,
+    "state": "Oklahoma",
+    "value": 104.879
+   },
+   {
+    "rank": 50,
+    "state": "Wyoming",
+    "value": 101.931
+   }
+  ]
+ },
+ "counties": null
+}

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Aggregated validation gate for `npm run validate`.
 #
-# Runs ten checks in sequence and ALWAYS runs all ten so every
+# Runs eleven checks in sequence and ALWAYS runs all eleven so every
 # issue surfaces in a single pass:
 #
 #   1. validate-data.js
@@ -60,6 +60,11 @@
 #          no longer matches the data (a refresh or a new post without a
 #          regenerate). Run `npm run llms`.
 #
+#  11. generate-data-json.py --check
+#        - exit 1 = a json/ metric summary is stale, or its Hawaiʻi value,
+#          year or rank disagrees with the committed /c/ page title. Run
+#          `npm run data-json` (after generate-og-pages.py if /c/ is stale).
+#
 # Aggregated exit code: 0 if all pass, 1 if any hard check failed.
 
 cd "$(dirname "$0")/.."
@@ -67,7 +72,7 @@ cd "$(dirname "$0")/.."
 set +e
 FAIL=0
 
-echo "── 1/10 validate-data.js ──"
+echo "── 1/11 validate-data.js ──"
 node scripts/validate-data.js
 V=$?
 if [ $V -eq 2 ]; then
@@ -76,7 +81,7 @@ if [ $V -eq 2 ]; then
 fi
 
 echo ""
-echo "── 2/10 audit-narrative-numbers.js --gate --gate-new ──"
+echo "── 2/11 audit-narrative-numbers.js --gate --gate-new ──"
 node scripts/audit-narrative-numbers.js --gate --gate-new
 A=$?
 if [ $A -ne 0 ]; then
@@ -84,7 +89,7 @@ if [ $A -ne 0 ]; then
 fi
 
 echo ""
-echo "── 3/10 sync-qotd-answers.js --check ──"
+echo "── 3/11 sync-qotd-answers.js --check ──"
 node scripts/sync-qotd-answers.js --check
 S=$?
 if [ $S -ne 0 ]; then
@@ -92,7 +97,7 @@ if [ $S -ne 0 ]; then
 fi
 
 echo ""
-echo "── 4/10 audit-internal.py --gate ──"
+echo "── 4/11 audit-internal.py --gate ──"
 python3 scripts/audit-internal.py --gate
 I=$?
 if [ $I -ne 0 ]; then
@@ -100,7 +105,7 @@ if [ $I -ne 0 ]; then
 fi
 
 echo ""
-echo "── 5/10 update-metric-counts.js --check ──"
+echo "── 5/11 update-metric-counts.js --check ──"
 node scripts/update-metric-counts.js --check
 M=$?
 if [ $M -ne 0 ]; then
@@ -108,7 +113,7 @@ if [ $M -ne 0 ]; then
 fi
 
 echo ""
-echo "── 6/10 generate-fyc-pages.js --check ──"
+echo "── 6/11 generate-fyc-pages.js --check ──"
 node scripts/generate-fyc-pages.js --check
 F=$?
 if [ $F -ne 0 ]; then
@@ -116,7 +121,7 @@ if [ $F -ne 0 ]; then
 fi
 
 echo ""
-echo "── 7/10 sync-otc-meta.js --check ──"
+echo "── 7/11 sync-otc-meta.js --check ──"
 node scripts/sync-otc-meta.js --check
 O=$?
 if [ $O -ne 0 ]; then
@@ -124,7 +129,7 @@ if [ $O -ne 0 ]; then
 fi
 
 echo ""
-echo "── 8/10 audit-otc-numbers.js --gate ──"
+echo "── 8/11 audit-otc-numbers.js --gate ──"
 node scripts/audit-otc-numbers.js --gate
 OTC=$?
 if [ $OTC -ne 0 ]; then
@@ -133,7 +138,7 @@ if [ $OTC -ne 0 ]; then
 fi
 
 echo ""
-echo "── 9/10 generate-qotd-redirects.js --check ──"
+echo "── 9/11 generate-qotd-redirects.js --check ──"
 node scripts/generate-qotd-redirects.js --check
 QR=$?
 if [ $QR -ne 0 ]; then
@@ -142,10 +147,18 @@ if [ $QR -ne 0 ]; then
 fi
 
 echo ""
-echo "── 10/10 generate-llms-txt.py --check ──"
+echo "── 10/11 generate-llms-txt.py --check ──"
 python3 scripts/generate-llms-txt.py --check
 L=$?
 if [ $L -ne 0 ]; then
+    FAIL=1
+fi
+
+echo ""
+echo "── 11/11 generate-data-json.py --check ──"
+python3 scripts/generate-data-json.py --check
+J=$?
+if [ $J -ne 0 ]; then
     FAIL=1
 fi
 

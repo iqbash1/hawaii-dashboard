@@ -1,0 +1,405 @@
+{
+ "id": "naep_math_8",
+ "name": "NAEP 8th Grade Math",
+ "area": "Education",
+ "unit": "score",
+ "unit_label": "scale score (0-500)",
+ "higher_is_better": true,
+ "hawaii": {
+  "year": "2024",
+  "value": 270.04,
+  "display": "270.0",
+  "rank": 30,
+  "of": 50
+ },
+ "median_50_states": 273.145,
+ "source": "NAEP / Nation's Report Card",
+ "page_url": "https://hawaiidashboard.org/c/naep_math_8/",
+ "json_url": "https://hawaiidashboard.org/json/naep_math_8.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/naep_math_8_state.csv",
+ "csv_county_url": null,
+ "cite_as": "NAEP / Nation's Report Card via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/naep_math_8/",
+ "definition": "Average math score for 8th-graders on the National Assessment of Educational Progress, the nation's report card, given every two years.",
+ "source_url": "https://www.nationsreportcard.gov/mathematics/states/scores/?grade=8",
+ "rank_note": "#1 = best performing state; higher values are better.",
+ "hawaii_series": [
+  {
+   "year": "1990",
+   "value": 251.02
+  },
+  {
+   "year": "1992",
+   "value": 257.41
+  },
+  {
+   "year": "1996",
+   "value": 262.13
+  },
+  {
+   "year": "2000",
+   "value": 262.77
+  },
+  {
+   "year": "2003",
+   "value": 265.73
+  },
+  {
+   "year": "2005",
+   "value": 265.63
+  },
+  {
+   "year": "2007",
+   "value": 268.77
+  },
+  {
+   "year": "2009",
+   "value": 273.76
+  },
+  {
+   "year": "2011",
+   "value": 277.84
+  },
+  {
+   "year": "2013",
+   "value": 281.41
+  },
+  {
+   "year": "2015",
+   "value": 279.34
+  },
+  {
+   "year": "2017",
+   "value": 277.34
+  },
+  {
+   "year": "2019",
+   "value": 275.33
+  },
+  {
+   "year": "2022",
+   "value": 270.1
+  },
+  {
+   "year": "2024",
+   "value": 270.04
+  }
+ ],
+ "median_series": [
+  {
+   "year": "1990",
+   "value": 263.18
+  },
+  {
+   "year": "1992",
+   "value": 267.35
+  },
+  {
+   "year": "1996",
+   "value": 270.215
+  },
+  {
+   "year": "2000",
+   "value": 276.01
+  },
+  {
+   "year": "2003",
+   "value": 279.39
+  },
+  {
+   "year": "2005",
+   "value": 280.885
+  },
+  {
+   "year": "2007",
+   "value": 283.25
+  },
+  {
+   "year": "2009",
+   "value": 284.295
+  },
+  {
+   "year": "2011",
+   "value": 283.29
+  },
+  {
+   "year": "2013",
+   "value": 284.98
+  },
+  {
+   "year": "2015",
+   "value": 283.035
+  },
+  {
+   "year": "2017",
+   "value": 282.21
+  },
+  {
+   "year": "2019",
+   "value": 281.215
+  },
+  {
+   "year": "2022",
+   "value": 272.61
+  },
+  {
+   "year": "2024",
+   "value": 273.145
+  }
+ ],
+ "rankings": {
+  "year": "2024",
+  "states": [
+   {
+    "rank": 1,
+    "state": "Massachusetts",
+    "value": 283.47
+   },
+   {
+    "rank": 2,
+    "state": "Wisconsin",
+    "value": 282.65
+   },
+   {
+    "rank": 3,
+    "state": "Minnesota",
+    "value": 282.09
+   },
+   {
+    "rank": 4,
+    "state": "Utah",
+    "value": 281.79
+   },
+   {
+    "rank": 5,
+    "state": "New Jersey",
+    "value": 281.68
+   },
+   {
+    "rank": 6,
+    "state": "South Dakota",
+    "value": 281.1
+   },
+   {
+    "rank": 7,
+    "state": "Nebraska",
+    "value": 279.88
+   },
+   {
+    "rank": 8,
+    "state": "North Dakota",
+    "value": 279.77
+   },
+   {
+    "rank": 9,
+    "state": "New Hampshire",
+    "value": 279.74
+   },
+   {
+    "rank": 10,
+    "state": "Montana",
+    "value": 279.08
+   },
+   {
+    "rank": 11,
+    "state": "Ohio",
+    "value": 278.81
+   },
+   {
+    "rank": 12,
+    "state": "Wyoming",
+    "value": 278.32
+   },
+   {
+    "rank": 13,
+    "state": "Indiana",
+    "value": 278.19
+   },
+   {
+    "rank": 14,
+    "state": "Colorado",
+    "value": 278.11
+   },
+   {
+    "rank": 15,
+    "state": "Idaho",
+    "value": 278.1
+   },
+   {
+    "rank": 16,
+    "state": "Illinois",
+    "value": 277.42
+   },
+   {
+    "rank": 17,
+    "state": "Connecticut",
+    "value": 276.67
+   },
+   {
+    "rank": 18,
+    "state": "Pennsylvania",
+    "value": 276.25
+   },
+   {
+    "rank": 19,
+    "state": "Tennessee",
+    "value": 275.98
+   },
+   {
+    "rank": 20,
+    "state": "North Carolina",
+    "value": 275.82
+   },
+   {
+    "rank": 21,
+    "state": "Vermont",
+    "value": 275.62
+   },
+   {
+    "rank": 22,
+    "state": "Virginia",
+    "value": 274.99
+   },
+   {
+    "rank": 23,
+    "state": "Iowa",
+    "value": 274.82
+   },
+   {
+    "rank": 24,
+    "state": "Kansas",
+    "value": 274.14
+   },
+   {
+    "rank": 25,
+    "state": "Washington",
+    "value": 273.67
+   },
+   {
+    "rank": 26,
+    "state": "Maine",
+    "value": 272.62
+   },
+   {
+    "rank": 27,
+    "state": "New York",
+    "value": 270.85
+   },
+   {
+    "rank": 28,
+    "state": "Kentucky",
+    "value": 270.81
+   },
+   {
+    "rank": 29,
+    "state": "Missouri",
+    "value": 270.36
+   },
+   {
+    "rank": 30,
+    "state": "Hawaiʻi",
+    "value": 270.04
+   },
+   {
+    "rank": 31,
+    "state": "Michigan",
+    "value": 269.98
+   },
+   {
+    "rank": 32,
+    "state": "Rhode Island",
+    "value": 269.83
+   },
+   {
+    "rank": 33,
+    "state": "Arizona",
+    "value": 269.66
+   },
+   {
+    "rank": 34,
+    "state": "Texas",
+    "value": 269.39
+   },
+   {
+    "rank": 35,
+    "state": "Mississippi",
+    "value": 269.06
+   },
+   {
+    "rank": 36,
+    "state": "California",
+    "value": 268.78
+   },
+   {
+    "rank": 37,
+    "state": "Georgia",
+    "value": 268.66
+   },
+   {
+    "rank": 38,
+    "state": "Maryland",
+    "value": 268.21
+   },
+   {
+    "rank": 39,
+    "state": "South Carolina",
+    "value": 268.01
+   },
+   {
+    "rank": 40,
+    "state": "Oregon",
+    "value": 267.94
+   },
+   {
+    "rank": 41,
+    "state": "Florida",
+    "value": 267.24
+   },
+   {
+    "rank": 42,
+    "state": "Louisiana",
+    "value": 266.78
+   },
+   {
+    "rank": 43,
+    "state": "Arkansas",
+    "value": 266.19
+   },
+   {
+    "rank": 44,
+    "state": "Nevada",
+    "value": 265.18
+   },
+   {
+    "rank": 45,
+    "state": "Oklahoma",
+    "value": 264.45
+   },
+   {
+    "rank": 46,
+    "state": "Alaska",
+    "value": 263.96
+   },
+   {
+    "rank": 47,
+    "state": "Delaware",
+    "value": 263.06
+   },
+   {
+    "rank": 48,
+    "state": "Alabama",
+    "value": 261.77
+   },
+   {
+    "rank": 49,
+    "state": "West Virginia",
+    "value": 260.77
+   },
+   {
+    "rank": 50,
+    "state": "New Mexico",
+    "value": 256.21
+   }
+  ]
+ },
+ "counties": null
+}

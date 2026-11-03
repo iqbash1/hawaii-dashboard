@@ -1,0 +1,485 @@
+{
+ "id": "renewables_share_gen",
+ "name": "Electricity from Renewables",
+ "area": "Infrastructure & Trust",
+ "unit": "%",
+ "unit_label": "% of electricity generated",
+ "higher_is_better": true,
+ "hawaii": {
+  "year": "2025",
+  "value": 21.71,
+  "display": "21.7%",
+  "rank": 23,
+  "of": 50
+ },
+ "median_50_states": 17.14,
+ "source": "EIA",
+ "page_url": "https://hawaiidashboard.org/c/renewables_share_gen/",
+ "json_url": "https://hawaiidashboard.org/json/renewables_share_gen.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/renewables_share_gen_state.csv",
+ "csv_county_url": null,
+ "cite_as": "EIA via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/renewables_share_gen/",
+ "definition": "Share of in-state electricity generation from renewable sources, including wind, solar, hydro, geothermal, and biomass.",
+ "source_url": "https://www.eia.gov/electricity/data/state/",
+ "rank_note": "#1 = best performing state; higher values are better.",
+ "hawaii_series": [
+  {
+   "year": "2001",
+   "value": 5.62
+  },
+  {
+   "year": "2002",
+   "value": 4.0
+  },
+  {
+   "year": "2003",
+   "value": 5.63
+  },
+  {
+   "year": "2004",
+   "value": 5.64
+  },
+  {
+   "year": "2005",
+   "value": 5.5
+  },
+  {
+   "year": "2006",
+   "value": 6.38
+  },
+  {
+   "year": "2007",
+   "value": 7.33
+  },
+  {
+   "year": "2008",
+   "value": 7.57
+  },
+  {
+   "year": "2009",
+   "value": 7.42
+  },
+  {
+   "year": "2010",
+   "value": 7.54
+  },
+  {
+   "year": "2011",
+   "value": 9.08
+  },
+  {
+   "year": "2012",
+   "value": 9.93
+  },
+  {
+   "year": "2013",
+   "value": 11.74
+  },
+  {
+   "year": "2014",
+   "value": 12.74
+  },
+  {
+   "year": "2015",
+   "value": 13.24
+  },
+  {
+   "year": "2016",
+   "value": 14.45
+  },
+  {
+   "year": "2017",
+   "value": 14.15
+  },
+  {
+   "year": "2018",
+   "value": 13.26
+  },
+  {
+   "year": "2019",
+   "value": 12.14
+  },
+  {
+   "year": "2020",
+   "value": 15.87
+  },
+  {
+   "year": "2021",
+   "value": 19.02
+  },
+  {
+   "year": "2022",
+   "value": 19.02
+  },
+  {
+   "year": "2023",
+   "value": 20.24
+  },
+  {
+   "year": "2024",
+   "value": 21.25
+  },
+  {
+   "year": "2025",
+   "value": 21.71
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2001",
+   "value": 3.92
+  },
+  {
+   "year": "2002",
+   "value": 4.12
+  },
+  {
+   "year": "2003",
+   "value": 4.95
+  },
+  {
+   "year": "2004",
+   "value": 4.85
+  },
+  {
+   "year": "2005",
+   "value": 4.79
+  },
+  {
+   "year": "2006",
+   "value": 4.66
+  },
+  {
+   "year": "2007",
+   "value": 4.49
+  },
+  {
+   "year": "2008",
+   "value": 5.32
+  },
+  {
+   "year": "2009",
+   "value": 6.07
+  },
+  {
+   "year": "2010",
+   "value": 6.63
+  },
+  {
+   "year": "2011",
+   "value": 7.56
+  },
+  {
+   "year": "2012",
+   "value": 7.52
+  },
+  {
+   "year": "2013",
+   "value": 7.84
+  },
+  {
+   "year": "2014",
+   "value": 8.94
+  },
+  {
+   "year": "2015",
+   "value": 8.85
+  },
+  {
+   "year": "2016",
+   "value": 9.38
+  },
+  {
+   "year": "2017",
+   "value": 11.74
+  },
+  {
+   "year": "2018",
+   "value": 11.66
+  },
+  {
+   "year": "2019",
+   "value": 12.4
+  },
+  {
+   "year": "2020",
+   "value": 15.67
+  },
+  {
+   "year": "2021",
+   "value": 14.27
+  },
+  {
+   "year": "2022",
+   "value": 13.69
+  },
+  {
+   "year": "2023",
+   "value": 15.35
+  },
+  {
+   "year": "2024",
+   "value": 15.77
+  },
+  {
+   "year": "2025",
+   "value": 17.14
+  }
+ ],
+ "rankings": {
+  "year": "2025",
+  "states": [
+   {
+    "rank": 1,
+    "state": "Vermont",
+    "value": 99.83
+   },
+   {
+    "rank": 2,
+    "state": "South Dakota",
+    "value": 79.54
+   },
+   {
+    "rank": 3,
+    "state": "Washington",
+    "value": 73.22
+   },
+   {
+    "rank": 4,
+    "state": "Idaho",
+    "value": 68.5
+   },
+   {
+    "rank": 5,
+    "state": "Oregon",
+    "value": 64.48
+   },
+   {
+    "rank": 6,
+    "state": "Iowa",
+    "value": 62.02
+   },
+   {
+    "rank": 7,
+    "state": "Maine",
+    "value": 57.8
+   },
+   {
+    "rank": 8,
+    "state": "Montana",
+    "value": 56.35
+   },
+   {
+    "rank": 9,
+    "state": "California",
+    "value": 55.26
+   },
+   {
+    "rank": 10,
+    "state": "New Mexico",
+    "value": 52.87
+   },
+   {
+    "rank": 11,
+    "state": "Kansas",
+    "value": 47.97
+   },
+   {
+    "rank": 12,
+    "state": "Oklahoma",
+    "value": 45.34
+   },
+   {
+    "rank": 13,
+    "state": "Nevada",
+    "value": 44.14
+   },
+   {
+    "rank": 14,
+    "state": "Colorado",
+    "value": 43.13
+   },
+   {
+    "rank": 15,
+    "state": "North Dakota",
+    "value": 40.58
+   },
+   {
+    "rank": 16,
+    "state": "Minnesota",
+    "value": 33.66
+   },
+   {
+    "rank": 17,
+    "state": "Nebraska",
+    "value": 33.06
+   },
+   {
+    "rank": 18,
+    "state": "Texas",
+    "value": 32.97
+   },
+   {
+    "rank": 19,
+    "state": "Wyoming",
+    "value": 30.83
+   },
+   {
+    "rank": 20,
+    "state": "New York",
+    "value": 28.83
+   },
+   {
+    "rank": 21,
+    "state": "Alaska",
+    "value": 25.8
+   },
+   {
+    "rank": 22,
+    "state": "Utah",
+    "value": 22.17
+   },
+   {
+    "rank": 23,
+    "state": "Hawaiʻi",
+    "value": 21.71
+   },
+   {
+    "rank": 24,
+    "state": "Arizona",
+    "value": 20.31
+   },
+   {
+    "rank": 25,
+    "state": "Massachusetts",
+    "value": 17.56
+   },
+   {
+    "rank": 26,
+    "state": "Illinois",
+    "value": 16.73
+   },
+   {
+    "rank": 27,
+    "state": "Indiana",
+    "value": 16.19
+   },
+   {
+    "rank": 28,
+    "state": "Arkansas",
+    "value": 14.07
+   },
+   {
+    "rank": 29,
+    "state": "Tennessee",
+    "value": 14.04
+   },
+   {
+    "rank": 30,
+    "state": "North Carolina",
+    "value": 13.79
+   },
+   {
+    "rank": 31,
+    "state": "Wisconsin",
+    "value": 13.54
+   },
+   {
+    "rank": 32,
+    "state": "Missouri",
+    "value": 13.04
+   },
+   {
+    "rank": 33,
+    "state": "Georgia",
+    "value": 12.87
+   },
+   {
+    "rank": 34,
+    "state": "New Hampshire",
+    "value": 12.63
+   },
+   {
+    "rank": 35,
+    "state": "Michigan",
+    "value": 12.58
+   },
+   {
+    "rank": 36,
+    "state": "Virginia",
+    "value": 12.54
+   },
+   {
+    "rank": 37,
+    "state": "Rhode Island",
+    "value": 10.94
+   },
+   {
+    "rank": 38,
+    "state": "Florida",
+    "value": 10.59
+   },
+   {
+    "rank": 39,
+    "state": "Maryland",
+    "value": 10.21
+   },
+   {
+    "rank": 40,
+    "state": "Alabama",
+    "value": 9.13
+   },
+   {
+    "rank": 41,
+    "state": "Kentucky",
+    "value": 8.74
+   },
+   {
+    "rank": 42,
+    "state": "Ohio",
+    "value": 8.08
+   },
+   {
+    "rank": 43,
+    "state": "West Virginia",
+    "value": 6.84
+   },
+   {
+    "rank": 44,
+    "state": "South Carolina",
+    "value": 6.35
+   },
+   {
+    "rank": 45,
+    "state": "Mississippi",
+    "value": 6.05
+   },
+   {
+    "rank": 46,
+    "state": "Louisiana",
+    "value": 5.13
+   },
+   {
+    "rank": 47,
+    "state": "Delaware",
+    "value": 4.23
+   },
+   {
+    "rank": 48,
+    "state": "Pennsylvania",
+    "value": 3.87
+   },
+   {
+    "rank": 49,
+    "state": "New Jersey",
+    "value": 3.66
+   },
+   {
+    "rank": 50,
+    "state": "Connecticut",
+    "value": 3.62
+   }
+  ]
+ },
+ "counties": null
+}

@@ -1,0 +1,429 @@
+{
+ "id": "unsheltered_homeless_rate",
+ "name": "Homelessness",
+ "area": "Affordability",
+ "unit": "per 10K",
+ "unit_label": "per 10K residents",
+ "higher_is_better": false,
+ "hawaii": {
+  "year": "2025",
+  "value": 28.21,
+  "display": "28.2 per 10K",
+  "rank": 48,
+  "of": 50
+ },
+ "median_50_states": 3.86,
+ "source": "HUD PIT Count",
+ "page_url": "https://hawaiidashboard.org/c/unsheltered_homeless_rate/",
+ "json_url": "https://hawaiidashboard.org/json/unsheltered_homeless_rate.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/unsheltered_homeless_rate_state.csv",
+ "csv_county_url": null,
+ "cite_as": "HUD PIT Count via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/unsheltered_homeless_rate/",
+ "definition": "One-night count of people sleeping outdoors, in vehicles, or in places not meant for habitation, per 10,000 residents.",
+ "source_url": "https://www.huduser.gov/portal/datasets/ahar.html",
+ "rank_note": "#1 = best performing state; lower values are better.",
+ "hawaii_series": [
+  {
+   "year": "2007",
+   "value": 25.52
+  },
+  {
+   "year": "2008",
+   "value": 25.21
+  },
+  {
+   "year": "2009",
+   "value": 18.67
+  },
+  {
+   "year": "2010",
+   "value": 16.84
+  },
+  {
+   "year": "2011",
+   "value": 18.45
+  },
+  {
+   "year": "2012",
+   "value": 17.93
+  },
+  {
+   "year": "2013",
+   "value": 18.2
+  },
+  {
+   "year": "2014",
+   "value": 21.65
+  },
+  {
+   "year": "2015",
+   "value": 26.57
+  },
+  {
+   "year": "2016",
+   "value": 29.57
+  },
+  {
+   "year": "2017",
+   "value": 26.06
+  },
+  {
+   "year": "2018",
+   "value": 23.8
+  },
+  {
+   "year": "2019",
+   "value": 24.98
+  },
+  {
+   "year": "2020",
+   "value": 25.15
+  },
+  {
+   "year": "2022",
+   "value": 26.03
+  },
+  {
+   "year": "2023",
+   "value": 27.23
+  },
+  {
+   "year": "2024",
+   "value": 28.17
+  },
+  {
+   "year": "2025",
+   "value": 28.21
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2007",
+   "value": 3.085
+  },
+  {
+   "year": "2008",
+   "value": 3.25
+  },
+  {
+   "year": "2009",
+   "value": 2.74
+  },
+  {
+   "year": "2010",
+   "value": 2.86
+  },
+  {
+   "year": "2011",
+   "value": 3.77
+  },
+  {
+   "year": "2012",
+   "value": 3.365
+  },
+  {
+   "year": "2013",
+   "value": 2.94
+  },
+  {
+   "year": "2014",
+   "value": 2.24
+  },
+  {
+   "year": "2015",
+   "value": 2.13
+  },
+  {
+   "year": "2016",
+   "value": 2.225
+  },
+  {
+   "year": "2017",
+   "value": 2.18
+  },
+  {
+   "year": "2018",
+   "value": 2.06
+  },
+  {
+   "year": "2019",
+   "value": 2.045
+  },
+  {
+   "year": "2020",
+   "value": 2.355
+  },
+  {
+   "year": "2022",
+   "value": 2.485
+  },
+  {
+   "year": "2023",
+   "value": 2.84
+  },
+  {
+   "year": "2024",
+   "value": 3.485
+  },
+  {
+   "year": "2025",
+   "value": 3.86
+  }
+ ],
+ "rankings": {
+  "year": "2025",
+  "states": [
+   {
+    "rank": 1,
+    "state": "Wisconsin",
+    "value": 0.8
+   },
+   {
+    "rank": 2,
+    "state": "Nebraska",
+    "value": 1.42
+   },
+   {
+    "rank": 3,
+    "state": "Maryland",
+    "value": 1.44
+   },
+   {
+    "rank": 4,
+    "state": "Virginia",
+    "value": 1.52
+   },
+   {
+    "rank": 5,
+    "state": "Delaware",
+    "value": 1.58
+   },
+   {
+    "rank": 6,
+    "state": "Illinois",
+    "value": 1.63
+   },
+   {
+    "rank": 7,
+    "state": "Wyoming",
+    "value": 1.66
+   },
+   {
+    "rank": 8,
+    "state": "Michigan",
+    "value": 1.69
+   },
+   {
+    "rank": 9,
+    "state": "Mississippi",
+    "value": 1.76
+   },
+   {
+    "rank": 10,
+    "state": "Iowa",
+    "value": 1.89
+   },
+   {
+    "rank": 11,
+    "state": "Maine",
+    "value": 1.99
+   },
+   {
+    "rank": 12,
+    "state": "New Jersey",
+    "value": 2.08
+   },
+   {
+    "rank": 13,
+    "state": "North Dakota",
+    "value": 2.08
+   },
+   {
+    "rank": 14,
+    "state": "Ohio",
+    "value": 2.08
+   },
+   {
+    "rank": 15,
+    "state": "Indiana",
+    "value": 2.2
+   },
+   {
+    "rank": 16,
+    "state": "Pennsylvania",
+    "value": 2.21
+   },
+   {
+    "rank": 17,
+    "state": "Connecticut",
+    "value": 2.26
+   },
+   {
+    "rank": 18,
+    "state": "Massachusetts",
+    "value": 2.44
+   },
+   {
+    "rank": 19,
+    "state": "South Carolina",
+    "value": 2.55
+   },
+   {
+    "rank": 20,
+    "state": "Kansas",
+    "value": 2.78
+   },
+   {
+    "rank": 21,
+    "state": "New York",
+    "value": 2.93
+   },
+   {
+    "rank": 22,
+    "state": "Utah",
+    "value": 2.96
+   },
+   {
+    "rank": 23,
+    "state": "Minnesota",
+    "value": 3.12
+   },
+   {
+    "rank": 24,
+    "state": "Louisiana",
+    "value": 3.36
+   },
+   {
+    "rank": 25,
+    "state": "Texas",
+    "value": 3.84
+   },
+   {
+    "rank": 26,
+    "state": "South Dakota",
+    "value": 3.88
+   },
+   {
+    "rank": 27,
+    "state": "Vermont",
+    "value": 4.19
+   },
+   {
+    "rank": 28,
+    "state": "Missouri",
+    "value": 4.2
+   },
+   {
+    "rank": 29,
+    "state": "Alabama",
+    "value": 4.28
+   },
+   {
+    "rank": 30,
+    "state": "North Carolina",
+    "value": 4.29
+   },
+   {
+    "rank": 31,
+    "state": "Kentucky",
+    "value": 4.34
+   },
+   {
+    "rank": 32,
+    "state": "New Hampshire",
+    "value": 4.61
+   },
+   {
+    "rank": 33,
+    "state": "Arkansas",
+    "value": 4.64
+   },
+   {
+    "rank": 34,
+    "state": "Oklahoma",
+    "value": 4.69
+   },
+   {
+    "rank": 35,
+    "state": "West Virginia",
+    "value": 5
+   },
+   {
+    "rank": 36,
+    "state": "Rhode Island",
+    "value": 5.54
+   },
+   {
+    "rank": 37,
+    "state": "Tennessee",
+    "value": 5.57
+   },
+   {
+    "rank": 38,
+    "state": "Florida",
+    "value": 5.61
+   },
+   {
+    "rank": 39,
+    "state": "Georgia",
+    "value": 5.89
+   },
+   {
+    "rank": 40,
+    "state": "Montana",
+    "value": 6.17
+   },
+   {
+    "rank": 41,
+    "state": "Idaho",
+    "value": 6.64
+   },
+   {
+    "rank": 42,
+    "state": "Alaska",
+    "value": 7.79
+   },
+   {
+    "rank": 43,
+    "state": "Colorado",
+    "value": 8.44
+   },
+   {
+    "rank": 44,
+    "state": "New Mexico",
+    "value": 10.1
+   },
+   {
+    "rank": 45,
+    "state": "Arizona",
+    "value": 11.15
+   },
+   {
+    "rank": 46,
+    "state": "Nevada",
+    "value": 14.97
+   },
+   {
+    "rank": 47,
+    "state": "Washington",
+    "value": 21.29
+   },
+   {
+    "rank": 48,
+    "state": "Hawaiʻi",
+    "value": 28.21
+   },
+   {
+    "rank": 49,
+    "state": "California",
+    "value": 29.37
+   },
+   {
+    "rank": 50,
+    "state": "Oregon",
+    "value": 38.61
+   }
+  ]
+ },
+ "counties": null
+}

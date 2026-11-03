@@ -42,7 +42,7 @@ npm run recompute        # or the per-metric fetcher
 npm run sync-qotd        # writes new js/questions.js + q/{id}/index.html
 
 # 3. Validate everything
-npm run validate         # runs all ten gates; fails fast on drift
+npm run validate         # runs all eleven gates; fails fast on drift
 
 # 4. Commit
 git add ...
@@ -61,7 +61,7 @@ question's direction changed because the latest year advanced):
 The sync script refuses to write changes when this happens, the bank's
 truth values cannot ship a silent flip.
 
-## The ten gates in `npm run validate`
+## The eleven gates in `npm run validate`
 
 | # | Gate | What it catches |
 |---|------|-----------------|
@@ -75,8 +75,9 @@ truth values cannot ship a silent flip.
 | 8 | `audit-otc-numbers.js --gate` | Each number an Off the Charts post **body** states (declared in `off-the-charts/facts.json`) still matches live data, as a standalone number (no substring passes). Tie-aware; persistence-table counts via `yearsMeeting`/`statesMeeting`. Catches the drift gate 2 can't see, since it scans data.js/questions.js, not post prose. After a refresh moves a tracked number, update the post + run `npm run sync-otc-meta`. |
 | 9 | `generate-qotd-redirects.js --check` | Each `q/{id}/index.html` must byte-match what the generator would write from `js/questions.js`; every question must have a share card; and each card must have been drawn from the current claim, via the SHA-256 recorded in `assets/og/q/claims.json`. Catches a hand-edited **claim**: gate 3 only owns the answers, so it reports "no changes needed" while the page and the card keep serving superseded wording. Fix pages with `node scripts/generate-qotd-redirects.js`, cards with `python3 scripts/generate-og-pages.py` (no `--slug`, which skips QOTD). |
 | 10 | `generate-llms-txt.py --check` | The two generated sections of `llms.txt` (every metric's latest Hawaiʻi value, year, 50-state rank and links; every Off the Charts post with its dek) must match what the generator writes. Values come from the same functions that build the `/c/` pages, so llms.txt can't disagree with them. `refresh-data.yml` regenerates it; after a manual refresh or a new post run `npm run llms`. |
+| 11 | `generate-data-json.py --check` | The `json/` metric summaries (`catalog.json` + one file per metric: latest Hawaiʻi value, rank, median, series, 50-state ranking, county values) must match what the generator writes, and each catalog entry's value, year and rank must match the committed `/c/` page title. `refresh-data.yml` regenerates it; after a manual refresh run `npm run data-json`. |
 
-All ten always run, so every problem surfaces in a single report.
+All eleven always run, so every problem surfaces in a single report.
 
 ## When NOT to run sync-qotd
 

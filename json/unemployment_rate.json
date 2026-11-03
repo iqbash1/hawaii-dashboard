@@ -1,0 +1,701 @@
+{
+ "id": "unemployment_rate",
+ "name": "Unemployment Rate",
+ "area": "Economy & Workforce",
+ "unit": "%",
+ "unit_label": "of labor force is unemployed",
+ "higher_is_better": false,
+ "hawaii": {
+  "year": "2026",
+  "value": 2.51,
+  "display": "2.5%",
+  "rank": 3,
+  "of": 50
+ },
+ "median_50_states": 4.06,
+ "source": "Bureau of Labor Statistics",
+ "page_url": "https://hawaiidashboard.org/c/unemployment_rate/",
+ "json_url": "https://hawaiidashboard.org/json/unemployment_rate.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/unemployment_rate_state.csv",
+ "csv_county_url": "https://hawaiidashboard.org/data/unemployment_rate_county.csv",
+ "cite_as": "Bureau of Labor Statistics via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/unemployment_rate/",
+ "definition": "Share of the civilian labor force actively looking for work but not currently employed, averaged over the year.",
+ "source_url": "https://www.bls.gov/lau/",
+ "rank_note": "#1 = best performing state; lower values are better.",
+ "hawaii_series": [
+  {
+   "year": "1976",
+   "value": 9.12
+  },
+  {
+   "year": "1977",
+   "value": 7.55
+  },
+  {
+   "year": "1978",
+   "value": 6.98
+  },
+  {
+   "year": "1979",
+   "value": 5.68
+  },
+  {
+   "year": "1980",
+   "value": 4.97
+  },
+  {
+   "year": "1981",
+   "value": 5.18
+  },
+  {
+   "year": "1982",
+   "value": 6.13
+  },
+  {
+   "year": "1983",
+   "value": 5.89
+  },
+  {
+   "year": "1984",
+   "value": 5.42
+  },
+  {
+   "year": "1985",
+   "value": 5.24
+  },
+  {
+   "year": "1986",
+   "value": 4.64
+  },
+  {
+   "year": "1987",
+   "value": 3.7
+  },
+  {
+   "year": "1988",
+   "value": 3.04
+  },
+  {
+   "year": "1989",
+   "value": 2.48
+  },
+  {
+   "year": "1990",
+   "value": 2.61
+  },
+  {
+   "year": "1991",
+   "value": 2.77
+  },
+  {
+   "year": "1992",
+   "value": 4.11
+  },
+  {
+   "year": "1993",
+   "value": 4.38
+  },
+  {
+   "year": "1994",
+   "value": 5.14
+  },
+  {
+   "year": "1995",
+   "value": 5.5
+  },
+  {
+   "year": "1996",
+   "value": 5.89
+  },
+  {
+   "year": "1997",
+   "value": 5.94
+  },
+  {
+   "year": "1998",
+   "value": 5.79
+  },
+  {
+   "year": "1999",
+   "value": 5.17
+  },
+  {
+   "year": "2000",
+   "value": 4.23
+  },
+  {
+   "year": "2001",
+   "value": 4.28
+  },
+  {
+   "year": "2002",
+   "value": 4.04
+  },
+  {
+   "year": "2003",
+   "value": 3.91
+  },
+  {
+   "year": "2004",
+   "value": 3.31
+  },
+  {
+   "year": "2005",
+   "value": 2.84
+  },
+  {
+   "year": "2006",
+   "value": 2.57
+  },
+  {
+   "year": "2007",
+   "value": 2.74
+  },
+  {
+   "year": "2008",
+   "value": 4.09
+  },
+  {
+   "year": "2009",
+   "value": 6.5
+  },
+  {
+   "year": "2010",
+   "value": 6.7
+  },
+  {
+   "year": "2011",
+   "value": 6.71
+  },
+  {
+   "year": "2012",
+   "value": 5.81
+  },
+  {
+   "year": "2013",
+   "value": 4.72
+  },
+  {
+   "year": "2014",
+   "value": 4.22
+  },
+  {
+   "year": "2015",
+   "value": 3.42
+  },
+  {
+   "year": "2016",
+   "value": 2.91
+  },
+  {
+   "year": "2017",
+   "value": 2.23
+  },
+  {
+   "year": "2018",
+   "value": 2.4
+  },
+  {
+   "year": "2019",
+   "value": 2.51
+  },
+  {
+   "year": "2020",
+   "value": 11.74
+  },
+  {
+   "year": "2021",
+   "value": 5.97
+  },
+  {
+   "year": "2022",
+   "value": 3.24
+  },
+  {
+   "year": "2023",
+   "value": 2.87
+  },
+  {
+   "year": "2024",
+   "value": 2.77
+  },
+  {
+   "year": "2025",
+   "value": 2.34
+  },
+  {
+   "year": "2026",
+   "value": 2.51
+  }
+ ],
+ "median_series": [
+  {
+   "year": "1976",
+   "value": 6.66
+  },
+  {
+   "year": "1977",
+   "value": 6.61
+  },
+  {
+   "year": "1978",
+   "value": 5.59
+  },
+  {
+   "year": "1979",
+   "value": 5.57
+  },
+  {
+   "year": "1980",
+   "value": 6.81
+  },
+  {
+   "year": "1981",
+   "value": 7.29
+  },
+  {
+   "year": "1982",
+   "value": 8.9
+  },
+  {
+   "year": "1983",
+   "value": 8.96
+  },
+  {
+   "year": "1984",
+   "value": 6.86
+  },
+  {
+   "year": "1985",
+   "value": 6.91
+  },
+  {
+   "year": "1986",
+   "value": 6.78
+  },
+  {
+   "year": "1987",
+   "value": 5.98
+  },
+  {
+   "year": "1988",
+   "value": 5.2
+  },
+  {
+   "year": "1989",
+   "value": 5.02
+  },
+  {
+   "year": "1990",
+   "value": 5.34
+  },
+  {
+   "year": "1991",
+   "value": 6.41
+  },
+  {
+   "year": "1992",
+   "value": 6.83
+  },
+  {
+   "year": "1993",
+   "value": 6.19
+  },
+  {
+   "year": "1994",
+   "value": 5.48
+  },
+  {
+   "year": "1995",
+   "value": 5.16
+  },
+  {
+   "year": "1996",
+   "value": 5.19
+  },
+  {
+   "year": "1997",
+   "value": 4.73
+  },
+  {
+   "year": "1998",
+   "value": 4.29
+  },
+  {
+   "year": "1999",
+   "value": 4.01
+  },
+  {
+   "year": "2000",
+   "value": 3.74
+  },
+  {
+   "year": "2001",
+   "value": 4.5
+  },
+  {
+   "year": "2002",
+   "value": 5.41
+  },
+  {
+   "year": "2003",
+   "value": 5.6
+  },
+  {
+   "year": "2004",
+   "value": 5.2
+  },
+  {
+   "year": "2005",
+   "value": 4.91
+  },
+  {
+   "year": "2006",
+   "value": 4.46
+  },
+  {
+   "year": "2007",
+   "value": 4.45
+  },
+  {
+   "year": "2008",
+   "value": 5.39
+  },
+  {
+   "year": "2009",
+   "value": 8.21
+  },
+  {
+   "year": "2010",
+   "value": 8.41
+  },
+  {
+   "year": "2011",
+   "value": 7.95
+  },
+  {
+   "year": "2012",
+   "value": 7.23
+  },
+  {
+   "year": "2013",
+   "value": 6.83
+  },
+  {
+   "year": "2014",
+   "value": 5.94
+  },
+  {
+   "year": "2015",
+   "value": 5.07
+  },
+  {
+   "year": "2016",
+   "value": 4.74
+  },
+  {
+   "year": "2017",
+   "value": 4.23
+  },
+  {
+   "year": "2018",
+   "value": 3.77
+  },
+  {
+   "year": "2019",
+   "value": 3.48
+  },
+  {
+   "year": "2020",
+   "value": 7.35
+  },
+  {
+   "year": "2021",
+   "value": 4.78
+  },
+  {
+   "year": "2022",
+   "value": 3.24
+  },
+  {
+   "year": "2023",
+   "value": 3.19
+  },
+  {
+   "year": "2024",
+   "value": 3.6
+  },
+  {
+   "year": "2025",
+   "value": 3.95
+  },
+  {
+   "year": "2026",
+   "value": 4.06
+  }
+ ],
+ "rankings": {
+  "year": "2026",
+  "states": [
+   {
+    "rank": 1,
+    "state": "South Dakota",
+    "value": 2.12
+   },
+   {
+    "rank": 2,
+    "state": "North Dakota",
+    "value": 2.38
+   },
+   {
+    "rank": 3,
+    "state": "Hawaiʻi",
+    "value": 2.51
+   },
+   {
+    "rank": 4,
+    "state": "Vermont",
+    "value": 2.61
+   },
+   {
+    "rank": 5,
+    "state": "New Hampshire",
+    "value": 2.97
+   },
+   {
+    "rank": 6,
+    "state": "Nebraska",
+    "value": 2.98
+   },
+   {
+    "rank": 7,
+    "state": "Alabama",
+    "value": 3.04
+   },
+   {
+    "rank": 8,
+    "state": "Maine",
+    "value": 3.18
+   },
+   {
+    "rank": 9,
+    "state": "Iowa",
+    "value": 3.27
+   },
+   {
+    "rank": 10,
+    "state": "Indiana",
+    "value": 3.32
+   },
+   {
+    "rank": 11,
+    "state": "Wyoming",
+    "value": 3.32
+   },
+   {
+    "rank": 12,
+    "state": "Wisconsin",
+    "value": 3.34
+   },
+   {
+    "rank": 13,
+    "state": "Montana",
+    "value": 3.39
+   },
+   {
+    "rank": 14,
+    "state": "Georgia",
+    "value": 3.41
+   },
+   {
+    "rank": 15,
+    "state": "Tennessee",
+    "value": 3.51
+   },
+   {
+    "rank": 16,
+    "state": "Idaho",
+    "value": 3.64
+   },
+   {
+    "rank": 17,
+    "state": "Mississippi",
+    "value": 3.64
+   },
+   {
+    "rank": 18,
+    "state": "North Carolina",
+    "value": 3.64
+   },
+   {
+    "rank": 19,
+    "state": "Utah",
+    "value": 3.68
+   },
+   {
+    "rank": 20,
+    "state": "Virginia",
+    "value": 3.73
+   },
+   {
+    "rank": 21,
+    "state": "Missouri",
+    "value": 3.74
+   },
+   {
+    "rank": 22,
+    "state": "Ohio",
+    "value": 3.77
+   },
+   {
+    "rank": 23,
+    "state": "Kansas",
+    "value": 3.84
+   },
+   {
+    "rank": 24,
+    "state": "Colorado",
+    "value": 3.93
+   },
+   {
+    "rank": 25,
+    "state": "Pennsylvania",
+    "value": 4.04
+   },
+   {
+    "rank": 26,
+    "state": "Oklahoma",
+    "value": 4.09
+   },
+   {
+    "rank": 27,
+    "state": "Arkansas",
+    "value": 4.17
+   },
+   {
+    "rank": 28,
+    "state": "Rhode Island",
+    "value": 4.21
+   },
+   {
+    "rank": 29,
+    "state": "Maryland",
+    "value": 4.24
+   },
+   {
+    "rank": 30,
+    "state": "West Virginia",
+    "value": 4.31
+   },
+   {
+    "rank": 31,
+    "state": "Louisiana",
+    "value": 4.32
+   },
+   {
+    "rank": 32,
+    "state": "Texas",
+    "value": 4.36
+   },
+   {
+    "rank": 33,
+    "state": "Minnesota",
+    "value": 4.43
+   },
+   {
+    "rank": 34,
+    "state": "Kentucky",
+    "value": 4.48
+   },
+   {
+    "rank": 35,
+    "state": "New York",
+    "value": 4.51
+   },
+   {
+    "rank": 36,
+    "state": "Alaska",
+    "value": 4.52
+   },
+   {
+    "rank": 37,
+    "state": "Massachusetts",
+    "value": 4.53
+   },
+   {
+    "rank": 38,
+    "state": "South Carolina",
+    "value": 4.54
+   },
+   {
+    "rank": 39,
+    "state": "Florida",
+    "value": 4.62
+   },
+   {
+    "rank": 40,
+    "state": "New Jersey",
+    "value": 4.68
+   },
+   {
+    "rank": 41,
+    "state": "New Mexico",
+    "value": 4.76
+   },
+   {
+    "rank": 42,
+    "state": "Arizona",
+    "value": 4.77
+   },
+   {
+    "rank": 43,
+    "state": "Illinois",
+    "value": 4.94
+   },
+   {
+    "rank": 44,
+    "state": "Connecticut",
+    "value": 4.97
+   },
+   {
+    "rank": 45,
+    "state": "Michigan",
+    "value": 5.0
+   },
+   {
+    "rank": 46,
+    "state": "Washington",
+    "value": 5.06
+   },
+   {
+    "rank": 47,
+    "state": "Delaware",
+    "value": 5.07
+   },
+   {
+    "rank": 48,
+    "state": "Nevada",
+    "value": 5.11
+   },
+   {
+    "rank": 49,
+    "state": "Oregon",
+    "value": 5.17
+   },
+   {
+    "rank": 50,
+    "state": "California",
+    "value": 5.24
+   }
+  ]
+ },
+ "counties": {
+  "year": "2024",
+  "values": {
+   "Honolulu": 2.52,
+   "Hawaiʻi": 2.99,
+   "Maui": 4.07,
+   "Kauaʻi": 2.43
+  }
+ }
+}

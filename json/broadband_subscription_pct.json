@@ -1,0 +1,357 @@
+{
+ "id": "broadband_subscription_pct",
+ "name": "Households with Broadband",
+ "area": "Infrastructure & Trust",
+ "unit": "%",
+ "unit_label": "of households have broadband",
+ "higher_is_better": true,
+ "hawaii": {
+  "year": "2024",
+  "value": 93.04,
+  "display": "93.0%",
+  "rank": 21,
+  "of": 50
+ },
+ "median_50_states": 92.81,
+ "source": "Census ACS",
+ "page_url": "https://hawaiidashboard.org/c/broadband_subscription_pct/",
+ "json_url": "https://hawaiidashboard.org/json/broadband_subscription_pct.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/broadband_subscription_pct_state.csv",
+ "csv_county_url": "https://hawaiidashboard.org/data/broadband_subscription_pct_county.csv",
+ "cite_as": "Census ACS via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/broadband_subscription_pct/",
+ "definition": "Share of households with a fixed broadband internet subscription, including cable, fiber, DSL, or fixed wireless.",
+ "source_url": "https://data.census.gov/",
+ "rank_note": "#1 = best performing state; higher values are better.",
+ "hawaii_series": [
+  {
+   "year": "2016",
+   "value": 83.18
+  },
+  {
+   "year": "2017",
+   "value": 84.48
+  },
+  {
+   "year": "2018",
+   "value": 85.73
+  },
+  {
+   "year": "2019",
+   "value": 88.02
+  },
+  {
+   "year": "2021",
+   "value": 91.34
+  },
+  {
+   "year": "2022",
+   "value": 91.29
+  },
+  {
+   "year": "2023",
+   "value": 92.62
+  },
+  {
+   "year": "2024",
+   "value": 93.04
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2016",
+   "value": 81.01
+  },
+  {
+   "year": "2017",
+   "value": 83.2
+  },
+  {
+   "year": "2018",
+   "value": 84.51
+  },
+  {
+   "year": "2019",
+   "value": 85.93
+  },
+  {
+   "year": "2021",
+   "value": 89.9
+  },
+  {
+   "year": "2022",
+   "value": 90.67
+  },
+  {
+   "year": "2023",
+   "value": 91.91
+  },
+  {
+   "year": "2024",
+   "value": 92.81
+  }
+ ],
+ "rankings": {
+  "year": "2024",
+  "states": [
+   {
+    "rank": 1,
+    "state": "New Hampshire",
+    "value": 95.29
+   },
+   {
+    "rank": 2,
+    "state": "Nevada",
+    "value": 95.11
+   },
+   {
+    "rank": 3,
+    "state": "California",
+    "value": 95.0
+   },
+   {
+    "rank": 4,
+    "state": "Washington",
+    "value": 94.98
+   },
+   {
+    "rank": 5,
+    "state": "Colorado",
+    "value": 94.9
+   },
+   {
+    "rank": 6,
+    "state": "New Jersey",
+    "value": 94.8
+   },
+   {
+    "rank": 7,
+    "state": "Maryland",
+    "value": 94.42
+   },
+   {
+    "rank": 8,
+    "state": "Massachusetts",
+    "value": 94.38
+   },
+   {
+    "rank": 9,
+    "state": "Delaware",
+    "value": 94.29
+   },
+   {
+    "rank": 10,
+    "state": "Florida",
+    "value": 94.26
+   },
+   {
+    "rank": 11,
+    "state": "Utah",
+    "value": 94.06
+   },
+   {
+    "rank": 12,
+    "state": "Connecticut",
+    "value": 94.03
+   },
+   {
+    "rank": 13,
+    "state": "Texas",
+    "value": 93.69
+   },
+   {
+    "rank": 14,
+    "state": "Oregon",
+    "value": 93.67
+   },
+   {
+    "rank": 15,
+    "state": "Alaska",
+    "value": 93.6
+   },
+   {
+    "rank": 16,
+    "state": "Arizona",
+    "value": 93.56
+   },
+   {
+    "rank": 17,
+    "state": "Georgia",
+    "value": 93.44
+   },
+   {
+    "rank": 18,
+    "state": "Rhode Island",
+    "value": 93.44
+   },
+   {
+    "rank": 19,
+    "state": "North Carolina",
+    "value": 93.18
+   },
+   {
+    "rank": 20,
+    "state": "New York",
+    "value": 93.1
+   },
+   {
+    "rank": 21,
+    "state": "Hawaiʻi",
+    "value": 93.04
+   },
+   {
+    "rank": 22,
+    "state": "Illinois",
+    "value": 92.93
+   },
+   {
+    "rank": 23,
+    "state": "South Carolina",
+    "value": 92.91
+   },
+   {
+    "rank": 24,
+    "state": "Minnesota",
+    "value": 92.86
+   },
+   {
+    "rank": 25,
+    "state": "Michigan",
+    "value": 92.81
+   },
+   {
+    "rank": 26,
+    "state": "Virginia",
+    "value": 92.81
+   },
+   {
+    "rank": 27,
+    "state": "Idaho",
+    "value": 92.79
+   },
+   {
+    "rank": 28,
+    "state": "Vermont",
+    "value": 92.75
+   },
+   {
+    "rank": 29,
+    "state": "Kansas",
+    "value": 92.53
+   },
+   {
+    "rank": 30,
+    "state": "Tennessee",
+    "value": 92.49
+   },
+   {
+    "rank": 31,
+    "state": "Maine",
+    "value": 92.37
+   },
+   {
+    "rank": 32,
+    "state": "Wisconsin",
+    "value": 92.32
+   },
+   {
+    "rank": 33,
+    "state": "Ohio",
+    "value": 92.22
+   },
+   {
+    "rank": 34,
+    "state": "Oklahoma",
+    "value": 92.14
+   },
+   {
+    "rank": 35,
+    "state": "Pennsylvania",
+    "value": 92.1
+   },
+   {
+    "rank": 36,
+    "state": "Indiana",
+    "value": 91.99
+   },
+   {
+    "rank": 37,
+    "state": "Nebraska",
+    "value": 91.93
+   },
+   {
+    "rank": 38,
+    "state": "Alabama",
+    "value": 91.64
+   },
+   {
+    "rank": 39,
+    "state": "Montana",
+    "value": 91.49
+   },
+   {
+    "rank": 40,
+    "state": "Missouri",
+    "value": 91.3
+   },
+   {
+    "rank": 41,
+    "state": "South Dakota",
+    "value": 91.28
+   },
+   {
+    "rank": 42,
+    "state": "Kentucky",
+    "value": 90.87
+   },
+   {
+    "rank": 43,
+    "state": "Arkansas",
+    "value": 90.76
+   },
+   {
+    "rank": 44,
+    "state": "Iowa",
+    "value": 90.71
+   },
+   {
+    "rank": 45,
+    "state": "North Dakota",
+    "value": 90.71
+   },
+   {
+    "rank": 46,
+    "state": "New Mexico",
+    "value": 90.53
+   },
+   {
+    "rank": 47,
+    "state": "Louisiana",
+    "value": 90.46
+   },
+   {
+    "rank": 48,
+    "state": "Wyoming",
+    "value": 89.92
+   },
+   {
+    "rank": 49,
+    "state": "West Virginia",
+    "value": 89.4
+   },
+   {
+    "rank": 50,
+    "state": "Mississippi",
+    "value": 88.33
+   }
+  ]
+ },
+ "counties": {
+  "year": "2024",
+  "values": {
+   "Honolulu": 93.29,
+   "Hawaiʻi": 92.86,
+   "Maui": 91.03,
+   "Kauaʻi": 94.74
+  }
+ }
+}

@@ -34,6 +34,7 @@ cp -r rh dist/
 cp -r c dist/
 cp -r q dist/
 cp -r data dist/
+cp -r json dist/
 
 # Replace all ?v=... cache-bust strings with the git short SHA.
 # Source files keep their manual versions; only dist/ gets the SHA.

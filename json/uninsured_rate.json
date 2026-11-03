@@ -1,0 +1,405 @@
+{
+ "id": "uninsured_rate",
+ "name": "Uninsured Rate",
+ "area": "Safety & Health",
+ "unit": "%",
+ "unit_label": "lack health insurance",
+ "higher_is_better": false,
+ "hawaii": {
+  "year": "2024",
+  "value": 3.5,
+  "display": "3.5%",
+  "rank": 2,
+  "of": 50
+ },
+ "median_50_states": 7.3,
+ "source": "Census ACS / KFF",
+ "page_url": "https://hawaiidashboard.org/c/uninsured_rate/",
+ "json_url": "https://hawaiidashboard.org/json/uninsured_rate.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/uninsured_rate_state.csv",
+ "csv_county_url": "https://hawaiidashboard.org/data/uninsured_rate_county.csv",
+ "cite_as": "Census ACS / KFF via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/uninsured_rate/",
+ "definition": "Share of residents under 65 with no health insurance coverage of any kind.",
+ "source_url": "https://www.kff.org/topic/uninsured/",
+ "rank_note": "#1 = best performing state; lower values are better.",
+ "hawaii_series": [
+  {
+   "year": "2010",
+   "value": 7.9
+  },
+  {
+   "year": "2011",
+   "value": 7.1
+  },
+  {
+   "year": "2012",
+   "value": 6.9
+  },
+  {
+   "year": "2013",
+   "value": 6.7
+  },
+  {
+   "year": "2014",
+   "value": 5.3
+  },
+  {
+   "year": "2015",
+   "value": 4.0
+  },
+  {
+   "year": "2016",
+   "value": 3.5
+  },
+  {
+   "year": "2017",
+   "value": 3.8
+  },
+  {
+   "year": "2018",
+   "value": 4.1
+  },
+  {
+   "year": "2019",
+   "value": 4.2
+  },
+  {
+   "year": "2021",
+   "value": 3.9
+  },
+  {
+   "year": "2022",
+   "value": 3.5
+  },
+  {
+   "year": "2023",
+   "value": 3.2
+  },
+  {
+   "year": "2024",
+   "value": 3.5
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2010",
+   "value": 14.3
+  },
+  {
+   "year": "2011",
+   "value": 14.25
+  },
+  {
+   "year": "2012",
+   "value": 13.75
+  },
+  {
+   "year": "2013",
+   "value": 13.5
+  },
+  {
+   "year": "2014",
+   "value": 10.25
+  },
+  {
+   "year": "2015",
+   "value": 8.65
+  },
+  {
+   "year": "2016",
+   "value": 8.0
+  },
+  {
+   "year": "2017",
+   "value": 8.0
+  },
+  {
+   "year": "2018",
+   "value": 8.0
+  },
+  {
+   "year": "2019",
+   "value": 8.0
+  },
+  {
+   "year": "2021",
+   "value": 7.35
+  },
+  {
+   "year": "2022",
+   "value": 6.75
+  },
+  {
+   "year": "2023",
+   "value": 6.6
+  },
+  {
+   "year": "2024",
+   "value": 7.3
+  }
+ ],
+ "rankings": {
+  "year": "2024",
+  "states": [
+   {
+    "rank": 1,
+    "state": "Massachusetts",
+    "value": 2.8
+   },
+   {
+    "rank": 2,
+    "state": "Hawaiʻi",
+    "value": 3.5
+   },
+   {
+    "rank": 3,
+    "state": "Vermont",
+    "value": 4.2
+   },
+   {
+    "rank": 4,
+    "state": "New Hampshire",
+    "value": 4.5
+   },
+   {
+    "rank": 5,
+    "state": "Rhode Island",
+    "value": 4.6
+   },
+   {
+    "rank": 6,
+    "state": "New York",
+    "value": 5.0
+   },
+   {
+    "rank": 7,
+    "state": "Michigan",
+    "value": 5.1
+   },
+   {
+    "rank": 8,
+    "state": "Minnesota",
+    "value": 5.1
+   },
+   {
+    "rank": 9,
+    "state": "Oregon",
+    "value": 5.2
+   },
+   {
+    "rank": 10,
+    "state": "Wisconsin",
+    "value": 5.3
+   },
+   {
+    "rank": 11,
+    "state": "Iowa",
+    "value": 5.4
+   },
+   {
+    "rank": 12,
+    "state": "Maine",
+    "value": 5.5
+   },
+   {
+    "rank": 13,
+    "state": "Connecticut",
+    "value": 5.8
+   },
+   {
+    "rank": 14,
+    "state": "Pennsylvania",
+    "value": 5.8
+   },
+   {
+    "rank": 15,
+    "state": "West Virginia",
+    "value": 5.8
+   },
+   {
+    "rank": 16,
+    "state": "California",
+    "value": 5.9
+   },
+   {
+    "rank": 17,
+    "state": "North Dakota",
+    "value": 6.1
+   },
+   {
+    "rank": 18,
+    "state": "Maryland",
+    "value": 6.3
+   },
+   {
+    "rank": 19,
+    "state": "Washington",
+    "value": 6.5
+   },
+   {
+    "rank": 20,
+    "state": "Ohio",
+    "value": 6.7
+   },
+   {
+    "rank": 21,
+    "state": "Kentucky",
+    "value": 6.8
+   },
+   {
+    "rank": 22,
+    "state": "Delaware",
+    "value": 6.9
+   },
+   {
+    "rank": 23,
+    "state": "Illinois",
+    "value": 6.9
+   },
+   {
+    "rank": 24,
+    "state": "Virginia",
+    "value": 6.9
+   },
+   {
+    "rank": 25,
+    "state": "Nebraska",
+    "value": 7.1
+   },
+   {
+    "rank": 26,
+    "state": "Indiana",
+    "value": 7.5
+   },
+   {
+    "rank": 27,
+    "state": "Louisiana",
+    "value": 7.7
+   },
+   {
+    "rank": 28,
+    "state": "Missouri",
+    "value": 7.7
+   },
+   {
+    "rank": 29,
+    "state": "New Jersey",
+    "value": 7.7
+   },
+   {
+    "rank": 30,
+    "state": "Colorado",
+    "value": 7.9
+   },
+   {
+    "rank": 31,
+    "state": "South Dakota",
+    "value": 8.1
+   },
+   {
+    "rank": 32,
+    "state": "Alabama",
+    "value": 8.2
+   },
+   {
+    "rank": 33,
+    "state": "Utah",
+    "value": 8.3
+   },
+   {
+    "rank": 34,
+    "state": "Kansas",
+    "value": 8.5
+   },
+   {
+    "rank": 35,
+    "state": "North Carolina",
+    "value": 8.6
+   },
+   {
+    "rank": 36,
+    "state": "Montana",
+    "value": 8.8
+   },
+   {
+    "rank": 37,
+    "state": "South Carolina",
+    "value": 9.0
+   },
+   {
+    "rank": 38,
+    "state": "Idaho",
+    "value": 9.2
+   },
+   {
+    "rank": 39,
+    "state": "Arkansas",
+    "value": 9.4
+   },
+   {
+    "rank": 40,
+    "state": "Mississippi",
+    "value": 9.7
+   },
+   {
+    "rank": 41,
+    "state": "Tennessee",
+    "value": 9.7
+   },
+   {
+    "rank": 42,
+    "state": "New Mexico",
+    "value": 10.1
+   },
+   {
+    "rank": 43,
+    "state": "Arizona",
+    "value": 10.3
+   },
+   {
+    "rank": 44,
+    "state": "Wyoming",
+    "value": 10.3
+   },
+   {
+    "rank": 45,
+    "state": "Florida",
+    "value": 10.9
+   },
+   {
+    "rank": 46,
+    "state": "Alaska",
+    "value": 11.0
+   },
+   {
+    "rank": 47,
+    "state": "Nevada",
+    "value": 11.4
+   },
+   {
+    "rank": 48,
+    "state": "Oklahoma",
+    "value": 11.5
+   },
+   {
+    "rank": 49,
+    "state": "Georgia",
+    "value": 12.0
+   },
+   {
+    "rank": 50,
+    "state": "Texas",
+    "value": 16.7
+   }
+  ]
+ },
+ "counties": {
+  "year": "2024",
+  "values": {
+   "Honolulu": 2.7,
+   "Hawaiʻi": 5.4,
+   "Maui": 4.0,
+   "Kauaʻi": 5.9
+  }
+ }
+}

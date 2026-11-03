@@ -1,0 +1,397 @@
+{
+ "id": "pcp_per_100k",
+ "name": "Primary Care Physicians (civilian)",
+ "area": "Safety & Health",
+ "unit": "per 100K",
+ "unit_label": "per 100K residents",
+ "higher_is_better": true,
+ "hawaii": {
+  "year": "2023",
+  "value": 91.8,
+  "display": "92 per 100K",
+  "rank": 7,
+  "of": 50
+ },
+ "median_50_states": 79.6,
+ "source": "HRSA Area Health Resource File",
+ "page_url": "https://hawaiidashboard.org/c/pcp_per_100k/",
+ "json_url": "https://hawaiidashboard.org/json/pcp_per_100k.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/pcp_per_100k_state.csv",
+ "csv_county_url": null,
+ "cite_as": "HRSA Area Health Resource File via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/pcp_per_100k/",
+ "definition": "Non-federal primary care doctors (MDs and DOs) per 100,000 civilians, counting all primary care specialties.",
+ "source_url": "https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf",
+ "rank_note": "#1 = best performing state; higher values are better.",
+ "hawaii_series": [
+  {
+   "year": "2010",
+   "value": 89.2
+  },
+  {
+   "year": "2011",
+   "value": 88.3
+  },
+  {
+   "year": "2012",
+   "value": 87.1
+  },
+  {
+   "year": "2013",
+   "value": 90.2
+  },
+  {
+   "year": "2014",
+   "value": 89.9
+  },
+  {
+   "year": "2015",
+   "value": 91.2
+  },
+  {
+   "year": "2016",
+   "value": 91.5
+  },
+  {
+   "year": "2017",
+   "value": 91.1
+  },
+  {
+   "year": "2018",
+   "value": 92.1
+  },
+  {
+   "year": "2019",
+   "value": 93.9
+  },
+  {
+   "year": "2020",
+   "value": 96.7
+  },
+  {
+   "year": "2021",
+   "value": 93
+  },
+  {
+   "year": "2022",
+   "value": 90.3
+  },
+  {
+   "year": "2023",
+   "value": 91.8
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2010",
+   "value": 74.9
+  },
+  {
+   "year": "2011",
+   "value": 75.5
+  },
+  {
+   "year": "2012",
+   "value": 75.9
+  },
+  {
+   "year": "2013",
+   "value": 77.4
+  },
+  {
+   "year": "2014",
+   "value": 77.4
+  },
+  {
+   "year": "2015",
+   "value": 77.5
+  },
+  {
+   "year": "2016",
+   "value": 77.5
+  },
+  {
+   "year": "2017",
+   "value": 77.6
+  },
+  {
+   "year": "2018",
+   "value": 78.05
+  },
+  {
+   "year": "2019",
+   "value": 79.15
+  },
+  {
+   "year": "2020",
+   "value": 79.05
+  },
+  {
+   "year": "2021",
+   "value": 76.8
+  },
+  {
+   "year": "2022",
+   "value": 79
+  },
+  {
+   "year": "2023",
+   "value": 79.6
+  }
+ ],
+ "rankings": {
+  "year": "2023",
+  "states": [
+   {
+    "rank": 1,
+    "state": "Vermont",
+    "value": 115.3
+   },
+   {
+    "rank": 2,
+    "state": "Maine",
+    "value": 106.6
+   },
+   {
+    "rank": 3,
+    "state": "Massachusetts",
+    "value": 103.2
+   },
+   {
+    "rank": 4,
+    "state": "Alaska",
+    "value": 98.1
+   },
+   {
+    "rank": 5,
+    "state": "Oregon",
+    "value": 95.6
+   },
+   {
+    "rank": 6,
+    "state": "Rhode Island",
+    "value": 94.6
+   },
+   {
+    "rank": 7,
+    "state": "Hawaii",
+    "value": 91.8
+   },
+   {
+    "rank": 8,
+    "state": "Minnesota",
+    "value": 90.8
+   },
+   {
+    "rank": 9,
+    "state": "Maryland",
+    "value": 87
+   },
+   {
+    "rank": 10,
+    "state": "Washington",
+    "value": 86.4
+   },
+   {
+    "rank": 11,
+    "state": "New Hampshire",
+    "value": 85.8
+   },
+   {
+    "rank": 12,
+    "state": "California",
+    "value": 85.2
+   },
+   {
+    "rank": 13,
+    "state": "Connecticut",
+    "value": 84.7
+   },
+   {
+    "rank": 14,
+    "state": "Colorado",
+    "value": 84.6
+   },
+   {
+    "rank": 15,
+    "state": "New York",
+    "value": 84.2
+   },
+   {
+    "rank": 16,
+    "state": "Montana",
+    "value": 84.1
+   },
+   {
+    "rank": 17,
+    "state": "Illinois",
+    "value": 83.8
+   },
+   {
+    "rank": 18,
+    "state": "West Virginia",
+    "value": 83.2
+   },
+   {
+    "rank": 19,
+    "state": "South Dakota",
+    "value": 82.2
+   },
+   {
+    "rank": 20,
+    "state": "Wisconsin",
+    "value": 82.1
+   },
+   {
+    "rank": 21,
+    "state": "Pennsylvania",
+    "value": 81.9
+   },
+   {
+    "rank": 22,
+    "state": "North Dakota",
+    "value": 81.5
+   },
+   {
+    "rank": 23,
+    "state": "Michigan",
+    "value": 81.4
+   },
+   {
+    "rank": 24,
+    "state": "Kansas",
+    "value": 80.9
+   },
+   {
+    "rank": 25,
+    "state": "New Jersey",
+    "value": 79.9
+   },
+   {
+    "rank": 26,
+    "state": "Delaware",
+    "value": 79.3
+   },
+   {
+    "rank": 27,
+    "state": "Virginia",
+    "value": 77.9
+   },
+   {
+    "rank": 28,
+    "state": "Ohio",
+    "value": 77.8
+   },
+   {
+    "rank": 29,
+    "state": "Nebraska",
+    "value": 76.1
+   },
+   {
+    "rank": 30,
+    "state": "Iowa",
+    "value": 75.4
+   },
+   {
+    "rank": 31,
+    "state": "New Mexico",
+    "value": 74.4
+   },
+   {
+    "rank": 32,
+    "state": "Florida",
+    "value": 74.1
+   },
+   {
+    "rank": 33,
+    "state": "Louisiana",
+    "value": 73.6
+   },
+   {
+    "rank": 34,
+    "state": "Missouri",
+    "value": 73.3
+   },
+   {
+    "rank": 35,
+    "state": "Wyoming",
+    "value": 72.5
+   },
+   {
+    "rank": 36,
+    "state": "North Carolina",
+    "value": 71.7
+   },
+   {
+    "rank": 37,
+    "state": "Arkansas",
+    "value": 70.5
+   },
+   {
+    "rank": 38,
+    "state": "Tennessee",
+    "value": 69.1
+   },
+   {
+    "rank": 39,
+    "state": "Georgia",
+    "value": 68.8
+   },
+   {
+    "rank": 40,
+    "state": "South Carolina",
+    "value": 68.5
+   },
+   {
+    "rank": 41,
+    "state": "Indiana",
+    "value": 67.1
+   },
+   {
+    "rank": 42,
+    "state": "Alabama",
+    "value": 66.6
+   },
+   {
+    "rank": 43,
+    "state": "Arizona",
+    "value": 64.9
+   },
+   {
+    "rank": 44,
+    "state": "Kentucky",
+    "value": 64.4
+   },
+   {
+    "rank": 45,
+    "state": "Idaho",
+    "value": 63.6
+   },
+   {
+    "rank": 46,
+    "state": "Texas",
+    "value": 61.8
+   },
+   {
+    "rank": 47,
+    "state": "Oklahoma",
+    "value": 60.4
+   },
+   {
+    "rank": 48,
+    "state": "Nevada",
+    "value": 59.1
+   },
+   {
+    "rank": 49,
+    "state": "Mississippi",
+    "value": 57.4
+   },
+   {
+    "rank": 50,
+    "state": "Utah",
+    "value": 56.6
+   }
+  ]
+ },
+ "counties": null
+}

@@ -1,0 +1,485 @@
+{
+ "id": "net_domestic_migration_rate",
+ "name": "Net Migration",
+ "area": "Infrastructure & Trust",
+ "unit": "per 10K",
+ "unit_label": "net inflow per 10K residents",
+ "higher_is_better": true,
+ "hawaii": {
+  "year": "2025",
+  "value": -61.9,
+  "display": "-61.9 per 10K",
+  "rank": 49,
+  "of": 50
+ },
+ "median_50_states": 9.8,
+ "source": "Census PEP",
+ "page_url": "https://hawaiidashboard.org/c/net_domestic_migration_rate/",
+ "json_url": "https://hawaiidashboard.org/json/net_domestic_migration_rate.json",
+ "csv_state_url": "https://hawaiidashboard.org/data/net_domestic_migration_rate_state.csv",
+ "csv_county_url": "https://hawaiidashboard.org/data/net_domestic_migration_rate_county.csv",
+ "cite_as": "Census PEP via Hawaiʻi Dashboard, https://hawaiidashboard.org/c/net_domestic_migration_rate/",
+ "definition": "Net inflow of U.S. residents moving from other states, per 10,000 residents; positive means more arrivals than departures.",
+ "source_url": "https://www.census.gov/data/datasets/time-series/demo/popest/2020s-state-total.html",
+ "rank_note": "#1 = best performing state; higher values are better.",
+ "hawaii_series": [
+  {
+   "year": "2001",
+   "value": 0.9
+  },
+  {
+   "year": "2002",
+   "value": 1.5
+  },
+  {
+   "year": "2003",
+   "value": 16.7
+  },
+  {
+   "year": "2004",
+   "value": -5.6
+  },
+  {
+   "year": "2005",
+   "value": -14.2
+  },
+  {
+   "year": "2006",
+   "value": -23.8
+  },
+  {
+   "year": "2007",
+   "value": -72.6
+  },
+  {
+   "year": "2008",
+   "value": -27.9
+  },
+  {
+   "year": "2009",
+   "value": -38.9
+  },
+  {
+   "year": "2010",
+   "value": -6.5
+  },
+  {
+   "year": "2011",
+   "value": -6.5
+  },
+  {
+   "year": "2012",
+   "value": -22.1
+  },
+  {
+   "year": "2013",
+   "value": -5.5
+  },
+  {
+   "year": "2014",
+   "value": -40.4
+  },
+  {
+   "year": "2015",
+   "value": -48.1
+  },
+  {
+   "year": "2016",
+   "value": -80.4
+  },
+  {
+   "year": "2017",
+   "value": -101.3
+  },
+  {
+   "year": "2018",
+   "value": -90.8
+  },
+  {
+   "year": "2019",
+   "value": -97.4
+  },
+  {
+   "year": "2021",
+   "value": -68
+  },
+  {
+   "year": "2022",
+   "value": -110.9
+  },
+  {
+   "year": "2023",
+   "value": -78.9
+  },
+  {
+   "year": "2024",
+   "value": -59.1
+  },
+  {
+   "year": "2025",
+   "value": -61.9
+  }
+ ],
+ "median_series": [
+  {
+   "year": "2001",
+   "value": 1.05
+  },
+  {
+   "year": "2002",
+   "value": 0.9
+  },
+  {
+   "year": "2003",
+   "value": 9.1
+  },
+  {
+   "year": "2004",
+   "value": 5.55
+  },
+  {
+   "year": "2005",
+   "value": 10.55
+  },
+  {
+   "year": "2006",
+   "value": 12.2
+  },
+  {
+   "year": "2007",
+   "value": 9.45
+  },
+  {
+   "year": "2008",
+   "value": 1.2
+  },
+  {
+   "year": "2009",
+   "value": 7.7
+  },
+  {
+   "year": "2010",
+   "value": -0.3
+  },
+  {
+   "year": "2011",
+   "value": -0.3
+  },
+  {
+   "year": "2012",
+   "value": -6
+  },
+  {
+   "year": "2013",
+   "value": -4.65
+  },
+  {
+   "year": "2014",
+   "value": -11.85
+  },
+  {
+   "year": "2015",
+   "value": -12.4
+  },
+  {
+   "year": "2016",
+   "value": -12.1
+  },
+  {
+   "year": "2017",
+   "value": -6.6
+  },
+  {
+   "year": "2018",
+   "value": -3.65
+  },
+  {
+   "year": "2019",
+   "value": -3
+  },
+  {
+   "year": "2021",
+   "value": 19.45
+  },
+  {
+   "year": "2022",
+   "value": 3.6
+  },
+  {
+   "year": "2023",
+   "value": 7.35
+  },
+  {
+   "year": "2024",
+   "value": 5.5
+  },
+  {
+   "year": "2025",
+   "value": 9.8
+  }
+ ],
+ "rankings": {
+  "year": "2025",
+  "states": [
+   {
+    "rank": 1,
+    "state": "South Carolina",
+    "value": 120.5
+   },
+   {
+    "rank": 2,
+    "state": "Idaho",
+    "value": 98.8
+   },
+   {
+    "rank": 3,
+    "state": "North Carolina",
+    "value": 75.6
+   },
+   {
+    "rank": 4,
+    "state": "Delaware",
+    "value": 65
+   },
+   {
+    "rank": 5,
+    "state": "Tennessee",
+    "value": 58.2
+   },
+   {
+    "rank": 6,
+    "state": "Montana",
+    "value": 55.6
+   },
+   {
+    "rank": 7,
+    "state": "Maine",
+    "value": 52.5
+   },
+   {
+    "rank": 8,
+    "state": "Arkansas",
+    "value": 46.6
+   },
+   {
+    "rank": 9,
+    "state": "New Hampshire",
+    "value": 46.4
+   },
+   {
+    "rank": 10,
+    "state": "Nevada",
+    "value": 45.6
+   },
+   {
+    "rank": 11,
+    "state": "Alabama",
+    "value": 45.1
+   },
+   {
+    "rank": 12,
+    "state": "Arizona",
+    "value": 41
+   },
+   {
+    "rank": 13,
+    "state": "West Virginia",
+    "value": 36.3
+   },
+   {
+    "rank": 14,
+    "state": "Oklahoma",
+    "value": 35.3
+   },
+   {
+    "rank": 15,
+    "state": "Wyoming",
+    "value": 25.1
+   },
+   {
+    "rank": 16,
+    "state": "Georgia",
+    "value": 24.3
+   },
+   {
+    "rank": 17,
+    "state": "South Dakota",
+    "value": 23.3
+   },
+   {
+    "rank": 18,
+    "state": "Missouri",
+    "value": 22.4
+   },
+   {
+    "rank": 19,
+    "state": "Texas",
+    "value": 21.4
+   },
+   {
+    "rank": 20,
+    "state": "Indiana",
+    "value": 17.5
+   },
+   {
+    "rank": 21,
+    "state": "Kentucky",
+    "value": 15.8
+   },
+   {
+    "rank": 22,
+    "state": "Minnesota",
+    "value": 14.3
+   },
+   {
+    "rank": 23,
+    "state": "Wisconsin",
+    "value": 11.7
+   },
+   {
+    "rank": 24,
+    "state": "Washington",
+    "value": 11.6
+   },
+   {
+    "rank": 25,
+    "state": "Ohio",
+    "value": 10
+   },
+   {
+    "rank": 26,
+    "state": "Florida",
+    "value": 9.6
+   },
+   {
+    "rank": 27,
+    "state": "Utah",
+    "value": 9.5
+   },
+   {
+    "rank": 28,
+    "state": "Virginia",
+    "value": 7.1
+   },
+   {
+    "rank": 29,
+    "state": "North Dakota",
+    "value": 6.4
+   },
+   {
+    "rank": 30,
+    "state": "Oregon",
+    "value": 5.2
+   },
+   {
+    "rank": 31,
+    "state": "Michigan",
+    "value": 1.8
+   },
+   {
+    "rank": 32,
+    "state": "Kansas",
+    "value": -1.7
+   },
+   {
+    "rank": 33,
+    "state": "Nebraska",
+    "value": -1.8
+   },
+   {
+    "rank": 34,
+    "state": "Pennsylvania",
+    "value": -2.2
+   },
+   {
+    "rank": 35,
+    "state": "Iowa",
+    "value": -3
+   },
+   {
+    "rank": 36,
+    "state": "Mississippi",
+    "value": -3.1
+   },
+   {
+    "rank": 37,
+    "state": "New Mexico",
+    "value": -10.7
+   },
+   {
+    "rank": 38,
+    "state": "Vermont",
+    "value": -11.2
+   },
+   {
+    "rank": 39,
+    "state": "Rhode Island",
+    "value": -13.9
+   },
+   {
+    "rank": 40,
+    "state": "Connecticut",
+    "value": -16.1
+   },
+   {
+    "rank": 41,
+    "state": "Maryland",
+    "value": -19.4
+   },
+   {
+    "rank": 42,
+    "state": "Colorado",
+    "value": -20.2
+   },
+   {
+    "rank": 43,
+    "state": "Louisiana",
+    "value": -31.2
+   },
+   {
+    "rank": 44,
+    "state": "Illinois",
+    "value": -31.5
+   },
+   {
+    "rank": 45,
+    "state": "New Jersey",
+    "value": -39.3
+   },
+   {
+    "rank": 46,
+    "state": "Massachusetts",
+    "value": -46.7
+   },
+   {
+    "rank": 47,
+    "state": "California",
+    "value": -58.2
+   },
+   {
+    "rank": 48,
+    "state": "Alaska",
+    "value": -61.4
+   },
+   {
+    "rank": 49,
+    "state": "Hawaiʻi",
+    "value": -61.9
+   },
+   {
+    "rank": 50,
+    "state": "New York",
+    "value": -68.8
+   }
+  ]
+ },
+ "counties": {
+  "year": "2025",
+  "values": {
+   "Honolulu": -67.5,
+   "Hawaiʻi": 13.7,
+   "Maui": -137.9,
+   "Kauaʻi": -34.9
+  }
+ }
+}
