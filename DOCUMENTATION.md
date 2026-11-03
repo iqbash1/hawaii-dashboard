@@ -1197,7 +1197,7 @@ Every indexable page has:
 
 - `robots.txt`, allows all crawlers, explicitly permits AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, etc.)
 - `sitemap.xml`, 50 URLs (home, 7 change-summary year-spans, About, FAQ, Subscribe, Off the Charts archive, 11 OtC posts, 27 `/c/` metric pages) with inline `<image:image>` entries for each URL's OG image (image-sitemap extension namespace). Priority hints; `<lastmod>` auto-rewritten at build time from each file's git history.
-- `_headers`, Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, 1-hour JSON with CORS for `/json/`, 1-day for `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML.
+- `_headers`, Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, 1-hour JSON with CORS for `/json/`, 1-day for `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML. Cloudflare merges every matching rule, so each specific block starts with `! Cache-Control` to drop the `/*` 60s value; without it the response carries two max-age values and caches use the first (`verify-live-site.sh` fails on that).
 
 ### AI chat engine optimization
 
