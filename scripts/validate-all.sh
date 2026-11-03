@@ -1,7 +1,7 @@
 #!/bin/bash
 # Aggregated validation gate for `npm run validate`.
 #
-# Runs nine checks in sequence and ALWAYS runs all nine so every
+# Runs ten checks in sequence and ALWAYS runs all ten so every
 # issue surfaces in a single pass:
 #
 #   1. validate-data.js
@@ -55,6 +55,11 @@
 #          sync-qotd-answers (gate 3) reports as "no changes needed" because it
 #          only owns the answers. Run `node scripts/generate-qotd-redirects.js`.
 #
+#  10. generate-llms-txt.py --check
+#        - exit 1 = the generated metric or Off the Charts section of llms.txt
+#          no longer matches the data (a refresh or a new post without a
+#          regenerate). Run `npm run llms`.
+#
 # Aggregated exit code: 0 if all pass, 1 if any hard check failed.
 
 cd "$(dirname "$0")/.."
@@ -62,7 +67,7 @@ cd "$(dirname "$0")/.."
 set +e
 FAIL=0
 
-echo "── 1/9 validate-data.js ──"
+echo "── 1/10 validate-data.js ──"
 node scripts/validate-data.js
 V=$?
 if [ $V -eq 2 ]; then
@@ -71,7 +76,7 @@ if [ $V -eq 2 ]; then
 fi
 
 echo ""
-echo "── 2/9 audit-narrative-numbers.js --gate --gate-new ──"
+echo "── 2/10 audit-narrative-numbers.js --gate --gate-new ──"
 node scripts/audit-narrative-numbers.js --gate --gate-new
 A=$?
 if [ $A -ne 0 ]; then
@@ -79,7 +84,7 @@ if [ $A -ne 0 ]; then
 fi
 
 echo ""
-echo "── 3/9 sync-qotd-answers.js --check ──"
+echo "── 3/10 sync-qotd-answers.js --check ──"
 node scripts/sync-qotd-answers.js --check
 S=$?
 if [ $S -ne 0 ]; then
@@ -87,7 +92,7 @@ if [ $S -ne 0 ]; then
 fi
 
 echo ""
-echo "── 4/9 audit-internal.py --gate ──"
+echo "── 4/10 audit-internal.py --gate ──"
 python3 scripts/audit-internal.py --gate
 I=$?
 if [ $I -ne 0 ]; then
@@ -95,7 +100,7 @@ if [ $I -ne 0 ]; then
 fi
 
 echo ""
-echo "── 5/9 update-metric-counts.js --check ──"
+echo "── 5/10 update-metric-counts.js --check ──"
 node scripts/update-metric-counts.js --check
 M=$?
 if [ $M -ne 0 ]; then
@@ -103,7 +108,7 @@ if [ $M -ne 0 ]; then
 fi
 
 echo ""
-echo "── 6/9 generate-fyc-pages.js --check ──"
+echo "── 6/10 generate-fyc-pages.js --check ──"
 node scripts/generate-fyc-pages.js --check
 F=$?
 if [ $F -ne 0 ]; then
@@ -111,7 +116,7 @@ if [ $F -ne 0 ]; then
 fi
 
 echo ""
-echo "── 7/9 sync-otc-meta.js --check ──"
+echo "── 7/10 sync-otc-meta.js --check ──"
 node scripts/sync-otc-meta.js --check
 O=$?
 if [ $O -ne 0 ]; then
@@ -119,7 +124,7 @@ if [ $O -ne 0 ]; then
 fi
 
 echo ""
-echo "── 8/9 audit-otc-numbers.js --gate ──"
+echo "── 8/10 audit-otc-numbers.js --gate ──"
 node scripts/audit-otc-numbers.js --gate
 OTC=$?
 if [ $OTC -ne 0 ]; then
@@ -128,12 +133,20 @@ if [ $OTC -ne 0 ]; then
 fi
 
 echo ""
-echo "── 9/9 generate-qotd-redirects.js --check ──"
+echo "── 9/10 generate-qotd-redirects.js --check ──"
 node scripts/generate-qotd-redirects.js --check
 QR=$?
 if [ $QR -ne 0 ]; then
     FAIL=1
     echo "✗ QOTD pages drifted from js/questions.js (a claim was edited without regenerating)"
+fi
+
+echo ""
+echo "── 10/10 generate-llms-txt.py --check ──"
+python3 scripts/generate-llms-txt.py --check
+L=$?
+if [ $L -ne 0 ]; then
+    FAIL=1
 fi
 
 echo ""

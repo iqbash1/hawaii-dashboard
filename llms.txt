@@ -10,44 +10,75 @@ Data: All metrics use nonpartisan federal sources reported the same way for all 
 
 The Hawaiʻi Dashboard tracks 27 metrics across 5 policy areas, comparing Hawaiʻi to the other 49 states over time. Each metric shows a trend chart (Hawaiʻi vs. the 50-state median), a 50-state ranking, rank history over time, and county breakdowns where data exists. The dashboard is updated annually; some metrics also show a latest monthly figure from federal sources.
 
+<!-- generated:metrics (scripts/generate-llms-txt.py, do not hand-edit) -->
 ## 5 Policy Areas and 27 Metrics
 
+Latest Hawaiʻi figure and 50-state rank for each metric, regenerated from the dashboard data on every refresh. Each metric page is readable without JavaScript and carries schema.org Dataset markup; each CSV is long-format (year, state, value) across all 50 states.
+
 ### Safety & Health
-1. Violent Crime Rate: per 100K residents (FBI Crime Data Explorer)
-2. Property Crime Rate: per 100K residents (FBI Crime Data Explorer)
-3. Primary Care Physicians: per 100K civilians (HRSA AHRF)
-4. Uninsured Rate: % without health insurance (Census ACS)
-5. Suicide Rate: per 100K residents (CDC WONDER)
+1. **Violent Crime Rate**: Hawaiʻi 214 per 100K in 2025, ranked #8 of 50 states (#1 = best). Counts murder, non-negligent manslaughter, rape, robbery, and aggravated assault. Rate per 100,000 residents. Source: FBI Crime Data Explorer.
+   Page: https://hawaiidashboard.org/c/violent_crime_rate/ | State CSV: https://hawaiidashboard.org/data/violent_crime_rate_state.csv
+2. **Property Crime Rate**: Hawaiʻi 1,682 per 100K in 2025, ranked #35 of 50 states (#1 = best). Counts burglary, larceny-theft, and motor vehicle theft. Rate per 100,000 residents. Source: FBI Crime Data Explorer.
+   Page: https://hawaiidashboard.org/c/property_crime_rate/ | State CSV: https://hawaiidashboard.org/data/property_crime_rate_state.csv
+3. **Primary Care Physicians (civilian)**: Hawaiʻi 92 per 100K in 2023, ranked #7 of 50 states (#1 = best). Non-federal primary care doctors (MDs and DOs) per 100,000 civilians, counting all primary care specialties. Source: HRSA Area Health Resource File.
+   Page: https://hawaiidashboard.org/c/pcp_per_100k/ | State CSV: https://hawaiidashboard.org/data/pcp_per_100k_state.csv
+4. **Uninsured Rate**: Hawaiʻi 3.5% in 2024, second-lowest in the nation (#2 of 50 states, #1 = best). Share of residents under 65 with no health insurance coverage of any kind. Source: Census ACS / KFF.
+   Page: https://hawaiidashboard.org/c/uninsured_rate/ | State CSV: https://hawaiidashboard.org/data/uninsured_rate_state.csv | County CSV: https://hawaiidashboard.org/data/uninsured_rate_county.csv
+5. **Suicide Rate**: Hawaiʻi 14 per 100K in 2024, ranked #11 of 50 states (#1 = best). Death rate for intentional self-harm per 100,000 residents, age-adjusted so states with different age distributions can be compared fairly. Source: CDC NCHS, National Vital Statistics System.
+   Page: https://hawaiidashboard.org/c/suicide_rate/ | State CSV: https://hawaiidashboard.org/data/suicide_rate_state.csv
 
 ### Affordability
-6. Renter Housing Cost Burden: % of renters cost-burdened, with 30%+ and 50%+ threshold views (Census ACS)
-7. Home Price-to-Income Ratio: median home value / median household income (Census ACS)
-8. Homelessness: per 10K residents, with unsheltered-only and total (sheltered + unsheltered) threshold views (HUD PIT Count)
-9. Residential Electricity Price: cents per kWh (EIA)
-10. Food Insecurity Rate: % of households, 3-year average, with food-insecure and very-low-food-security threshold views (USDA ERS)
+6. **Renter Housing Cost Burden**: Hawaiʻi 55.0% in 2024, fourth-highest in the nation (#47 of 50 states, #1 = best). Share of renter households paying 30% or more of income on gross rent, the federal affordability threshold. Source: Census ACS. Also shown: Renters paying 50%+ of income on housing (severely burdened).
+   Page: https://hawaiidashboard.org/c/renter_cost_burden_pct/ | State CSV: https://hawaiidashboard.org/data/renter_cost_burden_pct_state.csv | County CSV: https://hawaiidashboard.org/data/renter_cost_burden_pct_county.csv
+7. **Home Price-to-Income Ratio**: Hawaiʻi 8.7× in 2024, highest in the nation (#50 of 50 states, #1 = best). Median home value divided by median household income; a higher ratio means homes cost more relative to what residents earn. Source: Census ACS.
+   Page: https://hawaiidashboard.org/c/home_price_to_income/ | State CSV: https://hawaiidashboard.org/data/home_price_to_income_state.csv | County CSV: https://hawaiidashboard.org/data/home_price_to_income_county.csv
+8. **Homelessness**: Hawaiʻi 28.2 per 10K in 2025, third-highest in the nation (#48 of 50 states, #1 = best). One-night count of people sleeping outdoors, in vehicles, or in places not meant for habitation, per 10,000 residents. Source: HUD PIT Count. Also shown: All homeless (sheltered + unsheltered combined).
+   Page: https://hawaiidashboard.org/c/unsheltered_homeless_rate/ | State CSV: https://hawaiidashboard.org/data/unsheltered_homeless_rate_state.csv
+9. **Residential Electricity Price**: Hawaiʻi 40.4¢ in 2025, highest in the nation (#50 of 50 states, #1 = best). Average retail electricity price paid by residential customers, in cents per kilowatt-hour. Source: EIA.
+   Page: https://hawaiidashboard.org/c/residential_price_cpkwh/ | State CSV: https://hawaiidashboard.org/data/residential_price_cpkwh_state.csv
+10. **Food Insecurity Rate**: Hawaiʻi 10.8% in 2022-2024, ranked #9 of 50 states (#1 = best). 3-year average share of households uncertain of having enough food due to lack of money or other resources. Source: USDA ERS. Also shown: Very low food security only (households that reduced food intake).
+   Page: https://hawaiidashboard.org/c/food_insecurity_rate/ | State CSV: https://hawaiidashboard.org/data/food_insecurity_rate_state.csv
 
 ### Economy & Workforce
-11. Unemployment Rate: % of labor force (BLS LAUS)
-12. Labor Force Participation Rate: % of working-age population (BLS LAUS)
-13. Labor Productivity Index: output per hour, 2017=100 (BLS)
-14. Per Capita Income (real): inflation-adjusted, constant 2017 dollars (BEA SARPI)
-15. Income Inequality: Gini index of household income on a 0-to-100 scale (Census ACS)
-16. Establishment Entry Rate: new businesses as % of total (Census BDS)
-17. Net Employer Formation: new minus closed businesses as % of total (Census BDS)
+11. **Unemployment Rate**: Hawaiʻi 2.5% in 2026, third-lowest in the nation (#3 of 50 states, #1 = best). Share of the civilian labor force actively looking for work but not currently employed, averaged over the year. Source: Bureau of Labor Statistics.
+   Page: https://hawaiidashboard.org/c/unemployment_rate/ | State CSV: https://hawaiidashboard.org/data/unemployment_rate_state.csv | County CSV: https://hawaiidashboard.org/data/unemployment_rate_county.csv
+12. **Labor Force Participation Rate**: Hawaiʻi 60.6% in 2025, ranked #37 of 50 states (#1 = best). Share of civilians age 16 and older who are either employed or actively seeking work, averaged over the year. Source: Bureau of Labor Statistics.
+   Page: https://hawaiidashboard.org/c/labor_force_participation/ | State CSV: https://hawaiidashboard.org/data/labor_force_participation_state.csv | County CSV: https://hawaiidashboard.org/data/labor_force_participation_county.csv
+13. **Labor Productivity**: Hawaiʻi 111.2 in 2025, ranked #37 of 50 states (#1 = best). Real economic output per hour worked, measuring how efficiently the workforce produces goods and services. Values show output relative to the 2017 level (100 = same as 2017). Source: Bureau of Labor Statistics.
+   Page: https://hawaiidashboard.org/c/labor_productivity/ | State CSV: https://hawaiidashboard.org/data/labor_productivity_state.csv
+14. **Per Capita Income (real)**: Hawaiʻi $52K in 2024, fifth-lowest in the nation (#46 of 50 states, #1 = best). Total personal income per resident in constant 2017 dollars, adjusted for both regional price differences and national inflation so states and years can be compared on equal footing. Source: BEA.
+   Page: https://hawaiidashboard.org/c/real_per_capita_income/ | State CSV: https://hawaiidashboard.org/data/real_per_capita_income_state.csv | County CSV: https://hawaiidashboard.org/data/real_per_capita_income_county.csv
+15. **Income Inequality**: Hawaiʻi 45.4 in 2024, ranked #12 of 50 states (#1 = best). How evenly household income is spread, measured by the Gini index on a 0-to-100 scale. 0 would mean every household earns exactly the same; 100 would mean a single household earns everything. A higher number means a wider gap between the top and bottom earners. Source: Census ACS.
+   Page: https://hawaiidashboard.org/c/gini_index/ | State CSV: https://hawaiidashboard.org/data/gini_index_state.csv
+16. **New Business Entry Rate**: Hawaiʻi 9.2% in 2023, ranked #37 of 50 states (#1 = best). Share of all business establishments in the state that opened in the past year, measuring the pace of new business formation. Source: Census Business Dynamics Statistics.
+   Page: https://hawaiidashboard.org/c/estabs_entry_rate/ | State CSV: https://hawaiidashboard.org/data/estabs_entry_rate_state.csv | County CSV: https://hawaiidashboard.org/data/estabs_entry_rate_county.csv
+17. **Net Employer Business Formation**: Hawaiʻi 0.4% in 2023, ranked #43 of 50 states (#1 = best). Net new employer businesses as a share of existing stock; new businesses opened minus closures, scaled to state size. Source: Census Business Dynamics Statistics.
+   Page: https://hawaiidashboard.org/c/net_employer_formation/ | State CSV: https://hawaiidashboard.org/data/net_employer_formation_state.csv | County CSV: https://hawaiidashboard.org/data/net_employer_formation_county.csv
 
 ### Education
-18. NAEP Math Score (8th grade): scale score (NCES NAEP)
-19. NAEP Reading Score (8th grade): scale score (NCES NAEP)
-20. High School Graduation Rate (ACGR): % of cohort graduating on time (NCES)
-21. Adults with Bachelor's Degree+: % age 25+ (Census ACS)
+18. **NAEP 8th Grade Math**: Hawaiʻi 270.0 in 2024, ranked #30 of 50 states (#1 = best). Average math score for 8th-graders on the National Assessment of Educational Progress, the nation's report card, given every two years. Source: NAEP / Nation's Report Card.
+   Page: https://hawaiidashboard.org/c/naep_math_8/ | State CSV: https://hawaiidashboard.org/data/naep_math_8_state.csv
+19. **NAEP 8th Grade Reading**: Hawaiʻi 257.3 in 2024, ranked #25 of 50 states (#1 = best). Average reading score for 8th-graders on the National Assessment of Educational Progress, the nation's report card, given every two years. Source: NAEP / Nation's Report Card.
+   Page: https://hawaiidashboard.org/c/naep_reading_8/ | State CSV: https://hawaiidashboard.org/data/naep_reading_8_state.csv
+20. **High School Graduation Rate**: Hawaiʻi 86.0% in 2022, ranked #29 of 48 states (#1 = best). Share of 9th-graders who earn a regular diploma within four years, adjusted for students who transfer in or out. Source: NCES.
+   Page: https://hawaiidashboard.org/c/acgr/ | State CSV: https://hawaiidashboard.org/data/acgr_state.csv
+21. **Adults with Bachelor’s Degree+**: Hawaiʻi 37.8% in 2024, ranked #17 of 50 states (#1 = best). Share of adults age 25 and older who hold a bachelor’s degree or higher. Source: Census ACS / FRED.
+   Page: https://hawaiidashboard.org/c/ba_or_higher_pct/ | State CSV: https://hawaiidashboard.org/data/ba_or_higher_pct_state.csv | County CSV: https://hawaiidashboard.org/data/ba_or_higher_pct_county.csv
 
 ### Infrastructure & Trust
-22. Roads in Poor Condition: % of road miles, with poor-only and poor-and-mediocre threshold views (FHWA)
-23. Households with Broadband: % of households (Census ACS)
-24. Electricity from Renewables: % of total generation (EIA)
-25. Rainy Day Fund Balance: % of general fund expenditures (Pew / NASBO)
-26. Voter Participation Rate: % of eligible voters (VEP) in general election (US Elections Project)
-27. Net Domestic Migration Rate: per 10K residents (Census PEP)
+22. **Roads in Poor Condition**: Hawaiʻi 15.5% in 2024, fourth-highest in the nation (#47 of 50 states, #1 = best). Share of public road miles rated poor based on ride quality measured by the International Roughness Index. Source: FHWA Highway Statistics, Table HM-64. Also shown: Roads rated Poor + Acceptable combined (IRI > 95).
+   Page: https://hawaiidashboard.org/c/road_poor_pct/ | State CSV: https://hawaiidashboard.org/data/road_poor_pct_state.csv
+23. **Households with Broadband**: Hawaiʻi 93.0% in 2024, ranked #21 of 50 states (#1 = best). Share of households with a fixed broadband internet subscription, including cable, fiber, DSL, or fixed wireless. Source: Census ACS.
+   Page: https://hawaiidashboard.org/c/broadband_subscription_pct/ | State CSV: https://hawaiidashboard.org/data/broadband_subscription_pct_state.csv | County CSV: https://hawaiidashboard.org/data/broadband_subscription_pct_county.csv
+24. **Electricity from Renewables**: Hawaiʻi 21.7% in 2025, ranked #23 of 50 states (#1 = best). Share of in-state electricity generation from renewable sources, including wind, solar, hydro, geothermal, and biomass. Source: EIA.
+   Page: https://hawaiidashboard.org/c/renewables_share_gen/ | State CSV: https://hawaiidashboard.org/data/renewables_share_gen_state.csv
+25. **Rainy Day Fund**: Hawaiʻi 14.4% in 2025, ranked #22 of 50 states (#1 = best). State rainy-day savings balance as a percent of annual general fund spending, as self-reported by states to NASBO. Source: NASBO Fiscal Survey.
+   Page: https://hawaiidashboard.org/c/rainy_day_fund_pct/ | State CSV: https://hawaiidashboard.org/data/rainy_day_fund_pct_state.csv
+26. **Voter Participation Rate**: Hawaiʻi 50.3% in 2024, lowest in the nation (#50 of 50 states, #1 = best). Share of eligible voters (citizens age 18+, excluding those barred from voting) who cast a ballot in the general election. Source: US Elections Project.
+   Page: https://hawaiidashboard.org/c/voter_participation_rate/ | State CSV: https://hawaiidashboard.org/data/voter_participation_rate_state.csv
+27. **Net Migration**: Hawaiʻi -61.9 per 10K in 2025, second-lowest in the nation (#49 of 50 states, #1 = best). Net inflow of U.S. residents moving from other states, per 10,000 residents; positive means more arrivals than departures. Source: Census PEP.
+   Page: https://hawaiidashboard.org/c/net_domestic_migration_rate/ | State CSV: https://hawaiidashboard.org/data/net_domestic_migration_rate_state.csv | County CSV: https://hawaiidashboard.org/data/net_domestic_migration_rate_county.csv
+<!-- /generated:metrics -->
 
 ## Methodology
 
@@ -92,6 +123,24 @@ Every metric has a static CSV at `/data/{slug}_state.csv` (long-format: year, st
 
 When citing values from this dashboard, please credit the primary source (e.g. "BLS LAUS via Hawaiʻi Dashboard") and link to the specific metric page so readers can verify.
 
+<!-- generated:otc (scripts/generate-llms-txt.py, do not hand-edit) -->
+## Off the Charts analysis
+
+Short data-driven posts on Hawaiʻi, each built on dashboard metrics (archive: https://hawaiidashboard.org/off-the-charts/). Newest first.
+
+- **Where home prices outrun incomes, homelessness follows.** (2026-08-29): Alabama’s cost-adjusted income per person is about the same as Hawaiʻi’s, with far less street homelessness. Where homes cost more, more people are homeless; income matters far less. https://hawaiidashboard.org/off-the-charts/homelessness-tracks-home-prices/
+- **Easy to vote. Less to vote for.** (2026-08-19): Hawaiʻi ranks 4th nationally on the Cost of Voting Index after moving to all-mail voting in 2020 and still ranks #50 on presidential turnout. Turnout rose faster than the average in states without all-mail. Oregon has voted by mail since 2000 and ranks #7. https://hawaiidashboard.org/off-the-charts/easiest-ballot-lowest-turnout/
+- **Common incomes. Uncommon costs.** (2026-06-14): Hawaiʻi ranks among the most equal states on income, but a small gap is not prosperity. Its incomes are modest, and it is the most expensive state for a resident to buy a home. https://hawaiidashboard.org/off-the-charts/common-incomes-uncommon-costs/
+- **A safe state with a theft problem.** (2026-05-29): Hawaiʻi is one of the safest states from violent crime but ranks #35 of 50 on property crime. The difference is due to tourism: opportunistic theft clusters where visitors do. https://hawaiidashboard.org/off-the-charts/safe-state-theft-problem/
+- **Florida has Hawaiʻi beat on rent burden.** (2026-05-27): Hawaiʻi is the worst state in the country to buy a home, ranked last on home price-to-income every year since 2008. On rent burden, Florida is worse. Two housing problems, not one. https://hawaiidashboard.org/off-the-charts/florida-rent-burden/
+- **Hawaiʻi has the rainy day fund, finally.** (2026-05-25): Hawaiʻi’s rainy day fund crossed the GFOA-recommended 10% floor in 2024 and held in 2025, the first time on record. The fund was built by vote, not by rule, and a vote can drain it. https://hawaiidashboard.org/off-the-charts/rainy-day-fund-rule/
+- **Seventeen years of low violent crime with high homelessness.** (2026-05-17): Ever since HUD began tracking unsheltered homelessness in 2007, Hawaiʻi has ranked among the worst states on unsheltered homelessness, while remaining safer than the national median on violent crime. No other state has matched that combination every year of the 17-yr window. https://hawaiidashboard.org/off-the-charts/low-violent-crime-high-homelessness/
+- **One of America's tightest labor markets, with the weakest productivity growth.** (2026-05-12): Hawaiʻi has the country’s second-lowest unemployment but fell from #7 to #41 in productivity from 2018 to 2024 while the US median grew 11%. https://hawaiidashboard.org/off-the-charts/productivity-vs-unemployment/
+- **How Hawaiʻi rose in 8th-grade reading without raising its score.** (2026-05-09): Hawaiʻi’s 8th-grade NAEP reading rank climbed from #45 to #26 while the score barely moved. The country fell to where Hawaiʻi was; Hawaiʻi was one of only three states whose score didn’t fall during COVID. https://hawaiidashboard.org/off-the-charts/reading-without-raising/
+- **Expensive states are rich. Not Hawaiʻi.** (2026-05-05): Three of the four most unaffordable states for housing have high incomes to help. Hawaiʻi has the highest housing burden in the country and real per capita income fifth-from-bottom. https://hawaiidashboard.org/off-the-charts/expensive-states/
+- **Hawaiʻi quadrupled its renewables. The energy prices got worse.** (2026-04-28): From 2003 to 2024, Hawaiʻi’s renewable share quadrupled and the residential electricity price gap with the mainland more than tripled. A smaller ratepayer base is carrying both the legacy oil system and the clean-energy buildout. https://hawaiidashboard.org/off-the-charts/renewables-prices/
+<!-- /generated:otc -->
+
 ## Pages
 
 - **Dashboard** (https://hawaiidashboard.org/): Main page with all 27 metric cards, trend charts, and modal detail views.
@@ -114,7 +163,7 @@ Shareable links use path-based routes, each with its own Open Graph image:
 - /r/metric_slug/: Rankings view
 - /rh/metric_slug/: Rank history
 - /rh/metric_slug/state_code/: Rank history with a state comparator
-- /c/metric_slug/: County view
+- /c/metric_slug/: Metric page: latest Hawaiʻi value and rank, county table, recent trend, links to the CSVs (readable without JavaScript)
 
 The Trend and Rank history tabs share a single "Compare with" dropdown. Picking any of the 49 other states overlays that state's series on whichever chart is active and keeps the selection when switching between the two tabs.
 
@@ -122,7 +171,7 @@ The Trend and Rank history tabs share a single "Compare with" dropdown. Picking 
 
 - Nonpartisan: no political agenda; data presented without editorial interpretation
 - Free and open: no paywall, no login, no ads
-- Static site hosted on Cloudflare Pages
+- Static site served by Cloudflare Workers
 - Updated annually (some metrics show latest monthly figures between annual updates); a twice-daily automated drift audit re-fetches every wired federal-API metric and opens a `data-drift` issue if any Hawaiʻi year-cell diverges from the canonical source by more than 0.5% (or 0.0001 absolute), so the data you see is always traceable to the original federal source within tight tolerance
 - Designed for readability by residents aged 60+
 - All claims in "Potential drivers" and "Key levers" are sourced to peer-reviewed studies or federal reports

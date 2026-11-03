@@ -231,6 +231,9 @@ jobs:
       - name: Regenerate OG images and redirect pages
         run: python3 scripts/generate-og-pages.py
 
+      - name: Regenerate llms.txt figures
+        run: python3 scripts/generate-llms-txt.py
+
       # ----- Validate (strict mode for CI) -----
       - name: Validate data integrity
         id: validate
@@ -382,7 +385,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add js/state-data.js js/data.js js/county-data.js js/questions.js about/index.html
+          git add js/state-data.js js/data.js js/county-data.js js/questions.js about/index.html llms.txt
           # data/ holds the generator's CSV exports (Dataset JSON-LD distribution
           # URLs). Stage them too, otherwise generate-og-pages.py regenerates them
           # each run but they are never committed and drift from js/state-data.js.

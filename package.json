@@ -30,6 +30,8 @@
     "sync-otc-meta:check": "node scripts/sync-otc-meta.js --check",
     "generate-fyc": "node scripts/generate-fyc-pages.js",
     "generate-fyc:check": "node scripts/generate-fyc-pages.js --check",
+    "llms": "python3 scripts/generate-llms-txt.py",
+    "llms:check": "python3 scripts/generate-llms-txt.py --check",
     "recompute": "node scripts/recompute-data.js",
     "og": "python3 scripts/generate-og-pages.py",
     "share-cards": "node scripts/build-share-card-data.js && python3 scripts/generate-share-cards.py",
