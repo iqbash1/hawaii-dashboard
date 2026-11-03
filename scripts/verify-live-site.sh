@@ -401,6 +401,13 @@ if [ "$card_status" = "200" ]; then
 else
     fail "/.well-known/mcp/server-card.json returned HTTP ${card_status}"
 fi
+# IndexNow rejects submissions if the key file stops serving the key.
+indexnow_key="8927e06be109e6b35cbbbaddc0e37e5a"
+if [ "$(curl -s --max-time 10 "${BASE}/${indexnow_key}.txt" 2>/dev/null)" = "$indexnow_key" ]; then
+    ok "IndexNow key file serves the key"
+else
+    fail "IndexNow key file /${indexnow_key}.txt is missing or wrong"
+fi
 
 # -----------------------------------------------------------------------------
 # 8. SUMMARY

@@ -20,6 +20,7 @@
     "audit:drift": "node --env-file-if-exists=.env scripts/validate-data.js --audit-only --probe-floor",
     "ga4:hawaii": "node --env-file-if-exists=.env scripts/ga4-hawaii-report.js",
     "health": "node --env-file-if-exists=.env scripts/health-check.js",
+    "indexnow": "node scripts/indexnow-ping.js",
     "audit": "python3 scripts/audit-internal.py",
     "audit-narratives": "node scripts/audit-narrative-numbers.js",
     "audit-otc": "node scripts/audit-otc-numbers.js",

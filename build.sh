@@ -14,6 +14,7 @@ cp _redirects dist/
 cp robots.txt dist/
 cp sitemap.xml dist/
 cp llms.txt dist/
+cp 8927e06be109e6b35cbbbaddc0e37e5a.txt dist/  # IndexNow key (scripts/indexnow-ping.js)
 cp -r css dist/
 cp -r js dist/
 cp -r assets dist/
