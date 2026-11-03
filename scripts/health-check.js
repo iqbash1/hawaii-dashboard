@@ -261,6 +261,35 @@ function checkJsonLd() {
     else add('SEO: structured data', bad.length >= pages.length ? 'red' : 'yellow', bad.slice(0, 4).join('; '));
 }
 
+// ── 7b. AI crawler access ───────────────────────────────────────────────────
+// Cloudflare's AI Crawl Control answered ClaudeBot, GPTBot and CCBot with 403
+// at the edge and prepended its own robots.txt block disallowing them, while
+// the repo's robots.txt said Allow; nothing in the repo could see it (fixed in
+// the dashboard 2026-11-03). Fetch a /c/ page as each crawler so a dashboard
+// toggle can't silently undo that. Search/assistant bots are the live-citation
+// path, so losing one is red; training crawlers or the managed block are yellow.
+const AI_BOTS = {
+    search: ['Claude-SearchBot/1.0', 'Claude-User/1.0', 'OAI-SearchBot/1.0', 'ChatGPT-User/1.0', 'PerplexityBot/1.0'],
+    training: ['ClaudeBot/1.0', 'GPTBot/1.2', 'CCBot/2.0', 'Google-Extended', 'Applebot-Extended/1.0'],
+};
+function checkAiCrawlers() {
+    const page = `${SITE}/c/unemployment_rate/`;
+    const blocked = kind => AI_BOTS[kind].filter(ua => sh(
+        `curl -s -o /dev/null -w "%{http_code}" --max-time 20 -A "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ${ua})" "${page}"`
+    ).out.trim() !== '200').map(ua => ua.split('/')[0]);
+    const search = blocked('search'), training = blocked('training');
+    const robots = sh(`curl -fsSL --max-time 20 "${SITE}/robots.txt"`).out;
+    const managed = /BEGIN Cloudflare Managed/i.test(robots);
+
+    const parts = [];
+    if (search.length) parts.push(`search/assistant bots blocked: ${search.join(', ')}`);
+    if (training.length) parts.push(`training crawlers blocked: ${training.join(', ')}`);
+    if (managed) parts.push('robots.txt carries Cloudflare\'s managed AI block (turn off in AI Crawl Control)');
+    const total = AI_BOTS.search.length + AI_BOTS.training.length;
+    if (!parts.length) add('AI crawler access', 'green', `all ${total} AI crawlers get /c/ pages; robots.txt is the repo's own`);
+    else add('AI crawler access', search.length ? 'red' : 'yellow', parts.join('; '));
+}
+
 // ── 8. Automated alerts (roll up the other scheduled workflows' issues) ──────
 function checkAlerts() {
     const r = sh('gh issue list --state open --json number,title,labels --limit 50');
@@ -367,6 +396,7 @@ async function main() {
     await guard('Content style', checkStyle);
     await guard('SEO: sitemap', checkSitemap);
     await guard('SEO: structured data', checkJsonLd);
+    await guard('AI crawler access', checkAiCrawlers);
     await guard('Automated alerts', checkAlerts);
     await guard('Email subscriptions', checkSubscriptions);
     await guard('Tier 2 (perf + a11y)', checkTier2);
@@ -384,7 +414,7 @@ async function main() {
     out.push(`| | Dimension | Detail |`);
     out.push(`| --- | --- | --- |`);
     for (const r of results) out.push(`| ${dot(r.status)} | ${r.name} | ${r.detail} |`);
-    out.push(`\n---\n_Tier 1 (data, live site, security, deps, content, SEO, alerts, email subscriptions) + Tier 2 (performance, accessibility). Run on demand: \`npm run health\`. Red = blocker, yellow = attention, green = ok._`);
+    out.push(`\n---\n_Tier 1 (data, live site, security, deps, content, SEO, AI crawlers, alerts, email subscriptions) + Tier 2 (performance, accessibility). Run on demand: \`npm run health\`. Red = blocker, yellow = attention, green = ok._`);
 
     const dir = path.join(ROOT, '.analytics');
     fs.mkdirSync(dir, { recursive: true });

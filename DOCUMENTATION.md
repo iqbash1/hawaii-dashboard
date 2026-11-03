@@ -1212,7 +1212,7 @@ Every indexable page has:
 - Search and AI-crawler settings live in dashboards, not the repo (owner logins; Claude does not change them):
   - Cloudflare, hawaiidashboard.org zone: **AI Crawl Control** (older UI: Security, Bots) set to Allow; Security, WAF, Custom rules has no "block AI bots" rule (Security, Events filtered on `ClaudeBot` names the rule that fires); Caching, Configuration, **Crawler Hints** on.
   - Google Search Console: a Domain property with `sitemap.xml` submitted. Bing Webmaster Tools: Import from Search Console (Bing's index feeds ChatGPT search).
-  - Check from any shell; every line should print 200. Through 2026-11-02 ClaudeBot and GPTBot got 403 from the Cloudflare edge while OAI-SearchBot and PerplexityBot got 200, so `robots.txt` alone does not prove access.
+  - Check from any shell; every line should print 200. Through 2026-11-02 ClaudeBot and GPTBot got 403 from the Cloudflare edge while OAI-SearchBot and PerplexityBot got 200, so `robots.txt` alone does not prove access. Cloudflare also prepended its own "Cloudflare Managed" robots.txt block disallowing them; setting the crawlers to Allow on 2026-11-03 removed both. The weekly health check's "AI crawler access" row runs this check for ten crawlers and flags the managed block (red if a search/assistant bot is blocked, yellow for a training crawler).
     ```bash
     for ua in ClaudeBot/1.0 GPTBot/1.2 OAI-SearchBot/1.0 PerplexityBot/1.0; do printf '%s ' "$ua"; curl -s -o /dev/null -w '%{http_code}\n' -A "Mozilla/5.0 (compatible; $ua)" https://hawaiidashboard.org/c/uninsured_rate/; done
     ```
@@ -1226,7 +1226,7 @@ Every indexable page has:
 - Audit metric data: `npm run audit-metric -- <slug>` or `npm run audit-metric -- --all`
 - Audit links: `npm run audit-links`
 - Validate data: `npm run validate`
-- Weekly health check: `npm run health` (11 dimensions: data, live site, security, deps, content, SEO, alerts, email subscriptions, plus Lighthouse desktop perf + axe a11y via `tests/audit-tier2.js`)
+- Weekly health check: `npm run health` (12 dimensions: data, live site, security, deps, content, SEO, AI crawler access, alerts, email subscriptions, plus Lighthouse desktop perf + axe a11y via `tests/audit-tier2.js`)
 - Build for deployment: `npm run build` (copies to dist/ with cache-busted SHA)
 
 ---
