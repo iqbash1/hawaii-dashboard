@@ -1719,7 +1719,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Virginia",
-          "text": "Like Hawaiʻi, Virginia runs its homeless response through regional Continuums of Care. Virginia cut unsheltered homelessness 47% from 2010 to 2019 while funding rapid re-housing and supportive-housing rental assistance through Homeless Reduction Grants, which draw up to 20 percent of its Housing Trust Fund and must fit their local Continuum of Care's strategy.",
+          "text": "Like Hawaiʻi, Virginia runs its homeless response through regional Continuums of Care. Virginia cut its unsheltered homelessness rate by about half from 2010 to 2019 while funding rapid re-housing and supportive-housing rental assistance through Homeless Reduction Grants, which draw up to 20 percent of its Housing Trust Fund and must fit their local Continuum of Care's strategy.",
           "source": {
             "label": "Virginia Housing Trust Fund Homeless Reduction Grants - DHCD",
             "url": "https://web.archive.org/web/20260318224446/https://www.dhcd.virginia.gov/vhtf-homeless-reduction"
