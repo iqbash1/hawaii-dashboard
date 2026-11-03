@@ -2041,7 +2041,7 @@ function auditRankWindows(slug, metric, field, text, hawaiiSubjectOnly = false) 
 // rankHistoryNarrative.benchmarks[].text and caution.text make rank and
 // value claims about a COMPARATOR state, so every pass above (all
 // Hawaiʻi-guarded) skips them. A 2026-11-02 audit of all 54 found 19 false,
-// 13 of them refutable from STATE_DATA alone: Virginia's graduation rate
+// 12 of them refutable from STATE_DATA alone: Virginia's graduation rate
 // "87 percent in 2011" beside a chart showing 83.0%; Oregon's all-mail
 // voting rank "has since declined" while Oregon ranked #1 in 2022. Each
 // claim here is checked for the entry's own `state`, and anything this

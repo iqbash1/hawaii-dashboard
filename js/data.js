@@ -2699,7 +2699,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Utah",
-          "text": "Like Hawaiʻi, Utah faced rising housing costs that threatened population retention and responded with state-level supply reforms. Utah maintained positive net domestic in-migration through a period of rapid housing cost increases through state-level supply reforms from 2022 to 2024. HB 462 required cities to allow accessory dwelling units by right statewide, and SB 174 required higher-density zoning near transit corridors. Utah consistently ranked among the top states for new housing permits per capita following these reforms.",
+          "text": "Like Hawaiʻi, Utah faced rising housing costs that threatened population retention and responded with state-level supply reforms. Utah maintained positive net domestic in-migration through a period of rapid housing cost increases through state-level supply reforms from 2022 to 2024. HB 82 (2021) required cities to allow internal accessory dwelling units by right in single-family zones, with limited exceptions, and HB 462 (2022) required cities with fixed-guideway transit stations to adopt station area plans that allow more housing nearby.",
           "source": {
             "label": "HB 0462 Housing Affordability Amendments (2022) - Utah State Legislature",
             "url": "https://le.utah.gov/~2022/bills/static/HB0462.html"
