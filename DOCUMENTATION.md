@@ -138,6 +138,7 @@ hawaii-dashboard/
 │   ├── compute.test.js         # Unit tests for js/compute.js
 │   ├── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
 │   ├── subscribe.test.js       # Unit tests for worker-subscribe.mjs (validation, signed token, both handlers; Turnstile + Resend stubbed)
+│   ├── mcp.test.js             # Unit tests for worker-mcp.mjs (protocol, both eras, all 4 tools; env.ASSETS stubbed from json/)
 │   ├── email.test.js           # Unit tests for the subscriber email builders (scripts/email-template.js, send-qotd-email.js, send-otc-email.js)
 │   └── email-monitor.test.js   # Unit tests for the subscription monitoring verdicts (scripts/email-monitor.js)
 ├── .github/
@@ -156,8 +157,10 @@ hawaii-dashboard/
 │   └── index.html          # FAQ page: 14 Q&A pairs, feedback form
 ├── subscribe/
 │   └── index.html          # Fallback email signup page (form inline); the dialog in js/subscribe.js is the primary surface
-├── worker.js               # Cloudflare Worker, runs first ONLY for /assets/tour.mp4 (byte-range shim) and /api/* (routes to worker-subscribe.mjs)
+├── worker.js               # Cloudflare Worker, runs first ONLY for /assets/tour.mp4 (byte-range shim), /api/* (routes to worker-subscribe.mjs) and /mcp (worker-mcp.mjs)
 ├── worker-subscribe.mjs    # Email subscription endpoints: POST /api/subscribe (double opt-in start), GET /api/confirm (finish)
+├── worker-mcp.mjs          # MCP server for AI assistants at /mcp: stateless, dual-era, tools list_metrics/get_metric/compare/rankings over json/
+├── .well-known/mcp/        # server-card.json describing the /mcp server
 ├── wrangler.jsonc          # Worker config: static assets served from ./dist, run_worker_first paths
 ├── robots.txt              # Crawl directives for search engines and AI bots (all AI bots allowlisted)
 ├── sitemap.xml             # Site sitemap (50 URLs with inline <image:image> entries; build.sh rewrites lastmod in dist/)
@@ -886,7 +889,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/build-share-card-data.js` + `scripts/generate-share-cards.py` | **OTC social-card generator** (`npm run share-cards`). The `.js` re-derives each card's numbers live; the `.py` renders forwardable cards (claim + one honest data visual + attribution) at 1200×630 and 1080×1350 to `drafts/share-cards/` (gitignored). For the messenger/seeding distribution push. |
 | `scripts/validate-all.sh` | Aggregates the 11 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, generate-fyc-pages, sync-otc-meta, audit-otc-numbers, generate-qotd-redirects, generate-llms-txt, and generate-data-json. |
 | `scripts/generate-llms-txt.py` | Rewrites the two generated sections of `llms.txt` (between `<!-- generated:metrics -->` and `<!-- generated:otc -->` markers): each metric's latest Hawaiʻi value, year, 50-state rank, `/c/` page and CSV links, and each Off the Charts post with its dek. Reuses the `/c/` page functions in `generate-og-pages.py`, so the two can't disagree. `npm run llms`; `--check` is validate gate 10; `refresh-data.yml` runs it. |
-| `scripts/generate-data-json.py` | Writes `json/catalog.json` (one summary per metric) and `json/{slug}.json` (definition, Hawaiʻi + median series, full 50-state ranking for the latest year, latest county values, links, cite-as line), values in display units. Reuses the `/c/` page functions and checks every catalog entry against the committed `/c/` page title. `npm run data-json`; `--check` is validate gate 11; `refresh-data.yml` runs it. The `/mcp` server reads these files. |
+| `scripts/generate-data-json.py` | Writes `json/catalog.json` (one summary per metric) and `json/{slug}.json` (definition, Hawaiʻi + median series, full 50-state ranking for the latest year, latest county values, links, cite-as line), values in display units plus a `display` string for every value (the `/c/` page formatting). Reuses the `/c/` page functions and checks every catalog entry against the committed `/c/` page title. `npm run data-json`; `--check` is validate gate 11; `refresh-data.yml` runs it. The `/mcp` server reads these files and quotes the `display` strings, so it never formats a number. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 58 unit tests across 9 suites (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, V1/V2 gap threshold, medianSeries invariant). |
 
@@ -1016,7 +1019,7 @@ A honeypot hit still returns success and sends nothing, so the endpoint never re
 
 | File | Role |
 |------|------|
-| `worker.js` | Routes `/api/subscribe` and `/api/confirm` (plus the tour-video range shim). `wrangler.jsonc` `run_worker_first` limits the Worker to `/assets/tour.mp4` and `/api/*`; every other path is served straight from Static Assets. |
+| `worker.js` | Routes `/api/subscribe` and `/api/confirm`, `/mcp` (see `worker-mcp.mjs`) and the tour-video range shim. `wrangler.jsonc` `run_worker_first` limits the Worker to `/assets/tour.mp4`, `/api/*` and `/mcp`; every other path is served straight from Static Assets. |
 | `worker-subscribe.mjs` | Handlers, validation, token sign/verify, confirmation email template. |
 | `subscribe/index.html` | Fallback signup page with the form inline; listed in the sitemap. |
 | `js/subscribe.js` | Builds and opens the dialog (ask, "You're in", expired and save-failed states), lazy-loads Turnstile, submits the form, fires GA4 `subscribe_opened` / `subscribe_submitted` / `subscribe_confirmed` with a `surface` param (nav, qotd, otc). |
@@ -1113,11 +1116,11 @@ Node.js's built-in test runner (no dependencies, Node 20+).
 
 ```bash
 cd tests
-node --test utils.test.js compute.test.js qotd.test.js subscribe.test.js
+node --test utils.test.js compute.test.js qotd.test.js subscribe.test.js email.test.js email-monitor.test.js mcp.test.js
 # or: npm run test:unit
 ```
 
-Covers pure helpers in `js/utils.js` (rank thresholds, narrative generation) and `js/compute.js` (year parsing, median, comparison phrasing, state time-series extraction), the QOTD bank invariants, and the email subscription handlers in `worker-subscribe.mjs` (validation, signed confirmation token, both `/api/` routes with Turnstile and Resend stubbed).
+Covers pure helpers in `js/utils.js` (rank thresholds, narrative generation) and `js/compute.js` (year parsing, median, comparison phrasing, state time-series extraction), the QOTD bank invariants, and the email subscription handlers in `worker-subscribe.mjs` (validation, signed confirmation token, both `/api/` routes with Turnstile and Resend stubbed), and the `/mcp` server in `worker-mcp.mjs` (both protocol eras, every tool for every metric quoting the catalog's value, year and rank).
 
 ### E2E smoke tests (`tests/smoke.spec.js`)
 
@@ -1197,11 +1200,12 @@ Every indexable page has:
 
 - `robots.txt`, allows all crawlers, explicitly permits AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, etc.)
 - `sitemap.xml`, 50 URLs (home, 7 change-summary year-spans, About, FAQ, Subscribe, Off the Charts archive, 11 OtC posts, 27 `/c/` metric pages) with inline `<image:image>` entries for each URL's OG image (image-sitemap extension namespace). Priority hints; `<lastmod>` auto-rewritten at build time from each file's git history.
-- `_headers`, Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, 1-hour JSON with CORS for `/json/`, 1-day for `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML. Cloudflare merges every matching rule, so each specific block starts with `! Cache-Control` to drop the `/*` 60s value; without it the response carries two max-age values and caches use the first (`verify-live-site.sh` fails on that).
+- `_headers`, Strict-Transport-Security (max-age 1yr + includeSubDomains), Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera, mic, geo, payment, USB, motion sensors all denied). Cache-Control 1yr immutable for `/js/`, `/css/`, `/assets/`; 1-day for `/data/`, 1-hour JSON with CORS for `/json/` and `/.well-known/mcp/`, 1-day for `/robots.txt`, `/sitemap.xml`, `/llms.txt`; 60s for HTML. Cloudflare merges every matching rule, so each specific block starts with `! Cache-Control` to drop the `/*` 60s value; without it the response carries two max-age values and caches use the first (`verify-live-site.sh` fails on that).
 
 ### AI chat engine optimization
 
 - `llms.txt`, plain-text site summary (~180 lines) describing the dashboard, methodology, data sources, URL structure, and the `/data/{slug}_*.csv` endpoints. Its metric section (each metric's latest Hawaiʻi value, year, rank, page and CSV links) and Off the Charts section are generated by `scripts/generate-llms-txt.py`; the rest is hand-written. Follows the [Anthropic / Answer.AI llms.txt convention](https://llmstxt.org/) for AI system context.
+- `/mcp`, an MCP server (`worker-mcp.mjs`) that AI assistants can add by URL: four read-only tools over `json/`, every reply ending in the metric's page URL and a `Cite as` line. Described by `/.well-known/mcp/server-card.json` and a paragraph in `llms.txt`; `verify-live-site.sh` makes a real tool call against it.
 - `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, OAI-SearchBot, and other AI crawlers.
 - All pages have semantic HTML with descriptive headings.
 - FAQ page has FAQPage JSON-LD schema enabling Google rich results; metric landing pages have Dataset JSON-LD for Google Dataset Search.

@@ -10,8 +10,9 @@ Static site hosted on Cloudflare, with one small Worker that runs only for the t
 
 ```
 index.html              Main page (single-page app)
-worker.js               Cloudflare Worker, runs first only for /assets/tour.mp4 and /api/*
+worker.js               Cloudflare Worker, runs first only for /assets/tour.mp4, /api/* and /mcp
 worker-subscribe.mjs    POST /api/subscribe + GET /api/confirm (double opt-in; list lives in Resend)
+worker-mcp.mjs          MCP server at /mcp for AI assistants (reads json/)
 wrangler.jsonc          Worker config (static assets from ./dist, run_worker_first paths)
 css/
   styles.css            All shared styles
