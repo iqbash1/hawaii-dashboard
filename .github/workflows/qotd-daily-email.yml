@@ -6,6 +6,10 @@ name: Daily question email
 # It was 05:20 HST until 2026-09-14: GitHub started the run 2.5 to 4.5 hours
 # late every day that week, past 06:00, so the script sent immediately and
 # readers got the question between 07:45 and 09:51. Five hours of slack now.
+# By October 2026 GitHub ran this schedule 3 to 10 hours late, so since
+# 2026-11-03 a Cloudflare Cron Trigger (worker-cron.mjs, 01:00 and 03:00 HST)
+# starts it with workflow_dispatch. The schedule below stays as a backup; a
+# late run finds the broadcast already made and sends nothing.
 # The bank on main must carry the day's question by 01:00 HST.
 #
 # Where it goes is the EMAIL_SEND_MODE repository variable:

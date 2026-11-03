@@ -140,6 +140,7 @@ hawaii-dashboard/
 │   ├── qotd.test.js            # QOTD bank validators (claim/answer/medianSeries invariants)
 │   ├── subscribe.test.js       # Unit tests for worker-subscribe.mjs (validation, signed token, both handlers; Turnstile + Resend stubbed)
 │   ├── mcp.test.js             # Unit tests for worker-mcp.mjs (protocol, both eras, all 4 tools; env.ASSETS stubbed from json/)
+│   ├── cron.test.js            # Unit tests for worker-cron.mjs (workflow_dispatch call, failure on non-204 or missing token)
 │   ├── email.test.js           # Unit tests for the subscriber email builders (scripts/email-template.js, send-qotd-email.js, send-otc-email.js)
 │   └── email-monitor.test.js   # Unit tests for the subscription monitoring verdicts (scripts/email-monitor.js)
 ├── .github/
@@ -151,7 +152,7 @@ hawaii-dashboard/
 │       ├── cron-heartbeat.yml  # Weekly dead-man switch on refresh-data; rolling cron-stale issue
 │       ├── source-release-reminder.yml # Weekly 7-day-ahead reminder for source release windows
 │       ├── tests.yml           # Unit + smoke tests on every push/PR to main
-│       ├── qotd-daily-email.yml # Daily question email: 01:00 HST cron creates a Resend broadcast scheduled for 06:00 HST
+│       ├── qotd-daily-email.yml # Daily question email: started 01:00 HST by the Worker cron (worker-cron.mjs), creates a Resend broadcast scheduled for 06:00 HST
 │       ├── otc-post-email.yml  # New Off the Charts post email on push to main touching js/otc-posts.js (both email workflows keep a rolling email-failed issue)
 │       └── stale-refresh-pr.yml # Nudges a data-refresh PR left unmerged past 10 days
 ├── faq/
@@ -161,6 +162,7 @@ hawaii-dashboard/
 ├── worker.js               # Cloudflare Worker, runs first ONLY for /assets/tour.mp4 (byte-range shim), /api/* (routes to worker-subscribe.mjs) and /mcp (worker-mcp.mjs)
 ├── worker-subscribe.mjs    # Email subscription endpoints: POST /api/subscribe (double opt-in start), GET /api/confirm (finish)
 ├── worker-mcp.mjs          # MCP server for AI assistants at /mcp: stateless, dual-era, tools list_metrics/get_metric/compare/rankings over json/
+├── worker-cron.mjs         # Cron Trigger (01:00 + 03:00 HST) that starts the daily question email workflow via workflow_dispatch
 ├── .well-known/mcp/        # server-card.json describing the /mcp server
 ├── wrangler.jsonc          # Worker config: static assets served from ./dist, run_worker_first paths
 ├── robots.txt              # Crawl directives for search engines and AI bots (all AI bots allowlisted)
@@ -1023,6 +1025,7 @@ A honeypot hit still returns success and sends nothing, so the endpoint never re
 |------|------|
 | `worker.js` | Routes `/api/subscribe` and `/api/confirm`, `/mcp` (see `worker-mcp.mjs`) and the tour-video range shim. `wrangler.jsonc` `run_worker_first` limits the Worker to `/assets/tour.mp4`, `/api/*` and `/mcp`; every other path is served straight from Static Assets. |
 | `worker-subscribe.mjs` | Handlers, validation, token sign/verify, confirmation email template. |
+| `worker-cron.mjs` | The Worker's `scheduled` handler: at 11:00 and 13:00 UTC (`triggers.crons` in `wrangler.jsonc`) it calls GitHub's `workflow_dispatch` for `qotd-daily-email.yml` on main. See "The emails" below for why. |
 | `subscribe/index.html` | Fallback signup page with the form inline; listed in the sitemap. |
 | `js/subscribe.js` | Builds and opens the dialog (ask, "You're in", expired and save-failed states), lazy-loads Turnstile, submits the form, fires GA4 `subscribe_opened` / `subscribe_submitted` / `subscribe_confirmed` with a `surface` param (nav, qotd, otc). |
 | `tests/subscribe.test.js`, `tests/email.test.js` | 16 + 9 unit tests (handlers; email builders and the new-post detection): `cd tests && npm run test:unit`. |
@@ -1031,7 +1034,7 @@ A honeypot hit still returns success and sends nothing, so the endpoint never re
 
 ### Configuration (not in the repo)
 
-- Worker secrets (`wrangler secret put`): `RESEND_API_KEY`, `RESEND_SEGMENT_ID`, `TURNSTILE_SECRET_KEY`, `SUBSCRIBE_SIGNING_KEY`. Local dev reads the same names from `.dev.vars` (gitignored); use Turnstile's always-pass test secret `1x0000000000000000000000000000000AA` and the Beta segment there.
+- Worker secrets (`wrangler secret put`): `RESEND_API_KEY`, `RESEND_SEGMENT_ID`, `TURNSTILE_SECRET_KEY`, `SUBSCRIBE_SIGNING_KEY`, and `GITHUB_DISPATCH_TOKEN` (fine-grained GitHub token, this repo only, Actions read and write; used by `worker-cron.mjs`). Local dev reads the same names from `.dev.vars` (gitignored); use Turnstile's always-pass test secret `1x0000000000000000000000000000000AA` and the Beta segment there.
 - Turnstile widget "hawaiidashboard.org subscribe", managed mode, domains hawaiidashboard.org and localhost. The public sitekey is hardcoded in the page.
 - Resend: domain `hawaiidashboard.org` verified (DKIM at `resend._domainkey`, SPF on `send.`), segments "Dashboard readers" (live) and "Beta" (test sends). The pre-existing DMARC record is `p=reject`; Resend's signing aligns with it, any other sender will be rejected.
 - Cloudflare WAF rate-limit rule: 5 POSTs per 10 seconds per IP on `/api/subscribe`.
@@ -1043,7 +1046,7 @@ Two senders, one shared chrome (`scripts/email-template.js`: sender identity, gr
 
 | Email | Script | Workflow | When | Broadcast name |
 |-------|--------|----------|------|----------------|
-| Daily question | `scripts/send-qotd-email.js` (`npm run email:qotd`) | `qotd-daily-email.yml` | cron 01:00 HST creates a broadcast **scheduled for 06:00 HST**, so GitHub's cron jitter (2.5 to 4.5 h late in Sep 2026) never moves delivery. `--now` sends immediately (also automatic after 06:00). | `qotd-<HST date>` |
+| Daily question | `scripts/send-qotd-email.js` (`npm run email:qotd`) | `qotd-daily-email.yml` | 01:00 HST creates a broadcast **scheduled for 06:00 HST**, so a late start never moves delivery as long as it lands before 06:00. Started by a Cloudflare Cron Trigger (`worker-cron.mjs`, 01:00 with a 03:00 retry) through `workflow_dispatch`, because GitHub's own schedule ran 2.5 to 4.5 h late in Sep 2026 and 3 to 10 h late by late Oct 2026; the GitHub `schedule` stays as a backup and finds the broadcast already made. `--now` sends immediately (also automatic after 06:00). | `qotd-<HST date>` |
 | New post | `scripts/send-otc-email.js` (`npm run email:otc`) | `otc-post-email.yml` | on push to main touching `js/otc-posts.js`: slugs new since the previous commit, dated within 7 days, after the post answers on the live site, **scheduled for 12:00 HST the next day** (a day to cancel in Resend). `[no-email]` in the commit message skips. Manual run takes a slug, `now` sends immediately. | `otc-<slug>` |
 
 Both open with "Aloha {first name}," and stay minimal (user call 2026-09-09). The daily email: the claim in the subject ("True or false: …"), the claim, and True/False buttons that open `/?from_q={id}&a=true|false`; the site records the pick on landing (`QOTD.answerFromLink`, GA4 `qotd_answered` with `source: email`) and opens the proof view for that question, even a day later. The answer is never in the email. The new-post email: one context line, the title, the post's OG card, the dek and a "Read the post" button. Links carry `utm_source=email&utm_medium=qotd|otc`.
@@ -1061,6 +1064,7 @@ Change it with `gh variable set EMAIL_SEND_MODE --body beta` (or `live`). `--pre
 **Runbook**
 - Edited today's question after 01:00 HST? The scheduled broadcast still carries the old claim: delete it in Resend (Broadcasts, it is `qotd-<date>`, status scheduled) and run the daily workflow by hand with `now` checked. A run without deleting it first sends nothing, by design.
 - A post published and no email the next day? Check the workflow run from the publish push: the live-site wait fails if the deploy took longer than 10 minutes, and re-running the workflow by hand with the slug is safe (the name guard stops duplicates). To pull a scheduled post email, delete the `otc-<slug>` broadcast in Resend before noon HST the next day.
+- No `qotd-<date>` broadcast by 02:00 HST? Look at the Worker's cron events in the Cloudflare dashboard (Workers, hawaii-dashboard, Settings, Triggers): a failed event usually means `GITHUB_DISPATCH_TOKEN` expired or lost access. Then check the Actions tab for a `workflow_dispatch` run. Repeat dispatches are safe: the name guard skips an existing broadcast and the workflow's concurrency group runs one at a time.
 - Kill switch: set `EMAIL_SEND_MODE` to `dry-run`, or disable the workflow in the Actions tab. Cancelling an already scheduled broadcast is only possible in Resend.
 
 ### Monitoring (Phase 4)

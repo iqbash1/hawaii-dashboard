@@ -8,9 +8,13 @@
 //    re-served here with proper range support.
 // 2. Email subscription endpoints under /api/ (see worker-subscribe.mjs).
 // 3. The /mcp server for AI assistants (see worker-mcp.mjs).
+//
+// Plus a Cron Trigger (not a route) that starts the daily question email
+// workflow on time (see worker-cron.mjs).
 
 import { handleSubscribe, handleConfirm } from './worker-subscribe.mjs';
 import { handleMcp } from './worker-mcp.mjs';
+import { dispatchQotdWorkflow } from './worker-cron.mjs';
 
 const VIDEO_PATH = '/assets/tour.mp4';
 const IMMUTABLE = 'public, max-age=31536000, immutable';
@@ -26,6 +30,9 @@ export default {
     if (pathname === '/mcp') return handleMcp(request, env);
     // Defensive passthrough; with the scoped run_worker_first this is rarely hit.
     return env.ASSETS.fetch(request);
+  },
+  async scheduled(controller, env, ctx) {
+    ctx.waitUntil(dispatchQotdWorkflow(env));
   },
 };
 
