@@ -49,6 +49,9 @@ function hawaiiAnd(extra) {
 }
 const HAWAII = hawaiiAnd();
 
+// Session sources that are AI assistants (ChatGPT tags its links utm_source=chatgpt.com).
+const AI_SOURCES = 'chatgpt|openai|perplexity|claude\\.ai|gemini\\.google|copilot';
+
 // ---- formatting helpers ----------------------------------------------------
 const num = v => Number(v || 0);
 const fmtInt = n => num(n).toLocaleString('en-US');
@@ -200,6 +203,40 @@ async function main() {
             (sm.rows || []).map(r => [r.dimensionValues[0].value || '(unknown)', fmtInt(r.metricValues[0].value), pct(r.metricValues[1].value)])));
         out.push('');
     } catch (e) { out.push(`_Acquisition section failed: ${e.message}_\n`); }
+
+    // 3b) AI ASSISTANTS (all locations) --------------------------------------
+    // Visitors who clicked a link in an assistant's answer. Not Hawaiʻi-scoped:
+    // a citation is worth the same wherever the reader is, and these are clicks
+    // from people, not crawler hits. Baseline 2026-11 (llms.txt, /json/, /mcp).
+    try {
+        const resp = await run({
+            dateRanges: [
+                { startDate: startAgo(DAYS), endDate: END, name: 'cur' },
+                { startDate: startAgo(DAYS * 2), endDate: `${DAYS + 1 + LAG_DAYS}daysAgo`, name: 'prev' },
+            ],
+            dimensionFilter: { filter: { fieldName: 'sessionSource', stringFilter: { matchType: 'PARTIAL_REGEXP', value: AI_SOURCES, caseSensitive: false } } },
+            dimensions: [{ name: 'sessionSource' }],
+            metrics: [{ name: 'sessions' }, { name: 'engagedSessions' }],
+        });
+        const bySource = {};
+        for (const r of resp.rows || []) {
+            const src = r.dimensionValues[0].value;
+            const range = r.dimensionValues[1].value;
+            bySource[src] = bySource[src] || { cur: 0, prev: 0, engaged: 0 };
+            bySource[src][range] += num(r.metricValues[0].value);
+            if (range === 'cur') bySource[src].engaged += num(r.metricValues[1].value);
+        }
+        const rows = Object.entries(bySource).sort((a, b) => b[1].cur - a[1].cur || b[1].prev - a[1].prev);
+        const tot = rows.reduce((t, [, v]) => ({ cur: t.cur + v.cur, prev: t.prev + v.prev, engaged: t.engaged + v.engaged }), { cur: 0, prev: 0, engaged: 0 });
+        summary.ai = tot;
+        out.push(`## AI assistants sending visitors (all locations)\n`);
+        out.push(mdTable(['Source', `Sessions, last ${DAYS}d`, 'Prev period', 'Change', 'Engaged'],
+            rows.length ? [
+                ...rows.map(([src, v]) => [src, fmtInt(v.cur), fmtInt(v.prev), delta(v.cur, v.prev), fmtInt(v.engaged)]),
+                ['**All AI assistants**', `**${fmtInt(tot.cur)}**`, fmtInt(tot.prev), delta(tot.cur, tot.prev), fmtInt(tot.engaged)],
+            ] : []));
+        out.push(`\n_Sessions whose source is ChatGPT, OpenAI, Perplexity, Claude, Gemini or Copilot, from anywhere. Clicks only: an assistant that quotes the site without a click does not show here._\n`);
+    } catch (e) { out.push(`_AI assistants section failed: ${e.message}_\n`); }
 
     // 4) WHICH ISLAND (city) -------------------------------------------------
     try {
@@ -357,6 +394,7 @@ async function main() {
     console.log(`  Engagement rate:   ${pct(summary.engRate)}`);
     console.log(`  Avg time / user:   ${dur(summary.engPerUser)}`);
     if (summary.qotd) console.log(`  QOTD answered:     ${fmtInt(summary.qotd.answered)} (of ${fmtInt(summary.qotd.teaser)} teasers)`);
+    if (summary.ai) console.log(`  AI assistants:     ${fmtInt(summary.ai.cur)} sessions, all locations (${delta(summary.ai.cur, summary.ai.prev)} vs prev period)`);
     if (summary.readers) console.log(`  Email readers:     ${fmtInt(summary.readers.active)} active (${fmtInt(summary.readers.newLast7)} new this week)`);
     console.log(`\n📄 Full report: ${path.relative(process.cwd(), file)}`);
 }

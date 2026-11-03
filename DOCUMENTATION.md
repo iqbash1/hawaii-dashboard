@@ -1216,6 +1216,7 @@ Every indexable page has:
     ```bash
     for ua in ClaudeBot/1.0 GPTBot/1.2 OAI-SearchBot/1.0 PerplexityBot/1.0; do printf '%s ' "$ua"; curl -s -o /dev/null -w '%{http_code}\n' -A "Mozilla/5.0 (compatible; $ua)" https://hawaiidashboard.org/c/uninsured_rate/; done
     ```
+- The weekly GA4 email (`scripts/ga4-hawaii-report.js`) has an "AI assistants sending visitors" section: sessions whose source matches ChatGPT, OpenAI, Perplexity, Claude, Gemini or Copilot, current vs previous period, from all locations (unlike the rest of the report, which is Hawaiʻi-only). Baseline when it shipped (2026-11-02): about 40 sessions since May 2026, mostly Perplexity and ChatGPT and mostly from Hawaiʻi, with the most in September (22) and 0 in October.
 - `robots.txt` explicitly allows GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, OAI-SearchBot, and other AI crawlers.
 - All pages have semantic HTML with descriptive headings.
 - FAQ page has FAQPage JSON-LD schema enabling Google rich results; metric landing pages have Dataset JSON-LD for Google Dataset Search.
