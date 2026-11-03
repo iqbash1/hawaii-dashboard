@@ -127,11 +127,17 @@ ok "/about/ fetched"
 # -----------------------------------------------------------------------------
 section "CACHE-BUSTING HEADERS"
 
-# JS/CSS assets should have immutable caching (versioned via ?v= params)
-for asset_path in "js/app.js" "css/styles.css"; do
+# JS/CSS assets should have immutable caching (versioned via ?v= params).
+# _headers rules MERGE: without the "! Cache-Control" detach line in each
+# specific block, the /* 60s value is prepended ("public, max-age=60, public,
+# max-age=31536000, immutable") and caches honor the first, short one. A
+# doubled max-age fails here, on every path whose block sets its own value.
+for asset_path in "js/app.js" "css/styles.css" "data/acgr_state.csv" "json/catalog.json" "llms.txt"; do
     cc=$(curl -fsI --max-time 10 "${BASE}/${asset_path}" 2>/dev/null \
         | grep -i 'cache-control' | head -1 || true)
-    if echo "$cc" | grep -qi 'immutable'; then
+    if [ "$(echo "$cc" | grep -oi 'max-age' | wc -l | tr -d ' ')" -gt 1 ]; then
+        fail "${asset_path} Cache-Control has more than one max-age (a _headers block lost its \"! Cache-Control\" line; got: ${cc})"
+    elif echo "$cc" | grep -qi 'immutable'; then
         ok "${asset_path} has Cache-Control: immutable"
     elif echo "$cc" | grep -qi 'max-age'; then
         ok "${asset_path} has Cache-Control with max-age (got: ${cc})"
