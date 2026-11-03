@@ -11,7 +11,8 @@ These are for AI assistants and other programs (and the /mcp server, which
 reads them and quotes the `display` strings, so it never formats a number
 itself). Values, years and ranks come from the SAME functions that build
 the /c/ landing pages (scripts/generate-og-pages.py), and every run also
-checks each catalog entry against the committed /c/ page title, so a JSON
+checks each catalog entry against the committed /c/ page title, and
+the ranking against the page's best-5 / worst-5 states table, so a JSON
 answer can't disagree with the page it links to.
 
 Values are in display units: percentages as 55.0, not 0.55.
@@ -21,6 +22,7 @@ Usage:
   python3 scripts/generate-data-json.py --check   # exit 1 if json/ is stale
 """
 
+import html
 import importlib.util
 import json
 import os
@@ -135,13 +137,32 @@ def page_parity_errors(summary):
     return [] if page == ours else [f"{summary['id']}: page says {page}, JSON says {ours}"]
 
 
+def states_table_errors(detail):
+    """Compare the /c/ page's best-5 / worst-5 table with the JSON rankings."""
+    if not detail['rankings']:
+        return []
+    path = os.path.join(BASE_DIR, 'c', detail['id'], 'index.html')
+    rows = re.findall(r'<td class="rk">#(\d+)</td><td>(.+?)</td><td class="num">(.+?)</td>',
+                      open(path, encoding='utf-8').read())
+    by_rank = {s['rank']: s for s in detail['rankings']['states']}
+    if len(rows) < 10:
+        return [f"{detail['id']}: /c/ page has {len(rows)} states-table rows, expected 10 or more"]
+    errs = []
+    for rank, state, display in rows:
+        s = by_rank.get(int(rank))
+        if not s or (html.unescape(state), html.unescape(display)) != (s['state'], s['display']):
+            errs.append(f"{detail['id']}: states table #{rank} {state} {display}, JSON says "
+                        f"{s and (s['state'], s['display'])}")
+    return errs
+
+
 def render(data):
     files, catalog, errors = {}, [], []
     for slug, area in data['areaMap'].items():  # AREA_ORDER order from js/app.js
         if slug not in data['dashboard']:
             continue
         summary, detail = build_metric(slug, data['dashboard'][slug], area, data)
-        errors += page_parity_errors(summary)
+        errors += page_parity_errors(summary) + states_table_errors(detail)
         catalog.append(summary)
         files[f'{slug}.json'] = detail
     files['catalog.json'] = {

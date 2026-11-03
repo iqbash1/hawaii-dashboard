@@ -121,6 +121,12 @@
     th { background: #f5f7fa; font-weight: 600; color: #4c5666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
     tr:last-child td { border-bottom: 0; }
     td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    th.num { text-align: right; }
+    table.states td.rk { width: 3.5rem; color: #5d6770; font-variant-numeric: tabular-nums; }
+    table.states tr.grp td { background: #f5f7fa; color: #4c5666; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.4rem 0.9rem; }
+    table.states tr.hi td { background: #eef6f4; font-weight: 600; }
+    table.states tr.gap td { color: #5d6770; text-align: center; padding: 0.1rem; line-height: 1; }
+    .tnote { font-size: 0.85rem; color: #5d6770; margin-top: -0.25rem; }
     ul.related { padding-left: 1.25rem; margin: 0.5rem 0 0; }
     ul.related li { margin: 0.25rem 0; }
     p { margin: 0.75rem 0; }
@@ -143,6 +149,12 @@
     <p class="lede">Hawaii’s uninsured rate was <strong>3.5% in 2024</strong>, the <strong>second-lowest in the nation</strong> (50-state rank: #2).</p>
 
     <a class="cta-primary" href="/#uninsured_rate/county">View interactive chart &rarr;</a>
+    <h2>How states compare (2024)</h2>
+    <table class="states">
+      <thead><tr><th>Rank</th><th>State</th><th class="num">Uninsured Rate</th></tr></thead>
+      <tbody><tr class="grp"><td colspan="3">Best performing</td></tr><tr><td class="rk">#1</td><td>Massachusetts</td><td class="num">2.8%</td></tr><tr class="hi"><td class="rk">#2</td><td>Hawaiʻi</td><td class="num">3.5%</td></tr><tr><td class="rk">#3</td><td>Vermont</td><td class="num">4.2%</td></tr><tr><td class="rk">#4</td><td>New Hampshire</td><td class="num">4.5%</td></tr><tr><td class="rk">#5</td><td>Rhode Island</td><td class="num">4.6%</td></tr><tr class="grp"><td colspan="3">Worst performing</td></tr><tr><td class="rk">#46</td><td>Alaska</td><td class="num">11.0%</td></tr><tr><td class="rk">#47</td><td>Nevada</td><td class="num">11.4%</td></tr><tr><td class="rk">#48</td><td>Oklahoma</td><td class="num">11.5%</td></tr><tr><td class="rk">#49</td><td>Georgia</td><td class="num">12.0%</td></tr><tr><td class="rk">#50</td><td>Texas</td><td class="num">16.7%</td></tr></tbody>
+    </table>
+    <p class="tnote">50-state median: 7.3%. #1 = best performing state; lower values are better. <a href="/#uninsured_rate/rankings">All 50 states &rarr;</a></p>
     <h2>By county (2024)</h2>
     <table>
       <thead><tr><th>County</th><th class="num">Uninsured Rate</th></tr></thead>

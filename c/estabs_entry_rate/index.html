@@ -121,6 +121,12 @@
     th { background: #f5f7fa; font-weight: 600; color: #4c5666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
     tr:last-child td { border-bottom: 0; }
     td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    th.num { text-align: right; }
+    table.states td.rk { width: 3.5rem; color: #5d6770; font-variant-numeric: tabular-nums; }
+    table.states tr.grp td { background: #f5f7fa; color: #4c5666; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.4rem 0.9rem; }
+    table.states tr.hi td { background: #eef6f4; font-weight: 600; }
+    table.states tr.gap td { color: #5d6770; text-align: center; padding: 0.1rem; line-height: 1; }
+    .tnote { font-size: 0.85rem; color: #5d6770; margin-top: -0.25rem; }
     ul.related { padding-left: 1.25rem; margin: 0.5rem 0 0; }
     ul.related li { margin: 0.25rem 0; }
     p { margin: 0.75rem 0; }
@@ -143,6 +149,12 @@
     <p class="lede">Hawaii’s new business entry rate was <strong>9.2% in 2023</strong>, <strong>ranked #37 of 50 states</strong>.</p>
 
     <a class="cta-primary" href="/#estabs_entry_rate/county">View interactive chart &rarr;</a>
+    <h2>How states compare (2023)</h2>
+    <table class="states">
+      <thead><tr><th>Rank</th><th>State</th><th class="num">New Business Entry Rate</th></tr></thead>
+      <tbody><tr class="grp"><td colspan="3">Best performing</td></tr><tr><td class="rk">#1</td><td>Florida</td><td class="num">13.1%</td></tr><tr><td class="rk">#2</td><td>Delaware</td><td class="num">12.8%</td></tr><tr><td class="rk">#3</td><td>Utah</td><td class="num">12.8%</td></tr><tr><td class="rk">#4</td><td>Wyoming</td><td class="num">12.7%</td></tr><tr><td class="rk">#5</td><td>Nevada</td><td class="num">12.5%</td></tr><tr class="gap"><td colspan="3">&hellip;</td></tr><tr class="hi"><td class="rk">#37</td><td>Hawaiʻi</td><td class="num">9.2%</td></tr><tr class="gap"><td colspan="3">&hellip;</td></tr><tr class="grp"><td colspan="3">Worst performing</td></tr><tr><td class="rk">#46</td><td>New Hampshire</td><td class="num">8.8%</td></tr><tr><td class="rk">#47</td><td>Connecticut</td><td class="num">8.8%</td></tr><tr><td class="rk">#48</td><td>Ohio</td><td class="num">8.7%</td></tr><tr><td class="rk">#49</td><td>Iowa</td><td class="num">8.6%</td></tr><tr><td class="rk">#50</td><td>Pennsylvania</td><td class="num">8.3%</td></tr></tbody>
+    </table>
+    <p class="tnote">50-state median: 9.9%. #1 = best performing state; higher values are better. <a href="/#estabs_entry_rate/rankings">All 50 states &rarr;</a></p>
     <h2>By county (2023)</h2>
     <table>
       <thead><tr><th>County</th><th class="num">New Business Entry Rate</th></tr></thead>

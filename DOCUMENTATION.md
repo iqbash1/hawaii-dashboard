@@ -97,7 +97,7 @@ hawaii-dashboard/
 ├── scripts/
 │   ├── generate-og-pages.py    # Generates ALL metric OG images + redirect pages + QOTD OG cards (PIL-based)
 │   ├── generate-llms-txt.py    # Regenerates the metric + Off the Charts sections of llms.txt; --check exits 1 on drift
-│   ├── generate-data-json.py   # Writes json/catalog.json + json/{slug}.json for AI assistants; --check exits 1 on drift or /c/ disagreement
+│   ├── generate-data-json.py   # Writes json/catalog.json + json/{slug}.json for AI assistants; --check exits 1 on drift or /c/ disagreement (page title and states-table rows)
 │   ├── indexnow-ping.js        # Submits the live sitemap (or given URLs) to IndexNow; `npm run indexnow`
 │   ├── generate-og-image.py    # Generates the homepage fallback OG image
 │   ├── generate-og-change-summary.py # Generates the Change Summary OG image
@@ -257,7 +257,7 @@ Disambiguation: when two segments follow the slug, the second is tried as a 2-le
 
 - **`/t/`** = **t**rend share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
 - **`/r/`** = **r**ankings share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
-- **`/c/`** = **c**anonical metric landing page. Real indexable content (no redirect): keyword-rich title, Dataset + BreadcrumbList JSON-LD with `distribution` referencing `/data/{slug}_*.csv`, headline figure with national rank, county and state-trend tables, cross-links to related metrics, source attribution, CTA back to the SPA. One per metric (27 total). All other view types (`/t/`, `/r/`, `/rh/`) consolidate authority here via canonical-link.
+- **`/c/`** = **c**anonical metric landing page. Real indexable content (no redirect): keyword-rich title, Dataset + BreadcrumbList JSON-LD with `distribution` referencing `/data/{slug}_*.csv`, headline figure with national rank, a best-5 / worst-5 states table (Hawaiʻi's row added between the groups when it is in neither), county and state-trend tables, cross-links to related metrics, source attribution, CTA back to the SPA. One per metric (27 total). All other view types (`/t/`, `/r/`, `/rh/`) consolidate authority here via canonical-link.
 - **`/rh/`** = **r**ank **h**istory share view (redirect page → SPA; canonical-links to `/c/{slug}/`)
 
 ### Canonical consolidation
@@ -287,7 +287,7 @@ This single script reads `js/data.js`, `js/state-data.js`, and `js/county-data.j
 - 1,323 rank history comparison cards (`assets/og/{slug}_rh_{code}.png`), one per metric per state (27 × 49)
 - 11 county OG cards (`assets/og/{slug}_county.png`), for metrics with county data
 - 27 trend comparison cards per metric per state (`assets/og/{slug}_t_{code}.png`)
-- All `/c/{slug}/index.html` landing pages (full content, Dataset JSON-LD with `distribution`, headline figure, county and state-trend tables, source attribution, cross-links, CTA)
+- All `/c/{slug}/index.html` landing pages (full content, Dataset JSON-LD with `distribution`, headline figure, best-5 / worst-5 states table, county and state-trend tables, source attribution, cross-links, CTA)
 - All redirect pages in `t/`, `r/`, `rh/` (with canonical-link to `/c/{slug}/`, no longer self-canonical)
 - All static CSVs in `/data/` (`{slug}_state.csv` per metric, `{slug}_county.csv` for the 11 metrics with county data)
 
@@ -891,7 +891,7 @@ Daily "You know Hawaiʻi?" true/false claim. White card teaser at the top of the
 | `scripts/build-share-card-data.js` + `scripts/generate-share-cards.py` | **OTC social-card generator** (`npm run share-cards`). The `.js` re-derives each card's numbers live; the `.py` renders forwardable cards (claim + one honest data visual + attribution) at 1200×630 and 1080×1350 to `drafts/share-cards/` (gitignored). For the messenger/seeding distribution push. |
 | `scripts/validate-all.sh` | Aggregates the 11 validate gates into one CI command (`npm run validate`): validate-data, audit-narrative-numbers, sync-qotd-answers, audit-internal.py, update-metric-counts, generate-fyc-pages, sync-otc-meta, audit-otc-numbers, generate-qotd-redirects, generate-llms-txt, and generate-data-json. |
 | `scripts/generate-llms-txt.py` | Rewrites the two generated sections of `llms.txt` (between `<!-- generated:metrics -->` and `<!-- generated:otc -->` markers): each metric's latest Hawaiʻi value, year, 50-state rank, `/c/` page and CSV links, and each Off the Charts post with its dek. Reuses the `/c/` page functions in `generate-og-pages.py`, so the two can't disagree. `npm run llms`; `--check` is validate gate 10; `refresh-data.yml` runs it. |
-| `scripts/generate-data-json.py` | Writes `json/catalog.json` (one summary per metric) and `json/{slug}.json` (definition, Hawaiʻi + median series, full 50-state ranking for the latest year, latest county values, links, cite-as line), values in display units plus a `display` string for every value (the `/c/` page formatting). Reuses the `/c/` page functions and checks every catalog entry against the committed `/c/` page title. `npm run data-json`; `--check` is validate gate 11; `refresh-data.yml` runs it. The `/mcp` server reads these files and quotes the `display` strings, so it never formats a number. |
+| `scripts/generate-data-json.py` | Writes `json/catalog.json` (one summary per metric) and `json/{slug}.json` (definition, Hawaiʻi + median series, full 50-state ranking for the latest year, latest county values, links, cite-as line), values in display units plus a `display` string for every value (the `/c/` page formatting). Reuses the `/c/` page functions and checks every catalog entry against the committed `/c/` page title and the ranking against the page's best-5 / worst-5 states table. `npm run data-json`; `--check` is validate gate 11; `refresh-data.yml` runs it. The `/mcp` server reads these files and quotes the `display` strings, so it never formats a number. |
 | `scripts/REFRESH-PLAYBOOK.md` | Canonical sequence for data refreshes; the discipline that prevents narrative-vs-data drift. |
 | `tests/qotd.test.js` | 58 unit tests across 9 suites (bank shape, rotation, HST boundaries, id lookups, answer state, per-day dismiss, share URL, V1/V2 gap threshold, medianSeries invariant). |
 

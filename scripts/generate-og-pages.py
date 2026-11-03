@@ -951,6 +951,55 @@ def generate_metric_csv(slug, state_entry, county_entry):
     return written
 
 
+def _name_in_sentence(name):
+    """Metric name for mid-sentence use: lowercased, except acronyms
+    ('NAEP 8th Grade Math' -> 'NAEP 8th grade math', not 'naep ...')."""
+    return ' '.join(w if len(w) > 1 and w.isupper() else w.lower() for w in name.split(' '))
+
+
+def _states_table_html(slug, metric, rankings):
+    """Best-5 / worst-5 states table for the /c/ page, with Hawaiʻi's row added
+    between the groups when it is in neither. Lets a page answer (and be cited
+    for) "which state is best / worst at X", not only "how does Hawaiʻi do".
+    Rows are rankings['stateValues'] in rank order, the same list
+    generate-data-json.py writes to json/{slug}.json; gate 11 compares them."""
+    if not rankings or rankings['total'] < 10:
+        return ''
+    unit = metric.get('unit', '')
+    sv = rankings['stateValues']
+    hi = rankings['hawaiiRank']
+
+    def row(i):
+        name = sv[i]['state']
+        is_hi = name in ('Hawaii', 'Hawaiʻi')
+        cls = ' class="hi"' if is_hi else ''
+        # get_rankings has already scaled decimal percentages, so dec=False.
+        return (f'<tr{cls}><td class="rk">#{i + 1}</td><td>{_esc_html("Hawaiʻi" if is_hi else name)}</td>'
+                f'<td class="num">{_esc_html(_format_with_unit(sv[i]["value"], unit, False))}</td></tr>')
+
+    gap = '<tr class="gap"><td colspan="3">&hellip;</td></tr>'
+    body = ['<tr class="grp"><td colspan="3">Best performing</td></tr>', *(row(i) for i in range(5))]
+    if 5 < hi <= len(sv) - 5:
+        body += [gap, row(hi - 1), gap]
+    body += ['<tr class="grp"><td colspan="3">Worst performing</td></tr>',
+             *(row(i) for i in range(len(sv) - 5, len(sv)))]
+
+    year = rankings['year']
+    median = (metric.get('medianSeries') or {}).get(year)
+    median_txt = (f'50-state median: {_esc_html(_format_with_unit(median, unit, is_decimal_pct(metric)))}. '
+                  if median is not None else '')
+    better = 'higher' if metric.get('goodDirection', 'up') == 'up' else 'lower'
+    return (
+        f'\n    <h2>How states compare ({_esc_html(year)})</h2>\n'
+        f'    <table class="states">\n'
+        f'      <thead><tr><th>Rank</th><th>State</th><th class="num">{_esc_html(metric.get("metric", slug))}</th></tr></thead>\n'
+        f'      <tbody>{"".join(body)}</tbody>\n'
+        f'    </table>\n'
+        f'    <p class="tnote">{median_txt}#1 = best performing state; {better} values are better. '
+        f'<a href="/#{slug}/rankings">All {len(sv)} states &rarr;</a></p>'
+    )
+
+
 def _related_metrics(slug, area, dashboard, limit=3):
     """Return up to `limit` (slug, metric_name) pairs for other metrics in the
     same area, for cross-link footer."""
@@ -1011,7 +1060,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
 
     desc_lead = ''
     if formatted != 'N/A':
-        desc_lead = f'Hawaii {metric_name.lower()} was {formatted} in {latest_year}'
+        desc_lead = f'Hawaii {_name_in_sentence(metric_name)} was {formatted} in {latest_year}'
         if rank_phrase:
             desc_lead += f', {rank_phrase}'
         desc_lead += '.'
@@ -1035,7 +1084,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
         '@context': 'https://schema.org',
         '@type': 'Dataset',
         'name': f'Hawaii {metric_name}',
-        'description': (f'Annual {metric_name.lower()} for Hawaii'
+        'description': (f'Annual {_name_in_sentence(metric_name)} for Hawaii'
                         + (f' state and counties ({", ".join(county_data["counties"])})'
                            if county_data and county_data.get('counties') else ' state')
                         + (f', {temporal_cov.replace("/", "–")}.' if temporal_cov else '.')
@@ -1101,7 +1150,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
 
     # ── Body: lede ────────────────────────────────────────────────
     if formatted != 'N/A':
-        lede_main = f'Hawaii’s {metric_name.lower()} was <strong>{_esc_html(formatted)} in {latest_year}</strong>'
+        lede_main = f'Hawaii’s {_name_in_sentence(metric_name)} was <strong>{_esc_html(formatted)} in {latest_year}</strong>'
         if rank_phrase:
             if 'ranked #' in rank_phrase:
                 # rank_phrase already names the number; don't double-print it
@@ -1113,6 +1162,8 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
             lede_main += '.'
     else:
         lede_main = f'{_esc_html(metric_name)} data for Hawaii.'
+
+    states_html = _states_table_html(slug, metric, rankings)
 
     # ── Body: county table ────────────────────────────────────────
     county_html = ''
@@ -1244,6 +1295,12 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
     th {{ background: #f5f7fa; font-weight: 600; color: #4c5666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }}
     tr:last-child td {{ border-bottom: 0; }}
     td.num {{ text-align: right; font-variant-numeric: tabular-nums; }}
+    th.num {{ text-align: right; }}
+    table.states td.rk {{ width: 3.5rem; color: #5d6770; font-variant-numeric: tabular-nums; }}
+    table.states tr.grp td {{ background: #f5f7fa; color: #4c5666; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.4rem 0.9rem; }}
+    table.states tr.hi td {{ background: #eef6f4; font-weight: 600; }}
+    table.states tr.gap td {{ color: #5d6770; text-align: center; padding: 0.1rem; line-height: 1; }}
+    .tnote {{ font-size: 0.85rem; color: #5d6770; margin-top: -0.25rem; }}
     ul.related {{ padding-left: 1.25rem; margin: 0.5rem 0 0; }}
     ul.related li {{ margin: 0.25rem 0; }}
     p {{ margin: 0.75rem 0; }}
@@ -1265,7 +1322,7 @@ def generate_metric_landing_html(slug, metric, area, rankings, county_data,
 
     <p class="lede">{lede_main}</p>
 
-    <a class="cta-primary" href="{cta_href}">View interactive chart &rarr;</a>{county_html}{trend_html}{why_html}{related_html}
+    <a class="cta-primary" href="{cta_href}">View interactive chart &rarr;</a>{states_html}{county_html}{trend_html}{why_html}{related_html}
 
     <p style="margin-top:1.5rem;"><a href="{cta_href}">Open the full interactive chart &rarr;</a> for the historical series, US-state rankings, and rank history.</p>{source_html}
   </main>
@@ -1336,7 +1393,7 @@ def generate_redirect_html(slug, metric, area, rankings, output_path,
         image_url = f"{SITE_URL}/assets/og/{slug}{img_suffix}_county.png"
         page_url = f"{SITE_URL}/c/{slug}/{path_suffix}"
         redirect_hash = f"#{slug}/county"
-        description = f"Compare {metric_name.lower()} across {county_list} counties."
+        description = f"Compare {_name_in_sentence(metric_name)} across {county_list} counties."
     else:
         title = f"{metric_name} | Hawai\u02BBi Dashboard"
         image_url = f"{SITE_URL}/assets/og/{slug}{img_suffix}.png"

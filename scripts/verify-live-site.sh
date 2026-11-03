@@ -383,6 +383,16 @@ else
     fail "homepage is missing the Subscribe pill or js/subscribe.js"
 fi
 
+# /c/ pages carry a best-5 / worst-5 states table (generate-og-pages.py,
+# _states_table_html). Gate 11 checks the committed rows; this checks they ship.
+c_html=$(curl -s --max-time 15 "${BASE}/c/unemployment_rate/" 2>/dev/null || echo "")
+if [ "$(echo "$c_html" | grep -o '<td class="rk">' | wc -l | tr -d ' ')" -ge 10 ] \
+    && echo "$c_html" | grep -q 'How states compare'; then
+    ok "/c/unemployment_rate/ has the states table (10+ ranked rows)"
+else
+    fail "/c/unemployment_rate/ is missing the How states compare table"
+fi
+
 # MCP server for AI assistants (worker-mcp.mjs, run_worker_first "/mcp"). A
 # real tool call, so a broken /json/ read shows up here, not only a dead route.
 mcp_reply=$(curl -s --max-time 15 -X POST "${BASE}/mcp" -H 'Content-Type: application/json' \
