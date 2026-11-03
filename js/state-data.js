@@ -5,7 +5,7 @@
 // backfill scripts contributing the historical metrics this fetcher
 // does not cover; build-state-data.js MERGES with the existing file
 // rather than overwriting, to preserve those backfilled metrics).
-// Generated: 2026-11-03T00:48:25.691Z
+// Generated: 2026-11-03T01:08:27.805Z
 //
 // Contains per-state values across all available years.
 // Structure: { slug: { source, calculation, data: { year: { state: val } } } }
