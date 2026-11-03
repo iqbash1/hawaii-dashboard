@@ -109,7 +109,7 @@ function renderPage({ years, slug }) {
 
     <header class="fyc-header">
         <h1>How Hawai&#x02BB;i changed in the last <span class="fyc-span-toggle" id="fyc-span-toggle">
-            <button class="fyc-span-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Change time window">
+            <button class="fyc-span-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="${label}, change time window">
                 <span class="fyc-span-label">${label}</span>
                 <svg class="fyc-span-caret" width="12" height="12" viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3 L5 7 L9 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
