@@ -899,14 +899,14 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Massachusetts built sustained gains through standards-based reform and teacher quality; Florida's early gains from retention policies did not carry forward. Hawaiʻi's single statewide district allowed HIDOE to roll out Illustrative Mathematics to every school simultaneously, but teacher shortages remain most acute in STEM subjects on neighbor islands where cost-of-living premiums are not offset by compensation."
+        "Massachusetts built sustained gains through standards-based reform and teacher quality; Florida's third-grade reading retention policy has not lifted its 8th-grade math ranks. Hawaiʻi's single statewide district allowed HIDOE to roll out Illustrative Mathematics to every school simultaneously, but teacher shortages remain most acute in STEM subjects on neighbor islands where cost-of-living premiums are not offset by compensation."
       ],
       "caution": {
         "state": "Florida",
-        "text": "Florida's experience shows that early test-score gains from retention policies do not automatically carry forward to later grades. Florida's third-grade reading retention law (enacted 2002) was widely credited with raising 4th-grade NAEP reading scores. Independent researchers later found that a substantial share of the improvement reflected cohort effects: retained students below the threshold were excluded from the grade-level sample, making the measured cohort appear stronger. Eighth-grade math outcomes improved more modestly and less consistently.",
+        "text": "Florida shows that an early-grade reading policy does not by itself lift later-grade math. Since 2003 Florida has held back third graders who do not pass the state reading test and given them intensive reading help. A study of the policy found large test gains for retained students that faded once they were compared with students of the same age, though the gains held up against classmates in the same grade. Florida's 8th-grade math has ranked #32 or worse in every assessment since 2003.",
         "source": {
-          "label": "NAEP State and District Snapshots - NCES",
-          "url": "https://nces.ed.gov/nationsreportcard/snapshots/"
+          "label": "The Effects of Test-Based Retention on Student Outcomes over Time: Regression Discontinuity Evidence from Florida - NBER (Schwerdt, West and Winters)",
+          "url": "https://www.nber.org/papers/w21509"
         }
       }
     }
