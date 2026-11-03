@@ -188,7 +188,7 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "New Mexico",
-        "text": "New Mexico shares Hawaiʻi's exposure to methamphetamine supply chains and rural service gaps on its outer communities. New Mexico ranked near the national midpoint for violent crime through the 1990s and now consistently ranks last. The deterioration tracks the expansion of drug trafficking corridors through the state, the hollowing out of rural social services, and a collapse of community trust in law enforcement. New Mexico's drug trafficking exposure and rural service erosion represent a pattern of preconditions Hawaiʻi recognizes in its own methamphetamine supply chain and neighbor island service gaps.",
+        "text": "New Mexico shares Hawaiʻi's exposure to methamphetamine supply chains and rural service gaps on its outer communities. New Mexico has ranked in the bottom tier for violent crime since the 1990s and has been at or near last since 2013. The worsening tracks the expansion of drug trafficking corridors through the state, the hollowing out of rural social services, and a collapse of community trust in law enforcement. New Mexico's drug trafficking exposure and rural service erosion represent a pattern of preconditions Hawaiʻi recognizes in its own methamphetamine supply chain and neighbor island service gaps.",
         "source": {
           "label": "New Mexico Uniform Crime Reports - NM Department of Public Safety",
           "url": "https://www.dps.nm.gov/107-uniform-crime-reports/"
@@ -365,7 +365,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "New York",
-          "text": "Like Hawaiʻi, New York has high-density tourist and commercial areas that concentrate property crime targets. New York adopted CompStat in 1994, a data-driven policing system requiring precinct-level crime analysis and targeted resource deployment. The state paired enforcement accountability with drug courts and mental health diversion programs, reducing the repeat-offender population driving the most chronic property crime. New York's property crime rate fell over 50 percent between 1995 and 2015.",
+          "text": "Like Hawaiʻi, New York has high-density tourist and commercial areas that concentrate property crime targets. New York City's police department introduced CompStat in 1994, a data-driven policing system requiring precinct-level crime analysis and targeted resource deployment. New York's property crime rate fell over 50 percent between 1995 and 2015, as the state went from #12 to #2 for property crime.",
           "source": {
             "label": "CompStat: An Important Administrative Innovation in Policing - Harvard Kennedy School",
             "url": "https://www.hks.harvard.edu/publications/sizing-compstat-important-administrative-innovation-policing"
@@ -462,7 +462,7 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "Oklahoma",
-        "text": "Oklahoma's neighbor-island-like rural communities face the same financial pressures as Hawaiʻi's outer-island hospitals. Oklahoma ranked in the top half for primary care physician density through the 2000s and has since declined as rural hospital closures reduced the practice environments that attract physicians. Eight rural hospitals in Oklahoma have closed or stopped inpatient care since 2010, and physicians do not locate near closed hospitals. Hawaiʻi's neighbor island hospitals face similar financial pressures, and their closure would accelerate the physician shortage the J-1 program currently offsets.",
+        "text": "Oklahoma's neighbor-island-like rural communities face the same financial pressures as Hawaiʻi's outer-island hospitals. Oklahoma's primary care physician density ranking slipped from #42 in 2010 to #47 by 2020 as rural hospital closures reduced the practice environments that attract physicians. Eight rural hospitals in Oklahoma have closed or stopped inpatient care since 2010, and physicians do not locate near closed hospitals. Hawaiʻi's neighbor island hospitals face similar financial pressures, and their closure would accelerate the physician shortage the J-1 program currently offsets.",
         "source": {
           "label": "Rural Hospital Closures - Sheps Center, UNC",
           "url": "https://www.shepscenter.unc.edu/programs-projects/rural-health/rural-hospital-closures/"
@@ -533,7 +533,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Massachusetts",
-          "text": "Like Hawaiʻi, Massachusetts built coverage on an employer-based mandate that predates the ACA. Massachusetts has ranked #1 in health coverage since 2008. Chapter 58 (2006, RomneyCare) combined an individual coverage mandate, employer contribution requirements, and Medicaid expansion, reducing the uninsured rate from 10 percent in 2005 to below 3 percent by 2010. Massachusetts retained its lead after the ACA because its mandate and state-level premium subsidies cover a gap population that earns too much for Medicaid but may forgo coverage without an incentive.",
+          "text": "Like Hawaiʻi, Massachusetts built coverage on an employer-based mandate that predates the ACA. Massachusetts has ranked #1 in health coverage since 2008. Chapter 58 (2006, RomneyCare) combined an individual coverage mandate, employer contribution requirements, and Medicaid expansion, and the uninsured rate went from 4.4 percent in 2010 to 2.8 percent in 2015. Massachusetts retained its lead after the ACA because its mandate and state-level premium subsidies cover a gap population that earns too much for Medicaid but may forgo coverage without an incentive.",
           "source": {
             "label": "Chapter 58, An Act Providing Access to Affordable, Quality, Accountable Health Care (2006)",
             "url": "https://malegislature.gov/Laws/SessionLaws/Acts/2006/Chapter58"
@@ -642,7 +642,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "New Jersey",
-          "text": "Like Hawaiʻi, New Jersey is a densely populated coastal state with comprehensive gun laws and urban behavioral health infrastructure. New Jersey has ranked #1 or #2 in lowest suicide rate for most of the past decade, consistently below 8 per 100,000. The state operates a statewide network of community mental health centers with designated mobile crisis teams in every county, funded through a combination of state appropriations and federal Community Mental Health Block Grants. New Jersey also maintains a suicide prevention infrastructure office within its Department of Human Services that coordinates school-based programs, crisis line training, and means restriction outreach.",
+          "text": "Like Hawaiʻi, New Jersey is a densely populated coastal state with comprehensive gun laws and urban behavioral health infrastructure. New Jersey has ranked #1 or #2 for suicide rate for most of the past decade, at 7.2 to 8.6 per 100,000. The state operates a statewide network of community mental health centers with mobile crisis outreach teams that respond around the clock, funded through a combination of state appropriations and federal Community Mental Health Block Grants. New Jersey also maintains a suicide prevention infrastructure office within its Department of Human Services that coordinates school-based programs, crisis line training, and means restriction outreach.",
           "source": {
             "label": "NJ DMHAS Mobile Crisis Outreach Response Teams (MCORTs) - nj.gov",
             "url": "https://www.nj.gov/humanservices/dmhas/crisis/index.shtml"
@@ -650,7 +650,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "New Jersey deployed county-level mobile crisis teams statewide; Montana's rural isolation and provider gaps keep rates high. Hawaiʻi's neighbor island counties face similar access constraints: psychiatric provider capacity is limited, and while telehealth expansion since 2020 has partially closed the gap, rural and outer-island residents still face longer wait times for in-person behavioral health services."
+        "New Jersey built a statewide network of community mental health centers and mobile crisis teams; Montana's rural isolation and provider gaps keep rates high. Hawaiʻi's neighbor island counties face similar access constraints: psychiatric provider capacity is limited, and while telehealth expansion since 2020 has partially closed the gap, rural and outer-island residents still face longer wait times for in-person behavioral health services."
       ],
       "caution": {
         "state": "Montana",
@@ -722,7 +722,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Virginia",
-          "text": "Like Hawaiʻi, Virginia has a statewide accountability system that makes graduation outcomes a direct function of state policy. Virginia climbed from 87 percent in 2011 to 93 percent in 2022, moving from worse than average to near the top of the national rankings. Virginia restructured its diploma pathways in 2012 to add a Career and Technical Education (CTE) diploma option that allowed students to count industry certifications toward graduation requirements. The state also set a counselor-to-student ratio target of 1:250 and invested in school counselor hiring through the Lottery-funded At-Risk Add-On program. These structural changes created multiple on-ramps to graduation for students who did not fit the traditional academic track.",
+          "text": "Like Hawaiʻi, Virginia has a statewide accountability system that makes graduation outcomes a direct function of state policy. Virginia climbed from 83.0 percent in 2011 to 89.1 percent in 2022, rising from #21 to #10. Virginia restructured its diploma pathways in 2012 to add a Career and Technical Education (CTE) diploma option that allowed students to count industry certifications toward graduation requirements. The state also set a counselor-to-student ratio target of 1:250 and invested in school counselor hiring through the Lottery-funded At-Risk Add-On program. These structural changes created multiple on-ramps to graduation for students who did not fit the traditional academic track.",
           "source": {
             "label": "Career and Technical Education (CTE) - Virginia Department of Education",
             "url": "https://www.doe.virginia.gov/teaching-learning-assessment/instruction/career-and-technical-education-cte"
@@ -734,7 +734,7 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "Louisiana",
-        "text": "Louisiana, like Hawaiʻi, faced pressure to show improvement in graduation metrics across a state-managed system. Louisiana increased its reported graduation rate from 67 percent in 2012 to 78 percent by 2016, a 10-point gain in four years. Subsequent analysis found that much of the increase came from aggressive use of credit recovery programs that allowed students to replace failed courses with online alternatives that did not improve tested knowledge. NAEP scores did not rise over the same period, indicating that the graduation rate gain was not matched by learning gains. Louisiana's experience illustrates the risk of rate inflation through pathway manipulation rather than genuine improvement.",
+        "text": "Louisiana, like Hawaiʻi, faced pressure to show improvement in graduation metrics across a state-managed system. Louisiana increased its reported graduation rate from 72.0 percent in 2012 to 78.6 percent by 2016, a gain of nearly 7 points in four years. Subsequent analysis found that much of the increase came from aggressive use of credit recovery programs that allowed students to replace failed courses with online alternatives that did not improve tested knowledge. NAEP scores did not rise over the same period, indicating that the graduation rate gain was not matched by learning gains. Louisiana's experience illustrates the risk of rate inflation through pathway manipulation rather than genuine improvement.",
         "source": {
           "label": "Louisiana High School Performance Data - Louisiana Department of Education",
           "url": "https://doe.louisiana.gov/data-and-reports/high-school-performance"
@@ -891,7 +891,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Massachusetts",
-          "text": "Like Hawaiʻi, Massachusetts runs a statewide accountability system where state-level curriculum and teacher quality decisions directly shape outcomes. Massachusetts has ranked #1 or #2 in NAEP 8th grade math for over 25 years. The Massachusetts Education Reform Act of 1993 established standards-based accountability, redirected funding toward high-need districts through a foundation budget formula, and created mathematics-specific teacher licensure requirements. Massachusetts requires math teachers to pass a separate subject-matter exam (MTEL) distinct from general teaching certification.",
+          "text": "Like Hawaiʻi, Massachusetts runs a statewide accountability system where state-level curriculum and teacher quality decisions directly shape outcomes. Massachusetts has ranked #1 in NAEP 8th grade math in every assessment since 2005. The Massachusetts Education Reform Act of 1993 established standards-based accountability, redirected funding toward high-need districts through a foundation budget formula, and created mathematics-specific teacher licensure requirements. Massachusetts requires math teachers to pass a separate subject-matter exam (MTEL) distinct from general teaching certification.",
           "source": {
             "label": "Massachusetts Tests for Educator Licensure (MTEL) - Massachusetts DESE",
             "url": "https://www.doe.mass.edu/mtel/"
@@ -964,7 +964,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Mississippi",
-          "text": "Like Hawaiʻi, Mississippi ranked near the bottom in reading for decades before implementing statewide literacy reform. Mississippi was consistently last or near-last in reading scores through 2018. The state enacted the Mississippi Literacy Act in 2019, which required all third-grade reading teachers to be trained in structured literacy, placed literacy coaches in every school, and barred third-grade promotion for students not reading at grade level. By 2022, Mississippi's 4th grade reading scores rose 3 points on NAEP while the median fell 3 points, the largest positive divergence in the country. Mississippi's 8th grade reading scores also improved against national trends.",
+          "text": "Like Hawaiʻi, Mississippi ranked near the bottom in reading for decades before implementing statewide literacy reform. Mississippi ranked last or near-last in 8th grade reading from 2005 through 2017. The state enacted the Literacy-Based Promotion Act in 2013, which required all third-grade reading teachers to be trained in structured literacy, placed literacy coaches in every school, and barred third-grade promotion for students not reading at grade level. Mississippi's 8th grade reading rank rose from #50 in 2013 to #41 in 2024.",
           "source": {
             "label": "Mississippi Literacy-Based Promotion Act - Mississippi Department of Education",
             "url": "https://mdek12.org/literacy/lbpa/"
@@ -976,10 +976,10 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "Kentucky",
-        "text": "Kentucky shows that better-than-average performance can erode when implementation attention shifts to other priorities. Kentucky scored better than the median in 8th grade reading in 2011 and maintained that position through the mid-2010s. By 2022, Kentucky had fallen to worse than the median. Kentucky did not adopt a structured literacy requirement until 2022 legislation, and the delay coincided with a period when states that did adopt phonics-based mandates pulled ahead while Kentucky's scores declined. Kentucky illustrates that a good starting position does not protect a state's rank if instructional practices stagnate.",
+        "text": "Kentucky shows that better-than-average performance can erode when implementation attention shifts to other priorities. Kentucky scored better than the median in 8th grade reading in 2011 and maintained that position through the mid-2010s. By 2022, Kentucky had fallen to worse than the median. Kentucky did not pass a statewide early literacy law until 2022 (Senate Bill 9, the Read to Succeed Act), and the delay coincided with a period when several states that adopted phonics-based mandates earlier pulled ahead while Kentucky's scores declined. Kentucky illustrates that a good starting position does not protect a state's rank if instructional practices stagnate.",
         "source": {
-          "label": "Prichard Committee for Academic Excellence - prichardcommittee.org",
-          "url": "https://prichardcommittee.org/"
+          "label": "2022 Regular Session Senate Bill 9 - Kentucky General Assembly",
+          "url": "https://apps.legislature.ky.gov/record/22rs/sb9.html"
         }
       }
     }
@@ -1126,7 +1126,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Nebraska",
-          "text": "Unlike Hawaiʻi, Nebraska spreads employment risk across multiple sectors, providing a structural buffer during downturns. Nebraska has ranked #1 or #2 in lowest unemployment for most of the past three decades. Nebraska's economy spreads risk across agriculture, food processing, financial services, insurance, healthcare, and manufacturing. During the COVID downturn, Nebraska's unemployment peaked at roughly 8 percent in April 2020, compared to Hawaiʻi's 11.6 percent annual average and peak rates above 20 percent in individual months. Nebraska recovered to near pre-pandemic levels within 12 months.",
+          "text": "Unlike Hawaiʻi, Nebraska spreads employment risk across multiple sectors, providing a structural buffer during downturns. Nebraska held the best unemployment rate in the country every year from 1990 to 1998 and has ranked in the top 15 every year since 1999. Nebraska's economy spreads risk across agriculture, food processing, financial services, insurance, healthcare, and manufacturing. During the COVID downturn, Nebraska's unemployment peaked at roughly 8 percent in April 2020, compared to Hawaiʻi's 11.7 percent annual average and peak rates above 20 percent in individual months. Nebraska recovered to near pre-pandemic levels within 12 months.",
           "source": {
             "label": "Unemployment Rates for States, Historical Highs and Lows - Bureau of Labor Statistics",
             "url": "https://www.bls.gov/web/laus/lauhsthl.htm"
@@ -1134,7 +1134,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Nebraska's diversified economy absorbed COVID with a fraction of the disruption; Nevada's tourism concentration produced the same volatility as Hawaiʻi's. Hawaiʻi's recovery from 11.6 percent in 2020 to 3 percent by 2024 was driven almost entirely by the return of tourism rather than the growth of new sectors. The same structural volatility risk that existed before the pandemic exists today."
+        "Nebraska's diversified economy absorbed COVID with a fraction of the disruption; Nevada's tourism concentration produced the same volatility as Hawaiʻi's. Hawaiʻi's recovery from 11.7 percent in 2020 to 3 percent by 2024 was driven almost entirely by the return of tourism rather than the growth of new sectors. The same structural volatility risk that existed before the pandemic exists today."
       ],
       "caution": {
         "state": "Nevada",
@@ -1285,7 +1285,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Minnesota",
-          "text": "Like Hawaiʻi, Minnesota faces high childcare costs that affect whether working-age parents can enter or stay in the labor force. Minnesota has ranked #1 or #2 in labor force participation for most of the past four decades. The state's Child Care Assistance Program (CCAP) provides subsidized childcare on a sliding-fee scale for families earning up to 67 percent of state median income. Minnesota doubled CCAP funding between 2019 and 2023 and expanded eligibility thresholds. State analysis found each dollar invested in CCAP generated between $1.36 and $1.83 in increased labor force participation and associated tax revenue.",
+          "text": "Like Hawaiʻi, Minnesota faces high childcare costs that affect whether working-age parents can enter or stay in the labor force. Minnesota has ranked between #1 and #6 for labor force participation every year since 1977, and #1 from 1991 to 2004. The state's Child Care Assistance Program (CCAP) provides subsidized childcare on a sliding-fee scale for families earning up to 67 percent of state median income. Minnesota doubled CCAP funding between 2019 and 2023 and expanded eligibility thresholds. State analysis found each dollar invested in CCAP generated between $1.36 and $1.83 in increased labor force participation and associated tax revenue.",
           "source": {
             "label": "Child Care Assistance Program - Minnesota Department of Children, Youth, and Families",
             "url": "https://dcyf.mn.gov/programs-directory/child-care-assistance-program"
@@ -1483,7 +1483,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Texas",
-          "text": "Unlike Hawaiʻi, Texas allows by-right development at a scale that keeps supply closer to demand. Texas maintains one of the lowest renter cost burden rates in the country relative to income through permissive land-use regulation at the state level. Texas preempts local rent control and does not mandate design review, minimum parking requirements, or height limits in most zoning jurisdictions, which allows apartment supply to expand quickly in response to demand. When demand rose sharply from 2020 to 2022, new supply followed and limited sustained rent increases.",
+          "text": "Unlike Hawaiʻi, Texas has permissive state-level land-use rules, but its record shows supply rules alone have not kept renter burden better than average. Texas ranked better than the median for renter cost burden from 2010 to 2016, but has been worse than the median since 2017 and ranked #43 in 2024. Texas preempts local rent control, but most Texas cities still require minimum parking for new housing. When demand surged after 2020, renter cost burden still rose, from 48.0 percent in 2019 to 53.0 percent in 2022.",
           "source": {
             "label": "How Local Rules Fuel High Housing Costs in Texas - Texas Tribune",
             "url": "https://apps.texastribune.org/features/2024/texas-housing-affordability-zoning/"
@@ -1491,7 +1491,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Texas keeps burden low through permissive development; California's rent stabilization did not reduce burden without supply. Hawaiʻi has begun addressing supply directly: Maui County's Bill 9 (signed 2025) phases out approximately 6,200 vacation rentals in apartment-zoned areas by 2029-2031. At the same time, Hawaiʻi's LIHTC allocation is consistently underutilized because environmental review and permitting delays make projects financially unviable."
+        "Texas shows permissive land-use rules alone have not kept renter burden low; California's rent stabilization did not reduce burden without supply. Hawaiʻi has begun addressing supply directly: Maui County's Bill 9 (signed 2025) phases out approximately 6,200 vacation rentals in apartment-zoned areas by 2029-2031. At the same time, Hawaiʻi's LIHTC allocation is consistently underutilized because environmental review and permitting delays make projects financially unviable."
       ],
       "caution": {
         "state": "California",
@@ -1626,7 +1626,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Minnesota",
-          "text": "Like Hawaiʻi, Minnesota's housing supply was constrained by restrictive zoning before statewide reform. Minnesota enacted statewide zoning reform in 2023 (SF 3) allowing multiplexes in all cities over 1,000 people, following Minneapolis's 2040 comprehensive plan that eliminated single-family-only zoning citywide in 2020. Research found that rent growth in Minneapolis moderated relative to peer cities from 2020 to 2023 and new housing unit production accelerated. Minnesota is the first state to enact statewide single-family zoning elimination.",
+          "text": "Like Hawaiʻi, Minnesota's largest city had its housing supply constrained by restrictive zoning. Minneapolis's 2040 comprehensive plan, in effect from 2020, allowed duplexes and triplexes in areas that had previously allowed only single-family detached houses, and the city eliminated parking minimums in 2021. The Federal Reserve Bank of Minneapolis has built a data tool to measure the plan's effects on housing production and affordability.",
           "source": {
             "label": "Minneapolis 2040 Plan Data Tool - Federal Reserve Bank of Minneapolis",
             "url": "https://www.minneapolisfed.org/article/2024/minneapolis-2040-plan-data-tool-prepared-to-measure-impacts"
@@ -1634,7 +1634,7 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Minnesota's zoning reform opened supply; California's reforms stalled against permitting and labor barriers. Hawaiʻi faces both: a 20-to-40 percent construction cost premium driven by Jones Act shipping, and an estimated 20,000 to 25,000 residential units converted to full-time vacation rentals, directly reducing supply available to residents."
+        "Minneapolis legalized more housing types citywide; California's reforms stalled against permitting and labor barriers. Hawaiʻi faces both: a 20-to-40 percent construction cost premium driven by Jones Act shipping, and an estimated 20,000 to 25,000 residential units converted to full-time vacation rentals, directly reducing supply available to residents."
       ],
       "caution": {
         "state": "California",
@@ -1727,11 +1727,11 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Virginia unified provider data to drive placements; Oregon spent $1.7 billion on services without expanding supply. Hawaiʻi's Kauhale Initiative achieves $20,000 per unit on surplus state and federal land, compared to $200,000-plus for conventional affordable housing; scaling to 5,000 units would require more military and state surplus land transfers. The Return to Home program costs $500,000 per year, relocates mainland-connected individuals at a 2 percent return rate, and died in the 2025 legislature."
+        "Virginia unified provider data to drive placements; Oregon's unsheltered rate kept climbing as housing supply lagged. Hawaiʻi's Kauhale Initiative achieves $20,000 per unit on surplus state and federal land, compared to $200,000-plus for conventional affordable housing; scaling to 5,000 units would require more military and state surplus land transfers. The Return to Home program costs $500,000 per year, relocates mainland-connected individuals at a 2 percent return rate, and died in the 2025 legislature."
       ],
       "caution": {
         "state": "Oregon",
-        "text": "Oregon demonstrates the risk Hawaiʻi faces: spending on services without expanding housing supply does not reduce unsheltered counts. Oregon spent $1.7 billion on homelessness from 2019 to 2024 while unsheltered counts rose 17% and homeless deaths quadrupled. Hawaiʻi faces the same structural risk.",
+        "text": "Oregon demonstrates the risk Hawaiʻi faces: unsheltered homelessness can climb fast when housing supply lags demand. Oregon's unsheltered homelessness rate rose 60 percent from 2019 to 2025, from 24.1 to 38.6 per 10,000, and Oregon has ranked last in the country since 2024. Hawaiʻi faces the same structural risk.",
         "source": {
           "label": "Oregon Statewide Homelessness Estimates 2024 - Oregon Legislative Assembly",
           "url": "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/CommitteeMeetingDocument/288059"
@@ -2142,10 +2142,10 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Alaska",
-          "text": "Like Hawaiʻi, Alaska has isolated grids dependent on shipped-in fossil fuel, making rural energy costs structurally high. Alaska established the Renewable Energy Fund in 2008, a competitive grant program for rural diesel-dependent communities to transition to renewable generation. Communities used the grants to combine wind turbines and battery-backed hydropower, with Kodiak Island achieving near-full renewable generation and reducing diesel imports from 2.3 million gallons per year to near zero. Rates in Kodiak stabilized while surrounding diesel-dependent communities continued to face volatile fuel costs.",
+          "text": "Like Hawaiʻi, Alaska has isolated grids dependent on shipped-in fossil fuel, making rural energy costs structurally high. Alaska established the Renewable Energy Fund in 2008, a competitive grant program for rural diesel-dependent communities to transition to renewable generation. Communities have used the grants for feasibility studies, design, and construction of wind, hydropower, and other renewable projects that displace diesel generation. In 2023 the legislature removed the program's sunset date, extending it indefinitely.",
           "source": {
-            "label": "The Renewable Energy Fund - Alaska Renewable Energy Project (REAP)",
-            "url": "https://alaskarenewableenergy.org/initiatives/the-renewable-energy-fund/"
+            "label": "Renewable Energy Fund - Alaska Energy Authority",
+            "url": "https://www.akenergyauthority.org/What-We-Do/Grants-Loans/Renewable-Energy-Fund"
           }
         }
       ],
@@ -2244,7 +2244,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Iowa",
-          "text": "Unlike Hawaiʻi, Iowa established utility-scale procurement early, giving the grid a stable renewable base before distributed generation complicated dispatch. Iowa enacted the first state Renewable Portfolio Standard in the nation in 1983. By the early 2000s, Iowa had developed long-term fixed-price wind contracts with utilities that made wind development financially predictable. Iowa's wind energy share crossed 60 percent of total generation by 2020, the highest of any large state. The fixed-price contract structure allowed developers to finance projects without relying on volatile wholesale electricity prices, and the state's transmission investment kept interconnection costs low enough to sustain continued development.",
+          "text": "Unlike Hawaiʻi, Iowa established utility-scale procurement early, giving the grid a stable renewable base before distributed generation complicated dispatch. Iowa enacted the first state Renewable Portfolio Standard in the nation in 1983. By the early 2000s, Iowa had developed long-term fixed-price wind contracts with utilities that made wind development financially predictable. Iowa's renewable share of generation crossed 60 percent by 2022, mostly from wind. The fixed-price contract structure allowed developers to finance projects without relying on volatile wholesale electricity prices, and the state's transmission investment kept interconnection costs low enough to sustain continued development.",
           "source": {
             "label": "Iowa State Energy Profile - U.S. Energy Information Administration",
             "url": "https://www.eia.gov/state/print.php?sid=IA"
@@ -2256,10 +2256,10 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "Arizona",
-        "text": "Like Hawaiʻi, Arizona had high rooftop solar adoption that depended on net metering policies vulnerable to regulatory change. Arizona had among the highest rooftop solar adoption rates in the country through 2013, driven by net metering policies that credited solar customers at retail rates. In 2013, the Arizona Corporation Commission approved a monthly fixed charge on new solar customers after utilities argued that solar adopters were shifting grid costs to non-solar customers. New rooftop solar installations fell roughly 90 percent within months of the change. Arizona's experience illustrates how rate structure decisions by a state utility commission can rapidly reverse solar adoption gains independent of resource availability.",
+        "text": "Like Hawaiʻi, Arizona had high rooftop solar adoption that depended on net metering policies vulnerable to regulatory change. Arizona had among the highest rooftop solar adoption rates in the country through 2013, driven by net metering policies that credited solar customers at retail rates. In 2015, Salt River Project, one of the state's two largest utilities, added a demand charge for new solar customers after arguing that solar adopters were shifting grid costs to non-solar customers. Rooftop solar applications in its territory fell 96 percent in 2015. Arizona's experience illustrates how utility rate structure decisions can rapidly reverse solar adoption gains independent of resource availability.",
         "source": {
-          "label": "Arizona Corporation Commission Decision on Solar Fixed Charge - Vote Solar",
-          "url": "https://votesolar.org/press-release-arizona-corporation-commission-decision-on-solar-step-down/"
+          "label": "Solar flameout: Demand charges cause applications to plummet - Arizona Capitol Times",
+          "url": "https://azcapitoltimes.com/news/2016/02/19/solar-flameout-demand-charges-cause-applications-to-plummet-and-could-reflect-arizonas-energy-future/"
         }
       }
     }
@@ -2477,7 +2477,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "North Carolina",
-          "text": "Like Hawaiʻi, North Carolina lacked structural deposit rules until it enacted automatic surplus transfers that removed the decision from annual appropriations. North Carolina has ranked among the top states in rainy day fund adequacy for over a decade. State law requires that a fixed percentage of surplus revenues be automatically deposited into the Budget Stabilization Reserve each fiscal year, removing the deposit decision from the annual appropriations process. North Carolina's reserve balance grew steadily through the 2010s, and credit rating agencies cited the reserve structure in multiple upgrade decisions. Moody's upgraded North Carolina's bond rating citing fiscal reserves as a primary factor.",
+          "text": "Like Hawaiʻi, North Carolina lacked structural deposit rules until it enacted automatic surplus transfers that removed the decision from annual appropriations. North Carolina built its reserve from 4.1 percent of spending in 2015 to 17.7 percent in 2023. State law requires that a fixed percentage of surplus revenues be automatically deposited into the Budget Stabilization Reserve each fiscal year, removing the deposit decision from the annual appropriations process. Moody's has affirmed North Carolina's AAA rating, citing the state's strong financial position and reserves.",
           "source": {
             "label": "Moody's AAA Rating for North Carolina General Obligation Bonds - NC State Treasurer",
             "url": "https://www.nctreasurer.gov/news/press-releases/2025/04/02/treasurer-brad-briner-announces-moodys-aaa-rating-outstanding-general-obligation-bonds-nc"
@@ -2489,10 +2489,10 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "New Jersey",
-        "text": "Like Hawaiʻi before its recent buildup, New Jersey operated with chronically thin reserves that compounded fiscal stress through higher borrowing costs. New Jersey maintained a rainy day fund balance below 1 percent of general fund expenditures for most of the decade from 2010 to 2020, far worse than the median. Moody's and S&P both issued credit downgrades to New Jersey during this period, citing the thin reserve and structural budget imbalance as primary factors. Higher borrowing costs compounded the underlying fiscal stress, requiring larger debt service payments that further constrained the budget. New Jersey illustrates how chronically low reserves create a self-reinforcing cycle of fiscal pressure.",
+        "text": "Like Hawaiʻi before its recent buildup, New Jersey operated with chronically thin reserves that compounded fiscal stress through higher borrowing costs. New Jersey maintained a rainy day fund balance below 1 percent of general fund expenditures for most of the decade from 2010 to 2020, far worse than the median. Moody's and S&P both downgraded New Jersey repeatedly during this period, citing a weak financial position and a large structural budget imbalance driven mainly by pension contribution shortfalls. Higher borrowing costs compounded the underlying fiscal stress, requiring larger debt service payments that further constrained the budget. New Jersey illustrates how chronically low reserves create a self-reinforcing cycle of fiscal pressure.",
         "source": {
-          "label": "New Jersey's Shrinking Rainy Day Fund - New Jersey Policy Perspective",
-          "url": "https://www.njpp.org/publications/blog-category/lets-not-forget-to-fix-new-jerseys-shrinking-rainy-day-fund/"
+          "label": "New Jersey Cut to A2 by Moody's - The Bond Buyer",
+          "url": "https://www.bondbuyer.com/news/new-jersey-cut-to-a2-by-moodys"
         }
       }
     }
@@ -2579,19 +2579,19 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Colorado",
-          "text": "Like Hawaiʻi, Colorado adopted all-mail voting, but paired it with automatic voter registration and competitive elections across the ballot. Colorado enacted universal vote-by-mail in 2013 (HB 1303) paired with same-day voter registration at voting service centers and automatic voter registration through the DMV. Colorado went from worse than average participation in the early 2000s to consistently ranking in the top 10 by 2016. Approximately 15 to 20 percent of Colorado voters in recent elections registered on election day or in the final week, a direct result of same-day registration availability.",
+          "text": "Like Hawaiʻi, Colorado adopted all-mail voting, and it paired mail ballots with same-day registration. Colorado enacted universal vote-by-mail in 2013 (HB 1303), mailing a ballot to every active voter and allowing voters to register through Election Day at voter service and polling centers. Colorado already ranked in the top 10 before the reform, every year since 2008, and has stayed there, reaching #2 in 2020.",
           "source": {
-            "label": "HB13-1303 Voter Access and Modernized Elections Act - ACLU of Colorado",
-            "url": "https://www.aclu-co.org/legislation/hb13-1303-voter-access-modernized-elections-act"
+            "label": "Voter Access and Modernized Elections Act (2013 Session Laws, Ch. 185) - Colorado General Assembly",
+            "url": "https://content.leg.colorado.gov/sites/default/files/images/olls/2013a_sl_185.pdf"
           }
         }
       ],
       "explore": [
-        "Colorado paired all-mail voting with automatic registration and competitive elections; Oregon's all-mail gains faded without those reinforcing factors. In Hawaiʻi, roughly 27 percent of residents speak a language other than English at home, a barrier some high-participation states address through multilingual voter guides. Consistent one-party margins in statewide races also reduce the financial incentive for either party to invest in aggressive voter mobilization."
+        "Colorado paired all-mail voting with same-day registration; Oregon shows all-mail voting preserves high turnout rather than creating it. In Hawaiʻi, roughly 27 percent of residents speak a language other than English at home, a barrier some high-participation states address through multilingual voter guides. Consistent one-party margins in statewide races also reduce the financial incentive for either party to invest in aggressive voter mobilization."
       ],
       "caution": {
         "state": "Oregon",
-        "text": "Like Hawaiʻi, Oregon adopted all-mail voting but found that logistical reform alone did not sustain participation gains over time. Oregon pioneered all-mail voting in 2000 and maintained better-than-average participation for over a decade. Oregon's ranking has since declined as other states adopted mail voting without Oregon maintaining a comparable lead. Vote-by-mail removes logistical barriers for motivated voters but does not independently create the civic engagement that drives high participation.",
+        "text": "Like Hawaiʻi, Oregon votes entirely by mail, but Oregon was already a top-tier state before it switched. Oregon ranked between #4 and #10 for participation through the 1990s, adopted all-mail voting in 2000, and has ranked in the top 10 in 12 of 13 elections since, reaching #1 in 2022. Mail voting preserved Oregon's high turnout rather than creating it: Hawaiʻi switched in 2020 and still ranks near last. Vote-by-mail removes logistical barriers for motivated voters but does not independently create the civic engagement that drives high participation.",
         "source": {
           "label": "All-Mail Voting in Colorado Increases Turnout and Reduces Inequality - PMC/PNAS",
           "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9756790/"
@@ -2846,10 +2846,10 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Ohio",
-          "text": "Like Hawaiʻi, Ohio needed to create new employer formation pathways beyond its legacy industries. Ohio launched the Ohio Third Frontier program in 2002, a 10-year $1.4 billion state investment in technology commercialization infrastructure, early-stage capital access, and STEM startup formation. Rather than subsidizing individual companies directly, Third Frontier funded commercialization accelerators at universities and early-stage venture funds that co-invested with private capital. Ohio's technology startup formation rate increased substantially over the program's first decade, building clusters in biomedical devices, advanced materials, and clean energy.",
+          "text": "Like Hawaiʻi, Ohio needed to create new employer formation pathways beyond its legacy industries. Ohio launched the Ohio Third Frontier program in 2002, a $1.6 billion state investment designed to run through 2012 in technology commercialization infrastructure, early-stage capital access, and STEM startup formation. Rather than subsidizing individual companies directly, Third Frontier funded commercialization accelerators at universities and early-stage venture funds that co-invested with private capital. The state credited the program with about 500 companies and 8,000 jobs by 2010, but Ohio's overall establishment entry rate stayed between #44 and #50 every year from 2002 to 2012.",
           "source": {
-            "label": "Ohio Third Frontier Program Overview - Ohio Manufacturing Association",
-            "url": "https://www.ohiomfg.com/wp-content/uploads/2024/02/ohio_third_frontier_program_overview.pdf"
+            "label": "Ohio Third Frontier Bond Renewal (2010) - Ballotpedia",
+            "url": "https://ballotpedia.org/Ohio_Third_Frontier_Bond_Renewal_(2010)"
           }
         }
       ],
@@ -2993,7 +2993,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Florida",
-          "text": "Unlike Hawaiʻi, Florida reduced structural barriers to business registration and operation rather than relying on targeted incentives. Florida consistently ranks among the top five states for new employer business formation. Florida streamlined its business registration to a one-business-day approval cycle at $125 to $138 per entity, among the lowest combined costs in the country. Florida also operates one of the largest small business development center (SBDC) networks in the US, with 41 locations providing free consulting to early-stage businesses.",
+          "text": "Unlike Hawaiʻi, Florida reduced structural barriers to business registration and operation rather than relying on targeted incentives. Florida has ranked in the top 10 for net employer formation every year since 2011. Florida streamlined its business registration to a one-business-day approval cycle at $125 to $138 per entity, among the lowest combined costs in the country. Florida also operates one of the largest small business development center (SBDC) networks in the US, with 41 locations providing free consulting to early-stage businesses.",
           "source": {
             "label": "Florida SBDC Network - floridasbdc.org",
             "url": "https://floridasbdc.org/"
@@ -3005,10 +3005,10 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "Louisiana",
-        "text": "Louisiana's experience shows that sector-specific tax incentives do not produce lasting net employer growth when the underlying cost structure remains high. Louisiana invested over $250 million per year in film and entertainment tax incentives starting in 2002 to stimulate business formation beyond oil and gas. State legislative auditor reviews estimated the program cost $17 in incentives per $1 of lasting economic activity. Louisiana's overall employer formation rate remained in the bottom quarter throughout the incentive period.",
+        "text": "Louisiana's experience shows that sector-specific tax incentives do not produce lasting net employer growth when the underlying cost structure remains high. Louisiana has offered film and entertainment tax credits since 2002 to stimulate business formation beyond oil and gas. A study for the state found the motion picture credit returned about 22 cents in state tax revenue per dollar of credit in FY 2022. Louisiana's net employer formation rank swung from the top 10 after Hurricane Katrina (2007 to 2011) to the bottom third in most years since 2015.",
         "source": {
-          "label": "Motion Picture Production Program - Louisiana Entertainment",
-          "url": "https://www.louisianaentertainment.gov/film/motion-picture-production-program"
+          "label": "Louisiana Entertainment Impact Studies (Camoin Associates, 2023) - Louisiana Economic Development",
+          "url": "https://www.opportunitylouisiana.gov/wp-content/uploads/docs/2023-entertainment-impact-studies-march-2023.pdf"
         }
       }
     }
@@ -3077,7 +3077,7 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Massachusetts",
-          "text": "Unlike Hawaiʻi, Massachusetts deliberately concentrated public investment in high-output sectors rather than supporting existing low-productivity industries. Massachusetts has ranked #1 or #2 in labor productivity for most of the past two decades through deliberate concentration in sectors with high output per hour: biotechnology, medical devices, financial technology, and defense research. Massachusetts created the Massachusetts Life Sciences Center in 2008, a 10-year $1 billion initiative funding research infrastructure, workforce training, and company formation. The program is credited with establishing Massachusetts as the dominant US biotech hub outside of San Diego.",
+          "text": "Unlike Hawaiʻi, Massachusetts deliberately concentrated public investment in high-output sectors rather than supporting existing low-productivity industries. Massachusetts' productivity index has ranked in the top 10 every year since 2018 (#2 in 2018 and 2020), reflecting deliberate concentration in sectors with high output per hour: biotechnology, medical devices, financial technology, and defense research. Massachusetts created the Massachusetts Life Sciences Center in 2008, a 10-year $1 billion initiative funding research infrastructure, workforce training, and company formation.",
           "source": {
             "label": "Massachusetts Life Sciences Center - masslifesciences.com",
             "url": "https://www.masslifesciences.com/"
@@ -3089,7 +3089,7 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "Nevada",
-        "text": "Like Hawaiʻi, Nevada's economy is dominated by tourism and hospitality, keeping output per worker low despite headline employer wins. Nevada spent two decades attracting high-profile employers including the Tesla Gigafactory (2014) and the Raiders stadium (2020). Nevada's labor productivity has remained stuck in the bottom quartile because gaming and hospitality still employ the majority of the workforce. Individual large-employer announcements do not shift the productivity distribution unless they generate enough employment in high-value sectors to change the aggregate.",
+        "text": "Like Hawaiʻi, Nevada's economy is dominated by tourism and hospitality, keeping output per worker low despite headline employer wins. Nevada spent two decades attracting high-profile employers including the Tesla Gigafactory (2014) and the Raiders stadium (2020). Nevada's productivity index has ranked in the bottom quarter in most years since 2019, with gaming and hospitality still the state's largest employers. Individual large-employer announcements do not shift the productivity distribution unless they generate enough employment in high-value sectors to change the aggregate.",
         "source": {
           "label": "State and Metro Area Labor Productivity - Bureau of Labor Statistics",
           "url": "https://www.bls.gov/lpc/state-productivity.htm"
