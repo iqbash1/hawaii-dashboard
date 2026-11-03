@@ -62,6 +62,12 @@ jobs:
           RESEND_BETA_SEGMENT_ID: ${{ secrets.RESEND_BETA_SEGMENT_ID }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
 
+      # The step above waited for the post to go live, so search engines can
+      # fetch it now. Not an email failure, so it never opens the issue below.
+      - name: Submit the sitemap to IndexNow
+        continue-on-error: true
+        run: node scripts/indexnow-ping.js
+
       # Rolling `email-failed` issue: opened or updated when this job fails,
       # closed again by the next successful run. Rolled up by the weekly
       # health check under "Automated alerts".

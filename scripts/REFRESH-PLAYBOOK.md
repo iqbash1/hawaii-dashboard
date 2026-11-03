@@ -48,6 +48,9 @@ npm run validate         # runs all eleven gates; fails fast on drift
 git add ...
 git commit -m "data: ..."
 git push
+
+# 5. Once the deploy is live, tell Bing and the other IndexNow engines
+npm run indexnow
 ```
 
 If step 2 reports a **V6 truth flip** (a "gone up / gone down"
