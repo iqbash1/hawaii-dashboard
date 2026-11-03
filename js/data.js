@@ -541,14 +541,14 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Massachusetts strengthened coverage by layering state-level subsidies over its employer mandate; Tennessee shows how budget pressure can unravel a broad public program. The 2024 uptick reflects the end of pandemic-era continuous Medicaid enrollment, not a structural change, but it highlights dependence on federal enrollment rules the state does not control."
+        "Massachusetts strengthened coverage by layering state-level subsidies over its employer mandate; Tennessee shows how an eligibility cut can unravel coverage. The 2024 uptick reflects the end of pandemic-era continuous Medicaid enrollment, not a structural change, but it highlights dependence on federal enrollment rules the state does not control."
       ],
       "caution": {
         "state": "Tennessee",
-        "text": "Tennessee, like Hawaiʻi, relied on a broad public coverage program whose fiscal sustainability was ultimately tested. Tennessee operated TennCare, one of the broadest Medicaid programs in the country through the early 2000s, covering roughly 1.3 million residents and ranking among the highest-coverage states. Facing budget pressures, Tennessee disenrolled roughly 190,000 members in 2005 in a single year. Uninsured rates rose sharply and Tennessee fell from near the top of coverage rankings to worse than average.",
+        "text": "Tennessee shows how quickly coverage can unravel when a state cuts eligibility. From July through September 2005, TennCare, Tennessee's Medicaid program, disenrolled about 170,000 adults after an eligibility change. A study of the cut found that uninsured rates rose by almost 5 percentage points relative to adults in other Southern states, with no gain in employment, while doctor visits and hospital stays fell. Tennessee has ranked in the worse half of states for its uninsured rate every year since 2015.",
         "source": {
-          "label": "TennCare Disenrollment Led To Increased Eviction Filings In Tennessee (Health Affairs, 2023)",
-          "url": "https://www.healthaffairs.org/doi/10.1377/hlthaff.2023.00973"
+          "label": "The Effect of Disenrollment from Medicaid on Employment, Insurance Coverage, Health and Health Care Utilization - NBER (DeLeire, 2018)",
+          "url": "https://www.nber.org/papers/w24899"
         }
       }
     }
@@ -1285,10 +1285,10 @@ const DASHBOARD_DATA = {
       "benchmarks": [
         {
           "state": "Minnesota",
-          "text": "Like Hawaiʻi, Minnesota faces high childcare costs that affect whether working-age parents can enter or stay in the labor force. Minnesota has ranked between #1 and #6 for labor force participation every year since 1977, and #1 from 1991 to 2004. The state's Child Care Assistance Program (CCAP) provides subsidized childcare on a sliding-fee scale for families earning up to 67 percent of state median income. Minnesota doubled CCAP funding between 2019 and 2023 and expanded eligibility thresholds. State analysis found each dollar invested in CCAP generated between $1.36 and $1.83 in increased labor force participation and associated tax revenue.",
+          "text": "Like Hawaiʻi, Minnesota faces high childcare costs that affect whether working-age parents can enter or stay in the labor force. Minnesota has ranked between #1 and #6 for labor force participation every year since 1977, and #1 from 1991 to 2004. The state's Child Care Assistance Program (CCAP) subsidizes childcare on a sliding-fee scale while parents work or train. Most families can enroll if they earn up to 47 percent of the state's typical income for their family size, and keep the help until they earn more than 67 percent.",
           "source": {
-            "label": "Child Care Assistance Program - Minnesota Department of Children, Youth, and Families",
-            "url": "https://dcyf.mn.gov/programs-directory/child-care-assistance-program"
+            "label": "Minnesota Statutes 142E.10, Child Care Assistance Eligibility - Minnesota Revisor of Statutes",
+            "url": "https://www.revisor.mn.gov/statutes/cite/142E.10"
           }
         }
       ],
@@ -1873,14 +1873,14 @@ const DASHBOARD_DATA = {
         }
       ],
       "explore": [
-        "Virginia's SMART SCALE scores projects on cost-effectiveness before funding; Rhode Island's capital package funded visible projects over systematic upkeep. Federal infrastructure-law funds allocate approximately $510 million to Hawaiʻi over five years, with state-of-good-repair requirements directing more to maintenance. Neighbor island road maintenance costs more per mile than Oʻahu because every piece of equipment and material must be shipped separately."
+        "Virginia's SMART SCALE scores projects on cost-effectiveness before funding; Rhode Island's bridge-first repair program has not yet lifted its road rank. Federal infrastructure-law funds allocate approximately $510 million to Hawaiʻi over five years, with state-of-good-repair requirements directing more to maintenance. Neighbor island road maintenance costs more per mile than Oʻahu because every piece of equipment and material must be shipped separately."
       ],
       "caution": {
         "state": "Rhode Island",
-        "text": "Like Hawaiʻi, Rhode Island directed capital spending to high-visibility projects rather than cost-effective maintenance, and road quality did not improve. Rhode Island passed a major transportation funding package in 2016 (RhodeWorks) and directed a significant share to high-visibility bridge repairs. By 2020, Rhode Island still ranked near the bottom in road quality despite the investment. Capital infusions without systematic maintenance prioritization fund visible projects rather than cost-effective ones.",
+        "text": "Rhode Island shows how long a large repair program can take to show up in road rankings. RhodeWorks, a 10-year, $4.7 billion program signed in 2016, centered on the state's backlog of structurally deficient bridges, when Rhode Island ranked last in the country for bridge condition. Rhode Island has ranked #49 or worse for roads in poor condition every year since 2004, though the share of its roads in poor condition fell from about 39 percent in 2018 to about 24 percent in 2024.",
         "source": {
-          "label": "RI Bridges Improving After 5 Years of RhodeWorks - WPRI",
-          "url": "https://www.wpri.com/target-12/ri-bridges-improving-after-5-years-of-rhodeworks-tolls-still-in-legal-limbo/"
+          "label": "The First Year of RhodeWorks - State of Rhode Island",
+          "url": "https://www.ri.gov/press/view/29697"
         }
       }
     },
@@ -2154,10 +2154,10 @@ const DASHBOARD_DATA = {
       ],
       "caution": {
         "state": "California",
-        "text": "Like Hawaiʻi, California passed through renewable transition costs to ratepayers, widening the gap with states that kept legacy generation. California's electricity prices rose roughly 50 percent over the decade ending 2024 despite aggressive renewable mandates. Above-market contracts with ratepayer backstops, wildfire liability shifted to utility rates, and uncapped utility capital spending drove costs up even as renewable share increased. Connecticut followed a similar path and began rolling back its renewable portfolio target.",
+        "text": "Like Hawaiʻi, California has seen climate policy and other costs flow into household electricity bills. California's average residential price nearly doubled, from about 16 cents per kilowatt-hour in 2014 to about 32 cents in 2024. The Legislative Analyst's Office found that California's rates are close to double the rest of the nation's, driven mostly by its three large investor-owned utilities, and named wildfire-related costs, greenhouse gas reduction programs, and differences in utility operations as key factors. Wildfire costs grew from a negligible share of those utilities' rates before 2019 to between 7 and 13 percent of a typical bill.",
         "source": {
-          "label": "Why Are California's Electricity Prices So High? - California Legislative Analyst's Office",
-          "url": "https://lao.ca.gov/Publications/Report/4793"
+          "label": "Assessing California's Climate Policies: Residential Electricity Rates in California - California Legislative Analyst's Office (2025)",
+          "url": "https://lao.ca.gov/Publications/Report/4950"
         }
       }
     }

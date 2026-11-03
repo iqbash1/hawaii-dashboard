@@ -2179,11 +2179,14 @@ function auditNamedState(slug, metric, field, text, state) {
             const clause = before.slice(cut);
             const sBand = s9Band(clause, total);
             const most = /\bmost\s+years\b/i.test(clause);
+            // "every year" / "each assessment" admits no exception: Rhode Island
+            // "#50 every year since 2004" passed at 18 of 19 (2014 was #49).
+            const every = !most && /\b(every|each)\b/i.test(clause);
             const ys = years.filter(y => +y >= +since[1]);
             const hits = sBand ? ys.map(y => { const r = rk(y); return r ? inBand(r, sBand) : null; }).filter(x => x !== null) : [];
             if (hits.length) {
                 const sh = share(hits);
-                recordNew(most ? sh > 0.5 : sh >= 0.9, { ...base, check: 's9 since',
+                recordNew(most ? sh > 0.5 : every ? sh === 1 : sh >= 0.9, { ...base, check: 's9 since',
                     expected: `${sBand.text} ${most ? 'in most years' : 'every year'} since ${since[1]}`,
                     found: `${Math.round(sh * hits.length)} of ${hits.length} years` });
             }
